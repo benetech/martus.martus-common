@@ -30,7 +30,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.Arrays;
 
-import org.martus.common.CustomFields;
 import org.martus.common.FieldSpec;
 import org.martus.common.LegacyCustomFields;
 import org.martus.common.MartusUtilities;
