@@ -50,8 +50,12 @@ public class GridData
 		rows = new Vector();
 	}
 	
-	public void setMaxColumns(int maxColumns)
+	public class ColumnsAlreadySetException extends Exception{}
+	
+	public void setMaxColumns(int maxColumns) throws ColumnsAlreadySetException
 	{
+		if(this.maxColumns != 0)
+			throw new ColumnsAlreadySetException();
 		this.maxColumns = maxColumns;
 	}
 	
@@ -138,8 +142,15 @@ public class GridData
 		public void startDocument(Attributes attrs) throws SAXParseException
 		{
 			String cols = attrs.getValue(GridData.GRID_ATTRIBUTE_COLUMNS);
-			grid.setMaxColumns(Integer.parseInt(cols));
-			super.startDocument(attrs);
+			try
+			{
+				grid.setMaxColumns(Integer.parseInt(cols));
+				super.startDocument(attrs);
+			}
+			catch (ColumnsAlreadySetException e)
+			{
+				e.printStackTrace();
+			}
 		}
 
 		public SimpleXmlDefaultLoader startElement(String tag)

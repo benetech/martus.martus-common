@@ -29,7 +29,6 @@ import org.martus.common.GridData;
 import org.martus.common.GridRow;
 import org.martus.common.MartusUtilities;
 import org.martus.util.TestCaseEnhanced;
-import org.martus.util.xml.SimpleXmlParser;
 
 
 public class TestGridData extends TestCaseEnhanced
@@ -231,13 +230,27 @@ public class TestGridData extends TestCaseEnhanced
 	{
 		GridData original = createSampleGrid();
 		String xml = original.getXmlRepresentation();
-		GridData loaded = new GridData(1);
+		GridData loaded = new GridData(0);
 		loaded.addEmptyRow();
 		loaded.setFromXml(xml);
 		assertEquals("Columns?", original.getColumnCount(), loaded.getColumnCount());
 		assertEquals("Rows?", original.getRowCount(), loaded.getRowCount());
 		assertEquals(xml, loaded.getXmlRepresentation());
 		assertEquals("unescaped xml?", original.getValueAt(0,1), loaded.getValueAt(0,1));
+	}
+	
+	public void testResetColumns()
+	{
+		GridData grid = createSampleGrid();
+		try
+		{
+			grid.setMaxColumns(1);
+			fail("Didn't throw after we reset the # of columns?");
+		}
+		catch (GridData.ColumnsAlreadySetException expectedException)
+		{
+		}
+		
 	}
 
 	static public final String SAMPLE_DATA1 = "data1";
