@@ -30,6 +30,7 @@ import java.io.File;
 
 import org.martus.common.MartusUtilities;
 import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.packet.UniversalId;
 
 public class ClientFileDatabase extends FileDatabase
 {
@@ -61,4 +62,10 @@ public class ClientFileDatabase extends FileDatabase
 	{
 		return accountMapSignatureFile.exists();
 	}
+	
+	protected DatabaseKey getDatabaseKey(File accountDir, String bucketName, UniversalId uid)
+	{
+		return DatabaseKey.createSealedKey(uid);
+	}
+
 }

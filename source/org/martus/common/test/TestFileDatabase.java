@@ -564,6 +564,12 @@ public class TestFileDatabase extends TestCaseEnhanced
 		public void verifyAccountMap() throws FileVerificationException, MissingAccountMapSignatureException 
 		{
 		}
+		
+		protected DatabaseKey getDatabaseKey(File accountDir, String bucketName, UniversalId uid)
+		{
+			return DatabaseKey.createSealedKey(uid);
+		}
+
 	}
 
 	MockMartusSecurity security;

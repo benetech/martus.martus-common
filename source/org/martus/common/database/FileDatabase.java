@@ -406,7 +406,8 @@ abstract public class FileDatabase extends Database
 		{
 			for(int packetBucket = 0; packetBucket < packetBuckets.length; ++packetBucket)
 			{
-				File bucketDir = new File(accountDir, packetBuckets[packetBucket]);
+				String bucketName = packetBuckets[packetBucket];
+				File bucketDir = new File(accountDir, bucketName);
 				if(INTERIM_FOLDER_NAME.equals(bucketDir.getName()))
 					continue;
 				if(CONTACTINFO_FOLDER_NAME.equals(bucketDir.getName()))
@@ -425,15 +426,9 @@ abstract public class FileDatabase extends Database
 						if(uid.getLocalId().startsWith("BUR-"))
 							continue;
 							
-						DatabaseKey key = null;
-						if(isDraftPacketBucket(packetBuckets[packetBucket]))
-							key = DatabaseKey.createDraftKey(uid);
-						else
-							key = DatabaseKey.createSealedKey(uid);
-							
 						try
 						{
-							visitor.visit(key);
+							visitor.visit(getDatabaseKey(accountDir, bucketName, uid));
 						}
 						catch (RuntimeException nothingWeCanDoAboutIt)
 						{
@@ -444,6 +439,8 @@ abstract public class FileDatabase extends Database
 			}
 		}
 	}
+
+	protected abstract DatabaseKey getDatabaseKey(File accountDir, String bucketName, UniversalId uid);
 
 	public void scrubRecord(DatabaseKey key) 
 			throws IOException, RecordHiddenException
@@ -690,12 +687,7 @@ abstract public class FileDatabase extends Database
 	{
 		return new FileOutputStream(file);
 	}
-
-	public boolean isDraftPacketBucket(String folderName)
-	{
-		return false;
-	}
-
+	
 	public static int getHashValue(String inputString)
 	{
 		//Linux Elf hashing algorithm

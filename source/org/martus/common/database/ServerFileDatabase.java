@@ -35,6 +35,7 @@ import org.martus.common.MartusUtilities;
 import org.martus.common.MartusUtilities.FileVerificationException;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
+import org.martus.common.packet.UniversalId;
 import org.martus.common.utilities.MartusServerUtilities;
 import org.martus.common.utilities.MartusServerUtilities.MartusSignatureFileDoesntExistsException;
 import org.martus.util.FileOutputStreamViaTemp;
@@ -130,6 +131,16 @@ public class ServerFileDatabase extends FileDatabase
 	protected OutputStream createOutputStream(File file) throws IOException
 	{
 		return new FileOutputStreamViaTemp(file);
+	}
+	
+	protected DatabaseKey getDatabaseKey(File accountDir, String bucketName, UniversalId uid)
+	{
+		DatabaseKey key = null;
+		if(isDraftPacketBucket(bucketName))
+			key = DatabaseKey.createDraftKey(uid);
+		else
+			key = DatabaseKey.createSealedKey(uid);
+		return key;
 	}
 
 	private static final String draftPrefix = "d" + defaultBucketPrefix;
