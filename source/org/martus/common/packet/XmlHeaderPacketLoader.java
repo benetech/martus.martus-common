@@ -96,6 +96,8 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 				bhp.addPublicAttachmentLocalId(value);
 			else if(tag.equals(MartusXml.PrivateAttachmentIdElementName))
 				bhp.addPrivateAttachmentLocalId(value);
+			else if(tag.equals(MartusXml.AllHQSProxyUploadName))
+				bhp.setAllHQsProxyUploadFromXmlTextValue(value);
 		}
 		catch (Exception e)
 		{
@@ -139,6 +141,7 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 			stringTags.add(MartusXml.PublicAttachmentIdElementName);
 			stringTags.add(MartusXml.PrivateAttachmentIdElementName);
 			stringTags.add(MartusXml.HQPublicKeyElementName);
+			stringTags.add(MartusXml.AllHQSProxyUploadName);
 		}
 		return stringTags;
 	}

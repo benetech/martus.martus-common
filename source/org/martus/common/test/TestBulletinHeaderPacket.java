@@ -186,6 +186,20 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		assertEquals("not private after load without tag?", true, loadedBhp3.isAllPrivate());
 	}
 
+	public void testAllHQsProxyUpload() throws Exception
+	{
+		UniversalId dummyUid = UniversalId.createDummyUniversalId();
+		BulletinHeaderPacket noProxyUploaders = new BulletinHeaderPacket(dummyUid);
+		assertEquals("Can Upload?", false, noProxyUploaders.canAllHQsProxyUpload());
+
+		ByteArrayOutputStream out1 = new ByteArrayOutputStream();
+		bhp.writeXml(out1, security);
+		ByteArrayInputStreamWithSeek in1 = new ByteArrayInputStreamWithSeek(out1.toByteArray());
+		BulletinHeaderPacket loadedBhp1 = new BulletinHeaderPacket(UniversalId.createDummyUniversalId());
+		loadedBhp1.loadFromXml(in1, security);
+		assertEquals("Should now have all HQs as proxy uploaders?", true, loadedBhp1.canAllHQsProxyUpload());
+	}
+	
 	public void testWriteXml() throws Exception
 	{
 		String dataId = "this data id";
@@ -313,6 +327,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		assertEquals("hqKey", "", loaded.getHQPublicKey());
 		assertTrue("No unknown?", loaded.hasUnknownTags());
 		assertEquals("AuthorizedToReadKeys", 0, loaded.getAuthorizedToReadKeys().size());
+		assertEquals("AuthorizedToProxyUpload", 0, loaded.getAuthorizedToUploadKeys().size());
 
 		String[] list = loaded.getPublicAttachmentIds();
 		assertEquals("public count", 2, list.length);
@@ -362,6 +377,8 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		assertEquals("Key 1 not present?", hqKey1, loaded.getAuthorizedToReadKeys().get(0));
 		assertEquals("Key 2 not present?", hqKey2, loaded.getAuthorizedToReadKeys().get(1));
 		assertEquals("The original hqKey should be set from first key in vector", hqKey1, loaded.getHQPublicKey());
+		assertEquals("Key 1 not allowed to Upload?", hqKey1, loaded.getAuthorizedToUploadKeys().get(0));
+		assertEquals("Key 2 not allowed to upload?", hqKey2, loaded.getAuthorizedToUploadKeys().get(1));
 		
 		//Now re Add the same key2 as the primary HQ.
 		loaded.setHQPublicKey(hqKey2);

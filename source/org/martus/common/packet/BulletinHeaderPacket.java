@@ -127,12 +127,12 @@ public class BulletinHeaderPacket extends Packet
 
 	public String getHQPublicKey()
 	{
-		return hqPublicKey;
+		return legacyHqPublicKey;
 	}
 
 	public void setHQPublicKey(String key)
 	{
-		hqPublicKey = key;
+		legacyHqPublicKey = key;
 		if(key.length() > 0)
 		{
 			int index = authorizedToReadKeys.indexOf(key);
@@ -140,10 +140,25 @@ public class BulletinHeaderPacket extends Packet
 				authorizedToReadKeys.remove(index);
 			authorizedToReadKeys.add(0,key);
 		}
-		
 	}
 
 	public Vector getAuthorizedToReadKeys()
+	{
+		return authorizedToReadKeys;
+	}
+	
+	public boolean canAllHQsProxyUpload()
+	{
+		return allHQsCanProxyUpload;
+	}
+	
+	void setAllHQsProxyUploadFromXmlTextValue(String data)
+	{
+		if(data.equals(ALL_HQS_PROXY_UPLOAD))
+			allHQsCanProxyUpload = true;
+	}
+
+	public Vector getAuthorizedToUploadKeys()
 	{
 		return authorizedToReadKeys;
 	}
@@ -152,7 +167,7 @@ public class BulletinHeaderPacket extends Packet
 	{
 		authorizedToReadKeys = accountsKeys;
 		if(accountsKeys.size()>0)
-			hqPublicKey = (String)accountsKeys.get(0);
+			legacyHqPublicKey = (String)accountsKeys.get(0);
 	}
 	
 	public boolean isHQAuthorizedToRead(String publicKey)
@@ -160,6 +175,15 @@ public class BulletinHeaderPacket extends Packet
 		return(authorizedToReadKeys.contains(publicKey));
 	}
 
+	public boolean isAuthorizedToUpload(String publicKey)
+	{
+		if(publicKey.equals(getAccountId()))
+			return true;
+		if(!allHQsCanProxyUpload)
+			return false;
+		return(authorizedToReadKeys.contains(publicKey));
+	}
+	
 	public void setAllPrivate(boolean newValue)
 	{
 		allPrivate = newValue;
@@ -401,6 +425,7 @@ public class BulletinHeaderPacket extends Packet
 			String value = keys.toString();
 			writeNonEncodedElement(dest, MartusXml.AccountsAuthorizedToReadElementName, value);			
 		}
+		writeElement(dest, MartusXml.AllHQSProxyUploadName, ALL_HQS_PROXY_UPLOAD);
 	}
 
 	void setAllPrivateFromXmlTextValue(String data)
@@ -415,18 +440,19 @@ public class BulletinHeaderPacket extends Packet
 	{
 		status = "";
 		allPrivate = true;
+		allHQsCanProxyUpload = false;
 		fieldDataPacketSig = new byte[1];
 		privateFieldDataPacketSig = new byte[1];
 		publicAttachments = new Vector();
 		privateAttachments = new Vector();
-		hqPublicKey = "";
+		legacyHqPublicKey = "";
 		lastSavedTime = TIME_UNKNOWN;
 		authorizedToReadKeys = new Vector();
 	}
 
 	private final static String ALL_PRIVATE = "1";
 	private final static String NOT_ALL_PRIVATE = "0";
-
+	private final static String ALL_HQS_PROXY_UPLOAD = "1";
 	public static final long TIME_UNKNOWN = 0;
 
 	boolean knowsWhetherAllPrivate;
@@ -434,7 +460,7 @@ public class BulletinHeaderPacket extends Packet
 	String fieldDataPacketId;
 	String privateFieldDataPacketId;
 	String status;
-	String hqPublicKey;
+	String legacyHqPublicKey;
 	private long lastSavedTime;
 	private byte[] fieldDataPacketSig;
 	private byte[] privateFieldDataPacketSig;
@@ -442,4 +468,5 @@ public class BulletinHeaderPacket extends Packet
 	private Vector privateAttachments;
 	private static final String prefix = "B-";
 	private Vector authorizedToReadKeys;
+	private boolean allHQsCanProxyUpload;
 }
