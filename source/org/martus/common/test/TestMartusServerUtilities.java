@@ -191,6 +191,7 @@ public class TestMartusServerUtilities extends TestCaseEnhanced
 		String burRecord = MartusServerUtilities.createBulletinUploadRecord(uid.getLocalId(), otherSecurity);
 		assertTrue("This burRecord was not created by this security?", MartusServerUtilities.wasBurCreatedByThisCrypto(burRecord, otherSecurity));
 		assertFalse("This burRecord was created by this security?", MartusServerUtilities.wasBurCreatedByThisCrypto(burRecord, serverSecurity));
+		assertFalse("Null burRecord should be handled gracefully.", MartusServerUtilities.wasBurCreatedByThisCrypto(null, serverSecurity));
 	}
 
 	public void testWriteContactInfo() throws Exception

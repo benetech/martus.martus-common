@@ -473,6 +473,8 @@ public class MartusServerUtilities
 	
 	public static boolean wasBurCreatedByThisCrypto(String burToTest, MartusCrypto security)
 	{
+		if(burToTest == null)
+			return false;
 		BufferedReader reader = new BufferedReader(new StringReader(burToTest));
 		String digestFromTestBur;
 		String digestCreatedFromThisCrypto;
