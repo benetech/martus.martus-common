@@ -91,7 +91,7 @@ public class LegacyCustomFields
 				isValid = true;
 			else if(Character.isLetterOrDigit(c))
 				isValid = true;
-			else if(c == '_')
+			else if(c == '_' || c == '-' || c == '.')
 				isValid = true;
 
 			if(!isValid)

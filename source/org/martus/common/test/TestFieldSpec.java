@@ -52,12 +52,12 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertEquals("d", fieldWithExtra.getLabel());
 		assertEquals("not unknown?", FieldSpec.TYPE_UNKNOWN, fieldWithExtra.getType());
 		
-		FieldSpec fieldWithIllegalCharacters = LegacyCustomFields.createFromLegacy("<a9josée,<a9");
+		FieldSpec fieldWithIllegalCharacters = LegacyCustomFields.createFromLegacy("!<a9-._@#josée,!<a9-._@#josée");
 		assertFalse("has unknown?", fieldWithIllegalCharacters.hasUnknownStuff());
-		assertEquals("_a9josée", fieldWithIllegalCharacters.getTag());
-		assertEquals("<a9", fieldWithIllegalCharacters.getLabel());
+		assertEquals("__a9-.___josée", fieldWithIllegalCharacters.getTag());
+		assertEquals("!<a9-._@#josée", fieldWithIllegalCharacters.getLabel());
 		assertEquals("not normal?", FieldSpec.TYPE_NORMAL, fieldWithIllegalCharacters.getType());
-		
+
 	}
 	
 	public void testCreateFromTag()
