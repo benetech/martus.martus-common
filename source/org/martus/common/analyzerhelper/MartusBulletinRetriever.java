@@ -80,12 +80,12 @@ public class MartusBulletinRetriever
 	{
 		if(!isServerAvailable())
 			return new ArrayList();
-		List allBulletins = getListOfAllFieldOfficeBulletinIdsOnServer();
+		List allBulletins = getAllFieldOfficeBulletinUniversalIds();
 		allBulletins.removeAll(bulletinIdsAlreadyRetrieved);
 		return allBulletins;
 	}
 	
-	public List getListOfAllFieldOfficeBulletinIdsOnServer() throws ServerErrorException, MartusSignatureException
+	public List getAllFieldOfficeBulletinUniversalIds() throws ServerErrorException, MartusSignatureException
 	{
 		List allBulletins = new ArrayList();
 		Vector fieldOffices = serverSLL.downloadFieldOfficeAccountIds(security, security.getPublicKeyString());
@@ -94,15 +94,15 @@ public class MartusBulletinRetriever
 		{
 			String fieldOfficeAccountId = (String)fieldOffices.get(a);
 			NetworkResponse response = serverSLL.getSealedBulletinIds(security,fieldOfficeAccountId, noTags);
-			allBulletins.addAll(getListOfBulletinIds(fieldOfficeAccountId, response));
+			allBulletins.addAll(getListOfBulletinUniversalIds(fieldOfficeAccountId, response));
 
 			response = serverSLL.getDraftBulletinIds(security,fieldOfficeAccountId, noTags);
-			allBulletins.addAll(getListOfBulletinIds(fieldOfficeAccountId, response));
+			allBulletins.addAll(getListOfBulletinUniversalIds(fieldOfficeAccountId, response));
 		}
 		return allBulletins;
 	}
 	
-	public Vector getListOfBulletinIds(String fieldOfficeAccountId, NetworkResponse response) throws ServerErrorException
+	public Vector getListOfBulletinUniversalIds(String fieldOfficeAccountId, NetworkResponse response) throws ServerErrorException
 	{
 		if(!response.getResultCode().equals(NetworkInterfaceConstants.OK))
 			throw new ServerErrorException();

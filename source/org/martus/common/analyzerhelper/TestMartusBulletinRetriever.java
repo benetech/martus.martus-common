@@ -208,7 +208,7 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		String fieldOfficeAccountId = "SomeFieldOffice";
 		try
 		{
-			retriever.getListOfBulletinIds(fieldOfficeAccountId, response);
+			retriever.getListOfBulletinUniversalIds(fieldOfficeAccountId, response);
 			fail("Should have thrown since this is invalid response from a server.");
 		}
 		catch(ServerErrorException expected)
@@ -231,7 +231,7 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		bulletinSummaries.add(NetworkInterfaceConstants.OK);
 		bulletinSummaries.add(testBulletinSummaries);
 		response = new NetworkResponse(bulletinSummaries);
-		Vector returnedBulletinIDs = retriever.getListOfBulletinIds(fieldOfficeAccountId, response);
+		Vector returnedBulletinIDs = retriever.getListOfBulletinUniversalIds(fieldOfficeAccountId, response);
 		assertEquals("retriever should have a vector of size 3", 3, returnedBulletinIDs.size());
 		assertContains(UniversalId.createFromAccountAndLocalId(fieldOfficeAccountId,bulletin1Id), returnedBulletinIDs);
 		assertContains(UniversalId.createFromAccountAndLocalId(fieldOfficeAccountId,bulletin2Id), returnedBulletinIDs);
@@ -323,7 +323,7 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		retriever.initalizeServer("1.2.3.4", "some random public key");
 		retriever.serverNonSSL = new TestServerNetworkInterfaceForNonSSLHandler();
 		retriever.setSSLServerForTests(mockGateway);
-		List emptyList = retriever.getListOfAllFieldOfficeBulletinIdsOnServer();
+		List emptyList = retriever.getAllFieldOfficeBulletinUniversalIds();
 		assertEquals("Should be empty",0, emptyList.size());
 		
 		String fieldOffice1 = "field office 1";
@@ -332,7 +332,7 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		fieldOfficeIds.add(fieldOffice1);
 		fieldOfficeIds.add(fieldOffice2);
 		mockGateway.setFieldOfficeAccountIdsToReturn(fieldOfficeIds);
-		emptyList = retriever.getListOfAllFieldOfficeBulletinIdsOnServer();
+		emptyList = retriever.getAllFieldOfficeBulletinUniversalIds();
 		assertEquals("Should still be empty since there are no bulletins.",0, emptyList.size());
 		
 		String draftBulletinFO1LocalId = "Draft bulletin Field Office 1";
@@ -355,7 +355,7 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		fieldOffice2SealedBulletins.add(sealed1BulletinFO2LocalId);
 		mockGateway.setSealedBulletins(fieldOffice2, fieldOffice2SealedBulletins);
 
-		List allFieldOfficesBulletinIds = retriever.getListOfAllFieldOfficeBulletinIdsOnServer();
+		List allFieldOfficesBulletinIds = retriever.getAllFieldOfficeBulletinUniversalIds();
 		assertEquals("Should contain 4 bulletins", 4, allFieldOfficesBulletinIds.size());
 		
 		UniversalId bulletinId1 = UniversalId.createFromAccountAndLocalId(fieldOffice1,draftBulletinFO1LocalId);
