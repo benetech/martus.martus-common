@@ -107,7 +107,7 @@ public class Localization
 			return;
 		}
 			
-		if(mtfEntryText.startsWith("#"))
+		if(mtfEntryText.startsWith(MTF_COMMENT_FLAG))
 			return;
 		
 		if(mtfEntryText.indexOf('=') < 0)
@@ -366,6 +366,7 @@ public class Localization
 	public static final String UNUSED_TAG = "";
 	public static final String MARTUS_LANGUAGE_FILE_PREFIX = "Martus-";
 	public static final String MARTUS_LANGUAGE_FILE_SUFFIX = ".mtf";
+	public static final String MTF_COMMENT_FLAG = "#";
 	public static final String MTF_RIGHT_TO_LEFT_LANGUAGE_FLAG = "!right-to-left";
 	
 	public static final int HASH_LENGTH = 4;
