@@ -36,7 +36,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.martus.common.bulletin.Bulletin;
 import org.martus.util.UnicodeReader;
@@ -46,7 +49,7 @@ public class Localization
 	public Localization(File directoryToUse)
 	{
 		directory = directoryToUse;
-		languageTranslationsMap = new TreeMap();
+		localizedText = new TreeMap();
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -62,36 +65,22 @@ public class Localization
 		currentLanguageCode = newLanguageCode;
 	}
 	
-	public boolean isLanguageLoaded(String languageCode)
-	{
-		if(getStringMap(languageCode) == null)
-			return false;
-	
-		return true;
-	}
-
 	protected String getLabel(String languageCode, String key)
 	{
-		LocalizedString entry = null;
-		Map stringMap = getStringMap(languageCode);
-		if(stringMap != null)
-			entry = (LocalizedString)stringMap.get(key);
-			
-		if(entry != null)
-			return entry.getText();
+		String defaultValue = key;
+		Map localizations = (Map)localizedText.get(key);
+		if(localizations != null)
+		{
+			LocalizedString entry = (LocalizedString)localizations.get(languageCode);
+			if(entry != null)
+				return entry.getText();
 	
-		String defaultValue = null;
-		if(!languageCode.equals(ENGLISH))
-			defaultValue = getLabel(ENGLISH, key);
-			
-		if(defaultValue == null)
-			defaultValue = key;
+			entry = (LocalizedString)localizations.get(ENGLISH);
+			if(entry != null)
+				defaultValue = entry.getText();
+		}
 		return "<" + defaultValue + ">";
-	}
 
-	public Map getStringMap(String languageCode)
-	{
-		return (Map)languageTranslationsMap.get(languageCode);
 	}
 
 	protected void addEnglishTranslation(String mtfEntry)
@@ -114,9 +103,16 @@ public class Localization
 		String value = extractValueFromMtfEntry(mtfEntryText);
 		LocalizedString entry = new LocalizedString(key, value);
 
-		Map stringMap = createStringMap(languageCode);
-		if(entry != null)
-			stringMap.put(entry.getTag(), entry);
+		Map localizations = (Map)localizedText.get(key);
+		if(localizations == null)
+		{
+			if(!languageCode.equals(ENGLISH))
+				return;
+			localizations = new TreeMap();
+			localizedText.put(key, localizations);
+		}
+		
+		localizations.put(languageCode, entry);
 	}
 	
 	private String extractKeyFromMtfEntry(String mtfEntryText)
@@ -132,14 +128,6 @@ public class Localization
 		String value = parts[1];
 		value = value.replaceAll("\\\\n", "\n");
 		return value;
-	}
-
-	private Map createStringMap(String languageCode)
-	{
-		if(!isLanguageLoaded(languageCode))
-			languageTranslationsMap.put(languageCode, new TreeMap());
-	
-		return getStringMap(languageCode);
 	}
 
 	public void loadTranslations(String languageCode, InputStream inputStream)
@@ -161,6 +149,14 @@ public class Localization
 			System.out.println("BulletinDisplay.loadTranslations " + e);
 		}
 	}
+	
+	protected SortedSet getAllKeysSorted()
+	{
+		Set allKeys = localizedText.keySet();
+		SortedSet sorted = new TreeSet(allKeys);
+		return sorted;
+	}
+
 
 	/////////////////////////////////////////////////////////////////
 	// File-oriented stuff
@@ -299,7 +295,7 @@ public class Localization
 	
 
 	public File directory;
-	public Map languageTranslationsMap;
+	public Map localizedText;
 	public String currentLanguageCode;
 	public String currentDateFormat;
 

@@ -34,10 +34,7 @@ import java.io.StringReader;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.Vector;
 
 import org.martus.common.VersionBuildDate;
@@ -241,16 +238,9 @@ public class UiBasicLocalization extends Localization
 
 	public Vector getAllTranslationStrings(String languageCode)
 	{
-		Map englishMap = getStringMap(ENGLISH);
-		Set englishKeys = englishMap.keySet();
-		SortedSet sorted = new TreeSet(englishKeys);
-		return buildMtfEntries(languageCode, sorted);
-	}
-
-	private Vector buildMtfEntries(String languageCode, SortedSet sortedTags)
-	{
+		SortedSet sorted = getAllKeysSorted();
 		Vector strings = new Vector();
-		Iterator it = sortedTags.iterator();
+		Iterator it = sorted.iterator();
 		while(it.hasNext())
 		{
 			String key = (String)it.next();
