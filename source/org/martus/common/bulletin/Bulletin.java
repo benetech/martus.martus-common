@@ -35,6 +35,7 @@ import java.util.GregorianCalendar;
 import java.util.Vector;
 
 import org.martus.common.FieldSpec;
+import org.martus.common.MartusUtilities;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusCrypto.CryptoException;
 import org.martus.common.database.Database;
@@ -117,6 +118,12 @@ public class Bulletin implements BulletinConstants
 	public boolean isValid()
 	{
 		return isValidFlag;
+	}
+	
+	public String toFileName()
+	{
+		String bulletinTitle = get(Bulletin.TAGTITLE);
+		return MartusUtilities.toFileName(bulletinTitle, MartusUtilities.DEFAULT_FILE_NAME);
 	}
 	
 	public boolean hasUnknownTags()
