@@ -63,6 +63,8 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestFileInputStreamWithSeek.class));
 		suite.addTest(new TestSuite(TestFileOutputStreamViaTemp.class));
 		suite.addTest(new TestSuite(TestKeyShareSaveRestore.class));
+		suite.addTest(new TestSuite(TestMagicWordEntry.class));
+		suite.addTest(new TestSuite(TestMagicWords.class));
 		suite.addTest(new TestSuite(TestMartusSecurity.class));
 		suite.addTest(new TestSuite(TestMartusUtilities.class));
 		suite.addTest(new TestSuite(TestMartusXml.class));
@@ -75,7 +77,6 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestUniversalId.class));
 		suite.addTest(new TestSuite(TestXmlWriterFilter.class));
 		suite.addTest(new TestSuite(TestZipEntryInputStream.class));
-		suite.addTest(new TestSuite(TestMagicWords.class));
 
 		return suite;
 	}

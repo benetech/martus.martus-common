@@ -28,7 +28,7 @@ package org.martus.common;
 
 public class MagicWordEntry
 {	
-	public MagicWordEntry(String magicWordEntry)
+	public MagicWordEntry(String magicWordEntry, String groupEntry)
 	{			
 		if (magicWordEntry == null)
 			magicWordEntry = "";
@@ -41,7 +41,7 @@ public class MagicWordEntry
 		else		
 			magicWord = magicWordEntry;
 			
-		groupName = null;
+		groupName = groupEntry;
 	}
 
 	public String getMagicWord()

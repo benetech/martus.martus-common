@@ -94,7 +94,7 @@ public class TestMagicWords extends TestCaseEnhanced
 	{
 		String duplicateString = null;
 		assertTrue("Current size?", magicWords.size()==3);
-		magicWords.add(duplicateString);
+		magicWords.add(duplicateString, null);
 		assertFalse("Same size?", magicWords.size()==3);
 	}
 	
@@ -102,7 +102,7 @@ public class TestMagicWords extends TestCaseEnhanced
 	{
 		String duplicateString = "test2";
 		assertTrue("Current size?", magicWords.size()==3);
-		magicWords.add(duplicateString);
+		magicWords.add(duplicateString, null);
 		assertTrue("Same size?", magicWords.size()==3);
 	}
 	

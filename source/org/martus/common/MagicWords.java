@@ -53,7 +53,7 @@ public class MagicWords
 				if(line.trim().length() == 0)
 					logger.log("Warning: Found blank line in " + magicWordsFile.getPath());
 				else
-					add(MagicWords.normalizeMagicWord(line));
+					add(MagicWords.normalizeMagicWord(line), null);
 			}
 			reader.close();
 		}
@@ -80,9 +80,9 @@ public class MagicWords
 		return magicWord;
 	}
 	
-	public void add(String magicWordFileEntry)
+	public void add(String magicWordFileEntry, String group)
 	{						
-		add(new MagicWordEntry(magicWordFileEntry));				
+		add(new MagicWordEntry(magicWordFileEntry, group));				
 	}
 	
 	public void add(MagicWordEntry wordEntry)
