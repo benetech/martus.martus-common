@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 
+import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLServerSocketFactory;
 
@@ -71,11 +72,12 @@ public class MartusSecureWebServer extends WebServerWithSynchronousStartup
 	SSLContext createSSLContext() throws Exception
 	{
 		SSLContext sslContext = SSLContext.getInstance( "TLS" );
-		sslContext.init( security.createKeyManagers(), null, null );
+		if(keyManagers == null)
+			keyManagers = security.createKeyManagers();
+		sslContext.init( keyManagers, null, null );
 		return sslContext;
 	}
 	
-	
-	
 	public static MartusCrypto security;
+	public static KeyManager[] keyManagers;
 }
