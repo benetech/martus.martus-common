@@ -35,12 +35,16 @@ import java.security.PublicKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.Vector;
 
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.MockMartusSecurity;
+import org.martus.common.crypto.MartusCrypto.DecryptionException;
+import org.martus.common.crypto.MartusCrypto.EncryptionException;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
+import org.martus.common.crypto.MartusCrypto.NoKeyPairException;
 import org.martus.util.Base64;
 import org.martus.util.ByteArrayInputStreamWithSeek;
 
@@ -567,6 +571,63 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		strings.add(stringWithNewlines);
 		String vectorToString = strings.toString();
 		assertEquals("[" + stringWithNewlines + ", " + stringWithNewlines + "]", vectorToString);
+	}
+	
+	public void testVariousAESSizes() throws Exception
+	{
+		Vector results = new Vector();
+		String text = "This will be encrypted";
+		byte[] textBytes = text.getBytes("UTF-8");
+		int[] goodSizes = {128, 192, 256};
+		Random random = new Random();
+		for (int i = 0; i < goodSizes.length; i++)
+		{
+			int size = goodSizes[i];
+			byte[] key = new byte[size/8];
+			for(int b = 0; b < key.length; ++b)
+				key[b] = (byte)random.nextInt();
+			byte[] cipherBytes = encryptBytes(textBytes, key);
+			assertNotContains(cipherBytes, results);
+			results.add(cipherBytes);
+			String plainText = decryptBytes(cipherBytes, key);
+			assertEquals(text, plainText);
+		}
+	}
+	
+	public void testThatAllAESKeyBytesAreUsed() throws Exception
+	{
+		byte[] sampleBytes = {32,23,5,3,7,53,2,35,54,7,3,23,5,2,45,45,75,8};
+		int keySize = 256;
+		byte[] key = new byte[keySize/8];
+		Arrays.fill(key, 0, key.length, (byte)0);
+		byte[] baseResult = encryptBytes(sampleBytes, key);
+		for(int i=0; i < key.length; ++i)
+		{
+			 key[i] = (byte)0xFF;
+			 byte[] thisResult = encryptBytes(sampleBytes, key);
+			 assertNotEquals(Base64.encode(baseResult), Base64.encode(thisResult));
+			 key[i] = 0;
+		}
+	}
+
+	private String decryptBytes(byte[] cipherBytes, byte[] key)
+		throws NoKeyPairException, DecryptionException
+	{
+		ByteArrayInputStreamWithSeek cipherIn = new ByteArrayInputStreamWithSeek(cipherBytes);
+		ByteArrayOutputStream plainOut = new ByteArrayOutputStream();
+		security.decrypt(cipherIn, plainOut, key);
+		String plainText = new String(plainOut.toByteArray());
+		return plainText;
+	}
+
+	private byte[] encryptBytes(byte[] textBytes, byte[] key)
+		throws NoKeyPairException, EncryptionException
+	{
+		ByteArrayInputStream plainIn = new ByteArrayInputStream(textBytes);
+		ByteArrayOutputStream cipherOut = new ByteArrayOutputStream();
+		security.encrypt(plainIn, cipherOut, key);
+		byte[] cipherBytes = cipherOut.toByteArray();
+		return cipherBytes;
 	}
 /*
 	public void testSignatures()
