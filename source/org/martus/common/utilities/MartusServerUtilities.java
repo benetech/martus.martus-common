@@ -269,6 +269,12 @@ public class MartusServerUtilities
 		return dateStamp;
 	}
 	
+	public static Date getDateFromFormattedTimeStamp(String formattedTimeStamp) throws ParseException
+	{
+		SimpleDateFormat date = new SimpleDateFormat(MARTUS_SIGNATURE_FILE_DATE_FORMAT);
+		return date.parse(formattedTimeStamp);
+	}
+	
 	public synchronized static void writeSignatureFileWithDatestamp(File signatureFile, String date, File fileToSign, MartusCrypto signer)
 	throws IOException, MartusSignatureException
 	{	
