@@ -39,10 +39,11 @@ import org.martus.common.bulletin.BulletinConstants;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.database.DatabaseKey;
 import org.martus.util.Base64;
-import org.martus.util.InputStreamWithSeek;
 import org.martus.util.UnicodeReader;
-import org.martus.util.ZipEntryInputStream;
+import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
+import org.martus.util.inputstreamwithseek.ZipEntryInputStreamWithSeek;
 import org.martus.util.xml.SimpleXmlParser;
+
 
 public class BulletinHeaderPacket extends Packet
 {
@@ -295,7 +296,7 @@ public class BulletinHeaderPacket extends Packet
 		BulletinHeaderPacket header = new BulletinHeaderPacket(verifier);
 		ZipEntry headerZipEntry = getBulletinHeaderEntry(zip);
 
-		InputStreamWithSeek headerIn = new ZipEntryInputStream(zip, headerZipEntry);
+		InputStreamWithSeek headerIn = new ZipEntryInputStreamWithSeek(zip, headerZipEntry);
 		try
 		{
 			header.loadFromXml(headerIn, verifier);

@@ -50,8 +50,9 @@ import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.UniversalId;
 import org.martus.common.packet.Packet.SignatureVerificationException;
-import org.martus.util.ByteArrayInputStreamWithSeek;
 import org.martus.util.TestCaseEnhanced;
+import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
+
 
 
 

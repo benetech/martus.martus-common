@@ -43,9 +43,10 @@ import org.martus.common.MartusUtilities.FileVerificationException;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.database.FileDatabase.MissingAccountMapException;
 import org.martus.common.packet.UniversalId;
-import org.martus.util.ByteArrayInputStreamWithSeek;
-import org.martus.util.InputStreamWithSeek;
 import org.martus.util.TestCaseEnhanced;
+import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
+import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
+
 
 abstract public class MockDatabase extends Database
 {

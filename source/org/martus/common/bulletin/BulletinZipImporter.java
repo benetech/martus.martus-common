@@ -41,9 +41,10 @@ import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.Packet.InvalidPacketException;
 import org.martus.common.packet.Packet.SignatureVerificationException;
 import org.martus.common.packet.Packet.WrongPacketTypeException;
-import org.martus.util.InputStreamWithSeek;
-import org.martus.util.ZipEntryInputStream;
 import org.martus.util.Base64.InvalidBase64Exception;
+import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
+import org.martus.util.inputstreamwithseek.ZipEntryInputStreamWithSeek;
+
 
 
 public class BulletinZipImporter
@@ -62,7 +63,7 @@ public class BulletinZipImporter
 			Enumeration entries = zip.entries();
 			while(entries.hasMoreElements())
 				headerEntry = (ZipEntry)entries.nextElement();
-			InputStreamWithSeek headerIn = new ZipEntryInputStream(zip, headerEntry);
+			InputStreamWithSeek headerIn = new ZipEntryInputStreamWithSeek(zip, headerEntry);
 			try
 			{
 				header.loadFromXml(headerIn, verifier);
@@ -84,7 +85,7 @@ public class BulletinZipImporter
 			ZipEntry dataEntry = zip.getEntry(header.getFieldDataPacketId());
 			if(dataEntry == null)
 				throw new IOException("Data packet not found");
-			InputStreamWithSeek dataIn = new ZipEntryInputStream(zip, dataEntry);
+			InputStreamWithSeek dataIn = new ZipEntryInputStreamWithSeek(zip, dataEntry);
 			try
 			{
 				data.loadFromXml(dataIn, header.getFieldDataSignature(), verifier);
@@ -108,7 +109,7 @@ public class BulletinZipImporter
 			ZipEntry privateDataEntry = zip.getEntry(header.getPrivateFieldDataPacketId());
 			if(privateDataEntry == null)
 				throw new IOException("Private data packet not found");
-			InputStreamWithSeek privateDataIn = new ZipEntryInputStream(zip, privateDataEntry);
+			InputStreamWithSeek privateDataIn = new ZipEntryInputStreamWithSeek(zip, privateDataEntry);
 			try
 			{
 				privateData.loadFromXml(privateDataIn, header.getPrivateFieldDataSignature(), verifier);
@@ -180,7 +181,7 @@ public class BulletinZipImporter
 		ZipEntry attachmentEntry = zip.getEntry(localId);
 		if(attachmentEntry == null)
 			throw new IOException("Attachment packet not found: " + localId);
-		InputStreamWithSeek attachmentIn = new ZipEntryInputStream(zip, attachmentEntry);
+		InputStreamWithSeek attachmentIn = new ZipEntryInputStreamWithSeek(zip, attachmentEntry);
 		try
 		{
 			return AttachmentProxy.createFileProxyFromAttachmentPacket(attachmentIn, attachment, verifier);

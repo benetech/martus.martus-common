@@ -38,9 +38,10 @@ import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.BulletinHistory;
 import org.martus.common.packet.UniversalId;
 import org.martus.util.Base64;
-import org.martus.util.ByteArrayInputStreamWithSeek;
-import org.martus.util.InputStreamWithSeek;
 import org.martus.util.TestCaseEnhanced;
+import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
+import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
+
 
 public class TestBulletinHeaderPacket extends TestCaseEnhanced
 {

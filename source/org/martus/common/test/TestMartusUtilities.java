@@ -62,11 +62,12 @@ import org.martus.common.packet.Packet.InvalidPacketException;
 import org.martus.common.packet.Packet.SignatureVerificationException;
 import org.martus.common.packet.Packet.WrongAccountException;
 import org.martus.util.Base64;
-import org.martus.util.ByteArrayInputStreamWithSeek;
-import org.martus.util.InputStreamWithSeek;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.UnicodeReader;
 import org.martus.util.UnicodeWriter;
+import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
+import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
+
 
 
 public class TestMartusUtilities extends TestCaseEnhanced

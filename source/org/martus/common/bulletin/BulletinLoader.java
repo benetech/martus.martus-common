@@ -48,8 +48,9 @@ import org.martus.common.packet.Packet.InvalidPacketException;
 import org.martus.common.packet.Packet.SignatureVerificationException;
 import org.martus.common.packet.Packet.WrongPacketTypeException;
 import org.martus.util.Base64;
-import org.martus.util.InputStreamWithSeek;
 import org.martus.util.Base64.InvalidBase64Exception;
+import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
+
 
 
 public class BulletinLoader

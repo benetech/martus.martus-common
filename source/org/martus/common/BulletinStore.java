@@ -58,11 +58,12 @@ import org.martus.common.packet.Packet.InvalidPacketException;
 import org.martus.common.packet.Packet.SignatureVerificationException;
 import org.martus.common.packet.Packet.WrongAccountException;
 import org.martus.common.packet.Packet.WrongPacketTypeException;
-import org.martus.util.InputStreamWithSeek;
 import org.martus.util.StreamCopier;
 import org.martus.util.StreamFilter;
-import org.martus.util.ZipEntryInputStream;
 import org.martus.util.Base64.InvalidBase64Exception;
+import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
+import org.martus.util.inputstreamwithseek.ZipEntryInputStreamWithSeek;
+
 
 
 public class BulletinStore
@@ -369,7 +370,7 @@ public class BulletinStore
 			String localId = keys[i].getLocalId();
 			ZipEntry entry = zip.getEntry(localId);
 	
-			InputStreamWithSeek in = new ZipEntryInputStream(zip, entry);
+			InputStreamWithSeek in = new ZipEntryInputStreamWithSeek(zip, entry);
 	
 			final String tempFileName = "$$$importZip";
 			File file = File.createTempFile(tempFileName, null);

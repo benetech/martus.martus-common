@@ -60,11 +60,12 @@ import org.martus.common.packet.Packet.InvalidPacketException;
 import org.martus.common.packet.Packet.SignatureVerificationException;
 import org.martus.common.packet.Packet.WrongAccountException;
 import org.martus.util.Base64;
-import org.martus.util.InputStreamWithSeek;
 import org.martus.util.StreamFilter;
 import org.martus.util.UnicodeReader;
 import org.martus.util.UnicodeWriter;
 import org.martus.util.Base64.InvalidBase64Exception;
+import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
+
 
 public class MartusUtilities
 {

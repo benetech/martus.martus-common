@@ -77,8 +77,9 @@ import org.bouncycastle.jce.X509V1CertificateGenerator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.martus.common.MartusConstants;
 import org.martus.util.Base64;
-import org.martus.util.ByteArrayInputStreamWithSeek;
-import org.martus.util.InputStreamWithSeek;
+import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
+import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
+
 
 import com.isnetworks.provider.random.InfiniteMonkeyProvider;
 

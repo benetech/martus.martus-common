@@ -54,9 +54,10 @@ import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.UniversalId;
-import org.martus.util.InputStreamWithSeek;
 import org.martus.util.TestCaseEnhanced;
-import org.martus.util.ZipEntryInputStream;
+import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
+import org.martus.util.inputstreamwithseek.ZipEntryInputStreamWithSeek;
+
 
 
 public class TestBulletinZipImporter extends TestCaseEnhanced
@@ -192,13 +193,13 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 		ZipEntry dataEntry = (ZipEntry)entries.nextElement();
 		assertStartsWith("data id wrong?", "F", dataEntry.getName());
 		FieldDataPacket fdp = new FieldDataPacket(dummyUid, StandardFieldSpecs.getDefaultPublicFieldSpecs());
-		fdp.loadFromXml(new ZipEntryInputStream(zip, dataEntry), security);
+		fdp.loadFromXml(new ZipEntryInputStreamWithSeek(zip, dataEntry), security);
 		assertEquals("fdp id?", original.getFieldDataPacket().getUniversalId(), fdp.getUniversalId());
 
 		ZipEntry privateEntry = (ZipEntry)entries.nextElement();
 		assertStartsWith("private id wrong?", "F", privateEntry.getName());
 		FieldDataPacket pdp = new FieldDataPacket(dummyUid, StandardFieldSpecs.getDefaultPrivateFieldSpecs());
-		pdp.loadFromXml(new ZipEntryInputStream(zip, privateEntry), security);
+		pdp.loadFromXml(new ZipEntryInputStreamWithSeek(zip, privateEntry), security);
 		assertEquals("pdp id?", original.getPrivateFieldDataPacket().getUniversalId(), pdp.getUniversalId());
 
 		ZipEntry attachmentEntry = (ZipEntry)entries.nextElement();
@@ -210,7 +211,7 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 		ZipEntry headerEntry = (ZipEntry)entries.nextElement();
 		assertStartsWith("header id wrong?", "B", headerEntry.getName());
 		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security);
-		bhp.loadFromXml(new ZipEntryInputStream(zip, headerEntry), security);
+		bhp.loadFromXml(new ZipEntryInputStreamWithSeek(zip, headerEntry), security);
 		assertEquals("bhp id?", original.getUniversalId(), bhp.getUniversalId());
 
 		assertEquals("too many entries?", false, entries.hasMoreElements());
@@ -221,7 +222,7 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 	public void verifyAttachmentInZipFile(String label, AttachmentProxy a, byte[] bytes, ZipFile zip, ZipEntry attachmentEntry) throws Exception
 	{
 		assertStartsWith(label + " attachment id wrong?", "A", attachmentEntry.getName());
-		ZipEntryInputStream in = new ZipEntryInputStream(zip, attachmentEntry);
+		ZipEntryInputStreamWithSeek in = new ZipEntryInputStreamWithSeek(zip, attachmentEntry);
 
 		File tempRawFile = createTempFileFromName("$$$MartusTestBullSaveFileAtt2");
 		FileOutputStream out = new FileOutputStream(tempRawFile);
@@ -256,7 +257,7 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 		assertEquals("no data?", true, entries.hasMoreElements());
 		ZipEntry dataEntry = (ZipEntry)entries.nextElement();
 		assertNotNull("null data?", dataEntry);
-		InputStreamWithSeek dataIn = new ZipEntryInputStream(zip, dataEntry);
+		InputStreamWithSeek dataIn = new ZipEntryInputStreamWithSeek(zip, dataEntry);
 		FieldDataPacket data = new FieldDataPacket(uid, StandardFieldSpecs.getDefaultPublicFieldSpecs());
 		data.loadFromXml(dataIn, security);
 		assertEquals("data wrong?", b.get(Bulletin.TAGPUBLICINFO), data.get(Bulletin.TAGPUBLICINFO));
@@ -264,7 +265,7 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 		assertEquals("no private data?", true, entries.hasMoreElements());
 		ZipEntry privateDataEntry = (ZipEntry)entries.nextElement();
 		assertNotNull("null data?", privateDataEntry);
-		InputStreamWithSeek privateDataIn = new ZipEntryInputStream(zip, privateDataEntry);
+		InputStreamWithSeek privateDataIn = new ZipEntryInputStreamWithSeek(zip, privateDataEntry);
 		FieldDataPacket privateData = new FieldDataPacket(uid, StandardFieldSpecs.getDefaultPrivateFieldSpecs());
 		privateData.loadFromXml(privateDataIn, security);
 		assertEquals("data wrong?", b.get(Bulletin.TAGPRIVATEINFO), privateData.get(Bulletin.TAGPRIVATEINFO));
@@ -273,7 +274,7 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 		ZipEntry headerEntry = (ZipEntry)entries.nextElement();
 		assertNotNull("null header?", headerEntry);
 		assertEquals("wrong header name?", b.getLocalId(), headerEntry.getName());
-		InputStreamWithSeek headerIn = new ZipEntryInputStream(zip, headerEntry);
+		InputStreamWithSeek headerIn = new ZipEntryInputStreamWithSeek(zip, headerEntry);
 		BulletinHeaderPacket header = new BulletinHeaderPacket(security);
 		header.loadFromXml(headerIn, security);
 		headerIn.close();

@@ -45,14 +45,15 @@ import org.martus.common.crypto.StreamEncryptor;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
 import org.martus.common.packet.UniversalId;
 import org.martus.util.DirectoryUtils;
-import org.martus.util.FileInputStreamWithSeek;
-import org.martus.util.InputStreamWithSeek;
 import org.martus.util.ScrubFile;
 import org.martus.util.StreamCopier;
 import org.martus.util.StreamFilter;
-import org.martus.util.StringInputStream;
 import org.martus.util.UnicodeReader;
 import org.martus.util.UnicodeWriter;
+import org.martus.util.inputstreamwithseek.FileInputStreamWithSeek;
+import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
+import org.martus.util.inputstreamwithseek.StringInputStreamWithSeek;
+
 
 
 abstract public class FileDatabase extends Database
@@ -116,7 +117,7 @@ abstract public class FileDatabase extends Database
 	public void writeRecord(DatabaseKey key, String record) 
 			throws IOException, RecordHiddenException
 	{
-		writeRecord(key, new StringInputStream(record));
+		writeRecord(key, new StringInputStreamWithSeek(record));
 	}
 
 	public int getRecordSize(DatabaseKey key) 
@@ -166,7 +167,7 @@ abstract public class FileDatabase extends Database
 		if(encrypter == null)
 			throw new IOException("Null encrypter");
 
-		InputStream in = new StringInputStream(record);
+		InputStream in = new StringInputStreamWithSeek(record);
 		writeRecordUsingCopier(key, in, new StreamEncryptor(encrypter));
 	}
 

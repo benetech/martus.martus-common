@@ -35,7 +35,8 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 import org.martus.util.*;
-import org.martus.util.ZipEntryInputStream;
+import org.martus.util.inputstreamwithseek.ZipEntryInputStreamWithSeek;
+
 
 public class TestZipEntryInputStream extends TestCaseEnhanced
 {
@@ -49,7 +50,7 @@ public class TestZipEntryInputStream extends TestCaseEnhanced
 		super.setUp();
 		zip = createSampleZipFile();
 		entry = zip.getEntry(sampleEntryName);
-		in = new ZipEntryInputStream(zip, entry);
+		in = new ZipEntryInputStreamWithSeek(zip, entry);
 	}
 
 	public void tearDown() throws Exception
@@ -121,5 +122,5 @@ public class TestZipEntryInputStream extends TestCaseEnhanced
 	static final String sampleEntryName = "sample.dat";
 	ZipFile zip;
 	ZipEntry entry;
-	ZipEntryInputStream in;
+	ZipEntryInputStreamWithSeek in;
 }

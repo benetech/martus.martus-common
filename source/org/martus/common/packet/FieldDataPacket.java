@@ -48,12 +48,13 @@ import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.DecryptionException;
 import org.martus.util.Base64;
-import org.martus.util.ByteArrayInputStreamWithSeek;
-import org.martus.util.InputStreamWithSeek;
 import org.martus.util.UnicodeReader;
 import org.martus.util.Base64.InvalidBase64Exception;
+import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
+import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 import org.martus.util.xml.SimpleXmlParser;
 import org.xml.sax.SAXException;
+
 
 
 public class FieldDataPacket extends Packet

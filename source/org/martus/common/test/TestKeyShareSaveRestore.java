@@ -40,11 +40,12 @@ import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.KeyShareException;
 import org.martus.util.Base64;
-import org.martus.util.ByteArrayInputStreamWithSeek;
-import org.martus.util.StringInputStream;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.UnicodeReader;
 import org.martus.util.UnicodeStringWriter;
+import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
+import org.martus.util.inputstreamwithseek.StringInputStreamWithSeek;
+
 
 public class TestKeyShareSaveRestore extends TestCaseEnhanced
 {
@@ -125,7 +126,7 @@ public class TestKeyShareSaveRestore extends TestCaseEnhanced
 		Vector bundles = originalSecurity.buildKeyShareBundles();
 		assertNotNull("Got a null vector?", bundles);
 		assertEquals("Size of vector incorrect?", MartusConstants.numberOfFilesInShare, bundles.size());
-		InputStream in = new StringInputStream((String)bundles.get(0));
+		InputStream in = new StringInputStreamWithSeek((String)bundles.get(0));
 		
 		UnicodeReader reader = new UnicodeReader(in);
 		String item1MartusConstant = reader.readLine();
@@ -144,7 +145,7 @@ public class TestKeyShareSaveRestore extends TestCaseEnhanced
 
 		in.close();
 		reader.close();
-		in = new StringInputStream((String)bundles.get(2));
+		in = new StringInputStreamWithSeek((String)bundles.get(2));
 		reader = new UnicodeReader(in);
 
 		item1MartusConstant = reader.readLine();

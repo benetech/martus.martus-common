@@ -49,7 +49,8 @@ import org.martus.common.crypto.MartusCrypto;
 import org.martus.jarverifier.JarVerifier;
 import org.martus.swing.UiLanguageDirection;
 import org.martus.util.UnicodeReader;
-import org.martus.util.ZipEntryInputStreamThatClosesZipFile;
+import org.martus.util.inputstreamwithseek.ZipEntryInputStreamWithSeekThatClosesZipFile;
+
 
 public class Localization
 {
@@ -235,7 +236,7 @@ public class Localization
 			{
 				ZipFile zip = new ZipFile(translationFile);
 				ZipEntry zipEntry = zip.getEntry(mtfFileShortName);
-				transStream = new ZipEntryInputStreamThatClosesZipFile(zip, zipEntry);
+				transStream = new ZipEntryInputStreamWithSeekThatClosesZipFile(zip, zipEntry);
 			}
 			else
 			{

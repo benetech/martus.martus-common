@@ -54,8 +54,9 @@ import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.Packet;
 import org.martus.common.packet.UniversalId;
 import org.martus.util.Base64;
-import org.martus.util.InputStreamWithSeek;
-import org.martus.util.ZipEntryInputStream;
+import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
+import org.martus.util.inputstreamwithseek.ZipEntryInputStreamWithSeek;
+
 
 
 public class BulletinZipUtilities
@@ -267,7 +268,7 @@ public class BulletinZipUtilities
 			if(!localIds.contains(thisLocalId))
 				throw new IOException("Extra packet");
 			localIds.remove(thisLocalId);
-			InputStreamWithSeek in = new ZipEntryInputStream(zip, entry);
+			InputStreamWithSeek in = new ZipEntryInputStreamWithSeek(zip, entry);
 			Packet.validateXml(in, authorAccountId, entry.getName(), null, security);
 		}
 	
@@ -320,7 +321,7 @@ public class BulletinZipUtilities
 			if(!localIds.contains(thisLocalId))
 				throw new IOException("Extra packet");
 			localIds.remove(thisLocalId);
-			InputStreamWithSeek in = new ZipEntryInputStream(zip, entry);
+			InputStreamWithSeek in = new ZipEntryInputStreamWithSeek(zip, entry);
 			Packet.validateXml(in, authorAccountId, entry.getName(), null, security);
 		}
 	

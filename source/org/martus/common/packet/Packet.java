@@ -45,11 +45,12 @@ import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.Database.RecordHiddenException;
 import org.martus.util.Base64;
-import org.martus.util.InputStreamWithSeek;
 import org.martus.util.UnicodeReader;
 import org.martus.util.UnicodeWriter;
+import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 import org.martus.util.xml.SimpleXmlParser;
 import org.xml.sax.SAXException;
+
 
 public class Packet
 {

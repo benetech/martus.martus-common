@@ -39,8 +39,9 @@ import javax.net.ssl.KeyManager;
 
 import org.martus.common.MartusUtilities;
 import org.martus.util.Base64;
-import org.martus.util.InputStreamWithSeek;
 import org.martus.util.Base64.InvalidBase64Exception;
+import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
+
 
 public abstract class MartusCrypto
 {

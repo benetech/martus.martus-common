@@ -36,7 +36,8 @@ import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.Packet;
 import org.martus.common.packet.UniversalId;
 import org.martus.util.Base64;
-import org.martus.util.InputStreamWithSeek;
+import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
+
 
 public class AttachmentProxy
 {

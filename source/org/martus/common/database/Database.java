@@ -43,8 +43,9 @@ import org.martus.common.crypto.MartusCrypto.NoKeyPairException;
 import org.martus.common.database.FileDatabase.MissingAccountMapException;
 import org.martus.common.database.FileDatabase.MissingAccountMapSignatureException;
 import org.martus.common.packet.UniversalId;
-import org.martus.util.ByteArrayInputStreamWithSeek;
-import org.martus.util.InputStreamWithSeek;
+import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
+import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
+
 
 abstract public class Database extends ReadableDatabase
 {

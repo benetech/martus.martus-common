@@ -34,9 +34,10 @@ import java.util.Date;
 import org.martus.common.MartusConstants;
 import org.martus.common.crypto.MartusCrypto.KeyShareException;
 import org.martus.util.Base64;
-import org.martus.util.StringInputStream;
 import org.martus.util.UnicodeReader;
 import org.martus.util.UnicodeStringWriter;
+import org.martus.util.inputstreamwithseek.StringInputStreamWithSeek;
+
 
 
 class KeyShareBundle
@@ -51,7 +52,7 @@ class KeyShareBundle
 			
 	public KeyShareBundle(String bundleString) throws IOException, KeyShareException
 	{
-		InputStream in = new StringInputStream(bundleString);
+		InputStream in = new StringInputStreamWithSeek(bundleString);
 		UnicodeReader reader = new UnicodeReader(in);
 
 		id = reader.readLine();

@@ -33,7 +33,8 @@ import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.database.Database.RecordHiddenException;
 import org.martus.common.database.FileDatabase.MissingAccountMapSignatureException;
 import org.martus.common.packet.UniversalId;
-import org.martus.util.InputStreamWithSeek;
+import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
+
 
 
 public abstract class ReadableDatabase

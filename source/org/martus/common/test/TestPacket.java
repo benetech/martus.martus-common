@@ -44,8 +44,9 @@ import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.Packet;
 import org.martus.common.packet.UniversalId;
 import org.martus.common.packet.Packet.WrongAccountException;
-import org.martus.util.ByteArrayInputStreamWithSeek;
 import org.martus.util.TestCaseEnhanced;
+import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
+
 
 public class TestPacket extends TestCaseEnhanced
 {
