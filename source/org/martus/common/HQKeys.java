@@ -132,8 +132,9 @@ public class HQKeys
 		return false;
 	}
 
-	public String getLabelIfPresent(String publicKey)
+	public String getLabelIfPresent(HQKey hqKey)
 	{
+		String publicKey = hqKey.getPublicKey();
 		for (Iterator iter = hqKeys.iterator(); iter.hasNext();)
 		{
 			HQKey key = (HQKey) iter.next();

@@ -60,7 +60,7 @@ public class testHQKeys extends TestCaseEnhanced
 		String label2 = "abc";
 		HQKey key2 = new HQKey(publicKey2, label2);
 		hqKeys.add(key2);
-		assertEquals(label2, hqKeys.getLabelIfPresent(publicKey2));
+		assertEquals(label2, hqKeys.getLabelIfPresent(key2));
 	}
 	
 	public void testEmpty()
