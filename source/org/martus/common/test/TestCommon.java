@@ -61,7 +61,7 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestBulletin.class));
 		suite.addTest(new TestSuite(TestBulletinHeaderPacket.class));
 		suite.addTest(new TestSuite(TestBulletinLoader.class));
-		suite.addTest(new TestSuite(TestBulletinSaver.class));
+		suite.addTest(new TestSuite(TestBulletinStoreSaveBulletin.class));
 		suite.addTest(new TestSuite(TestBulletinStore.class));
 		suite.addTest(new TestSuite(TestBulletinSummary.class));
 		suite.addTest(new TestSuite(TestBulletinZipImporter.class));

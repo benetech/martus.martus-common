@@ -400,16 +400,27 @@ public class BulletinStore
 	
 	public void saveBulletinForTesting(Bulletin b) throws IOException, CryptoException
 	{
-		saveToClientDatabase(b, getWriteableDatabase(), false, b.getSignatureGenerator());
+		saveBulletin(b, false);
 	}
 	
+	// TODO: Not sure this method is really needed. I think the tests were 
+	// encrypting (mostly) for legacy reasons. We should stamp out all calls
+	// to this, at which point we should be able to rename saveBulletinForTesting 
+	// to simply saveBulletin, have it trust getDatabase().mustEncryptPublicData(),
+	// and then ClientBulletinStore.saveBulletin can just invoke super after clearin its cache
+	// kbs. 2004-10-06
 	public void saveEncryptedBulletinForTesting(Bulletin b) throws IOException, CryptoException
 	{
-		saveToClientDatabase(b, getWriteableDatabase(), true, b.getSignatureGenerator());
+		saveBulletin(b, true);
+	}
+	
+	protected void saveBulletin(Bulletin b, boolean mustEncryptPublicData) throws IOException, CryptoException
+	{
+		saveToClientDatabase(b, getWriteableDatabase(), mustEncryptPublicData, b.getSignatureGenerator());
 	}
 	
 	
-	public static void saveToClientDatabase(Bulletin b, Database db, boolean mustEncryptPublicData, MartusCrypto signer) throws
+	private static void saveToClientDatabase(Bulletin b, Database db, boolean mustEncryptPublicData, MartusCrypto signer) throws
 			IOException,
 			MartusCrypto.CryptoException
 	{
@@ -511,48 +522,3 @@ public class BulletinStore
 	private Vector leafKeys;
 }
 
-class LeafScanner implements Database.PacketVisitor
-{
-	public LeafScanner(ReadableDatabase databaseToScan, MartusCrypto cryptoToUse)
-	{
-		db = databaseToScan;
-		crypto = cryptoToUse;
-		leafKeys = new Vector();
-		nonLeafUids = new Vector();
-	}
-	
-	public Vector getLeafKeys()
-	{
-		return leafKeys;
-	}
-	
-	public void visit(DatabaseKey key)
-	{
-		try
-		{
-			UniversalId maybeLeaf = key.getUniversalId();
-			if(!nonLeafUids.contains(maybeLeaf))
-				leafKeys.add(key);
-			
-			BulletinHeaderPacket bhp = BulletinStore.loadBulletinHeaderPacket(db, key, crypto);
-			BulletinHistory history = bhp.getHistory();
-			for(int i=0; i < history.size(); ++i)
-			{
-				String thisLocalId = history.get(i);
-				UniversalId uidOfNonLeaf = UniversalId.createFromAccountAndLocalId(bhp.getAccountId(), thisLocalId);
-				leafKeys.remove(DatabaseKey.createSealedKey(uidOfNonLeaf));
-				leafKeys.remove(DatabaseKey.createDraftKey(uidOfNonLeaf));
-				nonLeafUids.add(uidOfNonLeaf);
-			}
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-	
-	ReadableDatabase db;
-	MartusCrypto crypto;
-	Vector leafKeys;
-	Vector nonLeafUids;
-}
