@@ -122,7 +122,9 @@ public class UiBasicLocalization extends Localization
 		writer.writeln("# 19.  Do not translate words used in XML for custom fields such as:");  
 		writer.writeln("#      <Field type='GRID'>, </Field>, <Tag>, </Tag>, <Label>, </Label>,");
 		writer.writeln("#      <GridSpecDetails>, </GridSpecDetails>, <Column>, </Column>");
-		writer.writeln("# 20.  If you want your language to appear right to left,");
+		writer.writeln("# 20.  do not translate \"#UseUnofficialTranslationFiles#\" in");
+		writer.writeln("#      field:warningUnofficialTranslation since it contains a file name");
+		writer.writeln("# 21.  If you want your language to appear right to left,");
 		writer.writeln("#      Uncomment the next line (by removing the # infront of #!right-to-left)");
 		writer.writeln("#!right-to-left");
 		writer.writeln("#");
