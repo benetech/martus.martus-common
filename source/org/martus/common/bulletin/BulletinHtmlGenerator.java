@@ -126,7 +126,7 @@ public class BulletinHtmlGenerator
 		html.append("</html>");
 	}
 
-	private String getSectionHtmlString(FieldDataPacket fdp)
+	public String getSectionHtmlString(FieldDataPacket fdp)
 	{
 		FieldSpec[] fieldTags = fdp.getFieldSpecs();
 		String sectionHtml = "";
