@@ -192,6 +192,56 @@ public class BulletinStore
 			zip.close();
 		}
 	}
+	
+	public Vector scanForLeafUids()
+	{
+		class LeafScanner implements Database.PacketVisitor
+		{
+			public LeafScanner()
+			{
+				leafUids = new Vector();
+				nonLeafUids = new Vector();
+			}
+			
+			public Vector getLeafUids()
+			{
+				return leafUids;
+			}
+			
+			public void visit(DatabaseKey key)
+			{
+				BulletinHeaderPacket bhp = new BulletinHeaderPacket();
+				try
+				{
+					UniversalId maybeLeaf = key.getUniversalId();
+					if(!nonLeafUids.contains(maybeLeaf))
+						leafUids.add(maybeLeaf);
+					
+					bhp.loadFromXml(getDatabase().openInputStream(key, security), security);
+					Vector history = bhp.getHistory();
+					for(int i=0; i < history.size(); ++i)
+					{
+						String thisLocalId = (String)history.get(i);
+						UniversalId uidOfNonLeaf = UniversalId.createFromAccountAndLocalId(bhp.getAccountId(), thisLocalId);
+						leafUids.remove(uidOfNonLeaf);
+						nonLeafUids.add(uidOfNonLeaf);
+					}
+				}
+				catch(Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+			
+			Vector leafUids;
+			Vector nonLeafUids;
+			
+		}
+		
+		LeafScanner scanner = new LeafScanner();
+		visitAllBulletins(scanner);
+		return scanner.getLeafUids();
+	}
 
 	private MartusCrypto security;
 	private File dir;

@@ -38,7 +38,6 @@ import org.martus.common.crypto.MartusCrypto.CryptoException;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.MockClientDatabase;
-import org.martus.common.database.MockDatabase;
 import org.martus.common.packet.UniversalId;
 import org.martus.util.Stopwatch;
 import org.martus.util.TestCaseEnhanced;
@@ -137,10 +136,39 @@ public class TestBulletinStore extends TestCaseEnhanced
 		assertTrue("missing 2?", two.contains(b2.getUniversalId()));
 	}
 
+	public void testScanForLeafUids() throws Exception
+	{
+		Bulletin other = createAndSaveBulletin();
+		
+		Bulletin one = new Bulletin(security);
+		one.setSealed();
 
+		Bulletin two = new Bulletin(security);
+		two.setSealed();
+		
+		verifyCloneIsLeaf(one, two, other.getUniversalId());
+		verifyCloneIsLeaf(two, one, other.getUniversalId());
+	}
 
 
 	
+	private void verifyCloneIsLeaf(Bulletin original, Bulletin clone, UniversalId otherUid) throws IOException, CryptoException
+	{
+		original.setHistory(new Vector());
+		BulletinSaver.saveToClientDatabase(original, db, false, security);
+
+		Vector history = new Vector();
+		history.add(original.getLocalId());
+		clone.setHistory(history);
+		BulletinSaver.saveToClientDatabase(clone, db, false, security);
+
+		Vector leafUids = store.scanForLeafUids();
+		assertEquals("wrong leaf count?", 2, leafUids.size());
+		assertContains("missing clone?", clone.getUniversalId(), leafUids);
+		
+		assertContains("missing other?", otherUid, leafUids);
+	}
+
 	private Bulletin createAndSaveBulletin() throws IOException, CryptoException
 	{
 		Bulletin b = new Bulletin(security);
@@ -151,7 +179,7 @@ public class TestBulletinStore extends TestCaseEnhanced
 
 	private static BulletinStore store;
 	private static MockMartusSecurity security;
-	private static MockDatabase db;
+	private static MockClientDatabase db;
 
 	private static File tempFile1;
 	private static final byte[] sampleBytes1 = {1,1,2,3,0,5,7,11};
