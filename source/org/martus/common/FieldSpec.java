@@ -29,34 +29,19 @@ package org.martus.common;
 
 public class FieldSpec
 {
-	public FieldSpec(String thisFieldDescription, int typeToUse)
+	public static FieldSpec createStandardField(String tagToUse, int typeToUse)
 	{
-		initializeFromDescription(thisFieldDescription);
-
-		type = typeToUse;
-	}
-
-	public FieldSpec(String thisFieldDescription)
-	{
-		initializeFromDescription(thisFieldDescription);
-
-		type = CustomFields.getStandardType(tag);
-		if(type == TYPE_UNKNOWN && !hasUnknownStuff())
-			type = TYPE_NORMAL;
-	}
-
-	private void initializeFromDescription(String thisFieldDescription)
-	{
-		tag = LegacyCustomFields.extractFieldSpecElement(thisFieldDescription, LegacyCustomFields.TAG_ELEMENT_NUMBER);
-		label = LegacyCustomFields.extractFieldSpecElement(thisFieldDescription, LegacyCustomFields.LABEL_ELEMENT_NUMBER);
-		String unknownStuff = LegacyCustomFields.extractFieldSpecElement(thisFieldDescription, LegacyCustomFields.UNKNOWN_ELEMENT_NUMBER);
-		if(!unknownStuff.equals(""))
-		{
-			//System.out.println("FieldSpec.initializeFromDescription unknown: " + tag + ": " + unknownStuff);
-			hasUnknown = true;
-		}
+		return new FieldSpec(tagToUse, "", typeToUse, false);
 	}
 	
+	FieldSpec(String tagToUse, String labelToUse, int typeToUse, boolean hasUnknownToUse)
+	{
+		tag = tagToUse;
+		label = labelToUse;
+		type = typeToUse;
+		hasUnknown = hasUnknownToUse;
+	}
+
 	public String getTag()
 	{
 		return tag;

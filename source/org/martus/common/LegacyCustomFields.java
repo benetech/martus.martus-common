@@ -55,7 +55,7 @@ public class LegacyCustomFields
 			if(delimiter < 0)
 				delimiter = delimitedTags.length();
 			String thisFieldDescription = delimitedTags.substring(tagStart, delimiter);
-			FieldSpec newFieldSpec = new FieldSpec(thisFieldDescription);
+			FieldSpec newFieldSpec = LegacyCustomFields.createFromLegacy(thisFieldDescription);
 	
 			newFieldSpecs = CustomFields.addFieldSpec(newFieldSpecs, newFieldSpec);
 			tagStart = delimiter + 1;
@@ -78,6 +78,25 @@ public class LegacyCustomFields
 		if(trailingComma < 0)
 			trailingComma = fieldDescription.length();
 		return fieldDescription.substring(elementStart, trailingComma);
+	}
+
+	public static FieldSpec createFromLegacy(String legacyDescription)
+	{
+		String extractedTag = LegacyCustomFields.extractFieldSpecElement(legacyDescription, LegacyCustomFields.TAG_ELEMENT_NUMBER);
+		String extractedLabel = LegacyCustomFields.extractFieldSpecElement(legacyDescription, LegacyCustomFields.LABEL_ELEMENT_NUMBER);
+		String extractedUnknown = LegacyCustomFields.extractFieldSpecElement(legacyDescription, LegacyCustomFields.UNKNOWN_ELEMENT_NUMBER);
+		boolean extractedHasUnknown = false;
+		if(!extractedUnknown.equals(""))
+		{
+			//System.out.println("FieldSpec.initializeFromDescription unknown: " + extractedTag + ": " + extractedUnknown);
+			extractedHasUnknown = true;
+		}
+	
+		int extractedType = CustomFields.getStandardType(extractedTag);
+		if(extractedType == FieldSpec.TYPE_UNKNOWN && !extractedHasUnknown)
+			extractedType = FieldSpec.TYPE_NORMAL;
+	
+		return new FieldSpec(extractedTag, extractedLabel, extractedType, extractedHasUnknown);
 	}
 	
 	private static final char FIELD_SPEC_DELIMITER = ';';

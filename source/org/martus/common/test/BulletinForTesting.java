@@ -29,6 +29,7 @@ package org.martus.common.test;
 import java.io.IOException;
 
 import org.martus.common.FieldSpec;
+import org.martus.common.LegacyCustomFields;
 import org.martus.common.XmlWriterFilter;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.crypto.MartusCrypto;
@@ -89,12 +90,12 @@ public class BulletinForTesting extends Bulletin
 		}
 
 		static FieldSpec[] customFieldSpecs = {
-			new FieldSpec("language"), 
-			new FieldSpec("entrydate"),
-			new FieldSpec("author"),
-			new FieldSpec("title"),
-			new FieldSpec("custom,Custom"),
-			new FieldSpec("extra,Bad Custom!,more"),
+			LegacyCustomFields.createFromLegacy("language"), 
+			LegacyCustomFields.createFromLegacy("entrydate"),
+			LegacyCustomFields.createFromLegacy("author"),
+			LegacyCustomFields.createFromLegacy("title"),
+			LegacyCustomFields.createFromLegacy("custom,Custom"),
+			LegacyCustomFields.createFromLegacy("extra,Bad Custom!,more"),
 		};
 	}
 

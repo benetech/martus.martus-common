@@ -26,8 +26,6 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common;
 
-import java.util.Vector;
-
 import org.martus.common.bulletin.BulletinConstants;
 
 
@@ -49,16 +47,16 @@ public class CustomFields
 		{
 			defaultPublicFieldSpecs = new FieldSpec[] 
 			{
-				new FieldSpec(BulletinConstants.TAGLANGUAGE, FieldSpec.TYPE_CHOICE),
-				new FieldSpec(BulletinConstants.TAGAUTHOR, FieldSpec.TYPE_NORMAL),
-				new FieldSpec(BulletinConstants.TAGORGANIZATION, FieldSpec.TYPE_NORMAL),
-				new FieldSpec(BulletinConstants.TAGTITLE, FieldSpec.TYPE_NORMAL),
-				new FieldSpec(BulletinConstants.TAGLOCATION, FieldSpec.TYPE_NORMAL), 
-				new FieldSpec(BulletinConstants.TAGKEYWORDS, FieldSpec.TYPE_NORMAL),
-				new FieldSpec(BulletinConstants.TAGEVENTDATE, FieldSpec.TYPE_DATERANGE),
-				new FieldSpec(BulletinConstants.TAGENTRYDATE, FieldSpec.TYPE_DATE),
-				new FieldSpec(BulletinConstants.TAGSUMMARY, FieldSpec.TYPE_MULTILINE),
-				new FieldSpec(BulletinConstants.TAGPUBLICINFO, FieldSpec.TYPE_MULTILINE),
+				FieldSpec.createStandardField(BulletinConstants.TAGLANGUAGE, FieldSpec.TYPE_CHOICE),
+				FieldSpec.createStandardField(BulletinConstants.TAGAUTHOR, FieldSpec.TYPE_NORMAL),
+				FieldSpec.createStandardField(BulletinConstants.TAGORGANIZATION, FieldSpec.TYPE_NORMAL),
+				FieldSpec.createStandardField(BulletinConstants.TAGTITLE, FieldSpec.TYPE_NORMAL),
+				FieldSpec.createStandardField(BulletinConstants.TAGLOCATION, FieldSpec.TYPE_NORMAL), 
+				FieldSpec.createStandardField(BulletinConstants.TAGKEYWORDS, FieldSpec.TYPE_NORMAL),
+				FieldSpec.createStandardField(BulletinConstants.TAGEVENTDATE, FieldSpec.TYPE_DATERANGE),
+				FieldSpec.createStandardField(BulletinConstants.TAGENTRYDATE, FieldSpec.TYPE_DATE),
+				FieldSpec.createStandardField(BulletinConstants.TAGSUMMARY, FieldSpec.TYPE_MULTILINE),
+				FieldSpec.createStandardField(BulletinConstants.TAGPUBLICINFO, FieldSpec.TYPE_MULTILINE),
 			};
 		}
 		
@@ -71,50 +69,46 @@ public class CustomFields
 		{
 			defaultPrivateFieldSpecs = new FieldSpec[]
 			{
-				new FieldSpec(BulletinConstants.TAGPRIVATEINFO, FieldSpec.TYPE_MULTILINE),
+				FieldSpec.createStandardField(BulletinConstants.TAGPRIVATEINFO, FieldSpec.TYPE_MULTILINE),
 			};
 		}
 		
 		return defaultPrivateFieldSpecs;
 	}
 
-	public static Vector getDefaultPublicFieldTags()
-	{
-		Vector tags = new Vector();
-		FieldSpec[] defaultFields = CustomFields.getDefaultPublicFieldSpecs();
-		for (int i = 0; i < defaultFields.length; i++)
-			tags.add(defaultFields[i].getTag());
-		return tags;
-	}
-
 	public static int getStandardType(String tag)
 	{
-		FieldSpec[] publicSpecs = CustomFields.getDefaultPublicFieldSpecs();
-		for(int i=0; i < publicSpecs.length; ++i)
-			if(publicSpecs[i].getTag().equals(tag))
-				return publicSpecs[i].getType();
-				
-		FieldSpec[] privateSpecs = CustomFields.getDefaultPrivateFieldSpecs();
-		for(int i=0; i < privateSpecs.length; ++i)
-			if(privateSpecs[i].getTag().equals(tag))
-				return privateSpecs[i].getType();
-				
-		return FieldSpec.TYPE_UNKNOWN;
+		FieldSpec thisSpec = findStandardFieldSpec(tag);
+		if(thisSpec == null)
+			return FieldSpec.TYPE_UNKNOWN;
+		return thisSpec.getType();
 	}
 
 	public static boolean isCustomFieldTag(String tag)
 	{
+		FieldSpec thisSpec = findStandardFieldSpec(tag);
+		if(thisSpec == null)
+			return true;
+		return false;
+	}
+	
+	private static FieldSpec findStandardFieldSpec(String tag)
+	{
 		FieldSpec[] publicSpecs = CustomFields.getDefaultPublicFieldSpecs();
 		for(int i=0; i < publicSpecs.length; ++i)
 			if(publicSpecs[i].getTag().equals(tag))
-				return false;
+			{
+				return publicSpecs[i];
+			}
 				
 		FieldSpec[] privateSpecs = CustomFields.getDefaultPrivateFieldSpecs();
 		for(int i=0; i < privateSpecs.length; ++i)
 			if(privateSpecs[i].getTag().equals(tag))
-				return false;
+			{
+				return privateSpecs[i];
+			}
 				
-		return true;
+		return null;
 	}
 	
 	

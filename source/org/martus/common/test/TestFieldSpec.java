@@ -27,6 +27,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.test;
 
 import org.martus.common.FieldSpec;
+import org.martus.common.LegacyCustomFields;
 
 
 public class TestFieldSpec extends TestCaseEnhanced
@@ -38,13 +39,13 @@ public class TestFieldSpec extends TestCaseEnhanced
 
 	public void testLegacy()
 	{
-		FieldSpec plainField = new FieldSpec("a,b");
+		FieldSpec plainField = LegacyCustomFields.createFromLegacy("a,b");
 		assertFalse("has unknown?", plainField.hasUnknownStuff());
 		assertEquals("a", plainField.getTag());
 		assertEquals("b", plainField.getLabel());
 		assertEquals("not normal?", FieldSpec.TYPE_NORMAL, plainField.getType());
 		
-		FieldSpec fieldWithExtra = new FieldSpec("c,d,e");
+		FieldSpec fieldWithExtra = LegacyCustomFields.createFromLegacy("c,d,e");
 		assertTrue("doesn't have unknown?", fieldWithExtra.hasUnknownStuff());
 		assertEquals("c", fieldWithExtra.getTag());
 		assertEquals("d", fieldWithExtra.getLabel());
@@ -53,13 +54,13 @@ public class TestFieldSpec extends TestCaseEnhanced
 	
 	public void testCreateFromTag()
 	{
-		FieldSpec plainField = new FieldSpec("author");
+		FieldSpec plainField = LegacyCustomFields.createFromLegacy("author");
 		assertFalse("has unknown?", plainField.hasUnknownStuff());
 		assertEquals("author", plainField.getTag());
 		assertEquals("", plainField.getLabel());
 		assertEquals("not normal?", FieldSpec.TYPE_NORMAL, plainField.getType());
 
-		FieldSpec dateField = new FieldSpec("entrydate");
+		FieldSpec dateField = LegacyCustomFields.createFromLegacy("entrydate");
 		assertFalse("has unknown?", dateField.hasUnknownStuff());
 		assertEquals("entrydate", dateField.getTag());
 		assertEquals("", dateField.getLabel());

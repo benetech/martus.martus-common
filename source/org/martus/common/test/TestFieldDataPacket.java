@@ -31,6 +31,7 @@ import java.io.File;
 import java.util.Arrays;
 
 import org.martus.common.FieldSpec;
+import org.martus.common.LegacyCustomFields;
 import org.martus.common.MartusXml;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.crypto.MartusCrypto;
@@ -387,7 +388,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 	
 	public void testWriteXmlCustomField() throws Exception
 	{
-		FieldSpec[] specs = {new FieldSpec("tag,<label>")};
+		FieldSpec[] specs = {LegacyCustomFields.createFromLegacy("tag,<label>")};
 		FieldDataPacket fdpCustom = new FieldDataPacket(UniversalId.createDummyUniversalId(), specs);
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -606,7 +607,12 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 	String aData = "data for a";
 	String bData = line1 + "\n" + line2 + "\r\n" + line3 + "\n" + line4;
 	String cData = "after b";
-	FieldSpec[] fieldTags = {new FieldSpec(aTag), new FieldSpec(bTag), new FieldSpec(cTag)};
+	FieldSpec[] fieldTags = 
+	{
+		LegacyCustomFields.createFromLegacy(aTag),
+		LegacyCustomFields.createFromLegacy(bTag),
+		LegacyCustomFields.createFromLegacy(cTag)
+	};
 
 	int SHORTEST_LEGAL_KEY_SIZE = 512;
 	static MartusSecurity security;
