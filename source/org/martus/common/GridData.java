@@ -50,12 +50,12 @@ public class GridData
 		rows = new Vector();
 	}
 	
-	public class ColumnsAlreadySetException extends Exception{}
+	public class AlreadyInitalizedException extends Exception{}
 	
-	public void setMaxColumns(int maxColumns) throws ColumnsAlreadySetException
+	public void setMaxColumns(int maxColumns) throws AlreadyInitalizedException
 	{
 		if(this.maxColumns != 0)
-			throw new ColumnsAlreadySetException();
+			throw new AlreadyInitalizedException();
 		this.maxColumns = maxColumns;
 	}
 	
@@ -147,7 +147,7 @@ public class GridData
 				grid.setMaxColumns(Integer.parseInt(cols));
 				super.startDocument(attrs);
 			}
-			catch (ColumnsAlreadySetException e)
+			catch (AlreadyInitalizedException e)
 			{
 				e.printStackTrace();
 			}

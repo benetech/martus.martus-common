@@ -247,7 +247,7 @@ public class TestGridData extends TestCaseEnhanced
 			grid.setMaxColumns(1);
 			fail("Didn't throw after we reset the # of columns?");
 		}
-		catch (GridData.ColumnsAlreadySetException expectedException)
+		catch (GridData.AlreadyInitalizedException expectedException)
 		{
 		}
 		
