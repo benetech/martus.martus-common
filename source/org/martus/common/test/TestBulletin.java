@@ -303,6 +303,8 @@ public class TestBulletin extends TestCaseEnhanced
 		b1.set(Bulletin.TAGPRIVATEINFO, "private info");
 		b1.setSealed();
 		BulletinSaver.saveToClientDatabase(b1, db, true, security);
+		assertEquals(0, b1.getHistory().size());
+		
 		Bulletin b2 = new Bulletin(security);
 		b2.createDraftCopyOf(b1, db);
 		assertEquals("Not a draft?", Bulletin.STATUSDRAFT, b2.getStatus());
@@ -312,6 +314,7 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals("private info", b1.get(Bulletin.TAGPRIVATEINFO), b2.get(Bulletin.TAGPRIVATEINFO));
 		assertEquals("wrong status?", Bulletin.STATUSDRAFT, b2.getStatus());
 		assertEquals("wrong private?", b1.isAllPrivate(), b2.isAllPrivate());
+		assertEquals("modified history?", 0, b1.getHistory().size());
 
 		AttachmentProxy a1 = new AttachmentProxy(tempFile1);
 		b1.addPublicAttachment(a1);

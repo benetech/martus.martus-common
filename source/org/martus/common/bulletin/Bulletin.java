@@ -437,7 +437,8 @@ public class Bulletin implements BulletinConstants
 		boolean originalIsMine = other.getAccount().equals(getAccount());
 		if(originalIsMine && other.isSealed())
 		{
-			Vector history = other.getHistory();
+			Vector history = new Vector();
+			history.addAll(other.getHistory());
 			history.add(other.getLocalId());
 			setHistory(history);
 		}
