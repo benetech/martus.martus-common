@@ -46,7 +46,6 @@ import org.martus.common.bulletin.Bulletin;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.jarverifier.JarVerifier;
 import org.martus.swing.UiLanguageDirection;
-import org.martus.util.FileTransfer;
 import org.martus.util.UnicodeReader;
 
 public class Localization
@@ -220,24 +219,24 @@ public class Localization
 	public void loadTranslationFile(String languageCode)
 	{
 		InputStream transStream = null;
-		String mtfFileShortName = getMtfFilename(languageCode);
-		File mtfFile = getMtfFile(languageCode);
-		File mlpkFile = getMlpkFile(languageCode);
 		ZipFile zip = null;
 		try
 		{
-			if(mtfFile.exists())
+			File translationFile = getTranslationFile(languageCode);
+			String mtfFileShortName = getMtfFilename(languageCode);
+
+			if(translationFile == null)
 			{
-				transStream = new FileInputStream(mtfFile);
+				transStream = getClass().getResourceAsStream(mtfFileShortName);
 			}
-			else if(mlpkFile.exists())
+			else if(isTranslationPackFile(translationFile))
 			{
-				zip = new ZipFile(mlpkFile);
+				zip = new ZipFile(translationFile);
 				transStream = zip.getInputStream(zip.getEntry(mtfFileShortName));
 			}
 			else
 			{
-				transStream = getClass().getResourceAsStream(mtfFileShortName);
+				transStream = new FileInputStream(translationFile);
 			}
 			
 			if(transStream == null)
@@ -257,16 +256,10 @@ public class Localization
 	{
 		try
 		{
-			File mtfFile = getMtfFile(translationFileLanguageCode);
-			if(mtfFile.exists())
-			{
-				moveFileToUntrusted(mtfFile);
-				return;
-			}
-
-			File mlpkFile = getMlpkFile(translationFileLanguageCode);
-			if(mlpkFile.exists())
-				moveFileToUntrusted(mlpkFile);
+			File translationFile = getTranslationFile(translationFileLanguageCode);
+			if(translationFile != null)
+				moveFileToUnofficial(translationFile);
+			//TODO move online help files for mtf file.
 		}
 		catch(IOException e)
 		{
@@ -274,10 +267,11 @@ public class Localization
 		}
 	}
 	
-	private void moveFileToUntrusted(File fileToMove) throws IOException
+	private void moveFileToUnofficial(File fileToMove) throws IOException
 	{
-		FileTransfer.copyFile(fileToMove, new File(getUntrustedTranslationDirectory(), fileToMove.getName()));
-		fileToMove.delete();
+		File moveTo = new File(getUnofficialTranslationDirectory(), fileToMove.getName());		
+		moveTo.delete();
+		fileToMove.renameTo(moveTo);
 	}
 
 	public File getMtfFile(String translationFileLanguageCode)
@@ -290,7 +284,7 @@ public class Localization
 		return new File(directory, getMlpkFilename(translationFileLanguageCode));
 	}
 	
-	public File getUntrustedTranslationDirectory()
+	public File getUnofficialTranslationDirectory()
 	{
 		File untrusted = new File(directory, UNTRUSTED_LANGUAGE_DIRECTORY);
 		untrusted.mkdirs();
@@ -341,25 +335,39 @@ public class Localization
 		return false;
 	}
 	
-	public boolean isTranslationTrusted(String languageCode)
+	public File getTranslationFile(String languageCode)
 	{
-		String mtfFileShortName = getMtfFilename(languageCode);
-		if(new File(directory, mtfFileShortName).exists())
-			return false;
-
+		File mtfFile = new File(directory, getMtfFilename(languageCode));
+		if(mtfFile.exists())
+			return mtfFile;
 		File mlpkFile = new File(directory, getMlpkFilename(languageCode));
 		if(mlpkFile.exists())
+			return mlpkFile;
+		return null;
+	}
+	
+	public boolean isTranslationPackFile(File translationFile)
+	{
+		return (translationFile.getName().endsWith(MARTUS_LANGUAGE_PACK_SUFFIX));
+	}
+	
+	public boolean isOfficialTranslation(String languageCode)
+	{
+		File translationFile = getTranslationFile(languageCode);
+		if(translationFile == null)
 		{
-			if(JarVerifier.verify(mlpkFile.getAbsolutePath(),false) != JarVerifier.JAR_VERIFIED_TRUE)
+			if(languageCode.equals(ENGLISH))
+				return true;
+			InputStream internal = getClass().getResourceAsStream(getMtfFilename(languageCode));
+			if(internal == null)
 				return false;
 			return true;
 		}
-		if(languageCode.equals(ENGLISH))
-			return true;
-		InputStream internal = getClass().getResourceAsStream(mtfFileShortName);
-		if(internal == null)
-			return false;
-		return true;
+		
+		if(isTranslationPackFile(translationFile))
+			return (JarVerifier.verify(translationFile.getAbsolutePath(),false) == JarVerifier.JAR_VERIFIED_TRUE);
+
+		return false;
 	}
 	
 	private boolean isRightToLeftLanguage()
