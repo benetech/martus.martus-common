@@ -147,10 +147,15 @@ public class MiniLocalization
 			LanguageOptions.setDirectionRightToLeft();
 		else
 			LanguageOptions.setDirectionLeftToRight();
-		if(currentLanguageCode.equals(ARABIC))
+		if(doesLanguageRequirePadding(currentLanguageCode))
 			LanguageOptions.setLanguagePaddingRequired();
 		else
 			LanguageOptions.setLanguagePaddingNotRequired();
+	}
+	
+	static public boolean doesLanguageRequirePadding(String languageCode)
+	{	
+		return languageCode.equals(ARABIC);
 	}
 	
 	public String getCurrentDateFormatCode()
