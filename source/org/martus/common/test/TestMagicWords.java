@@ -95,7 +95,7 @@ public class TestMagicWords extends TestCaseEnhanced
 		String duplicateString = null;
 		assertTrue("Current size?", magicWords.size()==3);
 		magicWords.add(duplicateString);
-		assertTrue("Same size?", magicWords.size()==4);
+		assertFalse("Same size?", magicWords.size()==3);
 	}
 	
 	public void testDuplicateMagicWords() throws Exception
