@@ -152,7 +152,7 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 				throws SAXParseException
 		{
 			if(tag.equals(GridData.GRID_DATA_TAG))
-				return new GridData.XmlGridDataLoader();
+				return new GridData.XmlGridDataLoader(new GridData());
 			return super.startElement(tag);
 		}
 

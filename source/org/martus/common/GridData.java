@@ -25,10 +25,15 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common;
 
+import java.io.IOException;
 import java.util.Vector;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.martus.util.xml.SimpleXmlDefaultLoader;
+import org.martus.util.xml.SimpleXmlParser;
 import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 
@@ -36,9 +41,20 @@ public class GridData
 {
 	public GridData(int columns)
 	{
-		rows = new Vector();
+		this();
 		maxColumns = columns;
 	}
+
+	public GridData()
+	{
+		rows = new Vector();
+	}
+	
+	public void setMaxColumns(int maxColumns)
+	{
+		this.maxColumns = maxColumns;
+	}
+	
 	
 	public void addEmptyRow()
 	{
@@ -81,6 +97,13 @@ public class GridData
 		rows.add(rowToAdd);
 	}
 	
+	public void setFromXml(String xmlData) throws IOException, ParserConfigurationException, SAXException
+	{
+		rows.clear();
+		GridData.XmlGridDataLoader loader = new GridData.XmlGridDataLoader(this);
+		SimpleXmlParser.parse(loader, xmlData);
+	}
+	
 	public String getXmlRepresentation()
 	{
 		String result = new String();
@@ -101,9 +124,10 @@ public class GridData
 	
 	public static class XmlGridDataLoader extends SimpleXmlDefaultLoader
 	{
-		public XmlGridDataLoader()
+		public XmlGridDataLoader(GridData gridToLoad)
 		{
 			super(GRID_DATA_TAG);
+			grid = gridToLoad;
 		}
 
 		public GridData getGridData()
@@ -114,7 +138,7 @@ public class GridData
 		public void startDocument(Attributes attrs) throws SAXParseException
 		{
 			String cols = attrs.getValue(GridData.GRID_ATTRIBUTE_COLUMNS);
-			grid = new GridData(Integer.parseInt(cols));
+			grid.setMaxColumns(Integer.parseInt(cols));
 			super.startDocument(attrs);
 		}
 

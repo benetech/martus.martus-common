@@ -227,20 +227,18 @@ public class TestGridData extends TestCaseEnhanced
 		return grid;
 	}
 	
-	
-	public void testXmlRowLoader() throws Exception
+	public void testXmlGridLoader() throws Exception
 	{
 		GridData original = createSampleGrid();
 		String xml = original.getXmlRepresentation();
-		GridData.XmlGridDataLoader loader = new GridData.XmlGridDataLoader();
-		SimpleXmlParser.parse(loader, xml);
-		GridData loaded = loader.getGridData();
+		GridData loaded = new GridData(1);
+		loaded.addEmptyRow();
+		loaded.setFromXml(xml);
 		assertEquals("Columns?", original.getColumnCount(), loaded.getColumnCount());
 		assertEquals("Rows?", original.getRowCount(), loaded.getRowCount());
 		assertEquals(xml, loaded.getXmlRepresentation());
 		assertEquals("unescaped xml?", original.getValueAt(0,1), loaded.getValueAt(0,1));
 	}
-	
 
 	static public final String SAMPLE_DATA1 = "data1";
 	static public final String SAMPLE_DATA2_RAW = "<&data2>";
