@@ -46,6 +46,7 @@ import org.martus.common.bulletin.Bulletin;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.jarverifier.JarVerifier;
 import org.martus.swing.UiLanguageDirection;
+import org.martus.util.FileTransfer;
 import org.martus.util.UnicodeReader;
 
 public class Localization
@@ -55,7 +56,6 @@ public class Localization
 		directory = directoryToUse;
 		textResources = new TreeMap();
 		rightToLeftLanguages = new Vector();
-		trustedTranslation = true;
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -216,26 +216,22 @@ public class Localization
 
 	/////////////////////////////////////////////////////////////////
 	// File-oriented stuff
+	
 	public void loadTranslationFile(String languageCode)
 	{
-		trustedTranslation = true;
 		InputStream transStream = null;
 		String mtfFileShortName = getMtfFilename(languageCode);
-		String mlpkFileShortName = getMlpkFilename(languageCode);
-		File mtfFile = new File(directory, mtfFileShortName);
-		File mlpkFile = new File(directory, mlpkFileShortName);
+		File mtfFile = getMtfFile(languageCode);
+		File mlpkFile = getMlpkFile(languageCode);
 		ZipFile zip = null;
 		try
 		{
 			if(mtfFile.exists())
 			{
-				trustedTranslation = false;
 				transStream = new FileInputStream(mtfFile);
 			}
 			else if(mlpkFile.exists())
 			{
-				if(JarVerifier.verify(mlpkFile.getAbsolutePath(),false) != JarVerifier.JAR_VERIFIED_TRUE)
-					trustedTranslation = false;
 				zip = new ZipFile(mlpkFile);
 				transStream = zip.getInputStream(zip.getEntry(mtfFileShortName));
 			}
@@ -251,11 +247,54 @@ public class Localization
 			if(zip != null)
 				zip.close();
 		}
-	
 		catch (IOException e)
 		{
 			System.out.println("BulletinDisplay.loadTranslationFile " + e);
 		}
+	}
+	
+	public void hideUntrustedTranslationFiles(String translationFileLanguageCode)
+	{
+		try
+		{
+			File mtfFile = getMtfFile(translationFileLanguageCode);
+			if(mtfFile.exists())
+			{
+				moveFileToUntrusted(mtfFile);
+				return;
+			}
+
+			File mlpkFile = getMlpkFile(translationFileLanguageCode);
+			if(mlpkFile.exists())
+				moveFileToUntrusted(mlpkFile);
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	private void moveFileToUntrusted(File fileToMove) throws IOException
+	{
+		FileTransfer.copyFile(fileToMove, new File(getUntrustedTranslationDirectory(), fileToMove.getName()));
+		fileToMove.delete();
+	}
+
+	public File getMtfFile(String translationFileLanguageCode)
+	{
+		return new File(directory, getMtfFilename(translationFileLanguageCode));
+	}
+
+	public File getMlpkFile(String translationFileLanguageCode)
+	{
+		return new File(directory, getMlpkFilename(translationFileLanguageCode));
+	}
+	
+	public File getUntrustedTranslationDirectory()
+	{
+		File untrusted = new File(directory, UNTRUSTED_LANGUAGE_DIRECTORY);
+		untrusted.mkdirs();
+		return untrusted;
 	}
 
 	public static String getLanguageCodeFromFilename(String filename)
@@ -302,9 +341,25 @@ public class Localization
 		return false;
 	}
 	
-	public boolean isTranslationTrusted()
+	public boolean isTranslationTrusted(String languageCode)
 	{
-		return trustedTranslation;
+		String mtfFileShortName = getMtfFilename(languageCode);
+		if(new File(directory, mtfFileShortName).exists())
+			return false;
+
+		File mlpkFile = new File(directory, getMlpkFilename(languageCode));
+		if(mlpkFile.exists())
+		{
+			if(JarVerifier.verify(mlpkFile.getAbsolutePath(),false) != JarVerifier.JAR_VERIFIED_TRUE)
+				return false;
+			return true;
+		}
+		if(languageCode.equals(ENGLISH))
+			return true;
+		InputStream internal = getClass().getResourceAsStream(mtfFileShortName);
+		if(internal == null)
+			return false;
+		return true;
 	}
 	
 	private boolean isRightToLeftLanguage()
@@ -402,6 +457,7 @@ public class Localization
 	public static final String MARTUS_LANGUAGE_PACK_SUFFIX = ".mlpk";
 	public static final String MTF_COMMENT_FLAG = "#";
 	public static final String MTF_RIGHT_TO_LEFT_LANGUAGE_FLAG = "!right-to-left";
+	public static final String UNTRUSTED_LANGUAGE_DIRECTORY = "Untrusted Martus Translations";
 	
 	public static final int HASH_LENGTH = 4;
 	
@@ -418,5 +474,4 @@ public class Localization
 				"it", "ja","jv","kn","kk","ky","ko","ml","mr","ne","or","pa","ps","pl","pt","ro",RUSSIAN,"sr",
 				"sr", "sd","si",SPANISH,"ta","tg","te",THAI,"tr","tk","uk","ur","uz","vi"};
 	public Vector rightToLeftLanguages;
-	public boolean trustedTranslation;
 }
