@@ -352,6 +352,11 @@ public class Localization
 		return isOfficialMlpTranslation(translationFile);
 	}
 	
+	public boolean isCurrentTranslationOfficial()
+	{
+		return isOfficialTranslation(currentLanguageCode);
+	}
+	
 	public boolean isOfficialTranslation(String languageCode)
 	{
 		File translationFile = getTranslationFile(languageCode);
