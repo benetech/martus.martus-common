@@ -85,15 +85,15 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		assertEquals("upper", false, fdp.fieldExists(bTag.toUpperCase()));
 
 		assertEquals("tag list", true, Arrays.equals(fieldTags, fdp.getFieldSpecs()));
-		assertEquals("HQ Keys not 0", 0, fdp.getHQPublicKeys().size());
+		assertEquals("HQ Keys not 0", 0, fdp.getAuthorizedToReadKeys().size());
 		String hqKey = "12345";
 		Vector keys = new Vector();
 		keys.add(hqKey);
 		
-		fdp.setHQPublicKeys(keys);
-		assertEquals("HQ Key not the same?", hqKey, fdp.getHQPublicKeys().get(0));
+		fdp.setAuthorizedToReadKeys(keys);
+		assertEquals("HQ Key not the same?", hqKey, fdp.getAuthorizedToReadKeys().get(0));
 		fdp.clearAll();
-		assertEquals("HQ Key not cleared?", 0, fdp.getHQPublicKeys().size());
+		assertEquals("HQ Key not cleared?", 0, fdp.getAuthorizedToReadKeys().size());
 	}
 
 	public void testIsEmpty()
@@ -630,7 +630,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		Vector keys = new Vector();
 		keys.add(securityHQ.getPublicKeyString());
 		
-		fdp.setHQPublicKeys(keys);
+		fdp.setAuthorizedToReadKeys(keys);
 
 		String data1 = "data 1";
 		String data2base = "data 2";

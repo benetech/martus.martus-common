@@ -180,18 +180,18 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		String key = security.getPublicKeyString();
 		Vector keys = new Vector();
 		keys.add(key);
-		original.setHQPublicKeys(keys);
+		original.setAuthorizedToReadKeys(keys);
 		BulletinSaver.saveToClientDatabase(original, db, true, security);
 
 		DatabaseKey dbKey = new DatabaseKey(original.getUniversalId());
 		Bulletin loaded = BulletinLoader.loadFromDatabase(db, dbKey, security);
-		assertEquals("Keys not the same?", original.getFieldDataPacket().getHQPublicKeys(), loaded.getFieldDataPacket().getHQPublicKeys());
+		assertEquals("Keys not the same?", original.getFieldDataPacket().getAuthorizedToReadKeys(), loaded.getFieldDataPacket().getAuthorizedToReadKeys());
 
 		File tempFile = createTempFile();
 		BulletinForTesting.saveToFile(db, original, tempFile, security);
 		Bulletin loaded2 = new Bulletin(security);
 		BulletinZipImporter.loadFromFile(loaded2, tempFile, security);
-		assertEquals("Loaded Keys not the same?", original.getFieldDataPacket().getHQPublicKeys(), loaded2.getFieldDataPacket().getHQPublicKeys());
+		assertEquals("Loaded Keys not the same?", original.getFieldDataPacket().getAuthorizedToReadKeys(), loaded2.getFieldDataPacket().getAuthorizedToReadKeys());
 	}
 
 	
@@ -220,7 +220,7 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		b.set(Bulletin.TAGPRIVATEINFO, samplePrivate);
 		Vector keys = new Vector();
 		keys.add(b.getAccount());
-		b.setHQPublicKeys(keys);
+		b.setAuthorizedToReadKeys(keys);
 		saveAndVerifyValid("freshly created", b);
 
 		DatabaseKey headerKey = new DatabaseKey(b.getBulletinHeaderPacket().getUniversalId());
@@ -344,7 +344,7 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		assertEquals(label + " wrong private fdp localId?", bhp.getPrivateFieldDataPacketId(), invalid.getPrivateFieldDataPacket().getLocalId());
 		assertEquals(label + " public info", expectedPublic, invalid.get(Bulletin.TAGPUBLICINFO));
 		assertEquals(label + " private info", expectedPrivate, invalid.get(Bulletin.TAGPRIVATEINFO));
-		assertEquals(label + " hq key", "", invalid.getHQPublicKey());
+		assertEquals(label + " hq keys", "", invalid.getAuthorizedToReadKeys().get(0));
 	}
 
 	static final String samplePublic = "some public text for loading";

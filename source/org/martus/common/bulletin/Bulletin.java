@@ -358,16 +358,16 @@ public class Bulletin implements BulletinConstants
 		return true;
 	}
 
-	public String getHQPublicKey()
+	public Vector getAuthorizedToReadKeys()
 	{
-		return getBulletinHeaderPacket().getHQPublicKey();
+		return getBulletinHeaderPacket().getAuthorizedToReadKeys();
 	}
 
-	public void setHQPublicKeys(Vector keys)
+	public void setAuthorizedToReadKeys(Vector authorizedKeys)
 	{
-		getBulletinHeaderPacket().setAccountsAuthorizedToReadKeys(keys);
-		getFieldDataPacket().setHQPublicKeys(keys);
-		getPrivateFieldDataPacket().setHQPublicKeys(keys);
+		getBulletinHeaderPacket().setAuthorizedToReadKeys(authorizedKeys);
+		getFieldDataPacket().setAuthorizedToReadKeys(authorizedKeys);
+		getPrivateFieldDataPacket().setAuthorizedToReadKeys(authorizedKeys);
 	}
 
 	public static DateFormat getStoredDateFormat()

@@ -135,22 +135,22 @@ public class BulletinHeaderPacket extends Packet
 		hqPublicKey = key;
 		if(key.length() > 0)
 		{
-			int index = accountsAuthorizedToReadKeys.indexOf(key);
+			int index = authorizedToReadKeys.indexOf(key);
 			if(index != -1)
-				accountsAuthorizedToReadKeys.remove(index);
-			accountsAuthorizedToReadKeys.add(0,key);
+				authorizedToReadKeys.remove(index);
+			authorizedToReadKeys.add(0,key);
 		}
 		
 	}
 
-	public Vector getAccountsAuthorizedToReadKeys()
+	public Vector getAuthorizedToReadKeys()
 	{
-		return accountsAuthorizedToReadKeys;
+		return authorizedToReadKeys;
 	}
 	
-	public void setAccountsAuthorizedToReadKeys(Vector accountsKeys)
+	public void setAuthorizedToReadKeys(Vector accountsKeys)
 	{
-		accountsAuthorizedToReadKeys = accountsKeys;
+		authorizedToReadKeys = accountsKeys;
 		if(accountsKeys.size()>0)
 			hqPublicKey = (String)accountsKeys.get(0);
 	}
@@ -363,7 +363,7 @@ public class BulletinHeaderPacket extends Packet
 		if(hqPublicKey.length() > 0)
 			writeElement(dest, MartusXml.HQPublicKeyElementName, hqPublicKey);
 		
-		Vector authorizedToReadKeys = getAccountsAuthorizedToReadKeys();
+		Vector authorizedToReadKeys = getAuthorizedToReadKeys();
 		if(authorizedToReadKeys.size() > 0)
 		{
 			HQKeys keys = new HQKeys(authorizedToReadKeys);
@@ -416,7 +416,7 @@ public class BulletinHeaderPacket extends Packet
 		privateAttachments = new Vector();
 		hqPublicKey = "";
 		lastSavedTime = TIME_UNKNOWN;
-		accountsAuthorizedToReadKeys = new Vector();
+		authorizedToReadKeys = new Vector();
 	}
 
 	private final static String ALL_PRIVATE = "1";
@@ -436,5 +436,5 @@ public class BulletinHeaderPacket extends Packet
 	private Vector publicAttachments;
 	private Vector privateAttachments;
 	private static final String prefix = "B-";
-	private Vector accountsAuthorizedToReadKeys;
+	private Vector authorizedToReadKeys;
 }

@@ -446,16 +446,16 @@ public class TestBulletin extends TestCaseEnhanced
 	public void testGetAndSetHQPublicKey()
 	{
 		Bulletin original = new Bulletin(security);
-		assertEquals("HQKey already set?", "", original.getHQPublicKey());
+		assertEquals("HQKey already set?", 0, original.getAuthorizedToReadKeys().size());
 		original.set(Bulletin.TAGPUBLICINFO, "public info");
 		String key = "12345";
 		Vector keys = new Vector();
 		keys.add(key);
 		
-		original.setHQPublicKeys(keys);
-		assertEquals("HQKey not set?", key, original.getHQPublicKey());
-		assertEquals("HQKey not set in public?", key, original.getFieldDataPacket().getHQPublicKeys().get(0));
-		assertEquals("HQKey not set in private?", key, original.getPrivateFieldDataPacket().getHQPublicKeys().get(0));
+		original.setAuthorizedToReadKeys(keys);
+		assertEquals("HQKey not set?", key, original.getAuthorizedToReadKeys().get(0));
+		assertEquals("HQKey not set in public?", key, original.getFieldDataPacket().getAuthorizedToReadKeys().get(0));
+		assertEquals("HQKey not set in private?", key, original.getPrivateFieldDataPacket().getAuthorizedToReadKeys().get(0));
 	}
 
 	static final String samplePublic = "some public text";

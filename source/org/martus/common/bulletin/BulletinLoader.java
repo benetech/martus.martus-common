@@ -83,13 +83,13 @@ public class BulletinLoader
 
 		if(b.isValid())
 		{
-			b.setHQPublicKeys(headerPacket.getAccountsAuthorizedToReadKeys());
+			b.setAuthorizedToReadKeys(headerPacket.getAuthorizedToReadKeys());
 		}
 		else
 		{
 			Vector emptySetOfKeys = new Vector();
 			emptySetOfKeys.add("");
-			b.setHQPublicKeys(emptySetOfKeys);
+			b.setAuthorizedToReadKeys(emptySetOfKeys);
 			if(!isHeaderValid)
 			{
 				//System.out.println("Bulletin.loadFromDatabase: Header invalid");

@@ -95,7 +95,7 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 			else if(tag.equals(MartusXml.HQPublicKeyElementName))
 				bhp.setHQPublicKey(value);
 			else if(tag.equals(MartusXml.AccountsAuthorizedToReadElementName))
-				bhp.setAccountsAuthorizedToReadKeys(HQKeys.parseXml(value));
+				bhp.setAuthorizedToReadKeys(HQKeys.parseXml(value));
 		}
 		catch (Exception e)
 		{
