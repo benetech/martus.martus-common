@@ -29,6 +29,7 @@ package org.martus.common.test;
 import org.martus.common.FieldSpec;
 import org.martus.common.GridFieldSpec;
 import org.martus.common.LegacyCustomFields;
+import org.martus.common.StandardFieldSpecs;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.clientside.Localization;
 import org.martus.util.TestCaseEnhanced;
@@ -132,5 +133,58 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertEquals(FieldSpec.TYPE_BOOLEAN, FieldSpec.getTypeCode("BOOLEAN"));
 		assertEquals(FieldSpec.TYPE_LANGUAGE, FieldSpec.getTypeCode("LANGUAGE"));
 		assertEquals(FieldSpec.TYPE_GRID, FieldSpec.getTypeCode("GRID"));
+	}
+	
+	public void testEquals()
+	{
+		FieldSpec a = new FieldSpec(FieldSpec.TYPE_NORMAL);
+		String labelA = "label a";
+		String tagA = "NewTagA";
+		String labelB = "label b";
+		String tagB = "NewTagB";
+		a.setLabel(labelA);
+		a.setTag(tagA);
+		FieldSpec b = new FieldSpec(FieldSpec.TYPE_NORMAL);
+		b.setLabel(labelA);
+		b.setTag(tagA);
+		assertTrue("A & B should be identical", a.equals(b));
+		
+		b.setLabel(labelB);
+		assertFalse("B has different Label", a.equals(b));
+
+		b.setLabel(labelA);
+		b.setTag(tagB);
+		assertFalse("B has different Tag", a.equals(b));
+		
+		FieldSpec c = new FieldSpec(FieldSpec.TYPE_MULTILINE);
+		c.setLabel(labelA);
+		c.setTag(tagA);
+		assertFalse("C has different Type", a.equals(b));
+		
+		String d = "someString";
+	
+		assertFalse("FieldSpec is not a String", a.equals(d));
+	}
+
+	
+	public void testIsAllFieldsPresnet()
+	{
+		FieldSpec[] currentSpec = StandardFieldSpecs.getDefaultPublicFieldSpecs();	
+		assertTrue("Same spec not equal?", FieldSpec.isAllFieldsPresent(currentSpec, currentSpec));
+		FieldSpec[] privateSpec = StandardFieldSpecs.getDefaultPrivateFieldSpecs();
+		assertFalse("completely different specs not different?", FieldSpec.isAllFieldsPresent(privateSpec, currentSpec));
+		int length = currentSpec.length;
+		FieldSpec[] newSpec = new FieldSpec[length-1];
+		for (int i = 0; i < length -2; i++)
+		{
+			newSpec[i] =  currentSpec[i];
+		}
+		FieldSpec lastSpec = currentSpec[length-2];
+		newSpec[length-2] = new FieldSpec(lastSpec.getType());
+		newSpec[length-2].setLabel(lastSpec.getLabel());
+		newSpec[length-2].setTag(lastSpec.getTag());
+		
+		assertTrue("NewSpec is a Subset of Current", FieldSpec.isAllFieldsPresent(newSpec, currentSpec));
+		assertFalse("CurrentSpec has one more field", FieldSpec.isAllFieldsPresent(currentSpec, newSpec));
 	}
 }

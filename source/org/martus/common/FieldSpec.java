@@ -119,6 +119,39 @@ public class FieldSpec
 		this.tag = tag;
 	}
 	
+	public static boolean isAllFieldsPresent(FieldSpec[] previousSpec, FieldSpec[] currentSpec)
+	{
+		for (int i = 0; i < previousSpec.length; i++)
+		{
+			FieldSpec thisField = previousSpec[i];
+			boolean fieldFound = false;
+			for (int j = 0; j < currentSpec.length; j++)
+			{
+				if(currentSpec[j].equals(thisField))
+					fieldFound = true;
+			}
+			if(!fieldFound)
+				return false;
+		}
+		return true;
+	}
+	
+	public boolean equals(Object obj)
+	{
+		if(!obj.getClass().equals(getClass()))
+			return false;
+		FieldSpec otherSpec = (FieldSpec)obj;
+		if(hasUnknown != otherSpec.hasUnknown)
+			return false;
+		if(!label.equals(otherSpec.label))
+			return false;
+		if(!tag.equals(otherSpec.tag))
+			return false;
+		if(type != otherSpec.type)
+			return false;
+		return true;
+	}
+
 	public static String getTypeString(int type)
 	{
 		Map map = getTypeCodesAndStrings();
