@@ -55,9 +55,7 @@ import org.xml.sax.SAXParseException;
 
 public class AttachmentPacket extends Packet
 {
-	public AttachmentPacket(String account, SessionKey sessionKeyToUse, File fileToAttach, MartusCrypto crypto) throws
-		IOException
-
+	public AttachmentPacket(String account, SessionKey sessionKeyToUse, File fileToAttach, MartusCrypto crypto)
 	{
 		super(createUniversalId(account));
 		sessionKey = sessionKeyToUse;
