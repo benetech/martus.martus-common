@@ -28,7 +28,9 @@ package org.martus.common.utilities;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import org.hrvd.util.date.Flexidate;
 import org.martus.common.bulletin.Bulletin;
@@ -47,7 +49,19 @@ public class MartusFlexidate
 		
 	private void setDateRange(Date beginDate, Date endDate)
 	{	
-		flexiDate = new Flexidate(beginDate, endDate);	
+		flexiDate = new Flexidate(normalizeDate(beginDate), normalizeDate(endDate));	
+	}
+	
+	public Date normalizeDate(Date date)
+	{
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(date);
+		int year = calendar.get(GregorianCalendar.YEAR);
+		int month = calendar.get(GregorianCalendar.MONTH);
+		int day = calendar.get(GregorianCalendar.DAY_OF_MONTH);
+		int NOON = 12;
+		calendar.set(year, month, day, NOON, 0, 0);
+		return calendar.getTime();
 	}
 	
 	private void parseString(String flexiDateStr)
