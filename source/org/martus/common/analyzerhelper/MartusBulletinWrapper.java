@@ -26,6 +26,9 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.analyzerhelper;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.zip.ZipFile;
 import org.martus.common.MartusUtilities.ServerErrorException;
 import org.martus.common.bulletin.AttachmentProxy;
@@ -37,6 +40,7 @@ import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.database.ClientFileDatabase;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.packet.UniversalId;
+import org.martus.common.utilities.MartusFlexidate;
 
 
 public class MartusBulletinWrapper
@@ -155,14 +159,25 @@ public class MartusBulletinWrapper
 		return bulletin.get(BulletinConstants.TAGPRIVATEINFO);
 	}
 	
-	public String getEventDate()
+	public MartusFlexidate getEventDate()
 	{
-		return bulletin.get(BulletinConstants.TAGEVENTDATE);
+		String rawEventDate = bulletin.get(BulletinConstants.TAGEVENTDATE);
+		return MartusFlexidate.createFromMartusDateString(rawEventDate);
 	}
 	
-	public String getEntryDate()
+	public Date getEntryDate()
 	{
-		return bulletin.get(BulletinConstants.TAGENTRYDATE);
+		String entryDate = bulletin.get(BulletinConstants.TAGENTRYDATE);
+		DateFormat dfStored = Bulletin.getStoredDateFormat();
+		try
+		{
+			return dfStored.parse(entryDate);
+		}
+		catch(ParseException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	private Bulletin bulletin;

@@ -95,10 +95,15 @@ public class TestMartusBulletinWrapper extends TestCaseEnhanced
 		String title = "title";
 		String location = "location";
 		String privateData = "private";
+		String entryDate = "2004-01-23";
+		
 		bulletin.set(BulletinConstants.TAGAUTHOR, author);
 		bulletin.set(BulletinConstants.TAGTITLE, title);
 		bulletin.set(BulletinConstants.TAGLOCATION, location);
 		bulletin.set(BulletinConstants.TAGPRIVATEINFO, privateData);
+		bulletin.set(BulletinConstants.TAGENTRYDATE, entryDate);
+		bulletin.set(BulletinConstants.TAGEVENTDATE, "2003-08-20,20030820+3");
+		
 		HQKey key = new HQKey(security.getPublicKeyString());
 		HQKeys keys = new HQKeys(key);
 		bulletin.setAuthorizedToReadKeys(keys);
@@ -121,6 +126,9 @@ public class TestMartusBulletinWrapper extends TestCaseEnhanced
 		assertEquals("Data for location not correct?", location, bulletinWrapper.getLocation());
 		assertEquals("PrivateData not visible?", privateData, bulletinWrapper.getPrivateInfo());
 		assertEquals("Is All Private incorrect?", bulletin.isAllPrivate(), bulletinWrapper.isAllPrivate());
+		assertEquals("Entry Date incorrect?", entryDate, Bulletin.getStoredDateFormat().format(bulletinWrapper.getEntryDate()));
+		assertEquals("Event Begin Date incorrect?", "2003-08-20", Bulletin.getStoredDateFormat().format(bulletinWrapper.getEventDate().getBeginDate()));
+		assertEquals("Event End Date incorrect?", "2003-08-23", Bulletin.getStoredDateFormat().format(bulletinWrapper.getEventDate().getEndDate()));
 		bulletinZipFile.delete();
 		db.deleteAllData();
 	}
