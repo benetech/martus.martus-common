@@ -31,6 +31,7 @@ import java.util.Vector;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlParser;
 import org.martus.util.xml.SimpleXmlStringLoader;
+import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
 
@@ -143,10 +144,16 @@ public class CustomFields
 			return new FieldSpec(tag, label, type, false);
 		}
 		
+		public void startDocument(Attributes attrs) throws SAXParseException
+		{
+			type = FieldSpec.getTypeCode(attrs.getValue("type"));
+			super.startDocument(attrs);
+		}
+
 		public SimpleXmlDefaultLoader startElement(String tag)
 			throws SAXParseException
 		{
-			if(tag.equals("Tag") || tag.equals("Label") || tag.equals("Type"))
+			if(tag.equals("Tag") || tag.equals("Label"))
 				return new SimpleXmlStringLoader(tag);
 			
 			return super.startElement(tag);
@@ -155,15 +162,17 @@ public class CustomFields
 		public void endElement(String thisTag, SimpleXmlDefaultLoader ended)
 			throws SAXParseException
 		{
-			String thisValue = ((SimpleXmlStringLoader)ended).getText(); 
 			if(thisTag.equals("Tag"))
-				tag = thisValue;
+				tag = getText(ended);
 			else if(thisTag.equals("Label"))
-				label = thisValue;
-			else if(thisTag.equals("Type"))
-				type = FieldSpec.getTypeCode(thisValue);
+				label = getText(ended);
 			else
 				super.endElement(thisTag, ended);
+		}
+
+		private String getText(SimpleXmlDefaultLoader ended)
+		{
+			return ((SimpleXmlStringLoader)ended).getText();
 		}
 
 		String tag;

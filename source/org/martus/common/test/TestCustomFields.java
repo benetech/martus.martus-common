@@ -60,6 +60,17 @@ public class TestCustomFields extends TestCase
 		CustomFields parsed = new CustomFields(CustomFields.parseXml(xml));
 		assertEquals(fields.toString(), parsed.toString());
 	}
+	
+	public void testGrid() throws Exception
+	{
+		String xml = "<CustomFields><Field type='GRID'><FieldSpecDetails><GridSpecDetails><Column><Label>column1</Label></Column><Column><Label>column2</Label></Column></GridSpecDetails></FieldSpecDetails></Field></CustomFields>";
+		CustomFields fields = new CustomFields();
+		CustomFields.CustomFieldLoader loader = new CustomFields.CustomFieldLoader("CustomFields", fields);
+		loader.parse(xml);
+		FieldSpec spec = fields.getSpecs()[0];
+		assertEquals(FieldSpec.TYPE_GRID, spec.getType());
+		
+	}
 
 	private FieldSpec[] getSampleSpecs()
 	{

@@ -48,10 +48,10 @@ public class FieldSpec
 	
 	public String toString()
 	{
-		return "<Field><Tag>" + MartusUtilities.getXmlEncoded(getTag()) + 
+		return "<Field type='" + MartusUtilities.getXmlEncoded(getTypeString(getType())) +
+				"'><Tag>" + MartusUtilities.getXmlEncoded(getTag()) + 
 				"</Tag><Label>" + MartusUtilities.getXmlEncoded(getLabel()) + 
-				"</Label><Type>" + MartusUtilities.getXmlEncoded(getTypeString(getType())) +
-				"</Type></Field>";
+				"</Label></Field>";
 	}
 
 	public String getTag()
