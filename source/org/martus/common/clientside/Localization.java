@@ -42,6 +42,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.martus.common.bulletin.Bulletin;
+import org.martus.common.crypto.MartusCrypto;
 import org.martus.util.UnicodeReader;
 
 public class Localization
@@ -69,21 +70,22 @@ public class Localization
 	{
 		Map availableTranslations = getAvailableTranslations(key);
 		if(availableTranslations == null)
-			return getAsUntranslated(key);
+			return formatAsUntranslated(key);
 
 		String translatedText = (String)availableTranslations.get(languageCode);
 		if(translatedText != null)
 			return translatedText;
 
 		String englishText = (String)availableTranslations.get(ENGLISH);
-		return getAsUntranslated(englishText);
+		return formatAsUntranslated(englishText);
 	}
 	
 	protected String getMtfEntry(String languageCode, String key)
 	{
 		String value = getLabel(languageCode, key);
+		String hash = getHashOfEnglish(key);
 		value = value.replaceAll("\\n", "\\\\n");
-		return key + "=" + value;
+		return "-" + hash + "-" + key + "=" + value;
 	}
 
 	protected void addEnglishTranslation(String mtfEntry)
@@ -113,24 +115,43 @@ public class Localization
 		}
 		
 		String translatedText = extractValueFromMtfEntry(mtfEntryText);
+		String hash = extractHashFromMtfEntry(mtfEntryText);
+		if(hash != null && !hash.equals(getHashOfEnglish(key)))
+			translatedText = formatAsUntranslated(translatedText);
 		availableTranslations.put(languageCode, translatedText);
 	}
 	
 	private String extractKeyFromMtfEntry(String mtfEntryText)
 	{
-		return mtfEntryText.split("=")[0];
+		int keyStart = HASH_LENGTH + 2;
+		if(!mtfEntryText.startsWith("-"))
+			keyStart = 0;
+		
+		int splitAt = mtfEntryText.indexOf('=', keyStart);
+		if(splitAt < 0)
+			splitAt = 0;
+		return mtfEntryText.substring(keyStart, splitAt);
 	}
 	
 	private String extractValueFromMtfEntry(String mtfEntryText)
 	{
-		String[] parts = mtfEntryText.split("=");
-		if(parts.length < 2)
+		int keyEnd = mtfEntryText.indexOf('=');
+		if(keyEnd < 0)
 			return "";
-		String value = parts[1];
+		
+		String value = mtfEntryText.substring(keyEnd+1);
 		value = value.replaceAll("\\\\n", "\n");
 		return value;
 	}
 
+	private String extractHashFromMtfEntry(String mtfEntryText)
+	{
+		if(!mtfEntryText.startsWith("-"))
+			return null;
+		
+		return mtfEntryText.substring(1, HASH_LENGTH + 1);
+	}
+	
 	public void loadTranslations(String languageCode, InputStream inputStream)
 	{
 		try
@@ -163,9 +184,16 @@ public class Localization
 		return (Map)textResources.get(key);
 	}
 
-	private String getAsUntranslated(String key)
+	private String formatAsUntranslated(String value)
 	{
-		return "<" + key + ">";
+		if(value.startsWith("<"))
+			return value;
+		return "<" + value + ">";
+	}
+
+	public String getHashOfEnglish(String key)
+	{
+		return MartusCrypto.getHexDigest(getLabel(ENGLISH, key)).substring(0,HASH_LENGTH);
 	}
 
 
@@ -313,6 +341,8 @@ public class Localization
 	public static final String UNUSED_TAG = "";
 	public static final String MARTUS_LANGUAGE_FILE_PREFIX = "Martus-";
 	public static final String MARTUS_LANGUAGE_FILE_SUFFIX = ".mtf";
+	
+	public static final int HASH_LENGTH = 4;
 	
 	public static final String LANGUAGE_OTHER = "?";
 	public static final String ENGLISH = "en";

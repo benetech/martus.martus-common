@@ -53,17 +53,21 @@ public class UiBasicLocalization extends Localization
 		writer.writeln("# Client version: " + versionLabel);
 		writer.writeln("# Client build:   " + VersionBuildDate.getVersionBuildDate());
 		writer.writeln("#");
+		writer.writeln("# This file MUST be saved in UTF-8 format!");
 		writer.writeln("# Lines beginning with # are comments and are ignored by Martus");
-		writer.writeln("# Each entry consists of: KEY=VALUE");
+		writer.writeln("# Each entry has two lines. The first line is the current English");
+		writer.writeln("#    text, and the second line consists of: KEY=VALUE");
 		writer.writeln("# Do not modify any KEY. Do localize every VALUE.");
-		writer.writeln("# Each untranslated VALUE has <> around it. As you translate each ");
-		writer.writeln("#    VALUE, remove its <>");
-		writer.writeln("# The file MUST be saved in UTF-8 format!");
-		writer.writeln("# If you name it Martus-xx.mtf (where xx is the correct language code) and");
-		writer.writeln("#    put the file in c:\\Martus, then Martus will automatically read it.");
-		writer.writeln("# In Martus, to choose a language, pick one from the drop-down list in the");
-		writer.writeln("#    lower left-hand corner of the signin screen, or once you are logged in,");
-		writer.writeln("#    go to Options/Preferences.");
+		writer.writeln("# Each VALUE that needs to be translated has <> around it. ");
+		writer.writeln("#    As you translate each VALUE, remove its <>");
+		writer.writeln("# When a non-English VALUE appears inside <> it is because the English ");
+		writer.writeln("#    translation has changed. Verify or update the translation to ");
+		writer.writeln("#    match the new English text, and remove the <>");
+		writer.writeln("# If you name it Martus-" + languageCode + ".mtf and put the file in ");
+		writer.writeln("#     c:\\Martus, then Martus will automatically read it.");
+		writer.writeln("# In Martus, to choose a language, pick one from the drop-down list");
+		writer.writeln("#    in the lower left-hand corner of the signin screen, or after you");
+		writer.writeln("#    are logged in, go to Options/Preferences.");
 		writer.writeln("#");
 		writer.writeln("#  1.  do NOT translate \"\\n\" (used for new lines)"); 
 		writer.writeln("#  2.  do NOT translate \"#N#\" or \"#M#\" (though move them as appropriate");
@@ -90,11 +94,18 @@ public class UiBasicLocalization extends Localization
 		while(it.hasNext())
 		{
 			String key = (String)it.next();
-			//String englishMtfEntry = getMtfEntry(ENGLISH, key);
-			//writer.writeln(englishMtfEntry);
 			String mtfEntry = getMtfEntry(languageCode, key);
+			String englishMtfEntry = getMtfEntry(ENGLISH, key);
+			int keyEnd = mtfEntry.indexOf('=');
+			char[] filler = new char[keyEnd];
+			Arrays.fill(filler, '=');
+			filler[0] = '#';
+			String result = new String(filler) + englishMtfEntry.substring(keyEnd);
+
+			writer.writeln();
+			writer.writeln(result);
 			writer.writeln(mtfEntry);
-			//writer.writeln();
+			
 		}
 	}
 
