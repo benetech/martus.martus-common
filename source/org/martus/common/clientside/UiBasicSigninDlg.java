@@ -187,10 +187,10 @@ public class UiBasicSigninDlg extends JDialog
 		}
 	}
 	
-	protected UiSigninPanel signinPane;
-	protected UiBasicLocalization localization;
-	protected CurrentUiState uiState;
-	protected int usersChoice;
+	public UiSigninPanel signinPane;
+	public UiBasicLocalization localization;
+	public CurrentUiState uiState;
+	public int usersChoice;
 	boolean languageChanged;
 	private JButton ok;
 	protected int currentMode;
