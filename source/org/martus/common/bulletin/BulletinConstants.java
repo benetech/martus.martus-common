@@ -46,8 +46,4 @@ public interface BulletinConstants
 	public static final String TAGPRIVATEINFO = "privateinfo";
 	public static final String TAGLASTSAVED = "BulletinLastSaved";
 
-	public static final String[] sortableFieldTags =
-		{TAGSTATUS, TAGWASSENT, TAGEVENTDATE, TAGTITLE, TAGAUTHOR, TAGLASTSAVED};
-
-
 }
