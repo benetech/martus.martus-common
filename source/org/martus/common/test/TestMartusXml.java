@@ -27,7 +27,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.test;
 
 import org.martus.common.MartusXml;
-import org.martus.util.*;
+import org.martus.util.TestCaseEnhanced;
 
 public class TestMartusXml extends TestCaseEnhanced
 {
@@ -41,7 +41,6 @@ public class TestMartusXml extends TestCaseEnhanced
 	{
 		assertEquals("<a>", MartusXml.getTagStart("a"));
 		assertEquals("<a b='c'>", MartusXml.getTagStart("a", "b", "c"));
-		assertEquals("<a b='c' d='e'>", MartusXml.getTagStart("a", "b", "c", "d", "e"));
 		assertEquals("</a>\n", MartusXml.getTagEnd("a"));
 	}
 }

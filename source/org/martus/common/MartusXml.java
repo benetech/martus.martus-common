@@ -57,12 +57,6 @@ public class MartusXml
 		return "<" + tagName + " " + attrName + "='" + attrValue + "'>";
 	}
 
-	public static String getTagStart(String tagName, String attr1Name, String attr1Value, String attr2Name, String attr2Value)
-	{
-		return "<" + tagName + " " + attr1Name + "='" + attr1Value +
-				"' " + attr2Name + "='" + attr2Value + "'>";
-	}
-
 	public static String getTagEnd(String tagName)
 	{
 		return "</" + tagName + ">\n";
