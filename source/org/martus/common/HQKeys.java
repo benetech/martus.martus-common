@@ -83,7 +83,7 @@ public class HQKeys
 	{
 		for(int i = 0; i < keysToAdd.size(); ++i)
 		{
-			hqKeys.add(keysToAdd.get(i));
+			add(keysToAdd.get(i));
 		}
 	}
 	

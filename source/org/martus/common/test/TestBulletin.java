@@ -516,6 +516,18 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals("HQKey not set?", key, (original.getAuthorizedToReadKeys().get(0)).getPublicKey());
 		assertEquals("HQKey not set in public?", key, (original.getFieldDataPacket().getAuthorizedToReadKeys().get(0)).getPublicKey());
 		assertEquals("HQKey not set in private?", key, (original.getPrivateFieldDataPacket().getAuthorizedToReadKeys().get(0)).getPublicKey());
+
+		HQKeys moreKeys = new HQKeys();
+		String publickey2 = "1234522";
+		HQKey key2 = new HQKey(publickey2);
+		moreKeys.add(key2);
+		assertEquals(1, original.getAuthorizedToReadKeys().size());
+		assertTrue(original.getAuthorizedToReadKeys().containsKey(key1.getPublicKey()));
+		original.addAuthorizedToReadKeys(moreKeys);
+		assertEquals(2, original.getAuthorizedToReadKeys().size());
+		assertTrue(original.getAuthorizedToReadKeys().containsKey(key1.getPublicKey()));
+		assertTrue(original.getAuthorizedToReadKeys().containsKey(key2.getPublicKey()));
+		
 	}
 
 	static MockDatabase getDb()
