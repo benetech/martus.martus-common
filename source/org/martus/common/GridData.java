@@ -28,15 +28,52 @@ package org.martus.common;
 import java.util.Vector;
 
 
-public class GridField
+public class GridData
 {
-	public GridField()
+	public GridData(int columns)
 	{
 		rows = new Vector();
+		maxColumns = columns;
 	}
 	
-	public void addRow(String[] rowToAdd)
+	public void addEmptyRow()
 	{
+		GridRow row = GridRow.createEmptyRow(getColumnCount());
+		addRow(row);
+	}
+	
+	public int getRowCount()
+	{
+		return rows.size();
+	}
+	
+	public int getColumnCount()
+	{
+		return maxColumns;
+	}
+	
+	private GridRow getRow(int row)
+	{
+		return (GridRow)rows.get(row);
+	}
+	
+	public void setValueAt(String data, int row, int col) throws ArrayIndexOutOfBoundsException
+	{
+		GridRow rowData = getRow(row);
+		rowData.setCell(data, col);
+	}
+
+	public String getValueAt(int row, int col) throws ArrayIndexOutOfBoundsException
+	{
+		GridRow rowData = getRow(row);
+		return rowData.getCell(col);
+	}
+	
+	
+	public void addRow(GridRow rowToAdd) throws ArrayIndexOutOfBoundsException
+	{
+		if(rowToAdd.columns() != getColumnCount())
+			throw new ArrayIndexOutOfBoundsException("Column out of bounds");
 		rows.add(rowToAdd);
 	}
 	
@@ -45,11 +82,11 @@ public class GridField
 		String result = new String();
 		for(int i = 0; i< rows.size(); ++i)
 		{
-			String[] contents = (String[])rows.get(i);
+			GridRow contents = (GridRow)rows.get(i);
 			result += ROW_START_TAG;
-			for(int j= 0; j < contents.length; ++j)
+			for(int j= 0; j < contents.columns(); ++j)
 			{
-				result += COL_START_TAG + contents[j] + COL_END_TAG;
+				result += COL_START_TAG + MartusUtilities.getXmlEncoded(contents.getCell(j)) + COL_END_TAG;
 			}
 			result += ROW_END_TAG;
 		}
@@ -62,4 +99,5 @@ public class GridField
 	public static final String COL_END_TAG = "</Col>";
 
 	Vector rows;
+	int maxColumns;
 }
