@@ -269,7 +269,7 @@ abstract public class FileDatabase extends Database
 		visitAllAccounts(accountVisitor);
 	}
 
-	public String getFolderForAccount(String accountString)
+	public String getFolderForAccount(String accountString) throws IOException
 	{
 		try
 		{
@@ -278,9 +278,10 @@ abstract public class FileDatabase extends Database
 		}
 		catch(Exception e)
 		{
-			System.out.println("FileDatabase:getFolderForAccount clientId=" + accountString + " : " + e);
+			System.out.println("FileDatabase:getFolderForAccount clientId=" + accountString);
+			e.printStackTrace();
+			throw new IOException(e.getMessage());
 		}
-		return accountString;
 	}
 
 	public File getAbsoluteInterimFolderForAccount(String accountString) throws
@@ -621,19 +622,10 @@ abstract public class FileDatabase extends Database
 
 	public String convertToRelativePath(String absoluteAccountPath)
 	{
-		try
-		{
-			File dir = new File(absoluteAccountPath);
-			File bucket = dir.getParentFile();
-			return bucket.getName() + File.separator + dir.getName();
-		}
-		catch(Exception e)
-		{
-			System.out.println("FileDatabase:getFolderForAccount clientId=" + absoluteAccountPath + " : " + e);
-		}
-		return absoluteAccountPath;
+		File dir = new File(absoluteAccountPath);
+		File bucket = dir.getParentFile();
+		return bucket.getName() + File.separator + dir.getName();
 	}
-
 
 	void deleteAllPacketsForAccount(File accountDir)
 	{
