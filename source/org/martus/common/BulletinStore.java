@@ -99,7 +99,7 @@ public class BulletinStore
 
 	public Vector getAllBulletinUids()
 	{
-		return getUidsOfAllBulletinRevisions();
+		return scanForLeafUids();
 	}
 
 	public void visitAllBulletins(Database.PacketVisitor visitorToUse)
@@ -159,7 +159,7 @@ public class BulletinStore
 	
 	
 
-	private Vector getUidsOfAllBulletinRevisions()
+	public Vector getUidsOfAllBulletinRevisions()
 	{
 		class UidCollector implements Database.PacketVisitor
 		{
