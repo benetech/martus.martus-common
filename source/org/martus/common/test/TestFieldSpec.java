@@ -56,9 +56,9 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertEquals("d", fieldWithExtra.getLabel());
 		assertEquals("not unknown?", FieldSpec.TYPE_UNKNOWN, fieldWithExtra.getType());
 		
-		FieldSpec fieldWithIllegalCharacters = LegacyCustomFields.createFromLegacy("!<a9-._@#josée,!<a9-._@#josée");
-		assertEquals("__a9-.___josée", fieldWithIllegalCharacters.getTag());
-		assertEquals("!<a9-._@#josée", fieldWithIllegalCharacters.getLabel());
+		FieldSpec fieldWithIllegalCharacters = LegacyCustomFields.createFromLegacy("!<a9-._@#jos"+Utf8ConstantsForTests.ACCENT_E_LOWER+"e,!<a9-._@#jos"+Utf8ConstantsForTests.ACCENT_E_LOWER+"e");
+		assertEquals("__a9-.___jos"+Utf8ConstantsForTests.ACCENT_E_LOWER+"e", fieldWithIllegalCharacters.getTag());
+		assertEquals("!<a9-._@#jos"+Utf8ConstantsForTests.ACCENT_E_LOWER+"e", fieldWithIllegalCharacters.getLabel());
 
 		FieldSpec fieldWithIllegalFirstCharacter = LegacyCustomFields.createFromLegacy(".ok,ok");
 		assertEquals("_ok", fieldWithIllegalFirstCharacter.getTag());

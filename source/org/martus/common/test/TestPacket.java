@@ -289,14 +289,14 @@ public class TestPacket extends TestCaseEnhanced
 	public void testVerifyGoodPacket() throws Exception
 	{
 		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security);
-		bhp.setPrivateFieldDataPacketId("Jos?e");
+		bhp.setPrivateFieldDataPacketId("Jos"+Utf8ConstantsForTests.ACCENT_E_LOWER+"e");
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		bhp.writeXml(out, security);
 
 		byte[] bytes = out.toByteArray();
 		ByteArrayInputStreamWithSeek in0 = new ByteArrayInputStreamWithSeek(bytes);
 		Packet.verifyPacketSignature(in0, security);
-		assertEquals("UTF", "Jos?e",bhp.getPrivateFieldDataPacketId());
+		assertEquals("UTF", "Jos"+Utf8ConstantsForTests.ACCENT_E_LOWER+"e", bhp.getPrivateFieldDataPacketId());
 	}
 
 	public void testVerifyGoodPacketWithAnotherAccount() throws Exception
