@@ -28,7 +28,9 @@ package org.martus.common.test;
 import java.util.Arrays;
 
 import org.martus.common.GridRow;
+import org.martus.common.MartusUtilities;
 import org.martus.util.TestCaseEnhanced;
+import org.martus.util.xml.SimpleXmlParser;
 
 
 public class TestGridRow extends TestCaseEnhanced
@@ -128,7 +130,20 @@ public class TestGridRow extends TestCaseEnhanced
 		catch (ArrayIndexOutOfBoundsException expected)
 		{
 		}
-
+	}
+	
+	public void testXmlRowLoader() throws Exception
+	{
+		String data1 = "data1";
+		String data2Raw = "data2";
+		String data2 = MartusUtilities.getXmlEncoded(data2Raw);
+		String xml = "<Row>\n<Column>" + data1 + "</Column><Column>" + data2 + "</Column></Row>";
+		GridRow.XmlGridRowLoader loader = new GridRow.XmlGridRowLoader(2);
+		SimpleXmlParser.parse(loader, xml);
+		GridRow row = loader.getGridRow();
+		assertEquals(data1, row.getCellText(0));
+		assertEquals(data2Raw, row.getCellText(1));
 		
 	}
+	
 }

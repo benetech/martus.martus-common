@@ -27,6 +27,10 @@ package org.martus.common;
 
 import java.util.Vector;
 
+import org.martus.util.xml.SimpleXmlDefaultLoader;
+import org.martus.util.xml.SimpleXmlStringLoader;
+import org.xml.sax.SAXParseException;
+
 
 public class GridRow
 {
@@ -78,6 +82,44 @@ public class GridRow
 	{
 		return (String)row.get(column);
 	}
+	
+	public static class XmlGridRowLoader extends SimpleXmlDefaultLoader
+	{
+		public XmlGridRowLoader(int maxColumns)
+		{
+			super(GridData.ROW_TAG);
+			thisRow = new GridRow(maxColumns);
+		}
+		
+		public GridRow getGridRow()
+		{
+			return thisRow;
+		}
+
+		public SimpleXmlDefaultLoader startElement(String tag)
+			throws SAXParseException
+		{
+			if(tag.equals(GridData.COLUMN_TAG))
+				return new SimpleXmlStringLoader(tag);
+			return super.startElement(tag);
+		}
+		
+		public void endElement(SimpleXmlDefaultLoader ended)
+				throws SAXParseException
+		{
+			String tag = ended.getTag();
+			if(tag.equals(GridData.COLUMN_TAG))
+			{
+				String cellText = ((SimpleXmlStringLoader)ended).getText();
+				thisRow.setCellText(currentColumn++, cellText);
+			}
+			super.endElement(ended);
+		}
+		GridRow thisRow;
+		int currentColumn;
+
+	}
+	
 	int maxColumns;
 	Vector row; 
 }
