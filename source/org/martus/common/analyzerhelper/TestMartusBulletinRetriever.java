@@ -27,15 +27,22 @@ package org.martus.common.analyzerhelper;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
+import org.martus.common.ProgressMeterInterface;
 import org.martus.common.MartusUtilities.ServerErrorException;
 import org.martus.common.analyzerhelper.MartusBulletinRetriever.ServerPublicCodeDoesNotMatchException;
+import org.martus.common.bulletin.Bulletin;
+import org.martus.common.bulletin.BulletinConstants;
+import org.martus.common.bulletin.BulletinSaver;
+import org.martus.common.bulletin.BulletinZipUtilities;
 import org.martus.common.clientside.ClientSideNetworkGateway;
 import org.martus.common.clientside.ClientSideNetworkHandlerUsingXmlRpcForNonSSL;
 import org.martus.common.clientside.Exceptions.ServerNotAvailableException;
@@ -44,6 +51,7 @@ import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
+import org.martus.common.database.ClientFileDatabase;
 import org.martus.common.network.NetworkInterface;
 import org.martus.common.network.NetworkInterfaceConstants;
 import org.martus.common.network.NetworkResponse;
@@ -51,6 +59,8 @@ import org.martus.common.network.NonSSLNetworkAPI;
 import org.martus.common.packet.UniversalId;
 import org.martus.util.Base64;
 import org.martus.util.TestCaseEnhanced;
+import org.martus.util.Base64.InvalidBase64Exception;
+
 
 
 public class TestMartusBulletinRetriever extends TestCaseEnhanced
@@ -253,14 +263,19 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 			fieldOfficeAccountIds = fieldOfficeAccountIdsToUse;
 		}
 		
-		public void setDraftBulletins(String fieldOffice, Vector bulletinLocalIds)
+		public void setTestDraftBulletinIdsToReturn(String fieldOffice, Vector bulletinLocalIds)
 		{
 			draftBulletins.put(fieldOffice, bulletinLocalIds);
 		}
 
-		public void setSealedBulletins(String fieldOffice, Vector bulletinLocalIds)
+		public void setTestSealedBulletinIdsToReturn(String fieldOffice, Vector bulletinLocalIds)
 		{
 			sealedBulletins.put(fieldOffice, bulletinLocalIds);
+		}
+		
+		public void setTestBulletinToRetrieve(Bulletin bulletin)
+		{
+			bulletinToRetrieve = bulletin;
 		}
 		
 		public Vector downloadFieldOfficeAccountIds(MartusCrypto security,
@@ -306,10 +321,39 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 				}
 			}
 		}
+		
+		
 
+		public File retrieveBulletin(UniversalId uid, MartusCrypto security,
+				int chunkSize, ProgressMeterInterface progressMeter)
+				throws IOException, FileNotFoundException,
+				MartusSignatureException, ServerErrorException,
+				InvalidBase64Exception
+		{
+			if(!uid.equals(bulletinToRetrieve.getUniversalId()))
+				throw new ServerErrorException();
+			File tempDirectory = createTempDirectory();
+
+			ClientFileDatabase db = new ClientFileDatabase(tempDirectory, security);
+			File bulletinZipFile = null;
+			try
+			{
+				db.initialize();
+				BulletinSaver.saveToClientDatabase(bulletinToRetrieve, db, true, security);
+				bulletinZipFile = createTempFileFromName("$$$TestBulletinWrapperZipFile");
+				BulletinZipUtilities.exportBulletinPacketsFromDatabaseToZipFile(db, bulletinToRetrieve.getDatabaseKeyForLocalId(bulletinToRetrieve.getLocalId()), bulletinZipFile, security);
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+			return bulletinZipFile;
+		}
+		
 		private Vector fieldOfficeAccountIds;
 		private HashMap draftBulletins;
 		private HashMap sealedBulletins;
+		private Bulletin bulletinToRetrieve;
 	}
 	
 	public void testGetListOfAllFieldOfficeBulletinIdsOnServer() throws Exception
@@ -338,22 +382,22 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		String draftBulletinFO1LocalId = "Draft bulletin Field Office 1";
 		Vector fieldOffice1DraftBulletins = new Vector();
 		fieldOffice1DraftBulletins.add(draftBulletinFO1LocalId);
-		mockGateway.setDraftBulletins(fieldOffice1, fieldOffice1DraftBulletins);
+		mockGateway.setTestDraftBulletinIdsToReturn(fieldOffice1, fieldOffice1DraftBulletins);
 
 		String sealed1BulletinFO1LocalId = "Sealed 1 bulletin Field Office 1";
 		String sealed2BulletinFO1LocalId = "Sealed 2 bulletin Field Office 1";
 		Vector fieldOffice1SealedBulletins = new Vector();
 		fieldOffice1SealedBulletins.add(sealed1BulletinFO1LocalId);
 		fieldOffice1SealedBulletins.add(sealed2BulletinFO1LocalId);
-		mockGateway.setSealedBulletins(fieldOffice1, fieldOffice1SealedBulletins);
+		mockGateway.setTestSealedBulletinIdsToReturn(fieldOffice1, fieldOffice1SealedBulletins);
 		
 		Vector fieldOffice2HasNoDraftBulletins = new Vector();
-		mockGateway.setDraftBulletins(fieldOffice2, fieldOffice2HasNoDraftBulletins);
+		mockGateway.setTestDraftBulletinIdsToReturn(fieldOffice2, fieldOffice2HasNoDraftBulletins);
 
 		String sealed1BulletinFO2LocalId = "Sealed 1 bulletin Field Office 2";
 		Vector fieldOffice2SealedBulletins = new Vector();
 		fieldOffice2SealedBulletins.add(sealed1BulletinFO2LocalId);
-		mockGateway.setSealedBulletins(fieldOffice2, fieldOffice2SealedBulletins);
+		mockGateway.setTestSealedBulletinIdsToReturn(fieldOffice2, fieldOffice2SealedBulletins);
 
 		List allFieldOfficesBulletinIds = retriever.getAllFieldOfficeBulletinUniversalIds();
 		assertEquals("Should contain 4 bulletins", 4, allFieldOfficesBulletinIds.size());
@@ -378,6 +422,45 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		assertTrue("Should contain this sealed 1 bulletin as well", newBulletinsOnly.contains(bulletinId2));
 		assertTrue("Should contain this sealed bulletin for field office 2 as well", newBulletinsOnly.contains(bulletinId4));
 	}
+	
+	public void testGetBulletin() throws Exception
+	{
+		NetworkInterface networkInterface = ClientSideNetworkGateway.buildNetworkInterface("1.2.3.4", serverSecurity.getPublicKeyString());
+		MockClientSideNetworkGateway mockGateway = new MockClientSideNetworkGateway(networkInterface);
+		
+		ByteArrayInputStream streamIn = new ByteArrayInputStream(streamOut.toByteArray());
+		MartusBulletinRetriever retriever = new MartusBulletinRetriever(streamIn, password );
+		streamIn.close();
+		retriever.initalizeServer("1.2.3.4", "some random public key");
+		retriever.serverNonSSL = new TestServerNetworkInterfaceForNonSSLHandler();
+		retriever.setSSLServerForTests(mockGateway);
+		
+		Bulletin bulletin = new Bulletin(security);
+		String author = "author";
+		String title = "title";
+		String location = "location";
+		String privateData = "private";
+		bulletin.set(BulletinConstants.TAGAUTHOR, author);
+		bulletin.set(BulletinConstants.TAGTITLE, title);
+		bulletin.set(BulletinConstants.TAGLOCATION, location);
+		bulletin.set(BulletinConstants.TAGPRIVATEINFO, privateData);
+		mockGateway.setTestBulletinToRetrieve(bulletin);
+
+		try
+		{
+			retriever.getBulletin(UniversalId.createDummyUniversalId());
+			fail("should have thrown for invalid UId");
+		}
+		catch(ServerErrorException expected)
+		{
+		}
+		MartusBulletinWrapper retrievedBulletin = retriever.getBulletin(bulletin.getUniversalId());
+		assertEquals("Didn't get the correct author?", author, retrievedBulletin.getAuthor());
+		assertEquals("Didn't get the correct title?", title, retrievedBulletin.getTitle());
+		assertEquals("Didn't get the correct location?", location, retrievedBulletin.getLocation());
+		assertEquals("Didn't get the correct private data?", privateData, retrievedBulletin.getPrivateInfo());
+	}
+	
 	
 	private static MartusSecurity security;
 	static MartusSecurity serverSecurity;

@@ -110,11 +110,9 @@ public class MartusBulletinRetriever
 			File bulletinZipFile = serverSLL.retrieveBulletin(uid, security, NetworkInterfaceConstants.MAX_CHUNK_SIZE, null);
 			MartusBulletinWrapper bulletin = new MartusBulletinWrapper(uid, bulletinZipFile, security);
 			return bulletin;
-			
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
 			throw new ServerErrorException(e.getMessage());
 		}
 	}

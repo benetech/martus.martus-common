@@ -64,7 +64,7 @@ public class TestMartusBulletinWrapper extends TestCaseEnhanced
 		bulletin.set(BulletinConstants.TAGLOCATION, location);
 		bulletin.set(BulletinConstants.TAGPRIVATEINFO, privateData);
 		
-		File tempDirectory = File.createTempFile("$$$TestBulletinWrapper", null);
+		File tempDirectory = createTempFileFromName("$$$TestBulletinWrapper");
 		tempDirectory.deleteOnExit();
 		tempDirectory.delete();
 		tempDirectory.mkdirs();
@@ -72,7 +72,7 @@ public class TestMartusBulletinWrapper extends TestCaseEnhanced
 		ClientFileDatabase db = new ClientFileDatabase(tempDirectory, security);
 		db.initialize();
 		BulletinSaver.saveToClientDatabase(bulletin, db, true, security);
-		File bulletinZipFile = File.createTempFile("$$$TestBulletinWrapperZipFile", null);
+		File bulletinZipFile = createTempFileFromName("$$$TestBulletinWrapperZipFile");
 		BulletinZipUtilities.exportBulletinPacketsFromDatabaseToZipFile(db, bulletin.getDatabaseKeyForLocalId(bulletin.getLocalId()), bulletinZipFile, security);
 		
 		MartusBulletinWrapper bulletinWrapper = new MartusBulletinWrapper(bulletin.getUniversalId(), bulletinZipFile, security);
