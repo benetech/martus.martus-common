@@ -29,18 +29,17 @@ package org.martus.common.packet;
 import java.util.Vector;
 
 import org.martus.common.MartusXml;
-import org.martus.util.Base64;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlStringLoader;
 import org.xml.sax.SAXParseException;
 
 
-public class XmlHeaderPacketLoader extends XmlPacketLoader
+public class XmlPacketLoader extends SimpleXmlDefaultLoader
 {
-	public XmlHeaderPacketLoader(BulletinHeaderPacket bhpToFill)
+	public XmlPacketLoader(Packet packetToFill)
 	{
-		super(bhpToFill);
-		bhp = bhpToFill;
+		super(packetToFill.getPacketRootElementName());
+		packet = packetToFill;
 	}
 
 	public SimpleXmlDefaultLoader startElement(String tag)
@@ -68,26 +67,10 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 		
 		try
 		{
-			if(tag.equals(MartusXml.BulletinStatusElementName))
-				bhp.setStatus(value);
-			else if(tag.equals(MartusXml.LastSavedTimeElementName))
-				bhp.setLastSavedTime(Long.parseLong(value));
-			else if(tag.equals(MartusXml.AllPrivateElementName))
-				bhp.setAllPrivateFromXmlTextValue(value);
-			else if(tag.equals(MartusXml.DataPacketIdElementName))
-				bhp.setFieldDataPacketId(value);
-			else if(tag.equals(MartusXml.DataPacketSigElementName))
-				bhp.setFieldDataSignature(Base64.decode(value));
-			else if(tag.equals(MartusXml.PrivateDataPacketIdElementName))
-				bhp.setPrivateFieldDataPacketId(value);
-			else if(tag.equals(MartusXml.PrivateDataPacketSigElementName))
-				bhp.setPrivateFieldDataSignature(Base64.decode(value));
-			else if(tag.equals(MartusXml.PublicAttachmentIdElementName))
-				bhp.addPublicAttachmentLocalId(value);
-			else if(tag.equals(MartusXml.PrivateAttachmentIdElementName))
-				bhp.addPrivateAttachmentLocalId(value);
-			else if(tag.equals(MartusXml.HQPublicKeyElementName))
-				bhp.setHQPublicKey(value);
+			if(tag.equals(MartusXml.PacketIdElementName))
+				packet.setPacketId(value);
+			else if(tag.equals(MartusXml.AccountElementName))
+				packet.setAccountId(value);
 		}
 		catch (Exception e)
 		{
@@ -95,26 +78,19 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 			throw new SAXParseException(e.getMessage(), null);
 		}
 	}
-
+	
 	private Vector getTagsContainingStrings()
 	{
 		if(stringTags == null)
 		{
 			stringTags = new Vector();
-			stringTags.add(MartusXml.BulletinStatusElementName);
-			stringTags.add(MartusXml.LastSavedTimeElementName);
-			stringTags.add(MartusXml.AllPrivateElementName);
-			stringTags.add(MartusXml.DataPacketIdElementName);
-			stringTags.add(MartusXml.DataPacketSigElementName);
-			stringTags.add(MartusXml.PrivateDataPacketIdElementName);
-			stringTags.add(MartusXml.PrivateDataPacketSigElementName);
-			stringTags.add(MartusXml.PublicAttachmentIdElementName);
-			stringTags.add(MartusXml.PrivateAttachmentIdElementName);
-			stringTags.add(MartusXml.HQPublicKeyElementName);
+			stringTags.add(MartusXml.PacketIdElementName);
+			stringTags.add(MartusXml.AccountElementName);
 		}
+		
 		return stringTags;
 	}
 
-	BulletinHeaderPacket bhp;
+	Packet packet;
 	private static Vector stringTags;
 }
