@@ -24,9 +24,9 @@ Boston, MA 02111-1307, USA.
 
 */
 
-package org.martus.common.clientside;
+package org.martus.common.utilities;
 
-import org.martus.common.utilities.MartusFlexidate;
+import org.martus.common.clientside.ChoiceItem;
 
 
 public class DateUtilities

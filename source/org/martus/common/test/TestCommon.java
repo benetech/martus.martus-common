@@ -32,7 +32,7 @@ import org.martus.common.clientside.test.TestChoiceItem;
 import org.martus.common.clientside.test.TestClientSideNetworkHandler;
 import org.martus.common.clientside.test.TestClientSideNetworkHandlerForNonSSL;
 import org.martus.common.clientside.test.TestCurrentUiState;
-import org.martus.common.clientside.test.TestDateUtilities;
+import org.martus.common.utilities.TestDateUtilities;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 

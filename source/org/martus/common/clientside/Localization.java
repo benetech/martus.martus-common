@@ -46,6 +46,7 @@ import java.util.zip.ZipFile;
 
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.utilities.DateUtilities;
 import org.martus.jarverifier.JarVerifier;
 import org.martus.swing.UiLanguageDirection;
 import org.martus.util.UnicodeReader;
