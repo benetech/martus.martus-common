@@ -30,8 +30,10 @@ import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Vector;
 
+import org.martus.common.crypto.MartusDirectCryptoKeyPair;
 import org.martus.common.crypto.MartusJceKeyPair;
 import org.martus.common.crypto.MartusKeyPair;
+import org.martus.util.Base64;
 import org.martus.util.TestCaseEnhanced;
 
 public class TestMartusKeyPair extends TestCaseEnhanced
@@ -44,12 +46,15 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 	protected void setUp() throws Exception
 	{
 		SecureRandom rand = new SecureRandom();
-		objects = new Vector();
-		objects.add(new MartusJceKeyPair(rand));
-	}
 
-	public void testBasics() throws Exception
-	{
+		MartusJceKeyPair jceKeyPair = new MartusJceKeyPair(rand);
+		
+		MartusDirectCryptoKeyPair directKeyPair = new MartusDirectCryptoKeyPair(rand);
+		
+		objects = new Vector();
+		objects.add(jceKeyPair);
+		objects.add(directKeyPair);
+
 		for(int i = 0; i < objects.size(); ++i)
 		{
 			MartusKeyPair p = (MartusKeyPair)objects.get(i);
@@ -57,24 +62,53 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 			
 			p.createRSA(512);
 			assertTrue("has key failed? " + p.getClass().getName(), p.hasKeyPair());
-			
+			String publicKeyString = p.getPublicKeyString();
+			Base64.decode(publicKeyString);
+		}
+//		System.out.println("JCE:");
+//		System.out.println(((RSAPublicKey)jceKeyPair.getPublicKey()).getModulus());
+//		System.out.println(((RSAPublicKey)jceKeyPair.getPublicKey()).getPublicExponent());
+	}
+	
+	public void tearDown() throws Exception
+	{
+		for(int i = 0; i < objects.size(); ++i)
+		{
+			MartusKeyPair p = (MartusKeyPair)objects.get(i);
+			assertTrue("lost key? " + p.getClass().getName(), p.hasKeyPair());
 			p.clear();
 			assertFalse("clear failed? " + p.getClass().getName(), p.hasKeyPair());
 		}
+	}
+
+	public void testBasics() throws Exception
+	{
 	}
 	
 	public void testEncryption() throws Exception
 	{
 		for(int i = 0; i < objects.size(); ++i)
 		{
-			MartusKeyPair p = (MartusKeyPair)objects.get(i);
-			p.createRSA(512);
+			MartusKeyPair encryptor = (MartusKeyPair)objects.get(i);
+			MartusKeyPair self = encryptor;
+			verifyEncryptDecrypt(encryptor, self);
 			
-			byte[] sampleBytes = new byte[] {55, 99, 13, 23, };
-			byte[] encrypted = p.encryptBytes(sampleBytes, p.getPublicKeyString());
-			byte[] decrypted = p.decryptBytes(encrypted);
-			assertTrue("bad decrypt? " + p.getClass().getName(), Arrays.equals(sampleBytes, decrypted));
+// The following test should be valid, but doesn't work yet
+//			int next = (i+1)%objects.size();
+//			MartusKeyPair decryptor = (MartusKeyPair)objects.get(next);
+//			verifyEncryptDecrypt(encryptor, decryptor);
 		}		
+	}
+	
+	private void verifyEncryptDecrypt(MartusKeyPair encryptor, MartusKeyPair decryptor) throws Exception
+	{
+		byte[] sampleBytes = new byte[] {55, 99, 13, 23, };
+		byte[] encrypted = encryptor.encryptBytes(sampleBytes, decryptor.getPublicKeyString());
+		byte[] decrypted = decryptor.decryptBytes(encrypted);
+		String label = " encryptor: " + encryptor.getClass().getName() +
+						" decryptor: " + decryptor.getClass().getName();
+		assertTrue("bad decrypt? " + label, Arrays.equals(sampleBytes, decrypted));
+		
 	}
 	
 	Vector objects;
