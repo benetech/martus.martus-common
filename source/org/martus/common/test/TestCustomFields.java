@@ -30,6 +30,7 @@ import junit.framework.TestCase;
 
 import org.martus.common.CustomFields;
 import org.martus.common.FieldSpec;
+import org.martus.common.GridFieldSpec;
 import org.martus.common.LegacyCustomFields;
 
 
@@ -63,12 +64,21 @@ public class TestCustomFields extends TestCase
 	
 	public void testGrid() throws Exception
 	{
-		String xml = "<CustomFields><Field type='GRID'><FieldSpecDetails><GridSpecDetails><Column><Label>column1</Label></Column><Column><Label>column2</Label></Column></GridSpecDetails></FieldSpecDetails></Field></CustomFields>";
+		String header1 = "column1";
+		String header2 = "column2";
+		String xml = "<CustomFields><Field type='GRID'><GridSpecDetails><Column><Label>" +
+				header1 +
+				"</Label></Column><Column><Label>" +
+				header2 +
+				"</Label></Column></GridSpecDetails></Field></CustomFields>";
 		CustomFields fields = new CustomFields();
 		CustomFields.CustomFieldLoader loader = new CustomFields.CustomFieldLoader("CustomFields", fields);
 		loader.parse(xml);
-		FieldSpec spec = fields.getSpecs()[0];
+		GridFieldSpec spec = (GridFieldSpec)fields.getSpecs()[0];
 		assertEquals(FieldSpec.TYPE_GRID, spec.getType());
+		assertEquals(2, spec.getColumnCount());
+		assertEquals(header1, spec.getColumnLabel(0));
+		assertEquals(header2, spec.getColumnLabel(1));
 		
 	}
 

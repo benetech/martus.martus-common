@@ -159,6 +159,8 @@ public class CustomFields
 		{
 			if(tag.equals("Tag") || tag.equals("Label"))
 				return new SimpleXmlStringLoader(tag);
+			else if(tag.equals(GridFieldSpec.GRID_SPEC_DETAILS_TAG))
+				return new GridFieldSpec.GridSpecDetailsLoader((GridFieldSpec)spec);
 			
 			return super.startElement(tag);
 		}
