@@ -120,12 +120,37 @@ public class BulletinStore
 		DatabaseKey key = new DatabaseKey(uid);
 		return doesBulletinRevisionExist(key);
 	}
-
+	
 	protected boolean doesBulletinRevisionExist(DatabaseKey key)
 	{
 		return getDatabase().doesRecordExist(key);
 	}
 	
+	public boolean hasNewerRevision(UniversalId uid)
+	{
+		Vector leafKeys = scanForLeafKeys();
+		for(int i=0; i < leafKeys.size(); ++i)
+		{
+			DatabaseKey key = (DatabaseKey)leafKeys.get(i);
+			if(!uid.getAccountId().equals(key.getAccountId()))
+				continue;
+			
+			if(!BulletinHeaderPacket.isValidLocalId(key.getLocalId()))
+				continue;
+			try
+			{
+				BulletinHeaderPacket bhp = loadBulletinHeaderPacket(getDatabase(), key, getSignatureVerifier());
+				if(bhp.getHistory().contains(uid.getLocalId()))
+					return true;
+			}
+			catch(Exception nothingWeCanDoAboutIt)
+			{
+			}
+		}
+
+		return false;
+	}
+
 	public void deleteAllData() throws Exception
 	{
 		deleteAllBulletins();
@@ -236,7 +261,7 @@ public class BulletinStore
 		}
 	}
 
-	private void deleteBulletinRevision(UniversalId uidOfAncestor) throws IOException, CryptoException, InvalidPacketException, WrongPacketTypeException, SignatureVerificationException, DecryptionException, UnsupportedEncodingException, NoKeyPairException
+	public void deleteBulletinRevision(UniversalId uidOfAncestor) throws IOException, CryptoException, InvalidPacketException, WrongPacketTypeException, SignatureVerificationException, DecryptionException, UnsupportedEncodingException, NoKeyPairException
 	{
 		DatabaseKey key = DatabaseKey.createSealedKey(uidOfAncestor);
 		BulletinHeaderPacket bhpOfAncestor = loadBulletinHeaderPacket(getDatabase(), key, getSignatureVerifier());

@@ -80,6 +80,15 @@ public class TestBulletinStore extends TestCaseEnhanced
 		super.tearDown();
 	}
     
+    public void testDoesBulletinRevisionExist() throws Exception
+	{
+		Bulletin original = createAndSaveBulletin();
+		Bulletin clone = createAndSaveClone(original);
+		
+		assertFalse("has newer than the clone?", store.hasNewerRevision(clone.getUniversalId()));
+		assertTrue("didn't find the clone?", store.hasNewerRevision(original.getUniversalId()));
+	}
+    
     public void testRemoveBulletinFromStore() throws Exception
 	{
     	Bulletin unrelated = createAndSaveBulletin();
