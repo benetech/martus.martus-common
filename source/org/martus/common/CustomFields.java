@@ -53,6 +53,11 @@ public class CustomFields
 		specs.add(newSpec);
 	}
 	
+	public int count()
+	{
+		return specs.size();
+	}
+	
 	public FieldSpec[] getSpecs()
 	{
 		return (FieldSpec[])specs.toArray(new FieldSpec[0]);

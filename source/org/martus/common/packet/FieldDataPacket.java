@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
 
+import org.martus.common.CustomFields;
 import org.martus.common.FieldSpec;
 import org.martus.common.LegacyCustomFields;
 import org.martus.common.MartusXml;
@@ -60,7 +61,7 @@ public class FieldDataPacket extends Packet
 
 	void setFieldSpecs(FieldSpec[] fieldSpecsToUse)
 	{
-		fieldSpecs = fieldSpecsToUse;
+		fieldSpecs = new CustomFields(fieldSpecsToUse);
 	}
 	
 	void setFieldSpecsFromString(String delimitedFieldSpecs)
@@ -116,19 +117,20 @@ public class FieldDataPacket extends Packet
 
 	public int getFieldCount()
 	{
-		return fieldSpecs.length;
+		return fieldSpecs.count();
 	}
 
 	public FieldSpec[] getFieldSpecs()
 	{
-		return fieldSpecs;
+		return fieldSpecs.getSpecs();
 	}
 
 	public boolean fieldExists(String fieldTag)
 	{
-		for(int f = 0; f < fieldSpecs.length; ++f)
+		FieldSpec[] specs = getFieldSpecs();
+		for(int f = 0; f < specs.length; ++f)
 		{
-			if(fieldSpecs[f].getTag().equals(fieldTag))
+			if(specs[f].getTag().equals(fieldTag))
 				return true;
 		}
 		return false;
@@ -371,7 +373,7 @@ public class FieldDataPacket extends Packet
 	final String packetHeaderTag = "packet";
 
 	private boolean encryptedFlag;
-	private FieldSpec[] fieldSpecs;
+	private CustomFields fieldSpecs;
 	private Map fieldData;
 	private Vector attachments;
 

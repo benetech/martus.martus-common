@@ -37,4 +37,6 @@ public interface MartusConstants
 	public final static int minNumberOfFilesNeededToRecreateSecret = 2;
 	public final static int numberOfFilesInShare = 5;
 	public final String NEWLINE = System.getProperty("line.separator");
+	public static final String deprecatedCustomFieldSpecs = "Error,Config written by a newer version of Martus, upgrade";
+
 }
