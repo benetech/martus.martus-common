@@ -105,6 +105,11 @@ public class MartusBulletinWrapper
 		}
 	}
 	
+	public boolean isAllPrivate()
+	{
+		return bulletin.isAllPrivate();
+	}
+	
 	public String getTitle()
 	{
 		return bulletin.get(BulletinConstants.TAGTITLE);
