@@ -81,7 +81,8 @@ public class TestBulletinZipUtilities extends TestCaseEnhanced {
 
 		Database hqDb = new MockClientDatabase();
 		verifyImportZip(hqDb, key, zip, hqSecurity);
-		
+
+		fileDb.deleteAllData();
 	}
 
 	private void verifyImportZip(Database authorDb, DatabaseKey key, ZipFile zip, MartusCrypto authorSecurity) throws IOException, RecordHiddenException, InvalidPacketException, SignatureVerificationException, WrongAccountException, DecryptionException, DamagedBulletinException, NoKeyPairException

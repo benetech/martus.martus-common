@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.martus.common.clientside.UiBasicLocalization;
+import org.martus.util.TestCaseEnhanced;
 
 public class MockUiLocalization extends UiBasicLocalization
 {
@@ -42,7 +43,7 @@ public class MockUiLocalization extends UiBasicLocalization
 
 	static File createTempDirectory() throws IOException
 	{
-		File directoryToUse = File.createTempFile("$$$MartusLoc", null);
+		File directoryToUse = File.createTempFile("$$$MartusLoc"+TestCaseEnhanced.getCallingTestClass(), null);
 		directoryToUse.deleteOnExit();
 		directoryToUse.delete();
 		directoryToUse.mkdir();
