@@ -30,7 +30,12 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.GridLayout;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -63,9 +68,11 @@ public class UiVirtualKeyboard
 		vKeyboard.setLayout(new GridLayout(rows, columns));
 		for(int i = 0; i < keys.length(); ++i)
 		{
-			JButton key = new JButton(keys.substring(i,i+1));
+			String text = keys.substring(i,i+1);
+			JButton key = new JButton(text);
 			key.setFocusPainted(false);
 			key.addActionListener(updateHandler);
+			key.addMouseListener(new MouseHandler(key));
 			vKeyboard.add(key);
 		}
 
@@ -114,6 +121,35 @@ public class UiVirtualKeyboard
 			passwordField.requestFocus();
 		}
 	}
+	
+	public class MouseHandler implements MouseListener
+	{
+		MouseHandler(JButton button)
+		{
+			owner = button;
+		}
+
+		public void mouseReleased(MouseEvent e)
+		{
+			Point mousePoint = e.getPoint();
+			beepIfReleaseOutsidePressedButton(mousePoint);
+		}
+
+		private void beepIfReleaseOutsidePressedButton(Point mousePoint)
+		{
+			Rectangle ourArea = new Rectangle(owner.getSize());
+			if(!ourArea.contains(mousePoint))
+				Toolkit.getDefaultToolkit().beep();
+		}
+		
+		public void mousePressed(MouseEvent e)	{}
+		public void mouseClicked(MouseEvent e)	{}
+		public void mouseEntered(MouseEvent e)	{}
+		public void mouseExited(MouseEvent e)	{}
+		
+		JButton owner;
+	}
+	
 	VirtualKeyboardHandler handler;
 	String space;
 	String delete;
