@@ -324,6 +324,7 @@ public class Localization extends MiniLocalization
 		defaultLanguageDateFormat.put(RUSSIAN, DateUtilities.DMY_DOT.getCode());
 		defaultLanguageDateFormat.put(THAI, DateUtilities.DMY_SLASH.getCode());
 		defaultLanguageDateFormat.put(ARABIC, DateUtilities.DMY_SLASH.getCode());
+		defaultLanguageDateFormat.put(FARSI, DateUtilities.DMY_SLASH.getCode());
 		return defaultLanguageDateFormat;
 	}
 	
