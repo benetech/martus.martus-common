@@ -66,6 +66,24 @@ public class MartusKeyPair
 		return jceKeyPair;
 	}
 
+	public PrivateKey getPrivateKey()
+	{
+		KeyPair pair = getJceKeyPair();
+		if(pair == null)
+			return null;
+		return pair.getPrivate();
+	}
+	
+	public PublicKey getPublicKey()
+	{
+		KeyPair pair = getJceKeyPair();
+		if(pair == null)
+			return null;
+		return pair.getPublic();
+	}
+
+
+
 	public void clear()
 	{
 		jceKeyPair = null;
@@ -169,6 +187,16 @@ public class MartusKeyPair
 		}
 	
 		return null;
+	}
+	
+	public byte[] getDigestOfPartOfPrivateKey() throws Exception
+	{
+		byte[] privateKey = getJceKeyPair().getPrivate().getEncoded();
+		byte[] quarter = new byte[privateKey.length / 4];
+		for(int i=0; i < quarter.length; ++i)
+			quarter[i] = privateKey[i*4];
+		return MartusCrypto.createDigest(quarter);
+		
 	}
 
 	private void setJceKeyPair(KeyPair jceKeyPair)

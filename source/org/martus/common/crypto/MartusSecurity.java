@@ -167,26 +167,26 @@ public class MartusSecurity extends MartusCrypto
 
 	public String getPublicKeyString()
 	{
-		PublicKey publicKey = getPublicKey();
+		PublicKey publicKey = getKeyPair().getPublicKey();
 		return(getKeyString(publicKey));
 	}
 
 	public String getPrivateKeyString()
 	{
-		PrivateKey privateKey = getPrivateKey();
+		PrivateKey privateKey = getKeyPair().getPrivateKey();
 		return(getKeyString(privateKey));
 	}
 
 	public byte[] createSignatureOfStream(InputStream inputStream) throws
 			MartusSignatureException
 	{
-		return createSignature(getPrivateKey(), inputStream);
+		return createSignature(getKeyPair().getPrivateKey(), inputStream);
 	}
 
 	public boolean verifySignature(InputStream inputStream, byte[] signature) throws
 			MartusSignatureException
 	{
-		return isValidSignatureOfStream(getPublicKey(), inputStream, signature);
+		return isValidSignatureOfStream(getKeyPair().getPublicKey(), inputStream, signature);
 	}
 
 	public boolean isValidSignatureOfStream(String publicKeyString, InputStream inputStream, byte[] signature) throws
@@ -203,7 +203,7 @@ public class MartusSecurity extends MartusCrypto
 			SessionKey sessionKey = createSessionKey();
 			Vector sessionKeyShares = MartusSecretShare.buildShares(sessionKey.getBytes());
 			
-			ByteArrayInputStream in = new ByteArrayInputStream(getKeyPairData(keyPair));
+			ByteArrayInputStream in = new ByteArrayInputStream(keyPair.getKeyPairData());
 			ByteArrayOutputStream encryptedKeypair = new ByteArrayOutputStream();
 			encrypt(in,encryptedKeypair,sessionKey);	
 			encryptedKeypair.close();
@@ -285,7 +285,7 @@ public class MartusSecurity extends MartusCrypto
 			EncryptionException,
 			NoKeyPairException
 	{
-		encrypt(plainStream, cipherStream, sessionKey, getPublicKey());
+		encrypt(plainStream, cipherStream, sessionKey, getKeyPair().getPublicKey());
 	}
 
 	public synchronized void encrypt(InputStream plainStream, OutputStream cipherStream, SessionKey sessionKey, PublicKey publicKey) throws
@@ -515,7 +515,7 @@ public class MartusSecurity extends MartusCrypto
 		NoKeyPairException,
 		DecryptionException
 	{
-		if(getPrivateKey() == null)
+		if(!hasKeyPair())
 			throw new NoKeyPairException();
 		
 		decrypt(cipherStream, plainStream, null);
@@ -617,7 +617,7 @@ public class MartusSecurity extends MartusCrypto
 	{
 		try
 		{
-			sigEngine.initSign(getPrivateKey());
+			sigEngine.initSign(getKeyPair().getPrivateKey());
 		}
 		catch(InvalidKeyException e)
 		{
@@ -699,7 +699,7 @@ public class MartusSecurity extends MartusCrypto
 		}
 	}
 
-	public String createRandomToken()
+	public static String createRandomToken()
 	{
 		byte[] token = new byte[TOKEN_BYTE_COUNT];
 		rand.nextBytes(token);
@@ -718,9 +718,9 @@ public class MartusSecurity extends MartusCrypto
 		RSAPrivateCrtKey sslPrivateKey = (RSAPrivateCrtKey)sunKeyPair.getPrivate();
 
 
-		RSAPublicKey serverPublicKey = (RSAPublicKey)getPublicKey();
-		RSAPrivateCrtKey serverPrivateKey = (RSAPrivateCrtKey)getPrivateKey();
+		RSAPublicKey serverPublicKey = (RSAPublicKey)getKeyPair().getPublicKey();
 
+		RSAPrivateCrtKey serverPrivateKey = (RSAPrivateCrtKey)getKeyPair().getPrivateKey();
 		X509Certificate cert0 = createCertificate(sslPublicKey, sslPrivateKey );
 		X509Certificate cert1 = createCertificate(sslPublicKey, serverPrivateKey);
 		X509Certificate cert2 = createCertificate(serverPublicKey, serverPrivateKey);
@@ -736,27 +736,11 @@ public class MartusSecurity extends MartusCrypto
 
 	// end interface
 
-	public PrivateKey getPrivateKey()
-	{
-		KeyPair pair = getJCEKeyPair();
-		if(pair == null)
-			return null;
-		return pair.getPrivate();
-	}
-
-	public PublicKey getPublicKey()
-	{
-		KeyPair pair = getJCEKeyPair();
-		if(pair == null)
-			return null;
-		return pair.getPublic();
-	}
-
 	public void writeKeyPair(OutputStream outputStream, char[] passPhrase, MartusKeyPair keyPair) throws
 			IOException
 	{
 		byte[] randomSalt = createRandomSalt();
-		byte[] keyPairData = getKeyPairData(keyPair);
+		byte[] keyPairData = keyPair.getKeyPairData();
 		byte[] cipherText = pbeEncrypt(keyPairData, passPhrase, randomSalt);
 		if(cipherText == null)
 			return;
@@ -765,11 +749,6 @@ public class MartusSecurity extends MartusCrypto
 		outputStream.write(randomSalt);
 		outputStream.write(cipherText);
 		outputStream.flush();
-	}
-
-	public byte[] getKeyPairData(MartusKeyPair keyPair) throws IOException
-	{
-		return keyPair.getKeyPairData();
 	}
 
 	public void setKeyPairFromData(byte[] data) throws
@@ -792,13 +771,7 @@ public class MartusSecurity extends MartusCrypto
 		return keyPair;
 	}
 	
-	public KeyPair getJCEKeyPair()
-	{
-		return keyPair.getJceKeyPair();
-	}
-
-
-	public byte[] createRandomSalt()
+	public static byte[] createRandomSalt()
 	{
 		byte[] salt = new byte[SALT_BYTE_COUNT];
 		rand.nextBytes(salt);
@@ -979,13 +952,9 @@ public class MartusSecurity extends MartusCrypto
 
 	public byte[] getDigestOfPartOfPrivateKey() throws CreateDigestException
 	{
-		byte[] privateKey = getPrivateKey().getEncoded();
-		byte[] quarter = new byte[privateKey.length / 4];
-		for(int i=0; i < quarter.length; ++i)
-			quarter[i] = privateKey[i*4];
 		try
 		{
-			return createDigest(quarter);
+			return getKeyPair().getDigestOfPartOfPrivateKey();
 		}
 		catch (Exception e)
 		{

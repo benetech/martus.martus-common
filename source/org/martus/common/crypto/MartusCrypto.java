@@ -159,7 +159,6 @@ public abstract class MartusCrypto
 		throws	DecryptionException;
 
 	// other
-	public abstract String createRandomToken();
 	public abstract KeyManager [] createKeyManagers() throws Exception;
 	public abstract byte[] getSessionKeyCache() throws IOException, NoKeyPairException, EncryptionException, MartusSignatureException;
 	public abstract void setSessionKeyCache(byte[] encryptedCacheBundle) throws IOException, NoKeyPairException, DecryptionException, MartusSignatureException;
