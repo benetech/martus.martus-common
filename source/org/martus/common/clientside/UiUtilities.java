@@ -52,7 +52,7 @@ public class UiUtilities
 		new UiNotifyDlg(parent, title, contents, buttons, tokenReplacement);
 	}
 
-	public static void messageDlg(UiBasicLocalization localization, JFrame parent, String baseTag, String message)
+	public static void messageDlg(UiBasicLocalization localization, JFrame parent, String baseTag, String message, Map tokenReplacement)
 	{
 		String title = localization.getWindowTitle(baseTag);
 		String cause = localization.getFieldLabel("message" + baseTag + "cause");
@@ -60,7 +60,7 @@ public class UiUtilities
 		String[] contents = {cause, "", message};
 		String[] buttons = {ok};
 
-		new UiNotifyDlg(parent, title, contents, buttons);
+		new UiNotifyDlg(parent, title, contents, buttons, tokenReplacement);
 	}
 
 	public static boolean confirmDlg(UiBasicLocalization localization, JFrame parent, String baseTag)
