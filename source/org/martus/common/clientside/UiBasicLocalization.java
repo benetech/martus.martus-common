@@ -98,6 +98,7 @@ public class UiBasicLocalization extends Localization
 		writer.writeln("#  7.  do not translate the words \"Martus\" or \"Benetech\"");
 		writer.writeln("#  8.  do NOT translate \"#S#\" (used for search string entry)");
 		writer.writeln("#  9.  do not translate #L# as is it used to populate lists of values on various dialogs.");
+		writer.writeln("# 10.  do not translate #Title# (used for bulletin title entry)");
 		writer.writeln("#");
 		
 		SortedSet sorted = getAllKeysSorted();
