@@ -124,7 +124,7 @@ public class ClientSideNetworkHandlerUsingXmlRpcForNonSSL implements NetworkInte
 		return true;
 	}
 
-	private static final String MARTUS_SERVER_PING_RESPONSE = "MartusServer";
+	public static final String MARTUS_SERVER_PING_RESPONSE = "MartusServer";
 
 	String server;
 	int[] ports;

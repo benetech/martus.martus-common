@@ -33,6 +33,7 @@ import java.io.InputStream;
 import java.util.Vector;
 import org.martus.common.analyzerhelper.MartusBulletinRetriever.ServerErrorException;
 import org.martus.common.analyzerhelper.MartusBulletinRetriever.ServerPublicCodeDoesNotMatchException;
+import org.martus.common.clientside.ClientSideNetworkHandlerUsingXmlRpcForNonSSL;
 import org.martus.common.clientside.Exceptions.ServerNotAvailableException;
 import org.martus.common.clientside.test.NoServerNetworkInterfaceForNonSSLHandler;
 import org.martus.common.crypto.MartusCrypto;
@@ -98,32 +99,12 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		streamIn.close();
 	}
 	
-	public void testPingServer() throws Exception
-	{
-		ByteArrayInputStream streamIn = new ByteArrayInputStream(streamOut.toByteArray());
-		MartusBulletinRetriever retriever = new MartusBulletinRetriever(streamIn, password );
-		streamIn.close();
-		
-		try
-		{
-			retriever.pingServer();
-			fail("server hasn't been configured yet");
-		}
-		catch(MartusBulletinRetriever.ServerNotConfiguredException expected)
-		{
-		}
-		
-		retriever.initalizeServer("1.2.3.4", "some random public key");
-		retriever.serverNonSSL = new NoServerNetworkInterfaceForNonSSLHandler();
-		assertFalse(retriever.pingServer());
-	}
-	
 	private class TestServerNetworkInterfaceForNonSSLHandler implements NetworkInterfaceForNonSSL
 	{
 
 		public String ping()
 		{
-			return "OK";
+			return ClientSideNetworkHandlerUsingXmlRpcForNonSSL.MARTUS_SERVER_PING_RESPONSE;
 		}
 
 		public Vector getServerInformation()
@@ -146,6 +127,28 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		}
 		
 		public String publicKeyString;
+	}
+	
+	public void testPingServer() throws Exception
+	{
+		ByteArrayInputStream streamIn = new ByteArrayInputStream(streamOut.toByteArray());
+		MartusBulletinRetriever retriever = new MartusBulletinRetriever(streamIn, password );
+		streamIn.close();
+		
+		try
+		{
+			retriever.pingServer();
+			fail("server hasn't been configured yet");
+		}
+		catch(MartusBulletinRetriever.ServerNotConfiguredException expected)
+		{
+		}
+		
+		retriever.initalizeServer("1.2.3.4", "some random public key");
+		retriever.serverNonSSL = new NoServerNetworkInterfaceForNonSSLHandler();
+		assertFalse(retriever.pingServer());
+		retriever.serverNonSSL = new TestServerNetworkInterfaceForNonSSLHandler();
+		assertTrue(retriever.pingServer());
 	}
 	
 	public void testGetServerPublicKey() throws Exception

@@ -82,6 +82,7 @@ public class MartusBulletinRetriever
 		}
 		catch(InvalidBase64Exception e)
 		{
+			e.printStackTrace();
 			throw new ServerErrorException();
 		}
 	}
