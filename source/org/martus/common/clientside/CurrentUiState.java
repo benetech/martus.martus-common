@@ -35,6 +35,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import org.martus.swing.UiLanguageDirection;
 
 public class CurrentUiState implements Serializable
 {
@@ -123,12 +124,19 @@ public class CurrentUiState implements Serializable
 
 	public int getCurrentFolderSplitterPosition()
 	{
-		return currentFolderSplitterPosition;
+		return getNormalizedSplitterPosition(currentLeftToRightFolderSplitterPosition);
 	}
 
-	public void setCurrentFolderSplitterPosition(int currentFolderSplitterPosition)
+	public void setCurrentFolderSplitterPosition(int newFolderSplitterPosition)
 	{
-		this.currentFolderSplitterPosition = currentFolderSplitterPosition;
+		this.currentLeftToRightFolderSplitterPosition = getNormalizedSplitterPosition(newFolderSplitterPosition);
+	}
+
+	private int getNormalizedSplitterPosition(int splitterPosition)
+	{
+		if(!UiLanguageDirection.isRightToLeftLanguage())
+			return splitterPosition;
+		return currentAppDimension.width - splitterPosition;
 	}
 
 	public int getCurrentPreviewSplitterPosition()
@@ -224,7 +232,7 @@ public class CurrentUiState implements Serializable
 			out.writeUTF(currentLanguage);
 
 			out.writeInt(currentPreviewSplitterPosition);
-			out.writeInt(currentFolderSplitterPosition);
+			out.writeInt(currentLeftToRightFolderSplitterPosition);
 
 			out.writeInt(currentAppDimension.height);
 			out.writeInt(currentAppDimension.width);
@@ -270,7 +278,7 @@ public class CurrentUiState implements Serializable
 				if(version > 1)
 				{
 					currentPreviewSplitterPosition = in.readInt();
-					currentFolderSplitterPosition = in.readInt();
+					currentLeftToRightFolderSplitterPosition = in.readInt();
 					if(version > 2)
 					{
 						currentAppDimension.height = in.readInt();
@@ -334,7 +342,7 @@ public class CurrentUiState implements Serializable
 
 	//Version 2
 	protected int currentPreviewSplitterPosition = 100;
-	protected int currentFolderSplitterPosition = 180;
+	protected int currentLeftToRightFolderSplitterPosition = 180;
 
 	//Version 3
 	protected Dimension currentAppDimension;
