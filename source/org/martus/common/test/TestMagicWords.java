@@ -115,7 +115,7 @@ public class TestMagicWords extends TestCaseEnhanced
 		magicWords.loadMagicWords(tempFile);
 		
 		words = magicWords.getInactiveMagicWords();
-		assertEquals("test3", (String) words.get(0));	
+		assertEquals("test3", words.get(0));	
 	}	
 		
 	File tempFile;
