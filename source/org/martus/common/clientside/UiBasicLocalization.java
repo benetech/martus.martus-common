@@ -98,30 +98,14 @@ public class UiBasicLocalization extends Localization
 		}
 	}
 
-	public static void writeWithNewlinesEncoded(UnicodeWriter writer, String thisString)
-		throws IOException
-	{
-		final String NEWLINE = System.getProperty("line.separator");
-		BufferedReader reader = new BufferedReader(new StringReader(thisString));
-		boolean additionalLine = false;
-		while(true)
-		{
-			String thisLine = reader.readLine();
-			if(thisLine == null)
-				break;
-			if(additionalLine)
-				writer.write("\\n");
-			additionalLine = true;
-			writer.write(thisLine);
-		}
-		writer.write(NEWLINE);
-		reader.close();
-	}
-
 	public UiBasicLocalization (File directoryToUse, String[] englishTranslations)
 	{
 		super(directoryToUse);
-		loadTranslations(ENGLISH, englishTranslations);
+		for(int i=0; i < englishTranslations.length; ++i)
+		{
+			String mtfEntry = englishTranslations[i];
+			addEnglishTranslation(mtfEntry);
+		}
 
 		setCurrentDateFormatCode(DateUtilities.MDY_SLASH.getCode());
 	}
@@ -129,36 +113,6 @@ public class UiBasicLocalization extends Localization
 	public String getLabel(String languageCode, String category, String tag)
 	{
 		return getLabel(languageCode, category + ":" + tag);
-	}
-
-	private String getLabel(String languageCode, String key)
-	{
-		LocalizedString entry = getLocalizedString(languageCode, key);
-			
-		if(entry != null)
-			return entry.getText();
-
-		return getDefaultLabel(languageCode, key);
-	}
-
-	private String getDefaultLabel(String languageCode, String key)
-	{
-		String defaultValue = null;
-		if(!languageCode.equals(ENGLISH))
-			defaultValue = getLabel(ENGLISH, key);
-			
-		if(defaultValue == null)
-			defaultValue = key;
-		return "<" + defaultValue + ">";
-	}
-
-	private LocalizedString getLocalizedString(String languageCode, String key)
-	{
-		Map stringMap = getStringMap(languageCode);
-		if(stringMap == null)
-			return null;
-
-		return (LocalizedString)stringMap.get(key);
 	}
 
 	protected ChoiceItem getLanguageChoiceItem(String filename)
@@ -287,8 +241,6 @@ public class UiBasicLocalization extends Localization
 
 	public Vector getAllTranslationStrings(String languageCode)
 	{
-		createStringMap(languageCode);
-	
 		Map englishMap = getStringMap(ENGLISH);
 		Set englishKeys = englishMap.keySet();
 		SortedSet sorted = new TreeSet(englishKeys);
@@ -316,6 +268,24 @@ public class UiBasicLocalization extends Localization
 		}
 	}
 
+	private static void writeWithNewlinesEncoded(UnicodeWriter writer, String thisString)
+		throws IOException
+	{
+		final String NEWLINE = System.getProperty("line.separator");
+		BufferedReader reader = new BufferedReader(new StringReader(thisString));
+		boolean additionalLine = false;
+		while(true)
+		{
+			String thisLine = reader.readLine();
+			if(thisLine == null)
+				break;
+			if(additionalLine)
+				writer.write("\\n");
+			additionalLine = true;
+			writer.write(thisLine);
+		}
+		writer.write(NEWLINE);
+		reader.close();
+	}
 	
-
 }

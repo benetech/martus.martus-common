@@ -37,7 +37,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.Vector;
 
 import org.martus.common.bulletin.Bulletin;
 import org.martus.util.UnicodeReader;
@@ -48,50 +47,21 @@ public class Localization
 	{
 		directory = directoryToUse;
 		languageTranslationsMap = new TreeMap();
-		
-		initalizeDefaultDateFormats();
-	}
-
-	private void initalizeDefaultDateFormats()
-	{
-		defaultLanguageDateFormat = new HashMap();
-		defaultLanguageDateFormat.put(ENGLISH, DateUtilities.getDefaultDateFormatCode());
-		defaultLanguageDateFormat.put(SPANISH, DateUtilities.DMY_SLASH.getCode());
-		defaultLanguageDateFormat.put(RUSSIAN, DateUtilities.DMY_DOT.getCode());
-		defaultLanguageDateFormat.put(THAI, DateUtilities.DMY_SLASH.getCode());
 	}
 	
-	public boolean isRecognizedLanguage(String testLanguageCode)
+	/////////////////////////////////////////////////////////////////
+	// Text-oriented stuff
+	public String getCurrentLanguageCode()
 	{
-		for(int i = 0 ; i < ALL_LANGUAGE_CODES.length; ++i)
-		{
-			if(ALL_LANGUAGE_CODES[i].equals(testLanguageCode))
-				return true;
-		}
-		return false;
+		return currentLanguageCode;
 	}
 
-	public String getDefaultDateFormatForLanguage(String languageCode)
+	public void setCurrentLanguageCode(String newLanguageCode)
 	{
-		if(!defaultLanguageDateFormat.containsKey(languageCode))
-			return DateUtilities.getDefaultDateFormatCode();
-		return (String)defaultLanguageDateFormat.get(languageCode);
+		loadTranslationFile(newLanguageCode);
+		currentLanguageCode = newLanguageCode;
 	}
-
-	public String getCurrentDateFormatCode()
-	{
-		return currentDateFormat;
-	}
-
-
-
-	public void setCurrentDateFormatCode(String code)
-	{
-		currentDateFormat = code;
-	}
-
-
-
+	
 	public boolean isLanguageLoaded(String languageCode)
 	{
 		if(getStringMap(languageCode) == null)
@@ -100,14 +70,34 @@ public class Localization
 		return true;
 	}
 
-
+	protected String getLabel(String languageCode, String key)
+	{
+		LocalizedString entry = null;
+		Map stringMap = getStringMap(languageCode);
+		if(stringMap != null)
+			entry = (LocalizedString)stringMap.get(key);
+			
+		if(entry != null)
+			return entry.getText();
+	
+		String defaultValue = null;
+		if(!languageCode.equals(ENGLISH))
+			defaultValue = getLabel(ENGLISH, key);
+			
+		if(defaultValue == null)
+			defaultValue = key;
+		return "<" + defaultValue + ">";
+	}
 
 	public Map getStringMap(String languageCode)
 	{
 		return (Map)languageTranslationsMap.get(languageCode);
 	}
 
-
+	protected void addEnglishTranslation(String mtfEntry)
+	{
+		addTranslation(ENGLISH, mtfEntry);
+	}
 
 	public void addTranslation(String languageCode, String mtfEntryText)
 	{
@@ -144,7 +134,7 @@ public class Localization
 		return value;
 	}
 
-	public Map createStringMap(String languageCode)
+	private Map createStringMap(String languageCode)
 	{
 		if(!isLanguageLoaded(languageCode))
 			languageTranslationsMap.put(languageCode, new TreeMap());
@@ -152,28 +142,28 @@ public class Localization
 		return getStringMap(languageCode);
 	}
 
-
-
-	public String getLanguageCodeFromFilename(String filename)
+	public void loadTranslations(String languageCode, InputStream inputStream)
 	{
-		if(!isLanguageFile(filename))
-			return "";
-	
-		int codeStart = filename.indexOf('-') + 1;
-		int codeEnd = filename.indexOf('.');
-		return filename.substring(codeStart, codeEnd);
+		try
+		{
+			UnicodeReader reader = new UnicodeReader(inputStream);
+			while(true)
+			{
+				String mtfEntry = reader.readLine();
+				if(mtfEntry == null)
+					break;
+				addTranslation(languageCode, mtfEntry);
+			}
+			reader.close();
+		}
+		catch (IOException e)
+		{
+			System.out.println("BulletinDisplay.loadTranslations " + e);
+		}
 	}
 
-
-
-	public static boolean isLanguageFile(String filename)
-	{
-		String filenameLower = filename.toLowerCase();
-		String martusLanguageFilePrefixLower = MARTUS_LANGUAGE_FILE_PREFIX.toLowerCase();
-		String martusLanguageFileSufixLower = MARTUS_LANGUAGE_FILE_SUFFIX.toLowerCase();
-		return (filenameLower.startsWith(martusLanguageFilePrefixLower) && filenameLower.endsWith(martusLanguageFileSufixLower));
-	}
-
+	/////////////////////////////////////////////////////////////////
+	// File-oriented stuff
 	public void loadTranslationFile(String languageCode)
 	{
 		InputStream transStream = null;
@@ -202,56 +192,51 @@ public class Localization
 		}
 	}
 
-
-	protected void loadTranslations(String languageCode, String[] englishTranslations)
+	public static String getLanguageCodeFromFilename(String filename)
 	{
-		createStringMap(languageCode);
-		for(int i=0; i < englishTranslations.length; ++i)
-			addTranslation(languageCode, englishTranslations[i]);
+		if(!isLanguageFile(filename))
+			return "";
+	
+		int codeStart = filename.indexOf('-') + 1;
+		int codeEnd = filename.indexOf('.');
+		return filename.substring(codeStart, codeEnd);
 	}
 
-	public void loadTranslations(String languageCode, InputStream inputStream)
+	public static boolean isLanguageFile(String filename)
 	{
-		Vector mtfStrings = new Vector();
-		try
+		String filenameLower = filename.toLowerCase();
+		String martusLanguageFilePrefixLower = MARTUS_LANGUAGE_FILE_PREFIX.toLowerCase();
+		String martusLanguageFileSufixLower = MARTUS_LANGUAGE_FILE_SUFFIX.toLowerCase();
+		return (filenameLower.startsWith(martusLanguageFilePrefixLower) && filenameLower.endsWith(martusLanguageFileSufixLower));
+	}
+
+
+	/////////////////////////////////////////////////////////////////
+	// Language-oriented stuff
+
+	public static boolean isRecognizedLanguage(String testLanguageCode)
+	{
+		for(int i = 0 ; i < ALL_LANGUAGE_CODES.length; ++i)
 		{
-			UnicodeReader reader = new UnicodeReader(inputStream);
-			String translation;
-			while(true)
-			{
-				translation = reader.readLine();
-				if(translation == null)
-					break;
-				mtfStrings.add(translation);
-			}
-			reader.close();
+			if(ALL_LANGUAGE_CODES[i].equals(testLanguageCode))
+				return true;
 		}
-		catch (IOException e)
-		{
-			System.out.println("BulletinDisplay.loadTranslations " + e);
-		}
-
-		String[] strings = new String[mtfStrings.size()];
-		mtfStrings.toArray(strings);
-		loadTranslations(languageCode, strings);
+		return false;
 	}
 
 
 
-	public String getCurrentLanguageCode()
+	/////////////////////////////////////////////////////////////////
+	// Date-oriented stuff
+	public String getCurrentDateFormatCode()
 	{
-		return currentLanguageCode;
+		return currentDateFormat;
 	}
 
-
-
-	public void setCurrentLanguageCode(String newLanguageCode)
+	public void setCurrentDateFormatCode(String code)
 	{
-		loadTranslationFile(newLanguageCode);
-		currentLanguageCode = newLanguageCode;
+		currentDateFormat = code;
 	}
-
-
 
 	public String convertStoredDateToDisplay(String storedDate)
 	{
@@ -294,11 +279,29 @@ public class Localization
 		return result;
 	}
 
+	private static Map getDefaultDateFormats()
+	{
+		Map defaultLanguageDateFormat = new HashMap();
+		defaultLanguageDateFormat.put(ENGLISH, DateUtilities.getDefaultDateFormatCode());
+		defaultLanguageDateFormat.put(SPANISH, DateUtilities.DMY_SLASH.getCode());
+		defaultLanguageDateFormat.put(RUSSIAN, DateUtilities.DMY_DOT.getCode());
+		defaultLanguageDateFormat.put(THAI, DateUtilities.DMY_SLASH.getCode());
+		return defaultLanguageDateFormat;
+	}
+	
+	public static String getDefaultDateFormatForLanguage(String languageCode)
+	{
+		Map defaultLanguageDateFormat = getDefaultDateFormats();
+		if(!defaultLanguageDateFormat.containsKey(languageCode))
+			return DateUtilities.getDefaultDateFormatCode();
+		return (String)defaultLanguageDateFormat.get(languageCode);
+	}
+	
+
 	public File directory;
 	public Map languageTranslationsMap;
 	public String currentLanguageCode;
 	public String currentDateFormat;
-	HashMap defaultLanguageDateFormat;
 
 	public static final String UNUSED_TAG = "";
 	public static final String MARTUS_LANGUAGE_FILE_PREFIX = "Martus-";
