@@ -84,7 +84,7 @@ public class UiBasicLocalization extends Localization
 		writer.writeln("#      both english \"and\"/\"or\" and the translations of those keywords for");
 		writer.writeln("#      bulletin searching, since for some languages keyboards are not available");
 		writer.writeln("#      to all users in those alphabets. So please translate the following for the");
-		writer.writeln("#      first sentence: \"When searching forbulletins you can add key words either");
+		writer.writeln("#      first sentence: \"When searching for bulletins you can add key words either");
 		writer.writeln("#      in english or the-language-you-are-translating (or/or-translated,");
 		writer.writeln("#      and/and-translated) between multiple search term words");
 		writer.writeln("#      (e.g. prison or jail, prison and assault).");
