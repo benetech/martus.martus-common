@@ -26,6 +26,8 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.clientside;
 
+import org.martus.common.utilities.MartusFlexidate;
+
 
 public class DateUtilities
 {
@@ -56,6 +58,22 @@ public class DateUtilities
 			DateUtilities.DMY_SLASH,
 			DateUtilities.DMY_DOT
 		};
+	}
+
+
+	public static String getStartDateRange(String storedFlexidateString)
+	{
+		MartusFlexidate mfd = MartusFlexidate.createFromMartusDateString(storedFlexidateString);
+		return MartusFlexidate.toStoredDateFormat(mfd.getBeginDate());
+	}
+
+
+	public static String getEndDateRange(String storedFlexidateString)
+	{
+		MartusFlexidate mfd = MartusFlexidate.createFromMartusDateString(storedFlexidateString);
+		if (!mfd.hasDateRange())
+			return "";
+		return MartusFlexidate.toStoredDateFormat(mfd.getEndDate());
 	}
 
 
