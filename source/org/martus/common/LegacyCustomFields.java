@@ -68,9 +68,9 @@ public class LegacyCustomFields
 	
 	public static FieldSpec createFromLegacy(String legacyDescription)
 	{
-		String extractedTag = LegacyCustomFields.extractFieldSpecElement(legacyDescription, LegacyCustomFields.TAG_ELEMENT_NUMBER);
-		String extractedLabel = LegacyCustomFields.extractFieldSpecElement(legacyDescription, LegacyCustomFields.LABEL_ELEMENT_NUMBER);
-		String extractedUnknown = LegacyCustomFields.extractFieldSpecElement(legacyDescription, LegacyCustomFields.UNKNOWN_ELEMENT_NUMBER);
+		String extractedTag = extractFieldSpecElement(legacyDescription, TAG_ELEMENT_NUMBER);
+		String extractedLabel = extractFieldSpecElement(legacyDescription, LABEL_ELEMENT_NUMBER);
+		String extractedUnknown = extractFieldSpecElement(legacyDescription, UNKNOWN_ELEMENT_NUMBER);
 		boolean extractedHasUnknown = false;
 		if(!extractedUnknown.equals(""))
 		{
