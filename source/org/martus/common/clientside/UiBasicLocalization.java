@@ -103,6 +103,16 @@ public class UiBasicLocalization extends Localization
 		writer.writeln("# 12.  do not translate \"#I#\" (used for bulletin details: Bulletin ID)");
 		writer.writeln("# 13.  do not translate \"#H#\" (used for bulletin details: Headquarter entries)");
 		writer.writeln("# 14.  do not translate \"#NumberOfHQs#\" in various dialogs");
+		writer.writeln("# 15.  Leave standard field tags in English in CreateCustomFieldsHelp1 and");
+		writer.writeln("#      CreateCustomFieldsHelp2, but put translation in parentheses after");
+		writer.writeln("#      english : e.g.  'author' (autor), so users know what they refer to");
+		writer.writeln("# 16.  Leave field types in English in CreateCustomFieldsHelp2 (e.g. BOOLEAN, ");
+		writer.writeln("#      DATE), but put translation in parentheses after english, so users know");
+		writer.writeln("#      what they refer to."); 
+		writer.writeln("# 17.  Leave field types in English in CreateCustomFieldsHelp3 examples ");
+		writer.writeln("#      (e.g. BOOLEAN, DATE), so users know what they refer to");
+
+		
 		writer.writeln("#");
 		
 		SortedSet sorted = getAllKeysSorted();
