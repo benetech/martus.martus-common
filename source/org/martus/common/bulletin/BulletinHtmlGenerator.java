@@ -29,13 +29,12 @@ package org.martus.common.bulletin;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-//import org.martus.client.swingui.fields.UiFlexiDateViewer;
 import org.martus.common.FieldSpec;
 import org.martus.common.GridData;
 import org.martus.common.GridFieldSpec;
 import org.martus.common.MartusUtilities;
+import org.martus.common.MiniLocalization;
 import org.martus.common.StandardFieldSpecs;
-import org.martus.common.clientside.UiBasicLocalization;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.ReadableDatabase;
 import org.martus.common.database.Database.RecordHiddenException;
@@ -46,12 +45,12 @@ import org.martus.swing.UiLanguageDirection;
 public class BulletinHtmlGenerator
 {
 	
-	public BulletinHtmlGenerator(UiBasicLocalization localizationToUse)
+	public BulletinHtmlGenerator(MiniLocalization localizationToUse)
 	{
 		this(80, localizationToUse);
 	}
 	
-	public BulletinHtmlGenerator(int widthToUse, UiBasicLocalization localizationToUse)
+	public BulletinHtmlGenerator(int widthToUse, MiniLocalization localizationToUse)
 	{
 		width = widthToUse;
 		localization = localizationToUse;
@@ -346,7 +345,7 @@ public class BulletinHtmlGenerator
 	}
 
 	int width;
-	UiBasicLocalization localization;
+	MiniLocalization localization;
 	Bulletin bulletin;
 
 	private static final String TABLE_HEADER = "th";

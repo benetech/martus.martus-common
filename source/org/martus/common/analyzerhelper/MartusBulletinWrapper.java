@@ -55,7 +55,7 @@ public class MartusBulletinWrapper
 		try
 		{
 			localization  = new UiBasicLocalization(getHomeDirectory(), EnglishCommonStrings.strings);	
-			localization.currentLanguageCode = Localization.ENGLISH;			
+			localization.setCurrentLanguageCode(Localization.ENGLISH);			
 			
 			tempDirectory = File.createTempFile("$$$BulletinWrapperDB", null);
 			tempDirectory.deleteOnExit();

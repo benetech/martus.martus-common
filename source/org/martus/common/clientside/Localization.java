@@ -30,83 +30,42 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
-import org.martus.common.bulletin.Bulletin;
+import org.martus.common.MiniLocalization;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.utilities.DateUtilities;
 import org.martus.jarverifier.JarVerifier;
-import org.martus.swing.UiLanguageDirection;
 import org.martus.util.UnicodeReader;
 import org.martus.util.inputstreamwithseek.ZipEntryInputStreamWithSeekThatClosesZipFile;
 
 
-public class Localization
+public class Localization extends MiniLocalization
 {
 	public Localization(File directoryToUse)
 	{
+		super();
 		directory = directoryToUse;
 		includeOfficialLanguagesOnly = true;
-		textResources = new TreeMap();
-		rightToLeftLanguages = new Vector();
 	}
 	
 	/////////////////////////////////////////////////////////////////
 	// Text-oriented stuff
-	public String getCurrentLanguageCode()
-	{
-		return currentLanguageCode;
-	}
-
 	public void setCurrentLanguageCode(String newLanguageCode)
 	{
 		loadTranslationFile(newLanguageCode);
-		currentLanguageCode = newLanguageCode;
-		if(isRightToLeftLanguage())
-			UiLanguageDirection.setDirection(UiLanguageDirection.RIGHT_TO_LEFT);
-		else
-			UiLanguageDirection.setDirection(UiLanguageDirection.LEFT_TO_RIGHT);
+		super.setCurrentLanguageCode(newLanguageCode);
 	}
 	
-	protected String getLabel(String languageCode, String key)
-	{
-		Map availableTranslations = getAvailableTranslations(key);
-		if(availableTranslations == null)
-			return formatAsUntranslated(key);
-
-		String translatedText = (String)availableTranslations.get(languageCode);
-		if(translatedText != null)
-			return translatedText;
-
-		String englishText = (String)availableTranslations.get(ENGLISH);
-		if(englishText == null)
-			System.out.println("Error, probably an invalid Martus-en.mtf file in C:\\Martus, try removing this file.");
-		return formatAsUntranslated(englishText);
-	}
-	
-	protected String getMtfEntry(String languageCode, String key)
+	public String getMtfEntry(String languageCode, String key)
 	{
 		String value = getLabel(languageCode, key);
 		String hash = getHashOfEnglish(key);
 		value = value.replaceAll("\\n", "\\\\n");
 		return "-" + hash + "-" + key + "=" + value;
-	}
-
-	protected void addEnglishTranslation(String mtfEntry)
-	{
-		addTranslation(ENGLISH, mtfEntry);
 	}
 
 	public void addTranslation(String languageCode, String mtfEntryText)
@@ -126,7 +85,7 @@ public class Localization
 		if(mtfEntryText.indexOf('=') < 0)
 			return;
 		
-		String key = extractKeyFromMtfEntry(mtfEntryText);
+		String key = extractKeyFromEntry(mtfEntryText);
 		Map availableTranslations = getAvailableTranslations(key);
 		if(availableTranslations == null)
 		{
@@ -136,14 +95,14 @@ public class Localization
 			textResources.put(key, availableTranslations);
 		}
 		
-		String translatedText = extractValueFromMtfEntry(mtfEntryText);
+		String translatedText = extractValueFromEntry(mtfEntryText);
 		String hash = extractHashFromMtfEntry(mtfEntryText);
 		if(hash != null && !hash.equals(getHashOfEnglish(key)))
 			translatedText = formatAsUntranslated(translatedText);
 		availableTranslations.put(languageCode, translatedText);
 	}
 	
-	private String extractKeyFromMtfEntry(String mtfEntryText)
+	public String extractKeyFromEntry(String mtfEntryText)
 	{
 		int keyStart = HASH_LENGTH + 2;
 		if(!mtfEntryText.startsWith("-"))
@@ -155,16 +114,7 @@ public class Localization
 		return mtfEntryText.substring(keyStart, splitAt);
 	}
 	
-	private String extractValueFromMtfEntry(String mtfEntryText)
-	{
-		int keyEnd = mtfEntryText.indexOf('=');
-		if(keyEnd < 0)
-			return "";
-		
-		String value = mtfEntryText.substring(keyEnd+1);
-		value = value.replaceAll("\\\\n", "\n");
-		return value;
-	}
+	
 
 	private String extractHashFromMtfEntry(String mtfEntryText)
 	{
@@ -174,7 +124,7 @@ public class Localization
 		return mtfEntryText.substring(1, HASH_LENGTH + 1);
 	}
 	
-	public void loadTranslations(String languageCode, InputStream inputStream)
+	public boolean loadTranslations(String languageCode, InputStream inputStream)
 	{
 		try
 		{
@@ -191,28 +141,11 @@ public class Localization
 		catch (IOException e)
 		{
 			System.out.println("BulletinDisplay.loadTranslations " + e);
+			return false;
 		}
+		return true;
 	}
 	
-	protected SortedSet getAllKeysSorted()
-	{
-		Set allKeys = textResources.keySet();
-		SortedSet sorted = new TreeSet(allKeys);
-		return sorted;
-	}
-
-	private Map getAvailableTranslations(String key)
-	{
-		return (Map)textResources.get(key);
-	}
-
-	private String formatAsUntranslated(String value)
-	{
-		if(value.startsWith("<"))
-			return value;
-		return "<" + value + ">";
-	}
-
 	public String getHashOfEnglish(String key)
 	{
 		return MartusCrypto.getHexDigest(getLabel(ENGLISH, key)).substring(0,HASH_LENGTH);
@@ -252,6 +185,7 @@ public class Localization
 		catch (IOException e)
 		{
 			System.out.println("Localization.loadTranslationFile " + e);
+			return;
 		}
 		finally
 		{
@@ -355,7 +289,7 @@ public class Localization
 	
 	public boolean isCurrentTranslationOfficial()
 	{
-		return isOfficialTranslation(currentLanguageCode);
+		return isOfficialTranslation(getCurrentLanguageCode());
 	}
 	
 	public boolean isOfficialTranslation(String languageCode)
@@ -382,106 +316,6 @@ public class Localization
 		return (JarVerifier.verify(translationFile, false) == JarVerifier.JAR_VERIFIED_TRUE);
 	}
 	
-	private boolean isRightToLeftLanguage()
-	{
-		return rightToLeftLanguages.contains(currentLanguageCode);
-	}
-	
-	public void addRightToLeftLanguage(String languageCode)
-	{
-		if(rightToLeftLanguages.contains(languageCode))
-			return;
-		rightToLeftLanguages.add(languageCode);
-	}
-
-	/////////////////////////////////////////////////////////////////
-	// Date-oriented stuff
-	public String getCurrentDateFormatCode()
-	{
-		return currentDateFormat;
-	}
-
-	public void setCurrentDateFormatCode(String code)
-	{
-		currentDateFormat = code;
-	}
-
-	public String convertStoredDateToDisplay(String storedDate)
-	{
-		DateFormat dfStored = Bulletin.getStoredDateFormat();
-		DateFormat dfDisplay = new SimpleDateFormat(getCurrentDateFormatCode());
-		String result = "";
-		try
-		{
-			Date d = dfStored.parse(storedDate);
-			result = dfDisplay.format(d);
-		}
-		catch(ParseException e)
-		{
-			// unparsable dates simply become blank strings,
-			// so we don't want to do anything for this exception
-			//System.out.println(e);
-		}
-		return result;
-	}
-	
-	
-	static public class NoDateSeparatorException extends Exception{};
-	
-	
-	private String reverseDate(String dateToReverse)
-	{
-		StringBuffer reversedDate= new StringBuffer();
-		try
-		{
-			char dateSeparator = UiBasicLocalization.getDateSeparator(dateToReverse);
-			int beginningIndex = dateToReverse.indexOf(dateSeparator);
-			int endingIndex = dateToReverse.lastIndexOf(dateSeparator);
-			String dateField1 = dateToReverse.substring(0, beginningIndex);
-			String dateField2 = dateToReverse.substring(beginningIndex+1, endingIndex);
-			String dateField3 = dateToReverse.substring(endingIndex+1);
-			reversedDate.append(dateField3);
-			reversedDate.append(dateSeparator);
-			reversedDate.append(dateField2);
-			reversedDate.append(dateSeparator);
-			reversedDate.append(dateField1);
-			return reversedDate.toString();
-		}
-		catch(NoDateSeparatorException e)
-		{
-			return dateToReverse;
-		}
-	}
-	
-	public String convertStoredDateToDisplayReverseIfNecessary(String date)
-	{
-		String displayDate = convertStoredDateToDisplay(date);
-		if(UiLanguageDirection.isRightToLeftLanguage())
-			return reverseDate(displayDate);
-		return displayDate;
-	}
-	
-	public String convertStoredDateTimeToDisplay(String storedDate)
-	{		
-		DateFormat dfStored = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
-		DateFormat dfDisplay = new SimpleDateFormat(getCurrentDateFormatCode());
-		String result = "";
-		try
-		{
-			Date date = dfStored.parse(storedDate);
-			String time = DateFormat.getTimeInstance(DateFormat.SHORT).format(date);		
-			result = dfDisplay.format(date)+" "+time;
-		}
-		catch(ParseException e)
-		{
-			// unparsable dates simply become blank strings,
-			// so we don't want to do anything for this exception
-			//System.out.println(e);
-		}
-	
-		return result;
-	}
-
 	private static Map getDefaultDateFormats()
 	{
 		Map defaultLanguageDateFormat = new HashMap();
@@ -502,32 +336,16 @@ public class Localization
 	}
 
 	public File directory;
-	public Map textResources;
-	public String currentLanguageCode;
-	public String currentDateFormat;
 
+	public static final int HASH_LENGTH  = 4;
 	public static final String UNUSED_TAG = "";
 	public static final String MARTUS_LANGUAGE_FILE_PREFIX = "Martus-";
+
 	public static final String MARTUS_LANGUAGE_FILE_SUFFIX = ".mtf";
 	public static final String MARTUS_LANGUAGE_PACK_SUFFIX = ".mlp";
 	public static final String MTF_COMMENT_FLAG = "#";
 	public static final String MTF_RIGHT_TO_LEFT_LANGUAGE_FLAG = "!right-to-left";
 	
-	public static final int HASH_LENGTH = 4;
-	
-	public static final String LANGUAGE_OTHER = "?";
-	public static final String ENGLISH = "en";
-	public static final String FRENCH = "fr";
-	public static final String SPANISH = "es";
-	public static final String RUSSIAN = "ru";
-	public static final String THAI = "th";
-	public static final String ARABIC = "ar";
-	public static final String[] ALL_LANGUAGE_CODES = {
-				LANGUAGE_OTHER, ENGLISH, ARABIC,
-				"az", "bg", "bn", "km","my","zh", "nl", "eo", "fa", FRENCH, "de","gu","ha","he","hi","hu",
-				"it", "ja","jv","kn","kk","ky","ko","ml","mr","ne","or","pa","ps","pl","pt","ro",RUSSIAN,"sr",
-				"sr", "sd","si",SPANISH,"ta","tg","te",THAI,"tr","tk","uk","ur","uz","vi"};
-	public Vector rightToLeftLanguages;
 	public boolean includeOfficialLanguagesOnly;
 	
 }
