@@ -38,6 +38,7 @@ import org.martus.common.bulletin.BulletinZipUtilities;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusCrypto.CryptoException;
 import org.martus.common.crypto.MartusCrypto.DecryptionException;
+import org.martus.common.crypto.MartusCrypto.NoKeyPairException;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.FileDatabase.MissingAccountMapException;
@@ -206,7 +207,6 @@ public class BulletinStore
 	public synchronized void removeBulletinFromStore(Bulletin b) throws IOException
 	{
 		MartusCrypto crypto = getSignatureVerifier();
-		BulletinHeaderPacket bhp = b.getBulletinHeaderPacket();
 		Vector history = b.getHistory();
 		try
 		{
@@ -214,15 +214,24 @@ public class BulletinStore
 			{
 				String localIdOfAncestor = (String)history.get(i);
 				UniversalId uidOfAncestor = UniversalId.createFromAccountAndLocalId(b.getAccount(), localIdOfAncestor);
-				
+				deleteBulletinRevision(uidOfAncestor);
 			}
-			deleteBulletinRevisionFromDatabase(bhp, getDatabase(), crypto);
+
+			BulletinHeaderPacket bhpMain = b.getBulletinHeaderPacket();
+			deleteBulletinRevisionFromDatabase(bhpMain, getDatabase(), crypto);
 		}
 		catch(Exception e)
 		{
 			//e.printStackTrace();
 			throw new IOException("Unable to delete bulletin");
 		}
+	}
+
+	private void deleteBulletinRevision(UniversalId uidOfAncestor) throws IOException, CryptoException, InvalidPacketException, WrongPacketTypeException, SignatureVerificationException, DecryptionException, UnsupportedEncodingException, NoKeyPairException
+	{
+		DatabaseKey key = DatabaseKey.createSealedKey(uidOfAncestor);
+		BulletinHeaderPacket bhpOfAncestor = loadBulletinHeaderPacket(getDatabase(), key, getSignatureVerifier());
+		deleteBulletinRevisionFromDatabase(bhpOfAncestor, getDatabase(), getSignatureVerifier());
 	}
 
 	public static void deleteBulletinRevisionFromDatabase(BulletinHeaderPacket bhp, Database db, MartusCrypto crypto)

@@ -84,11 +84,10 @@ public class TestBulletinStore extends TestCaseEnhanced
     	Bulletin unrelated = createAndSaveBulletin();
 		assertEquals("didn't create unrelated bulletin?", 1, store.getBulletinCount());
 
-// ENABLE these tests next to continue work on versioning 2004-08-19 kbs
-//		Bulletin original = createAndSaveBulletin();
-//		Bulletin clone = createAndSaveClone(original);
-//		store.removeBulletinFromStore(clone);
-//		assertEquals("didn't delete clone and ancestor?", 1, store.getBulletinCount());
+		Bulletin original = createAndSaveBulletin();
+		Bulletin clone = createAndSaveClone(original);
+		store.removeBulletinFromStore(clone);
+		assertEquals("didn't delete clone and ancestor?", 1, store.getBulletinCount());
 		
 		store.removeBulletinFromStore(unrelated);
 		assertEquals("didn't delete unrelated?", 0, store.getBulletinCount());
