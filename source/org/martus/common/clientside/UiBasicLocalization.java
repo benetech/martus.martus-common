@@ -46,7 +46,6 @@ import org.martus.util.UnicodeWriter;
 
 public class UiBasicLocalization extends Localization
 {
-	public static final String[] AVAILABLE_MTF_LANGUAGE_RESOURCES = {"es", "ru"};
     public void exportTranslations(String languageCode, String versionLabel, UnicodeWriter writer)
 		throws IOException 
 	{

@@ -57,6 +57,7 @@ public class Localization
 		defaultLanguageDateFormat.put(ENGLISH, DateUtilities.getDefaultDateFormatCode());
 		defaultLanguageDateFormat.put(SPANISH, DateUtilities.DMY_SLASH.getCode());
 		defaultLanguageDateFormat.put(RUSSIAN, DateUtilities.DMY_DOT.getCode());
+		defaultLanguageDateFormat.put(THAI, DateUtilities.DMY_SLASH.getCode());
 	}
 	
 	public boolean isRecognizedLanguage(String testLanguageCode)
@@ -88,11 +89,13 @@ public class Localization
 	public static final String ENGLISH = "en";
 	public static final String SPANISH = "es";
 	public static final String RUSSIAN = "ru";
+	public static final String THAI = "th";
+	public static final String[] AVAILABLE_MTF_LANGUAGE_RESOURCES = {SPANISH, RUSSIAN, THAI};
 	public static final String[] ALL_LANGUAGE_CODES = {
 				"?", ENGLISH, "ar",
 				"az", "bn", "my","zh", "nl", "eo", "fa", "fr", "de","gu","ha","he","hi","hu",
 				"it", "ja","jv","kn","kk","ky","ko","ml","mr","or","pa","ps","pl","pt","ro",RUSSIAN,"sr",
-				"sr", "sd","si",SPANISH,"ta","tg","te","th","tr","tk","uk","ur","uz","vi"};
+				"sr", "sd","si",SPANISH,"ta","tg","te",THAI,"tr","tk","uk","ur","uz","vi"};
 	public String getCurrentDateFormatCode()
 	{
 		return currentDateFormat;
@@ -170,9 +173,12 @@ public class Localization
 
 
 
-	protected static boolean isLanguageFile(String filename)
+	public static boolean isLanguageFile(String filename)
 	{
-		return (filename.startsWith(MARTUS_LANGUAGE_FILE_PREFIX) && filename.endsWith(MARTUS_LANGUAGE_FILE_SUFFIX));
+		String filenameLower = filename.toLowerCase();
+		String martusLanguageFilePrefixLower = MARTUS_LANGUAGE_FILE_PREFIX.toLowerCase();
+		String martusLanguageFileSufixLower = MARTUS_LANGUAGE_FILE_SUFFIX.toLowerCase();
+		return (filenameLower.startsWith(martusLanguageFilePrefixLower) && filenameLower.endsWith(martusLanguageFileSufixLower));
 	}
 
 	public void loadTranslationFile(String languageCode)
