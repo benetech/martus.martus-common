@@ -66,4 +66,34 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertEquals("", dateField.getLabel());
 		assertEquals("not date?", FieldSpec.TYPE_DATE, dateField.getType());
 	}
+	
+	public void testToString()
+	{
+		FieldSpec plainField = LegacyCustomFields.createFromLegacy("a,b");
+		String xml = "<Field><Tag>a</Tag><Label>b</Label><Type>STRING</Type></Field>";
+		assertEquals(xml, plainField.toString());
+	}
+	
+	public void testGetTypeString()
+	{
+		assertEquals("STRING", FieldSpec.getTypeString(FieldSpec.TYPE_NORMAL));
+		assertEquals("MULTILINE", FieldSpec.getTypeString(FieldSpec.TYPE_MULTILINE));
+		assertEquals("DATE", FieldSpec.getTypeString(FieldSpec.TYPE_DATE));
+		assertEquals("DATERANGE", FieldSpec.getTypeString(FieldSpec.TYPE_DATERANGE));
+		assertEquals("BOOLEAN", FieldSpec.getTypeString(FieldSpec.TYPE_BOOLEAN));
+		assertEquals("SINGLECHOICE", FieldSpec.getTypeString(FieldSpec.TYPE_CHOICE));
+		assertEquals("UNKNOWN", FieldSpec.getTypeString(-99));
+	}
+	
+	public void testGetTypeCode()
+	{
+		assertEquals(FieldSpec.TYPE_UNKNOWN, FieldSpec.getTypeCode("anything else"));
+		assertEquals(FieldSpec.TYPE_NORMAL, FieldSpec.getTypeCode("STRING"));
+		assertEquals(FieldSpec.TYPE_MULTILINE, FieldSpec.getTypeCode("MULTILINE"));
+		assertEquals(FieldSpec.TYPE_DATE, FieldSpec.getTypeCode("DATE"));
+		assertEquals(FieldSpec.TYPE_DATERANGE, FieldSpec.getTypeCode("DATERANGE"));
+		assertEquals(FieldSpec.TYPE_BOOLEAN, FieldSpec.getTypeCode("BOOLEAN"));
+		assertEquals(FieldSpec.TYPE_CHOICE, FieldSpec.getTypeCode("SINGLECHOICE"));
+		
+	}
 }

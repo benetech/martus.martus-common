@@ -26,6 +26,10 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 
 public class FieldSpec
 {
@@ -40,6 +44,14 @@ public class FieldSpec
 		label = labelToUse;
 		type = typeToUse;
 		hasUnknown = hasUnknownToUse;
+	}
+	
+	public String toString()
+	{
+		return "<Field><Tag>" + getTag() + 
+				"</Tag><Label>" + getLabel() + 
+				"</Label><Type>" + getTypeString(getType()) +
+				"</Type></Field>";
 	}
 
 	public String getTag()
@@ -60,6 +72,41 @@ public class FieldSpec
 	public boolean hasUnknownStuff()
 	{
 		return hasUnknown;
+	}
+	
+	public static String getTypeString(int type)
+	{
+		Map map = getTypeCodesAndStrings();
+		if(!map.containsKey(new Integer(type)))
+			type = TYPE_UNKNOWN;
+		String value = (String)map.get(new Integer(type));
+		return value;		 
+	}
+	
+	public static int getTypeCode(String type)
+	{
+		Map map = getTypeCodesAndStrings();
+		for (Iterator iter = map.entrySet().iterator(); iter.hasNext();)
+		{
+			Map.Entry entry = (Map.Entry)iter.next();
+			String value = (String)entry.getValue();
+			if(value.equals(type))
+				return ((Integer)entry.getKey()).intValue();
+		} 
+		return TYPE_UNKNOWN;
+	}
+	
+	private static Map getTypeCodesAndStrings()
+	{
+		HashMap map = new HashMap();
+		map.put(new Integer(TYPE_NORMAL), "STRING");
+		map.put(new Integer(TYPE_MULTILINE), "MULTILINE");
+		map.put(new Integer(TYPE_DATE), "DATE");
+		map.put(new Integer(TYPE_DATERANGE), "DATERANGE");
+		map.put(new Integer(TYPE_BOOLEAN), "BOOLEAN");
+		map.put(new Integer(TYPE_CHOICE), "SINGLECHOICE");
+		map.put(new Integer(TYPE_UNKNOWN), "UNKNOWN");
+		return map;
 	}
 
 	String tag;

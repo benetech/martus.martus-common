@@ -56,6 +56,7 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestBulletinSaver.class));
 		suite.addTest(new TestSuite(TestBulletinSearcher.class));
 		suite.addTest(new TestSuite(TestBulletinZipImporter.class));
+		suite.addTest(new TestSuite(TestCustomFields.class));
 		suite.addTest(new TestSuite(TestDatabaseKey.class));
 		suite.addTest(new TestSuite(TestFieldDataPacket.class));
 		suite.addTest(new TestSuite(TestFieldSpec.class));
