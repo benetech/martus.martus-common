@@ -54,6 +54,8 @@ public class GridData
 	
 	public void setMaxColumns(int maxColumns) throws AlreadyInitalizedException
 	{
+		if(this.maxColumns == maxColumns)
+			return;
 		if(this.maxColumns != 0)
 			throw new AlreadyInitalizedException();
 		this.maxColumns = maxColumns;

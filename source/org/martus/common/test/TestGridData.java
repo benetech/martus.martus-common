@@ -250,7 +250,7 @@ public class TestGridData extends TestCaseEnhanced
 		assertEquals("column 4 not empty?", "", grid.getValueAt(0,3));
 	}
 	
-	public void testResetColumns()
+	public void testResetColumns() throws Exception
 	{
 		GridData grid = createSampleGrid();
 		try
@@ -261,6 +261,7 @@ public class TestGridData extends TestCaseEnhanced
 		catch (GridData.AlreadyInitalizedException expectedException)
 		{
 		}
+		grid.setMaxColumns(2);
 		
 	}
 
