@@ -27,7 +27,8 @@ package org.martus.common.analyzerhelper;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 import org.martus.common.MartusUtilities.PublicInformationInvalidException;
 import org.martus.common.clientside.ClientSideNetworkGateway;
 import org.martus.common.clientside.ClientSideNetworkHandlerUsingXmlRpcForNonSSL;
@@ -70,12 +71,11 @@ public class MartusBulletinRetriever
 		return getServerPublicKey(serverPublicCode, serverNonSSL);
 	}
 	
-	public Vector getListOfNewBulletinIds(Vector bulletinIdsAlreadyRetrieved) throws ServerNotConfiguredException
+	public List getListOfNewBulletinIds(List bulletinIdsAlreadyRetrieved) throws ServerNotConfiguredException
 	{
-		Vector newBulletins = new Vector();
+		List newBulletins = new ArrayList();
 		if(!isServerAvailable())
 			return newBulletins;
-		
 		
 		return newBulletins;
 	}
