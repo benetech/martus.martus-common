@@ -489,20 +489,6 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		TRACE_END();
 	}
 
-	public void testSignatureInitializeVerify()
-	{
-		TRACE_BEGIN("testVerifySignature");
-		try
-		{
-			security.signatureInitializeVerify("not a valid key string");
-			fail("should have thrown");
-		}
-		catch(MartusSignatureException ignoreThisExpectedException)
-		{
-		}
-		TRACE_END();
-	}
-
 	public void testEncryptWithoutKeyPair() throws Exception
 	{
 		TRACE_BEGIN("testEncryptWithoutKeyPair");

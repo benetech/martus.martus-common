@@ -45,6 +45,7 @@ import org.martus.util.Base64.InvalidBase64Exception;
 public abstract class MartusCrypto
 {
 	// key pair stuff
+	public abstract MartusKeyPair getKeyPair();
 	public abstract boolean hasKeyPair();
 	public abstract void clearKeyPair();
 	public abstract void createKeyPair();
@@ -63,7 +64,7 @@ public abstract class MartusCrypto
 		return sigString;
 	}
 
-	// one-shot signature methods
+	// signature methods
 	public abstract boolean verifySignature(InputStream inputStream, byte[] signature) throws
 		MartusSignatureException;
 	public abstract byte[] createSignatureOfStream(InputStream inputStream) throws
@@ -77,19 +78,8 @@ public abstract class MartusCrypto
 		String sig = (String)dataToTest.remove(dataToTest.size() - 1);
 		return verifySignatureOfVectorOfStrings(dataToTest, signedBy, sig);
 	}
+	public abstract SignatureEngine createSignatureVerifier(String signedByPublicKey) throws Exception;
 		
-	// multi-part signature methods
-	public abstract void signatureInitializeSign() throws
-		MartusSignatureException;
-	public abstract void signatureDigestBytes(byte[] bytes) throws
-			MartusSignatureException;
-	public abstract byte[] signatureGet() throws
-		MartusSignatureException;
-	public abstract void signatureInitializeVerify(String publicKey) throws
-		MartusSignatureException;
-	public abstract boolean signatureIsValid(byte[] sig) throws
-		MartusSignatureException;
-
 	// session keys
 	public abstract SessionKey createSessionKey();
 	public abstract SessionKey encryptSessionKey(SessionKey sessionKey, String publicKey) throws

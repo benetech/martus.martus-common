@@ -44,10 +44,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.Provider;
-import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Security;
-import java.security.Signature;
 import java.security.SignatureException;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
@@ -109,7 +107,6 @@ public class MartusSecurity extends MartusCrypto
 
 		try
 		{
-			sigEngine = Signature.getInstance(SIGN_ALGORITHM, "BC");
 			pbeCipherEngine = Cipher.getInstance(PBE_ALGORITHM, "BC");
 			sessionCipherEngine = Cipher.getInstance(SESSION_ALGORITHM, "BC");
 			sessionKeyGenerator = KeyGenerator.getInstance(SESSION_ALGORITHM_NAME, "BC");
@@ -631,79 +628,11 @@ public class MartusSecurity extends MartusCrypto
 		return new SessionKey(sessionKeyGenerator.generateKey().getEncoded());
 	}
 
-	public synchronized void signatureInitializeSign() throws
-			MartusSignatureException
+	public SignatureEngine createSignatureVerifier(String signedByPublicKey) throws Exception
 	{
-		try
-		{
-			sigEngine.initSign(getKeyPair().getPrivateKey());
-		}
-		catch(InvalidKeyException e)
-		{
-			//System.out.println("signatureInitialize :" + e);
-			throw(new MartusSignatureException());
-		}
+		return SignatureEngine.createVerifier(signedByPublicKey);
 	}
-
-	public synchronized void signatureInitializeVerify(String publicKeyString) throws
-			MartusSignatureException
-	{
-		PublicKey publicKey = MartusKeyPair.extractPublicKey(publicKeyString);
-		try
-		{
-			sigEngine.initVerify(publicKey);
-		}
-		catch(Exception e)
-		{
-			//e.printStackTrace();
-			//System.out.println("signatureInitialize :" + e);
-			//System.out.println("PublicKeyString : " + publicKeyString);
-			throw(new MartusSignatureException());
-		}
-	}
-
-	public synchronized byte[] signatureGet() throws
-			MartusSignatureException
-	{
-		try
-		{
-			return sigEngine.sign();
-		}
-		catch(SignatureException e)
-		{
-			//System.out.println("signatureGet:" + e);
-			throw(new MartusSignatureException());
-		}
-	}
-
-	public synchronized boolean signatureIsValid(byte[] sig) throws
-		MartusSignatureException
-	{
-		try
-		{
-			return sigEngine.verify(sig);
-		}
-		catch(SignatureException e)
-		{
-			//System.out.println("signatureGet:" + e);
-			throw(new MartusSignatureException());
-		}
-	}
-
-	public synchronized void signatureDigestBytes(byte[] bytes) throws
-			MartusSignatureException
-	{
-		try
-		{
-			sigEngine.update(bytes);
-		}
-		catch(SignatureException e)
-		{
-			//System.out.println("signatureGet:" + e);
-			throw(new MartusSignatureException());
-		}
-	}
-
+	
 	public synchronized String createSignatureOfVectorOfStrings(Vector dataToSign) throws MartusCrypto.MartusSignatureException 
 	{
 		try
@@ -984,7 +913,6 @@ public class MartusSecurity extends MartusCrypto
 		return ENCRYPTED_FILE_VERSION_IDENTIFIER;
 	}
 
-	private static final String SIGN_ALGORITHM = "SHA1WithRSA";
 	private static final String SESSION_ALGORITHM_NAME = "AES";
 	private static final String SESSION_ALGORITHM = "AES/CBC/PKCS5Padding";
 	private static final String PBE_ALGORITHM = "PBEWithSHAAndTwofish-CBC";
@@ -999,7 +927,6 @@ public class MartusSecurity extends MartusCrypto
 	private MartusKeyPair keyPair;
 	private Map decryptedSessionKeys;
 
-	private Signature sigEngine;
 	private Cipher pbeCipherEngine;
 	private Cipher sessionCipherEngine;
 	private KeyGenerator sessionKeyGenerator;

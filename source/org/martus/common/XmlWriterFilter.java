@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.Writer;
 
 import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.crypto.SignatureEngine;
 
 public class XmlWriterFilter
 {
@@ -56,14 +57,14 @@ public class XmlWriterFilter
 
 	public void writeDirect(String s) throws IOException
 	{
-		if(sigGen != null)
+		if(engine != null)
 		{
 			try
 			{
 				byte[] bytes = s.getBytes("UTF-8");
-				sigGen.signatureDigestBytes(bytes);
+				engine.digest(bytes);
 			}
-			catch(MartusCrypto.MartusSignatureException e)
+			catch(Exception e)
 			{
 				throw new IOException("Signature Exception: " + e.getMessage());
 			}
@@ -74,21 +75,31 @@ public class XmlWriterFilter
 	public void startSignature(MartusCrypto sigGenToUse) throws
 				MartusCrypto.MartusSignatureException
 	{
-		sigGen = sigGenToUse;
-		sigGen.signatureInitializeSign();
+		try
+		{
+			engine = SignatureEngine.createSigner(sigGenToUse.getKeyPair());
+		}
+		catch (Exception e)
+		{
+			throw new MartusCrypto.MartusSignatureException();
+		}
 	}
 
 	public byte[] getSignature() throws
 				MartusCrypto.MartusSignatureException
 	{
-		if(sigGen == null)
+		try
+		{
+			byte[] sig = engine.getSignature();
+			engine = null;
+			return sig;
+		}
+		catch(Exception e)
+		{
 			throw new MartusCrypto.MartusSignatureException();
-
-		byte[] sig = sigGen.signatureGet();
-		sigGen = null;
-		return sig;
+		}
 	}
 
 	private Writer writer;
-	private MartusCrypto sigGen;
+	private SignatureEngine engine;
 }

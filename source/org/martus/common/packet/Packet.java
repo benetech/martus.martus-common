@@ -30,7 +30,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.Arrays;
 
@@ -40,8 +39,8 @@ import org.martus.common.VersionBuildDate;
 import org.martus.common.XmlWriterFilter;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.SessionKey;
+import org.martus.common.crypto.SignatureEngine;
 import org.martus.common.crypto.MartusCrypto.CryptoException;
-import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.Database.RecordHiddenException;
@@ -281,11 +280,11 @@ public class Packet
 		{
 			synchronized(verifier)
 			{
-				verifier.signatureInitializeVerify(publicKey);
+				SignatureEngine engine = verifier.createSignatureVerifier(publicKey);
 
-				digestOneLine(startComment, verifier);
-				digestOneLine(packetType, verifier);
-				digestOneLine(accountLine, verifier);
+				digestOneLine(startComment, engine);
+				digestOneLine(packetType, engine);
+				digestOneLine(accountLine, engine);
 
 				String sigLine = null;
 				String line = null;
@@ -297,14 +296,14 @@ public class Packet
 						break;
 					}
 
-					digestOneLine(line, verifier);
+					digestOneLine(line, engine);
 				}
 
 				byte[] sigBytes = extractSigFromXmlLine(sigLine);
 				if(expectedSig != null && !Arrays.equals(expectedSig, sigBytes))
 					throw new SignatureVerificationException();
 
-				if(!verifier.signatureIsValid(sigBytes))
+				if(!engine.isValidSignature(sigBytes))
 					throw new SignatureVerificationException();
 
 				in.seek(0);
@@ -313,15 +312,14 @@ public class Packet
 				return sigBytes;
 			}
 		}
-		catch (MartusSignatureException e)
+		catch(InvalidPacketException e)
+		{
+			throw(e);
+		}
+		catch (Exception e)
 		{
 			throw new SignatureVerificationException();
 		}
-		catch (UnsupportedEncodingException e)
-		{
-			throw new SignatureVerificationException();
-		}
-		
 	}
 
 	public static boolean isValidStartComment(final String startComment)
@@ -335,11 +333,11 @@ public class Packet
 		return true;
 	}
 
-	static void digestOneLine(final String packetType, MartusCrypto verifier)
-		throws MartusSignatureException, UnsupportedEncodingException
+	static void digestOneLine(final String packetType, SignatureEngine engine)
+		throws Exception
 	{
-		verifier.signatureDigestBytes(packetType.getBytes("UTF-8"));
-		verifier.signatureDigestBytes(newlineBytes);
+		engine.digest(packetType.getBytes("UTF-8"));
+		engine.digest(newlineBytes);
 	}
 
 	static byte[] extractSigFromXmlLine(String sigLine)

@@ -138,14 +138,6 @@ public class MockMartusSecurity extends MartusSecurity
 		super.createKeyPair(SMALLEST_LEGAL_KEY_FOR_TESTING);
 	}
 
-	public boolean signatureIsValid(byte[] sig) throws MartusSignatureException
-	{
-		if(fakeSigVerifyFailure)
-			return false;
-
-		return super.signatureIsValid(sig);
-	}
-
 	KeyPair createSunKeyPair(int bitsInKey) throws Exception
 	{
 		int smallKeySizeForTesting = 1024;
@@ -157,6 +149,15 @@ public class MockMartusSecurity extends MartusSecurity
 		setKeyPairFromData(Base64.decode(nonEncryptedSampleKeyPair));
 	}
 
+	public SignatureEngine createSignatureVerifier(String signedByPublicKey)
+			throws Exception
+	{
+		if(fakeSigVerifyFailure)
+			return null;
+
+		return super.createSignatureVerifier(signedByPublicKey);
+	}
+	
 	static final int SMALLEST_LEGAL_KEY_FOR_TESTING = 512;
 
 	public boolean fakeSigVerifyFailure;
@@ -354,10 +355,4 @@ public class MockMartusSecurity extends MartusSecurity
 		"B1YmxpY0tleSUiag5b+myEAgACTAAHbW9kdWx1c3EAfgAFTAAOcHVibGljRXhw" +
 		"b25lbnRxAH4ABXhwcQB+AA1xAH4AIw==";
 		
-	public byte[] signatureGet() throws MartusSignatureException
-	{
-		speedWarning("signatureGet");
-		return super.signatureGet();
-	}
-
 }
