@@ -28,6 +28,7 @@ package org.martus.common.packet;
 
 import java.util.Vector;
 
+import org.martus.common.HQKeys;
 import org.martus.common.MartusXml;
 import org.martus.util.Base64;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
@@ -69,7 +70,6 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 	private void endStringElement(SimpleXmlDefaultLoader ended)
 		throws SAXParseException
 	{
-		
 		try
 		{
 			String tag = ended.getTag();
@@ -94,6 +94,8 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 				bhp.addPrivateAttachmentLocalId(value);
 			else if(tag.equals(MartusXml.HQPublicKeyElementName))
 				bhp.setHQPublicKey(value);
+			else if(tag.equals(MartusXml.AccountsAuthorizedToReadElementName))
+				bhp.setAccountsAuthorizedToReadKeys(HQKeys.parseXml(value));
 		}
 		catch (Exception e)
 		{
@@ -117,6 +119,7 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 			stringTags.add(MartusXml.PublicAttachmentIdElementName);
 			stringTags.add(MartusXml.PrivateAttachmentIdElementName);
 			stringTags.add(MartusXml.HQPublicKeyElementName);
+			stringTags.add(MartusXml.AccountsAuthorizedToReadElementName);
 		}
 		return stringTags;
 	}

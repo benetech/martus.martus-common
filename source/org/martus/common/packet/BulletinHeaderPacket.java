@@ -33,6 +33,7 @@ import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.martus.common.HQKeys;
 import org.martus.common.MartusXml;
 import org.martus.common.XmlWriterFilter;
 import org.martus.common.bulletin.BulletinConstants;
@@ -132,6 +133,26 @@ public class BulletinHeaderPacket extends Packet
 	public void setHQPublicKey(String key)
 	{
 		hqPublicKey = key;
+		if(key.length() > 0)
+		{
+			int index = accountsAuthorizedToReadKeys.indexOf(key);
+			if(index != -1)
+				accountsAuthorizedToReadKeys.remove(index);
+			accountsAuthorizedToReadKeys.add(0,key);
+		}
+		
+	}
+
+	public Vector getAccountsAuthorizedToReadKeys()
+	{
+		return accountsAuthorizedToReadKeys;
+	}
+	
+	public void setAccountsAuthorizedToReadKeys(Vector accountsKeys)
+	{
+		accountsAuthorizedToReadKeys = accountsKeys;
+		if(accountsKeys.size()>0)
+			hqPublicKey = (String)accountsKeys.get(0);
 	}
 
 	public void setAllPrivate(boolean newValue)
@@ -232,7 +253,6 @@ public class BulletinHeaderPacket extends Packet
 			System.out.println(e.getCause());
 			System.out.println(e.getClass());
 			System.out.println(e.getMessage());
-			System.out.println(e.getCause());
 			throw new InvalidPacketException(e.getMessage());
 		}
 	}
@@ -342,6 +362,14 @@ public class BulletinHeaderPacket extends Packet
 		String hqPublicKey = getHQPublicKey();
 		if(hqPublicKey.length() > 0)
 			writeElement(dest, MartusXml.HQPublicKeyElementName, hqPublicKey);
+		
+		Vector authorizedToReadKeys = getAccountsAuthorizedToReadKeys();
+		if(authorizedToReadKeys.size() > 0)
+		{
+			HQKeys keys = new HQKeys(authorizedToReadKeys);
+			String value = keys.toString();
+			writeElement(dest, MartusXml.AccountsAuthorizedToReadElementName, value);			
+		}
 
 		String dataId = getFieldDataPacketId();
 		if(dataId != null)
@@ -388,6 +416,7 @@ public class BulletinHeaderPacket extends Packet
 		privateAttachments = new Vector();
 		hqPublicKey = "";
 		lastSavedTime = TIME_UNKNOWN;
+		accountsAuthorizedToReadKeys = new Vector();
 	}
 
 	private final static String ALL_PRIVATE = "1";
@@ -407,4 +436,5 @@ public class BulletinHeaderPacket extends Packet
 	private Vector publicAttachments;
 	private Vector privateAttachments;
 	private static final String prefix = "B-";
+	private Vector accountsAuthorizedToReadKeys;
 }

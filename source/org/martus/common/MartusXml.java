@@ -111,6 +111,7 @@ public class MartusXml
 	public final static String EncryptedFlagElementName = "Encrypted";
 	public final static String HQSessionKeyElementName = "HQSessionKey";
 	public final static String HQPublicKeyElementName = "HQPublicKey";
+	public final static String AccountsAuthorizedToReadElementName = "AuthorizedToReadKey";
 	public final static String EncryptedDataElementName = "EncryptedData";
 	public final static String DataPacketIdElementName = "DataPacketId";
 	public final static String PrivateDataPacketIdElementName = "PrivateDataPacketId";

@@ -28,6 +28,7 @@ package org.martus.common.test;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
+import java.util.Vector;
 
 import org.martus.common.MartusXml;
 import org.martus.common.crypto.MartusSecurity;
@@ -238,6 +239,8 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		assertContains(Long.toString(bhp.getLastSavedTime()), result);
 
 		assertNotContains(MartusXml.getTagStart(MartusXml.HQPublicKeyElementName), result);
+		
+		assertNotContains(MartusXml.getTagStart(MartusXml.AccountsAuthorizedToReadElementName), result);
 	}
 
 	public void testWriteXmlWithHQKeySet() throws Exception
@@ -309,6 +312,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		assertEquals("private data sig", true, Arrays.equals(sampleSig2, loaded.getPrivateFieldDataSignature()));
 		assertEquals("hqKey", "", loaded.getHQPublicKey());
 		assertTrue("No unknown?", loaded.hasUnknownTags());
+		assertEquals("AuthorizedToReadKeys", 0, loaded.getAccountsAuthorizedToReadKeys().size());
 
 		String[] list = loaded.getPublicAttachmentIds();
 		assertEquals("public count", 2, list.length);
@@ -321,6 +325,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 	public void testLoadXmlWithHQKey() throws Exception
 	{
 		String hqKey = "sdjflksj";
+		bhp.setAccountsAuthorizedToReadKeys(new Vector());
 		bhp.setHQPublicKey(hqKey);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		bhp.writeXml(out, security);
@@ -332,8 +337,51 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		loaded.loadFromXml(in, security);
 
 		assertEquals("hqKey", bhp.getHQPublicKey(), loaded.getHQPublicKey());
+		assertEquals("The # of authorized accounts not set by just setting the HQ Key?", 1, loaded.getAccountsAuthorizedToReadKeys().size());
+		assertEquals("hqKey not present in authorized list?", hqKey, loaded.getAccountsAuthorizedToReadKeys().get(0));
 	}
 
+	public void testLoadXmlWithMultipleAuthorizedToReadKeys() throws Exception
+	{
+		String hqKey1 = "Key 1";
+		String hqKey2 = "Key 2";
+		Vector hqKeys = new Vector();
+		hqKeys.add(hqKey1);
+		hqKeys.add(hqKey2);
+		bhp.setHQPublicKey("");
+		bhp.setAccountsAuthorizedToReadKeys(hqKeys);
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		bhp.writeXml(out, security);
+		String result = new String(out.toByteArray(), "UTF-8");
+
+		BulletinHeaderPacket loaded = new BulletinHeaderPacket("");
+		byte[] bytes = result.getBytes("UTF-8");
+		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
+		loaded.loadFromXml(in, security);
+		assertEquals("The # of authorized accounts not set?", hqKeys.size(), loaded.getAccountsAuthorizedToReadKeys().size());
+		assertEquals("Key 1 not present?", hqKey1, loaded.getAccountsAuthorizedToReadKeys().get(0));
+		assertEquals("Key 2 not present?", hqKey2, loaded.getAccountsAuthorizedToReadKeys().get(1));
+		assertEquals("The original hqKey should be set from first key in vector", hqKey1, loaded.getHQPublicKey());
+		
+		//Now re Add the same key2 as the primary HQ.
+		loaded.setHQPublicKey(hqKey2);
+		assertEquals("The original hqKey should now be key2", hqKey2, loaded.getHQPublicKey());
+		assertEquals("The # of authorized accounts should not have changed?", 2, loaded.getAccountsAuthorizedToReadKeys().size());
+		assertEquals("Key 2 should now be first in the list?", hqKey2, loaded.getAccountsAuthorizedToReadKeys().get(0));
+		assertEquals("Key 1 should be bumped to position 2?", hqKey1, loaded.getAccountsAuthorizedToReadKeys().get(1));
+		
+		//Now Add a new key as the primary HQ.
+		String hqKey3 = "Key 3";
+		loaded.setHQPublicKey(hqKey3);
+		assertEquals("The original hqKey should now be key3", hqKey3, loaded.getHQPublicKey());
+		assertEquals("The # of authorized accounts should not have changed?", 3, loaded.getAccountsAuthorizedToReadKeys().size());
+		assertEquals("Key 3 should now be first in the list?", hqKey3, loaded.getAccountsAuthorizedToReadKeys().get(0));
+		assertEquals("Key 2 should now be 2nd?", hqKey2, loaded.getAccountsAuthorizedToReadKeys().get(1));
+		assertEquals("Key 1 should be bumped to the last?", hqKey1, loaded.getAccountsAuthorizedToReadKeys().get(2));
+	}
+	
+	
+	
 	byte[] sampleSig1 = {1,6,38,0};
 	byte[] sampleSig2 = {7, 9, 9};
 	final String attachmentId1 = "second alphabetically";
