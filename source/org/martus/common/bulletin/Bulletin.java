@@ -159,11 +159,10 @@ public class Bulletin implements BulletinConstants
 	}
 	
 	public String getLastSavedDate()
-	{
-		DateFormat df = Bulletin.getStoredDateFormat();	
+	{		
 		Calendar cal = new GregorianCalendar();
-		cal.setTimeInMillis(getLastSavedTime());					
-		return df.format(cal.getTime());
+		cal.setTimeInMillis(getLastSavedTime());		
+		return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(cal.getTime());
 	}
 
 	public boolean isDraft()
@@ -212,6 +211,7 @@ public class Bulletin implements BulletinConstants
 			fieldData.set(fieldName, value);
 		else
 			privateFieldData.set(fieldName, value);
+				
 	}
 
 	public String get(String fieldName)
@@ -222,6 +222,10 @@ public class Bulletin implements BulletinConstants
 				return BulletinConstants.STATUSDRAFT;
 			return BulletinConstants.STATUSSEALED;
 		}
+		
+		if (fieldName.equals(Bulletin.TAGLASTSAVED))
+			 return getLastSavedDate();
+			 
 		if(isStandardField(fieldName))
 			return fieldData.get(fieldName);
 		else
@@ -291,6 +295,7 @@ public class Bulletin implements BulletinConstants
 		getPendingPrivateAttachments().clear();
 		set(TAGENTRYDATE, getToday());
 		set(TAGEVENTDATE, getFirstOfThisYear());
+set(TAGLASTSAVED, getLastSavedDate());		
 		setDraft();
 	}
 
