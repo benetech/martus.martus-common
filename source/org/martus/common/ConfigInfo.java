@@ -31,7 +31,6 @@ import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.util.Vector;
 
 import org.martus.common.crypto.MartusCrypto;
@@ -112,8 +111,8 @@ public class ConfigInfo implements Serializable
 		customFieldSpecs = FieldSpec.buildFieldListString(FieldSpec.getDefaultPublicFieldSpecs());
 	}
 
-	public Vector getEncodedContactInfo(MartusCrypto signer) throws
-		MartusSignatureException, UnsupportedEncodingException
+	public Vector getRawContactInfo(MartusCrypto signer)
+		throws MartusSignatureException
 	{
 		Vector contactInfo = new Vector();
 		contactInfo.add(signer.getPublicKeyString());
@@ -126,8 +125,7 @@ public class ConfigInfo implements Serializable
 		contactInfo.add(address);
 		String signature = signer.createSignatureOfVectorOfStrings(contactInfo);
 		contactInfo.add(signature);
-		
-		return ContactInfo.encodeContactInfoVector(contactInfo);
+		return contactInfo;
 	}
 	
 	public static ConfigInfo load(InputStream inputStream)

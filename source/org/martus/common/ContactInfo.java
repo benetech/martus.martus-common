@@ -31,6 +31,7 @@ import java.util.Vector;
 
 import org.martus.common.network.NetworkInterfaceConstants;
 import org.martus.util.Base64;
+import org.martus.util.Base64.InvalidBase64Exception;
 
 
 public class ContactInfo
@@ -60,6 +61,13 @@ public class ContactInfo
 	{
 		if (!isEncoded(possiblyEncodedContactInfo))
 			return possiblyEncodedContactInfo;
+		return decodeContactInfoVector(possiblyEncodedContactInfo);
+		
+	}
+
+	private static Vector decodeContactInfoVector(Vector possiblyEncodedContactInfo)
+		throws UnsupportedEncodingException, InvalidBase64Exception
+	{
 		Vector decodedContactInfo = new Vector();
 		decodedContactInfo.add(possiblyEncodedContactInfo.get(1));
 		decodedContactInfo.add(possiblyEncodedContactInfo.get(2));
@@ -73,6 +81,5 @@ public class ContactInfo
 		}
 		decodedContactInfo.add(possiblyEncodedContactInfo.get(i));
 		return decodedContactInfo;
-		
 	}
 }
