@@ -266,7 +266,17 @@ public class Localization
 		}
 		return false;
 	}
-
+	
+	public boolean isRightToLeftLanguage()
+	{
+		for(int i = 0 ; i < RIGHT_TO_LEFT_LANGUAGES.length; ++i)
+		{
+			if(RIGHT_TO_LEFT_LANGUAGES[i].equals(currentLanguageCode))
+				return true;
+		}
+//TODO return false for 2.x release
+return languageDirectionRightToLeft;
+	}
 
 
 	/////////////////////////////////////////////////////////////////
@@ -345,6 +355,7 @@ public class Localization
 	public Map textResources;
 	public String currentLanguageCode;
 	public String currentDateFormat;
+	public boolean languageDirectionRightToLeft;
 
 	public static final String UNUSED_TAG = "";
 	public static final String MARTUS_LANGUAGE_FILE_PREFIX = "Martus-";
@@ -357,10 +368,14 @@ public class Localization
 	public static final String FRENCH = "fr";
 	public static final String SPANISH = "es";
 	public static final String RUSSIAN = "ru";
-	public static final String THAI = "th";	
+	public static final String THAI = "th";
+	public static final String ARABIC = "ar";
 	public static final String[] ALL_LANGUAGE_CODES = {
-				LANGUAGE_OTHER, ENGLISH, "ar",
+				LANGUAGE_OTHER, ENGLISH, ARABIC,
 				"az", "bn", "km","my","zh", "nl", "eo", "fa", FRENCH, "de","gu","ha","he","hi","hu",
 				"it", "ja","jv","kn","kk","ky","ko","ml","mr","ne","or","pa","ps","pl","pt","ro",RUSSIAN,"sr",
 				"sr", "sd","si",SPANISH,"ta","tg","te",THAI,"tr","tk","uk","ur","uz","vi"};
+	
+	public static final String[] RIGHT_TO_LEFT_LANGUAGES = {
+			ARABIC};
 }
