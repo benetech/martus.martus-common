@@ -30,6 +30,7 @@ import java.io.InputStream;
 import org.martus.common.MartusUtilities.PublicInformationInvalidException;
 import org.martus.common.clientside.ClientSideNetworkHandlerUsingXmlRpcForNonSSL;
 import org.martus.common.clientside.Exceptions.ServerNotAvailableException;
+import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
 import org.martus.common.crypto.MartusCrypto.CryptoInitializationException;
@@ -70,7 +71,8 @@ public class MartusBulletinRetriever
 		{
 			ServerPublicKey = MartusServerUtilities.getServerPublicKey(serverNonSSL, security);
 			String serverPublicCodeToTest = MartusSecurity.computePublicCode(ServerPublicKey);
-			if(!serverPublicCode.equals(serverPublicCodeToTest))
+			
+			if(!MartusCrypto.removeNonDigits(serverPublicCode).equals(serverPublicCodeToTest))
 				throw new ServerPublicCodeDoesNotMatchException();
 			return ServerPublicKey;
 		}

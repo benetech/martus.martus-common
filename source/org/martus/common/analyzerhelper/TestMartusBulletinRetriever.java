@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Vector;
 import org.martus.common.analyzerhelper.MartusBulletinRetriever.ServerErrorException;
+import org.martus.common.analyzerhelper.MartusBulletinRetriever.ServerPublicCodeDoesNotMatchException;
 import org.martus.common.clientside.Exceptions.ServerNotAvailableException;
 import org.martus.common.clientside.test.NoServerNetworkInterfaceForNonSSLHandler;
 import org.martus.common.crypto.MartusCrypto;
@@ -58,6 +59,8 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 	  	{
 			security = new MartusSecurity();
 			security.createKeyPair(512);
+			serverSecurity = new MartusSecurity();
+			serverSecurity.createKeyPair(512);
 	  	}
 		streamOut = new ByteArrayOutputStream();
 		security.writeKeyPair(streamOut, password);
@@ -143,8 +146,6 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		}
 		
 		public String publicKeyString;
-		public MartusCrypto serverSecurity;		
-		
 	}
 	
 	public void testGetServerPublicKey() throws Exception
@@ -164,7 +165,6 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		}
 		
 		TestServerNetworkInterfaceForNonSSLHandler testServerForNonSSL = new TestServerNetworkInterfaceForNonSSLHandler();
-		testServerForNonSSL.serverSecurity = security;
 		testServerForNonSSL.publicKeyString = "some invalid keystring";
 		try
 		{
@@ -174,10 +174,22 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		catch(ServerErrorException expected)
 		{
 		}
-		
+		String serverPublicKeyString = serverSecurity.getPublicKeyString();
+		testServerForNonSSL.publicKeyString = serverPublicKeyString;
+		try
+		{
+			retriever.getServerPublicKey("Invalid code", testServerForNonSSL);
+			fail("Incorrect public code.");
+		}
+		catch(ServerPublicCodeDoesNotMatchException expected)
+		{
+		}
+		retriever.getServerPublicKey(MartusCrypto.computePublicCode(serverPublicKeyString), testServerForNonSSL);
+		retriever.getServerPublicKey(MartusCrypto.computeFormattedPublicCode(serverPublicKeyString), testServerForNonSSL);
 	}
 	
 	private static MartusSecurity security;
+	static MartusSecurity serverSecurity;
 	private static char[] password = "the password".toCharArray();
 	private ByteArrayOutputStream streamOut;
 
