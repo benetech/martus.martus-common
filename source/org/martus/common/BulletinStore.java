@@ -103,12 +103,16 @@ public class BulletinStore
 
 	public int getBulletinCount()
 	{
-		return scanForLeafUids().size();
+		return scanForLeafKeys().size();
 	}
 
 	public Vector getAllBulletinUids()
 	{
-		return scanForLeafUids();
+		Vector uids = new Vector();
+		Vector keys = scanForLeafKeys();
+		for(int i=0; i < keys.size(); ++i)
+			uids.add( ((DatabaseKey)keys.get(i)).getUniversalId());
+		return uids;
 	}
 
 	public boolean doesBulletinRevisionExist(UniversalId uid)
@@ -154,14 +158,19 @@ public class BulletinStore
 		}
 	}
 	
-	public Vector scanForLeafUids()
+	public Vector scanForLeafKeys()
 	{
 		LeafScanner scanner = new LeafScanner(getDatabase(), getSignatureVerifier());
 		visitAllBulletinRevisions(scanner);
-		return scanner.getLeafUids();
+		return scanner.getLeafKeys();
 	}
 	
-	
+	public void visitAllBulletins(Database.PacketVisitor visitor)
+	{
+		Vector leafKeys = scanForLeafKeys();
+		for(int i=0; i < leafKeys.size(); ++i)
+			visitor.visit((DatabaseKey)leafKeys.get(i));
+	}
 
 	public Vector getUidsOfAllBulletinRevisions()
 	{
@@ -285,13 +294,13 @@ class LeafScanner implements Database.PacketVisitor
 	{
 		db = databaseToScan;
 		crypto = cryptoToUse;
-		leafUids = new Vector();
+		leafKeys = new Vector();
 		nonLeafUids = new Vector();
 	}
 	
-	public Vector getLeafUids()
+	public Vector getLeafKeys()
 	{
-		return leafUids;
+		return leafKeys;
 	}
 	
 	public void visit(DatabaseKey key)
@@ -300,7 +309,7 @@ class LeafScanner implements Database.PacketVisitor
 		{
 			UniversalId maybeLeaf = key.getUniversalId();
 			if(!nonLeafUids.contains(maybeLeaf))
-				leafUids.add(maybeLeaf);
+				leafKeys.add(key);
 			
 			BulletinHeaderPacket bhp = BulletinStore.loadBulletinHeaderPacket(db, key, crypto);
 			Vector history = bhp.getHistory();
@@ -308,7 +317,8 @@ class LeafScanner implements Database.PacketVisitor
 			{
 				String thisLocalId = (String)history.get(i);
 				UniversalId uidOfNonLeaf = UniversalId.createFromAccountAndLocalId(bhp.getAccountId(), thisLocalId);
-				leafUids.remove(uidOfNonLeaf);
+				leafKeys.remove(DatabaseKey.createSealedKey(uidOfNonLeaf));
+				leafKeys.remove(DatabaseKey.createDraftKey(uidOfNonLeaf));
 				nonLeafUids.add(uidOfNonLeaf);
 			}
 		}
@@ -320,6 +330,6 @@ class LeafScanner implements Database.PacketVisitor
 	
 	Database db;
 	MartusCrypto crypto;
-	Vector leafUids;
+	Vector leafKeys;
 	Vector nonLeafUids;
 }

@@ -38,6 +38,7 @@ import org.martus.common.crypto.MartusCrypto.CryptoException;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.MockClientDatabase;
+import org.martus.common.database.Database.PacketVisitor;
 import org.martus.common.packet.UniversalId;
 import org.martus.util.Stopwatch;
 import org.martus.util.TestCaseEnhanced;
@@ -101,20 +102,6 @@ public class TestBulletinStore extends TestCaseEnhanced
 	}
 	
     
-
-	private Bulletin createAndSaveClone(Bulletin original) throws IOException, CryptoException
-	{
-		if(original.getFieldDataPacket().getAttachments().length > 0)
-			fail("Not tested for attachments!");
-		if(original.getPrivateFieldDataPacket().getAttachments().length > 0)
-			fail("Not tested for attachments!");
-		Bulletin clone = new Bulletin(security);
-		Vector history = new Vector();
-		history.add(original.getLocalId());
-		clone.setHistory(history);
-		BulletinSaver.saveToClientDatabase(clone, db, false, security);
-		return clone;
-	}
 
 	public void testGetAllBulletinUids() throws Exception
 	{
@@ -184,6 +171,36 @@ public class TestBulletinStore extends TestCaseEnhanced
 		verifyCloneIsLeaf(one, two, other.getUniversalId());
 		verifyCloneIsLeaf(two, one, other.getUniversalId());
 	}
+	
+	public void testVisitAllBulletins() throws Exception
+	{
+		Bulletin original1 = createAndSaveBulletin();
+		Bulletin clone1 = createAndSaveClone(original1);
+		
+		Bulletin original2 = createAndSaveBulletin();
+		Bulletin clone2a = createAndSaveClone(original2);
+		Bulletin clone2b = createAndSaveClone(original2);
+		Bulletin clone2bx = createAndSaveClone(clone2b);
+		
+		class SimpleCollector implements PacketVisitor
+		{
+			public void visit(DatabaseKey key)
+			{
+				result.add(key.getLocalId());
+			}
+
+			Vector result = new Vector();
+		}
+		
+		SimpleCollector collector = new SimpleCollector();
+		store.visitAllBulletins(collector);
+		
+		assertEquals(3, collector.result.size());
+		assertContains(clone1.getLocalId(), collector.result);
+		assertContains(clone2a.getLocalId(), collector.result);
+		assertContains(clone2bx.getLocalId(), collector.result);
+		
+	}
 
 	private void verifyCloneIsLeaf(Bulletin original, Bulletin clone, UniversalId otherUid) throws IOException, CryptoException
 	{
@@ -195,11 +212,11 @@ public class TestBulletinStore extends TestCaseEnhanced
 		clone.setHistory(history);
 		BulletinSaver.saveToClientDatabase(clone, db, false, security);
 
-		Vector leafUids = store.scanForLeafUids();
-		assertEquals("wrong leaf count?", 2, leafUids.size());
-		assertContains("missing clone?", clone.getUniversalId(), leafUids);
+		Vector leafKeys = store.scanForLeafKeys();
+		assertEquals("wrong leaf count?", 2, leafKeys.size());
+		assertContains("missing clone?", DatabaseKey.createSealedKey(clone.getUniversalId()), leafKeys);
 		
-		assertContains("missing other?", otherUid, leafUids);
+		assertContains("missing other?", DatabaseKey.createSealedKey(otherUid), leafKeys);
 	}
 
 	private Bulletin createAndSaveBulletin() throws IOException, CryptoException
@@ -207,6 +224,20 @@ public class TestBulletinStore extends TestCaseEnhanced
 		Bulletin b = new Bulletin(security);
 		BulletinSaver.saveToClientDatabase(b, db, false, security);
 		return b;
+	}
+
+	private Bulletin createAndSaveClone(Bulletin original) throws IOException, CryptoException
+	{
+		if(original.getFieldDataPacket().getAttachments().length > 0)
+			fail("Not tested for attachments!");
+		if(original.getPrivateFieldDataPacket().getAttachments().length > 0)
+			fail("Not tested for attachments!");
+		Bulletin clone = new Bulletin(security);
+		Vector history = new Vector();
+		history.add(original.getLocalId());
+		clone.setHistory(history);
+		BulletinSaver.saveToClientDatabase(clone, db, false, security);
+		return clone;
 	}
 
 
