@@ -229,6 +229,10 @@ public class BulletinHeaderPacket extends Packet
 		{
 			// TODO: Be more specific with exceptions!
 			e.printStackTrace();
+			System.out.println(e.getCause());
+			System.out.println(e.getClass());
+			System.out.println(e.getMessage());
+			System.out.println(e.getCause());
 			throw new InvalidPacketException(e.getMessage());
 		}
 	}
