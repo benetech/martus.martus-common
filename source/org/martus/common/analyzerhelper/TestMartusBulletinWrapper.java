@@ -67,6 +67,7 @@ public class TestMartusBulletinWrapper extends TestCaseEnhanced
 		bulletin.set(BulletinConstants.TAGTITLE, title);
 		bulletin.set(BulletinConstants.TAGLOCATION, location);
 		bulletin.set(BulletinConstants.TAGPRIVATEINFO, privateData);
+		bulletin.setDraft();
 		
 		File tempDirectory = createTempFileFromName("$$$TestBulletinWrapper");
 		tempDirectory.deleteOnExit();
@@ -102,6 +103,7 @@ public class TestMartusBulletinWrapper extends TestCaseEnhanced
 		bulletin.set(BulletinConstants.TAGPRIVATEINFO, privateData);
 		bulletin.set(BulletinConstants.TAGENTRYDATE, entryDate);
 		bulletin.set(BulletinConstants.TAGEVENTDATE, "2003-08-20,20030820+3");
+		bulletin.setSealed();
 		
 		HQKey key = new HQKey(security.getPublicKeyString());
 		HQKeys keys = new HQKeys(key);
