@@ -456,8 +456,6 @@ public class TestMartusUtilities extends TestCaseEnhanced
 	public void testCreateSignatureFromFile()
 		throws Exception
 	{
-		MartusCrypto otherSecurity = MockMartusSecurity.createClient();
-
 		String string1 = "The string to write into the file to sign.";
 		String string2 = "The other string to write to another file to sign.";
 

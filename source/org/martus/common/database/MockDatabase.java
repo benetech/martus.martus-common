@@ -129,7 +129,6 @@ abstract public class MockDatabase extends Database
 		if(key == null || record == null)
 			throw new IOException("Null parameter");
 
-		String data = null;
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		int theByte = 0;
 		while( (theByte = record.read()) >= 0)
