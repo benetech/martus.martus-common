@@ -180,7 +180,9 @@ public class MartusSecurity extends MartusCrypto
 	{
 		try
 		{
-			return getKeyPair().signStream(inputStream);
+			SignatureEngine engine = SignatureEngine.createSigner(getKeyPair());
+			engine.digest(inputStream);
+			return engine.getSignature();
 		}
 		catch (Exception e)
 		{
@@ -192,20 +194,24 @@ public class MartusSecurity extends MartusCrypto
 	public boolean verifySignature(InputStream inputStream, byte[] signature) throws
 			MartusSignatureException
 	{
-		try
-		{
-			return getKeyPair().isSignatureValid(inputStream, signature);
-		} 
-		catch (Exception e)
-		{
-			throw new MartusSignatureException();
-		}
+		MartusKeyPair r = getKeyPair();
+		return isValidSignatureOfStream(r.getPublicKeyString(), inputStream, signature);
 	}
 
 	public boolean isValidSignatureOfStream(String publicKeyString, InputStream inputStream, byte[] signature) throws
 			MartusSignatureException
 	{
-		return isValidSignatureOfStream(MartusKeyPair.extractPublicKey(publicKeyString), inputStream, signature);
+		try
+		{
+			SignatureEngine engine = SignatureEngine.createVerifier(publicKeyString);
+			engine.digest(inputStream);
+			return engine.isValidSignature(signature);
+		}
+		catch (Exception e)
+		{
+			//System.out.println("verifySignature :" + e);
+			throw(new MartusSignatureException());
+		}
 	}
 	
 	public Vector buildKeyShareBundles() 
@@ -884,20 +890,6 @@ public class MartusSecurity extends MartusCrypto
 	BigInteger createCertificateSerialNumber()
 	{
 		return new BigInteger(128, rand);
-	}
-
-	public synchronized boolean isValidSignatureOfStream(PublicKey publicKey, InputStream inputStream, byte[] signature) throws
-			MartusSignatureException
-	{
-		try
-		{
-			return MartusKeyPair.isSignatureValid(inputStream, signature, publicKey);
-		}
-		catch (Exception e)
-		{
-			//System.out.println("verifySignature :" + e);
-			throw(new MartusSignatureException());
-		}
 	}
 
 	synchronized KeyPair createSunKeyPair(int bitsInKey) throws Exception

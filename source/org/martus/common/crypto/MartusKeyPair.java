@@ -29,7 +29,6 @@ package org.martus.common.crypto;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.security.InvalidKeyException;
@@ -42,7 +41,6 @@ import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
-import java.security.Signature;
 import java.security.spec.EncodedKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
@@ -53,7 +51,6 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-import org.martus.common.MartusConstants;
 import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
 import org.martus.util.Base64;
 
@@ -205,35 +202,6 @@ public class MartusKeyPair
 		
 	}
 	
-	public byte[] signStream(InputStream in) throws Exception
-	{
-		Signature engine = Signature.getInstance(SIGN_ALGORITHM, "BC");
-		engine.initSign(getPrivateKey());
-		accumulateForSignOrVerify(in, engine);
-		return engine.sign();
-	}
-	
-	public boolean isSignatureValid(InputStream in, byte[] sig) throws Exception
-	{
-		return isSignatureValid(in, sig, getPublicKey());
-	}
-	
-	static boolean isSignatureValid(InputStream in, byte[] sig, PublicKey signerPublicKey) throws Exception
-	{
-		Signature engine = Signature.getInstance(SIGN_ALGORITHM, "BC");
-		engine.initVerify(signerPublicKey);
-		accumulateForSignOrVerify(in, engine);
-		return engine.verify(sig);
-	}
-	
-	private static void accumulateForSignOrVerify(InputStream in, Signature engine) throws Exception
-	{
-		int got;
-		byte[] bytes = new byte[MartusConstants.streamBufferCopySize];
-		while ((got = in.read(bytes)) >= 0)
-			engine.update(bytes, 0, got);
-	}
-
 	private KeyPair getJceKeyPair()
 	{
 		return jceKeyPair;

@@ -26,9 +26,12 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.crypto;
 
+import java.io.InputStream;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Signature;
+
+import org.martus.common.MartusConstants;
 
 public class SignatureEngine
 {
@@ -54,6 +57,14 @@ public class SignatureEngine
 	public void digest(byte[] bytes) throws Exception
 	{
 		engine.update(bytes);
+	}
+	
+	public void digest(InputStream in) throws Exception
+	{
+		int got;
+		byte[] bytes = new byte[MartusConstants.streamBufferCopySize];
+		while ((got = in.read(bytes)) >= 0)
+			engine.update(bytes, 0, got);
 	}
 	
 	public byte[] getSignature() throws Exception
