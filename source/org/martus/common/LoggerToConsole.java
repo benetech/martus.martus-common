@@ -51,24 +51,24 @@ public class LoggerToConsole implements LoggerInterface
 		System.out.println(logEntry);
 	}
 
-	public void logERROR(String message)
+	public void logError(String message)
 	{
-		log("ERROR " + message);
+		log("ERROR: " + message);
 	}
 	
 	public void logInfo(String message)
 	{
-		log("Info " + message);
+		log("Info: " + message);
 		
 	}
 	public void logNotice(String message)
 	{
-		log("Notice " + message);
+		log("Notice: " + message);
 		
 	}
-	public void logVerbose(String message)
+	public void logDebug(String message)
 	{
-		log("Verbose " + message);
+		log("Debug: " + message);
 	}
 
 	static public String getCurrentClientAddress()
