@@ -55,6 +55,7 @@ public class SimpleX509TrustManager implements X509TrustManager
 	public void checkServerTrusted(X509Certificate[] chain, String authType)
 		throws CertificateException
 	{
+		calledCheckServerTrusted = true;
 		if(!authType.equals("RSA"))
 			throw new CertificateException("Only RSA supported");
 		if(chain.length != 3)
@@ -71,13 +72,21 @@ public class SimpleX509TrustManager implements X509TrustManager
 			PublicKey tryPublicKey = expectedPublicKey;
 			if(tryPublicKey == null)
 			{
+				if(expectedPublicCode == null)
+					throw new CertificateException("No key or code is trusted");
 				String certPublicKeyString = MartusSecurity.getKeyString(cert2.getPublicKey());
 				String certPublicCode = MartusCrypto.computePublicCode(certPublicKeyString);
 				if(expectedPublicCode.equals(certPublicCode))
+				{
 					tryPublicKey = cert2.getPublicKey();
+				}
 			}
+
+			if(tryPublicKey == null)
+				throw new CertificateException("Key is not trusted");
 			cert1.verify(tryPublicKey);
-			setExpectedPublicKey(MartusSecurity.getKeyString(tryPublicKey));
+			String keyString = MartusSecurity.getKeyString(tryPublicKey);
+			setExpectedPublicKey(keyString);
 		}
 		catch (Exception e)
 		{
@@ -103,8 +112,24 @@ public class SimpleX509TrustManager implements X509TrustManager
 		expectedPublicKey = MartusSecurity.extractPublicKey(expectedPublicKeyToUse);
 		expectedPublicCode = null;
 	}
-
+	
+	public String getExpectedPublicKey()
+	{
+		return MartusSecurity.getKeyString(expectedPublicKey);
+	}
+	
+	public boolean wasCheckServerTrustedCalled()
+	{
+		return calledCheckServerTrusted;
+	}
+	
+	public void clearCalledCheckServerTrusted()
+	{
+		calledCheckServerTrusted = false;
+	}
+	
 	private PublicKey expectedPublicKey;
 	private String expectedPublicCode;
+	private boolean calledCheckServerTrusted;
 
 }
