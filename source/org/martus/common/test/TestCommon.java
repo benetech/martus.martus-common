@@ -31,6 +31,7 @@ import org.martus.common.clientside.test.TestClientSideNetworkHandler;
 import org.martus.common.clientside.test.TestClientSideNetworkHandlerForNonSSL;
 import org.martus.common.clientside.test.TestCurrentUiState;
 import org.martus.common.clientside.test.TestDateUtilities;
+import org.martus.common.utilities.TestMartusBulletinRetriever;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -84,6 +85,7 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestMagicWordEntry.class));
 		suite.addTest(new TestSuite(TestMagicWords.class));
 		suite.addTest(new TestSuite(TestMartusKeyPair.class));
+		suite.addTest(new TestSuite(TestMartusBulletinRetriever.class));
 		suite.addTest(new TestSuite(TestMartusSecurity.class));
 		suite.addTest(new TestSuite(TestMartusUtilities.class));
 		suite.addTest(new TestSuite(TestMartusXml.class));
