@@ -130,6 +130,7 @@ public class MartusSecurity extends MartusCryptoImplementation
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
 			throw new CryptoInitializationException();
 		}
 	}
