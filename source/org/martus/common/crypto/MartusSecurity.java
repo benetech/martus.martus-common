@@ -34,7 +34,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
@@ -149,7 +148,7 @@ public class MartusSecurity extends MartusCrypto
 	public void writeKeyPair(OutputStream outputStream, char[] passPhrase) throws
 			IOException
 	{
-		writeKeyPair(outputStream, passPhrase, keyPair.getJceKeyPair());
+		writeKeyPair(outputStream, passPhrase, keyPair);
 	}
 
 	public void readKeyPair(InputStream inputStream, char[] passPhrase) throws
@@ -204,7 +203,7 @@ public class MartusSecurity extends MartusCrypto
 			SessionKey sessionKey = createSessionKey();
 			Vector sessionKeyShares = MartusSecretShare.buildShares(sessionKey.getBytes());
 			
-			ByteArrayInputStream in = new ByteArrayInputStream(getKeyPairData(getKeyPair()));
+			ByteArrayInputStream in = new ByteArrayInputStream(getKeyPairData(keyPair));
 			ByteArrayOutputStream encryptedKeypair = new ByteArrayOutputStream();
 			encrypt(in,encryptedKeypair,sessionKey);	
 			encryptedKeypair.close();
@@ -739,7 +738,7 @@ public class MartusSecurity extends MartusCrypto
 
 	public PrivateKey getPrivateKey()
 	{
-		KeyPair pair = getKeyPair();
+		KeyPair pair = getJCEKeyPair();
 		if(pair == null)
 			return null;
 		return pair.getPrivate();
@@ -747,13 +746,13 @@ public class MartusSecurity extends MartusCrypto
 
 	public PublicKey getPublicKey()
 	{
-		KeyPair pair = getKeyPair();
+		KeyPair pair = getJCEKeyPair();
 		if(pair == null)
 			return null;
 		return pair.getPublic();
 	}
 
-	public void writeKeyPair(OutputStream outputStream, char[] passPhrase, KeyPair keyPair) throws
+	public void writeKeyPair(OutputStream outputStream, char[] passPhrase, MartusKeyPair keyPair) throws
 			IOException
 	{
 		byte[] randomSalt = createRandomSalt();
@@ -768,12 +767,9 @@ public class MartusSecurity extends MartusCrypto
 		outputStream.flush();
 	}
 
-	public byte[] getKeyPairData(KeyPair keyPair) throws IOException
+	public byte[] getKeyPairData(MartusKeyPair keyPair) throws IOException
 	{
-		ByteArrayOutputStream data = new ByteArrayOutputStream();
-		ObjectOutputStream objectOutputStream = new ObjectOutputStream(data);
-		objectOutputStream.writeObject(keyPair);
-		return data.toByteArray();
+		return keyPair.getKeyPairData();
 	}
 
 	public void setKeyPairFromData(byte[] data) throws
@@ -791,7 +787,12 @@ public class MartusSecurity extends MartusCrypto
 		}
 	}
 
-	public KeyPair getKeyPair()
+	public MartusKeyPair getKeyPair()
+	{
+		return keyPair;
+	}
+	
+	public KeyPair getJCEKeyPair()
 	{
 		return keyPair.getJceKeyPair();
 	}

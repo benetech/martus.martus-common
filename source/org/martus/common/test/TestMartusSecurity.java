@@ -32,6 +32,7 @@ import java.io.ObjectInputStream;
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.PublicKey;
+import java.security.SecureRandom;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
@@ -67,25 +68,25 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		if(security == null)
 			security = new MartusSecurity();
 
-		if(security.getKeyPair() == null)
+		if(!security.hasKeyPair())
 		{
 			security.createKeyPair(SMALLEST_LEGAL_KEY_FOR_TESTING);
-			assertNotNull("setup1: KeyPair returned NULL", security.getKeyPair());
+			assertTrue("setup1: KeyPair returned NULL", security.hasKeyPair());
 
 			MartusSecurity otherSecurity = new MartusSecurity();
 			otherSecurity.createKeyPair(SMALLEST_LEGAL_KEY_FOR_TESTING);
-			assertNotNull("setup2: KeyPair returned NULL", security.getKeyPair());
+			assertTrue("setup2: KeyPair returned NULL", security.hasKeyPair());
 
 			invalidKeyPair = new KeyPair(security.getPublicKey(), otherSecurity.getPrivateKey());
-			assertNotNull("setup3: KeyPair returned NULL", security.getKeyPair());
+			assertTrue("setup3: KeyPair returned NULL", security.hasKeyPair());
 		}
-		assertNotNull("setup4: KeyPair returned NULL", security.getKeyPair());
+		assertTrue("setup4: KeyPair returned NULL", security.hasKeyPair());
 		if(securityWithoutKeyPair == null)
 		{
 			securityWithoutKeyPair = new MartusSecurity();
 		}
 		assertNotNull("setup: security NULL", security);
-		assertNotNull("setup: KeyPair returned NULL", security.getKeyPair());
+		assertTrue("setup: KeyPair returned NULL", security.hasKeyPair());
 		assertNotNull("setup: Key returned NULL", security.getPrivateKey());
 		TRACE_END();
 	}
@@ -215,9 +216,9 @@ public class TestMartusSecurity extends TestCaseEnhanced
 	public void testCreateKeyPair()
 	{
 		TRACE_BEGIN("testCreateKeyPair");
-		assertNull("start with no key pair", securityWithoutKeyPair.getKeyPair());
+		assertNull("start with no key pair", securityWithoutKeyPair.getJCEKeyPair());
 
-		KeyPair keyPair = security.getKeyPair();
+		KeyPair keyPair = security.getJCEKeyPair();
 		assertNotNull("got a key pair", keyPair);
 
 		RSAPublicKey publicKey = (RSAPublicKey)keyPair.getPublic();
@@ -297,17 +298,18 @@ public class TestMartusSecurity extends TestCaseEnhanced
 	public void testGetAndSetKeyPair() throws Exception
 	{
 		TRACE_BEGIN("testWriteAndReadKeyPair");
-		KeyPair keyPair = security.getKeyPair();
+		MartusKeyPair keyPair = security.getKeyPair();
 		assertEquals("no change", keyPair, security.getKeyPair());
 		byte[] data = security.getKeyPairData(keyPair);
 		assertTrue("byte compare", Arrays.equals(data, security.getKeyPairData(keyPair)));
 
 		MartusSecurity tempSecurity = new MartusSecurity();
 		tempSecurity.setKeyPairFromData(data);
-		KeyPair gotKeyPair = tempSecurity.getKeyPair();
+		KeyPair originalKeyPair = security.getJCEKeyPair();
+		KeyPair gotKeyPair = tempSecurity.getJCEKeyPair();
 		assertNotNull("get/set null", tempSecurity);
-		assertEquals("get/set public", keyPair.getPublic(), gotKeyPair.getPublic());
-		assertEquals("get/set private", keyPair.getPrivate(), gotKeyPair.getPrivate());
+		assertEquals("get/set public", originalKeyPair.getPublic(), gotKeyPair.getPublic());
+		assertEquals("get/set private", originalKeyPair.getPrivate(), gotKeyPair.getPrivate());
 
 		String publicKeyString = security.getPublicKeyString();
 		PublicKey publicKey = MartusKeyPair.extractPublicKey(publicKeyString);
@@ -327,8 +329,8 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		{
 			ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
 			tempSecurity.readKeyPair(inputStream, passPhrase);
-			KeyPair oldKeyPair = security.getKeyPair();
-			KeyPair gotKeyPair = tempSecurity.getKeyPair();
+			KeyPair oldKeyPair = security.getJCEKeyPair();
+			KeyPair gotKeyPair = tempSecurity.getJCEKeyPair();
 			assertNotNull("good null", gotKeyPair);
 			assertEquals("good public", oldKeyPair.getPublic(), gotKeyPair.getPublic());
 			assertEquals("good private", oldKeyPair.getPrivate(), gotKeyPair.getPrivate());
@@ -342,7 +344,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 			{
 				//This is an expected exception
 			}
-			assertNull("past eof", tempSecurity.getKeyPair());
+			assertNull("past eof", tempSecurity.getJCEKeyPair());
 		}
 
 		{
@@ -355,7 +357,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 			{
 				//Expected exception
 			}
-			assertNull("bad passphrase", tempSecurity.getKeyPair());
+			assertNull("bad passphrase", tempSecurity.getJCEKeyPair());
 		}
 		TRACE_END();
 	}
@@ -365,21 +367,18 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		TRACE_BEGIN("testVerifyDuringReadKeyPair");
 		char[] passPhrase = "Let's put on a show!".toCharArray();
 		KeyPair mismatched = invalidKeyPair;
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		security.writeKeyPair(outputStream, passPhrase, mismatched);
-
-		MartusSecurity tempSecurity = new MartusSecurity();
-
-		ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+		byte[] mismatchedKeyPairData = MartusKeyPair.getKeyPairData(mismatched);
+		
+		MartusKeyPair willFail = new MartusKeyPair(new SecureRandom());
 		try
 		{
-			tempSecurity.readKeyPair(inputStream, passPhrase);
+			willFail.setFromData(mismatchedKeyPairData);
 		}
-		catch(MartusSecurity.AuthorizationFailedException e)
+		catch(MartusCrypto.AuthorizationFailedException ignoreExpected)
 		{
-			//Expecting exception here
 		}
-		assertNull("Shouldn't accept invalid pair", tempSecurity.getKeyPair());
+		
+		assertFalse("Shouldn't accept invalid pair", willFail.isValid());
 		TRACE_END();
 	}
 
@@ -387,7 +386,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 	{
 		TRACE_BEGIN("testIsKeyPairValid");
 		assertEquals("null", false, securityWithoutKeyPair.isKeyPairValid((KeyPair)null));
-		assertEquals("created", true, security.isKeyPairValid(security.getKeyPair()));
+		assertEquals("created", true, security.isKeyPairValid(security.getJCEKeyPair()));
 		assertEquals("invalid", false, security.isKeyPairValid(invalidKeyPair));
 		TRACE_END();
 	}
