@@ -70,18 +70,17 @@ public class Bulletin implements BulletinConstants
 	public Bulletin(MartusCrypto securityToUse, FieldSpec[] publicFieldSpecs, FieldSpec[] privateFieldSpecs)
 	{
 		security = securityToUse;
-		String accountId = security.getPublicKeyString();
 		isValidFlag = true;
 
-		UniversalId headerUid = BulletinHeaderPacket.createUniversalId(accountId);
+		UniversalId headerUid = BulletinHeaderPacket.createUniversalId(security);
 		header = createHeaderPacket(headerUid);
 
-		UniversalId dataUid = FieldDataPacket.createUniversalId(accountId);
+		UniversalId dataUid = FieldDataPacket.createUniversalId(security);
 		fieldData = createPublicFieldDataPacket(dataUid, publicFieldSpecs);
 		fieldData.setEncrypted(true);
 		header.setFieldDataPacketId(dataUid.getLocalId());
 		
-		UniversalId privateDataUid = FieldDataPacket.createUniversalId(accountId);
+		UniversalId privateDataUid = FieldDataPacket.createUniversalId(security);
 		privateFieldData = createPrivateFieldDataPacket(privateDataUid, privateFieldSpecs);
 		privateFieldData.setEncrypted(true);
 		header.setPrivateFieldDataPacketId(privateDataUid.getLocalId());

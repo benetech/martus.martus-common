@@ -55,14 +55,13 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 			security.createKeyPair(SHORTEST_LEGAL_KEY_SIZE);
 		}
 		if(bhp == null)
-			bhp = new BulletinHeaderPacket(security.getPublicKeyString());
+			bhp = new BulletinHeaderPacket(security);
 	}
 
 	public void testCreateUniversalId()
 	{
-		String sampleAccount = "an account";
-		UniversalId uid = BulletinHeaderPacket.createUniversalId(sampleAccount);
-		assertEquals("account", sampleAccount, uid.getAccountId());
+		UniversalId uid = BulletinHeaderPacket.createUniversalId(security);
+		assertEquals("account", security.getPublicKeyString(), uid.getAccountId());
 		assertStartsWith("prefix", "B-", uid.getLocalId());
 	}
 
@@ -291,7 +290,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 
 	public void testLoadXml() throws Exception
 	{
-		UniversalId uid = HeaderPacketWithUnknownTag.createUniversalId(security.getPublicKeyString());
+		UniversalId uid = HeaderPacketWithUnknownTag.createUniversalId(security);
 		HeaderPacketWithUnknownTag bhp = new HeaderPacketWithUnknownTag(uid);
 		
 		String dataId = "some id";
@@ -312,7 +311,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		bhp.writeXml(out, security);
 		String result = new String(out.toByteArray(), "UTF-8");
 
-		BulletinHeaderPacket loaded = new BulletinHeaderPacket("");
+		BulletinHeaderPacket loaded = new BulletinHeaderPacket(security);
 		byte[] bytes = result.getBytes("UTF-8");
 		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
 		loaded.loadFromXml(in, security);
@@ -351,7 +350,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		bhp.writeXml(out, security);
 		String result = new String(out.toByteArray(), "UTF-8");
 
-		BulletinHeaderPacket loaded = new BulletinHeaderPacket("");
+		BulletinHeaderPacket loaded = new BulletinHeaderPacket(security);
 		byte[] bytes = result.getBytes("UTF-8");
 		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
 		loaded.loadFromXml(in, security);
@@ -377,7 +376,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		bhp.writeXml(out, security);
 		String result = new String(out.toByteArray(), "UTF-8");
 
-		BulletinHeaderPacket loaded = new BulletinHeaderPacket("");
+		BulletinHeaderPacket loaded = new BulletinHeaderPacket(security);
 		byte[] bytes = result.getBytes("UTF-8");
 		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
 		loaded.loadFromXml(in, security);

@@ -740,8 +740,7 @@ public class MartusSecurity extends MartusCryptoImplementation
 		}
 	}
 
-	public synchronized SessionKey createSessionKey() throws
-			EncryptionException
+	public synchronized SessionKey createSessionKey()
 	{
 		sessionKeyGenerator.init(bitsInSessionKey, rand);
 		return new SessionKey(sessionKeyGenerator.generateKey().getEncoded());

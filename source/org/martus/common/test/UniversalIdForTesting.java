@@ -23,24 +23,21 @@ Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.
 
 */
+package org.martus.common.test;
 
-package org.martus.common.packet;
+import java.rmi.server.UID;
+import org.martus.common.packet.UniversalId;
 
-import org.martus.common.FieldSpec;
 
-
-public class PacketFactory
+public class UniversalIdForTesting extends UniversalId
 {
-	public static Packet createEmptyPacket(UniversalId uid)
+	UniversalIdForTesting(String accountIdToUse, String localIdToUse)
 	{
-		String localId = uid.getLocalId();
-		if(BulletinHeaderPacket.isValidLocalId(localId))
-			return new BulletinHeaderPacket(uid);
-		else if(FieldDataPacket.isValidLocalId(localId))
-			return new FieldDataPacket(uid, new FieldSpec[0]);
-		else if(AttachmentPacket.isValidLocalId(localId))
-			return new AttachmentPacket(uid);
-			
-		return null;
+		super(accountIdToUse, localIdToUse);
+	}
+	
+	static public UniversalId createFromAccountAndPrefix(String accountId, String prefix)
+	{
+		return createFromAccountAndLocalId(accountId, prefix + new UID().toString());
 	}
 }

@@ -74,7 +74,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 			securityHQ = new MartusSecurity();
 			securityHQ.createKeyPair(SHORTEST_LEGAL_KEY_SIZE);
 		}
-		UniversalId uid = FieldDataPacket.createUniversalId(security.getPublicKeyString());
+		UniversalId uid = FieldDataPacket.createUniversalId(security);
 		fdp = new FieldDataPacket(uid, fieldTags);
 	}
 
@@ -117,9 +117,8 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 
 	public void testCreateUniversalId()
 	{
-		String sampleAccount = "an account";
-		UniversalId uid = FieldDataPacket.createUniversalId(sampleAccount);
-		assertEquals("account", sampleAccount, uid.getAccountId());
+		UniversalId uid = FieldDataPacket.createUniversalId(security);
+		assertEquals("account", security.getPublicKeyString(), uid.getAccountId());
 		assertStartsWith("prefix", "F-", uid.getLocalId());
 	}
 
@@ -297,7 +296,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 			}
 		}
 		
-		UniversalId uid = FieldDataPacket.createUniversalId(security.getPublicKeyString());
+		UniversalId uid = FieldDataPacket.createUniversalId(security);
 		FieldDataPacketWithUnknownTags fdp = new FieldDataPacketWithUnknownTags(uid, fieldTags);
 		
 		String id = "1234567";
@@ -521,7 +520,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 
 	public void testWriteAndLoadGrids()throws Exception
 	{
-		UniversalId uid = FieldDataPacket.createUniversalId(security.getPublicKeyString());
+		UniversalId uid = FieldDataPacket.createUniversalId(security);
 		GridData grid = TestGridData.createSampleGrid();
 		String gridTag = "grid";
 		FieldSpec[] specs = {FieldSpec.createStandardField(gridTag,FieldSpec.TYPE_GRID)};
@@ -549,8 +548,8 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		String data1 = "  some  \n\n whitespace \n\n";
 		String data2 = "<&>";
 		String data3 = "";
-		UniversalId uid1 = UniversalId.createFromAccountAndPrefix(account, "A");
-		UniversalId uid2 = UniversalId.createFromAccountAndPrefix(account, "A");
+		UniversalId uid1 = UniversalIdForTesting.createFromAccountAndPrefix(account, "A");
+		UniversalId uid2 = UniversalIdForTesting.createFromAccountAndPrefix(account, "A");
 		AttachmentProxy attach1 = new AttachmentProxy(new File("attachment 1"));
 		AttachmentProxy attach2 = new AttachmentProxy(new File("attachmenté 2"));
 		attach1.setUniversalIdAndSessionKey(uid1, security.createSessionKey());
@@ -626,7 +625,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		assertNotContains("encrypted data visible3?", data1, result);
 		assertNotContains("encrypted data visible4?", data2base + xmlAmp + xmlLt + xmlGt, result);
 
-		UniversalId uid = UniversalId.createFromAccountAndPrefix("other acct", "");
+		UniversalId uid = UniversalIdForTesting.createFromAccountAndPrefix("other acct", "");
 		FieldDataPacket got = new FieldDataPacket(uid, fdp.getFieldSpecs());
 		byte[] bytes = result.getBytes("UTF-8");
 		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
@@ -663,7 +662,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		assertContains(MartusXml.getTagStart(MartusXml.HQSessionKeyElementName), result);
 		assertContains(MartusXml.getTagStart(AuthorizedSessionKeys.AUTHORIZED_SESSION_KEYS_TAG), result);
 
-		UniversalId uid = UniversalId.createFromAccountAndPrefix("other acct", "");
+		UniversalId uid = UniversalIdForTesting.createFromAccountAndPrefix("other acct", "");
 		FieldDataPacket got = new FieldDataPacket(uid, fdp.getFieldSpecs());
 		byte[] bytes = result.getBytes("UTF-8");
 		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
@@ -718,7 +717,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		assertContains(MartusXml.getTagStart(MartusXml.HQSessionKeyElementName), result);
 		assertContains(MartusXml.getTagStart(AuthorizedSessionKeys.AUTHORIZED_SESSION_KEYS_TAG), result);
 
-		UniversalId uid = UniversalId.createFromAccountAndPrefix("other acct", "");
+		UniversalId uid = UniversalIdForTesting.createFromAccountAndPrefix("other acct", "");
 		FieldDataPacket got = new FieldDataPacket(uid, fdp.getFieldSpecs());
 		byte[] bytes = result.getBytes("UTF-8");
 		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);

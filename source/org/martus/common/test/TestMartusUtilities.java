@@ -504,11 +504,10 @@ public class TestMartusUtilities extends TestCaseEnhanced
 
 	public void testDoesPacketNeedLocalEncryption() throws Exception
 	{
-		final String accountId = "dummy";
-		BulletinHeaderPacket bhpWithoutFlag = new BulletinHeaderPacket(accountId);
-		BulletinHeaderPacket bhpWithFlagPrivate = new BulletinHeaderPacket(accountId);
+		BulletinHeaderPacket bhpWithoutFlag = new BulletinHeaderPacket(security);
+		BulletinHeaderPacket bhpWithFlagPrivate = new BulletinHeaderPacket(security);
 		bhpWithFlagPrivate.setAllPrivate(true);
-		BulletinHeaderPacket bhpWithFlagPublic = new BulletinHeaderPacket(accountId);
+		BulletinHeaderPacket bhpWithFlagPublic = new BulletinHeaderPacket(security);
 		bhpWithFlagPublic.setAllPrivate(false);
 		byte[] binaryEncryptedData = {0, 1, 2, 3};
 		byte[] tagEncryptedData = new String("blah blah blah\n<Encrypted> blah blah").getBytes();
@@ -540,8 +539,8 @@ public class TestMartusUtilities extends TestCaseEnhanced
 	{
 		MockMartusSecurity client1 = MockMartusSecurity.createClient();
 		MockMartusSecurity client2 = MockMartusSecurity.createOtherClient();
-		UniversalId realUid = BulletinHeaderPacket.createUniversalId(client1.getPublicKeyString());
-		UniversalId wrongUid = BulletinHeaderPacket.createUniversalId(client2.getPublicKeyString());
+		UniversalId realUid = BulletinHeaderPacket.createUniversalId(client1);
+		UniversalId wrongUid = BulletinHeaderPacket.createUniversalId(client2);
 		BulletinHeaderPacket bhp1 = new BulletinHeaderPacket(realUid);
 
 		Database db = new MockServerDatabase();

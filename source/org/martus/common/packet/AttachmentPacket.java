@@ -57,21 +57,26 @@ public class AttachmentPacket extends Packet
 {
 	public AttachmentPacket(String account, SessionKey sessionKeyToUse, File fileToAttach, MartusCrypto crypto)
 	{
-		super(createUniversalId(account));
+		super(createUniversalId(crypto));
 		sessionKey = sessionKeyToUse;
 		rawFile = fileToAttach;
 		security = crypto;
 	}
 
+	public AttachmentPacket(UniversalId uId)
+	{
+		super(uId);
+	}
+	
 	private AttachmentPacket(MartusCrypto crypto)
 	{
 		super(UniversalId.createDummyUniversalId());
 		security = crypto;
 	}
 
-	public static UniversalId createUniversalId(String accountId)
+	public static UniversalId createUniversalId(MartusCrypto accountSecurity)
 	{
-		return UniversalId.createFromAccountAndPrefix(accountId, prefix);
+		return UniversalId.createFromAccountAndLocalId(accountSecurity.getPublicKeyString(), createLocalId(accountSecurity, prefix));
 	}
 
 	public static boolean isValidLocalId(String localId)

@@ -79,7 +79,7 @@ public class BulletinZipUtilities
 		BulletinHeaderPacket bhp;
 		String headerXml = "";
 	
-		bhp = new BulletinHeaderPacket("");
+		bhp = new BulletinHeaderPacket(security);
 		try
 		{
 			headerXml = db.readRecord(headerKey, security);
@@ -136,7 +136,7 @@ public class BulletinZipUtilities
 		byte[] headerBytes = headerXml.getBytes("UTF-8");
 	
 		ByteArrayInputStreamWithSeek headerIn = new ByteArrayInputStreamWithSeek(headerBytes);
-		BulletinHeaderPacket bhp = new BulletinHeaderPacket("");
+		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security);
 	
 		MartusCrypto doNotCheckSigDuringDownload = null;
 		bhp.loadFromXml(headerIn, doNotCheckSigDuringDownload);

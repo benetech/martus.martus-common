@@ -37,6 +37,7 @@ import org.martus.common.MartusXml;
 import org.martus.common.StandardFieldSpecs;
 import org.martus.common.VersionBuildDate;
 import org.martus.common.XmlWriterFilter;
+import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.FieldDataPacket;
@@ -63,6 +64,21 @@ public class TestPacket extends TestCaseEnhanced
     	}
     }
 
+    public void testCreateLocalId() throws Exception
+    {
+    	String prefix = "d-";
+    	String local1 = Packet.createLocalId(security, prefix);
+    	assertStartsWith(prefix, local1);
+    	assertEquals(26, local1.length());
+    	String local2 = Packet.createLocalId(security, prefix);
+    	assertNotEquals(local1, local2);
+    	assertNotContains("Should not contain a /", "/", local1);
+    	assertNotContains("Should not contain a =", "=", local1);
+    	assertNotContains("Local 2 Should not contain a /", "/", local2);
+    	assertNotContains("Local 2 Should not contain a =", "=", local2);
+    	
+    }
+    
 	public void testIsValidVersion()
 	{
 		assertFalse("Valid null comment?", Packet.isValidStartComment(null));
@@ -144,7 +160,7 @@ public class TestPacket extends TestCaseEnhanced
 
 	public void testWriteAndLoadUtf8() throws Exception
 	{
-		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security.getPublicKeyString());
+		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security);
 		String utf8Data = "ßÑñú";
 		bhp.setFieldDataPacketId(utf8Data);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -160,7 +176,7 @@ public class TestPacket extends TestCaseEnhanced
 
 	public void testLoadMoreSpecificPacketType() throws Exception
 	{
-		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security.getPublicKeyString());
+		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security);
 		bhp.setFieldDataPacketId("none");
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		byte[] sig = bhp.writeXml(out, security);
@@ -193,9 +209,9 @@ public class TestPacket extends TestCaseEnhanced
 	{
 		class CorruptedBhp extends BulletinHeaderPacket
 		{
-			public CorruptedBhp(String accountString)
+			public CorruptedBhp(MartusCrypto accountSecurity)
 			{
-				super(createUniversalId(accountString));
+				super(createUniversalId(accountSecurity));
 			}
 
 			protected void internalWriteXml(XmlWriterFilter dest) throws IOException
@@ -205,7 +221,7 @@ public class TestPacket extends TestCaseEnhanced
 			}
 		}
 
-		CorruptedBhp bhp = new CorruptedBhp(security.getPublicKeyString());
+		CorruptedBhp bhp = new CorruptedBhp(security);
 		bhp.setFieldDataPacketId("none");
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		bhp.writeXml(out, security);
@@ -222,7 +238,7 @@ public class TestPacket extends TestCaseEnhanced
 	
 	public void testValidatePacketWithWrongAccountId() throws Exception
 	{
-		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security.getPublicKeyString());
+		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		bhp.writeXml(out, security);
 
@@ -240,7 +256,7 @@ public class TestPacket extends TestCaseEnhanced
 	public void testValidatePacketWithWrongLocalId() throws Exception
 	{
 		FieldSpec[] specs = StandardFieldSpecs.getDefaultPublicFieldSpecs();
-		UniversalId uid = FieldDataPacket.createUniversalId(security.getPublicKeyString());
+		UniversalId uid = FieldDataPacket.createUniversalId(security);
 		FieldDataPacket fdp = new FieldDataPacket(uid, specs);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		fdp.writeXml(out, security);
@@ -273,7 +289,7 @@ public class TestPacket extends TestCaseEnhanced
 
 	public void testVerifyGoodPacket() throws Exception
 	{
-		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security.getPublicKeyString());
+		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security);
 		bhp.setPrivateFieldDataPacketId("Josée");
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		bhp.writeXml(out, security);
@@ -286,7 +302,7 @@ public class TestPacket extends TestCaseEnhanced
 
 	public void testVerifyGoodPacketWithAnotherAccount() throws Exception
 	{
-		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security.getPublicKeyString());
+		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		bhp.writeXml(out, security);
 
@@ -298,7 +314,7 @@ public class TestPacket extends TestCaseEnhanced
 
 	public void testVerifyPacketWithCorruptedStartComment() throws Exception
 	{
-		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security.getPublicKeyString());
+		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		bhp.writeXml(out, security);
 
@@ -318,7 +334,7 @@ public class TestPacket extends TestCaseEnhanced
 
 	public void testVerifyPacketWithCorruptedSignatureComment() throws Exception
 	{
-		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security.getPublicKeyString());
+		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		bhp.writeXml(out, security);
 
@@ -355,7 +371,7 @@ public class TestPacket extends TestCaseEnhanced
 
 	public void testVerifyPacketWithCorruptedData() throws Exception
 	{
-		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security.getPublicKeyString());
+		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		bhp.writeXml(out, security);
 
@@ -379,7 +395,7 @@ public class TestPacket extends TestCaseEnhanced
 
 	public void testVerifyPacketWithCorruptedSignature() throws Exception
 	{
-		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security.getPublicKeyString());
+		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		bhp.writeXml(out, security);
 
@@ -400,7 +416,7 @@ public class TestPacket extends TestCaseEnhanced
 
 	public void testVerifyPacketWithNoAccountTag() throws Exception
 	{
-		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security.getPublicKeyString());
+		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		bhp.writeXml(out, security);
 
@@ -429,7 +445,7 @@ public class TestPacket extends TestCaseEnhanced
 
 	public void testVerifyPacketWithBadAccountElement() throws Exception
 	{
-		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security.getPublicKeyString());
+		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		bhp.writeXml(out, security);
 
@@ -506,7 +522,7 @@ public class TestPacket extends TestCaseEnhanced
 	{
 		SimplePacketSubtype()
 		{
-			super(UniversalId.createFromAccountAndPrefix(security.getPublicKeyString(), ""));
+			super(UniversalIdForTesting.createFromAccountAndPrefix(security.getPublicKeyString(), ""));
 		}
 
 		protected String getPacketRootElementName()
@@ -520,7 +536,7 @@ public class TestPacket extends TestCaseEnhanced
 	{
 		AnotherSimplePacketSubtype()
 		{
-			super(UniversalId.createFromAccountAndPrefix(security.getPublicKeyString(), ""));
+			super(UniversalIdForTesting.createFromAccountAndPrefix(security.getPublicKeyString(), ""));
 		}
 
 		protected String getPacketRootElementName()

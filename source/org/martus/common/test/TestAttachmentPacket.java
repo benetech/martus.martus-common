@@ -77,9 +77,8 @@ public class TestAttachmentPacket extends TestCaseEnhanced
 
 	public void testCreateUniversalId()
 	{
-		String sampleAccount = "an account";
-		UniversalId uid = AttachmentPacket.createUniversalId(sampleAccount);
-		assertEquals("account", sampleAccount, uid.getAccountId());
+		UniversalId uid = AttachmentPacket.createUniversalId(security);
+		assertEquals("account", security.getPublicKeyString(), uid.getAccountId());
 		assertStartsWith("prefix", "A-", uid.getLocalId());
 	}
 

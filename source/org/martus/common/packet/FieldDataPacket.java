@@ -82,9 +82,9 @@ public class FieldDataPacket extends Packet
 		setFieldSpecs(LegacyCustomFields.parseFieldSpecsFromString(delimitedFieldSpecs));
 	}
 
-	public static UniversalId createUniversalId(String accountId)
+	public static UniversalId createUniversalId(MartusCrypto accountSecurity)
 	{
-		return UniversalId.createFromAccountAndPrefix(accountId, prefix);
+		return UniversalId.createFromAccountAndLocalId(accountSecurity.getPublicKeyString(), createLocalId(accountSecurity, prefix));
 	}
 
 	public static boolean isValidLocalId(String localId)

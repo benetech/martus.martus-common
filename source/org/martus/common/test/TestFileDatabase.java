@@ -350,7 +350,7 @@ public class TestFileDatabase extends TestCaseEnhanced
 		for(int i = 0; i < 20; ++i)
 		{
 			String a1 = "account" + i;
-			UniversalId uid1 = UniversalId.createFromAccountAndPrefix(a1, "x");
+			UniversalId uid1 = UniversalIdForTesting.createFromAccountAndPrefix(a1, "x");
 			DatabaseKey key1 = new DatabaseKey(uid1);
 			int accountHash1 = FileDatabase.getHashValue(uid1.getAccountId()) & 0xFF;
 			String accountHashString1 = Integer.toHexString(accountHash1 + 0xb00);
@@ -417,7 +417,7 @@ public class TestFileDatabase extends TestCaseEnhanced
 		db.deleteAllData();
 		File mapFile = db.accountMapFile;
 		String accountId = "accountForTesting";
-		UniversalId uid = UniversalId.createFromAccountAndPrefix(accountId, "x");
+		UniversalId uid = UniversalIdForTesting.createFromAccountAndPrefix(accountId, "x");
 		DatabaseKey key = new DatabaseKey(uid);
 
 		db.writeRecord(key, "Some record text");
@@ -567,9 +567,9 @@ public class TestFileDatabase extends TestCaseEnhanced
 	MyFileDatabase db;
 	File dir;
 	String accountString1 = "acct1";
-	DatabaseKey shortKey = new DatabaseKey(UniversalId.createFromAccountAndPrefix(accountString1 , "x"));
-	DatabaseKey shortKey2 = new DatabaseKey(UniversalId.createFromAccountAndPrefix(accountString1 , "x"));
-	DatabaseKey otherKey = new DatabaseKey(UniversalId.createFromAccountAndPrefix("acct2", "x"));
+	DatabaseKey shortKey = new DatabaseKey(UniversalIdForTesting.createFromAccountAndPrefix(accountString1 , "x"));
+	DatabaseKey shortKey2 = new DatabaseKey(UniversalIdForTesting.createFromAccountAndPrefix(accountString1 , "x"));
+	DatabaseKey otherKey = new DatabaseKey(UniversalIdForTesting.createFromAccountAndPrefix("acct2", "x"));
 	String sampleString1 = "This is just a little bit of data as a sample";
 	String sampleString2 = "Here is a somewhat different sample string";
 	byte[] sampleBytes1 = {127,44,17,0,27,99};

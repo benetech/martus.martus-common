@@ -207,7 +207,7 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 
 		ZipEntry headerEntry = (ZipEntry)entries.nextElement();
 		assertStartsWith("header id wrong?", "B", headerEntry.getName());
-		BulletinHeaderPacket bhp = new BulletinHeaderPacket("dummy");
+		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security);
 		bhp.loadFromXml(new ZipEntryInputStream(zip, headerEntry), security);
 		assertEquals("bhp id?", original.getUniversalId(), bhp.getUniversalId());
 
@@ -272,7 +272,7 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 		assertNotNull("null header?", headerEntry);
 		assertEquals("wrong header name?", b.getLocalId(), headerEntry.getName());
 		InputStreamWithSeek headerIn = new ZipEntryInputStream(zip, headerEntry);
-		BulletinHeaderPacket header = new BulletinHeaderPacket("");
+		BulletinHeaderPacket header = new BulletinHeaderPacket(security);
 		header.loadFromXml(headerIn, security);
 		headerIn.close();
 		assertEquals("header id wrong?", b.getLocalId(), header.getLocalId());

@@ -39,6 +39,7 @@ import org.martus.common.MartusXml;
 import org.martus.common.VersionBuildDate;
 import org.martus.common.XmlWriterFilter;
 import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.CryptoException;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
 import org.martus.common.database.Database;
@@ -90,6 +91,19 @@ public class Packet
 	public Packet(UniversalId universalIdToUse)
 	{
 		uid = universalIdToUse;
+	}
+	
+	static public String createLocalId(MartusCrypto crypto, String prefix)
+	{
+		SessionKey sessionKey = crypto.createSessionKey();
+		byte[] originalBytes = sessionKey.getBytes();
+		byte[] wantedBytes = new byte[LOCALID_RANDOM_BYTE_COUNT];
+		System.arraycopy(originalBytes, 0, wantedBytes, 0, wantedBytes.length);
+		String base64SessionKey = Base64.encode(wantedBytes);
+		String normalizedKey = base64SessionKey.replaceAll("/",".");
+		normalizedKey = normalizedKey.replaceAll("=", "-");
+		String localId = prefix + normalizedKey;
+		return localId;
 	}
 
 	public UniversalId getUniversalId()
@@ -421,4 +435,6 @@ public class Packet
 	// typically, we print the values to the console when Help/About is done
 	public static int callsToVerifyPacketSignature;
 	public static long millisInVerifyPacketSignature;
+
+	private static final int LOCALID_RANDOM_BYTE_COUNT = 128/8;
 }

@@ -48,7 +48,7 @@ public class TestUniversalId extends TestCaseEnhanced
 	public void testAccountId()
 	{
 		final String sampleAccountId1 = "an account id";
-		UniversalId uid = UniversalId.createFromAccountAndPrefix(sampleAccountId1, "");
+		UniversalId uid = UniversalIdForTesting.createFromAccountAndPrefix(sampleAccountId1, "");
 		assertEquals("wrong account?", sampleAccountId1, uid.getAccountId());
 
 		final String sampleAccountId2 = "another silly account id";
@@ -77,7 +77,7 @@ public class TestUniversalId extends TestCaseEnhanced
 
 	public void testToString()
 	{
-		UniversalId uid = UniversalId.createFromAccountAndPrefix(sampleAccountId, "");
+		UniversalId uid = UniversalIdForTesting.createFromAccountAndPrefix(sampleAccountId, "");
 
 		String whole = uid.toString();
 		assertContains("no account?", sampleAccountId, whole);

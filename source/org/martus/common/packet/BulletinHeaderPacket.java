@@ -46,9 +46,9 @@ import org.martus.util.xml.SimpleXmlParser;
 
 public class BulletinHeaderPacket extends Packet
 {
-	public BulletinHeaderPacket(String accountString)
+	public BulletinHeaderPacket(MartusCrypto accountSecurity)
 	{
-		super(createUniversalId(accountString));
+		super(createUniversalId(accountSecurity));
 		initialize();
 	}
 
@@ -58,9 +58,14 @@ public class BulletinHeaderPacket extends Packet
 		initialize();
 	}
 
-	public static UniversalId createUniversalId(String accountId)
+	public BulletinHeaderPacket()
 	{
-		return UniversalId.createFromAccountAndPrefix(accountId, prefix);
+		initialize();
+	}
+
+	public static UniversalId createUniversalId(MartusCrypto accountSecurity)
+	{
+		return UniversalId.createFromAccountAndLocalId(accountSecurity.getPublicKeyString(), createLocalId(accountSecurity, prefix));
 	}
 
 	public static boolean isValidLocalId(String localId)
@@ -288,7 +293,7 @@ public class BulletinHeaderPacket extends Packet
 		throws IOException,
 		SignatureVerificationException
 	{
-		BulletinHeaderPacket header = new BulletinHeaderPacket("Unknown");
+		BulletinHeaderPacket header = new BulletinHeaderPacket(verifier);
 		ZipEntry headerZipEntry = getBulletinHeaderEntry(zip);
 
 		InputStreamWithSeek headerIn = new ZipEntryInputStream(zip, headerZipEntry);

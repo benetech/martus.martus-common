@@ -38,15 +38,9 @@ public class UniversalId implements Comparable, Serializable
 		return new UniversalId(accountId, localId);
 	}
 
-	public static UniversalId createFromAccountAndPrefix(String accountId, String prefix)
-	{
-		String localId = prefix + new UID().toString();
-		return new UniversalId(accountId, localId);
-	}
-
 	public static UniversalId createDummyUniversalId()
 	{
-		return createFromAccountAndPrefix("DummyAccount", "Dummy");
+		return createFromAccountAndLocalId("DummyAccount", "Dummy" + new UID().toString());
 	}
 
 	static UniversalId createDummyFromString(String uidAsString)
@@ -68,7 +62,7 @@ public class UniversalId implements Comparable, Serializable
 		return createFromAccountAndLocalId(accountId, localId);
 	}
 
-	private UniversalId(String accountIdToUse, String localIdToUse)
+	protected UniversalId(String accountIdToUse, String localIdToUse)
 	{
 		setAccountId(accountIdToUse);
 		setLocalId(localIdToUse);

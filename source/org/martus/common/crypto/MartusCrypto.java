@@ -80,8 +80,7 @@ public abstract class MartusCrypto
 		MartusSignatureException;
 
 	// session keys
-	public abstract SessionKey createSessionKey() throws
-			EncryptionException;
+	public abstract SessionKey createSessionKey();
 	public abstract SessionKey encryptSessionKey(SessionKey sessionKey, String publicKey) throws
 		EncryptionException;
 	public abstract SessionKey decryptSessionKey(SessionKey encryptedSessionKey) throws
