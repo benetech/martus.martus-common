@@ -154,7 +154,6 @@ public class FieldDataPacket extends Packet
 		fieldData = new TreeMap();
 		clearAttachments();
 		hqPublicKey="";
-		decryptedByAuthor = true;
 	}
 
 	public void clearAttachments()
@@ -226,14 +225,12 @@ public class FieldDataPacket extends Packet
 			if(getAccountId().equals(verifier.getPublicKeyString()))
 			{	
 				verifier.decrypt(inEncrypted, outPlain);
-				decryptedByAuthor = true;
 			}
 			else if(encryptedHQSessionKeyDuringLoad != null)
 			{
 				byte[] encryptedHQSessionKey = Base64.decode(encryptedHQSessionKeyDuringLoad);
 				byte[] hqSessionKey = verifier.decryptSessionKey(encryptedHQSessionKey);
 				verifier.decrypt(inEncrypted, outPlain, hqSessionKey);
-				decryptedByAuthor = false;
 			}
 			else
 			{
@@ -256,11 +253,6 @@ public class FieldDataPacket extends Packet
 		}
 	}
 	
-	public boolean wasDecryptedByAuthor()
-	{
-		return decryptedByAuthor;
-	}
-
 	public void loadFromXml(InputStreamWithSeek inputStream, MartusCrypto verifier) throws
 		IOException,
 		InvalidPacketException,
@@ -385,6 +377,5 @@ public class FieldDataPacket extends Packet
 	private byte[] pendingAttachmentKeyBytes;
 	private static final String prefix = "F-";
 	private String hqPublicKey;
-	private boolean decryptedByAuthor; 
 }
 

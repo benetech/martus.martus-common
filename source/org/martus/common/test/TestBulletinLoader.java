@@ -193,47 +193,6 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		assertEquals("Loaded Keys not the same?", original.getFieldDataPacket().getHQPublicKey(), loaded2.getFieldDataPacket().getHQPublicKey());
 	}
 
-	public void testWasDecryptedByAuthor() throws Exception
-	{
-		Bulletin original = new Bulletin(security);
-		original.set(Bulletin.TAGPUBLICINFO, "public info");
-		original.setAllPrivate(true);
-
-		MartusSecurity hqSecurity = new MartusSecurity();
-		hqSecurity.createKeyPair(512);
-		String key = hqSecurity.getPublicKeyString();
-		original.setHQPublicKey(key);
-		BulletinSaver.saveToClientDatabase(original, db, true, security);
-
-		DatabaseKey dbKey = new DatabaseKey(original.getUniversalId());
-
-		Bulletin loadedByAuthor = BulletinLoader.loadFromDatabase(db, dbKey, security);
-		assertTrue("Bulletin not valid with author security?", loadedByAuthor.isValid());
-		assertTrue("Packet not decoded by author with author security?", loadedByAuthor.getFieldDataPacket().wasDecryptedByAuthor());
-		assertTrue("Bulletin should be decrypted by author", loadedByAuthor.wasDecryptedByAuthor());
-
-		Bulletin loadedByHQ = BulletinLoader.loadFromDatabase(db, dbKey, hqSecurity);
-		assertTrue("Bulletin not valid with HQ security?", loadedByHQ.isValid());
-		assertFalse("Packet decoded by author with HQ security?", loadedByHQ.getFieldDataPacket().wasDecryptedByAuthor());
-		assertFalse("Bulletin should not have been decrypted by author", loadedByHQ.wasDecryptedByAuthor());
-		
-		Bulletin privateBulletin = new Bulletin(security);
-		privateBulletin.set(Bulletin.TAGPRIVATEINFO, "private info");
-		privateBulletin.setAllPrivate(false);
-		privateBulletin.setHQPublicKey(key);
-		BulletinSaver.saveToClientDatabase(privateBulletin, db, true, security);
-		
-		dbKey = new DatabaseKey(privateBulletin.getUniversalId());
-		loadedByAuthor = BulletinLoader.loadFromDatabase(db, dbKey, security);
-		assertTrue("Public Bulletin not valid with author security?", loadedByAuthor.isValid());
-		assertTrue("Private Packet not decoded by author with author security?", loadedByAuthor.getPrivateFieldDataPacket().wasDecryptedByAuthor());
-		assertTrue("Public Bulletin should be decrypted by author", loadedByAuthor.wasDecryptedByAuthor());
-
-		loadedByHQ = BulletinLoader.loadFromDatabase(db, dbKey, hqSecurity);
-		assertTrue("Public Bulletin not valid with HQ security?", loadedByHQ.isValid());
-		assertFalse("Private Packet decoded by author with HQ security?", loadedByHQ.getPrivateFieldDataPacket().wasDecryptedByAuthor());
-		assertFalse("Public Bulletin should not have been decrypted by author", loadedByHQ.wasDecryptedByAuthor());
-	}
 	
 	
 	public void testLoadFromDatabaseEncrypted() throws Exception

@@ -555,13 +555,6 @@ public class Bulletin implements BulletinConstants
 		return new FieldDataPacket(dataUid, publicFieldSpecs);
 	}
 	
-	public boolean wasDecryptedByAuthor()
-	{
-		if(isAllPrivate())
-			return getFieldDataPacket().wasDecryptedByAuthor();
-		return getPrivateFieldDataPacket().wasDecryptedByAuthor();
-	}
-
 	private boolean isValidFlag;
 	private MartusCrypto security;
 	private BulletinHeaderPacket header;
