@@ -598,8 +598,7 @@ public class MartusUtilities
 				if( result.contains(currentLine) )
 					continue;
 	
-				result.add(currentLine);
-				//System.out.println("loadListFromFile: " + currentLine);
+				result.add(currentLine);				
 			}
 			
 			return result;

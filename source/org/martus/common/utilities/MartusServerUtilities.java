@@ -538,13 +538,12 @@ public class MartusServerUtilities
 	
 	
 	
-	public static Vector loadHiddenPacketsFile(File hiddenFile, Database database, LoggerInterface logger)
+	public static void loadHiddenPacketsFile(File hiddenFile, Database database, LoggerInterface logger)
 	{	
-		Vector packets = new Vector();	
 		try
 		{
 			UnicodeReader reader = new UnicodeReader(hiddenFile);
-			packets = loadHiddenPacketsList(reader, database, logger);
+			loadHiddenPacketsList(reader, database, logger);
 		}
 		catch(FileNotFoundException nothingToWorryAbout)
 		{
@@ -554,24 +553,21 @@ public class MartusServerUtilities
 		{
 			e.printStackTrace();
 			logger.log("Error loading Deleted Packets file: " + hiddenFile.getName());
-		}
-		
-		return packets;
+		}		
 	}
 
-	public static Vector loadHiddenPacketsList(UnicodeReader reader, Database db, LoggerInterface logger) throws IOException, InvalidBase64Exception
+	public static void loadHiddenPacketsList(UnicodeReader reader, Database db, LoggerInterface logger) throws IOException, InvalidBase64Exception
 	{
 		String accountId = null;
-		Vector hiddenPackets = new Vector();
 		try
 		{
 			while(true)
 			{
 				String thisLine = reader.readLine();
 				if(thisLine == null)
-					return hiddenPackets;
+					return;
 				if(thisLine.startsWith(" "))
-					hiddenPackets.addAll(hidePackets(db, accountId, thisLine, logger));
+					hidePackets(db, accountId, thisLine, logger);
 				else
 					accountId = thisLine;
 			}				
