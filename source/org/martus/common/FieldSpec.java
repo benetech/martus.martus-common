@@ -42,7 +42,12 @@ public class FieldSpec
 {
 	public static FieldSpec createStandardField(String tagToUse, int typeToUse)
 	{
-		return new FieldSpec(tagToUse, "", typeToUse, false);
+		return createCustomField(tagToUse, "", typeToUse);
+	}
+	
+	public static FieldSpec createCustomField(String tagToUse, String labelToUse, int typeToUse)
+	{
+		return new FieldSpec(tagToUse, labelToUse, typeToUse, false);
 	}
 	
 	public FieldSpec(int typeToUse)
