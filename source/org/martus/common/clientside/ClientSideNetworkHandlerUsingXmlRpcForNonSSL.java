@@ -112,6 +112,20 @@ public class ClientSideNetworkHandlerUsingXmlRpcForNonSSL implements NetworkInte
 		System.out.println(stamp + " " + message);
 	}
 
+	public static boolean isNonSSLServerAvailable(NetworkInterfaceForNonSSL server)
+	{
+		String result = server.ping();
+		if(result == null)
+			return false;
+	
+		if(result.indexOf(MARTUS_SERVER_PING_RESPONSE) != 0)
+			return false;
+	
+		return true;
+	}
+
+	private static final String MARTUS_SERVER_PING_RESPONSE = "MartusServer";
+
 	String server;
 	int[] ports;
 	static int indexOfPortThatWorkedLast = 0;

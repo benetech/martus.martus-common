@@ -27,12 +27,12 @@ package org.martus.common.analyzerhelper;
 
 import java.io.IOException;
 import java.io.InputStream;
-import org.martus.common.clientside.Exceptions;
-import org.martus.common.clientside.Exceptions.ServerNotAvailableException;
+import org.martus.common.clientside.ClientSideNetworkHandlerUsingXmlRpcForNonSSL;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
 import org.martus.common.crypto.MartusCrypto.CryptoInitializationException;
 import org.martus.common.crypto.MartusCrypto.InvalidKeyPairFileVersionException;
+import org.martus.common.network.NetworkInterfaceForNonSSL;
 
 
 public class MartusBulletinRetriever
@@ -47,18 +47,20 @@ public class MartusBulletinRetriever
 	{
 		this.serverIPAddress = serverIPAddress;
 		this.serverPublicCode = serverPublicCode;
+		serverNonSSL = new ClientSideNetworkHandlerUsingXmlRpcForNonSSL(serverIPAddress);
 	}
 	
 	
 	public class ServerNotConfiguredException extends Exception{};
 
-	public boolean pingServer() throws ServerNotAvailableException, ServerNotConfiguredException 
+	public boolean pingServer() throws ServerNotConfiguredException 
 	{
 		if(serverIPAddress == null || serverPublicCode==null)
 			throw new ServerNotConfiguredException();
-		throw new Exceptions.ServerNotAvailableException();
+		return ClientSideNetworkHandlerUsingXmlRpcForNonSSL.isNonSSLServerAvailable(serverNonSSL);
 	}
 	
+	public NetworkInterfaceForNonSSL serverNonSSL;
 	private MartusSecurity security;
 	private String serverIPAddress;
 	private String serverPublicCode;

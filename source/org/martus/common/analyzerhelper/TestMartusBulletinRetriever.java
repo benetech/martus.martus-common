@@ -30,7 +30,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import org.martus.common.clientside.Exceptions;
+import org.martus.common.clientside.test.NoServerNetworkInterfaceForNonSSLHandler;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
 import org.martus.util.TestCaseEnhanced;
@@ -110,15 +110,9 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		{
 		}
 		
-		try
-		{
-			retriever.setServer("1.2.3.4", "some random code");
-			retriever.pingServer();
-			fail("server doesn't exist");
-		}
-		catch(Exceptions.ServerNotAvailableException expected)
-		{
-		}
+		retriever.setServer("1.2.3.4", "some random code");
+		retriever.serverNonSSL = new NoServerNetworkInterfaceForNonSSLHandler();
+		assertFalse(retriever.pingServer());
 	}
 	
 	private static MartusSecurity security;
