@@ -108,6 +108,13 @@ public class TestBulletin extends TestCaseEnhanced
 
 	}
     
+    public void testGetLastSavedDate() throws Exception
+	{
+    	Bulletin b = new Bulletin(security);
+    	b.getBulletinHeaderPacket().updateLastSavedTime();
+    	assertEquals(Bulletin.getToday(), b.getLastSavedDate());
+	}
+    
     public void testContains()
     {
     	Bulletin b = new Bulletin(security);

@@ -166,6 +166,12 @@ public class Bulletin implements BulletinConstants
 		return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(cal.getTime());
 	}
 	
+	public String getLastSavedDate()
+	{
+		DateFormat df = getStoredDateFormat();
+		return df.format(new Date(getLastSavedTime()));
+	}
+	
 	public void setHistory(BulletinHistory newHistory)
 	{
 		getBulletinHeaderPacket().setHistory(newHistory);
@@ -342,10 +348,13 @@ public class Bulletin implements BulletinConstants
 	{
 		String eventDate = fieldData.get(Bulletin.TAGEVENTDATE);
 		String entryDate = fieldData.get(Bulletin.TAGENTRYDATE);
+		String savedDate = getLastSavedDate();
 		
-		if(eventDate.compareTo(beginDate) >= 0 && eventDate.compareTo(endDate) <= 0)
+		if(areInAscendingOrder(beginDate, eventDate, endDate))
 			return true;
-		if(entryDate.compareTo(beginDate) >= 0 && entryDate.compareTo(endDate) <= 0)
+		if(areInAscendingOrder(beginDate, entryDate, endDate))
+			return true;
+		if(areInAscendingOrder(beginDate, savedDate, endDate))
 			return true;
 			
 		int comma = eventDate.indexOf(MartusFlexidate.DATE_RANGE_SEPARATER);		
@@ -355,6 +364,11 @@ public class Bulletin implements BulletinConstants
 		return false;
 	}
 	
+	private boolean areInAscendingOrder(String beginDate, String eventDate, String endDate)
+	{
+		return eventDate.compareTo(beginDate) >= 0 && eventDate.compareTo(endDate) <= 0;
+	}
+
 	private boolean isWithinFlexiDates(String flexiDate, String searchBeginDate, String searchEndDate)
 	{		
 		if (flexiDate.indexOf(MartusFlexidate.FLEXIDATE_RANGE_DELIMITER) < 0)
