@@ -83,7 +83,14 @@ public class MartusUtilities
 		}
 	}
 
-
+	public static void deleteAllFiles(Vector filesToDelete)
+	{
+		for (int i = 0; i < filesToDelete.size(); i++)
+		{
+			((File)filesToDelete.get(i)).delete();
+		}
+	}
+	
 	public static int getCappedFileLength(File file) throws FileTooLargeException
 	{
 		long rawLength = file.length();

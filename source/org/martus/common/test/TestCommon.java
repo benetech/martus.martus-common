@@ -69,6 +69,7 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestPacket.class));
 		suite.addTest(new TestSuite(TestSearchParser.class));
 		suite.addTest(new TestSuite(TestSearchTreeNode.class));
+		suite.addTest(new TestSuite(TestServerFileDatabase.class));
 		suite.addTest(new TestSuite(TestUnicodeFileReader.class));
 		suite.addTest(new TestSuite(TestUnicodeFileWriter.class));
 		suite.addTest(new TestSuite(TestUniversalId.class));
