@@ -51,7 +51,7 @@ public class LoggerToConsole implements LoggerInterface
 		System.out.println(logEntry);
 	}
 
-	protected String getCurrentClientAddress()
+	static public String getCurrentClientAddress()
 	{
 		Thread currThread = Thread.currentThread();
 		if( XmlRpcThread.class.getName() == currThread.getClass().getName() )
