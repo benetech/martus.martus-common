@@ -587,6 +587,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 			for(int b = 0; b < key.length; ++b)
 				key[b] = (byte)random.nextInt();
 			byte[] cipherBytes = encryptBytes(textBytes, key);
+			assertFalse("Bytes not encypted?", Arrays.equals(cipherBytes,textBytes));
 			assertNotContains(cipherBytes, results);
 			results.add(cipherBytes);
 			String plainText = decryptBytes(cipherBytes, key);
@@ -599,12 +600,13 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		byte[] sampleBytes = {32,23,5,3,7,53,2,35,54,7,3,23,5,2,45,45,75,8};
 		int keySize = 256;
 		byte[] key = new byte[keySize/8];
-		Arrays.fill(key, 0, key.length, (byte)0);
+		Arrays.fill(key, (byte)0);
 		byte[] baseResult = encryptBytes(sampleBytes, key);
 		for(int i=0; i < key.length; ++i)
 		{
 			 key[i] = (byte)0xFF;
 			 byte[] thisResult = encryptBytes(sampleBytes, key);
+			 assertFalse("Not encypted?", Arrays.equals(thisResult, sampleBytes));
 			 assertNotEquals(Base64.encode(baseResult), Base64.encode(thisResult));
 			 key[i] = 0;
 		}
