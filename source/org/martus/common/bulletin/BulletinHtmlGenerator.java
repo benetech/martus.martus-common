@@ -138,7 +138,7 @@ public class BulletinHtmlGenerator
 		
 			String value = getHTMLEscaped(b.get(tag));
 			if(spec.getType() == FieldSpec.TYPE_DATE)
-				value = localization.convertStoredDateToDisplay(value);
+				value = localization.convertStoredDateToDisplayReverseIfNecessary(value);
 			else if(spec.getType() == FieldSpec.TYPE_LANGUAGE)
 				value = getHTMLEscaped(localization.getLanguageName(value));
 			else if(spec.getType() == FieldSpec.TYPE_MULTILINE)

@@ -34,7 +34,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.Vector;
-
 import org.martus.common.VersionBuildDate;
 import org.martus.common.utilities.DateUtilities;
 import org.martus.common.utilities.MartusFlexidate;
@@ -43,7 +42,8 @@ import org.martus.util.UnicodeWriter;
 
 public class UiBasicLocalization extends Localization
 {
-    public void exportTranslations(String languageCode, String versionLabel, UnicodeWriter writer)
+    private static final String SPACE = " ";
+	public void exportTranslations(String languageCode, String versionLabel, UnicodeWriter writer)
 		throws IOException 
 	{
 		setCurrentLanguageCode("en");
@@ -320,24 +320,62 @@ public class UiBasicLocalization extends Localization
 		return strings;
 	}
 
+	static private boolean isDigit(char characterToTest)
+	{
+		try
+		{
+			Double.valueOf(new String(new char[]{characterToTest}));
+			return true;
+		}
+		catch(NumberFormatException e)
+		{
+			return false;
+		}
+	}
+
+	static public char getDateSeparator(String date) throws NoDateSeparatorException
+	{
+		for(int i = 0; i < date.length(); ++i)
+		{
+			if(!isDigit(date.charAt(i)))
+				return date.charAt(i);
+		}
+		throw new NoDateSeparatorException();
+	}
+
 	public String getViewableDateRange(String newText)
 	{
 		MartusFlexidate mfd = MartusFlexidate.createFromMartusDateString(newText);
-		
 		String rawBeginDate = MartusFlexidate.toStoredDateFormat(mfd.getBeginDate());
+
+		if (!mfd.hasDateRange())
+			return convertStoredDateToDisplayReverseIfNecessary(rawBeginDate);
+
 		String rawEndDate = MartusFlexidate.toStoredDateFormat(mfd.getEndDate());
-		
+
 		String beginDate = convertStoredDateToDisplay(rawBeginDate);
 		String endDate = convertStoredDateToDisplay(rawEndDate);
-				
-		String display = "";
-		
-		if (mfd.hasDateRange())
-			display = getFieldLabel("DateRangeFrom")+ " " + 
-				beginDate + " " + getFieldLabel("DateRangeTo")+
-				" " + endDate;		
-		else
-			display = beginDate;
+		try
+		{
+			//Strange quirk with Java and displaying RToL languages with dates.
+			//When there is a string with mixed RtoL and LtoR characters 
+			//if there is .'s separating numbers then the date is not reversed,
+			//but if the date is separated by /'s, then the date is reversed.
+			if(getDateSeparator(beginDate) == '.')
+			{
+				beginDate = convertStoredDateToDisplayReverseIfNecessary(rawBeginDate);
+				endDate = convertStoredDateToDisplayReverseIfNecessary(rawEndDate);
+			}
+		}
+		catch(NoDateSeparatorException e)
+		{
+			e.printStackTrace();
+			return "";
+		}
+			
+		String display = getFieldLabel("DateRangeFrom")+ SPACE + 
+			beginDate + SPACE + getFieldLabel("DateRangeTo")+
+			SPACE + endDate;
 		return display;
 	}
 

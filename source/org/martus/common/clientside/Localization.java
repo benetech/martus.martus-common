@@ -422,8 +422,43 @@ public class Localization
 			// so we don't want to do anything for this exception
 			//System.out.println(e);
 		}
-	
 		return result;
+	}
+	
+	
+	static public class NoDateSeparatorException extends Exception{};
+	
+	
+	private String reverseDate(String dateToReverse)
+	{
+		StringBuffer reversedDate= new StringBuffer();
+		try
+		{
+			char dateSeparator = UiBasicLocalization.getDateSeparator(dateToReverse);
+			int beginningIndex = dateToReverse.indexOf(dateSeparator);
+			int endingIndex = dateToReverse.lastIndexOf(dateSeparator);
+			String dateField1 = dateToReverse.substring(0, beginningIndex);
+			String dateField2 = dateToReverse.substring(beginningIndex+1, endingIndex);
+			String dateField3 = dateToReverse.substring(endingIndex+1);
+			reversedDate.append(dateField3);
+			reversedDate.append(dateSeparator);
+			reversedDate.append(dateField2);
+			reversedDate.append(dateSeparator);
+			reversedDate.append(dateField1);
+			return reversedDate.toString();
+		}
+		catch(NoDateSeparatorException e)
+		{
+			return dateToReverse;
+		}
+	}
+	
+	public String convertStoredDateToDisplayReverseIfNecessary(String date)
+	{
+		String displayDate = convertStoredDateToDisplay(date);
+		if(UiLanguageDirection.isRightToLeftLanguage())
+			return reverseDate(displayDate);
+		return displayDate;
 	}
 	
 	public String convertStoredDateTimeToDisplay(String storedDate)
