@@ -167,6 +167,7 @@ public class BulletinStore
 	public void deleteAllBulletins() throws Exception
 	{
 		database.deleteAllData();
+		clearLeafKeyCache();
 	}
 
 	public void importZipFileToStoreWithSameUids(File inputFile) throws IOException, MartusCrypto.CryptoException, Packet.InvalidPacketException, Packet.SignatureVerificationException
@@ -191,16 +192,14 @@ public class BulletinStore
 		}
 	}
 	
-	private void clearLeafKeyCache()
+	public void clearLeafKeyCache()
 	{
 		leafKeys = null;
 	}
 	
 	public Vector scanForLeafKeys()
 	{
-		// TODO: Once the problems are ironed out, this if
-		// can be restored. kevin 2004-10-05
-		//if(leafKeys == null)
+		if(leafKeys == null)
 		{
 			LeafScanner scanner = new LeafScanner(getDatabase(), getSignatureVerifier());
 			visitAllBulletinRevisions(scanner);
@@ -280,11 +279,11 @@ public class BulletinStore
 			MartusCrypto.DecryptionException,
 			MartusCrypto.NoKeyPairException
 	{
-		clearLeafKeyCache();
 		DatabaseKey[] keys = BulletinZipUtilities.getAllPacketKeys(bhp);
 		for (int i = 0; i < keys.length; i++)
 		{
 			deleteSpecificPacket(keys[i]);
+			clearLeafKeyCache();
 		}
 	}
 
@@ -317,6 +316,7 @@ public class BulletinStore
 		{
 			UniversalId uId = (UniversalId)(packetsIdsToHide.get(i));
 			db.hide(uId);
+			clearLeafKeyCache();
 			String publicCode = MartusCrypto.getFormattedPublicCode(uId.getAccountId());
 			logger.log("Deleting " + publicCode + ": " + uId.getLocalId());
 		
@@ -343,9 +343,10 @@ public class BulletinStore
 		WrongAccountException
 	{
 		importBulletinPacketsFromZipFileToDatabase(getWriteableDatabase(), accountIdIfKnown, zip, getSignatureVerifier());
+		clearLeafKeyCache();
 	}
 
-	public static void importBulletinPacketsFromZipFileToDatabase(Database db, String authorAccountId, ZipFile zip, MartusCrypto security)
+	private static void importBulletinPacketsFromZipFileToDatabase(Database db, String authorAccountId, ZipFile zip, MartusCrypto security)
 		throws IOException,
 		Database.RecordHiddenException,
 		Packet.InvalidPacketException,
@@ -418,8 +419,8 @@ public class BulletinStore
 	protected void saveBulletin(Bulletin b, boolean mustEncryptPublicData) throws IOException, CryptoException
 	{
 		saveToClientDatabase(b, getWriteableDatabase(), mustEncryptPublicData, b.getSignatureGenerator());
+		clearLeafKeyCache();
 	}
-	
 	
 	private static void saveToClientDatabase(Bulletin b, Database db, boolean mustEncryptPublicData, MartusCrypto signer) throws
 			IOException,
@@ -448,19 +449,15 @@ public class BulletinStore
 		FieldDataPacket publicDataPacket = b.getFieldDataPacket();
 		boolean shouldEncryptPublicData = (b.isDraft() || b.isAllPrivate());
 		publicDataPacket.setEncrypted(shouldEncryptPublicData);
+		
 		Packet packet1 = publicDataPacket;
 		boolean encryptPublicData = mustEncryptPublicData;
-		Database db1 = db;
-		MartusCrypto signer1 = signer;
-	
-		byte[] dataSig = packet1.writeXmlToClientDatabase(db1, encryptPublicData, signer1);
+		byte[] dataSig = packet1.writeXmlToClientDatabase(db, encryptPublicData, signer);
 		bhp.setFieldDataSignature(dataSig);
+		
 		Packet packet2 = b.getPrivateFieldDataPacket();
 		boolean encryptPublicData1 = mustEncryptPublicData;
-		Database db2 = db;
-		MartusCrypto signer2 = signer;
-	
-		byte[] privateDataSig = packet2.writeXmlToClientDatabase(db2, encryptPublicData1, signer2);
+		byte[] privateDataSig = packet2.writeXmlToClientDatabase(db, encryptPublicData1, signer);
 		bhp.setPrivateFieldDataSignature(privateDataSig);
 	
 		for(int i = 0; i < b.getPendingPublicAttachments().size(); ++i)
@@ -468,28 +465,20 @@ public class BulletinStore
 			// TODO: Should the bhp also remember attachment sigs?
 			Packet packet = (Packet)b.getPendingPublicAttachments().get(i);
 			boolean encryptPublicData2 = mustEncryptPublicData;
-			Database db3 = db;
-			MartusCrypto signer3 = signer;
-			packet.writeXmlToClientDatabase(db3, encryptPublicData2, signer3);
+			packet.writeXmlToClientDatabase(db, encryptPublicData2, signer);
 		}
 	
 		for(int i = 0; i < b.getPendingPrivateAttachments().size(); ++i)
 		{
 			// TODO: Should the bhp also remember attachment sigs?
 			Packet packet = (Packet)b.getPendingPrivateAttachments().get(i);
-			Packet packet3 = packet;
 			boolean encryptPublicData2 = mustEncryptPublicData;
-			Database db3 = db;
-			MartusCrypto signer3 = signer;
-			packet3.writeXmlToClientDatabase(db3, encryptPublicData2, signer3);
+			packet.writeXmlToClientDatabase(db, encryptPublicData2, signer);
 		}
 	
 		bhp.updateLastSavedTime();
 		Packet packet = bhp;
-		boolean encryptPublicData2 = mustEncryptPublicData;
-		Database db3 = db;
-		MartusCrypto signer3 = signer;
-		packet.writeXmlToClientDatabase(db3, encryptPublicData2, signer3);
+		packet.writeXmlToClientDatabase(db, mustEncryptPublicData, signer);
 	
 		if(bulletinAlreadyExisted)
 		{

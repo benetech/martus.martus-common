@@ -32,6 +32,7 @@ import java.util.Vector;
 import java.util.zip.ZipFile;
 
 import org.martus.common.BulletinStore;
+import org.martus.common.LoggerForTesting;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinLoader;
 import org.martus.common.bulletin.BulletinZipUtilities;
@@ -41,7 +42,6 @@ import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.crypto.MartusCrypto.CryptoException;
 import org.martus.common.crypto.MartusCrypto.DecryptionException;
 import org.martus.common.crypto.MartusCrypto.NoKeyPairException;
-import org.martus.common.database.ClientFileDatabase;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.MockClientDatabase;
@@ -78,6 +78,7 @@ public class TestBulletinStore extends TestCaseEnhanced
     	security = MockMartusSecurity.createClient();
 		store = new BulletinStore();
 		store.doAfterSigninInitialization(createTempDirectory(), db);
+		store.setSignatureGenerator(security);
 
     	if(tempFile1 == null)
     	{
@@ -90,6 +91,34 @@ public class TestBulletinStore extends TestCaseEnhanced
     	assertEquals("Still some mock streams open?", 0, db.getOpenStreamCount());
 		store.deleteAllData();
 		super.tearDown();
+	}
+    
+    public void testLeafKeyCache() throws Exception
+	{
+    	Bulletin one = createAndSaveBulletin();
+    	store.saveBulletinForTesting(one);
+    	Bulletin clone = createAndSaveClone(one);
+    	assertEquals("not just clone?", 1, store.scanForLeafKeys().size());
+    	store.deleteBulletinRevisionFromDatabase(clone.getBulletinHeaderPacket());
+    	assertEquals("didn't delete?", 1, store.scanForLeafKeys().size());
+    	
+    	File tempZip = createTempFile();
+    	store.saveBulletinForTesting(one);
+    	BulletinZipUtilities.exportBulletinPacketsFromDatabaseToZipFile(store.getDatabase(), one.getDatabaseKey(), tempZip, store.getSignatureVerifier());
+    	store.deleteBulletinRevision(one.getDatabaseKey());
+    	assertEquals("not ready for import?", 0, store.scanForLeafKeys().size());
+    	store.importBulletinZipFile(new ZipFile(tempZip));
+    	assertEquals("didn't import?", 1, store.scanForLeafKeys().size());
+    	tempZip.delete();
+
+    	Vector toHide = new Vector();
+    	toHide.add(one.getUniversalId());
+    	store.hidePackets(toHide, new LoggerForTesting());
+    	assertEquals("didn't hide?", 0, store.scanForLeafKeys().size());
+    	
+    	store.saveBulletinForTesting(clone);
+    	store.deleteAllData();
+    	assertEquals("didn't delete all?", 0, store.scanForLeafKeys().size());
 	}
     
     public void testHasNewerRevision() throws Exception
@@ -237,24 +266,23 @@ public class TestBulletinStore extends TestCaseEnhanced
 		BulletinZipUtilities.exportBulletinPacketsFromDatabaseToZipFile(fromStore.getDatabase(), key, destFile, authorSecurity);
 		ZipFile zip = new ZipFile(destFile);
 		
-		MartusCrypto hqSecurity = MockMartusSecurity.createHQ();
-		Database fileDb = new ClientFileDatabase(createTempDirectory(), hqSecurity);
-		fileDb.initialize();
-		verifyImportZip(fileDb, key, zip, hqSecurity);
+		BulletinStore hqStore = new MockBulletinStore(this);
+		hqStore.setSignatureGenerator(MockMartusSecurity.createHQ());
+		verifyImportZip(hqStore, key, zip);
+		hqStore.deleteAllData();
 		
-		Database authorDb = new MockClientDatabase();
-		verifyImportZip(authorDb, key, zip, authorSecurity);
+		BulletinStore otherStore = new MockBulletinStore(this);
+		otherStore.setSignatureGenerator(MockMartusSecurity.createOtherClient());
+		verifyImportZip(otherStore, key, zip);
+		otherStore.deleteAllData();
 
-		Database hqDb = new MockClientDatabase();
-		verifyImportZip(hqDb, key, zip, hqSecurity);
-
-		fileDb.deleteAllData();
+		verifyImportZip(store, key, zip);
 	}
 
-	private void verifyImportZip(Database authorDb, DatabaseKey key, ZipFile zip, MartusCrypto authorSecurity) throws IOException, RecordHiddenException, InvalidPacketException, SignatureVerificationException, WrongAccountException, DecryptionException, DamagedBulletinException, NoKeyPairException
+	private void verifyImportZip(BulletinStore store, DatabaseKey key, ZipFile zip) throws IOException, RecordHiddenException, InvalidPacketException, SignatureVerificationException, WrongAccountException, DecryptionException, DamagedBulletinException, NoKeyPairException
 	{
-		BulletinStore.importBulletinPacketsFromZipFileToDatabase(authorDb, null, zip, authorSecurity);
-		BulletinLoader.loadFromDatabase(authorDb, key, authorSecurity);
+		store.importBulletinZipFile(zip);
+		BulletinLoader.loadFromDatabase(store.getDatabase(), key, store.getSignatureGenerator());
 	}
 	
 	private void verifyCloneIsLeaf(Bulletin original, Bulletin clone, UniversalId otherUid) throws IOException, CryptoException
