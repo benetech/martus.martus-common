@@ -30,9 +30,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Vector;
+import org.martus.common.analyzerhelper.MartusBulletinRetriever.ServerErrorException;
+import org.martus.common.clientside.Exceptions.ServerNotAvailableException;
 import org.martus.common.clientside.test.NoServerNetworkInterfaceForNonSSLHandler;
+import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
+import org.martus.common.network.NetworkInterfaceConstants;
+import org.martus.common.network.NetworkInterfaceForNonSSL;
+import org.martus.util.Base64;
 import org.martus.util.TestCaseEnhanced;
 
 
@@ -52,6 +59,9 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 			security = new MartusSecurity();
 			security.createKeyPair(512);
 	  	}
+		streamOut = new ByteArrayOutputStream();
+		security.writeKeyPair(streamOut, password);
+		streamOut.close();
 	}	
 	
 	public void testInvalidIOStream() throws Exception
@@ -70,11 +80,6 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 
 	public void testPassword() throws Exception
 	{
-		char[] password = "the password".toCharArray();
-		ByteArrayOutputStream streamOut = new ByteArrayOutputStream();
-		security.writeKeyPair(streamOut, password);
-		streamOut.close();
-		
 		ByteArrayInputStream streamIn = new ByteArrayInputStream(streamOut.toByteArray());
 		
 		try
@@ -92,11 +97,6 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 	
 	public void testPingServer() throws Exception
 	{
-		char[] password = "the password".toCharArray();
-		ByteArrayOutputStream streamOut = new ByteArrayOutputStream();
-		security.writeKeyPair(streamOut, password);
-		streamOut.close();
-		
 		ByteArrayInputStream streamIn = new ByteArrayInputStream(streamOut.toByteArray());
 		MartusBulletinRetriever retriever = new MartusBulletinRetriever(streamIn, password );
 		streamIn.close();
@@ -110,10 +110,75 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		{
 		}
 		
-		retriever.setServer("1.2.3.4", "some random code");
+		retriever.initalizeServer("1.2.3.4", "some random public key");
 		retriever.serverNonSSL = new NoServerNetworkInterfaceForNonSSLHandler();
 		assertFalse(retriever.pingServer());
 	}
 	
+	private class TestServerNetworkInterfaceForNonSSLHandler implements NetworkInterfaceForNonSSL
+	{
+
+		public String ping()
+		{
+			return "OK";
+		}
+
+		public Vector getServerInformation()
+		{
+			Vector result = new Vector();
+			try
+			{
+				byte[] publicKeyBytes = Base64.decode(publicKeyString);
+				ByteArrayInputStream in = new ByteArrayInputStream(publicKeyBytes);
+				byte[] sigBytes = serverSecurity.createSignatureOfStream(in);
+				
+				result.add(NetworkInterfaceConstants.OK);
+				result.add(publicKeyString);
+				result.add(Base64.encode(sigBytes));
+			}
+			catch(Exception e)
+			{
+			}
+			return result;
+		}
+		
+		public String publicKeyString;
+		public MartusCrypto serverSecurity;		
+		
+	}
+	
+	public void testGetServerPublicKey() throws Exception
+	{
+		
+		ByteArrayInputStream streamIn = new ByteArrayInputStream(streamOut.toByteArray());
+		MartusBulletinRetriever retriever = new MartusBulletinRetriever(streamIn, password );
+		streamIn.close();
+		NetworkInterfaceForNonSSL noServer = new NoServerNetworkInterfaceForNonSSLHandler();
+		try
+		{
+			retriever.getServerPublicKey("Some Random code", noServer);
+			fail("Server exists?");
+		}
+		catch(ServerNotAvailableException expected)
+		{
+		}
+		
+		TestServerNetworkInterfaceForNonSSLHandler testServerForNonSSL = new TestServerNetworkInterfaceForNonSSLHandler();
+		testServerForNonSSL.serverSecurity = security;
+		testServerForNonSSL.publicKeyString = "some invalid keystring";
+		try
+		{
+			retriever.getServerPublicKey("Some Random code", testServerForNonSSL);
+			fail("Invalid public key strings should throw an exception");
+		}
+		catch(ServerErrorException expected)
+		{
+		}
+		
+	}
+	
 	private static MartusSecurity security;
+	private static char[] password = "the password".toCharArray();
+	private ByteArrayOutputStream streamOut;
+
 }

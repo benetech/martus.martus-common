@@ -27,12 +27,16 @@ package org.martus.common.analyzerhelper;
 
 import java.io.IOException;
 import java.io.InputStream;
+import org.martus.common.MartusUtilities.PublicInformationInvalidException;
 import org.martus.common.clientside.ClientSideNetworkHandlerUsingXmlRpcForNonSSL;
+import org.martus.common.clientside.Exceptions.ServerNotAvailableException;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
 import org.martus.common.crypto.MartusCrypto.CryptoInitializationException;
 import org.martus.common.crypto.MartusCrypto.InvalidKeyPairFileVersionException;
 import org.martus.common.network.NetworkInterfaceForNonSSL;
+import org.martus.common.utilities.MartusServerUtilities;
+import org.martus.util.Base64.InvalidBase64Exception;
 
 
 public class MartusBulletinRetriever
@@ -43,25 +47,51 @@ public class MartusBulletinRetriever
 		security.readKeyPair(keyPair, password);
 	}
 	
-	public void setServer(String serverIPAddress, String serverPublicCode)
+	public void initalizeServer(String serverIPAddress, String serverPublicKey)
 	{
-		this.serverIPAddress = serverIPAddress;
-		this.serverPublicCode = serverPublicCode;
+		this.serverPublicKey = serverPublicKey;
 		serverNonSSL = new ClientSideNetworkHandlerUsingXmlRpcForNonSSL(serverIPAddress);
 	}
 	
-	
 	public class ServerNotConfiguredException extends Exception{};
+	public class ServerPublicCodeDoesNotMatchException extends Exception {};
+	public class ServerErrorException extends Exception {};
+	
+	public String getServerPublicKey(String serverIPAddress, String serverPublicCode) throws ServerPublicCodeDoesNotMatchException, ServerNotAvailableException, ServerErrorException
+	{
+		ClientSideNetworkHandlerUsingXmlRpcForNonSSL serverNonSSL = new ClientSideNetworkHandlerUsingXmlRpcForNonSSL(serverIPAddress);
+		return getServerPublicKey(serverPublicCode, serverNonSSL);
+	}
+
+	public String getServerPublicKey(String serverPublicCode, NetworkInterfaceForNonSSL serverNonSSL) throws ServerNotAvailableException, ServerPublicCodeDoesNotMatchException, ServerErrorException
+	{
+		String ServerPublicKey;
+		try
+		{
+			ServerPublicKey = MartusServerUtilities.getServerPublicKey(serverNonSSL, security);
+			String serverPublicCodeToTest = MartusSecurity.computePublicCode(ServerPublicKey);
+			if(!serverPublicCode.equals(serverPublicCodeToTest))
+				throw new ServerPublicCodeDoesNotMatchException();
+			return ServerPublicKey;
+		}
+		catch(PublicInformationInvalidException e)
+		{
+			throw new ServerErrorException();
+		}
+		catch(InvalidBase64Exception e)
+		{
+			throw new ServerErrorException();
+		}
+	}
 
 	public boolean pingServer() throws ServerNotConfiguredException 
 	{
-		if(serverIPAddress == null || serverPublicCode==null)
+		if(serverPublicKey==null)
 			throw new ServerNotConfiguredException();
 		return ClientSideNetworkHandlerUsingXmlRpcForNonSSL.isNonSSLServerAvailable(serverNonSSL);
 	}
 	
 	public NetworkInterfaceForNonSSL serverNonSSL;
 	private MartusSecurity security;
-	private String serverIPAddress;
-	private String serverPublicCode;
+	private String serverPublicKey;
 }

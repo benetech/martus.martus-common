@@ -51,7 +51,9 @@ import java.util.zip.ZipFile;
 import org.martus.common.LoggerInterface;
 import org.martus.common.MartusUtilities;
 import org.martus.common.MartusUtilities.FileVerificationException;
+import org.martus.common.MartusUtilities.PublicInformationInvalidException;
 import org.martus.common.bulletin.BulletinZipUtilities;
+import org.martus.common.clientside.Exceptions.ServerNotAvailableException;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
@@ -61,6 +63,7 @@ import org.martus.common.crypto.MartusCrypto.InvalidKeyPairFileVersionException;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
+import org.martus.common.network.NetworkInterfaceForNonSSL;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.Packet;
 import org.martus.common.packet.UniversalId;
@@ -614,6 +617,24 @@ public class MartusServerUtilities
 			uids.add(uid);
 		}
 		return uids;
+	}
+
+	public static String getServerPublicKey(NetworkInterfaceForNonSSL server, MartusCrypto verifier) throws ServerNotAvailableException, PublicInformationInvalidException
+	{
+		if(server.ping() == null)
+			throw new ServerNotAvailableException();
+	
+		Vector serverInformation = server.getServerInformation();
+		if(serverInformation == null)
+			throw new ServerNotAvailableException();
+	
+		if(serverInformation.size() != 3)
+			throw new PublicInformationInvalidException();
+	
+		String accountId = (String)serverInformation.get(1);
+		String sig = (String)serverInformation.get(2);
+		MartusUtilities.validatePublicInfo(accountId, sig, verifier);
+		return accountId;
 	}
 
 	public static class MartusSignatureFileAlreadyExistsException extends Exception {}
