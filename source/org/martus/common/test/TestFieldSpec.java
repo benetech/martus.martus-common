@@ -36,7 +36,7 @@ public class TestFieldSpec extends TestCaseEnhanced
 		super(name);
 	}
 
-	public void testBasics()
+	public void testLegacy()
 	{
 		FieldSpec plainField = new FieldSpec("a,b");
 		assertFalse("has unknown?", plainField.hasUnknownStuff());
@@ -49,5 +49,20 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertEquals("c", fieldWithExtra.getTag());
 		assertEquals("d", fieldWithExtra.getLabel());
 		assertEquals("not unknown?", FieldSpec.TYPE_UNKNOWN, fieldWithExtra.getType());
+	}
+	
+	public void testCreateFromTag()
+	{
+		FieldSpec plainField = new FieldSpec("author");
+		assertFalse("has unknown?", plainField.hasUnknownStuff());
+		assertEquals("author", plainField.getTag());
+		assertEquals("", plainField.getLabel());
+		assertEquals("not normal?", FieldSpec.TYPE_NORMAL, plainField.getType());
+
+		FieldSpec dateField = new FieldSpec("entrydate");
+		assertFalse("has unknown?", dateField.hasUnknownStuff());
+		assertEquals("entrydate", dateField.getTag());
+		assertEquals("", dateField.getLabel());
+		assertEquals("not date?", FieldSpec.TYPE_DATE, dateField.getType());
 	}
 }

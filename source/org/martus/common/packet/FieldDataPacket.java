@@ -36,6 +36,7 @@ import java.util.TreeMap;
 import java.util.Vector;
 
 import org.martus.common.FieldSpec;
+import org.martus.common.LegacyCustomFields;
 import org.martus.common.MartusXml;
 import org.martus.common.XmlWriterFilter;
 import org.martus.common.bulletin.AttachmentProxy;
@@ -64,7 +65,7 @@ public class FieldDataPacket extends Packet
 	
 	void setFieldSpecsFromString(String delimitedFieldSpecs)
 	{
-		setFieldSpecs(FieldSpec.parseFieldSpecsFromString(delimitedFieldSpecs));
+		setFieldSpecs(LegacyCustomFields.parseFieldSpecsFromString(delimitedFieldSpecs));
 	}
 
 	public static UniversalId createUniversalId(String accountId)
@@ -315,7 +316,7 @@ public class FieldDataPacket extends Packet
 
 	protected String getFieldListString()
 	{
-		return FieldSpec.buildFieldListString(getFieldSpecs());
+		return LegacyCustomFields.buildFieldListString(getFieldSpecs());
 	}
 
 	protected void setFromXml(String elementName, String data) throws
