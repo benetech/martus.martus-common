@@ -262,28 +262,6 @@ public class MiniLocalization
 		return result;
 	}
 	
-	
-	public String convertStoredDateTimeToDisplay(String storedDate)
-	{		
-		DateFormat dfStored = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
-		DateFormat dfDisplay = new SimpleDateFormat(getCurrentDateFormatCode());
-		String result = "";
-		try
-		{
-			Date date = dfStored.parse(storedDate);
-			String time = DateFormat.getTimeInstance(DateFormat.SHORT).format(date);		
-			result = dfDisplay.format(date)+" "+time;
-		}
-		catch(ParseException e)
-		{
-			// unparsable dates simply become blank strings,
-			// so we don't want to do anything for this exception
-			//System.out.println(e);
-		}
-	
-		return result;
-	}
-
 	public String convertStoredDateToDisplayReverseIfNecessary(String date)
 	{
 		String displayDate = convertStoredDateToDisplay(date);
@@ -342,6 +320,8 @@ public class MiniLocalization
 
 	public String formatDateTime(long dateTime)
 	{
+		if(dateTime == DATE_UNKNOWN)
+			return "";
 		DateFormat dateShort = new SimpleDateFormat(getCurrentDateFormatCode());
 		DateFormat time24hour = new SimpleDateFormat("HH:mm");
 		
@@ -364,6 +344,7 @@ public class MiniLocalization
 				"sr", "sd","si",SPANISH,"ta","tg","te",THAI,"tr","tk","uk","ur","uz","vi"};
 
 	static public final String SPACE = " ";
+	static public final long DATE_UNKNOWN = -1;
 
 	protected Map textResources;
 	protected Vector rightToLeftLanguages;

@@ -1,7 +1,7 @@
 /*
 
 The Martus(tm) free, social justice documentation and
-monitoring software. Copyright (C) 2001-2005, Beneficent
+monitoring software. Copyright (C) 2005, Beneficent
 Technology, Inc. (Benetech).
 
 Martus is free software; you can redistribute it and/or
@@ -50,8 +50,13 @@ public class TestMiniLocalization extends TestCaseEnhanced
     	final int december = 11;
     	GregorianCalendar afternoon = new GregorianCalendar(2004, december, 9, 13, 59);
     	assertEquals("12/09/2004 13:59", loc.formatDateTime(afternoon.getTimeInMillis()));
-    	
 	}
+    
+    public void testDateUnknown()
+    {
+    	MiniLocalization loc = new MiniLocalization();
+    	assertEquals("Should return '' for an unknown date", "", loc.formatDateTime(MiniLocalization.DATE_UNKNOWN));
+    }
     
 	
 }

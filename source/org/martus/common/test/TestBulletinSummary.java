@@ -29,6 +29,7 @@ package org.martus.common.test;
 import java.util.Vector;
 import junit.framework.TestCase;
 import org.martus.common.BulletinSummary;
+import org.martus.common.MiniLocalization;
 import org.martus.common.network.NetworkInterfaceConstants;
 import org.martus.common.packet.BulletinHistory;
 
@@ -50,7 +51,7 @@ public class TestBulletinSummary extends TestCase
 		assertEquals("bhp", summary.getLocalId());
 		assertEquals("fdp", summary.getFieldDataPacketLocalId());
 		assertEquals(27, summary.getSize());
-		assertEquals("", summary.getDateTimeSaved());
+		assertEquals(MiniLocalization.DATE_UNKNOWN, summary.getDateTimeSaved());
 		
 	}
 	
@@ -91,7 +92,7 @@ public class TestBulletinSummary extends TestCase
 	{
 		String minimal = "bhp=fdp=456";
 		BulletinSummary summary = BulletinSummary.createFromString("account", minimal);
-		assertEquals("", summary.getDateTimeSaved());
+		assertEquals(MiniLocalization.DATE_UNKNOWN, summary.getDateTimeSaved());
 		assertEquals(1, summary.getVersionNumber());
 		assertEquals(0, summary.getHistory().size());
 	}

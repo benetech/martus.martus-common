@@ -27,11 +27,7 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common;
 
-import java.text.DateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Vector;
-
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.network.NetworkInterfaceConstants;
 import org.martus.common.packet.BulletinHistory;
@@ -123,19 +119,16 @@ public class BulletinSummary
 	}
 	
 	
-	public String getDateTimeSaved()
+	public long getDateTimeSaved()
 	{
-		String dateToConvert = dateTimeSaved;
-		return getLastDateTimeSaved(dateToConvert);
+		return getLastDateTimeSaved(dateTimeSaved);
 	}
 
-	static public String getLastDateTimeSaved(String dateToConvert)
+	static public long getLastDateTimeSaved(String dateToConvert)
 	{
 		if(dateToConvert.length() == 0)
-			return "";
-		Calendar cal = new GregorianCalendar();
-		cal.setTimeInMillis(Long.parseLong(dateToConvert));		
-		return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(cal.getTime());
+			return MiniLocalization.DATE_UNKNOWN;
+		return Long.parseLong(dateToConvert);
 	}
 	
 	public int getVersionNumber()
