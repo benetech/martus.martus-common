@@ -26,6 +26,7 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.crypto;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -52,18 +53,67 @@ public abstract class MartusCrypto
 		IOException, InvalidKeyPairFileVersionException, AuthorizationFailedException;
 	public abstract String getPublicKeyString();
 	public abstract byte[] getDigestOfPartOfPrivateKey() throws CreateDigestException;
-	public abstract String getSignatureOfPublicKey()
-		throws Base64.InvalidBase64Exception, MartusCrypto.MartusSignatureException;
+	public String getSignatureOfPublicKey() throws Base64.InvalidBase64Exception, MartusCrypto.MartusSignatureException {
+		String publicKeyString = getPublicKeyString();
+		byte[] publicKeyBytes = Base64.decode(publicKeyString);
+		ByteArrayInputStream in = new ByteArrayInputStream(publicKeyBytes);
+		byte[] sigBytes = createSignatureOfStream(in);
+		String sigString = Base64.encode(sigBytes);
+		return sigString;
+	}
 
 	// one-shot signature methods
 	public abstract byte[] createSignatureOfStream(InputStream inputStream) throws
 		MartusSignatureException;
 	public abstract boolean isValidSignatureOfStream(String publicKeyString, InputStream inputStream, byte[] signature) throws
 		MartusSignatureException;
-	public abstract String createSignatureOfVectorOfStrings(Vector dataToSign) throws
-			MartusCrypto.MartusSignatureException;
-	public abstract boolean verifySignatureOfVectorOfStrings(Vector dataToTest, String signedBy, String sig);
-	public abstract boolean verifySignatureOfVectorOfStrings(Vector dataToTestWithSignature, String signedBy);
+	public synchronized String createSignatureOfVectorOfStrings(Vector dataToSign) throws MartusCrypto.MartusSignatureException {
+		try
+		{
+			signatureInitializeSign();
+			for(int element = 0; element < dataToSign.size(); ++element)
+			{
+				String thisElement = dataToSign.get(element).toString();
+				byte[] bytesToSign = thisElement.getBytes("UTF-8");
+				signatureDigestBytes(bytesToSign);
+				signatureDigestByte((byte)0);
+			}
+			return Base64.encode(signatureGet());
+		}
+		catch(Exception e)
+		{
+			// TODO: Needs tests!
+			e.printStackTrace();
+			System.out.println("ServerProxy.sign: " + e);
+			throw new MartusCrypto.MartusSignatureException();
+		}
+	}
+	public synchronized boolean verifySignatureOfVectorOfStrings(Vector dataToTestWithSignature, String signedBy) {
+		Vector dataToTest = (Vector)dataToTestWithSignature.clone();
+		String sig = (String)dataToTest.remove(dataToTest.size() - 1);
+		return verifySignatureOfVectorOfStrings(dataToTest, signedBy, sig);
+	}
+	public synchronized boolean verifySignatureOfVectorOfStrings(Vector dataToTest, String signedBy, String sig) {
+		try
+		{
+			signatureInitializeVerify(signedBy);
+			for(int element = 0; element < dataToTest.size(); ++element)
+			{
+				String thisElement = dataToTest.get(element).toString();
+				byte[] bytesToSign = thisElement.getBytes("UTF-8");
+				//TODO: might want to optimize this for speed
+				for(int b = 0; b < bytesToSign.length; ++b)
+					signatureDigestByte(bytesToSign[b]);
+				signatureDigestByte((byte)0);
+			}
+			byte[] sigBytes = Base64.decode(sig);
+			return signatureIsValid(sigBytes);
+		}
+		catch(Exception e)
+		{
+			return false;
+		}
+	}
 		
 	// multi-part signature methods
 	public abstract void signatureInitializeSign() throws
