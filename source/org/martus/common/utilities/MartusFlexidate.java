@@ -37,6 +37,9 @@ import org.martus.common.bulletin.Bulletin;
 
 public class MartusFlexidate
 {
+	/*
+	 * this appears to take a string in the form: 19891201+300
+	 */
 	public MartusFlexidate(String dateStr)
 	{		
 		parseString(dateStr);		
@@ -89,6 +92,10 @@ public class MartusFlexidate
 		return flexiDate.getCalendarLow().getTime();
 	}
 	
+	/* this expects a string in one of these forms:
+	 * 	1989-12-01
+	 *  1989-12-01,19891201+300
+ 	 */
 	public static MartusFlexidate createFromMartusDateString(String dateStr)
 	{
 		DateFormat df = Bulletin.getStoredDateFormat();
