@@ -252,6 +252,7 @@ public class Packet
 			InvalidPacketException,
 			SignatureVerificationException
 	{
+		long startedAt = System.currentTimeMillis();
 		UnicodeReader reader = new UnicodeReader(in);
 
 		final String startComment = reader.readLine();
@@ -293,6 +294,8 @@ public class Packet
 					throw new SignatureVerificationException();
 
 				in.seek(0);
+				++callsToVerifyPacketSignature;
+				millisInVerifyPacketSignature += (System.currentTimeMillis() - startedAt);
 				return sigBytes;
 			}
 		}
@@ -304,7 +307,7 @@ public class Packet
 		{
 			throw new SignatureVerificationException();
 		}
-
+		
 	}
 
 	public static boolean isValidStartComment(final String startComment)
@@ -408,4 +411,7 @@ public class Packet
 	final static byte[] newlineBytes = "\n".getBytes();
 	UniversalId uid;
 	boolean hasUnknown;
+
+	public static int callsToVerifyPacketSignature;
+	public static long millisInVerifyPacketSignature;
 }

@@ -40,6 +40,8 @@ public class XmlPacketLoader extends SimpleXmlDefaultLoader
 	{
 		super(packetToFill.getPacketRootElementName());
 		packet = packetToFill;
+		
+		startedAt = System.currentTimeMillis();
 	}
 	
 	public void startDocument()
@@ -91,6 +93,9 @@ public class XmlPacketLoader extends SimpleXmlDefaultLoader
 	{
 		if(foundUnknownTags())
 			packet.setHasUnknownTags(true);
+		
+		++callsToXmlPacketLoader;
+		millisInXmlPacketLoader += (System.currentTimeMillis() - startedAt);
 	}
 	
 	private Vector getTagsContainingStrings()
@@ -106,5 +111,9 @@ public class XmlPacketLoader extends SimpleXmlDefaultLoader
 	}
 
 	Packet packet;
+	long startedAt;
 	private static Vector stringTags;
+
+	public static int callsToXmlPacketLoader;
+	public static long millisInXmlPacketLoader;
 }

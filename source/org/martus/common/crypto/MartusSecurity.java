@@ -553,6 +553,7 @@ public class MartusSecurity extends MartusCryptoImplementation
 		byte[] sig = createSignatureOfStream(new ByteArrayInputStream(encryptedBytes));
 		ByteArrayOutputStream bundleRawOut = new ByteArrayOutputStream();
 		DataOutputStream bundleOut = new DataOutputStream(bundleRawOut);
+		bundleOut.writeInt(BUNDLE_VERSION);
 		bundleOut.writeUTF(getPublicKeyString());
 		bundleOut.writeInt(sig.length);
 		bundleOut.write(sig);
@@ -567,6 +568,8 @@ public class MartusSecurity extends MartusCryptoImplementation
 	{
 		ByteArrayInputStream bundleRawIn = new ByteArrayInputStream(encryptedCacheBundle);
 		DataInputStream bundleIn = new DataInputStream(bundleRawIn);
+		if(bundleIn.readInt() != BUNDLE_VERSION)
+			throw new IOException();
 		String ourPublicKey = getPublicKeyString();
 		String signerPublicKey = bundleIn.readUTF();
 		if(!signerPublicKey.equals(ourPublicKey))
@@ -1232,6 +1235,7 @@ public class MartusSecurity extends MartusCryptoImplementation
 	private static final int IV_BYTE_COUNT = 16;	// from the book
 	private static final int TOKEN_BYTE_COUNT = 16; //128 bits
 	private static final int CACHE_VERSION = 1;
+	private static final int BUNDLE_VERSION = 1;
 	private static SecureRandom rand;
 	private KeyPair jceKeyPair;
 	private Map decryptedSessionKeys;
