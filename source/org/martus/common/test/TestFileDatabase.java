@@ -515,13 +515,21 @@ public class TestFileDatabase extends TestCaseEnhanced
 
 		db.writeRecord(shortKey, sampleString1);
 		db.writeRecord(shortKey2, sampleString2);
-
+		DatabaseKey shortKey3 = new DatabaseKey(UniversalIdForTesting.createFromAccountAndPrefix(accountString1 , "x"));
+		db.writeRecord(shortKey3, sampleString2);
+		db.hide(shortKey3.getUniversalId());
+		
 		PacketCollector ac = new PacketCollector();
-		db.visitAllRecordsForAccount(ac, accountString1);
+		db.visitAllNonHiddenRecordsForAccount(ac, accountString1);
 		assertEquals("count?", 2, ac.list.size());
 		assertContains("missing 1?", shortKey, ac.list);
 		assertContains("missing 2?", shortKey2, ac.list);
 
+		PacketCollector acHidden = new PacketCollector();
+		db.visitAllHiddenRecordsForAccount(acHidden, accountString1);
+		assertEquals("hidden count?", 1, acHidden.list.size());
+		assertContains("missing hidden bulletin?", shortKey3, acHidden.list);
+	
 	}
 	
 	public void testScrubRecord() throws Exception

@@ -56,7 +56,6 @@ public class TestKeyShareSaveRestore extends TestCaseEnhanced
 
 	public void testSecretShare() throws Exception
 	{
-		MartusSecurity tempSecurity = new MartusSecurity();
 		byte[] secret = {1,2,3,4,0,8,5,6,7,0};
 		Vector allShares = MartusSecretShare.buildShares(secret);
 		assertNotNull("Shares null?",allShares);

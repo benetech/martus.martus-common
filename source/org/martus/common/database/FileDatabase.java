@@ -263,7 +263,7 @@ abstract public class FileDatabase extends Database
 
 			public void visit(String accountString)
 			{
-				visitAllRecordsForAccount(packetVisitor, accountString);
+				visitAllNonHiddenRecordsForAccount(packetVisitor, accountString);
 			}
 			PacketVisitor packetVisitor;
 		}
@@ -389,7 +389,21 @@ abstract public class FileDatabase extends Database
 		}
 	}
 
-	public void visitAllRecordsForAccount(PacketVisitor visitor, String accountString)
+	public void visitAllNonHiddenRecordsForAccount(PacketVisitor visitor, String accountString)
+	{
+		boolean includeNonhiddenRecords = true;
+		boolean includeHiddenRecords = false;
+		visitAllRecordsForAccount(visitor, accountString, includeNonhiddenRecords, includeHiddenRecords);
+	}
+
+	public void visitAllHiddenRecordsForAccount(PacketVisitor visitor, String accountString)
+	{
+		boolean includeNonhiddenRecords = false;
+		boolean includeHiddenRecords = true;
+		visitAllRecordsForAccount(visitor, accountString, includeNonhiddenRecords, includeHiddenRecords);
+	}
+
+	private void visitAllRecordsForAccount(PacketVisitor visitor, String accountString, boolean includeNonhiddenRecords, boolean includeHiddenRecords)
 	{
 		File accountDir = null;
 		try
@@ -421,7 +435,9 @@ abstract public class FileDatabase extends Database
 					for(int i=0; i < files.length; ++i)
 					{
 						UniversalId uid = UniversalId.createFromAccountAndLocalId(accountString, files[i]);
-						if(isHidden(uid))
+						if(includeNonhiddenRecords && isHidden(uid))
+							continue;
+						if(includeHiddenRecords && !isHidden(uid))
 							continue;
 						if(uid.getLocalId().startsWith("BUR-"))
 							continue;
@@ -445,7 +461,7 @@ abstract public class FileDatabase extends Database
 			}
 		}
 	}
-	
+
 	public void scrubRecord(DatabaseKey key) 
 			throws IOException, RecordHiddenException
 	{
@@ -640,7 +656,7 @@ abstract public class FileDatabase extends Database
 		}
 
 		PacketDeleter deleter = new PacketDeleter();
-		visitAllRecordsForAccount(deleter, getAccountString(accountDir));
+		visitAllNonHiddenRecordsForAccount(deleter, getAccountString(accountDir));
 
 		accountDir.delete();
 	}
