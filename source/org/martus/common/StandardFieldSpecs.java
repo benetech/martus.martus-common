@@ -83,6 +83,13 @@ public class StandardFieldSpecs
 		return false;
 	}
 	
+	public static boolean isStandardFieldTag(String tag)
+	{
+		if (findStandardFieldSpec(tag) != null)
+			return true;
+		return false;	
+	}
+	
 	private static FieldSpec findStandardFieldSpec(String tag)
 	{
 		FieldSpec[] publicSpecs = StandardFieldSpecs.getDefaultPublicFieldSpecs();
