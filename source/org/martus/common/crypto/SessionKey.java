@@ -26,6 +26,10 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.crypto;
 
+import java.util.Arrays;
+
+import org.martus.util.Base64;
+
 
 public class SessionKey
 {
@@ -37,6 +41,25 @@ public class SessionKey
 	public byte[] getBytes()
 	{
 		return keyBytes;
+	}
+	
+	public boolean equals(Object otherSessionKey)
+	{
+		SessionKey otherKey = (SessionKey)otherSessionKey;
+		return Arrays.equals(getBytes(), otherKey.getBytes());
+	}
+	
+	public int hashCode()
+	{
+		// Since our data IS randomly distributed, AND
+		// we don't expect more than a couple thousand entries 
+		// in the system, we can just return the first byte 
+		return keyBytes[0];
+	}
+
+	public String toString()
+	{
+		return Base64.encode(getBytes());
 	}
 	
 	byte[] keyBytes;

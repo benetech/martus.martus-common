@@ -46,9 +46,9 @@ import org.martus.common.crypto.MartusCrypto.DecryptionException;
 import org.martus.common.crypto.MartusCrypto.EncryptionException;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
 import org.martus.common.crypto.MartusCrypto.NoKeyPairException;
-import org.martus.util.*;
 import org.martus.util.Base64;
 import org.martus.util.ByteArrayInputStreamWithSeek;
+import org.martus.util.TestCaseEnhanced;
 
 
 public class TestMartusSecurity extends TestCaseEnhanced
@@ -87,6 +87,68 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		assertNotNull("setup: KeyPair returned NULL", security.getKeyPair());
 		assertNotNull("setup: Key returned NULL", security.getPrivateKey());
 		TRACE_END();
+	}
+	
+	public void testCacheOfDecryptedSessionKeys() throws Exception
+	{
+		MartusSecurity bigKeySecurity = new MartusSecurity();
+		bigKeySecurity.createKeyPair();
+		String publicKeyString = bigKeySecurity.getPublicKeyString();
+		
+		byte[] emptyCache1 = bigKeySecurity.getSessionKeyCache();
+		assertTrue("emptyCache1 too big?", emptyCache1.length < 1000);
+
+		final int MAX_KEYS = 100;
+		SessionKey[] plainSessionKeys = new SessionKey[MAX_KEYS];
+		SessionKey[] encryptedSessionKeys = new SessionKey[MAX_KEYS];
+		for(int i=0; i < MAX_KEYS; ++i)
+		{
+			plainSessionKeys[i] = bigKeySecurity.createSessionKey();
+			encryptedSessionKeys[i] = bigKeySecurity.encryptSessionKey(plainSessionKeys[i], publicKeyString);
+		}
+		
+		
+		byte[] fullCache1 = bigKeySecurity.getSessionKeyCache();
+		assertTrue("fullCache1 too small?", fullCache1.length > 2000);
+
+		bigKeySecurity.flushSessionKeyCache();
+		byte[] emptyCache2 = bigKeySecurity.getSessionKeyCache();
+		assertTrue("emptyCache2 too big?", emptyCache2.length < 1000);
+
+		for(int i = 0; i < MAX_KEYS; ++i)
+		{
+			SessionKey decrypted = bigKeySecurity.decryptSessionKey(encryptedSessionKeys[i]);
+			assertEquals("bad initial decryption?", plainSessionKeys[i], decrypted);
+		}
+		
+		byte[] fullCache2 = bigKeySecurity.getSessionKeyCache();
+		assertTrue("fullCache2 too small?", fullCache2.length > 2000);
+
+		for(int i=0; i < MAX_KEYS; ++i)
+		{
+			encryptedSessionKeys[i] = new SessionKey(encryptedSessionKeys[i].getBytes());
+		}
+		
+		long stopTime1 = System.currentTimeMillis() + 1000;
+		for(int i=0; i < MAX_KEYS; ++i)
+		{
+			assertTrue("After juggle, only decrypted " + i, System.currentTimeMillis() < stopTime1);
+			SessionKey decrypted = bigKeySecurity.decryptSessionKey(encryptedSessionKeys[i]);
+			assertEquals("after juggle, bad re-decryption?", plainSessionKeys[i], decrypted);
+		}
+		
+		bigKeySecurity.flushSessionKeyCache();
+		bigKeySecurity.setSessionKeyCache(fullCache2);
+		byte[] fullCache3 = bigKeySecurity.getSessionKeyCache();
+		assertTrue("fullCache3 too small?", fullCache3.length > 2000);
+
+		long stopTime2 = System.currentTimeMillis() + 1000;
+		for(int i=0; i < MAX_KEYS; ++i)
+		{
+			assertTrue("After cache restore, only decrypted " + i, System.currentTimeMillis() < stopTime2);
+			SessionKey decrypted = bigKeySecurity.decryptSessionKey(encryptedSessionKeys[i]);
+			assertEquals("after cache restore, bad re-decryption?", plainSessionKeys[i], decrypted);
+		}
 	}
 
 	public void testGetDigestOfPartOfPrivateKey() throws Exception

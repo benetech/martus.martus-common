@@ -64,7 +64,11 @@ import java.security.spec.X509EncodedKeySpec;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.crypto.Cipher;
@@ -133,6 +137,8 @@ public class MartusSecurity extends MartusCryptoImplementation
 			e.printStackTrace();
 			throw new CryptoInitializationException();
 		}
+
+		decryptedSessionKeys = new HashMap();
 	}
 
 	// begin MartusCrypto interface
@@ -476,6 +482,76 @@ public class MartusSecurity extends MartusCryptoImplementation
 		}
 	}
 
+	public byte[] getSessionKeyCache() throws IOException, NoKeyPairException, EncryptionException
+	{
+		ByteArrayOutputStream rawOut = new ByteArrayOutputStream();
+		DataOutputStream out = new DataOutputStream(rawOut);
+		out.writeInt(CACHE_VERSION);
+		out.writeInt(decryptedSessionKeys.size());
+		Set keys = decryptedSessionKeys.keySet();
+		for (Iterator iter = keys.iterator(); iter.hasNext(); ) 
+		{
+			SessionKey encryptedSessionKey = (SessionKey) iter.next();
+			byte[] encryptedBytes = encryptedSessionKey.getBytes();
+			out.writeInt(encryptedBytes.length);
+			out.write(encryptedBytes);
+			SessionKey decryptedSessionKey = getCachedDecryptedSessionKey(encryptedSessionKey);
+			byte[] decryptedBytes = decryptedSessionKey.getBytes();
+			out.writeInt(decryptedBytes.length);
+			out.write(decryptedBytes);
+		}
+		out.writeInt(CACHE_VERSION);
+		
+		ByteArrayOutputStream encryptedResult = new ByteArrayOutputStream();
+		encrypt(new ByteArrayInputStream(rawOut.toByteArray()), encryptedResult);
+
+		return encryptedResult.toByteArray();
+	}
+	
+	public void setSessionKeyCache(byte[] encryptedCache) throws IOException, NoKeyPairException, DecryptionException
+	{
+		flushSessionKeyCache();
+
+		ByteArrayOutputStream cacheBytes = new ByteArrayOutputStream();
+		decrypt(new ByteArrayInputStreamWithSeek(encryptedCache), cacheBytes);
+		
+		ByteArrayInputStream rawIn = new ByteArrayInputStream(cacheBytes.toByteArray());
+		DataInputStream in = new DataInputStream(rawIn);
+		if(in.readInt() != CACHE_VERSION)
+			throw new IOException();
+		int numPairs = in.readInt();
+		for(int i=0; i < numPairs; ++i)
+		{
+			int encryptedSize = in.readInt(); 
+			byte[] encrypted = new byte[encryptedSize];
+			in.read(encrypted);
+			int decryptedSize = in.readInt(); 
+			byte[] decrypted = new byte[decryptedSize];
+			in.read(decrypted);
+			decryptedSessionKeys.put(new SessionKey(encrypted), new SessionKey(decrypted));
+		}
+		if(in.readInt() != CACHE_VERSION)
+			throw new IOException();
+		
+		if(in.available() != 0)
+			throw new IOException();
+	}
+	
+	public synchronized void flushSessionKeyCache()
+	{
+		decryptedSessionKeys.clear();
+	}
+
+	private void addSessionKeyToCache(SessionKey encryptedSessionKey, SessionKey decryptedSessionKey)
+	{
+		decryptedSessionKeys.put(encryptedSessionKey, decryptedSessionKey);
+	}
+
+	private SessionKey getCachedDecryptedSessionKey(SessionKey encryptedSessionKey)
+	{
+		return (SessionKey)decryptedSessionKeys.get(encryptedSessionKey);
+	}
+
 	public synchronized SessionKey encryptSessionKey(SessionKey sessionKey, String publicKey) throws
 		EncryptionException
 	{
@@ -483,7 +559,9 @@ public class MartusSecurity extends MartusCryptoImplementation
 		{
 			rsaCipherEngine.init(Cipher.ENCRYPT_MODE, extractPublicKey(publicKey), rand);
 			byte[] encryptedKeyBytes = rsaCipherEngine.doFinal(sessionKey.getBytes());
-			return new SessionKey(encryptedKeyBytes);
+			SessionKey encryptedSessionKey = new SessionKey(encryptedKeyBytes);
+			addSessionKeyToCache(encryptedSessionKey, sessionKey);
+			return encryptedSessionKey;
 		}
 		catch (Exception e)
 		{
@@ -493,20 +571,43 @@ public class MartusSecurity extends MartusCryptoImplementation
 		}
 	}
 
+	public synchronized SessionKey decryptSessionKey(SessionKey encryptedSessionKey) throws
+		DecryptionException
+	{
+		SessionKey decrypted = getCachedDecryptedSessionKey(encryptedSessionKey);
+		if(decrypted != null)
+			return decrypted;
+		
+		try
+		{
+			rsaCipherEngine.init(Cipher.DECRYPT_MODE, getPrivateKey(), rand);
+			byte[] sessionKeyBytes = rsaCipherEngine.doFinal(encryptedSessionKey.getBytes());
+			SessionKey decryptedSessionKey = new SessionKey(sessionKeyBytes);
+			addSessionKeyToCache(encryptedSessionKey, decryptedSessionKey);
+			return decryptedSessionKey;
+		}
+		catch(Exception e)
+		{
+			//System.out.println("MartusSecurity.decryptSessionKey: " + e);
+			//e.printStackTrace();
+			throw new DecryptionException();
+		}
+	}
+
 	public void decrypt(InputStreamWithSeek cipherStream, OutputStream plainStream) throws
-			NoKeyPairException,
-			DecryptionException
+		NoKeyPairException,
+		DecryptionException
 	{
 		if(getPrivateKey() == null)
 			throw new NoKeyPairException();
-
+		
 		decrypt(cipherStream, plainStream, null);
 	}
-
+	
 	SessionKey readSessionKey(DataInputStream dis) throws DecryptionException
 	{
 		byte[] encryptedKeyBytes = null;
-
+		
 		try
 		{
 			int keyByteCount = dis.readInt();
@@ -520,23 +621,6 @@ public class MartusSecurity extends MartusCryptoImplementation
 			throw new DecryptionException();
 		}
 		return new SessionKey(encryptedKeyBytes);
-	}
-
-	public synchronized SessionKey decryptSessionKey(SessionKey encryptedSessionKey) throws
-		DecryptionException
-	{
-		try
-		{
-			rsaCipherEngine.init(Cipher.DECRYPT_MODE, getPrivateKey(), rand);
-			byte[] sessionKeyBytes = rsaCipherEngine.doFinal(encryptedSessionKey.getBytes());
-			return new SessionKey(sessionKeyBytes);
-		}
-		catch(Exception e)
-		{
-			//System.out.println("MartusSecurity.decryptSessionKey: " + e);
-			//e.printStackTrace();
-			throw new DecryptionException();
-		}
 	}
 
 	public synchronized void decrypt(InputStreamWithSeek cipherStream, OutputStream plainStream, SessionKey sessionKey) throws
@@ -1095,8 +1179,10 @@ public class MartusSecurity extends MartusCryptoImplementation
     private static final int ITERATION_COUNT = 1000;
 	private static final int IV_BYTE_COUNT = 16;	// from the book
 	private static final int TOKEN_BYTE_COUNT = 16; //128 bits
+	private static final int CACHE_VERSION = 1;
 	private static SecureRandom rand;
 	private KeyPair jceKeyPair;
+	private Map decryptedSessionKeys;
 
 	private Signature sigEngine;
 	private Cipher rsaCipherEngine;
