@@ -34,7 +34,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Timer;
@@ -56,7 +55,6 @@ import org.martus.common.database.Database.RecordHiddenException;
 import org.martus.common.network.NetworkInterfaceConstants;
 import org.martus.common.network.SimpleX509TrustManager;
 import org.martus.common.packet.BulletinHeaderPacket;
-import org.martus.common.packet.Packet;
 import org.martus.common.packet.UniversalId;
 import org.martus.common.packet.Packet.InvalidPacketException;
 import org.martus.common.packet.Packet.SignatureVerificationException;
@@ -360,24 +358,6 @@ public class MartusUtilities
 		UniversalId uid = UniversalId.createFromAccountAndLocalId(accountId, localId);
 		DatabaseKey key = DatabaseKey.createDraftKey(uid);
 		db.discardRecord(key);
-	}
-
-	public static void deleteBulletinFromDatabase(BulletinHeaderPacket bhp, Database db, MartusCrypto crypto)
-		throws
-			IOException,
-			MartusCrypto.CryptoException,
-			UnsupportedEncodingException,
-			Packet.InvalidPacketException,
-			Packet.WrongPacketTypeException,
-			Packet.SignatureVerificationException,
-			MartusCrypto.DecryptionException,
-			MartusCrypto.NoKeyPairException
-	{
-		DatabaseKey[] keys = BulletinZipUtilities.getAllPacketKeys(bhp);
-		for (int i = 0; i < keys.length; i++)
-		{
-			db.discardRecord(keys[i]);
-		}
 	}
 
 	public static String getXmlEncoded(String text)

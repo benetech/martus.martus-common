@@ -28,10 +28,12 @@ package org.martus.common;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Vector;
 import java.util.zip.ZipFile;
 
 import org.martus.common.MartusUtilities.FileVerificationException;
+import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinZipUtilities;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.database.Database;
@@ -193,6 +195,39 @@ public class BulletinStore
 		}
 	
 		new BulletinKeyFilter(getDatabase(), visitorToUse);
+	}
+
+	public synchronized void removeBulletinFromStore(Bulletin b) throws IOException
+	{
+		MartusCrypto crypto = getSignatureVerifier();
+		BulletinHeaderPacket bhp = b.getBulletinHeaderPacket();
+		try
+		{
+			deleteBulletinRevisionFromDatabase(bhp, getDatabase(), crypto);
+		}
+		catch(Exception e)
+		{
+			//e.printStackTrace();
+			throw new IOException("Unable to delete bulletin");
+		}
+	}
+
+	public static void deleteBulletinRevisionFromDatabase(BulletinHeaderPacket bhp, Database db, MartusCrypto crypto)
+		throws
+			IOException,
+			MartusCrypto.CryptoException,
+			UnsupportedEncodingException,
+			Packet.InvalidPacketException,
+			Packet.WrongPacketTypeException,
+			Packet.SignatureVerificationException,
+			MartusCrypto.DecryptionException,
+			MartusCrypto.NoKeyPairException
+	{
+		DatabaseKey[] keys = BulletinZipUtilities.getAllPacketKeys(bhp);
+		for (int i = 0; i < keys.length; i++)
+		{
+			db.discardRecord(keys[i]);
+		}
 	}
 
 	private MartusCrypto security;
