@@ -86,6 +86,8 @@ public class UiPasswordField extends JPasswordField
 	{
 		clearVirtualPassword();
 		setVirtualMode(true);
+		if(passwordToUse == null)
+			return;
 		for(int i = 0; i < passwordToUse.length; ++i)
 			appendChar(passwordToUse[i]);
 	}

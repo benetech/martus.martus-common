@@ -104,7 +104,7 @@ public class UiSigninPanel extends JPanel implements VirtualKeyboardHandler
 		new UiVirtualKeyboard(localization, this, passwordField);
 		UpdatePasswordArea();
 		
-		if(username.length() > 0)
+		if(username != null && username.length() > 0)
 			passwordField.requestFocus();
 	}
 	
