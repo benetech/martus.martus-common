@@ -66,7 +66,7 @@ public class UiBasicLocalization extends Localization
 		writer.writeln("# The file MUST be saved in UTF-8 format!");
 		writer.writeln("# If you name it Martus-xx.mtf (where xx is the correct language code) and");
 		writer.writeln("#    put the file in c:\\Martus, then Martus will automatically read it.");
-		writer.writeln("# In Martus, to choose a language, pick one of the drop-down box in the");
+		writer.writeln("# In Martus, to choose a language, pick one from the drop-down list in the");
 		writer.writeln("#    lower left-hand corner of the signin screen, or once you are logged in,");
 		writer.writeln("#    go to Options/Preferences.");
 		writer.writeln("#");
@@ -76,17 +76,18 @@ public class UiBasicLocalization extends Localization
 		writer.writeln("#      creating/restoring secret share).");  
 		writer.writeln("#  3.  in field:VirtualKeyboardKeys, keep the english alphabet, but include any");
 		writer.writeln("#      non-english characters at the end of the english alphabet/numbers/special");
-		writer.writeln("#      characters (e.g. attach entire thai alphabet at the end of the line)");
+		writer.writeln("#      characters (e.g. attach entire Thai alphabet at the end of the line)");
 		writer.writeln("#  4.  in field:SearchBulletinRules, make sure to translate the english \"and\"");
 		writer.writeln("#      and \"or\" in the text to exactly match the keyword:and= and ");
 		writer.writeln("#      keyword:or= translations");
-		writer.writeln("#  5.  in field:inputCustomFieldsentry, can translate tags into foreign characters)");
-		writer.writeln("#      (but without punctuation or spaces)");
+		writer.writeln("#  5.  in field:inputCustomFieldsentry, can translate tags into foreign");
+		writer.writeln("#      characters (but without punctuation or spaces)");
 		writer.writeln("#  6.  when there are file or directory names, do not translate them");
-		writer.writeln("#      (e.g.  \"acctmap.txt\" and \"packets\"");
-		writer.writeln("#      in field:confirmWarnMissingAccountMapFilecause=Warning: acctmap.txt file in");
-		writer.writeln("#      your account's packets directory...");
+		writer.writeln("#      (e.g.  \"acctmap.txt\" and \"packets\")");
+		writer.writeln("#      in field:confirmWarnMissingAccountMapFilecause=Warning: acctmap.txt");
+		writer.writeln("#      file in your account's packets directory...");
 		writer.writeln("#  7.  do not translate the words \"Martus\" or \"Benetech\"");
+		writer.writeln("#  8.  do NOT translate \"#S#\" (used for search string entry");
 		writer.writeln("#");
 		
 		Vector keys = getAllTranslationStrings(languageCode);
