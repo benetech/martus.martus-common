@@ -98,7 +98,7 @@ public class UiBasicLocalization extends Localization
 			String englishMtfEntry = getMtfEntry(ENGLISH, key);
 			int keyEnd = mtfEntry.indexOf('=');
 			char[] filler = new char[keyEnd];
-			Arrays.fill(filler, '=');
+			Arrays.fill(filler, '_');
 			filler[0] = '#';
 			String result = new String(filler) + englishMtfEntry.substring(keyEnd);
 
