@@ -45,6 +45,12 @@ import org.martus.swing.UiLanguageDirection;
 
 public class BulletinHtmlGenerator
 {
+	
+	public BulletinHtmlGenerator(UiBasicLocalization localizationToUse)
+	{
+		this(80, localizationToUse);
+	}
+	
 	public BulletinHtmlGenerator(int widthToUse, UiBasicLocalization localizationToUse)
 	{
 		width = widthToUse;
@@ -156,7 +162,7 @@ public class BulletinHtmlGenerator
 			else if(spec.getType() == FieldSpec.TYPE_GRID)
 			{
 				GridFieldSpec grid = (GridFieldSpec)spec;
-				value = "<table border='1' align='right'><tr>";
+				value = "<table border='1' align='left'><tr>";
 				String justification = "center";
 				if(!UiLanguageDirection.isRightToLeftLanguage())
 					value += getItemToAddForTable(grid.getColumnZeroLabel(),TABLE_HEADER, justification);
