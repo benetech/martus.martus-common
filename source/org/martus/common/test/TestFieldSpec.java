@@ -83,6 +83,7 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertEquals("DATERANGE", FieldSpec.getTypeString(FieldSpec.TYPE_DATERANGE));
 		assertEquals("BOOLEAN", FieldSpec.getTypeString(FieldSpec.TYPE_BOOLEAN));
 		assertEquals("LANGUAGE", FieldSpec.getTypeString(FieldSpec.TYPE_LANGUAGE));
+		assertEquals("GRID", FieldSpec.getTypeString(FieldSpec.TYPE_GRID));
 		assertEquals("UNKNOWN", FieldSpec.getTypeString(-99));
 	}
 	
@@ -95,6 +96,6 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertEquals(FieldSpec.TYPE_DATERANGE, FieldSpec.getTypeCode("DATERANGE"));
 		assertEquals(FieldSpec.TYPE_BOOLEAN, FieldSpec.getTypeCode("BOOLEAN"));
 		assertEquals(FieldSpec.TYPE_LANGUAGE, FieldSpec.getTypeCode("LANGUAGE"));
-		
+		assertEquals(FieldSpec.TYPE_GRID, FieldSpec.getTypeCode("GRID"));
 	}
 }
