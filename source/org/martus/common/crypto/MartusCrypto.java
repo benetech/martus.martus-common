@@ -38,6 +38,7 @@ import javax.net.ssl.KeyManager;
 import org.martus.common.MartusUtilities;
 import org.martus.util.Base64;
 import org.martus.util.InputStreamWithSeek;
+import org.martus.util.Base64.InvalidBase64Exception;
 
 public abstract class MartusCrypto
 {
@@ -196,12 +197,24 @@ public abstract class MartusCrypto
 		return normalizedPublicCode;
 	}
 
-	public static String getFormattedPublicCode(String nextAccountId)
+	public static String getFormattedPublicCode(String accountId)
 		throws Base64.InvalidBase64Exception
 	{
-		return MartusCrypto.formatPublicCode(MartusCrypto.computePublicCode(nextAccountId));
+		return formatPublicCode(MartusCrypto.computePublicCode(accountId));
 	}
 
+	public static String formatAccountIdForLog(String accountId)
+	{
+		try
+		{
+			return formatPublicCode(MartusCrypto.computePublicCode(accountId));
+		}
+		catch (InvalidBase64Exception ignoreForLoggingUseAccountId)
+		{
+			return accountId;
+		}
+	}
+	
 
 	// exceptions
 	public static class CryptoException extends Exception{}
