@@ -487,7 +487,7 @@ public class Localization
 	public static final String ARABIC = "ar";
 	public static final String[] ALL_LANGUAGE_CODES = {
 				LANGUAGE_OTHER, ENGLISH, ARABIC,
-				"az", "bn", "km","my","zh", "nl", "eo", "fa", FRENCH, "de","gu","ha","he","hi","hu",
+				"az", "bg", "bn", "km","my","zh", "nl", "eo", "fa", FRENCH, "de","gu","ha","he","hi","hu",
 				"it", "ja","jv","kn","kk","ky","ko","ml","mr","ne","or","pa","ps","pl","pt","ro",RUSSIAN,"sr",
 				"sr", "sd","si",SPANISH,"ta","tg","te",THAI,"tr","tk","uk","ur","uz","vi"};
 	public Vector rightToLeftLanguages;
