@@ -25,6 +25,8 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.test;
 
+import java.util.Vector;
+import org.martus.common.DropDownFieldSpec;
 import org.martus.common.EnglishCommonStrings;
 import org.martus.common.FieldSpec;
 import org.martus.common.GridData;
@@ -183,6 +185,28 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 		BulletinHtmlGenerator generator = new BulletinHtmlGenerator(loc);
 		String expectedHtml ="<tr><td width='15%' align='right' valign='top'></td><td valign='top'><table border='1' align='left'><tr><th align='center'> </th><th align='center'>Column 1</th><th align='center'>Column 2</th></tr><tr><td align='left'>1</td><td align='left'>data1</td><td align='left'>&lt;&amp;data2&gt;</td></tr><tr><td align='left'>2</td><td align='left'>data3</td><td align='left'>data4</td></tr></table></td></tr>\n";
 		assertEquals("HTML Grids not correct?", expectedHtml, generator.getSectionHtmlString(b.getFieldDataPacket()));
+	}
+
+	public void testGetHtmlStringWithDropDowns() throws Exception
+	{
+		DropDownFieldSpec dropdownSpec = new DropDownFieldSpec();
+		Vector choices = new Vector();
+		choices.add("green");
+		choices.add("blue");
+		
+		dropdownSpec.setChoices(choices);
+		dropdownSpec.setTag("myDropDownTag");
+		dropdownSpec.setLabel("myDropdownLabel");
+		FieldSpec[] dropdownSpecs = {dropdownSpec};
+		FieldSpec[] standardPrivateFields = StandardFieldSpecs.getDefaultPrivateFieldSpecs();
+		
+		Bulletin b = new Bulletin(security, dropdownSpecs, standardPrivateFields);
+		b.set(dropdownSpec.getTag(), "blue");
+		
+		
+		BulletinHtmlGenerator generator = new BulletinHtmlGenerator(loc);
+		String expectedHtml ="<tr><td width='15%' align='right' valign='top'>myDropdownLabel</td><td valign='top'>blue</td></tr>\n";
+		assertEquals("HTML Dropdowns not correct?", expectedHtml, generator.getSectionHtmlString(b.getFieldDataPacket()));
 	}
 
 	public void testGetHtmlStringWithEmptyGrids() throws Exception
