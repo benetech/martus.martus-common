@@ -51,7 +51,6 @@ public class UiPasswordField extends JPasswordField
 		if(inVirtualMode)
 		{	
 			char[] virtual = getVirtualPassword();
-			clearVirtualPassword();
 			return virtual;
 		}
 		return super.getPassword();
