@@ -30,7 +30,6 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -157,13 +156,6 @@ public class Bulletin implements BulletinConstants
 	public long getLastSavedTime()
 	{
 		return getBulletinHeaderPacket().getLastSavedTime();
-	}
-	
-	public String getLastSavedDateTime()
-	{		
-		Calendar cal = new GregorianCalendar();
-		cal.setTimeInMillis(getLastSavedTime());		
-		return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(cal.getTime());
 	}
 	
 	public String getLastSavedDate()
@@ -309,7 +301,6 @@ public class Bulletin implements BulletinConstants
 		
 		set(TAGENTRYDATE, getToday());
 		set(TAGEVENTDATE, getFirstOfThisYear());
-		set(TAGLASTSAVED, getLastSavedDateTime());
 		
 		setDraft();
 	}

@@ -28,6 +28,7 @@ package org.martus.common.analyzerhelper;
 import java.io.File;
 import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
+import org.martus.common.MiniLocalization;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinConstants;
@@ -217,8 +218,10 @@ public class TestMartusBulletinWrapper extends TestCaseEnhanced
 		File bulletinZipFile = createTempFileFromName("$$$TestBulletinWrapperHQZipFile");
 		BulletinZipUtilities.exportBulletinPacketsFromDatabaseToZipFile(store.getDatabase(), bulletin.getDatabaseKeyForLocalId(bulletin.getLocalId()), bulletinZipFile, fosecurity);
 		
+		MiniLocalization localization = new MiniLocalization();
 		MartusBulletinWrapper bulletinWrapper = new MartusBulletinWrapper(bulletin.getUniversalId(), bulletinZipFile, security);
-		String expectedHtmlResult = "<html><table width='100'><tr><td width='15%' align='right' valign='top'>Last Saved</td><td valign='top'>"+bulletin.getLastSavedDateTime()+"</td></tr>\n" +
+		String expectedHtmlResult = "<html><table width='100'><tr><td width='15%' align='right' valign='top'>Last Saved</td><td valign='top'>"+
+				localization.formatDateTime(bulletin.getLastSavedTime())+"</td></tr>\n" +
 				"<tr><td width='15%' align='right' valign='top'>Version</td><td valign='top'>1</td></tr>\n"+
 				"<tr><td width='15%' align='right' valign='top'>Bulletin Status:</td><td valign='top'>Sealed</td></tr>\n"+
 				"<tr></tr><tr></tr><tr><td width='15%' align='right' valign='top'>Field Desk Bulletin</td><td valign='top'></td></tr>\n"+

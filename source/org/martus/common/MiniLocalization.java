@@ -28,7 +28,9 @@ package org.martus.common;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -336,6 +338,16 @@ public class MiniLocalization
 		if(rightToLeftLanguages.contains(languageCode))
 			return;
 		rightToLeftLanguages.add(languageCode);
+	}
+
+	public String formatDateTime(long dateTime)
+	{
+		DateFormat dateShort = new SimpleDateFormat(getCurrentDateFormatCode());
+		DateFormat time24hour = new SimpleDateFormat("HH:mm");
+		
+		Calendar cal = new GregorianCalendar();
+		cal.setTimeInMillis(dateTime);		
+		return dateShort.format(cal.getTime()) + " " + time24hour.format(cal.getTime());
 	}
 
 	public static final String ENGLISH = "en";

@@ -93,6 +93,7 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestMartusSecurity.class));
 		suite.addTest(new TestSuite(TestMartusUtilities.class));
 		suite.addTest(new TestSuite(TestMartusXml.class));
+		suite.addTest(new TestSuite(TestMiniLocalization.class));
 		suite.addTest(new TestSuite(TestPacket.class));
 		suite.addTest(new TestSuite(TestUnicodeFileReader.class));
 		suite.addTest(new TestSuite(TestUnicodeFileWriter.class));

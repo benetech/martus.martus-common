@@ -118,7 +118,7 @@ public class BulletinHtmlGenerator
 	
 	private void appendHeadHtml(StringBuffer html, Bulletin b )
 	{
-		html.append(getHtmlEscapedFieldHtmlString(localization.getFieldLabel("BulletinLastSaved"), b.getLastSavedDateTime()));
+		html.append(getHtmlEscapedFieldHtmlString(localization.getFieldLabel("BulletinLastSaved"), localization.formatDateTime(b.getLastSavedTime())));
 		html.append(getHtmlEscapedFieldHtmlString(localization.getFieldLabel("BulletinVersionNumber"), (new Integer(b.getVersion())).toString()));
 		html.append(getHtmlEscapedFieldHtmlString(localization.getFieldLabel("BulletinStatus"), localization.getStatusLabel(b.getStatus())));
 		html.append("<tr></tr>");		
