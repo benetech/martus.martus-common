@@ -26,6 +26,7 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.clientside;
 
+import java.awt.ComponentOrientation;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,7 +50,7 @@ public class UiUtilities
 		String[] contents = {cause};
 		String[] buttons = {ok};
 
-		new UiNotifyDlg(parent, title, contents, buttons, tokenReplacement);
+		new UiNotifyDlg(parent, title, contents, buttons, tokenReplacement, localization.getComponentOrientation());
 	}
 
 	public static void messageDlg(UiBasicLocalization localization, JFrame parent, String baseTag, String message)
@@ -60,7 +61,7 @@ public class UiUtilities
 		String[] contents = {cause, "", message};
 		String[] buttons = {ok};
 
-		new UiNotifyDlg(parent, title, contents, buttons);
+		new UiNotifyDlg(parent, title, contents, buttons, localization.getComponentOrientation());
 	}
 
 	public static boolean confirmDlg(UiBasicLocalization localization, JFrame parent, String baseTag)
@@ -91,18 +92,18 @@ public class UiUtilities
 		String no = localization.getButtonLabel("no");
 		String[] buttons = {yes, no};
 
-		return confirmDlg(parent, title, contents, buttons, tokenReplacement);
+		return confirmDlg(parent, title, contents, buttons, tokenReplacement, localization.getComponentOrientation());
 	}
 
-	public static boolean confirmDlg(JFrame parent, String title, String[] contents, String[] buttons) 
+	public static boolean confirmDlg(JFrame parent, String title, String[] contents, String[] buttons, ComponentOrientation orientation) 
 	{
 		HashMap emptyTokenReplacement = new HashMap();
-		return confirmDlg(parent, title, contents, buttons, emptyTokenReplacement); 
+		return confirmDlg(parent, title, contents, buttons, emptyTokenReplacement, orientation); 
 	}
 
-	public static boolean confirmDlg(JFrame parent, String title, String[] contents, String[] buttons, Map tokenReplacement) 
+	public static boolean confirmDlg(JFrame parent, String title, String[] contents, String[] buttons, Map tokenReplacement, ComponentOrientation orientation) 
 	{
-		UiNotifyDlg notify = new UiNotifyDlg(parent, title, contents, buttons, tokenReplacement);
+		UiNotifyDlg notify = new UiNotifyDlg(parent, title, contents, buttons, tokenReplacement, orientation);
 		String result = notify.getResult();
 		if(result == null)
 			return false;
