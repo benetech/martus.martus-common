@@ -132,7 +132,7 @@ public class ConfigInfo implements Serializable
 		return encodeContactInfoVector(contactInfo);
 	}
 	
-	private Vector encodeContactInfoVector(Vector unencodedContactInfo) throws UnsupportedEncodingException
+	public static Vector encodeContactInfoVector(Vector unencodedContactInfo) throws UnsupportedEncodingException
 	{
 		Vector encoded = new Vector();
 		encoded.add(BASE_64_ENCODED);
