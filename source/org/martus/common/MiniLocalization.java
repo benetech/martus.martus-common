@@ -41,7 +41,7 @@ import java.util.Vector;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.utilities.DateUtilities;
 import org.martus.common.utilities.MartusFlexidate;
-import org.martus.util.language.LanguageDirection;
+import org.martus.util.language.LanguageOptions;
 
 
 public class MiniLocalization
@@ -145,9 +145,13 @@ public class MiniLocalization
 	{
 		currentLanguageCode = newLanguageCode;
 		if(isRightToLeftLanguage())
-			LanguageDirection.setDirectionRightToLeft();
+			LanguageOptions.setDirectionRightToLeft();
 		else
-			LanguageDirection.setDirectionLeftToRight();
+			LanguageOptions.setDirectionLeftToRight();
+		if(currentLanguageCode.equals(ARABIC))
+			LanguageOptions.setLanguagePaddingRequired();
+		else
+			LanguageOptions.setLanguagePaddingNotRequired();
 	}
 	
 	public String getCurrentDateFormatCode()
@@ -274,7 +278,7 @@ public class MiniLocalization
 
 	private String reverseDisplayDateIfRequired(String displayDate)
 	{
-		if(LanguageDirection.isRightToLeftLanguage())
+		if(LanguageOptions.isRightToLeftLanguage())
 			return reverseDate(displayDate);
 		return displayDate;
 	}

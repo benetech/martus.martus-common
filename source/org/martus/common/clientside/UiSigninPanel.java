@@ -40,7 +40,7 @@ import javax.swing.border.LineBorder;
 
 import org.martus.swing.UiParagraphPanel;
 import org.martus.swing.UiWrappedTextArea;
-import org.martus.util.language.LanguageDirection;
+import org.martus.util.language.LanguageOptions;
 
 public class UiSigninPanel extends UiParagraphPanel implements VirtualKeyboardHandler
 {
@@ -196,7 +196,7 @@ public class UiSigninPanel extends UiParagraphPanel implements VirtualKeyboardHa
 	private JPanel createPanel(Component component1, Component component2)
 	{
 		JPanel panel = new JPanel();
-		if(LanguageDirection.isRightToLeftLanguage())
+		if(LanguageOptions.isRightToLeftLanguage())
 		{
 			panel.add(component2);
 			panel.add(component1);

@@ -29,7 +29,7 @@ package org.martus.common.test;
 import java.util.GregorianCalendar;
 import org.martus.common.MiniLocalization;
 import org.martus.util.TestCaseEnhanced;
-import org.martus.util.language.LanguageDirection;
+import org.martus.util.language.LanguageOptions;
 
 
 public class TestMiniLocalization extends TestCaseEnhanced
@@ -65,7 +65,7 @@ public class TestMiniLocalization extends TestCaseEnhanced
     	final int december = 11;
     	GregorianCalendar afternoon = new GregorianCalendar(2004, december, 9, 13, 59);
     	assertEquals("13:59 2004/09/12", loc.formatDateTime(afternoon.getTimeInMillis()));
-    	LanguageDirection.setDirectionLeftToRight();
+    	LanguageOptions.setDirectionLeftToRight();
 	}
 
     public void testDateUnknown()

@@ -25,8 +25,10 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.clientside;
 
+import java.awt.Dimension;
 import javax.swing.JTextField;
 import org.martus.swing.UiLanguageDirection;
+import org.martus.util.language.LanguageOptions;
 
 
 public class UiTextField extends JTextField
@@ -53,5 +55,23 @@ public class UiTextField extends JTextField
 	{
 		setComponentOrientation(UiLanguageDirection.getComponentOrientation());
 		setHorizontalAlignment(UiLanguageDirection.getHorizontalAlignment());
+	}
+	
+	/* 
+	 * NOTE: This is a horrible hack to work around the fact that a JTextArea
+	 * seems to completely ignore any calls to setBorder or setMargin.
+	 * We need to add some space to the bottom of the field to avoid Arabic
+	 * (and even English) characters from being chopped off. 
+	 * The number of pixels is arbitrary and may need to be adjusted.
+	 */
+	public Dimension getPreferredSize()
+	{
+		if(!LanguageOptions.needsLanguagePadding())
+			return super.getPreferredSize();
+
+		final int EXTRA_PIXELS = 12;
+		Dimension d = super.getPreferredSize();
+		d.setSize(d.getWidth(), d.getHeight() + EXTRA_PIXELS);
+		return d;
 	}
 }

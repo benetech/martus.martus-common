@@ -36,7 +36,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 
-import org.martus.util.language.LanguageDirection;
+import org.martus.util.language.LanguageOptions;
 
 public class CurrentUiState implements Serializable
 {
@@ -135,7 +135,7 @@ public class CurrentUiState implements Serializable
 
 	private int getNormalizedSplitterPosition(int splitterPosition)
 	{
-		if(!LanguageDirection.isRightToLeftLanguage())
+		if(!LanguageOptions.isRightToLeftLanguage())
 			return splitterPosition;
 		return currentAppDimension.width - splitterPosition;
 	}
