@@ -87,48 +87,50 @@ public class TestMagicWords extends TestCaseEnhanced
 		String removeString = MAGICWORD1;
 		
 		assertTrue("Contain this matic word", magicWords.isValidMagicWord(removeString));
-		assertTrue("Current magic words size", magicWords.size()== 3); 
+		assertTrue("Current magic words size", magicWords.getNumberOfAllMagicWords()== 3); 
 		magicWords.remove(removeString);
-		assertTrue("Current magic words size after remove", magicWords.size()== 2); 			
+		assertTrue("Current magic words size after remove", magicWords.getNumberOfAllMagicWords()== 2); 			
 	
 	}
 	
 	public void testNullMagicWord() throws Exception
 	{
 		String duplicateString = null;
-		assertTrue("Current size?", magicWords.size()==3);
+		assertTrue("Current size?", magicWords.getNumberOfAllMagicWords()==3);
 		magicWords.add(duplicateString, null);
-		assertFalse("Same size?", magicWords.size()==3);
+		assertFalse("Same size?", magicWords.getNumberOfAllMagicWords()==3);
 	}
 	
 	public void testDuplicateMagicWords() throws Exception
 	{
 		String duplicateString = MAGICWORD2;
-		assertTrue("Current size?", magicWords.size()==3);
+		assertTrue("Current size?", magicWords.getNumberOfAllMagicWords()==3);
 		magicWords.add(duplicateString, null);
-		assertTrue("Same size?", magicWords.size()==3);
+		assertTrue("Same size?", magicWords.getNumberOfAllMagicWords()==3);
 	}
 
 	public void testGetAllMagicWords()
 	{
 		Vector allMagicWords = magicWords.getAllMagicWords();
 		assertEquals("Size incorrect", 3, allMagicWords.size());
-		Vector magicWords = new Vector();
+		Vector magicWordsVector = new Vector();
 		Vector groupNames = new Vector();
 		
 		for(int i = 0; i<allMagicWords.size(); ++i)
 		{
 			String lineEntry = (String)allMagicWords.get(i);
-			magicWords.add(MagicWords.getMagicWordWithActiveSignFromLineEntry(lineEntry));
+			magicWordsVector.add(MagicWords.getMagicWordWithActiveSignFromLineEntry(lineEntry));
 			groupNames.add(MagicWords.getGroupNameFromLineEntry(lineEntry));
 		}
-		assertContains(MAGICWORD1, magicWords);
-		assertContains(MAGICWORD2, magicWords);
-		assertContains(INACTIVE_MAGICWORD3, magicWords);
+		assertContains(MAGICWORD1, magicWordsVector);
+		assertContains(MAGICWORD2, magicWordsVector);
+		assertContains(INACTIVE_MAGICWORD3, magicWordsVector);
 		
 		assertContains(GROUPNAME1, groupNames);
 		assertContains(MAGICWORD2, groupNames);
 		assertContains(INACTIVE_GROUPNAME3, groupNames);
+		
+		assertEquals("All incorrect", 3, magicWords.getNumberOfAllMagicWords());
 	}
 	
 	public void testGetActiveMagicWords()
@@ -203,9 +205,12 @@ public class TestMagicWords extends TestCaseEnhanced
 		magicWords3.loadMagicWords(tempFile1);
 		tempFile1.delete();
 		
-		assertEquals("Size incorrect for all words", 4, magicWords3.getAllMagicWords().size());
-		assertEquals("Size incorrect for active words", 2, magicWords3.getActiveMagicWords().size());
-		assertEquals("Size incorrect for inactive words", 2, magicWords3.getInactiveMagicWords().size());
+		assertEquals("Size incorrect for all words from size", 4, magicWords3.getAllMagicWords().size());
+		assertEquals("Size incorrect for all words", 4, magicWords3.getNumberOfAllMagicWords());
+		assertEquals("Size incorrect for active words from size", 2, magicWords3.getActiveMagicWords().size());
+		assertEquals("Size incorrect for active words", 2, magicWords3.getNumberOfActiveWords());
+		assertEquals("Size incorrect for inactive words from size", 2, magicWords3.getInactiveMagicWords().size());
+		assertEquals("Size incorrect for inactive words", 2, magicWords3.getNumberOfInactiveWords());
 		File tempFile2 = createTempFileFromName("$$$MartusTestSaveMagicFile");
 		magicWords3.writeMagicWords(tempFile2, magicWords3.getAllMagicWords());
 

@@ -139,9 +139,19 @@ public class MagicWords
 		return magicWords;
 	}
 	
-	public int size()
+	public int getNumberOfAllMagicWords()
 	{
 		return magicWordEntries.size();
+	}
+	
+	public int getNumberOfActiveWords()
+	{
+		return getActiveMagicWords().size();
+	}
+	
+	public int getNumberOfInactiveWords()
+	{
+		return getInactiveMagicWords().size();
 	}
 	
 	private boolean contains(String magicWordToFind)
