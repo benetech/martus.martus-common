@@ -288,17 +288,6 @@ public class BulletinHeaderPacket extends Packet
 		}
 	}
 
-	public void loadFromXml(InputStreamWithSeek inputStream, MartusCrypto verifier) throws
-		IOException,
-		InvalidPacketException,
-		WrongPacketTypeException,
-		SignatureVerificationException,
-		MartusCrypto.DecryptionException,
-		MartusCrypto.NoKeyPairException
-	{
-		loadFromXml(inputStream, null, verifier);
-	}
-
 	public static BulletinHeaderPacket loadFromZipFile(ZipFile zip, MartusCrypto verifier)
 		throws IOException,
 		SignatureVerificationException

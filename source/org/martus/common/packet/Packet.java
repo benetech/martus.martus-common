@@ -414,6 +414,11 @@ public class Packet
 		dest.writeDirect(data);
 	}
 	
+	public void loadFromXml(InputStreamWithSeek inputStream, MartusCrypto verifier) throws IOException, InvalidPacketException, WrongPacketTypeException, SignatureVerificationException, MartusCrypto.DecryptionException, MartusCrypto.NoKeyPairException
+	{
+		loadFromXml(inputStream, null, verifier);
+	}
+
 	public void loadFromXml(InputStreamWithSeek inputStream, byte[] expectedSig, MartusCrypto verifier) throws
 		IOException,
 		InvalidPacketException,
@@ -435,4 +440,5 @@ public class Packet
 	public static long millisInVerifyPacketSignature;
 
 	private static final int LOCALID_RANDOM_BYTE_COUNT = 128/8;
+
 }

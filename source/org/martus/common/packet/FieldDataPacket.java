@@ -276,17 +276,6 @@ public class FieldDataPacket extends Packet
 		return loader;
 	}
 
-	public void loadFromXml(InputStreamWithSeek inputStream, MartusCrypto verifier) throws
-		IOException,
-		InvalidPacketException,
-		WrongPacketTypeException,
-		SignatureVerificationException,
-		MartusCrypto.DecryptionException,
-		MartusCrypto.NoKeyPairException
-	{
-		loadFromXml(inputStream, null, verifier);
-	}
-
 	public byte[] writeXmlPlainText(Writer writer, MartusCrypto signer) throws IOException
 	{
 		return super.writeXml(writer, signer);
