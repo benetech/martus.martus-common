@@ -40,6 +40,7 @@ import java.security.SecureRandom;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
+import java.util.zip.ZipFile;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -47,6 +48,7 @@ import javax.net.ssl.TrustManager;
 
 import org.martus.common.bulletin.BulletinZipUtilities;
 import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.crypto.MartusCrypto.DecryptionException;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
@@ -56,6 +58,9 @@ import org.martus.common.network.SimpleX509TrustManager;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.Packet;
 import org.martus.common.packet.UniversalId;
+import org.martus.common.packet.Packet.InvalidPacketException;
+import org.martus.common.packet.Packet.SignatureVerificationException;
+import org.martus.common.packet.Packet.WrongAccountException;
 import org.martus.util.Base64;
 import org.martus.util.InputStreamWithSeek;
 import org.martus.util.StreamFilter;
@@ -672,6 +677,13 @@ public class MartusUtilities
 		}
 		
 		return clientsNotAmplified;
+	}
+
+	public static BulletinHeaderPacket extractHeaderPacket(String authorAccountId, ZipFile zip, MartusCrypto security) throws InvalidPacketException, IOException, SignatureVerificationException, WrongAccountException, DecryptionException
+	{
+		BulletinZipUtilities.validateIntegrityOfZipFilePackets(authorAccountId, zip, security);
+		BulletinHeaderPacket header = BulletinHeaderPacket.loadFromZipFile(zip, security);
+		return header;
 	}
 
 	public static final String DEFAULT_FILE_NAME = "Martus-";

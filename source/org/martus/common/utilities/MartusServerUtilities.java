@@ -108,10 +108,8 @@ public class MartusServerUtilities
 			Packet.WrongAccountException,
 			MartusCrypto.DecryptionException 
 	{
-		BulletinZipUtilities.validateIntegrityOfZipFilePackets(authorAccountId, zip, security);
-
+		BulletinHeaderPacket header = MartusUtilities.extractHeaderPacket(authorAccountId, zip, security);
 		Enumeration entries = zip.entries();
-		BulletinHeaderPacket header = BulletinHeaderPacket.loadFromZipFile(zip, security);
 		while(entries.hasMoreElements())
 		{
 			ZipEntry entry = (ZipEntry)entries.nextElement();
