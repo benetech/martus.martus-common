@@ -84,8 +84,6 @@ public class TestMartusBulletinWrapper extends TestCaseEnhanced
 		assertEquals("Data for title not correct?", title, bulletinWrapper.getTitle());
 		assertEquals("Data for location not correct?", location, bulletinWrapper.getLocation());
 		assertEquals("PrivateData not visible?", privateData, bulletinWrapper.getPrivateInfo());
-		assertEquals("Local Id different?", bulletin.getLocalId(), bulletinWrapper.getBulletinId());
-		assertEquals("Account Public code different?", MartusSecurity.computePublicCode(bulletin.getAccount()), bulletinWrapper.getAccountPublicCode());
 		bulletinZipFile.delete();
 		db.deleteAllData();
 	}

@@ -37,7 +37,6 @@ import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.database.ClientFileDatabase;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.packet.UniversalId;
-import org.martus.util.Base64.InvalidBase64Exception;
 
 
 public class MartusBulletinWrapper
@@ -106,24 +105,6 @@ public class MartusBulletinWrapper
 		}
 	}
 	
-	public String getBulletinId()
-	{
-		return bulletin.getLocalId();
-	}
-	
-	public String getAccountPublicCode()
-	{
-		try
-		{
-			return MartusSecurity.computePublicCode(bulletin.getAccount());
-		}
-		catch(InvalidBase64Exception e)
-		{
-			e.printStackTrace();
-		}
-		return null;
-	}
-
 	public String getTitle()
 	{
 		return bulletin.get(BulletinConstants.TAGTITLE);
