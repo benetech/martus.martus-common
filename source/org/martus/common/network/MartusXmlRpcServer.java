@@ -28,7 +28,7 @@ package org.martus.common.network;
 
 import java.net.InetAddress;
 
-import org.martus.common.utilities.WebServerWithClientId;
+import org.martus.util.xmlrpc.WebServerWithClientId;
 
 
 public class MartusXmlRpcServer

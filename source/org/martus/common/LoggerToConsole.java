@@ -29,7 +29,7 @@ package org.martus.common;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
-import org.martus.common.utilities.XmlRpcThread;
+import org.martus.util.xmlrpc.XmlRpcThread;
 
 
 public class LoggerToConsole implements LoggerInterface
