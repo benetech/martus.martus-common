@@ -224,9 +224,12 @@ abstract public class FileDatabase extends Database
 		{
 			File file = getFileForRecord(key);
 			file.delete();
+			if(file.exists())
+				throw new IOException("delete failed: " + file);
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
 			System.out.println("FileDatabase.discardRecord: " + e);
 		}
 	}
