@@ -46,13 +46,13 @@ import org.martus.swing.Utilities;
 
 public class UiBasicSigninDlg extends JDialog
 {
-	public UiBasicSigninDlg(UiBasicLocalization localizationToUse, CurrentUiState uiStateToUse, JFrame owner, int mode, String username)
+	public UiBasicSigninDlg(UiBasicLocalization localizationToUse, CurrentUiState uiStateToUse, JFrame owner, int mode, String username, char[] password)
 	{
 		super(owner, true);
-		initalize(localizationToUse, uiStateToUse, owner, mode, username);
+		initalize(localizationToUse, uiStateToUse, owner, mode, username, password);
 	}
 
-	public void initalize(UiBasicLocalization localizationToUse, CurrentUiState uiStateToUse, JFrame owner, int mode, String username)
+	public void initalize(UiBasicLocalization localizationToUse, CurrentUiState uiStateToUse, JFrame owner, int mode, String username, char[] password)
 	{
 		currentMode = mode;
 		localization = localizationToUse;
@@ -60,7 +60,7 @@ public class UiBasicSigninDlg extends JDialog
 		usersChoice = CANCEL;
 		setTitle(getTextForTitle(localization, currentMode));
 		
-		signinPane = new UiSigninPanel(this, currentMode, username);
+		signinPane = new UiSigninPanel(this, currentMode, username, password);
 		
 		ok = new JButton(localization.getButtonLabel("ok"));
 		ok.addActionListener(new OkHandler());

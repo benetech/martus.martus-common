@@ -42,7 +42,7 @@ import org.martus.swing.UiWrappedTextArea;
 
 public class UiSigninPanel extends JPanel implements VirtualKeyboardHandler
 {
-	public UiSigninPanel(UiBasicSigninDlg dialogToUse, int mode, String username)
+	public UiSigninPanel(UiBasicSigninDlg dialogToUse, int mode, String username, char[] password)
 	{
 		owner = dialogToUse;
 		localization = owner.getLocalization();
@@ -96,7 +96,7 @@ public class UiSigninPanel extends JPanel implements VirtualKeyboardHandler
 		
 		add(new JLabel(localization.getFieldLabel("password")), ParagraphLayout.NEW_PARAGRAPH);
 		passwordField = new UiPasswordField(20);
-		
+		passwordField.setPassword(password);
 		switchToNormalKeyboard = new JButton(localization.getButtonLabel("VirtualKeyboardSwitchToNormal"));
 		switchToNormalKeyboard.addActionListener(new SwitchKeyboardHandler());
 		passwordArea = new JPanel();

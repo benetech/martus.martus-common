@@ -60,28 +60,20 @@ public class UiPasswordField extends JPasswordField
 	
 	public void setVirtualMode(boolean virtualMode)
 	{
+		char[] currentPassword = getPassword();
 		inVirtualMode = virtualMode;
 		if(inVirtualMode)
 		{
 			super.setEditable(false);
-			char[] tempPassword = super.getPassword();
-			virtualPasswordLength = tempPassword.length;
-			System.arraycopy(tempPassword, 0, virtualPassword, 0, virtualPasswordLength);
-			scrubData(tempPassword);
+			virtualPasswordLength = currentPassword.length;
+			System.arraycopy(currentPassword, 0, virtualPassword, 0, virtualPasswordLength);
+			scrubData(currentPassword);
 			updateFakeVisualPassword();
 			return;
 		}
 		
 		super.setEditable(true);
-		if(virtualPasswordLength == 0)
-		{
-			super.setText("");
-			return;
-		}
-
-		char[] exactSizePassword = getVirtualPassword();
-		super.setText(new String(exactSizePassword));
-		clearVirtualPassword();
+		super.setText(new String(currentPassword));
 	}
 	
 	private char[] getVirtualPassword()
@@ -89,6 +81,14 @@ public class UiPasswordField extends JPasswordField
 		char[] exactSizePassword = new char[virtualPasswordLength];
 		System.arraycopy(virtualPassword,0,exactSizePassword,0,virtualPasswordLength);
 		return exactSizePassword;
+	}
+	
+	public void setPassword(char[] passwordToUse)
+	{
+		clearVirtualPassword();
+		setVirtualMode(true);
+		for(int i = 0; i < passwordToUse.length; ++i)
+			appendChar(passwordToUse[i]);
 	}
 
 	public void appendChar(char charToAppend)
@@ -122,7 +122,7 @@ public class UiPasswordField extends JPasswordField
 		super.setText(fakePasswordData);
 	}
 
-	private void scrubData(char[] data)
+	static public void scrubData(char[] data)
 	{
 		final char scrubDataByte = 0x55;
 		Arrays.fill(data, scrubDataByte);
