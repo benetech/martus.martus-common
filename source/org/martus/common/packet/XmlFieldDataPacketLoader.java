@@ -26,8 +26,12 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.packet;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
+import org.martus.common.AuthorizedSessionKeys;
 import org.martus.common.CustomFields;
 import org.martus.common.GridData;
 import org.martus.common.MartusXml;
@@ -47,6 +51,8 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 	{
 		super(packetToFill);
 		fdp = packetToFill;
+		authorizedEncryptedHQSessionKeyStrings = new HashMap();
+		authorizedEncryptedHQSessionKeys = new HashMap();
 	}
 	
 	public SimpleXmlDefaultLoader startElement(String tag)
@@ -60,6 +66,8 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 			return new CustomFields.XmlCustomFieldsLoader(new CustomFields());
 		else if(getTagsContainingStrings().contains(tag))
 			return new SimpleXmlStringLoader(tag);
+		else if(tag.equals(AuthorizedSessionKeys.AUTHORIZED_SESSION_KEYS_TAG))
+			return new AuthorizedSessionKeys.XmlAuthorizedLoader(authorizedEncryptedHQSessionKeyStrings);
 		else
 			return super.startElement(tag);
 	}
@@ -93,8 +101,19 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 					setLegacyCustomFields(value);
 				else if(tag.equals(MartusXml.EncryptedDataElementName))
 					encryptedData = value;
-				else if(tag.equals(MartusXml.HQSessionKeyElementName))
-					encryptedHQSessionKey = new SessionKey(Base64.decode(value));
+//				else if(tag.equals(MartusXml.HQSessionKeyElementName))
+//					encryptedHQSessionKey = new SessionKey(Base64.decode(value));
+			}
+			else if(tag.equals(AuthorizedSessionKeys.AUTHORIZED_SESSION_KEYS_TAG))
+			{
+				for (Iterator iter = authorizedEncryptedHQSessionKeyStrings.entrySet().iterator(); iter.hasNext();)
+				{
+					Map.Entry element = (Map.Entry) iter.next();
+					String publicCode = (String)element.getKey();
+					String sessionKeyString = (String)element.getValue();
+					SessionKey sessionKey = new SessionKey(Base64.decode(sessionKeyString));
+					authorizedEncryptedHQSessionKeys.put(publicCode, sessionKey);
+				}
 			}
 			else
 				super.endElement(tag, ended);
@@ -184,8 +203,10 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 
 	}
 	
-	SessionKey encryptedHQSessionKey;
+//	SessionKey encryptedHQSessionKey;
 	String encryptedData;
+	HashMap authorizedEncryptedHQSessionKeys;
+	private HashMap authorizedEncryptedHQSessionKeyStrings;
 	private FieldDataPacket fdp;
 	private static Vector stringTags;
 }

@@ -30,14 +30,18 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.Vector;
 
+import org.martus.common.AuthorizedSessionKeys;
 import org.martus.common.MartusXml;
 import org.martus.common.XmlWriterFilter;
 import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.EncryptionException;
 import org.martus.util.Base64;
+import org.martus.util.Base64.InvalidBase64Exception;
 
 class EncryptedFieldDataPacket extends Packet
 {
@@ -88,14 +92,33 @@ class EncryptedFieldDataPacket extends Packet
 		{
 			try
 			{
-				//TODO multiple keys
+				//Legacy HQ
 				SessionKey encryptedSessionKey = security.encryptSessionKey(sessionKey, (String)authorizedToReadKeys.get(0));
 				String sessionKeyString = Base64.encode(encryptedSessionKey.getBytes());
 				writeElement(dest, MartusXml.HQSessionKeyElementName, sessionKeyString);
+				
+				HashMap sessionKeysAndPublicCodes = new HashMap();
+				for(int i = 0; i < authorizedToReadKeys.size(); ++i)
+				{
+					String publicKey = (String)authorizedToReadKeys.get(i);
+					SessionKey thisHQsEncryptedSessionKey = security.encryptSessionKey(sessionKey, publicKey);
+					String thisHQsSessionKeyString = Base64.encode(thisHQsEncryptedSessionKey.getBytes());
+					String publicCode = MartusSecurity.computePublicCode(publicKey);
+					sessionKeysAndPublicCodes.put(publicCode, thisHQsSessionKeyString);
+				}
+				if(!sessionKeysAndPublicCodes.isEmpty())
+				{
+					AuthorizedSessionKeys sessionKeys = new AuthorizedSessionKeys(sessionKeysAndPublicCodes);
+					writeNonEncodedXMLString(dest, sessionKeys.toString());
+				}
 			}
 			catch(EncryptionException e)
 			{
 				throw new IOException("FieldDataPacket.internalWriteXml Encryption Exception");
+			}
+			catch (InvalidBase64Exception e)
+			{
+				throw new IOException("FieldDataPacket.internalWriteXml InvalidBase64 Exception on HQ Public Key");
 			}
 		}
 		writeElement(dest, MartusXml.EncryptedDataElementName, encryptedData);

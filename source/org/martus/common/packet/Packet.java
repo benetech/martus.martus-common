@@ -397,6 +397,11 @@ public class Packet
 		dest.writeEndTag(tag);
 	}
 
+	protected void writeNonEncodedXMLString(XmlWriterFilter dest, String data) throws IOException
+	{
+		dest.writeDirect(data);
+	}
+	
 	public void loadFromXml(InputStreamWithSeek inputStream, byte[] expectedSig, MartusCrypto verifier) throws
 		IOException,
 		InvalidPacketException,

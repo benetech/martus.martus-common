@@ -33,6 +33,7 @@ import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Vector;
 
+import org.martus.common.AuthorizedSessionKeys;
 import org.martus.common.CustomFields;
 import org.martus.common.FieldSpec;
 import org.martus.common.GridData;
@@ -643,6 +644,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		out.close();
 
 		assertContains(MartusXml.getTagStart(MartusXml.HQSessionKeyElementName), result);
+		assertContains(MartusXml.getTagStart(AuthorizedSessionKeys.AUTHORIZED_SESSION_KEYS_TAG), result);
 
 		UniversalId uid = UniversalId.createFromAccountAndPrefix("other acct", "");
 		FieldDataPacket got = new FieldDataPacket(uid, fdp.getFieldSpecs());
@@ -673,17 +675,69 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		}
 	}
 
-//	public void testAttachments()
-//	{
-//		String id1 = "235235";
-//		String id2 = "29836982";
-//		String label1 = "This is a test";
-//		String label2 = "Why not do something?";
-//
-//		AttachmentInfo a1 = new AttachmentInfo(id1, label1);
-//		AttachmentInfo a2 = new AttachmentInfo(id2, label2);
-//
-//	}
+	public void testWriteAndLoadXmlEncryptedWithMultipleHQ() throws Exception
+	{
+		fdp.setEncrypted(true);
+		MartusSecurity seconndHQ = new MartusSecurity();
+		seconndHQ.createKeyPair(SHORTEST_LEGAL_KEY_SIZE);
+		Vector keys = new Vector();
+		keys.add(securityHQ.getPublicKeyString());
+		keys.add(seconndHQ.getPublicKeyString());
+		
+		fdp.setAuthorizedToReadKeys(keys);
+
+		String data1 = "data 1";
+		String data2base = "data 2";
+		fdp.set(aTag, data1);
+		fdp.set(bTag, data2base + "&<>");
+
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		fdp.writeXml(out, security);
+		String result = new String(out.toByteArray(), "UTF-8");
+		out.close();
+
+		assertContains(MartusXml.getTagStart(MartusXml.HQSessionKeyElementName), result);
+		assertContains(MartusXml.getTagStart(AuthorizedSessionKeys.AUTHORIZED_SESSION_KEYS_TAG), result);
+
+		UniversalId uid = UniversalId.createFromAccountAndPrefix("other acct", "");
+		FieldDataPacket got = new FieldDataPacket(uid, fdp.getFieldSpecs());
+		byte[] bytes = result.getBytes("UTF-8");
+		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
+		got.loadFromXml(in, securityHQ);
+
+		assertEquals("account", fdp.getAccountId(), got.getAccountId());
+		assertEquals("id", fdp.getLocalId(), got.getLocalId());
+		assertEquals("a", fdp.get(aTag), got.get(aTag));
+		assertEquals("b", fdp.get(bTag), got.get(bTag));
+		assertEquals("encrypted", fdp.isEncrypted(), got.isEncrypted());
+
+		ByteArrayInputStreamWithSeek in2 = new ByteArrayInputStreamWithSeek(bytes);
+		got.loadFromXml(in2, security);
+		assertEquals("account", fdp.getAccountId(), got.getAccountId());
+
+		ByteArrayInputStreamWithSeek in3 = new ByteArrayInputStreamWithSeek(bytes);
+		got.clearAll();
+		got.loadFromXml(in3, seconndHQ);
+
+		assertEquals("account", fdp.getAccountId(), got.getAccountId());
+		assertEquals("id", fdp.getLocalId(), got.getLocalId());
+		assertEquals("a", fdp.get(aTag), got.get(aTag));
+		assertEquals("b", fdp.get(bTag), got.get(bTag));
+		assertEquals("encrypted", fdp.isEncrypted(), got.isEncrypted());
+
+		
+		MartusSecurity otherSecurity = new MartusSecurity();
+		otherSecurity.createKeyPair(SHORTEST_LEGAL_KEY_SIZE);
+		try
+		{
+			ByteArrayInputStreamWithSeek in4 = new ByteArrayInputStreamWithSeek(bytes);
+			got.loadFromXml(in4, otherSecurity);
+			fail("Should have thrown decrption exception");
+		}
+		catch (MartusCrypto.DecryptionException expectedException)
+		{
+		}
+	}
 
 	public void testLoadDamaged() throws Exception
 	{
