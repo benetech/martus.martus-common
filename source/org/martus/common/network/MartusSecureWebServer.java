@@ -34,7 +34,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLServerSocketFactory;
 
 import org.martus.common.crypto.MartusCrypto;
-import org.martus.util.WebServerWithClientId;
+import org.martus.common.utilities.WebServerWithClientId;
 
 public class MartusSecureWebServer extends WebServerWithClientId
 {

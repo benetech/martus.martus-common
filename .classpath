@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-    <classpathentry kind="src" path="source"/>
-    <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-    <classpathentry kind="src" path="/martus-utils"/>
-    <classpathentry kind="src" path="/martus-hrdag"/>
-    <classpathentry kind="output" path="bin"/>
+	<classpathentry kind="src" path="source"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="/martus-utils"/>
+	<classpathentry kind="src" path="/martus-hrdag"/>
+	<classpathentry kind="src" path="/martus-logi"/>
+	<classpathentry kind="lib" path="source/ThirdPartyJars/ant.jar"/>
+	<classpathentry kind="lib" path="source/ThirdPartyJars/InfiniteMonkey.jar"/>
+	<classpathentry kind="lib" path="source/ThirdPartyJars/jasper-compiler.jar"/>
+	<classpathentry kind="lib" path="source/ThirdPartyJars/jasper-runtime.jar"/>
+	<classpathentry kind="lib" path="source/ThirdPartyJars/servlet.jar"/>
+	<classpathentry kind="lib" path="source/ThirdPartyJars/xmlrpc-1.1.jar"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>
