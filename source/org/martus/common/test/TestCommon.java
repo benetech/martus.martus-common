@@ -54,7 +54,6 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestBulletinHeaderPacket.class));
 		suite.addTest(new TestSuite(TestBulletinLoader.class));
 		suite.addTest(new TestSuite(TestBulletinSaver.class));
-		suite.addTest(new TestSuite(TestBulletinSearcher.class));
 		suite.addTest(new TestSuite(TestBulletinZipImporter.class));
 		suite.addTest(new TestSuite(TestCustomFields.class));
 		suite.addTest(new TestSuite(TestDatabaseKey.class));
@@ -73,8 +72,6 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestMartusUtilities.class));
 		suite.addTest(new TestSuite(TestMartusXml.class));
 		suite.addTest(new TestSuite(TestPacket.class));
-		suite.addTest(new TestSuite(TestSearchParser.class));
-		suite.addTest(new TestSuite(TestSearchTreeNode.class));
 		suite.addTest(new TestSuite(TestServerFileDatabase.class));
 		suite.addTest(new TestSuite(TestUnicodeFileReader.class));
 		suite.addTest(new TestSuite(TestUnicodeFileWriter.class));
