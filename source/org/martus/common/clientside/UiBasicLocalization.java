@@ -90,10 +90,10 @@ public class UiBasicLocalization extends Localization
 		writer.writeln("#  8.  do NOT translate \"#S#\" (used for search string entry");
 		writer.writeln("#");
 		
-		Vector keys = getAllTranslationStrings(languageCode);
-		for(int i = 0; i < keys.size(); ++i)
+		Vector mtfEntries = getAllTranslationStrings(languageCode);
+		for(int i = 0; i < mtfEntries.size(); ++i)
 		{
-			String thisString = (String)keys.get(i);
+			String thisString = (String)mtfEntries.get(i);
 			writeWithNewlinesEncoded(writer, thisString);
 		}
 	}
@@ -133,19 +133,27 @@ public class UiBasicLocalization extends Localization
 
 	private String getLabel(String languageCode, String key)
 	{
-		LocalizedString entry = null;
-		String result = null;
-		Map stringMap = getStringMap(languageCode);
-		if(stringMap != null)
-			entry = (LocalizedString)stringMap.get(key);
+		LocalizedString entry = getLocalizedString(languageCode, key);
 			
 		if(entry != null)
-			result = entry.getText();
-		if(result == null && !languageCode.equals(ENGLISH))
-			result = "<" + getLabel(ENGLISH, key) + ">";
-		if(result == null)
-			result ="<"+key+">";
-		return result;
+			return entry.getText();
+
+		String defaultValue = null;
+		if(!languageCode.equals(ENGLISH))
+			defaultValue = getLabel(ENGLISH, key);
+			
+		if(defaultValue == null)
+			defaultValue = key;
+		return "<" + defaultValue + ">";
+	}
+
+	private LocalizedString getLocalizedString(String languageCode, String key)
+	{
+		Map stringMap = getStringMap(languageCode);
+		if(stringMap == null)
+			return null;
+
+		return (LocalizedString)stringMap.get(key);
 	}
 
 	protected ChoiceItem getLanguageChoiceItem(String filename)
@@ -276,11 +284,16 @@ public class UiBasicLocalization extends Localization
 	{
 		createStringMap(languageCode);
 	
-		Vector strings = new Vector();
 		Map englishMap = getStringMap(ENGLISH);
 		Set englishKeys = englishMap.keySet();
 		SortedSet sorted = new TreeSet(englishKeys);
-		Iterator it = sorted.iterator();
+		return buildMtfEntries(languageCode, sorted);
+	}
+
+	private Vector buildMtfEntries(String languageCode, SortedSet sortedTags)
+	{
+		Vector strings = new Vector();
+		Iterator it = sortedTags.iterator();
 		while(it.hasNext())
 		{
 			String key = (String)it.next();
