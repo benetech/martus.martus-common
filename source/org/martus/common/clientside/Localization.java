@@ -41,12 +41,15 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.jarverifier.JarVerifier;
 import org.martus.swing.UiLanguageDirection;
 import org.martus.util.UnicodeReader;
+import org.martus.util.ZipEntryInputStreamThatClosesZipFile;
 
 public class Localization
 {
@@ -219,7 +222,6 @@ public class Localization
 	public void loadTranslationFile(String languageCode)
 	{
 		InputStream transStream = null;
-		ZipFile zip = null;
 		try
 		{
 			File translationFile = getTranslationFile(languageCode);
@@ -231,8 +233,9 @@ public class Localization
 			}
 			else if(isTranslationPackFile(translationFile))
 			{
-				zip = new ZipFile(translationFile);
-				transStream = zip.getInputStream(zip.getEntry(mtfFileShortName));
+				ZipFile zip = new ZipFile(translationFile);
+				ZipEntry zipEntry = zip.getEntry(mtfFileShortName);
+				transStream = new ZipEntryInputStreamThatClosesZipFile(zip, zipEntry);
 			}
 			else
 			{
@@ -253,8 +256,6 @@ public class Localization
 			{
 				if(transStream != null)
 					transStream.close();
-				if(zip != null)
-					zip.close();
 			}
 			catch(IOException e1)
 			{
