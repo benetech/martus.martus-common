@@ -44,6 +44,7 @@ import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
 import org.martus.common.network.NetworkInterfaceConstants;
 import org.martus.common.network.NetworkResponse;
 import org.martus.common.network.NonSSLNetworkAPI;
+import org.martus.common.packet.UniversalId;
 import org.martus.util.Base64.InvalidBase64Exception;
 
 
@@ -111,8 +112,7 @@ public class MartusBulletinRetriever
 		{
 			String summary = (String)result.get(i);
 			String[] data = summary.split("=");
-			String bulletinId = fieldOfficeAccountId + data[0];
-			bulletinIds.add(bulletinId);
+			bulletinIds.add(UniversalId.createFromAccountAndLocalId(fieldOfficeAccountId,data[0]));
 		}
 		return bulletinIds;
 	}

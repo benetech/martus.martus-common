@@ -48,6 +48,7 @@ import org.martus.common.network.NetworkInterface;
 import org.martus.common.network.NetworkInterfaceConstants;
 import org.martus.common.network.NetworkResponse;
 import org.martus.common.network.NonSSLNetworkAPI;
+import org.martus.common.packet.UniversalId;
 import org.martus.util.Base64;
 import org.martus.util.TestCaseEnhanced;
 
@@ -232,9 +233,9 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		response = new NetworkResponse(bulletinSummaries);
 		Vector returnedBulletinIDs = retriever.getListOfBulletinIds(fieldOfficeAccountId, response);
 		assertEquals("retriever should have a vector of size 3", 3, returnedBulletinIDs.size());
-		assertContains(fieldOfficeAccountId+bulletin1Id, returnedBulletinIDs);
-		assertContains(fieldOfficeAccountId+bulletin2Id, returnedBulletinIDs);
-		assertContains(fieldOfficeAccountId+bulletin3Id, returnedBulletinIDs);
+		assertContains(UniversalId.createFromAccountAndLocalId(fieldOfficeAccountId,bulletin1Id), returnedBulletinIDs);
+		assertContains(UniversalId.createFromAccountAndLocalId(fieldOfficeAccountId,bulletin2Id), returnedBulletinIDs);
+		assertContains(UniversalId.createFromAccountAndLocalId(fieldOfficeAccountId,bulletin3Id), returnedBulletinIDs);
 	}
 	
 	private class MockClientSideNetworkGateway extends ClientSideNetworkGateway
@@ -357,10 +358,10 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		List allFieldOfficesBulletinIds = retriever.getListOfAllFieldOfficeBulletinIdsOnServer();
 		assertEquals("Should contain 4 bulletins", 4, allFieldOfficesBulletinIds.size());
 		
-		String bulletinId1 = fieldOffice1+draftBulletinFO1LocalId;
-		String bulletinId2 = fieldOffice1+sealed1BulletinFO1LocalId;
-		String bulletinId3 = fieldOffice1+sealed2BulletinFO1LocalId;
-		String bulletinId4 = fieldOffice2+sealed1BulletinFO2LocalId;
+		UniversalId bulletinId1 = UniversalId.createFromAccountAndLocalId(fieldOffice1,draftBulletinFO1LocalId);
+		UniversalId bulletinId2 = UniversalId.createFromAccountAndLocalId(fieldOffice1,sealed1BulletinFO1LocalId);
+		UniversalId bulletinId3 = UniversalId.createFromAccountAndLocalId(fieldOffice1,sealed2BulletinFO1LocalId);
+		UniversalId bulletinId4 = UniversalId.createFromAccountAndLocalId(fieldOffice2,sealed1BulletinFO2LocalId);
 
 		assertTrue("Should contain this draft bulletin", allFieldOfficesBulletinIds.contains(bulletinId1));
 		assertTrue("Should contain this sealed 1 bulletin", allFieldOfficesBulletinIds.contains(bulletinId2));
