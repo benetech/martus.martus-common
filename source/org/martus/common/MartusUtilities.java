@@ -610,6 +610,59 @@ public class MartusUtilities
 		String hex = bigInt.toString(16);
 		return hex.substring(1);
 	}
+	
+	public static Vector loadBannedClients(File bannedClientsFile)
+	{
+		Vector clientsBanned = new Vector();
+		if(!bannedClientsFile.exists())
+			return clientsBanned;
+		try
+		{
+			clientsBanned = MartusUtilities.loadListFromFile(bannedClientsFile);
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			System.exit(12);
+		}
+		return clientsBanned;
+	}
+	
+	public static Vector loadCanUploadFile(File canUploadFile)
+	{
+		Vector canUploadFiles = new Vector();
+		if (!canUploadFile.exists())
+			return canUploadFiles;
+		try
+		{
+			canUploadFiles = MartusUtilities.loadListFromFile(canUploadFile);
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+		return canUploadFiles;
+	}	
+	
+	public static Vector loadClientsNotAmplified(File clientsNotToBeAmplifiedFile)
+	{
+		Vector clientsNotAmplified = new Vector();
+		if(!clientsNotToBeAmplifiedFile.exists())
+			return clientsNotAmplified;
+			
+		try
+		{
+			clientsNotAmplified = MartusUtilities.loadListFromFile(clientsNotToBeAmplifiedFile);
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			System.exit(12);
+		}
+		
+		return clientsNotAmplified;
+	}
 
 	public static final String DEFAULT_FILE_NAME = "Martus-";
 	static final String PUBLIC_KEY_FILE_IDENTIFIER = "Martus Public Key:";
