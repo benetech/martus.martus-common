@@ -118,7 +118,8 @@ public class UiBasicLocalization extends Localization
 		writer.writeln("# 18.  Do not translate words used in XML for custom fields such as:");  
 		writer.writeln("#      <Field type='GRID'>, </Field>, <Tag>, </Tag>, <Label>, </Label>,");
 		writer.writeln("#      <GridSpecDetails>, </GridSpecDetails>, <Column>, </Column>");
-		
+		writer.writeln("# 19.  Uncomment the next line (by removing the #) if you want your language to appear right to left.");
+		writer.writeln("#!right-to-left");
 		writer.writeln("#");
 		
 		SortedSet sorted = getAllKeysSorted();
