@@ -79,34 +79,6 @@ public class MartusXml
 		return "</" + tagName + ">\n";
 	}
 
-	static public String loadXml(Reader xmlReader, DefaultHandler handler)
-	{
-		String error = null;
-        try
-        {
-        	loadXmlWithExceptions(xmlReader, handler);
-		}
-		catch(SAXParseException e)
-		{
-			error = e.getMessage() + ", " + e.getLineNumber() + ":" + e.getColumnNumber();
-			System.out.println("SAX Parse Exception: " + error);
-			e.printStackTrace();
-		}
-		catch(SAXException e)
-		{
-			error = e.toString();
-			System.out.println("SAX Exception: " + error);
-			e.printStackTrace();
-        }
-        catch (Throwable t)
-        {
-			error = "Unknown throwable: " + t.toString();
-            t.printStackTrace();
-        }
-
-        return error;
-	}
-
 	static public void loadXmlWithExceptions(Reader xmlReader, DefaultHandler handler) throws
 			ParserConfigurationException,
 			SAXParseException,
