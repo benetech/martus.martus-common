@@ -109,7 +109,8 @@ public class MagicWords
 		Vector magicWords = new Vector();		
 		for(int i = 0; i<magicWordEntries.size(); ++i)
 		{
-			magicWords.add(getLineEntryFromMagicWordEntry((MagicWordEntry)magicWordEntries.get(i)));
+			MagicWordEntry entry = (MagicWordEntry) magicWordEntries.get(i);
+			magicWords.add(entry.getLineOfMagicWord());
 		}
 		return magicWords;		
 	}
@@ -121,7 +122,7 @@ public class MagicWords
 		{
 			MagicWordEntry entry = (MagicWordEntry)magicWordEntries.get(i);
 			if(entry.isActive())
-				magicWords.add(getLineEntryFromMagicWordEntry(entry));
+				magicWords.add(entry.getLineOfMagicWord());
 		}
 		return magicWords;
 	}
@@ -133,7 +134,7 @@ public class MagicWords
 		{
 			MagicWordEntry entry = (MagicWordEntry)magicWordEntries.get(i);			
 			if(!entry.isActive())
-				magicWords.add(getLineEntryFromMagicWordEntry(entry));
+				magicWords.add(entry.getLineOfMagicWord());
 		}
 		return magicWords;
 	}
@@ -187,20 +188,17 @@ public class MagicWords
 		return lineEntry.substring(index+1);
 	}
 	
-	public static String getLineEntryFromMagicWordEntry(MagicWordEntry entry)
-	{
-		return entry.getMagicWordWithActiveSign() + FIELD_DELIMITER + entry.getGroupName();
-	}
 	
 	public static String filterActiveSign(String magicWord)
 	{		
-		if (magicWord.startsWith("#"))
+		if (magicWord.startsWith(INACTIVE_SIGN))
 			magicWord = magicWord.substring(1);
 		
 		return magicWord;
 	}
 	
 	public static final char FIELD_DELIMITER = '\t';
+	public static final String INACTIVE_SIGN = "#";
 	
 	Vector magicWordEntries; 
 	LoggerInterface logger;

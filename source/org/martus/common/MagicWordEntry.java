@@ -34,7 +34,7 @@ public class MagicWordEntry
 		if (groupEntry == null)
 			groupEntry = "";
 		
-		if (magicWordEntry.startsWith(INACTIVE_SIGN))
+		if (magicWordEntry.startsWith(MagicWords.INACTIVE_SIGN))
 		{	
 			magicWord = magicWordEntry.substring(1);
 			setActive(false);
@@ -55,7 +55,7 @@ public class MagicWordEntry
 		if (isActive())
 			return magicWord;
 			
-		return INACTIVE_SIGN+magicWord;		
+		return MagicWords.INACTIVE_SIGN+magicWord;		
 	}
 
 	public String getGroupName()
@@ -73,12 +73,15 @@ public class MagicWordEntry
 		active = status;
 	}
 	
-	public String toString()
+	public String getLineOfMagicWord()
 	{
-		return MagicWords.getLineEntryFromMagicWordEntry(this);
+		return getMagicWordWithActiveSign() + MagicWords.FIELD_DELIMITER + getGroupName();
 	}
-
-	private static final String INACTIVE_SIGN = "#";
+	
+	public String getLineOfMagicWordNoSign()
+	{
+		return getMagicWord() + MagicWords.FIELD_DELIMITER + getGroupName();
+	}	
 	
 	private String magicWord;
 	private String groupName;

@@ -266,7 +266,7 @@ public class TestMagicWords extends TestCaseEnhanced
 		String validMagicWord = "magic";
 		MagicWordEntry entry = new MagicWordEntry(validMagicWord, groupEntry);
 		String validLineEntry = validMagicWord + MagicWords.FIELD_DELIMITER + groupEntry;
-		assertEquals("invalid line entry", validLineEntry, MagicWords.getLineEntryFromMagicWordEntry(entry));
+		assertEquals("invalid line entry", validLineEntry, entry.getLineOfMagicWord());
 		
 	}
 	
