@@ -37,7 +37,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
-import java.security.Key;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
@@ -130,7 +129,7 @@ public class MartusSecurity extends MartusCrypto
 	// begin MartusCrypto interface
 	public boolean hasKeyPair()
 	{
-		return keyPair.isValid();
+		return keyPair.hasKeyPair();
 	}
 
 	public void clearKeyPair()
@@ -167,26 +166,40 @@ public class MartusSecurity extends MartusCrypto
 
 	public String getPublicKeyString()
 	{
-		PublicKey publicKey = getKeyPair().getPublicKey();
-		return(getKeyString(publicKey));
+		return getKeyPair().getPublicKeyString();
 	}
 
 	public String getPrivateKeyString()
 	{
 		PrivateKey privateKey = getKeyPair().getPrivateKey();
-		return(getKeyString(privateKey));
+		return(MartusKeyPair.getKeyString(privateKey));
 	}
 
 	public byte[] createSignatureOfStream(InputStream inputStream) throws
 			MartusSignatureException
 	{
-		return createSignature(getKeyPair().getPrivateKey(), inputStream);
+		try
+		{
+			return getKeyPair().signStream(inputStream);
+		}
+		catch (Exception e)
+		{
+			//System.out.println("createSignature :" + e);
+			throw(new MartusSignatureException());
+		}
 	}
 
 	public boolean verifySignature(InputStream inputStream, byte[] signature) throws
 			MartusSignatureException
 	{
-		return isValidSignatureOfStream(getKeyPair().getPublicKey(), inputStream, signature);
+		try
+		{
+			return getKeyPair().isSignatureValid(inputStream, signature);
+		} 
+		catch (Exception e)
+		{
+			throw new MartusSignatureException();
+		}
 	}
 
 	public boolean isValidSignatureOfStream(String publicKeyString, InputStream inputStream, byte[] signature) throws
@@ -285,17 +298,17 @@ public class MartusSecurity extends MartusCrypto
 			EncryptionException,
 			NoKeyPairException
 	{
-		encrypt(plainStream, cipherStream, sessionKey, getKeyPair().getPublicKey());
+		encrypt(plainStream, cipherStream, sessionKey, getPublicKeyString());
 	}
 
-	public synchronized void encrypt(InputStream plainStream, OutputStream cipherStream, SessionKey sessionKey, PublicKey publicKey) throws
+	public synchronized void encrypt(InputStream plainStream, OutputStream cipherStream, SessionKey sessionKey, String publicKeyString) throws
 			EncryptionException,
 			NoKeyPairException
 	{
-		if(publicKey == null)
+		if(publicKeyString == null)
 			throw new NoKeyPairException();
 
-		CipherOutputStream cos = createCipherOutputStream(cipherStream, sessionKey, getKeyString(publicKey));
+		CipherOutputStream cos = createCipherOutputStream(cipherStream, sessionKey, publicKeyString);
 		try
 		{
 			InputStream bufferedPlainStream = new BufferedInputStream(plainStream);
@@ -780,7 +793,7 @@ public class MartusSecurity extends MartusCrypto
 
 	public synchronized boolean isKeyPairValid(KeyPair candidatePair)
 	{
-		return keyPair.isKeyPairValid(candidatePair);
+		return MartusKeyPair.isKeyPairValid(candidatePair);
 	}
 
 	public byte[] decryptKeyPair(InputStream inputStream, char[] passPhrase) throws IOException
@@ -843,30 +856,12 @@ public class MartusSecurity extends MartusCrypto
 		return new BigInteger(128, rand);
 	}
 
-	synchronized byte[] createSignature(PrivateKey privateKey, InputStream inputStream) throws
-			MartusSignatureException
-	{
-		try
-		{
-			sigEngine.initSign(privateKey);
-			accumulateForSignOrVerify(inputStream);
-			return sigEngine.sign();
-		}
-		catch (Exception e)
-		{
-			//System.out.println("createSignature :" + e);
-			throw(new MartusSignatureException());
-		}
-	}
-
 	public synchronized boolean isValidSignatureOfStream(PublicKey publicKey, InputStream inputStream, byte[] signature) throws
 			MartusSignatureException
 	{
 		try
 		{
-			sigEngine.initVerify(publicKey);
-			accumulateForSignOrVerify(inputStream);
-			return sigEngine.verify(signature);
+			return MartusKeyPair.isSignatureValid(inputStream, signature, publicKey);
 		}
 		catch (Exception e)
 		{
@@ -962,39 +957,15 @@ public class MartusSecurity extends MartusCrypto
 		}
 	}
 	
-	static public String getKeyString(Key key)
-	{
-		if(key == null)
-			return null;
-		return Base64.encode(key.getEncoded());
-	}
-	
 	static public String geEncryptedFileIdentifier()
 	{
 		return ENCRYPTED_FILE_VERSION_IDENTIFIER;
 	}
 
-	protected synchronized void accumulateForSignOrVerify(InputStream in) throws
-					IOException,
-					MartusSignatureException
-	{
-		try
-		{
-			int got;
-			byte[] bytes = new byte[MartusConstants.streamBufferCopySize];
-			while( (got=in.read(bytes)) >= 0)
-				sigEngine.update(bytes, 0, got);
-		}
-		catch(java.security.SignatureException e)
-		{
-			throw new MartusSignatureException();
-		}
-	}
-
+	private static final String SIGN_ALGORITHM = "SHA1WithRSA";
 	private static final String SESSION_ALGORITHM_NAME = "AES";
 	private static final String SESSION_ALGORITHM = "AES/CBC/PKCS5Padding";
 	private static final String PBE_ALGORITHM = "PBEWithSHAAndTwofish-CBC";
-	private static final String SIGN_ALGORITHM = "SHA1WithRSA";
 	private static final String DIGEST_ALGORITHM = "SHA1";
 	private static final String ENCRYPTED_FILE_VERSION_IDENTIFIER = "Martus Encrypted File Version 001";
 

@@ -29,6 +29,7 @@ package org.martus.common.crypto;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.security.InvalidKeyException;
@@ -41,6 +42,7 @@ import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.Signature;
 import java.security.spec.EncodedKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
@@ -51,6 +53,7 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import org.martus.common.MartusConstants;
 import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
 import org.martus.util.Base64;
 
@@ -61,11 +64,6 @@ public class MartusKeyPair
 		rand = randomGenerator;
 	}
 	
-	public KeyPair getJceKeyPair()
-	{
-		return jceKeyPair;
-	}
-
 	public PrivateKey getPrivateKey()
 	{
 		KeyPair pair = getJceKeyPair();
@@ -82,16 +80,24 @@ public class MartusKeyPair
 		return pair.getPublic();
 	}
 
-
+	public String getPublicKeyString()
+	{
+		return(getKeyString(getPublicKey()));
+	}
 
 	public void clear()
 	{
 		jceKeyPair = null;
 	}
 	
-	public boolean isValid()
+	public boolean hasKeyPair()
 	{
 		return (jceKeyPair != null);
+	}
+	
+	public boolean isKeyPairValid()
+	{
+		return isKeyPairValid(getJceKeyPair());
 	}
 	
 	public void createRSA(int publicKeyBits, SecureRandom rand) throws Exception
@@ -125,7 +131,7 @@ public class MartusKeyPair
 		setJceKeyPair(candidatePair);
 	}
 	
-	public synchronized boolean isKeyPairValid(KeyPair candidatePair)
+	public static boolean isKeyPairValid(KeyPair candidatePair)
 	{
 		if(candidatePair == null)
 			return false;
@@ -198,45 +204,87 @@ public class MartusKeyPair
 		return MartusCrypto.createDigest(quarter);
 		
 	}
+	
+	public byte[] signStream(InputStream in) throws Exception
+	{
+		Signature engine = Signature.getInstance(SIGN_ALGORITHM, "BC");
+		engine.initSign(getPrivateKey());
+		accumulateForSignOrVerify(in, engine);
+		return engine.sign();
+	}
+	
+	public boolean isSignatureValid(InputStream in, byte[] sig) throws Exception
+	{
+		return isSignatureValid(in, sig, getPublicKey());
+	}
+	
+	static boolean isSignatureValid(InputStream in, byte[] sig, PublicKey signerPublicKey) throws Exception
+	{
+		Signature engine = Signature.getInstance(SIGN_ALGORITHM, "BC");
+		engine.initVerify(signerPublicKey);
+		accumulateForSignOrVerify(in, engine);
+		return engine.verify(sig);
+	}
+	
+	private static void accumulateForSignOrVerify(InputStream in, Signature engine) throws Exception
+	{
+		int got;
+		byte[] bytes = new byte[MartusConstants.streamBufferCopySize];
+		while ((got = in.read(bytes)) >= 0)
+			engine.update(bytes, 0, got);
+	}
+
+	private KeyPair getJceKeyPair()
+	{
+		return jceKeyPair;
+	}
 
 	private void setJceKeyPair(KeyPair jceKeyPair)
 	{
 		this.jceKeyPair = jceKeyPair;
 	}
 
-	private Cipher createRSAEncryptor(PublicKey key) throws NoSuchAlgorithmException, NoSuchProviderException, NoSuchPaddingException, InvalidKeyException
+	private static Cipher createRSAEncryptor(PublicKey key) throws NoSuchAlgorithmException, NoSuchProviderException, NoSuchPaddingException, InvalidKeyException
 	{
 		return createRSAEngine(key, Cipher.ENCRYPT_MODE);
 	}
 
-	private Cipher createRSADecryptor(PrivateKey key) throws NoSuchAlgorithmException, NoSuchProviderException, NoSuchPaddingException, InvalidKeyException
+	private static Cipher createRSADecryptor(PrivateKey key) throws NoSuchAlgorithmException, NoSuchProviderException, NoSuchPaddingException, InvalidKeyException
 	{
 		return createRSAEngine(key, Cipher.DECRYPT_MODE);
 	}
 
-	private Cipher createRSAEngine(Key key, int mode) throws NoSuchAlgorithmException, NoSuchProviderException, NoSuchPaddingException, InvalidKeyException
+	private static Cipher createRSAEngine(Key key, int mode) throws NoSuchAlgorithmException, NoSuchProviderException, NoSuchPaddingException, InvalidKeyException
 	{
 		Cipher rsaCipherEngine = Cipher.getInstance(RSA_ALGORITHM, "BC");
 		rsaCipherEngine.init(mode, key, rand);
 		return rsaCipherEngine;
 	}
 
-	private byte[] encryptBytes(byte[] bytesToEncrypt, PublicKey publicKey) throws NoSuchAlgorithmException, NoSuchProviderException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException
+	private static byte[] encryptBytes(byte[] bytesToEncrypt, PublicKey publicKey) throws NoSuchAlgorithmException, NoSuchProviderException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException
 	{
 		Cipher rsaCipherEngine = createRSAEncryptor(publicKey);
 		return rsaCipherEngine.doFinal(bytesToEncrypt);
 	}
 
-	private byte[] decryptBytes(byte[] bytesToDecrypt, PrivateKey privateKey) throws NoSuchAlgorithmException, NoSuchProviderException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException
+	private static byte[] decryptBytes(byte[] bytesToDecrypt, PrivateKey privateKey) throws NoSuchAlgorithmException, NoSuchProviderException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException
 	{
 		Cipher rsaCipherEngine = createRSADecryptor(privateKey);
 		return rsaCipherEngine.doFinal(bytesToDecrypt);
 	}
 
-	private SecureRandom rand;
+	static public String getKeyString(Key key)
+	{
+		if(key == null)
+			return null;
+		return Base64.encode(key.getEncoded());
+	}
+
+	private static SecureRandom rand;
 	private KeyPair jceKeyPair;
 
 
+	private static final String SIGN_ALGORITHM = "SHA1WithRSA";
 	static final String RSA_ALGORITHM_NAME = "RSA";
 	private static final String RSA_ALGORITHM = "RSA/NONE/PKCS1Padding";
 }

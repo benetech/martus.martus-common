@@ -221,11 +221,11 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		MartusKeyPair keyPair = security.getKeyPair();
 		assertNotNull("got a key pair", keyPair);
 
-		RSAPublicKey publicKey = (RSAPublicKey)keyPair.getJceKeyPair().getPublic();
+		RSAPublicKey publicKey = (RSAPublicKey)keyPair.getPublicKey();
 		BigInteger publicExp = publicKey.getPublicExponent();
 		assertTrue("public non-zero", publicExp.bitLength() != 0);
 
-		RSAPrivateKey privateKey = (RSAPrivateKey)keyPair.getJceKeyPair().getPrivate();
+		RSAPrivateKey privateKey = (RSAPrivateKey)keyPair.getPrivateKey();
 		BigInteger privateExp = privateKey.getPrivateExponent();
 		assertTrue("private non-zero", privateExp.bitLength() != 0);
 
@@ -308,8 +308,8 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		MartusKeyPair originalKeyPair = security.getKeyPair();
 		MartusKeyPair gotKeyPair = tempSecurity.getKeyPair();
 		assertNotNull("get/set null", tempSecurity);
-		assertEquals("get/set public", originalKeyPair.getJceKeyPair().getPublic(), gotKeyPair.getJceKeyPair().getPublic());
-		assertEquals("get/set private", originalKeyPair.getJceKeyPair().getPrivate(), gotKeyPair.getJceKeyPair().getPrivate());
+		assertEquals("get/set public", originalKeyPair.getPublicKey(), gotKeyPair.getPublicKey());
+		assertEquals("get/set private", originalKeyPair.getPrivateKey(), gotKeyPair.getPrivateKey());
 
 		String publicKeyString = security.getPublicKeyString();
 		PublicKey publicKey = MartusKeyPair.extractPublicKey(publicKeyString);
@@ -329,11 +329,11 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		{
 			ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
 			tempSecurity.readKeyPair(inputStream, passPhrase);
-			KeyPair oldKeyPair = security.getKeyPair().getJceKeyPair();
-			KeyPair gotKeyPair = tempSecurity.getKeyPair().getJceKeyPair();
+			MartusKeyPair oldKeyPair = security.getKeyPair();
+			MartusKeyPair gotKeyPair = tempSecurity.getKeyPair();
 			assertNotNull("good null", gotKeyPair);
-			assertEquals("good public", oldKeyPair.getPublic(), gotKeyPair.getPublic());
-			assertEquals("good private", oldKeyPair.getPrivate(), gotKeyPair.getPrivate());
+			assertEquals("good public", oldKeyPair.getPublicKey(), gotKeyPair.getPublicKey());
+			assertEquals("good private", oldKeyPair.getPrivateKey(), gotKeyPair.getPrivateKey());
 
 			try
 			{
@@ -377,7 +377,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		{
 		}
 		
-		assertFalse("Shouldn't accept invalid pair", willFail.isValid());
+		assertFalse("Shouldn't accept invalid pair", willFail.hasKeyPair());
 		TRACE_END();
 	}
 
@@ -385,7 +385,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 	{
 		TRACE_BEGIN("testIsKeyPairValid");
 		assertFalse("null", securityWithoutKeyPair.isKeyPairValid((KeyPair)null));
-		assertTrue("created", security.isKeyPairValid(security.getKeyPair().getJceKeyPair()));
+		assertTrue("created", security.getKeyPair().isKeyPairValid());
 		assertFalse("invalid", security.isKeyPairValid(invalidKeyPair));
 		TRACE_END();
 	}
