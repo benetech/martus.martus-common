@@ -579,19 +579,26 @@ public class MartusSecurity extends MartusCryptoImplementation
 		byte[] encryptedCacheBytes = new byte[bundleIn.readInt()];
 		bundleIn.read(encryptedCacheBytes);
 		
-		if(!verifySignature(new ByteArrayInputStream(encryptedCacheBytes), sig))
+		if(!isValidSignatureOfStream(signerPublicKey, new ByteArrayInputStream(encryptedCacheBytes), sig))
 			throw new MartusSignatureException();
 		return encryptedCacheBytes;
 	}
 
 	public synchronized void flushSessionKeyCache()
 	{
+		Set keys = decryptedSessionKeys.keySet();
+		for (Iterator iter = keys.iterator(); iter.hasNext(); ) 
+		{
+			SessionKey encryptedSessionKey = (SessionKey)iter.next();
+			SessionKey decryptedSessionKey = (SessionKey)decryptedSessionKeys.get(encryptedSessionKey);
+			decryptedSessionKey.wipe();
+		}
 		decryptedSessionKeys.clear();
 	}
 
 	private void addSessionKeyToCache(SessionKey encryptedSessionKey, SessionKey decryptedSessionKey)
 	{
-		decryptedSessionKeys.put(encryptedSessionKey, decryptedSessionKey);
+		decryptedSessionKeys.put(encryptedSessionKey, decryptedSessionKey.copy());
 	}
 
 	private SessionKey getCachedDecryptedSessionKey(SessionKey encryptedSessionKey)

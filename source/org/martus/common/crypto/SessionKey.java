@@ -43,6 +43,18 @@ public class SessionKey
 		return keyBytes;
 	}
 	
+	public SessionKey copy()
+	{
+		byte[] copiedBytes = new byte[getBytes().length];
+		System.arraycopy(getBytes(), 0, copiedBytes, 0, copiedBytes.length);
+		return new SessionKey(copiedBytes);
+	}
+	
+	public void wipe()
+	{
+		Arrays.fill(keyBytes, (byte)0x55);
+	}
+	
 	public boolean equals(Object otherSessionKey)
 	{
 		SessionKey otherKey = (SessionKey)otherSessionKey;
@@ -53,8 +65,9 @@ public class SessionKey
 	{
 		// Since our data IS randomly distributed, AND
 		// we don't expect more than a couple thousand entries 
-		// in the system, we can just return the first byte 
-		return keyBytes[0];
+		// in the system, we can just return the first two bytes
+		// and have an even spread across 64k buckets
+		return (keyBytes[1] << 8) | keyBytes[0];
 	}
 
 	public String toString()
