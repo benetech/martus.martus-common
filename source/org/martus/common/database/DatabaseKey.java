@@ -58,8 +58,7 @@ public class DatabaseKey implements Comparable
 	{
 		if(status.equals(BulletinConstants.STATUSDRAFT))
 			return createDraftKey(uidToUse);
-		else
-			return createSealedKey(uidToUse);
+		return createSealedKey(uidToUse);
 	}
 
 	public DatabaseKey(UniversalId uidToUse)

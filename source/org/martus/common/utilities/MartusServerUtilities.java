@@ -121,8 +121,7 @@ public class MartusServerUtilities
 				DatabaseKey newKey = header.createKeyWithHeaderStatus(uid);
 				if(newKey.isDraft())
 					throw new SealedPacketExistsException(entry.getName());
-				else
-					throw new DuplicatePacketException(entry.getName());
+				throw new DuplicatePacketException(entry.getName());
 			}
 		}
 		

@@ -343,8 +343,7 @@ public class BulletinHeaderPacket extends Packet
 	{
 		if(getStatus().equals(BulletinConstants.STATUSDRAFT))
 			return DatabaseKey.createDraftKey(uid);
-		else
-			return DatabaseKey.createSealedKey(uid);
+		return DatabaseKey.createSealedKey(uid);
 	}
 
 	static ZipEntry getBulletinHeaderEntry(ZipFile zip) throws IOException

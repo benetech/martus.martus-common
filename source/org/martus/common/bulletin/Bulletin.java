@@ -221,8 +221,7 @@ public class Bulletin implements BulletinConstants
 	{			 
 		if(isFieldInPublicSection(fieldName))
 			return fieldData.get(fieldName);
-		else
-			return getPrivateFieldDataPacket().get(fieldName);
+		return getPrivateFieldDataPacket().get(fieldName);
 	}
 
 	public void addPublicAttachment(AttachmentProxy a) throws

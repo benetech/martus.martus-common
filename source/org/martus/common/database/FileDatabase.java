@@ -502,8 +502,7 @@ abstract public class FileDatabase extends Database
 	{
 		if(key.isDraft())
 			return draftQuarantinePrefix;
-		else
-			return sealedQuarantinePrefix;
+		return sealedQuarantinePrefix;
 	}
 
 	public class TooManyAccountsException extends IOException {}
