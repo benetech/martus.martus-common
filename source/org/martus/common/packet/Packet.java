@@ -213,18 +213,26 @@ public class Packet
 	public byte[] writeXmlToDatabase(Database db, DatabaseKey headerKey, boolean mustEncrypt, MartusCrypto signer)
 		throws IOException, Database.RecordHiddenException, CryptoException
 	{
-//FIXME:add this valid check back and fix tests which are failing.	
-//		if(headerKey.getAccountId() != signer.getPublicKeyString())
-//			throw new CryptoException();//Only the owner can write an xml file into the database. 
 		StringWriter headerWriter = new StringWriter();
 		byte[] sig = writeXml(headerWriter, signer);
 		if(mustEncrypt && isPublicData())
+		{
+			ensureSignerIsAuthor(headerKey, signer); 
 			db.writeRecordEncrypted(headerKey, headerWriter.toString(), signer);
+		}
 		else
+		{
 			db.writeRecord(headerKey, headerWriter.toString());
+		}
 		return sig;
 	}
 	
+	private void ensureSignerIsAuthor(DatabaseKey headerKey, MartusCrypto signer) throws CryptoException
+	{
+		if(!headerKey.getAccountId().equals(signer.getPublicKeyString()))
+			throw new CryptoException();
+	}
+
 	static public void validateXml(InputStreamWithSeek inputStream, String accountId, String localId, byte[] expectedSig, MartusCrypto verifier) throws
 		IOException,
 		InvalidPacketException,
