@@ -327,6 +327,7 @@ public class TestBulletin extends TestCaseEnhanced
 		b1.setSealed();
 		store.saveEncryptedBulletinForTesting(b1);
 		assertEquals(0, b1.getHistory().size());
+		assertEquals(1, b1.getVersion());
 		
 		Bulletin b2 = new Bulletin(security);
 		b2.createDraftCopyOf(b1, getDb());
@@ -338,6 +339,7 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals("wrong status?", Bulletin.STATUSDRAFT, b2.getStatus());
 		assertEquals("wrong private?", b1.isAllPrivate(), b2.isAllPrivate());
 		assertEquals("modified history?", 0, b1.getHistory().size());
+		assertEquals(1, b1.getVersion());
 
 		AttachmentProxy a1 = new AttachmentProxy(tempFile1);
 		b1.addPublicAttachment(a1);

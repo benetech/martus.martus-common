@@ -71,8 +71,6 @@ public class BulletinSummary
 		history = historyToUse;
 		if(history == null)
 			history = new BulletinHistory();
-		else
-			versionNumber = history.size() + 1;
 	}
 	
 	public void setFieldDataPacket(FieldDataPacket fdpToUse)
@@ -142,7 +140,7 @@ public class BulletinSummary
 	
 	public int getVersionNumber()
 	{
-		return versionNumber;
+		return getHistory().size()+1;
 	}
 	
 	public BulletinHistory getHistory()
@@ -175,7 +173,10 @@ public class BulletinSummary
 		BulletinHistory history = new BulletinHistory();
 		String[] localIds = localIdsAsString.split(" ");
 		for(int i=0; i < localIds.length; ++i)
-			history.add(localIds[i]);
+		{
+			if(localIds[i].length() > 0)
+				history.add(localIds[i]);
+		}
 		return history;
 	}
 
@@ -208,7 +209,6 @@ public class BulletinSummary
 	String author;
 	public String dateTimeSaved;
 	private BulletinHistory history;
-	private int versionNumber;
 	int size;
 	boolean checkedFlag;
 	boolean downloadable;

@@ -27,9 +27,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.test;
 
 import java.util.Vector;
-
 import junit.framework.TestCase;
-
 import org.martus.common.BulletinSummary;
 import org.martus.common.network.NetworkInterfaceConstants;
 import org.martus.common.packet.BulletinHistory;
@@ -53,6 +51,7 @@ public class TestBulletinSummary extends TestCase
 		assertEquals("fdp", summary.getFieldDataPacketLocalId());
 		assertEquals(27, summary.getSize());
 		assertEquals("", summary.getDateTimeSaved());
+		
 	}
 	
 	public void testCreateFromStringsTooManyValues() throws Exception
@@ -93,10 +92,35 @@ public class TestBulletinSummary extends TestCase
 		String minimal = "bhp=fdp=456";
 		BulletinSummary summary = BulletinSummary.createFromString("account", minimal);
 		assertEquals("", summary.getDateTimeSaved());
-		assertEquals(0, summary.getVersionNumber());
+		assertEquals(1, summary.getVersionNumber());
 		assertEquals(0, summary.getHistory().size());
 	}
 
+	public void testCreateFromStringsWithAllData() throws Exception
+	{
+		String allData1 = "bhp=fdp=15=123456=123 456 789";
+		String allData2 = "bhp=fdp=16=123456=33";
+		BulletinSummary summary = BulletinSummary.createFromString("account", allData1);
+		assertEquals(15, summary.getSize());
+		assertEquals("12/31/69 4:02 PM", summary.getDateTimeSaved());
+		assertEquals(4, summary.getVersionNumber());
+		assertEquals(3, summary.getHistory().size());
+
+		BulletinSummary summary2 = BulletinSummary.createFromString("account", allData2);
+		assertEquals(16, summary2.getSize());
+		assertEquals("12/31/69 4:02 PM", summary2.getDateTimeSaved());
+		assertEquals(2, summary2.getVersionNumber());
+		assertEquals(1, summary2.getHistory().size());
+	}
+
+	public void testCreateFromStringsWithNoHistory() throws Exception
+	{
+		String noHistory = "bhp=fdp=15=123456=";
+		BulletinSummary summary = BulletinSummary.createFromString("account", noHistory);
+		assertEquals(1, summary.getVersionNumber());
+		assertEquals(0, summary.getHistory().size());
+	}
+	
 	public void testGetNormalRetrieveTags() throws Exception
 	{
 		Vector tags = BulletinSummary.getNormalRetrieveTags();
