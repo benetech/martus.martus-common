@@ -26,6 +26,8 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.crypto;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -111,6 +113,20 @@ public abstract class MartusCrypto
 	public abstract Vector getKeyShareBundles();
 	public abstract void recoverFromKeyShareBundles(Vector shares) throws KeyShareException;
 
+	public void readKeyPair(File keyPairFile, char[] combinedPassPhrase) throws
+	IOException, InvalidKeyPairFileVersionException, AuthorizationFailedException
+	{
+		FileInputStream inputStream = new FileInputStream(keyPairFile);
+		try
+		{
+			readKeyPair(inputStream, combinedPassPhrase);
+		}
+		finally
+		{
+			inputStream.close();
+		}
+	}
+	
 	// public codes
 	public static String computePublicCode(String publicKeyString) throws
 		Base64.InvalidBase64Exception
