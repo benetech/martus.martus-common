@@ -144,11 +144,11 @@ public class TestCaseEnhanced extends TestCase
 											" WAS found in " + "<" + container + ">");
 	}
 
-	public static void assertContains(Object unexpected, Vector container)
+	public static void assertContains(Object expected, Vector container)
 	{
-		assertNotNull(unexpected);
-		if (!container.contains(unexpected))
-			throw new AssertionFailedError("<" + unexpected + ">" + " not found in " + "<" + container + ">");
+		assertNotNull(expected);
+		if (!container.contains(expected))
+			throw new AssertionFailedError("<" + expected + ">" + " not found in " + "<" + container + ">");
 	}
 
 	public static void assertContains(String message, Object unexpected, Vector container)
