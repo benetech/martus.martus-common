@@ -39,6 +39,7 @@ import org.martus.common.clientside.UiBasicLocalization;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.ReadableDatabase;
 import org.martus.common.database.Database.RecordHiddenException;
+import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.UniversalId;
 import org.martus.swing.UiLanguageDirection;
 
@@ -86,16 +87,14 @@ public class BulletinHtmlGenerator
 		appendTitleOfSection(html, publicSectionTitle);
 		html.append(getHtmlEscapedFieldHtmlString(localization.getFieldLabel("allprivate"), localization.getButtonLabel(allPrivateValueTag)));
 
-		FieldSpec[] standardFieldTags = b.getPublicFieldSpecs();
-		html.append(getSectionHtmlString(b, standardFieldTags));
+		html.append(getSectionHtmlString(b.getFieldDataPacket()));
 		html.append(getAttachmentsHtmlString(b.getPublicAttachments(), database));
 
 		if (includePrivateData)
 		{	
 			html.append("<tr></tr>");
 			appendTitleOfSection(html, localization.getFieldLabel("privatesection"));
-			FieldSpec[] privateFieldTags = b.getPrivateFieldSpecs();
-			html.append(getSectionHtmlString(b, privateFieldTags));
+			html.append(getSectionHtmlString(b.getPrivateFieldDataPacket()));
 			html.append(getAttachmentsHtmlString(b.getPrivateAttachments(), database));
 		}
 		
@@ -127,16 +126,16 @@ public class BulletinHtmlGenerator
 		html.append("</html>");
 	}
 
-	private String getSectionHtmlString(Bulletin b, FieldSpec[] standardFieldTags)
+	private String getSectionHtmlString(FieldDataPacket fdp)
 	{
+		FieldSpec[] fieldTags = fdp.getFieldSpecs();
 		String sectionHtml = "";
-		for(int fieldNum = 0; fieldNum < standardFieldTags.length; ++fieldNum)
+		for(int fieldNum = 0; fieldNum < fieldTags.length; ++fieldNum)
 		{
-			FieldSpec spec = standardFieldTags[fieldNum];
+			FieldSpec spec = fieldTags[fieldNum];
 			String tag = spec.getTag();
 			String label = getHTMLEscaped(spec.getLabel());			
-		
-			String value = getHTMLEscaped(b.get(tag));
+			String value = getHTMLEscaped(fdp.get(tag));
 			if(spec.getType() == FieldSpec.TYPE_DATE)
 				value = localization.convertStoredDateToDisplayReverseIfNecessary(value);
 			else if(spec.getType() == FieldSpec.TYPE_LANGUAGE)
@@ -173,7 +172,7 @@ public class BulletinHtmlGenerator
 				try
 				{
 					GridData gridData = new GridData();
-					gridData.setFromXml(b.get(tag));
+					gridData.setFromXml(fdp.get(tag));
 					int rowCount = gridData.getRowCount();
 
 					justification = "left";
