@@ -550,6 +550,14 @@ public class MartusUtilities
 		return ip;
 	}
 
+	public static synchronized Vector loadListFromFile(File listFile) throws IOException
+	{
+		UnicodeReader reader = new UnicodeReader(listFile);
+		Vector list = loadListFromFile(reader);
+		reader.close();
+		return list;
+	}
+	
 	public static synchronized Vector loadListFromFile(BufferedReader readerInput)
 		throws IOException
 	{
