@@ -41,8 +41,10 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
+import java.util.zip.ZipFile;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.crypto.MartusCrypto;
+import org.martus.jarverifier.JarVerifier;
 import org.martus.swing.UiLanguageDirection;
 import org.martus.util.UnicodeReader;
 
@@ -53,6 +55,7 @@ public class Localization
 		directory = directoryToUse;
 		textResources = new TreeMap();
 		rightToLeftLanguages = new Vector();
+		trustedTranslation = true;
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -215,24 +218,38 @@ public class Localization
 	// File-oriented stuff
 	public void loadTranslationFile(String languageCode)
 	{
+		trustedTranslation = true;
 		InputStream transStream = null;
-		String fileShortName = getMtfFilename(languageCode);
-		File file = new File(directory, fileShortName);
+		String mtfFileShortName = getMtfFilename(languageCode);
+		String mlpkFileShortName = getMlpkFilename(languageCode);
+		File mtfFile = new File(directory, mtfFileShortName);
+		File mlpkFile = new File(directory, mlpkFileShortName);
+		ZipFile zip = null;
 		try
 		{
-			if(file.exists())
+			if(mtfFile.exists())
 			{
-				transStream = new FileInputStream(file);
+				trustedTranslation = false;
+				transStream = new FileInputStream(mtfFile);
+			}
+			else if(mlpkFile.exists())
+			{
+				if(JarVerifier.verify(mlpkFile.getAbsolutePath(),false) != JarVerifier.JAR_VERIFIED_TRUE)
+					trustedTranslation = false;
+				zip = new ZipFile(mlpkFile);
+				transStream = zip.getInputStream(zip.getEntry(mtfFileShortName));
 			}
 			else
 			{
-				transStream = getClass().getResourceAsStream(fileShortName);
+				transStream = getClass().getResourceAsStream(mtfFileShortName);
 			}
+			
 			if(transStream == null)
-			{
 				return;
-			}
 			loadTranslations(languageCode, transStream);
+			transStream.close();
+			if(zip != null)
+				zip.close();
 		}
 	
 		catch (IOException e)
@@ -256,7 +273,10 @@ public class Localization
 		String filenameLower = filename.toLowerCase();
 		String martusLanguageFilePrefixLower = MARTUS_LANGUAGE_FILE_PREFIX.toLowerCase();
 		String martusLanguageFileSufixLower = MARTUS_LANGUAGE_FILE_SUFFIX.toLowerCase();
-		return (filenameLower.startsWith(martusLanguageFilePrefixLower) && filenameLower.endsWith(martusLanguageFileSufixLower));
+		String martusLanguagePackSufixLower = MARTUS_LANGUAGE_PACK_SUFFIX.toLowerCase();
+		return (filenameLower.startsWith(martusLanguageFilePrefixLower) 
+				&&(filenameLower.endsWith(martusLanguageFileSufixLower) ||
+			       filenameLower.endsWith(martusLanguagePackSufixLower)));
 	}
 
 	public static String getMtfFilename(String languageCode)
@@ -280,6 +300,11 @@ public class Localization
 				return true;
 		}
 		return false;
+	}
+	
+	public boolean isTranslationTrusted()
+	{
+		return trustedTranslation;
 	}
 	
 	private boolean isRightToLeftLanguage()
@@ -393,4 +418,5 @@ public class Localization
 				"it", "ja","jv","kn","kk","ky","ko","ml","mr","ne","or","pa","ps","pl","pt","ro",RUSSIAN,"sr",
 				"sr", "sd","si",SPANISH,"ta","tg","te",THAI,"tr","tk","uk","ur","uz","vi"};
 	public Vector rightToLeftLanguages;
+	public boolean trustedTranslation;
 }
