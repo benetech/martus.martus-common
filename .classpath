@@ -7,6 +7,6 @@
     <classpathentry kind="src" path="/martus-utils"/>
     <classpathentry kind="lib" path="ThirdPartyJars/common/ant.jar"/>
     <classpathentry kind="lib" path="ThirdPartyJars/common/InfiniteMonkey.jar"/>
-    <classpathentry kind="lib" path="ThirdPartyJars/common/xmlrpc-1.1.jar"/>
+    <classpathentry kind="lib" path="ThirdPartyJars/common/xmlrpc-1.2-b1.jar"/>
     <classpathentry kind="output" path="bin"/>
 </classpath>
