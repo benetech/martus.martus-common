@@ -81,7 +81,14 @@ public class UiBasicLocalization extends Localization
 		writer.writeln("#      characters (e.g. attach entire Thai alphabet at the end of the line)");
 		writer.writeln("#  4.  in field:SearchBulletinRules, make sure to translate the english \"and\"");
 		writer.writeln("#      and \"or\" in the text to exactly match the keyword:and= and ");
-		writer.writeln("#      keyword:or= translations");
+		writer.writeln("#      keyword:or= translations.  Also, the translation of the first sentence should");
+		writer.writeln("#      not exactly match the english version because Martus can handle both english");
+		writer.writeln("#      \"and\"/\"or\" and the translations of those keywords for bulletin searching,");
+		writer.writeln("#      since for some languages keyboards are not available to all users in those alphabets.");
+		writer.writeln("#      So please translate the following for the first sentence:   \"When searching for");
+		writer.writeln("#      bulletins you can add key words either in english or the-language-you-are-translating");
+		writer.writeln("#      (or/or-translated, and/and-translated) between multiple search term words");
+		writer.writeln("#      (e.g. prison or jail, prison and assault).");
 		writer.writeln("#  5.  in field:inputCustomFieldsentry, you can translate tags into foreign");
 		writer.writeln("#      characters (but without punctuation or spaces)");
 		writer.writeln("#  6.  when there are file or directory names, do not translate them");
