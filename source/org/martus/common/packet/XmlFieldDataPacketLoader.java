@@ -101,8 +101,8 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 					setLegacyCustomFields(value);
 				else if(tag.equals(MartusXml.EncryptedDataElementName))
 					encryptedData = value;
-//				else if(tag.equals(MartusXml.HQSessionKeyElementName))
-//					encryptedHQSessionKey = new SessionKey(Base64.decode(value));
+				else if(tag.equals(MartusXml.HQSessionKeyElementName))
+					encryptedHQSessionKey = new SessionKey(Base64.decode(value));
 			}
 			else if(tag.equals(AuthorizedSessionKeys.AUTHORIZED_SESSION_KEYS_TAG))
 			{
@@ -203,9 +203,17 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 
 	}
 	
-//	SessionKey encryptedHQSessionKey;
+	public SessionKey GetHQSessionKey(String hqPublicKey)
+	{
+		SessionKey key = (SessionKey)authorizedEncryptedHQSessionKeys.get(hqPublicKey);
+		if(key == null)
+			return encryptedHQSessionKey;
+		return key;
+	}
+	
 	String encryptedData;
-	HashMap authorizedEncryptedHQSessionKeys;
+	private SessionKey encryptedHQSessionKey;
+	private HashMap authorizedEncryptedHQSessionKeys;
 	private HashMap authorizedEncryptedHQSessionKeyStrings;
 	private FieldDataPacket fdp;
 	private static Vector stringTags;

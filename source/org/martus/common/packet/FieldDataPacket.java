@@ -222,7 +222,7 @@ public class FieldDataPacket extends Packet
 			if(encryptedData != null)
 			{
 				String publicCodeOfSecurity = MartusSecurity.computePublicCode(security.getPublicKeyString());
-				SessionKey encryptedHQSessionKey = (SessionKey)loader.authorizedEncryptedHQSessionKeys.get(publicCodeOfSecurity);
+				SessionKey encryptedHQSessionKey = loader.GetHQSessionKey(publicCodeOfSecurity);
 				loadEncryptedXml(encryptedData, encryptedHQSessionKey, security);
 			}
 			

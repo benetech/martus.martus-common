@@ -154,6 +154,11 @@ public class BulletinHeaderPacket extends Packet
 		if(accountsKeys.size()>0)
 			hqPublicKey = (String)accountsKeys.get(0);
 	}
+	
+	public boolean isHQAuthorizedToRead(String publicKey)
+	{
+		return(authorizedToReadKeys.contains(publicKey));
+	}
 
 	public void setAllPrivate(boolean newValue)
 	{
@@ -363,14 +368,6 @@ public class BulletinHeaderPacket extends Packet
 		if(hqPublicKey.length() > 0)
 			writeElement(dest, MartusXml.HQPublicKeyElementName, hqPublicKey);
 		
-		Vector authorizedToReadKeys = getAuthorizedToReadKeys();
-		if(authorizedToReadKeys.size() > 0)
-		{
-			HQKeys keys = new HQKeys(authorizedToReadKeys);
-			String value = keys.toString();
-			writeNonEncodedElement(dest, MartusXml.AccountsAuthorizedToReadElementName, value);			
-		}
-
 		String dataId = getFieldDataPacketId();
 		if(dataId != null)
 		{
@@ -395,6 +392,14 @@ public class BulletinHeaderPacket extends Packet
 		for(int i = 0; i < privateAttachmentIds.length; ++i)
 		{
 			writeElement(dest, MartusXml.PrivateAttachmentIdElementName, privateAttachmentIds[i]);
+		}
+
+		Vector authorizedToReadKeys = getAuthorizedToReadKeys();
+		if(authorizedToReadKeys.size() > 0)
+		{
+			HQKeys keys = new HQKeys(authorizedToReadKeys);
+			String value = keys.toString();
+			writeNonEncodedElement(dest, MartusXml.AccountsAuthorizedToReadElementName, value);			
 		}
 	}
 

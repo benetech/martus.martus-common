@@ -93,18 +93,20 @@ class EncryptedFieldDataPacket extends Packet
 			try
 			{
 				//Legacy HQ
-				SessionKey encryptedSessionKey = security.encryptSessionKey(sessionKey, (String)authorizedToReadKeys.get(0));
-				String sessionKeyString = Base64.encode(encryptedSessionKey.getBytes());
+				String publicKey = (String)authorizedToReadKeys.get(0);
+				String sessionKeyString = getSessionKeyString(publicKey);
 				writeElement(dest, MartusXml.HQSessionKeyElementName, sessionKeyString);
 				
 				HashMap sessionKeysAndPublicCodes = new HashMap();
-				for(int i = 0; i < authorizedToReadKeys.size(); ++i)
+				String publicCode = MartusSecurity.computePublicCode(publicKey);
+				sessionKeysAndPublicCodes.put(publicCode, sessionKeyString);
+
+				for(int i = 1; i < authorizedToReadKeys.size(); ++i)
 				{
-					String publicKey = (String)authorizedToReadKeys.get(i);
-					SessionKey thisHQsEncryptedSessionKey = security.encryptSessionKey(sessionKey, publicKey);
-					String thisHQsSessionKeyString = Base64.encode(thisHQsEncryptedSessionKey.getBytes());
-					String publicCode = MartusSecurity.computePublicCode(publicKey);
-					sessionKeysAndPublicCodes.put(publicCode, thisHQsSessionKeyString);
+					publicKey = (String)authorizedToReadKeys.get(i);
+					sessionKeyString = getSessionKeyString(publicKey);
+					publicCode = MartusSecurity.computePublicCode(publicKey);
+					sessionKeysAndPublicCodes.put(publicCode, sessionKeyString);
 				}
 				if(!sessionKeysAndPublicCodes.isEmpty())
 				{
@@ -122,6 +124,13 @@ class EncryptedFieldDataPacket extends Packet
 			}
 		}
 		writeElement(dest, MartusXml.EncryptedDataElementName, encryptedData);
+	}
+
+	private String getSessionKeyString(String publicCode) throws EncryptionException
+	{
+		SessionKey encryptedSessionKey = security.encryptSessionKey(sessionKey, publicCode);
+		String sessionKeyString = Base64.encode(encryptedSessionKey.getBytes());
+		return sessionKeyString;
 	}
 
 	MartusCrypto security;

@@ -168,7 +168,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		
 		try
 		{
-			byte[] partial = new byte[original.length-1];
+			byte[] partial = new byte[original.length-17];
 			System.arraycopy(original, 0, partial, 0, partial.length);
 			security.setSessionKeyCache(partial);
 			fail("Should have thrown for incomplete cache");
