@@ -215,17 +215,7 @@ public class Bulletin implements BulletinConstants
 	}
 
 	public String get(String fieldName)
-	{
-		if(fieldName.equals(Bulletin.TAGSTATUS))
-		{
-			if(isDraft())
-				return BulletinConstants.STATUSDRAFT;
-			return BulletinConstants.STATUSSEALED;
-		}
-		
-		if (fieldName.equals(Bulletin.TAGLASTSAVED))
-			 return getLastSavedDateTime();
-			 
+	{			 
 		if(isStandardField(fieldName))
 			return fieldData.get(fieldName);
 		else
