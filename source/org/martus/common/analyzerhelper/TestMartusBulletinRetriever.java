@@ -178,7 +178,7 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		NonSSLNetworkAPI noServer = new NoServerNetworkInterfaceForNonSSLHandler();
 		try
 		{
-			retriever.getServerPublicKey("Some Random code", noServer);
+			retriever.getForInternalUseServerPublicKey("Some Random code", noServer);
 			fail("Server exists?");
 		}
 		catch(ServerNotAvailableException expected)
@@ -189,7 +189,7 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		testServerForNonSSL.publicKeyString = "some invalid keystring";
 		try
 		{
-			retriever.getServerPublicKey("Some Random code", testServerForNonSSL);
+			retriever.getForInternalUseServerPublicKey("Some Random code", testServerForNonSSL);
 			fail("Invalid public key strings should throw an exception");
 		}
 		catch(ServerErrorException expected)
@@ -199,14 +199,14 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		testServerForNonSSL.publicKeyString = serverPublicKeyString;
 		try
 		{
-			retriever.getServerPublicKey("Invalid code", testServerForNonSSL);
+			retriever.getForInternalUseServerPublicKey("Invalid code", testServerForNonSSL);
 			fail("Incorrect public code.");
 		}
 		catch(ServerPublicCodeDoesNotMatchException expected)
 		{
 		}
-		retriever.getServerPublicKey(MartusCrypto.computePublicCode(serverPublicKeyString), testServerForNonSSL);
-		retriever.getServerPublicKey(MartusCrypto.computeFormattedPublicCode(serverPublicKeyString), testServerForNonSSL);
+		retriever.getForInternalUseServerPublicKey(MartusCrypto.computePublicCode(serverPublicKeyString), testServerForNonSSL);
+		retriever.getForInternalUseServerPublicKey(MartusCrypto.computeFormattedPublicCode(serverPublicKeyString), testServerForNonSSL);
 	}
 	
 	public void testGetListOfBulletinIds() throws Exception

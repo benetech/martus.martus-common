@@ -74,7 +74,7 @@ public class MartusBulletinRetriever
 	public String getServerPublicKey(String serverIPAddress, String serverPublicCode) throws ServerPublicCodeDoesNotMatchException, ServerNotAvailableException, ServerErrorException
 	{
 		ClientSideNetworkHandlerUsingXmlRpcForNonSSL serverNonSSL = new ClientSideNetworkHandlerUsingXmlRpcForNonSSL(serverIPAddress);
-		return getServerPublicKey(serverPublicCode, serverNonSSL);
+		return getForInternalUseServerPublicKey(serverPublicCode, serverNonSSL);
 	}
 	
 	public List getListOfNewBulletinIds(List bulletinIdsAlreadyRetrieved) throws ServerNotConfiguredException, MartusSignatureException, ServerErrorException
@@ -136,7 +136,7 @@ public class MartusBulletinRetriever
 	public class ServerNotConfiguredException extends Exception{};
 	public class ServerPublicCodeDoesNotMatchException extends Exception {};
 	
-	public String getServerPublicKey(String serverPublicCode, NonSSLNetworkAPI serverNonSSL) throws ServerNotAvailableException, ServerPublicCodeDoesNotMatchException, ServerErrorException
+	public String getForInternalUseServerPublicKey(String serverPublicCode, NonSSLNetworkAPI serverNonSSL) throws ServerNotAvailableException, ServerPublicCodeDoesNotMatchException, ServerErrorException
 	{
 		String ServerPublicKey;
 		try
