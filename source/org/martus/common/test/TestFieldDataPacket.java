@@ -386,9 +386,9 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		assertContains(data2base + xmlAmp + xmlLt + xmlGt, result);
 
 		assertContains(fieldListForTesting, result);
-		CustomFields fields = new CustomFields(fieldTags);
-		// The following three lines should be restored as soon as 
+		//TODO The following three lines should be restored as soon as 
 		// FieldDataPackets can correctly read <CustomField> tags
+		//CustomFields fields = new CustomFields(fieldTags);
 		//assertContains(MartusConstants.deprecatedCustomFieldSpecs, result);
 		//assertContains(fields.toString(), result);
 	}
@@ -406,9 +406,9 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		String rawFieldList = LegacyCustomFields.buildFieldListString(specs);
 		String encodedFieldList = MartusUtilities.getXmlEncoded(rawFieldList);
 		assertContains(encodedFieldList, result);
-		CustomFields fields = new CustomFields(fieldTags);
-		// The following three lines should be restored as soon as 
+		//TODO The following three lines should be restored as soon as 
 		// FieldDataPackets can correctly read <CustomField> tags
+		//CustomFields fields = new CustomFields(fieldTags);
 		//assertContains(MartusConstants.deprecatedCustomFieldSpecs, result);
 		//assertContains(fields.toString(), result);
 	}
