@@ -102,6 +102,9 @@ public class TestFieldSpec extends TestCaseEnhanced
 
 		spec = new FieldSpec(FieldSpec.TYPE_NORMAL);
 		assertEquals(emptyString, spec.getDefaultValue());
+
+		spec = new FieldSpec(FieldSpec.TYPE_DROPDOWN);
+		assertEquals(emptyString, spec.getDefaultValue());
 	}
 	
 	public void testToString()
@@ -120,6 +123,7 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertEquals("BOOLEAN", FieldSpec.getTypeString(FieldSpec.TYPE_BOOLEAN));
 		assertEquals("LANGUAGE", FieldSpec.getTypeString(FieldSpec.TYPE_LANGUAGE));
 		assertEquals("GRID", FieldSpec.getTypeString(FieldSpec.TYPE_GRID));
+		assertEquals("DROPDOWN", FieldSpec.getTypeString(FieldSpec.TYPE_DROPDOWN));
 		assertEquals("UNKNOWN", FieldSpec.getTypeString(-99));
 	}
 	
@@ -133,6 +137,7 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertEquals(FieldSpec.TYPE_BOOLEAN, FieldSpec.getTypeCode("BOOLEAN"));
 		assertEquals(FieldSpec.TYPE_LANGUAGE, FieldSpec.getTypeCode("LANGUAGE"));
 		assertEquals(FieldSpec.TYPE_GRID, FieldSpec.getTypeCode("GRID"));
+		assertEquals(FieldSpec.TYPE_DROPDOWN, FieldSpec.getTypeCode("DROPDOWN"));
 	}
 	
 	public void testEquals()

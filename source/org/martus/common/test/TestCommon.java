@@ -76,6 +76,7 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestCustomFields.class));
 		suite.addTest(new TestSuite(TestDatabaseKey.class));
 		suite.addTest(new TestSuite(TestDateUtilities.class));
+		suite.addTest(new TestSuite(TestDropDownFieldSpec.class));
 		suite.addTest(new TestSuite(TestFieldDataPacket.class));
 		suite.addTest(new TestSuite(TestFieldSpec.class));
 		suite.addTest(new TestSuite(TestFileDatabase.class));

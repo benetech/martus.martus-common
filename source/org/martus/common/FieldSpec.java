@@ -189,6 +189,7 @@ public class FieldSpec
 		map.put(new Integer(TYPE_BOOLEAN), "BOOLEAN");
 		map.put(new Integer(TYPE_LANGUAGE), "LANGUAGE");
 		map.put(new Integer(TYPE_GRID), "GRID");
+		map.put(new Integer(TYPE_DROPDOWN), "DROPDOWN");
 		map.put(new Integer(TYPE_UNKNOWN), "UNKNOWN");
 		return map;
 	}
@@ -210,6 +211,8 @@ public class FieldSpec
 			int type = getTypeCode(attrs.getValue(FieldSpec.FIELD_SPEC_TYPE_ATTR));
 			if(type == TYPE_GRID)
 				spec = new GridFieldSpec();
+			else if(type == TYPE_DROPDOWN)
+				spec = new DropDownFieldSpec();
 			else
 				spec = new FieldSpec(type);
 			super.startDocument(attrs);
@@ -222,6 +225,8 @@ public class FieldSpec
 				return new SimpleXmlStringLoader(tag);
 			else if(tag.equals(GridFieldSpec.GRID_SPEC_DETAILS_TAG))
 				return new GridFieldSpec.GridSpecDetailsLoader((GridFieldSpec)spec);
+			else if(tag.equals(DropDownFieldSpec.DROPDOWN_SPEC_CHOICES_TAG))
+				return new DropDownFieldSpec.DropDownSpecLoader((DropDownFieldSpec)spec);
 			
 			return super.startElement(tag);
 		}
@@ -256,6 +261,7 @@ public class FieldSpec
 	public static final int TYPE_DATERANGE = 5;
 	public static final int TYPE_BOOLEAN = 6;
 	public static final int TYPE_GRID = 7;
+	public static final int TYPE_DROPDOWN = 8;
 	public static final int TYPE_UNKNOWN = 99;
 	
 	public static final String FIELD_SPEC_XML_TAG = "Field";
