@@ -318,6 +318,7 @@ public class Packet
 		}
 		catch (Exception e)
 		{
+			//e.printStackTrace();
 			throw new SignatureVerificationException();
 		}
 	}

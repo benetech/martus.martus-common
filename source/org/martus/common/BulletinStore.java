@@ -33,7 +33,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import org.martus.common.MartusUtilities.FileVerificationException;
@@ -58,7 +57,6 @@ import org.martus.common.packet.Packet.InvalidPacketException;
 import org.martus.common.packet.Packet.SignatureVerificationException;
 import org.martus.common.packet.Packet.WrongAccountException;
 import org.martus.common.packet.Packet.WrongPacketTypeException;
-import org.martus.common.utilities.MartusServerUtilities;
 import org.martus.util.InputStreamWithSeek;
 import org.martus.util.StreamCopier;
 import org.martus.util.StreamFilter;
@@ -203,22 +201,6 @@ public class BulletinStore
 		Vector leafKeys = scanForLeafKeys();
 		for(int i=0; i < leafKeys.size(); ++i)
 			visitor.visit((DatabaseKey)leafKeys.get(i));
-	}
-
-	public Vector getUidsOfAllBulletinRevisions()
-	{
-		class UidCollector implements Database.PacketVisitor
-		{
-			public void visit(DatabaseKey key)
-			{
-				uidList.add(key.getUniversalId());
-			}
-			Vector uidList = new Vector();
-		}
-	
-		UidCollector uidCollector = new UidCollector();
-		visitAllBulletinRevisions(uidCollector);
-		return uidCollector.uidList;
 	}
 
 	public void visitAllBulletinRevisions(Database.PacketVisitor visitorToUse)
@@ -396,33 +378,6 @@ public class BulletinStore
 			zipEntries.put(key,file);
 		}
 		db.importFiles(zipEntries);
-	}
-
-	public BulletinHeaderPacket saveZipFileToDatabase(File zipFile, String authorAccountId)
-		throws
-			ZipException,
-			IOException,
-			Database.RecordHiddenException,
-			Packet.InvalidPacketException,
-			Packet.SignatureVerificationException,
-			MartusServerUtilities.SealedPacketExistsException,
-			MartusServerUtilities.DuplicatePacketException,
-			Packet.WrongAccountException,
-			MartusCrypto.DecryptionException
-	{
-		ZipFile zip = null;
-		try
-		{
-			zip = new ZipFile(zipFile);
-			BulletinHeaderPacket header = MartusServerUtilities.validateZipFilePacketsForServerImport(getWriteableDatabase(), authorAccountId, zip, getSignatureVerifier());
-			importBulletinZipFile(zip, authorAccountId);
-			return header;
-		}
-		finally
-		{
-			if(zip != null)
-				zip.close();
-		}
 	}
 
 	protected void deleteSpecificPacket(DatabaseKey burKey)

@@ -93,7 +93,7 @@ public class TestBulletinStore extends TestCaseEnhanced
 		super.tearDown();
 	}
     
-    public void testDoesBulletinRevisionExist() throws Exception
+    public void testHasNewerRevision() throws Exception
 	{
 		Bulletin original = createAndSaveBulletin();
 		Bulletin clone = createAndSaveClone(original);

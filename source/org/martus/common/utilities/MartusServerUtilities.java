@@ -26,7 +26,6 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.utilities;
 
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,17 +34,13 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
-import java.io.StringReader;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Vector;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import org.martus.common.BulletinStore;
 import org.martus.common.LoggerInterface;
@@ -54,14 +49,9 @@ import org.martus.common.MartusUtilities.FileVerificationException;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
-import org.martus.common.crypto.MartusCrypto.CreateDigestException;
 import org.martus.common.crypto.MartusCrypto.CryptoInitializationException;
 import org.martus.common.crypto.MartusCrypto.InvalidKeyPairFileVersionException;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
-import org.martus.common.database.Database;
-import org.martus.common.database.DatabaseKey;
-import org.martus.common.packet.BulletinHeaderPacket;
-import org.martus.common.packet.Packet;
 import org.martus.common.packet.UniversalId;
 import org.martus.util.Base64;
 import org.martus.util.UnicodeReader;
@@ -69,35 +59,6 @@ import org.martus.util.UnicodeWriter;
 
 public class MartusServerUtilities
 {
-	public static BulletinHeaderPacket validateZipFilePacketsForServerImport(Database db, String authorAccountId, ZipFile zip, MartusCrypto security)
-		throws
-			Packet.InvalidPacketException,
-			IOException,
-			Packet.SignatureVerificationException,
-			SealedPacketExistsException,
-			DuplicatePacketException,
-			Packet.WrongAccountException,
-			MartusCrypto.DecryptionException 
-	{
-		BulletinHeaderPacket header = MartusUtilities.extractHeaderPacket(authorAccountId, zip, security);
-		Enumeration entries = zip.entries();
-		while(entries.hasMoreElements())
-		{
-			ZipEntry entry = (ZipEntry)entries.nextElement();
-			UniversalId uid = UniversalId.createFromAccountAndLocalId(authorAccountId, entry.getName());
-			DatabaseKey trySealedKey = DatabaseKey.createSealedKey(uid);
-			if(db.doesRecordExist(trySealedKey))
-			{
-				DatabaseKey newKey = header.createKeyWithHeaderStatus(uid);
-				if(newKey.isDraft())
-					throw new SealedPacketExistsException(entry.getName());
-				throw new DuplicatePacketException(entry.getName());
-			}
-		}
-		
-		return header;
-	}
-
 	public static MartusCrypto loadCurrentMartusSecurity(File keyPairFile, char[] passphrase)
 		throws CryptoInitializationException, FileNotFoundException, IOException, InvalidKeyPairFileVersionException, AuthorizationFailedException
 	{
@@ -417,82 +378,6 @@ public class MartusServerUtilities
 		return null;
 	}
 
-	public static String createBulletinUploadRecord(String bulletinLocalId, MartusCrypto security) throws MartusCrypto.CreateDigestException
-	{
-		String timeStamp = MartusServerUtilities.createTimeStamp();
-		return createBulletinUploadRecordWithSpecificTimeStamp(
-			bulletinLocalId, timeStamp, security);
-	}
-
-	public static String createBulletinUploadRecordWithSpecificTimeStamp(
-		String bulletinLocalId,
-		String timeStamp,
-		MartusCrypto security)
-		throws CreateDigestException
-	{
-		byte[] partOfPrivateKey = security.getDigestOfPartOfPrivateKey();
-		String stringToDigest = 
-				BULLETIN_UPLOAD_RECORD_IDENTIFIER + newline +
-				bulletinLocalId + newline +
-				timeStamp + newline +
-				Base64.encode(partOfPrivateKey) + newline;
-		String digest = MartusCrypto.createDigestString(stringToDigest);
-		return 
-			BULLETIN_UPLOAD_RECORD_IDENTIFIER + newline + 
-			bulletinLocalId + newline +
-			timeStamp + newline +
-			digest + newline;
-	}
-	
-	public static boolean wasBurCreatedByThisCrypto(String burToTest, MartusCrypto security)
-	{
-		if(burToTest == null)
-			return false;
-		BufferedReader reader = new BufferedReader(new StringReader(burToTest));
-		String digestFromTestBur;
-		String digestCreatedFromThisCrypto;
-		try
-		{
-			String fileTypeIdentifier = reader.readLine();
-			String localId = reader.readLine();
-			String timeStamp = reader.readLine(); 
-			digestFromTestBur = reader.readLine();
-
-			String stringToDigest = 
-					fileTypeIdentifier + newline +
-					localId  + newline +
-					timeStamp + newline +
-					Base64.encode(security.getDigestOfPartOfPrivateKey()) + newline;
-
-			digestCreatedFromThisCrypto = MartusCrypto.createDigestString(stringToDigest);
-
-		}
-		catch (Exception e)
-		{
-			return false;
-		}
-
-		return (digestCreatedFromThisCrypto.equals(digestFromTestBur));		
-	}
-
-
-	public static DatabaseKey getBurKey(DatabaseKey key)
-	{
-		UniversalId burUid = UniversalId.createFromAccountAndLocalId(key.getAccountId(), "BUR-" + key.getLocalId());
-		
-		if(key.isDraft())
-			return DatabaseKey.createDraftKey(burUid);
-		return DatabaseKey.createSealedKey(burUid);
-	}
-
-	public static void writeSpecificBurToDatabase(Database db, BulletinHeaderPacket bhp, String bur)
-		throws IOException, Database.RecordHiddenException
-	{
-		DatabaseKey headerKey = bhp.createKeyWithHeaderStatus(bhp.getUniversalId());
-		DatabaseKey burKey = MartusServerUtilities.getBurKey(headerKey);
-		db.writeRecord(burKey, bur);
-	}
-	
 	public static void writeContatctInfo(String accountId, Vector contactInfo, File contactInfoFile) throws IOException
 	{
 		contactInfoFile.getParentFile().mkdirs();
@@ -572,28 +457,10 @@ public class MartusServerUtilities
 	public static class MartusSignatureFileDoesntExistsException extends Exception {}
 	public static class FileTooLargeException extends IOException {}
 
-	public static class DuplicatePacketException extends Exception
-	{
-		public DuplicatePacketException(String message)
-		{
-			super(message);
-		}
-	}
-	
-	public static class SealedPacketExistsException extends Exception
-	{
-		public SealedPacketExistsException(String message)
-		{
-			super(message);
-		}
-	}
-	
 	private static final String MARTUS_SIGNATURE_FILE_DATE_FORMAT = "yyyyMMdd-HHmmss";
 	private static final String MARTUS_SIGNATURE_FILE_IDENTIFIER = "Martus Signature File";
 	private static final String MARTUS_SIGNATURE_FILE_DIRECTORY_NAME = "signatures";
 	private static final int MAX_ALLOWED_ENCRYPTED_FILESIZE = 1000*1000;
 
-	private static final String BULLETIN_UPLOAD_RECORD_IDENTIFIER = "Martus Bulletin Upload Record 1.0";
-	final static String newline = "\n";
 	
 }
