@@ -234,11 +234,11 @@ public class TestMartusBulletinWrapper extends TestCaseEnhanced
 				"<tr><td width='15%' align='right' valign='top'>Date of Event</td><td valign='top'>Between 08/20/2003 and 08/23/2003</td></tr>\n"+
 				"<tr><td width='15%' align='right' valign='top'>Date Created</td><td valign='top'>01/23/2004</td></tr>\n"+
 				"<tr><td width='15%' align='right' valign='top'>Summary</td><td valign='top'><p></p></td></tr>\n"+
-				"<tr><td width='15%' align='right' valign='top'>&lt;field:publicinfo&gt;</td><td valign='top'><p></p></td></tr>\n"+
+				"<tr><td width='15%' align='right' valign='top'>Details</td><td valign='top'><p></p></td></tr>\n"+
 				"<tr><td width='15%' align='right' valign='top'>Attachments</td><td valign='top'><p>"+tempFile1.getName()+"    ( 1 Kb )</p><p>"+tempFile2.getName()+"    ( 1 Kb )</p></td></tr>\n"+
 				"<tr></tr><tr><td colspan='2'><tr><td width='15%' align='right' valign='top'><u><b>Private Information</b></u></td><td valign='top'></td></tr>\n"+
 				"</td></tr>\n"+
-				"<tr><td width='15%' align='right' valign='top'>&lt;field:privateinfo&gt;</td><td valign='top'><p>"+privateData+"</p><p></p></td></tr>\n"+
+				"<tr><td width='15%' align='right' valign='top'>Private</td><td valign='top'><p>"+privateData+"</p><p></p></td></tr>\n"+
 				"<tr><td width='15%' align='right' valign='top'>Attachments</td><td valign='top'><p>"+tempFile3.getName()+"    ( 1 Kb )</p></td></tr>\n"+
 				"<tr></tr><tr><td width='15%' align='right' valign='top'>Bulletin Id:</td><td valign='top'>"+bulletin.getLocalId()+"</td></tr>\n"+
 				"</table></html>";				
