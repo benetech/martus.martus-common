@@ -35,6 +35,7 @@ import org.martus.common.MartusConstants;
 import org.martus.util.*;
 import org.martus.util.UnicodeReader;
 import org.martus.util.UnicodeWriter;
+import org.martus.util.UnicodeReader.BOMNotFoundException;
 
 public class TestUnicodeFileReader extends TestCaseEnhanced
 {
@@ -116,6 +117,33 @@ public class TestUnicodeFileReader extends TestCaseEnhanced
 		reader.close();
 
 		file.delete();
+	}
+    
+    public void testSkipBOM() throws Exception
+	{
+		File file = createTempFileFromName("$$testSkipBOMNonUTF8");
+		createTempFile(file);
+		UnicodeReader reader = new UnicodeReader(file);
+		try
+		{
+			reader.skipBOM();
+			fail("Should have thrown since file isn't UTF8");
+		}
+		catch(BOMNotFoundException expected)
+		{
+		}
+		
+		File utf8File = createTempFile();
+		UnicodeWriter writer = new UnicodeWriter(utf8File);
+		writer.writeBOM();
+		writer.write(text);
+		writer.close();
+		
+		reader = new UnicodeReader(utf8File);
+		reader.skipBOM();
+		String resultingText = reader.readLine();
+		reader.close();
+		assertEquals("Text after the BOM should be idential", text, resultingText);
 	}
 
 	void createTempFile(File file) throws Exception
