@@ -155,7 +155,8 @@ public class MiniLocalization
 	
 	public boolean doesLanguageRequirePadding(String languageCode)
 	{	
-		return languageCode.equals(ARABIC);
+		boolean paddingRequired = languageCode.equals(ARABIC) || languageCode.equals(FARSI);
+		return paddingRequired;
 	}
 	
 	public String getCurrentDateFormatCode()
@@ -359,9 +360,10 @@ public class MiniLocalization
 	public static final String RUSSIAN = "ru";
 	public static final String THAI = "th";
 	public static final String ARABIC = "ar";
+	public static final String FARSI = "fa";
 	public static final String[] ALL_LANGUAGE_CODES = {
 				LANGUAGE_OTHER, ENGLISH, ARABIC,
-				"az", "bg", "bn", "km","my","zh", "nl", "eo", "fa", FRENCH, "de","gu","ha","he","hi","hu",
+				"az", "bg", "bn", "km","my","zh", "nl", "eo", FARSI, FRENCH, "de","gu","ha","he","hi","hu",
 				"it", "ja","jv","kn","kk","ky","ko","ml","mr","ne","or","pa","ps","pl","pt","ro",RUSSIAN,"sr",
 				"sr", "sd","si",SPANISH,"ta","tg","te",THAI,"tr","tk","uk","ur","uz","vi"};
 
