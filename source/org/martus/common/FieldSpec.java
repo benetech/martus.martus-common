@@ -105,6 +105,7 @@ public class FieldSpec
 		map.put(new Integer(TYPE_DATERANGE), "DATERANGE");
 		map.put(new Integer(TYPE_BOOLEAN), "BOOLEAN");
 		map.put(new Integer(TYPE_LANGUAGE), "LANGUAGE");
+		map.put(new Integer(TYPE_GRID), "GRID");
 		map.put(new Integer(TYPE_UNKNOWN), "UNKNOWN");
 		return map;
 	}
@@ -120,6 +121,7 @@ public class FieldSpec
 	public static final int TYPE_LANGUAGE = 4;
 	public static final int TYPE_DATERANGE = 5;
 	public static final int TYPE_BOOLEAN = 6;
+	public static final int TYPE_GRID = 7;
 	public static final int TYPE_UNKNOWN = 99;
 
 }
