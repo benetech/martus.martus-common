@@ -60,11 +60,11 @@ public class TestMiniLocalization extends TestCaseEnhanced
 		loc.setCurrentLanguageCode(rightToLeftLanguageCode);
     	final int june = 5;
     	GregorianCalendar leadingZeros = new GregorianCalendar(1996, june, 1, 7, 4);
-    	assertEquals("07:04 06/01/1996", loc.formatDateTime(leadingZeros.getTimeInMillis()));
+    	assertEquals("07:04 1996/01/06", loc.formatDateTime(leadingZeros.getTimeInMillis()));
     	
     	final int december = 11;
     	GregorianCalendar afternoon = new GregorianCalendar(2004, december, 9, 13, 59);
-    	assertEquals("13:59 12/09/2004", loc.formatDateTime(afternoon.getTimeInMillis()));
+    	assertEquals("13:59 2004/09/12", loc.formatDateTime(afternoon.getTimeInMillis()));
     	LanguageDirection.setDirectionLeftToRight();
 	}
 

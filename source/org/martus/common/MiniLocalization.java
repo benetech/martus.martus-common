@@ -265,6 +265,11 @@ public class MiniLocalization
 	public String convertStoredDateToDisplayReverseIfNecessary(String date)
 	{
 		String displayDate = convertStoredDateToDisplay(date);
+		return reverseDisplayDateIfRequired(displayDate);
+	}
+
+	private String reverseDisplayDateIfRequired(String displayDate)
+	{
 		if(LanguageDirection.isRightToLeftLanguage())
 			return reverseDate(displayDate);
 		return displayDate;
@@ -328,7 +333,7 @@ public class MiniLocalization
 		Calendar cal = new GregorianCalendar();
 		cal.setTimeInMillis(dateTime);
 		
-		String date = dateShort.format(cal.getTime());
+		String date = reverseDisplayDateIfRequired(dateShort.format(cal.getTime()));
 		String time = time24hour.format(cal.getTime());
 		if(isRightToLeftLanguage())
 			return time + SPACE + date;
