@@ -50,7 +50,7 @@ public class UiSigninPanel extends JPanel implements VirtualKeyboardHandler
 		uiState = owner.getCurrentUiState();
 		setLayout(new ParagraphLayout());
 		
-		ComponentOrientation orientation = localization.getComponentOrientation();
+		ComponentOrientation orientation = UiLanguageDirection.getComponentOrientation();
 		if(mode == UiBasicSigninDlg.TIMED_OUT)
 		{
 			add(new JLabel(""), ParagraphLayout.NEW_PARAGRAPH);

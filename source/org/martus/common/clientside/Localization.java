@@ -26,7 +26,6 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.clientside;
 
-import java.awt.ComponentOrientation;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -42,7 +41,6 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
-import javax.swing.SwingConstants;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.util.UnicodeReader;
@@ -67,6 +65,10 @@ public class Localization
 	{
 		loadTranslationFile(newLanguageCode);
 		currentLanguageCode = newLanguageCode;
+		if(isRightToLeftLanguage())
+			UiLanguageDirection.setDirection(UiLanguageDirection.RIGHT_TO_LEFT);
+		else
+			UiLanguageDirection.setDirection(UiLanguageDirection.LEFT_TO_RIGHT);
 	}
 	
 	protected String getLabel(String languageCode, String key)
@@ -276,22 +278,7 @@ public class Localization
 		return false;
 	}
 	
-	public ComponentOrientation getComponentOrientation()
-	{
-		if(isRightToLeftLanguage())
-			return ComponentOrientation.RIGHT_TO_LEFT;
-		return ComponentOrientation.LEFT_TO_RIGHT;
-	}
-	
-	public int getHorizontalAlignment()
-	{
-		if(isRightToLeftLanguage())
-			return SwingConstants.RIGHT;
-		return SwingConstants.LEFT;
-	}
-
-	
-	public boolean isRightToLeftLanguage()
+	private boolean isRightToLeftLanguage()
 	{
 		return rightToLeftLanguages.contains(currentLanguageCode);
 	}

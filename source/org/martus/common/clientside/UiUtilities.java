@@ -50,7 +50,7 @@ public class UiUtilities
 		String[] contents = {cause};
 		String[] buttons = {ok};
 
-		new UiNotifyDlg(parent, title, contents, buttons, tokenReplacement, localization.getComponentOrientation());
+		new UiNotifyDlg(parent, title, contents, buttons, tokenReplacement, UiLanguageDirection.getComponentOrientation());
 	}
 
 	public static void messageDlg(UiBasicLocalization localization, JFrame parent, String baseTag, String message)
@@ -61,7 +61,7 @@ public class UiUtilities
 		String[] contents = {cause, "", message};
 		String[] buttons = {ok};
 
-		new UiNotifyDlg(parent, title, contents, buttons, localization.getComponentOrientation());
+		new UiNotifyDlg(parent, title, contents, buttons, UiLanguageDirection.getComponentOrientation());
 	}
 
 	public static boolean confirmDlg(UiBasicLocalization localization, JFrame parent, String baseTag)
@@ -92,7 +92,7 @@ public class UiUtilities
 		String no = localization.getButtonLabel("no");
 		String[] buttons = {yes, no};
 
-		return confirmDlg(parent, title, contents, buttons, tokenReplacement, localization.getComponentOrientation());
+		return confirmDlg(parent, title, contents, buttons, tokenReplacement, UiLanguageDirection.getComponentOrientation());
 	}
 
 	public static boolean confirmDlg(JFrame parent, String title, String[] contents, String[] buttons, ComponentOrientation orientation) 
