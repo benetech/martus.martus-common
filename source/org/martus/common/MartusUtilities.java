@@ -613,57 +613,38 @@ public class MartusUtilities
 		return hex.substring(1);
 	}
 	
-	public static Vector loadBannedClients(File bannedClientsFile)
+	public static Vector loadClientListAndExitOnError(File clientFile)
 	{
-		Vector clientsBanned = new Vector();
-		if(!bannedClientsFile.exists())
-			return clientsBanned;
 		try
 		{
-			clientsBanned = MartusUtilities.loadListFromFile(bannedClientsFile);
+			return LoadList(clientFile);
 		}
-		catch (IOException e)
+		catch(IOException e)
 		{
 			e.printStackTrace();
 			System.exit(12);
+			return new Vector();
 		}
-		return clientsBanned;
 	}
 	
-	public static Vector loadCanUploadFile(File canUploadFile)
+	public static Vector loadClientList(File clientFile)
 	{
-		Vector canUploadFiles = new Vector();
-		if (!canUploadFile.exists())
-			return canUploadFiles;
 		try
 		{
-			canUploadFiles = MartusUtilities.loadListFromFile(canUploadFile);
+			return LoadList(clientFile);
 		}
-		catch (IOException e)
+		catch(IOException e)
 		{
 			e.printStackTrace();
+			return new Vector();
 		}
-		
-		return canUploadFiles;
 	}	
 	
-	public static Vector loadClientsNotAmplified(File clientsNotToBeAmplifiedFile)
+	private static Vector LoadList(File clientFile) throws IOException
 	{
-		Vector clientsNotAmplified = new Vector();
-		if(!clientsNotToBeAmplifiedFile.exists())
-			return clientsNotAmplified;
-			
-		try
-		{
-			clientsNotAmplified = MartusUtilities.loadListFromFile(clientsNotToBeAmplifiedFile);
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-			System.exit(12);
-		}
-		
-		return clientsNotAmplified;
+		if (!clientFile.exists())
+			return new Vector();
+		return MartusUtilities.loadListFromFile(clientFile);
 	}
 
 	public static BulletinHeaderPacket extractHeaderPacket(String authorAccountId, ZipFile zip, MartusCrypto security) throws InvalidPacketException, IOException, SignatureVerificationException, WrongAccountException, DecryptionException
