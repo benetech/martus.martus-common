@@ -4,5 +4,10 @@
     <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
     <classpathentry kind="src" path="/martus-utils"/>
     <classpathentry kind="src" path="/martus-hrdag"/>
+    <classpathentry kind="var" path="jsse"/>
+    <classpathentry kind="var" path="javajce"/>
+    <classpathentry kind="var" path="InfiniteMonkeys"/>
+    <classpathentry kind="var" path="bccrypto"/>
+    <classpathentry kind="var" path="junit"/>
     <classpathentry kind="output" path="bin"/>
 </classpath>
