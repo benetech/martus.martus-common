@@ -52,7 +52,6 @@ import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.Database.RecordHiddenException;
-import org.martus.common.network.NetworkInterfaceConstants;
 import org.martus.common.network.SimpleX509TrustManager;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.UniversalId;
@@ -284,14 +283,6 @@ public class MartusUtilities
 		{
 			writer.close();
 		}
-	}
-
-	public static Vector getRetrieveBulletinSummaryTags()
-	{
-		Vector tags = new Vector();
-		tags.add(NetworkInterfaceConstants.TAG_BULLETIN_SIZE);
-		tags.add(NetworkInterfaceConstants.TAG_BULLETIN_DATE_SAVED);
-		return tags;
 	}
 
 	public static int getBulletinSize(Database db, BulletinHeaderPacket bhp)

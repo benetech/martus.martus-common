@@ -30,8 +30,10 @@ package org.martus.common;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Vector;
 
 import org.martus.common.bulletin.Bulletin;
+import org.martus.common.network.NetworkInterfaceConstants;
 import org.martus.common.packet.FieldDataPacket;
 
 public class BulletinSummary
@@ -112,6 +114,14 @@ public class BulletinSummary
 	public FieldDataPacket getFieldDataPacket()
 	{
 		return fdp;
+	}
+
+	public static Vector getNormalRetrieveTags()
+	{
+		Vector tags = new Vector();
+		tags.add(NetworkInterfaceConstants.TAG_BULLETIN_SIZE);
+		tags.add(NetworkInterfaceConstants.TAG_BULLETIN_DATE_SAVED);
+		return tags;
 	}
 
 	private FieldDataPacket fdp;
