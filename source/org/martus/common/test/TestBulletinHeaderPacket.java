@@ -294,13 +294,15 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
 		loaded.loadFromXml(in, security);
 
+		assertEquals("account", bhp.getAccountId(), loaded.getAccountId());
+		assertEquals("local id", bhp.getLocalId(), loaded.getLocalId());
 		assertEquals("time", bhp.getLastSavedTime(), loaded.getLastSavedTime());
 		assertEquals("id", bhp.getLocalId(), loaded.getLocalId());
 		assertEquals("data id", bhp.getFieldDataPacketId(), loaded.getFieldDataPacketId());
 		assertEquals("private id", bhp.getPrivateFieldDataPacketId(), loaded.getPrivateFieldDataPacketId());
 		assertEquals("status", sampleStatus, loaded.getStatus());
-		assertEquals("data sig", true, Arrays.equals(sampleSig1, bhp.getFieldDataSignature()));
-		assertEquals("private data sig", true, Arrays.equals(sampleSig2, bhp.getPrivateFieldDataSignature()));
+		assertEquals("data sig", true, Arrays.equals(sampleSig1, loaded.getFieldDataSignature()));
+		assertEquals("private data sig", true, Arrays.equals(sampleSig2, loaded.getPrivateFieldDataSignature()));
 		assertEquals("hqKey", "", loaded.getHQPublicKey());
 
 		String[] list = loaded.getPublicAttachmentIds();
