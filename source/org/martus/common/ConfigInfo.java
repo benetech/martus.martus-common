@@ -36,9 +36,6 @@ import java.util.Vector;
 
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
-import org.martus.common.network.NetworkInterfaceConstants;
-import org.martus.util.Base64;
-import org.martus.util.Base64.InvalidBase64Exception;
 
 public class ConfigInfo implements Serializable
 {
@@ -130,49 +127,9 @@ public class ConfigInfo implements Serializable
 		String signature = signer.createSignatureOfVectorOfStrings(contactInfo);
 		contactInfo.add(signature);
 		
-		return encodeContactInfoVector(contactInfo);
+		return ContactInfo.encodeContactInfoVector(contactInfo);
 	}
 	
-	public static Vector encodeContactInfoVector(Vector unencodedContactInfo) throws UnsupportedEncodingException
-	{
-		Vector encoded = new Vector();
-		encoded.add(NetworkInterfaceConstants.BASE_64_ENCODED);
-		encoded.add(unencodedContactInfo.get(0));
-		encoded.add(unencodedContactInfo.get(1));
-		int start = 2;
-		int i = start;
-		int stringsToEncode = ((Integer)(unencodedContactInfo.get(1))).intValue();
-		for(; i < start + stringsToEncode ; ++i)
-			encoded.add(Base64.encode((String)unencodedContactInfo.get(i)));
-		encoded.add(unencodedContactInfo.get(i));
-		return encoded;
-	}
-
-	private static boolean isEncoded(Vector possiblyEncodedContactInfo)
-	{
-		return possiblyEncodedContactInfo.get(0).equals(NetworkInterfaceConstants.BASE_64_ENCODED);
-	}
-	
-	static public Vector decodeContactInfoVectorIfNecessary(Vector possiblyEncodedContactInfo) throws UnsupportedEncodingException, InvalidBase64Exception
-	{
-		if (!isEncoded(possiblyEncodedContactInfo))
-			return possiblyEncodedContactInfo;
-		Vector decodedContactInfo = new Vector();
-		decodedContactInfo.add(possiblyEncodedContactInfo.get(1));
-		decodedContactInfo.add(possiblyEncodedContactInfo.get(2));
-		int start = 3;
-		int i = start;
-		int stringsToDecode = ((Integer)(possiblyEncodedContactInfo.get(2))).intValue();
-		for(; i < start + stringsToDecode ; ++i)
-		{	
-			String encodedData = (String)possiblyEncodedContactInfo.get(i);
-			decodedContactInfo.add(new String(Base64.decode(encodedData),"UTF-8"));
-		}
-		decodedContactInfo.add(possiblyEncodedContactInfo.get(i));
-		return decodedContactInfo;
-		
-	}
-
 	public static ConfigInfo load(InputStream inputStream)
 	{
 		ConfigInfo loaded =  new ConfigInfo();
