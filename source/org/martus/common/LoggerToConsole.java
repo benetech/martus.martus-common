@@ -51,6 +51,26 @@ public class LoggerToConsole implements LoggerInterface
 		System.out.println(logEntry);
 	}
 
+	public void logERROR(String message)
+	{
+		log("ERROR " + message);
+	}
+	
+	public void logInfo(String message)
+	{
+		log("Info " + message);
+		
+	}
+	public void logNotice(String message)
+	{
+		log("Notice " + message);
+		
+	}
+	public void logVerbose(String message)
+	{
+		log("Verbose " + message);
+	}
+
 	static public String getCurrentClientAddress()
 	{
 		Thread currThread = Thread.currentThread();

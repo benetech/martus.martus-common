@@ -32,7 +32,7 @@ import java.util.Vector;
 import java.util.zip.ZipFile;
 
 import org.martus.common.BulletinStore;
-import org.martus.common.LoggerForTesting;
+import org.martus.common.LoggerToNull;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinLoader;
 import org.martus.common.bulletin.BulletinZipUtilities;
@@ -122,7 +122,7 @@ public class TestBulletinStore extends TestCaseEnhanced
 
     	Vector toHide = new Vector();
     	toHide.add(one.getUniversalId());
-    	store.hidePackets(toHide, new LoggerForTesting());
+    	store.hidePackets(toHide, new LoggerToNull());
     	assertEquals("didn't hide?", 0, store.scanForLeafKeys().size());
     	
     	store.saveBulletinForTesting(clone);

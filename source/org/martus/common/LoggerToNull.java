@@ -27,14 +27,12 @@ Boston, MA 02111-1307, USA.
 package org.martus.common;
 
 
-public class LoggerForTesting implements LoggerInterface
+public class LoggerToNull implements LoggerInterface
 {
-	public LoggerForTesting()
-	{
-	}
-
-	public void log(String message)
-	{
-	}
-
+	public LoggerToNull(){}
+	public void log(String message){}
+	public void logERROR(String message){}
+	public void logInfo(String message){}
+	public void logNotice(String message){}
+	public void logVerbose(String message){}
 }
