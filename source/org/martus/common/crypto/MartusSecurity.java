@@ -469,6 +469,7 @@ public class MartusSecurity extends MartusCryptoImplementation
 		}
 		catch(Exception e)
 		{
+			//e.printStackTrace();
 			//System.out.println("MartusSecurity.createCipherOutputStream: " + e);
 			throw new EncryptionException();
 		}
@@ -485,6 +486,7 @@ public class MartusSecurity extends MartusCryptoImplementation
 		}
 		catch (Exception e)
 		{
+			//e.printStackTrace();
 			//System.out.println("MartusSecurity.encryptSessionKey: " + e);
 			throw new EncryptionException();
 		}
