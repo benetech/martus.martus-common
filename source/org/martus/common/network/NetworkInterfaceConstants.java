@@ -49,6 +49,7 @@ public interface NetworkInterfaceConstants
 
 	public static final String UNKNOWN_COMMAND = "unknown command";
 	public static final String NOT_AUTHORIZED = "not authorized";
+	public static final String UNKNOW = "unknown";
 
 	public static final int MAX_CHUNK_SIZE = 100 * 1024;
 	public static final String BASE_64_ENCODED = "Base64Encoded";
