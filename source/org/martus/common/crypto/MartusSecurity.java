@@ -1046,6 +1046,8 @@ public class MartusSecurity extends MartusCryptoImplementation
 	
 	static public String getKeyString(Key key)
 	{
+		if(key == null)
+			return null;
 		return Base64.encode(key.getEncoded());
 	}
 	

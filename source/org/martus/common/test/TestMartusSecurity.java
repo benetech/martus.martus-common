@@ -297,16 +297,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		assertNull("no key should return null key", securityWithoutKeyPair.getPublicKey());
 		assertNotNull("Key returned NULL?", security.getPublicKey());
 
-		try
-		{
-			securityWithoutKeyPair.getPublicKeyString();
-			fail("Should have thrown null exception");
-		}
-		catch(NullPointerException e)
-		{
-			//expected exception
-		}
-
+		assertNull("Should be null", securityWithoutKeyPair.getPublicKeyString());
 		String publicKeyString = security.getPublicKeyString();
 		assertNotNull("no key string?", security.getPublicKeyString());
 		PublicKey publicKey = MartusSecurity.extractPublicKey(publicKeyString);
