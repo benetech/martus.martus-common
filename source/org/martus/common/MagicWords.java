@@ -31,13 +31,14 @@ import java.io.IOException;
 import java.util.Vector;
 
 import org.martus.util.UnicodeReader;
+import org.martus.util.UnicodeWriter;
 
 public class MagicWords
 {
 	public MagicWords(LoggerInterface currentLogger)
 	{
 		logger = currentLogger;
-		magicWordEntries = new Vector();
+		magicWordEntries = new Vector();		
 	}
 	
 	public void loadMagicWords(File magicWordsFile) throws IOException
@@ -61,10 +62,33 @@ public class MagicWords
 		}
 	}
 	
-	public void add(String magicWordFileEntry)
+	public void remove(String magicWordEntry)
+	{		
+		for(int i = 0; i<magicWordEntries.size(); ++i)
+		{
+			MagicWordEntry entry = (MagicWordEntry)magicWordEntries.get(i);
+			if(entry.getMagicWord().equals(normalizeMagicWord(magicWordEntry)))
+				magicWordEntries.remove(entry);
+		}
+	}
+	
+	public static String filterActiveSign(String magicWord)
 	{
-		if(!contains(getMagicWordFromFileEntry(magicWordFileEntry)))
-			magicWordEntries.add(new MagicWordEntry(magicWordFileEntry));
+		String word =null;
+		if (magicWord.startsWith("#"))
+			word = magicWord.replace('#', '\0').trim();
+		return word;
+	}
+	
+	public void add(String magicWordFileEntry)
+	{						
+		add(new MagicWordEntry(magicWordFileEntry));				
+	}
+	
+	public void add(MagicWordEntry wordEntry)
+	{
+		if(!contains(getMagicWordFromFileEntry(wordEntry.getMagicWord())))			
+			magicWordEntries.add(wordEntry);
 	}
 	
 	public boolean isValidMagicWord(String tryMagicWord)
@@ -77,10 +101,61 @@ public class MagicWords
 		for(int i = 0; i<magicWordEntries.size(); ++i)
 		{
 			MagicWordEntry entry = (MagicWordEntry)magicWordEntries.get(i);
-			if(entry.getMagicWord().equals(magicWordToFind))
+			if(entry.getMagicWord().equals(magicWordToFind) && entry.isActive())
 				return true;
 		}
 		return false;
+	}
+	
+	public Vector getAllMagicWords()
+	{
+		Vector magicWords = new Vector();		
+		for(int i = 0; i<magicWordEntries.size(); ++i)
+		{
+			MagicWordEntry entry = (MagicWordEntry)magicWordEntries.get(i);	
+			magicWords.add(entry.getMagicWordWithActiveSign());
+		}
+		return magicWords;		
+	}
+	
+	public Vector getActiveMagicWords()
+	{
+		Vector magicWords = new Vector();		
+		for(int i = 0; i<magicWordEntries.size(); ++i)
+		{
+			MagicWordEntry entry = (MagicWordEntry)magicWordEntries.get(i);
+			if(entry.isActive())
+				magicWords.add(entry.getMagicWord());
+		}
+		return magicWords;
+	}
+	
+	public Vector getInActiveMagicWords()
+	{
+		Vector magicWords = new Vector();		
+		for(int i = 0; i<magicWordEntries.size(); ++i)
+		{
+			MagicWordEntry entry = (MagicWordEntry)magicWordEntries.get(i);
+			if(!entry.isActive())
+				magicWords.add(entry.getMagicWord());
+		}
+		return magicWords;
+	}
+	
+	public void writeMagicWords(File magicWordsFile, Vector newMagicWords) throws IOException
+	{		
+		try
+		{
+			UnicodeWriter writer = new UnicodeWriter(magicWordsFile);
+			for (int i=0;i<newMagicWords.size();++i)
+			{
+				writer.writeln((String) newMagicWords.get(i));
+			}								
+			writer.close();			
+		}
+		catch (FileNotFoundException nothingToWorryAbout)
+		{			
+		}				
 	}
 	
 	public int size()
@@ -96,30 +171,8 @@ public class MagicWords
 	public String getMagicWordFromFileEntry(String magicWordEntry)
 	{
 		return magicWordEntry;
-	}
-	
-	class MagicWordEntry
-	{
-		public MagicWordEntry(String magicWordEntry)
-		{
-			magicWord = getMagicWordFromFileEntry(magicWordEntry);
-			groupName = null;
-		}
+	}	
 		
-		public String getMagicWord()
-		{
-			return magicWord;
-		}
-		
-		public String getGroupName()
-		{
-			return groupName;
-		}
-		
-		String magicWord;
-		String groupName;
-	}
-	
 	Vector magicWordEntries; 
 	LoggerInterface logger;
 }
