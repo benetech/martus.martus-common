@@ -33,6 +33,7 @@ import java.io.StringReader;
 import org.martus.common.FieldSpec;
 import org.martus.common.GridData;
 import org.martus.common.GridFieldSpec;
+import org.martus.common.HQKeys;
 import org.martus.common.MartusUtilities;
 import org.martus.common.MiniLocalization;
 import org.martus.common.StandardFieldSpecs;
@@ -41,6 +42,7 @@ import org.martus.common.database.ReadableDatabase;
 import org.martus.common.database.Database.RecordHiddenException;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.UniversalId;
+import org.martus.util.Base64.InvalidBase64Exception;
 import org.martus.util.language.LanguageOptions;
 
 public class BulletinHtmlGenerator
@@ -103,7 +105,7 @@ public class BulletinHtmlGenerator
 			html.append(getSectionHtmlString(b.getPrivateFieldDataPacket()));
 			html.append(getAttachmentsHtmlString(b.getPrivateAttachments(), database));
 		}
-		
+		appendHQs(html, b);
 		appendTailHtml(html, b);
 		return html.toString();
 	}
@@ -131,6 +133,38 @@ public class BulletinHtmlGenerator
 		html.append("</table>");
 		html.append("</html>");
 	}
+	
+	private void appendHQs(StringBuffer html, Bulletin b )
+	{
+		appendTitleOfSection(html, localization.getFieldLabel("HQSummaryLabel"));
+
+		HQKeys keys = b.getAuthorizedToReadKeys();
+		int size = keys.size();
+		if(size==0)
+		{
+			html.append(getFieldHtmlString("",localization.getFieldLabel("NoHQsConfigured")));
+			return;
+		}
+
+		for(int i = 0; i < size; ++i)
+		{
+			String label = keys.get(i).getLabel();
+			if(label.length() == 0)
+			{
+				try 
+				{
+					label = keys.get(i).getPublicCode();
+				} 
+				catch (InvalidBase64Exception e) 
+				{
+					e.printStackTrace();
+				}
+			}
+			html.append(getHtmlEscapedFieldHtmlString("",label));
+			html.append("<p></p>");
+		}
+	}
+	
 
 	public String getSectionHtmlString(FieldDataPacket fdp)
 	{

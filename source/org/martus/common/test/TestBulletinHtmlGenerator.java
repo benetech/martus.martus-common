@@ -120,6 +120,9 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 			"</td></tr>\n"+
 			"<tr><td width='15%' align='right' valign='top'>Private</td><td valign='top'><p></p></td></tr>\n"+
 			"<tr><td width='15%' align='right' valign='top'>Attachments</td><td valign='top'></td></tr>\n"+
+			"<tr><td colspan='2'><tr><td width='15%' align='right' valign='top'><u><b>Headquarters</b></u></td><td valign='top'></td></tr>\n"+
+			"</td></tr>\n"+
+			"<tr><td width='15%' align='right' valign='top'></td><td valign='top'>No Headquarter accounts currently configured</td></tr>\n"+
 			"<tr></tr><tr><td width='15%' align='right' valign='top'>Bulletin Id:</td><td valign='top'>"+b.getLocalId()+"</td></tr>\n"+
 			"</table></html>";
 		assertEquals("Entire Bulletin's HTML not correct", expectedHtml, generator.getHtmlString(b, store.getDatabase(), true, true));
@@ -156,6 +159,9 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 		"<tr><td width='15%' align='right' valign='top'>Summary</td><td valign='top'><p></p></td></tr>\n"+
 		"<tr><td width='15%' align='right' valign='top'>Details</td><td valign='top'><p></p></td></tr>\n"+
 		"<tr><td width='15%' align='right' valign='top'>Attachments</td><td valign='top'></td></tr>\n"+
+		"<tr><td colspan='2'><tr><td width='15%' align='right' valign='top'><u><b>Headquarters</b></u></td><td valign='top'></td></tr>\n"+
+		"</td></tr>\n"+
+		"<tr><td width='15%' align='right' valign='top'></td><td valign='top'>No Headquarter accounts currently configured</td></tr>\n"+
 		"<tr></tr><tr><td width='15%' align='right' valign='top'>Bulletin Id:</td><td valign='top'>"+b.getLocalId()+"</td></tr>\n"+
 		"</table></html>";
 		assertEquals("Entire Bulletin's HTML not correct", expectedHtml, generator.getHtmlString(b, store.getDatabase(), false, false));

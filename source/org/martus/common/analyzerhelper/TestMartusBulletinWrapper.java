@@ -203,7 +203,7 @@ public class TestMartusBulletinWrapper extends TestCaseEnhanced
 		
 		bulletin.setSealed();
 		
-		HQKey key = new HQKey(security.getPublicKeyString());
+		HQKey key = new HQKey(security.getPublicKeyString(), "My HQ");
 		HQKeys keys = new HQKeys(key);
 		bulletin.setAuthorizedToReadKeys(keys);
 		
@@ -243,7 +243,10 @@ public class TestMartusBulletinWrapper extends TestCaseEnhanced
 				"</td></tr>\n"+
 				"<tr><td width='15%' align='right' valign='top'>Private</td><td valign='top'><p>"+privateData+"</p><p></p></td></tr>\n"+
 				"<tr><td width='15%' align='right' valign='top'>Attachments</td><td valign='top'><p>"+tempFile3.getName()+"    ( 1 Kb )</p></td></tr>\n"+
-				"<tr></tr><tr><td width='15%' align='right' valign='top'>Bulletin Id:</td><td valign='top'>"+bulletin.getLocalId()+"</td></tr>\n"+
+				"<tr><td colspan='2'><tr><td width='15%' align='right' valign='top'><u><b>Headquarters</b></u></td><td valign='top'></td></tr>\n"+
+				"</td></tr>\n"+
+				"<tr><td width='15%' align='right' valign='top'></td><td valign='top'>"+key.getPublicCode()+"</td></tr>\n"+
+				"<p></p><tr></tr><tr><td width='15%' align='right' valign='top'>Bulletin Id:</td><td valign='top'>"+bulletin.getLocalId()+"</td></tr>\n"+
 				"</table></html>";				
 	
 		assertEquals("Html not the same?", expectedHtmlResult, bulletinWrapper.getHTML());

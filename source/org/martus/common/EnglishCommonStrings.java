@@ -104,6 +104,9 @@ public class EnglishCommonStrings
 		"field:privateinfo=Private",
 		"field:summary=Summary",
 		"field:attachments=Attachments",
+		"field:HQSummaryLabel=Headquarters",
+		"field:HQNotConfigured=(not currently configured)",
+		"field:NoHQsConfigured=No Headquarter accounts currently configured",
 
 		"button:yes=Yes",
 		"button:no=No",
