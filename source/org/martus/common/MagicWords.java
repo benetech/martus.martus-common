@@ -147,7 +147,7 @@ public class MagicWords
 		return (getMagicWordEntry(magicWordToFind) != null);
 	}
 
-	private MagicWordEntry getMagicWordEntry(String magicWordToFind)
+	public MagicWordEntry getMagicWordEntry(String magicWordToFind)
 	{
 		String normalizedMagicWordToFind = normalizeMagicWord(magicWordToFind);
 		for(int i = 0; i<magicWordEntries.size(); ++i)
