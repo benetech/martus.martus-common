@@ -64,11 +64,16 @@ public class SimpleX509TrustManager implements X509TrustManager
 		X509Certificate cert0 = chain[0];
 		X509Certificate cert1 = chain[1];
 		X509Certificate cert2 = chain[2];
+		int failedCert = 0;
 		try
 		{
+			failedCert = 0;
 			cert0.verify(cert0.getPublicKey());
+			failedCert = 1;
 			cert1.verify(cert2.getPublicKey());
+			failedCert = 2;
 			cert2.verify(cert2.getPublicKey());
+			failedCert = -1;
 
 			PublicKey tryPublicKey = expectedPublicKey;
 			if(tryPublicKey == null)
@@ -92,6 +97,18 @@ public class SimpleX509TrustManager implements X509TrustManager
 		catch (SignatureException e)
 		{
 			e.printStackTrace();
+			System.out.println("Failed cert: " + failedCert);
+			String key0 = MartusSecurity.getKeyString(cert0.getPublicKey());
+			String key1 = MartusSecurity.getKeyString(cert1.getPublicKey());
+			String key2 = MartusSecurity.getKeyString(cert2.getPublicKey());
+			System.out.println("Cert0 public: " + key0);
+			if(!key0.equals(key1))
+				System.out.println("Cert1 public: " + key1);
+			System.out.println("Cert2 public: " + key2);
+			System.out.println("Cert2 public code: " + MartusCrypto.formatAccountIdForLog(key2));
+			String expectedKeyString = MartusSecurity.getKeyString(expectedPublicKey);
+			System.out.println("Expected public code: " + MartusCrypto.formatAccountIdForLog(expectedKeyString));
+
 			throw new CertificateException(e.toString());
 		}
 		catch (Exception e)
