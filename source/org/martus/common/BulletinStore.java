@@ -262,11 +262,11 @@ public class BulletinStore
 		}
 	}
 
-	public void deleteBulletinRevision(UniversalId uidOfAncestor) throws IOException, CryptoException, InvalidPacketException, WrongPacketTypeException, SignatureVerificationException, DecryptionException, UnsupportedEncodingException, NoKeyPairException
+	public void deleteBulletinRevision(UniversalId uidToDelete) throws IOException, CryptoException, InvalidPacketException, WrongPacketTypeException, SignatureVerificationException, DecryptionException, UnsupportedEncodingException, NoKeyPairException
 	{
-		DatabaseKey key = DatabaseKey.createSealedKey(uidOfAncestor);
-		BulletinHeaderPacket bhpOfAncestor = loadBulletinHeaderPacket(getDatabase(), key, getSignatureVerifier());
-		deleteBulletinRevisionFromDatabase(bhpOfAncestor, getDatabase(), getSignatureVerifier());
+		DatabaseKey key = DatabaseKey.createSealedKey(uidToDelete);
+		BulletinHeaderPacket bhp = loadBulletinHeaderPacket(getDatabase(), key, getSignatureVerifier());
+		deleteBulletinRevisionFromDatabase(bhp, getDatabase(), getSignatureVerifier());
 	}
 
 	public static void deleteBulletinRevisionFromDatabase(BulletinHeaderPacket bhp, Database db, MartusCrypto crypto)
