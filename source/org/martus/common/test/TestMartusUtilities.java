@@ -85,6 +85,36 @@ public class TestMartusUtilities extends TestCaseEnhanced
 		}
     }
 
+
+	public void testToFileName()
+	{
+		String alphaNumeric		= "123abcABC";
+		String alphaSpaces		= "abc def";
+		String alphaPunctIn		= "a.b";
+		String alphaPunctOut	= "a b";
+		String trailingPunctIn	= "abc!";
+		String trailingPunctOut	= "abc";
+		String leadingPunctIn	= "?abc";
+		String leadingPunctOut	= "abc";
+		String punctuation1		= "`-=[]\\;',./";
+		String punctuation2		= "~!@#%^&*()_+";
+		String punctuation3		= "{}|:\"<>?";
+		String tooLong			= "abcdefghijklmnopqrstuvwxyz";
+		String tooShort			= "ab";
+		String minimumLength	= "abc";
+		assertEquals(alphaNumeric, MartusUtilities.toFileName(alphaNumeric));
+		assertEquals(alphaSpaces, MartusUtilities.toFileName(alphaSpaces));
+		assertEquals(alphaPunctOut, MartusUtilities.toFileName(alphaPunctIn));
+		assertEquals(trailingPunctOut, MartusUtilities.toFileName(trailingPunctIn));
+		assertEquals(leadingPunctOut, MartusUtilities.toFileName(leadingPunctIn));
+		assertEquals("Martus-", MartusUtilities.toFileName(punctuation1));
+		assertEquals("Martus-", MartusUtilities.toFileName(punctuation2));
+		assertEquals("Martus-", MartusUtilities.toFileName(punctuation3));
+		assertEquals(tooLong.substring(0, 20), MartusUtilities.toFileName(tooLong));
+		assertEquals("Martus-" + tooShort, MartusUtilities.toFileName(tooShort));
+		assertEquals(minimumLength, MartusUtilities.toFileName(minimumLength));
+	}
+	
 	// TODO: create tests for all the MartusUtilities methods
 	public void testExportServerPublicKey() throws Exception
 	{
