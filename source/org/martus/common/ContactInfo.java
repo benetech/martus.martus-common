@@ -152,7 +152,7 @@ public class ContactInfo implements Serializable
 		return possiblyEncodedContactInfo.get(0).equals(BASE_64_ENCODED);
 	}
 	
-	static public Vector decodeContactInfoVectorIfNecessary(Vector possiblyEncodedContactInfo) throws InvalidBase64Exception
+	static public Vector decodeContactInfoVectorIfNecessary(Vector possiblyEncodedContactInfo) throws UnsupportedEncodingException, InvalidBase64Exception
 	{
 		if (!isEncoded(possiblyEncodedContactInfo))
 			return possiblyEncodedContactInfo;
@@ -165,7 +165,7 @@ public class ContactInfo implements Serializable
 		for(; i < start + stringsToDecode ; ++i)
 		{	
 			String encodedData = (String)possiblyEncodedContactInfo.get(i);
-			decodedContactInfo.add(new String(Base64.decode(encodedData)));
+			decodedContactInfo.add(new String(Base64.decode(encodedData),"UTF-8"));
 		}
 		decodedContactInfo.add(possiblyEncodedContactInfo.get(i));
 		return decodedContactInfo;
