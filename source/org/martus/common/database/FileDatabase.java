@@ -263,7 +263,7 @@ abstract public class FileDatabase extends Database
 
 			public void visit(String accountString)
 			{
-				visitAllNonHiddenRecordsForAccount(packetVisitor, accountString);
+				visitAllRecordsForAccount(packetVisitor, accountString);
 			}
 			PacketVisitor packetVisitor;
 		}
@@ -389,21 +389,7 @@ abstract public class FileDatabase extends Database
 		}
 	}
 
-	public void visitAllNonHiddenRecordsForAccount(PacketVisitor visitor, String accountString)
-	{
-		boolean includeNonhiddenRecords = true;
-		boolean includeHiddenRecords = false;
-		visitAllRecordsForAccount(visitor, accountString, includeNonhiddenRecords, includeHiddenRecords);
-	}
-
-	public void visitAllHiddenRecordsForAccount(PacketVisitor visitor, String accountString)
-	{
-		boolean includeNonhiddenRecords = false;
-		boolean includeHiddenRecords = true;
-		visitAllRecordsForAccount(visitor, accountString, includeNonhiddenRecords, includeHiddenRecords);
-	}
-
-	private void visitAllRecordsForAccount(PacketVisitor visitor, String accountString, boolean includeNonhiddenRecords, boolean includeHiddenRecords)
+	public void visitAllRecordsForAccount(PacketVisitor visitor, String accountString)
 	{
 		File accountDir = null;
 		try
@@ -435,9 +421,7 @@ abstract public class FileDatabase extends Database
 					for(int i=0; i < files.length; ++i)
 					{
 						UniversalId uid = UniversalId.createFromAccountAndLocalId(accountString, files[i]);
-						if(includeNonhiddenRecords && isHidden(uid))
-							continue;
-						if(includeHiddenRecords && !isHidden(uid))
+						if(isHidden(uid))
 							continue;
 						if(uid.getLocalId().startsWith("BUR-"))
 							continue;
@@ -656,7 +640,7 @@ abstract public class FileDatabase extends Database
 		}
 
 		PacketDeleter deleter = new PacketDeleter();
-		visitAllNonHiddenRecordsForAccount(deleter, getAccountString(accountDir));
+		visitAllRecordsForAccount(deleter, getAccountString(accountDir));
 
 		accountDir.delete();
 	}

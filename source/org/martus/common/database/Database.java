@@ -80,7 +80,7 @@ abstract public class Database
 	abstract public int getRecordSize(DatabaseKey key) throws IOException, RecordHiddenException;
 	abstract public void visitAllRecords(PacketVisitor visitor);
 	abstract public void visitAllAccounts(AccountVisitor visitor);
-	abstract public void visitAllNonHiddenRecordsForAccount(PacketVisitor visitor, String accountString);
+	abstract public void visitAllRecordsForAccount(PacketVisitor visitor, String accountString);
 	abstract public File getIncomingInterimFile(DatabaseKey key) throws IOException, RecordHiddenException;
 	abstract public File getOutgoingInterimFile(DatabaseKey key) throws IOException, RecordHiddenException;
 	abstract public File getOutgoingInterimPublicOnlyFile(DatabaseKey key) throws IOException, RecordHiddenException;

@@ -242,7 +242,7 @@ abstract public class MockDatabase extends Database
 		}
 	}
 
-	public void visitAllNonHiddenRecordsForAccount(PacketVisitor visitor, String accountString)
+	public void visitAllRecordsForAccount(PacketVisitor visitor, String accountString)
 	{
 		class FilterByAccount implements PacketVisitor
 		{
