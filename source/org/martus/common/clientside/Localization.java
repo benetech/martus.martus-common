@@ -40,7 +40,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
-
+import java.util.Vector;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.util.UnicodeReader;
@@ -51,6 +51,7 @@ public class Localization
 	{
 		directory = directoryToUse;
 		textResources = new TreeMap();
+		rightToLeftLanguages = new Vector();
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -99,13 +100,19 @@ public class Localization
 	{
 		if(mtfEntryText == null)
 			return;
+		
+		if(mtfEntryText.equals(MTF_RIGHT_TO_LEFT_LANGUAGE_FLAG))
+		{
+			addRightToLeftLanguage(languageCode);
+			return;
+		}
 			
 		if(mtfEntryText.startsWith("#"))
 			return;
 		
 		if(mtfEntryText.indexOf('=') < 0)
 			return;
-	
+		
 		String key = extractKeyFromMtfEntry(mtfEntryText);
 		Map availableTranslations = getAvailableTranslations(key);
 		if(availableTranslations == null)
@@ -269,15 +276,15 @@ public class Localization
 	
 	public boolean isRightToLeftLanguage()
 	{
-		for(int i = 0 ; i < RIGHT_TO_LEFT_LANGUAGES.length; ++i)
-		{
-			if(RIGHT_TO_LEFT_LANGUAGES[i].equals(currentLanguageCode))
-				return true;
-		}
-//TODO return false for 2.x release
-return languageDirectionRightToLeft;
+		return rightToLeftLanguages.contains(currentLanguageCode);
 	}
-
+	
+	public void addRightToLeftLanguage(String languageCode)
+	{
+		if(rightToLeftLanguages.contains(languageCode))
+			return;
+		rightToLeftLanguages.add(languageCode);
+	}
 
 	/////////////////////////////////////////////////////////////////
 	// Date-oriented stuff
@@ -355,11 +362,11 @@ return languageDirectionRightToLeft;
 	public Map textResources;
 	public String currentLanguageCode;
 	public String currentDateFormat;
-	public boolean languageDirectionRightToLeft;
 
 	public static final String UNUSED_TAG = "";
 	public static final String MARTUS_LANGUAGE_FILE_PREFIX = "Martus-";
 	public static final String MARTUS_LANGUAGE_FILE_SUFFIX = ".mtf";
+	public static final String MTF_RIGHT_TO_LEFT_LANGUAGE_FLAG = "!right-to-left";
 	
 	public static final int HASH_LENGTH = 4;
 	
@@ -375,7 +382,5 @@ return languageDirectionRightToLeft;
 				"az", "bn", "km","my","zh", "nl", "eo", "fa", FRENCH, "de","gu","ha","he","hi","hu",
 				"it", "ja","jv","kn","kk","ky","ko","ml","mr","ne","or","pa","ps","pl","pt","ro",RUSSIAN,"sr",
 				"sr", "sd","si",SPANISH,"ta","tg","te",THAI,"tr","tk","uk","ur","uz","vi"};
-	
-	public static final String[] RIGHT_TO_LEFT_LANGUAGES = {
-			ARABIC};
+	public Vector rightToLeftLanguages;
 }
