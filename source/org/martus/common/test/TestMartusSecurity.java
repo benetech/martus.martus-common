@@ -35,6 +35,7 @@ import java.security.PublicKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
+import java.util.Vector;
 
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusSecurity;
@@ -553,6 +554,19 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		assertEquals("Invalid Length?", 24, token1.length());
 		String token2 = security.createRandomToken();
 		assertNotEquals("Same token?", token1, token2);
+	}
+	
+	public void testSigningVectorsOfVectors() throws Exception
+	{
+		String stringWithNewlines = "abc\n\ndef\n";
+		byte[] bytesWithNewlines = stringWithNewlines.getBytes("UTF-8");
+		assertEquals(stringWithNewlines.length(), bytesWithNewlines.length);
+		
+		Vector strings = new Vector();
+		strings.add(stringWithNewlines);
+		strings.add(stringWithNewlines);
+		String vectorToString = strings.toString();
+		assertEquals("[" + stringWithNewlines + ", " + stringWithNewlines + "]", vectorToString);
 	}
 /*
 	public void testSignatures()
