@@ -31,11 +31,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.math.BigInteger;
 import java.util.Vector;
 
 import javax.net.ssl.KeyManager;
 
+import org.martus.common.MartusUtilities;
 import org.martus.util.Base64;
 import org.martus.util.InputStreamWithSeek;
 
@@ -162,8 +162,7 @@ public abstract class MartusCrypto
 		try
 		{
 			byte[] rawDigest = MartusSecurity.createDigestBytes(anyString);
-			BigInteger bigInt = new BigInteger(rawDigest);
-			return bigInt.abs().toString(16);
+			return MartusUtilities.byteArrayToHexString(rawDigest);
 		}
 		catch (Exception e)
 		{

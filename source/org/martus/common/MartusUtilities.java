@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -584,6 +585,17 @@ public class MartusUtilities
 		{
 			throw new IOException(e.getMessage());
 		}
+	}
+
+	public static String byteArrayToHexString(byte[] bytes)
+	{
+		int oldLength = bytes.length;
+		byte[] positiveBytes = new byte[oldLength+1];
+		System.arraycopy(bytes,0,positiveBytes,1,oldLength);
+		positiveBytes[0] = 1;
+		BigInteger bigInt = new BigInteger(positiveBytes);
+		String hex = bigInt.toString(16);
+		return hex.substring(1);
 	}
 
 	static final String PUBLIC_KEY_FILE_IDENTIFIER = "Martus Public Key:";
