@@ -26,6 +26,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.clientside;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -66,11 +67,7 @@ public class UiBasicSigninDlg extends JDialog
 		JButton cancel = new JButton(localization.getButtonLabel("cancel"));
 		cancel.addActionListener(new CancelHandler());
 		Box buttonBox = Box.createHorizontalBox();
-		JComponent languageComponent = getLanguageComponent();
-		buttonBox.add(languageComponent);
-		buttonBox.add(Box.createHorizontalGlue());
-		
-		JButton[] buttons = {ok, cancel};
+		Component[] buttons = {getLanguageComponent(), Box.createHorizontalGlue(), ok, cancel};
 		Utilities.addComponentsRespectingOrientation(buttonBox, buttons);
 
 		buttonBox.add(Box.createHorizontalGlue());
