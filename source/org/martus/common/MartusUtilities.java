@@ -37,6 +37,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.StringTokenizer;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -498,6 +499,30 @@ public class MartusUtilities
 	
 		Timer timer = new Timer(true);
 		timer.schedule(task, IMMEDIATELY, interval);
+	}
+
+	public static boolean isValidCharInFolder(char c)
+	{
+		if (Character.isLetterOrDigit(c))
+			return true;
+
+		if (c > 128)
+			return true;
+
+		return false;		
+	}
+
+	public static String removeExtraSpacesAtFirstPosition(String text)
+	{
+		if (!text.startsWith(" "))
+			return text.trim();
+
+		StringTokenizer st = new StringTokenizer(text);
+		if (st.hasMoreElements())
+		{
+			return st.nextToken().trim();
+		}
+		return text.trim();
 	}
 
 	static private boolean isCharOkInFileName(char c)
