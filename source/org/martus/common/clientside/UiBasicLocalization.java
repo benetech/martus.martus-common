@@ -36,6 +36,7 @@ import java.util.SortedSet;
 import java.util.Vector;
 
 import org.martus.common.VersionBuildDate;
+import org.martus.common.utilities.MartusFlexidate;
 import org.martus.util.UnicodeWriter;
 
 
@@ -316,6 +317,27 @@ public class UiBasicLocalization extends Localization
 			strings.add(mtfEntry);
 		}
 		return strings;
+	}
+
+	public String getViewableDateRange(String newText)
+	{
+		MartusFlexidate mfd = MartusFlexidate.createFromMartusDateString(newText);
+		
+		String rawBeginDate = MartusFlexidate.toStoredDateFormat(mfd.getBeginDate());
+		String rawEndDate = MartusFlexidate.toStoredDateFormat(mfd.getEndDate());
+		
+		String beginDate = convertStoredDateToDisplay(rawBeginDate);
+		String endDate = convertStoredDateToDisplay(rawEndDate);
+				
+		String display = "";
+		
+		if (mfd.hasDateRange())
+			display = getFieldLabel("DateRangeFrom")+ " " + 
+				beginDate + " " + getFieldLabel("DateRangeTo")+
+				" " + endDate;		
+		else
+			display = beginDate;
+		return display;
 	}
 
 	public static class LanguageFilenameFilter implements FilenameFilter
