@@ -247,7 +247,7 @@ public class BulletinStore
 		{
 			for(int i = 0; i < history.size(); ++i)
 			{
-				String localIdOfAncestor = (String)history.get(i);
+				String localIdOfAncestor = history.get(i);
 				UniversalId uidOfAncestor = UniversalId.createFromAccountAndLocalId(b.getAccount(), localIdOfAncestor);
 				deleteBulletinRevision(uidOfAncestor);
 			}
@@ -341,7 +341,7 @@ class LeafScanner implements Database.PacketVisitor
 			BulletinHistory history = bhp.getHistory();
 			for(int i=0; i < history.size(); ++i)
 			{
-				String thisLocalId = (String)history.get(i);
+				String thisLocalId = history.get(i);
 				UniversalId uidOfNonLeaf = UniversalId.createFromAccountAndLocalId(bhp.getAccountId(), thisLocalId);
 				leafKeys.remove(DatabaseKey.createSealedKey(uidOfNonLeaf));
 				leafKeys.remove(DatabaseKey.createDraftKey(uidOfNonLeaf));

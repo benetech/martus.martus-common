@@ -272,8 +272,8 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 
 		String result = new String(out.toByteArray(), "UTF-8");
 		assertContains(MartusXml.getTagStart(MartusXml.HistoryElementName), result);
-		assertContains((String)history.get(0), result);
-		assertContains((String)history.get(1), result);
+		assertContains(history.get(0), result);
+		assertContains(history.get(1), result);
 		
 	}
 
@@ -462,7 +462,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		bhp.loadFromXml(in, security);
 		HQKeys hqKeys = bhp.getAuthorizedToReadKeys();
 		assertEquals(1, hqKeys.size());
-		HQKey thisKey = (HQKey)hqKeys.get(0);
+		HQKey thisKey = hqKeys.get(0);
 		assertEquals(hqAccountId, thisKey.getPublicKey());
 	}
 	
