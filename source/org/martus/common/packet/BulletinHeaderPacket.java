@@ -146,6 +146,19 @@ public class BulletinHeaderPacket extends Packet
 	{
 		return history;
 	}
+	
+	public int getVersionNumber()
+	{
+		return history.size() + 1;
+	}
+	
+	public String getOriginalRevisionId()
+	{
+		if(getVersionNumber() == 1)
+			return getLocalId();
+		return history.get(0);
+	}
+	
 
 	public void setFieldDataPacketId(String id)
 	{

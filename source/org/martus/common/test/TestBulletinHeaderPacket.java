@@ -360,6 +360,8 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		assertEquals("AuthorizedToReadKeys", 0, loaded.getAuthorizedToReadKeys().size());
 		assertEquals("AuthorizedToProxyUpload", 0, loaded.getAuthorizedToUploadKeys().size());
 		assertEquals("has history?", 0, loaded.getHistory().size());
+		assertEquals("Incorrect version #?",1, loaded.getVersionNumber());
+		assertEquals("Since it has no history, should have same local id for original revision id.?", bhp.getLocalId(), loaded.getOriginalRevisionId());
 
 		String[] list = loaded.getPublicAttachmentIds();
 		assertEquals("public count", 2, list.length);
@@ -387,6 +389,9 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		assertEquals("no history?", history.size(), loadedHistory.size());
 		for(int i=0; i < history.size(); ++i)
 			assertEquals("wrong history " + i + "?", history.get(i), loadedHistory.get(i));
+		
+		assertEquals("Incorrect version #?",history.size()+1, loaded.getVersionNumber());
+		assertEquals("Incorrect original revision id?", history.get(0), loaded.getOriginalRevisionId());
 	}
 
 	public void testLoadXmlWithHQKey() throws Exception

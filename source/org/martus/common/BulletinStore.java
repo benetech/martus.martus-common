@@ -121,13 +121,19 @@ public class BulletinStore
 		return scanForLeafKeys().size();
 	}
 
-	public Vector getAllBulletinUids()
+	public Vector getAllBulletinLeafUids()
 	{
 		Vector uids = new Vector();
 		Vector keys = scanForLeafKeys();
 		for(int i=0; i < keys.size(); ++i)
 			uids.add( ((DatabaseKey)keys.get(i)).getUniversalId());
 		return uids;
+	}
+	
+	public boolean isLeaf(UniversalId uId)
+	{
+		Vector bulletinLeafUidsInSystem  = getAllBulletinLeafUids();
+		return bulletinLeafUidsInSystem.contains(uId);
 	}
 
 	public boolean doesBulletinRevisionExist(DatabaseKey key)
