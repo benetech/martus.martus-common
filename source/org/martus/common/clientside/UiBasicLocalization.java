@@ -132,10 +132,14 @@ public class UiBasicLocalization extends Localization
 
 	private String getLabel(String languageCode, String key)
 	{
+		LocalizedString entry = null;
 		String result = null;
 		Map stringMap = getStringMap(languageCode);
 		if(stringMap != null)
-			result = (String)stringMap.get(key);
+			entry = (LocalizedString)stringMap.get(key);
+			
+		if(entry != null)
+			result = entry.getText();
 		if(result == null && !languageCode.equals(ENGLISH))
 			result = "<" + getLabel(ENGLISH, key) + ">";
 		if(result == null)

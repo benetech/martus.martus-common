@@ -77,25 +77,6 @@ public class Localization
 		return (String)defaultLanguageDateFormat.get(languageCode);
 	}
 
-	public File directory;
-	public Map languageTranslationsMap;
-	public String currentLanguageCode;
-	public String currentDateFormat;
-
-	public static final String UNUSED_TAG = "";
-	public static final String MARTUS_LANGUAGE_FILE_PREFIX = "Martus-";
-	public static final String MARTUS_LANGUAGE_FILE_SUFFIX = ".mtf";
-	
-	public static final String ENGLISH = "en";
-	public static final String SPANISH = "es";
-	public static final String RUSSIAN = "ru";
-	public static final String THAI = "th";
-	public static final String[] AVAILABLE_MTF_LANGUAGE_RESOURCES = {SPANISH, RUSSIAN, THAI};
-	public static final String[] ALL_LANGUAGE_CODES = {
-				"?", ENGLISH, "ar",
-				"az", "bn", "my","zh", "nl", "eo", "fa", "fr", "de","gu","ha","he","hi","hu",
-				"it", "ja","jv","kn","kk","ky","ko","ml","mr","or","pa","ps","pl","pt","ro",RUSSIAN,"sr",
-				"sr", "sd","si",SPANISH,"ta","tg","te",THAI,"tr","tk","uk","ur","uz","vi"};
 	public String getCurrentDateFormatCode()
 	{
 		return currentDateFormat;
@@ -146,7 +127,7 @@ public class Localization
 		String key = translation.substring(0,endKey);
 		String value = translation.substring(endKey + 1, translation.length());
 		value = value.replaceAll("\\\\n", "\n");
-		stringMap.put(key, value);
+		stringMap.put(key, new LocalizedString(key, value));
 	}
 
 
@@ -269,5 +250,25 @@ public class Localization
 	
 		return result;
 	}
+
+	public File directory;
+	public Map languageTranslationsMap;
+	public String currentLanguageCode;
+	public String currentDateFormat;
 	HashMap defaultLanguageDateFormat;
+
+	public static final String UNUSED_TAG = "";
+	public static final String MARTUS_LANGUAGE_FILE_PREFIX = "Martus-";
+	public static final String MARTUS_LANGUAGE_FILE_SUFFIX = ".mtf";
+	
+	public static final String ENGLISH = "en";
+	public static final String SPANISH = "es";
+	public static final String RUSSIAN = "ru";
+	public static final String THAI = "th";
+	public static final String[] AVAILABLE_MTF_LANGUAGE_RESOURCES = {SPANISH, RUSSIAN, THAI};
+	public static final String[] ALL_LANGUAGE_CODES = {
+				"?", ENGLISH, "ar",
+				"az", "bn", "my","zh", "nl", "eo", "fa", "fr", "de","gu","ha","he","hi","hu",
+				"it", "ja","jv","kn","kk","ky","ko","ml","mr","or","pa","ps","pl","pt","ro",RUSSIAN,"sr",
+				"sr", "sd","si",SPANISH,"ta","tg","te",THAI,"tr","tk","uk","ur","uz","vi"};
 }
