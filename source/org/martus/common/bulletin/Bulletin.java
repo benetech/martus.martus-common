@@ -30,13 +30,14 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Vector;
 
-import org.martus.common.StandardFieldSpecs;
 import org.martus.common.FieldSpec;
 import org.martus.common.MartusUtilities;
+import org.martus.common.StandardFieldSpecs;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.CryptoException;
@@ -155,6 +156,14 @@ public class Bulletin implements BulletinConstants
 	public long getLastSavedTime()
 	{
 		return getBulletinHeaderPacket().getLastSavedTime();
+	}
+	
+	public String getLastSavedDate()
+	{
+		DateFormat df = Bulletin.getStoredDateFormat();	
+		Calendar cal = new GregorianCalendar();
+		cal.setTimeInMillis(getLastSavedTime());					
+		return df.format(cal.getTime());
 	}
 
 	public boolean isDraft()
