@@ -35,10 +35,14 @@ import java.util.zip.ZipFile;
 
 import org.martus.common.MartusXml;
 import org.martus.common.XmlWriterFilter;
-import org.martus.common.bulletin.*;
-import org.martus.common.crypto.*;
-import org.martus.common.database.*;
-import org.martus.util.*;
+import org.martus.common.bulletin.BulletinConstants;
+import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.database.DatabaseKey;
+import org.martus.util.Base64;
+import org.martus.util.InputStreamWithSeek;
+import org.martus.util.UnicodeReader;
+import org.martus.util.ZipEntryInputStream;
+import org.martus.util.xml.SimpleXmlParser;
 
 public class BulletinHeaderPacket extends Packet
 {
@@ -88,6 +92,11 @@ public class BulletinHeaderPacket extends Packet
 	public long getLastSavedTime()
 	{
 		return lastSavedTime;
+	}
+	
+	void setLastSavedTime(long timeToUse)
+	{
+		lastSavedTime = timeToUse;
 	}
 
 	public void updateLastSavedTime()
@@ -208,8 +217,20 @@ public class BulletinHeaderPacket extends Packet
 		MartusCrypto.DecryptionException,
 		MartusCrypto.NoKeyPairException
 	{
-		knowsWhetherAllPrivate = false;
-		super.loadFromXmlInternal(inputStream, expectedSig, verifier);
+		if(verifier != null)
+			verifyPacketSignature(inputStream, expectedSig, verifier);
+		XmlHeaderPacketLoader loader = new XmlHeaderPacketLoader(this);
+		try
+		{
+			knowsWhetherAllPrivate = false;
+			SimpleXmlParser.parse(loader, new UnicodeReader(inputStream));
+		}
+		catch (Exception e)
+		{
+			// TODO: Be more specific with exceptions!
+			e.printStackTrace();
+			throw new InvalidPacketException(e.getMessage());
+		}
 	}
 
 	public void loadFromXml(InputStreamWithSeek inputStream, MartusCrypto verifier) throws
@@ -345,56 +366,12 @@ public class BulletinHeaderPacket extends Packet
 		}
 	}
 
-	protected void setFromXml(String elementName, String data) throws
-			Base64.InvalidBase64Exception
+	void setAllPrivateFromXmlTextValue(String data)
 	{
-		if(elementName.equals(MartusXml.BulletinStatusElementName))
-		{
-			setStatus(data);
-		}
-		else if(elementName.equals(MartusXml.LastSavedTimeElementName))
-		{
-			lastSavedTime = Long.parseLong(data);
-		}
-		else if(elementName.equals(MartusXml.AllPrivateElementName))
-		{
-			if(data.equals(NOT_ALL_PRIVATE))
-				setAllPrivate(false);
-			else
-				setAllPrivate(true);
-		}
-		else if(elementName.equals(MartusXml.HQPublicKeyElementName))
-		{
-			setHQPublicKey(data);
-		}
-		else if(elementName.equals(MartusXml.DataPacketIdElementName))
-		{
-			setFieldDataPacketId(data);
-		}
-		else if(elementName.equals(MartusXml.PrivateDataPacketIdElementName))
-		{
-			setPrivateFieldDataPacketId(data);
-		}
-		else if(elementName.equals(MartusXml.DataPacketSigElementName))
-		{
-			setFieldDataSignature(Base64.decode(data));
-		}
-		else if(elementName.equals(MartusXml.PrivateDataPacketSigElementName))
-		{
-			setPrivateFieldDataSignature(Base64.decode(data));
-		}
-		else if(elementName.equals(MartusXml.PublicAttachmentIdElementName))
-		{
-			addPublicAttachmentLocalId(data);
-		}
-		else if(elementName.equals(MartusXml.PrivateAttachmentIdElementName))
-		{
-			addPrivateAttachmentLocalId(data);
-		}
+		if(data.equals(NOT_ALL_PRIVATE))
+			setAllPrivate(false);
 		else
-		{
-			super.setFromXml(elementName, data);
-		}
+			setAllPrivate(true);
 	}
 
 	protected void initialize()
