@@ -117,40 +117,6 @@ public class TestPacket extends TestCaseEnhanced
 		sigComment.substring(sigIndex, sigEndIndex);
 	}
 	
-	public void testUnknownTags() throws Exception
-	{
-		class PacketWithoutUnknownTags extends LoadablePacket
-		{
-		}
-		
-		PacketWithoutUnknownTags without = new PacketWithoutUnknownTags();
-		StringWriter writerWithout = new StringWriter();
-		without.writeXml(writerWithout, security);
-		String resultWithout = writerWithout.toString();
-		ByteArrayInputStreamWithSeek inWithout = new ByteArrayInputStreamWithSeek(resultWithout.getBytes());
-		without.loadFromXml(inWithout, null, null);
-		assertFalse("has unknown?", without.hasUnknownTags());
-
-		class PacketWithUnknownTags extends LoadablePacket
-		{
-			protected void internalWriteXml(XmlWriterFilter dest) throws IOException
-			{
-				writeElement(dest, "UnknownTag", "");
-			}
-		}
-		
-		PacketWithUnknownTags with = new PacketWithUnknownTags();
-		StringWriter writerWith = new StringWriter();
-		with.writeXml(writerWith, security);
-		String resultWith = writerWith.toString();
-		
-		assertContains("<UnknownTag>", resultWith);
-		
-		ByteArrayInputStreamWithSeek inWith = new ByteArrayInputStreamWithSeek(resultWith.getBytes());
-		with.loadFromXml(inWith, null, null);
-		assertTrue("no unknown?", with.hasUnknownTags());
-	}
-
 	public void testWriteXmlToWriter() throws Exception
 	{
 		Packet packet = new Packet();
@@ -461,7 +427,7 @@ public class TestPacket extends TestCaseEnhanced
 		try
 		{
 			AnotherSimplePacketSubtype loaded = new AnotherSimplePacketSubtype();
-			loaded.loadFromXmlInternal(inputStream, null, security);
+			loaded.loadFromXml(inputStream, null, security);
 			fail("Should have thrown WrongPacketTypeException");
 		}
 		catch(Packet.WrongPacketTypeException e)

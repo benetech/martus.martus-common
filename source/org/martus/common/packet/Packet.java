@@ -35,8 +35,6 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.Arrays;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.martus.common.MartusXml;
 import org.martus.common.VersionBuildDate;
 import org.martus.common.XmlWriterFilter;
@@ -52,7 +50,6 @@ import org.martus.util.UnicodeReader;
 import org.martus.util.UnicodeWriter;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 public class Packet
@@ -210,20 +207,6 @@ public class Packet
 		else
 			db.writeRecord(headerKey, headerWriter.toString());
 		return sig;
-	}
-
-	public void loadFromXmlInternal(InputStreamWithSeek inputStream, byte[] expectedSig, MartusCrypto verifier) throws
-		IOException,
-		InvalidPacketException,
-		WrongPacketTypeException,
-		SignatureVerificationException,
-		MartusCrypto.DecryptionException,
-		MartusCrypto.NoKeyPairException
-	{
-		XmlHandler handler = new XmlHandler(getPacketRootElementName());
-		loadFromXml(inputStream, expectedSig, verifier, handler);
-		if(!handler.gotStartTag)
-			throw new InvalidPacketException("No root tag");
 	}
 
 	static public void validateXml(InputStreamWithSeek inputStream, String accountId, String localId, byte[] expectedSig, MartusCrypto verifier) throws
@@ -392,78 +375,6 @@ public class Packet
 		writeElement(dest, MartusXml.AccountElementName, getAccountId());
 	}
 
-	protected void setFromXml(String elementName, String data) throws
-			Base64.InvalidBase64Exception
-	{
-		if(elementName.equals(MartusXml.PacketIdElementName))
-		{
-			setPacketId(data);
-		}
-		else if(elementName.equals(MartusXml.AccountElementName))
-		{
-			setAccountId(data);
-		}
-		else if(elementName.equals(getPacketRootElementName()))
-		{
-			// do nothing
-		}
-		else
-		{
-			//System.out.println("Packet.setFromXml unknown tag: " + elementName);
-			hasUnknown = true;
-		}
-	}
-
-	class XmlHandler extends DefaultHandler
-	{
-		XmlHandler(String expectedRootTag)
-		{
-			rootTag = expectedRootTag;
-		}
-
-		public void startElement(String namespaceURI, String sName, String qName,
-				Attributes attrs) throws SAXException
-		{
-			if(!gotStartTag)
-			{
-				if(rootTag != null && !qName.equals(rootTag))
-					throw new WrongPacketTypeException("Incorrect root tag");
-			}
-			gotStartTag = true;
-			currentElementName = qName;
-			data = new StringBuffer();
-		}
-
-		public void endElement(String namespaceURI, String sName, String qName)
-		{
-			if(!gotStartTag)
-				return;
-			try
-			{
-				setFromXml(qName, new String(data));
-			}
-			catch(Base64.InvalidBase64Exception e)
-			{
-				System.out.println("Packet.endelement: " + e);
-			}
-			currentElementName = "";
-			data = new StringBuffer();
-		}
-
-		public void characters(char buf[], int offset, int len) throws SAXException
-		{
-			if(!gotStartTag)
-				return;
-
-			data.append(buf,offset, len);
-		}
-
-		boolean gotStartTag;
-		String rootTag;
-		String currentElementName;
-		StringBuffer data;
-	}
-
 	static class XmlValidateHandler extends DefaultHandler
 	{
 		XmlValidateHandler()
@@ -527,42 +438,6 @@ public class Packet
 		MartusCrypto.NoKeyPairException
 	{
 		throw new WrongPacketTypeException("Can't call loadFromXml directly on a Packet object!");
-	}
-
-	protected void loadFromXml(InputStreamWithSeek inputStream, byte[] expectedSig, MartusCrypto verifier, DefaultHandler handler) throws
-		IOException,
-		InvalidPacketException,
-		WrongPacketTypeException,
-		SignatureVerificationException
-	{
-		if(verifier != null)
-			verifyPacketSignature(inputStream, expectedSig, verifier);
-		BufferedReader reader = new UnicodeReader(inputStream);
-		try
-		{
-			MartusXml.loadXmlWithExceptions(reader, handler);
-		}
-		catch(WrongPacketTypeException e)
-		{
-			throw(e);
-		}
-		catch(SAXParseException e)
-		{
-			//System.out.println("Packet.loadFromXml: " + e);
-			throw new InvalidPacketException("SAXParseException " + e.getMessage());
-		}
-		catch(ParserConfigurationException e)
-		{
-			throw new InvalidPacketException("ParserConfigurationException");
-		}
-		catch(SAXException e)
-		{
-			throw new InvalidPacketException("SAXException");
-		}
-		finally
-		{
-			reader.close();
-		}
 	}
 
 	final static byte[] newlineBytes = "\n".getBytes();
