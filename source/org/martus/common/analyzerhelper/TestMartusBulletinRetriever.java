@@ -474,6 +474,7 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		assertEquals("Didn't get the correct title?", title, retrievedBulletin.getTitle());
 		assertEquals("Didn't get the correct location?", location, retrievedBulletin.getLocation());
 		assertEquals("Didn't get the correct private data?", privateData, retrievedBulletin.getPrivateInfo());
+		retrievedBulletin.deleteAllData();		
 		
 		MartusBulletinWrapper cancelledBulletin = retriever.getBulletin(bulletin.getUniversalId(), new exitBulletinRetrieveProgressMeter());
 		assertNull("Should return a null bulletin if cancelled.", cancelledBulletin);
