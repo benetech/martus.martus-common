@@ -504,6 +504,20 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		assertContains(fields.toString(), result);
 	}
 
+	public void testWriteXmlNoCustomFields() throws Exception
+	{
+		FieldSpec[] specs = StandardFieldSpecs.getDefaultPublicFieldSpecs();
+		FieldDataPacket fdpCustom = new FieldDataPacket(UniversalId.createDummyUniversalId(), specs);
+		
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		fdpCustom.writeXml(out, security);
+		String result = new String(out.toByteArray(), "UTF-8");
+		out.close();
+		
+		assertNotContains("<CustomFields>", result);
+		assertContains(LegacyCustomFields.buildFieldListString(specs), result);
+	}
+
 	public void testWriteAndLoadGrids()throws Exception
 	{
 		UniversalId uid = FieldDataPacket.createUniversalId(security.getPublicKeyString());

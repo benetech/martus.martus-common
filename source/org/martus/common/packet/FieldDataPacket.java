@@ -314,10 +314,18 @@ public class FieldDataPacket extends Packet
 		if(isEncrypted() && !isEmpty())
 			writeElement(dest, MartusXml.EncryptedFlagElementName, "");
 
-		writeElement(dest, MartusXml.FieldListElementName, MartusConstants.deprecatedCustomFieldSpecs);
-		dest.writeDirect(fieldSpecs.toString());
-		
+		String xmlSpecs = fieldSpecs.toString();
 		FieldSpec[] specs = fieldSpecs.getSpecs();
+		if(xmlSpecs.equals(DEFAULT_LEGACY_SPECS_AS_XML))
+		{
+			writeElement(dest, MartusXml.FieldListElementName, LegacyCustomFields.buildFieldListString(specs));
+		}
+		else
+		{
+			writeElement(dest, MartusXml.FieldListElementName, MartusConstants.deprecatedCustomFieldSpecs);
+			dest.writeDirect(xmlSpecs);
+		}
+		
 		for(int i = 0; i < specs.length; ++i)
 		{
 			FieldSpec spec = specs[i];
@@ -349,6 +357,60 @@ public class FieldDataPacket extends Packet
 		return LegacyCustomFields.buildFieldListString(getFieldSpecs());
 	}
 
+	private static final String DEFAULT_LEGACY_SPECS_AS_XML = 
+		"<CustomFields>\n" +
+		"<Field type='LANGUAGE'>\n" +
+		"<Tag>language</Tag>\n" +
+		"<Label></Label>\n" +
+		"</Field>\n" +
+		"\n" +
+		"<Field type='STRING'>\n" +
+		"<Tag>author</Tag>\n" +
+		"<Label></Label>\n" +
+		"</Field>\n" +
+		"\n" +
+		"<Field type='STRING'>\n" +
+		"<Tag>organization</Tag>\n" +
+		"<Label></Label>\n" +
+		"</Field>\n" +
+		"\n" +
+		"<Field type='STRING'>\n" +
+		"<Tag>title</Tag>\n" +
+		"<Label></Label>\n" +
+		"</Field>\n" +
+		"\n" +
+		"<Field type='STRING'>\n" +
+		"<Tag>location</Tag>\n" +
+		"<Label></Label>\n" +
+		"</Field>\n" +
+		"\n" +
+		"<Field type='STRING'>\n" +
+		"<Tag>keywords</Tag>\n" +
+		"<Label></Label>\n" +
+		"</Field>\n" +
+		"\n" +
+		"<Field type='DATERANGE'>\n" +
+		"<Tag>eventdate</Tag>\n" +
+		"<Label></Label>\n" +
+		"</Field>\n" +
+		"\n" +
+		"<Field type='DATE'>\n" +
+		"<Tag>entrydate</Tag>\n" +
+		"<Label></Label>\n" +
+		"</Field>\n" +
+		"\n" +
+		"<Field type='MULTILINE'>\n" +
+		"<Tag>summary</Tag>\n" +
+		"<Label></Label>\n" +
+		"</Field>\n" +
+		"\n" +
+		"<Field type='MULTILINE'>\n" +
+		"<Tag>publicinfo</Tag>\n" +
+		"<Label></Label>\n" +
+		"</Field>\n" +
+		"\n" +
+		"</CustomFields>\n";
+	
 	final String packetHeaderTag = "packet";
 
 	private boolean encryptedFlag;
