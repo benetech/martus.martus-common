@@ -101,7 +101,7 @@ public class MagicWords
 		for(int i = 0; i<magicWordEntries.size(); ++i)
 		{
 			MagicWordEntry entry = (MagicWordEntry)magicWordEntries.get(i);
-			if(entry.getMagicWord().equals(magicWordToFind) && entry.isActive())
+			if(entry.isActive() && entry.getMagicWord().equals(magicWordToFind))
 				return true;
 		}
 		return false;
