@@ -77,14 +77,14 @@ public class MartusBulletinRetriever
 	public String getServerPublicKey(String serverIPAddress, String serverPublicCode) throws ServerPublicCodeDoesNotMatchException, ServerNotAvailableException, ServerErrorException
 	{
 		ClientSideNetworkHandlerUsingXmlRpcForNonSSL serverNonSSL = new ClientSideNetworkHandlerUsingXmlRpcForNonSSL(serverIPAddress);
-		return getInternalUseServerPublicKey(serverPublicCode, serverNonSSL);
+		return getServerPublicKey(serverPublicCode, serverNonSSL);
 	}
 	
 	public List getListOfNewBulletinIds(List bulletinIdsAlreadyRetrieved) throws ServerNotConfiguredException, MartusSignatureException, ServerErrorException
 	{
 		if(!isServerAvailable())
 			return new ArrayList();
-		List allBulletins = getInternalUseAllFieldOfficeBulletinUniversalIds();
+		List allBulletins = getAllFieldOfficeBulletinUniversalIds();
 		allBulletins.removeAll(bulletinIdsAlreadyRetrieved);
 		return allBulletins;
 	}
@@ -104,9 +104,7 @@ public class MartusBulletinRetriever
 		}
 	}
 	
-	//InternalUse methods are public accessible only for tests
-	
-	public List getInternalUseAllFieldOfficeBulletinUniversalIds() throws ServerErrorException, MartusSignatureException
+	List getAllFieldOfficeBulletinUniversalIds() throws ServerErrorException, MartusSignatureException
 	{
 		List allBulletins = new ArrayList();
 		Vector fieldOffices = serverSLL.downloadFieldOfficeAccountIds(security, security.getPublicKeyString());
@@ -115,15 +113,15 @@ public class MartusBulletinRetriever
 		{
 			String fieldOfficeAccountId = (String)fieldOffices.get(a);
 			NetworkResponse response = serverSLL.getSealedBulletinIds(security,fieldOfficeAccountId, noTags);
-			allBulletins.addAll(getInternalUseListOfBulletinUniversalIds(fieldOfficeAccountId, response));
+			allBulletins.addAll(getListOfBulletinUniversalIds(fieldOfficeAccountId, response));
 
 			response = serverSLL.getDraftBulletinIds(security,fieldOfficeAccountId, noTags);
-			allBulletins.addAll(getInternalUseListOfBulletinUniversalIds(fieldOfficeAccountId, response));
+			allBulletins.addAll(getListOfBulletinUniversalIds(fieldOfficeAccountId, response));
 		}
 		return allBulletins;
 	}
 	
-	Vector getInternalUseListOfBulletinUniversalIds(String fieldOfficeAccountId, NetworkResponse response) throws ServerErrorException
+	Vector getListOfBulletinUniversalIds(String fieldOfficeAccountId, NetworkResponse response) throws ServerErrorException
 	{
 		if(!response.getResultCode().equals(NetworkInterfaceConstants.OK))
 			throw new ServerErrorException();
@@ -138,7 +136,7 @@ public class MartusBulletinRetriever
 		return bulletinIds;
 	}
 
-	public String getInternalUseServerPublicKey(String serverPublicCode, NonSSLNetworkAPI serverNonSSL) throws ServerNotAvailableException, ServerPublicCodeDoesNotMatchException, ServerErrorException
+	String getServerPublicKey(String serverPublicCode, NonSSLNetworkAPI serverNonSSL) throws ServerNotAvailableException, ServerPublicCodeDoesNotMatchException, ServerErrorException
 	{
 		String ServerPublicKey;
 		try
@@ -161,7 +159,7 @@ public class MartusBulletinRetriever
 		}
 	}
 	
-	public void setInternalUseSSLServer(ClientSideNetworkGateway sslServerToUse)
+	void setSSLServerToUse(ClientSideNetworkGateway sslServerToUse)
 	{
 		serverSLL = sslServerToUse;
 	}

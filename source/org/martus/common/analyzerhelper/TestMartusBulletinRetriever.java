@@ -171,7 +171,7 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		NonSSLNetworkAPI noServer = new NoServerNetworkInterfaceForNonSSLHandler();
 		try
 		{
-			retriever.getInternalUseServerPublicKey("Some Random code", noServer);
+			retriever.getServerPublicKey("Some Random code", noServer);
 			fail("Server exists?");
 		}
 		catch(ServerNotAvailableException expected)
@@ -182,7 +182,7 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		testServerForNonSSL.publicKeyString = "some invalid keystring";
 		try
 		{
-			retriever.getInternalUseServerPublicKey("Some Random code", testServerForNonSSL);
+			retriever.getServerPublicKey("Some Random code", testServerForNonSSL);
 			fail("Invalid public key strings should throw an exception");
 		}
 		catch(ServerErrorException expected)
@@ -192,14 +192,14 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		testServerForNonSSL.publicKeyString = serverPublicKeyString;
 		try
 		{
-			retriever.getInternalUseServerPublicKey("Invalid code", testServerForNonSSL);
+			retriever.getServerPublicKey("Invalid code", testServerForNonSSL);
 			fail("Incorrect public code.");
 		}
 		catch(ServerPublicCodeDoesNotMatchException expected)
 		{
 		}
-		retriever.getInternalUseServerPublicKey(MartusCrypto.computePublicCode(serverPublicKeyString), testServerForNonSSL);
-		retriever.getInternalUseServerPublicKey(MartusCrypto.computeFormattedPublicCode(serverPublicKeyString), testServerForNonSSL);
+		retriever.getServerPublicKey(MartusCrypto.computePublicCode(serverPublicKeyString), testServerForNonSSL);
+		retriever.getServerPublicKey(MartusCrypto.computeFormattedPublicCode(serverPublicKeyString), testServerForNonSSL);
 	}
 	
 	public void testGetListOfBulletinIds() throws Exception
@@ -211,7 +211,7 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		String fieldOfficeAccountId = "SomeFieldOffice";
 		try
 		{
-			retriever.getInternalUseListOfBulletinUniversalIds(fieldOfficeAccountId, response);
+			retriever.getListOfBulletinUniversalIds(fieldOfficeAccountId, response);
 			fail("Should have thrown since this is invalid response from a server.");
 		}
 		catch(ServerErrorException expected)
@@ -234,7 +234,7 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		bulletinSummaries.add(NetworkInterfaceConstants.OK);
 		bulletinSummaries.add(testBulletinSummaries);
 		response = new NetworkResponse(bulletinSummaries);
-		Vector returnedBulletinIDs = retriever.getInternalUseListOfBulletinUniversalIds(fieldOfficeAccountId, response);
+		Vector returnedBulletinIDs = retriever.getListOfBulletinUniversalIds(fieldOfficeAccountId, response);
 		assertEquals("retriever should have a vector of size 3", 3, returnedBulletinIDs.size());
 		assertContains(UniversalId.createFromAccountAndLocalId(fieldOfficeAccountId,bulletin1Id), returnedBulletinIDs);
 		assertContains(UniversalId.createFromAccountAndLocalId(fieldOfficeAccountId,bulletin2Id), returnedBulletinIDs);
@@ -360,8 +360,8 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		streamIn.close();
 		retriever.initalizeServer("1.2.3.4", "some random public key");
 		retriever.serverNonSSL = new TestServerNetworkInterfaceForNonSSLHandler();
-		retriever.setInternalUseSSLServer(mockGateway);
-		List emptyList = retriever.getInternalUseAllFieldOfficeBulletinUniversalIds();
+		retriever.setSSLServerToUse(mockGateway);
+		List emptyList = retriever.getAllFieldOfficeBulletinUniversalIds();
 		assertEquals("Should be empty",0, emptyList.size());
 		
 		String fieldOffice1 = "field office 1";
@@ -370,7 +370,7 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		fieldOfficeIds.add(fieldOffice1);
 		fieldOfficeIds.add(fieldOffice2);
 		mockGateway.setFieldOfficeAccountIdsToReturn(fieldOfficeIds);
-		emptyList = retriever.getInternalUseAllFieldOfficeBulletinUniversalIds();
+		emptyList = retriever.getAllFieldOfficeBulletinUniversalIds();
 		assertEquals("Should still be empty since there are no bulletins.",0, emptyList.size());
 		
 		String draftBulletinFO1LocalId = "Draft bulletin Field Office 1";
@@ -393,7 +393,7 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		fieldOffice2SealedBulletins.add(sealed1BulletinFO2LocalId);
 		mockGateway.setTestSealedBulletinIdsToReturn(fieldOffice2, fieldOffice2SealedBulletins);
 
-		List allFieldOfficesBulletinIds = retriever.getInternalUseAllFieldOfficeBulletinUniversalIds();
+		List allFieldOfficesBulletinIds = retriever.getAllFieldOfficeBulletinUniversalIds();
 		assertEquals("Should contain 4 bulletins", 4, allFieldOfficesBulletinIds.size());
 		
 		UniversalId bulletinId1 = UniversalId.createFromAccountAndLocalId(fieldOffice1,draftBulletinFO1LocalId);
@@ -427,7 +427,7 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		streamIn.close();
 		retriever.initalizeServer("1.2.3.4", "some random public key");
 		retriever.serverNonSSL = new TestServerNetworkInterfaceForNonSSLHandler();
-		retriever.setInternalUseSSLServer(mockGateway);
+		retriever.setSSLServerToUse(mockGateway);
 		
 		Bulletin bulletin = new Bulletin(security);
 		String author = "author";
