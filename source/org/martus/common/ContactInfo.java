@@ -36,6 +36,7 @@ import java.util.Vector;
 
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
+import org.martus.common.network.NetworkInterfaceConstants;
 import org.martus.util.Base64;
 import org.martus.util.Base64.InvalidBase64Exception;
 
@@ -135,7 +136,7 @@ public class ContactInfo implements Serializable
 	public static Vector encodeContactInfoVector(Vector unencodedContactInfo) throws UnsupportedEncodingException
 	{
 		Vector encoded = new Vector();
-		encoded.add(BASE_64_ENCODED);
+		encoded.add(NetworkInterfaceConstants.BASE_64_ENCODED);
 		encoded.add(unencodedContactInfo.get(0));
 		encoded.add(unencodedContactInfo.get(1));
 		int start = 2;
@@ -149,7 +150,7 @@ public class ContactInfo implements Serializable
 
 	private static boolean isEncoded(Vector possiblyEncodedContactInfo)
 	{
-		return possiblyEncodedContactInfo.get(0).equals(BASE_64_ENCODED);
+		return possiblyEncodedContactInfo.get(0).equals(NetworkInterfaceConstants.BASE_64_ENCODED);
 	}
 	
 	static public Vector decodeContactInfoVectorIfNecessary(Vector possiblyEncodedContactInfo) throws UnsupportedEncodingException, InvalidBase64Exception
@@ -235,7 +236,6 @@ public class ContactInfo implements Serializable
 	}
 
 	private boolean mustAskUserToSendToServer;
-	public static final String BASE_64_ENCODED = "Base64Encoded";
 	
 	public static final short VERSION = 5;
 	//Version 1
