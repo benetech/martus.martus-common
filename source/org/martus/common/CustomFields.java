@@ -65,14 +65,14 @@ public class CustomFields
 	
 	public String toString()
 	{
-		String result = "<CustomFields>\n";
+		String result = "<" + MartusXml.CustomFieldSpecsElementName + ">\n";
 		for (int i = 0; i < specs.size(); i++)
 		{
 			FieldSpec spec = (FieldSpec)specs.get(i);
 			result += spec.toString();
 			result += "\n";
 		}
-		result += "</CustomFields>";
+		result += "</" + MartusXml.CustomFieldSpecsElementName + ">\n";
 		return result;
 	}
 	
@@ -81,7 +81,7 @@ public class CustomFields
 	public static FieldSpec[] parseXml(String xml) throws CustomFieldsParseException
 	{
 		CustomFields fields = new CustomFields();
-		CustomFieldLoader loader = new CustomFieldLoader("CustomFields", fields);
+		CustomFieldLoader loader = new CustomFieldLoader(MartusXml.CustomFieldSpecsElementName, fields);
 		try
 		{
 			SimpleXmlParser.parse(loader, xml);
@@ -94,12 +94,17 @@ public class CustomFields
 		}
 	}
 	
-	static class CustomFieldLoader extends SimpleXmlDefaultLoader
+	public static class CustomFieldLoader extends SimpleXmlDefaultLoader
 	{
 		public CustomFieldLoader(String tag, CustomFields fieldsToLoad)
 		{
 			super(tag);
 			fields = fieldsToLoad;
+		}
+		
+		public CustomFields getFields()
+		{
+			return fields;
 		}
 		
 		public SimpleXmlDefaultLoader startElement(String tag)

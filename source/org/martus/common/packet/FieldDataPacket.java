@@ -40,6 +40,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.martus.common.CustomFields;
 import org.martus.common.FieldSpec;
 import org.martus.common.LegacyCustomFields;
+import org.martus.common.MartusConstants;
 import org.martus.common.MartusXml;
 import org.martus.common.XmlWriterFilter;
 import org.martus.common.bulletin.AttachmentProxy;
@@ -62,6 +63,11 @@ public class FieldDataPacket extends Packet
 		super(universalIdToUse);
 		setFieldSpecs(fieldSpecsToUse);
 		clearAll();
+	}
+	
+	void setCustomFields(CustomFields fieldsToUse)
+	{
+		fieldSpecs = fieldsToUse;
 	}
 
 	void setFieldSpecs(FieldSpec[] fieldSpecsToUse)
@@ -205,7 +211,6 @@ public class FieldDataPacket extends Packet
 	{
 		setEncrypted(false);
 		fieldData.clear();
-		setHasUnknownTags(false);
 		if(security != null)
 			verifyPacketSignature(inputStream, expectedSig, security);
 		try
@@ -266,8 +271,6 @@ public class FieldDataPacket extends Packet
 	{
 		XmlFieldDataPacketLoader loader = new XmlFieldDataPacketLoader(this);
 		SimpleXmlParser.parse(loader, new UnicodeReader(in));
-		if(loader.foundUnknownTags())
-			setHasUnknownTags(true);
 		return loader;
 	}
 
@@ -309,13 +312,9 @@ public class FieldDataPacket extends Packet
 		if(isEncrypted() && !isEmpty())
 			writeElement(dest, MartusXml.EncryptedFlagElementName, "");
 
-		String fieldList = getFieldListString();
-		writeElement(dest, MartusXml.FieldListElementName, fieldList);
+		writeElement(dest, MartusXml.FieldListElementName, MartusConstants.deprecatedCustomFieldSpecs);
+		dest.writeDirect(fieldSpecs.toString());
 		
-		// The following two lines should be restored as soon as 
-		// FieldDataPackets can correctly read <CustomField> tags
-		//writeElement(dest, MartusXml.FieldListElementName, MartusConstants.deprecatedCustomFieldSpecs);
-		//dest.writeDirect(fieldSpecs.toString());
 		Iterator iterator = fieldData.keySet().iterator();
 		while(iterator.hasNext())
 		{

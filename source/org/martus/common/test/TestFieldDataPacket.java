@@ -32,8 +32,10 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Arrays;
 
+import org.martus.common.CustomFields;
 import org.martus.common.FieldSpec;
 import org.martus.common.LegacyCustomFields;
+import org.martus.common.MartusConstants;
 import org.martus.common.MartusUtilities;
 import org.martus.common.MartusXml;
 import org.martus.common.XmlWriterFilter;
@@ -283,7 +285,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 			{
 				super.internalWriteXml(dest);
 				writeElement(dest, "UnknownTagHere", "blah");
-				writeElement(dest, MartusXml.FieldElementPrefix + aTag, "data");
+				writeElement(dest, MartusXml.FieldElementPrefix + bTag, "data");
 			}
 		}
 		
@@ -314,7 +316,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		ByteArrayInputStreamWithSeek in2 = new ByteArrayInputStreamWithSeek(bytes2);
 		fdp.loadFromXml(in2, security);
 		assertTrue("encrypted no unknown tags?", fdp.hasUnknownTags());
-		assertEquals("encrypted lost data after unknown aTag?", "data", fdp.get(aTag));
+		assertEquals("encrypted lost data after unknown bTag?", "data", fdp.get(bTag));
 	}
 
 	public void testLoadFromXmlWithSpaces() throws Exception
@@ -435,12 +437,10 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		assertContains(data1, result);
 		assertContains(data2base + xmlAmp + xmlLt + xmlGt, result);
 
-		assertContains(fieldListForTesting, result);
-		//TODO The following three lines should be restored as soon as 
-		// FieldDataPackets can correctly read <CustomField> tags
-		//CustomFields fields = new CustomFields(fieldTags);
-		//assertContains(MartusConstants.deprecatedCustomFieldSpecs, result);
-		//assertContains(fields.toString(), result);
+		assertNotContains(fieldListForTesting, result);
+		CustomFields fields = new CustomFields(fieldTags);
+		assertContains(MartusConstants.deprecatedCustomFieldSpecs, result);
+		assertContains(fields.toString(), result);
 	}
 	
 	public void testWriteXmlCustomField() throws Exception
@@ -455,12 +455,11 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		
 		String rawFieldList = LegacyCustomFields.buildFieldListString(specs);
 		String encodedFieldList = MartusUtilities.getXmlEncoded(rawFieldList);
-		assertContains(encodedFieldList, result);
-		//TODO The following three lines should be restored as soon as 
-		// FieldDataPackets can correctly read <CustomField> tags
-		//CustomFields fields = new CustomFields(fieldTags);
-		//assertContains(MartusConstants.deprecatedCustomFieldSpecs, result);
-		//assertContains(fields.toString(), result);
+		assertNotContains(encodedFieldList, result);
+
+		CustomFields fields = new CustomFields(specs);
+		assertContains(MartusConstants.deprecatedCustomFieldSpecs, result);
+		assertContains(fields.toString(), result);
 	}
 
 	public void testWriteAndLoadXml() throws Exception

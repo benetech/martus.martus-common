@@ -28,6 +28,7 @@ package org.martus.common.packet;
 
 import java.util.Vector;
 
+import org.martus.common.CustomFields;
 import org.martus.common.MartusXml;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.crypto.SessionKey;
@@ -54,6 +55,8 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 			return new XmlFieldLoader(tag);
 		else if(tag.equals(MartusXml.AttachmentElementName))
 			return new XmlAttachmentLoader(tag);
+		else if(tag.equals(MartusXml.CustomFieldSpecsElementName))
+			return new CustomFields.CustomFieldLoader(tag, new CustomFields());
 		else if(getTagsContainingStrings().contains(tag))
 			return new SimpleXmlStringLoader(tag);
 		else
@@ -76,6 +79,11 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 			{
 				XmlAttachmentLoader loader = (XmlAttachmentLoader)ended;
 					fdp.addAttachment(loader.getAttachmentProxy(fdp.getAccountId()));
+			}
+			else if(tag.equals(MartusXml.CustomFieldSpecsElementName))
+			{
+				CustomFields.CustomFieldLoader loader = (CustomFields.CustomFieldLoader)ended;
+				fdp.setCustomFields(loader.getFields());
 			}
 			else if(getTagsContainingStrings().contains(tag))
 			{

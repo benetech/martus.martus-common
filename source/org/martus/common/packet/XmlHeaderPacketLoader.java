@@ -61,13 +61,20 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 		throws SAXParseException
 	{
 		String tag = ended.getTag();
-		if(!getTagsContainingStrings().contains(tag))
+		if(getTagsContainingStrings().contains(tag))
+			endStringElement(ended);
+		else
 			super.endElement(ended);
+	}
 
-		String value = ((SimpleXmlStringLoader)ended).getText();
+	private void endStringElement(SimpleXmlDefaultLoader ended)
+		throws SAXParseException
+	{
 		
 		try
 		{
+			String tag = ended.getTag();
+			String value = ((SimpleXmlStringLoader)ended).getText();
 			if(tag.equals(MartusXml.BulletinStatusElementName))
 				bhp.setStatus(value);
 			else if(tag.equals(MartusXml.LastSavedTimeElementName))

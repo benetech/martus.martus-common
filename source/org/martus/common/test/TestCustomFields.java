@@ -47,7 +47,7 @@ public class TestCustomFields extends TestCase
 		String xml = "<CustomFields>\n";
 		for(int i=0; i < specs.length; ++i)
 			xml += specs[i].toString() + "\n";
-		xml += "</CustomFields>";
+		xml += "</CustomFields>\n";
 		assertEquals(xml, fields.toString());
 	}
 

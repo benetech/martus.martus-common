@@ -60,20 +60,6 @@ public class BulletinForTesting extends Bulletin
 		return super.createHeaderPacket(headerUid);
 	}
 	
-	static class HeaderPacketWithUnknownTag extends BulletinHeaderPacket
-	{
-		public HeaderPacketWithUnknownTag(UniversalId universalIdToUse)
-		{
-			super(universalIdToUse);
-		}
-
-		protected void internalWriteXml(XmlWriterFilter dest) throws IOException
-		{
-			super.internalWriteXml(dest);
-			writeElement(dest, "UnknownTag", "");
-		}
-	}
-	
 	static class FieldDataPacketWithUnknownCustomField extends FieldDataPacket
 	{
 		public FieldDataPacketWithUnknownCustomField(UniversalId universalIdToUse, FieldSpec[] fieldSpecsToUse)

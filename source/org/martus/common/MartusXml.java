@@ -111,4 +111,5 @@ public class MartusXml
 	public final static String AttachmentElementName = "Attachment";
 	public final static String AttachmentBytesElementName = "AttachmentData";
 	public final static String AttachmentKeyElementName = "AttachmentSessionKey";
+	public static final String CustomFieldSpecsElementName = "CustomFields";
 }

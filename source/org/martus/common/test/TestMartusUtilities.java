@@ -433,7 +433,7 @@ public class TestMartusUtilities extends TestCaseEnhanced
 		BulletinSaver.saveToClientDatabase(b1, db, true, security);
 		BulletinHeaderPacket bhp = b1.getBulletinHeaderPacket();
 		int emptySize = MartusUtilities.getBulletinSize(db, bhp);
-		assertTrue("empty size not correct?", emptySize > 1000 && emptySize < 3000);
+		assertTrue("empty size not correct?", emptySize > 1000 && emptySize < 5000);
 		b1.set(Bulletin.TAGTITLE, "Title");
 		b1.set(Bulletin.TAGPUBLICINFO, "Details1");
 		b1.set(Bulletin.TAGPRIVATEINFO, "PrivateDetails1");

@@ -42,6 +42,11 @@ public class XmlPacketLoader extends SimpleXmlDefaultLoader
 		packet = packetToFill;
 	}
 	
+	public void startDocument()
+	{
+		packet.setHasUnknownTags(false);
+	}
+	
 	public SimpleXmlDefaultLoader startElement(String tag)
 		throws SAXParseException
 	{
@@ -81,6 +86,12 @@ public class XmlPacketLoader extends SimpleXmlDefaultLoader
 			e.printStackTrace();
 			throw new SAXParseException(e.getMessage(), null);
 		}
+	}
+	
+	public void endDocument()
+	{
+		if(foundUnknownTags())
+			packet.setHasUnknownTags(true);
 	}
 	
 	private Vector getTagsContainingStrings()

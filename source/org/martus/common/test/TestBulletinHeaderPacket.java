@@ -271,6 +271,9 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 
 	public void testLoadXml() throws Exception
 	{
+		UniversalId uid = HeaderPacketWithUnknownTag.createUniversalId(security.getPublicKeyString());
+		HeaderPacketWithUnknownTag bhp = new HeaderPacketWithUnknownTag(uid);
+		
 		String dataId = "some id";
 		String privateId = "private id";
 		String sampleStatus = "draft or whatever";
@@ -305,6 +308,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		assertEquals("data sig", true, Arrays.equals(sampleSig1, loaded.getFieldDataSignature()));
 		assertEquals("private data sig", true, Arrays.equals(sampleSig2, loaded.getPrivateFieldDataSignature()));
 		assertEquals("hqKey", "", loaded.getHQPublicKey());
+		assertTrue("No unknown?", loaded.hasUnknownTags());
 
 		String[] list = loaded.getPublicAttachmentIds();
 		assertEquals("public count", 2, list.length);
