@@ -49,6 +49,7 @@ import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinLoader;
 import org.martus.common.bulletin.BulletinSaver;
 import org.martus.common.bulletin.BulletinZipUtilities;
+import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.crypto.MartusCrypto.DecryptionException;
@@ -61,10 +62,10 @@ import org.martus.common.packet.UniversalId;
 import org.martus.common.packet.Packet.InvalidPacketException;
 import org.martus.common.packet.Packet.SignatureVerificationException;
 import org.martus.common.packet.Packet.WrongAccountException;
-import org.martus.util.*;
 import org.martus.util.Base64;
 import org.martus.util.ByteArrayInputStreamWithSeek;
 import org.martus.util.InputStreamWithSeek;
+import org.martus.util.TestCaseEnhanced;
 import org.martus.util.UnicodeReader;
 import org.martus.util.UnicodeWriter;
 
@@ -81,8 +82,7 @@ public class TestMartusUtilities extends TestCaseEnhanced
 		super.setUp();
 		if(security == null)
 		{
-			security = new MartusSecurity();
-			security.createKeyPair(512);
+			security = MockMartusSecurity.createClient();
 		}
     }
 
@@ -571,5 +571,5 @@ public class TestMartusUtilities extends TestCaseEnhanced
 		assertEquals(label + " didn't reset?", firstByte, in.read());
 	}
 
-	static MartusSecurity security;
+	static MartusCrypto security;
 }

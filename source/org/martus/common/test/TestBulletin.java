@@ -33,6 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+
 import org.martus.common.FieldSpec;
 import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
@@ -43,7 +44,7 @@ import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinConstants;
 import org.martus.common.bulletin.BulletinSaver;
 import org.martus.common.crypto.MartusCrypto;
-import org.martus.common.crypto.MartusSecurity;
+import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.MockClientDatabase;
 import org.martus.common.database.MockDatabase;
@@ -80,8 +81,7 @@ public class TestBulletin extends TestCaseEnhanced
 
 		if(security == null)
 		{
-			security = new MartusSecurity();
-			security.createKeyPair(512);
+			security = MockMartusSecurity.createClient();
 		}
 		db = new MockClientDatabase();
     }
@@ -483,5 +483,5 @@ public class TestBulletin extends TestCaseEnhanced
 	static AttachmentProxy proxy6;
 
 	static MockDatabase db;
-	static MartusSecurity security;
+	static MartusCrypto security;
 }

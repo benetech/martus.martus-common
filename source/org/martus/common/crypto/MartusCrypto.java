@@ -32,6 +32,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
 import java.util.Vector;
 
 import javax.net.ssl.KeyManager;
@@ -63,6 +66,8 @@ public abstract class MartusCrypto
 	}
 
 	// one-shot signature methods
+	public abstract boolean verifySignature(InputStream inputStream, byte[] signature) throws
+		MartusSignatureException;
 	public abstract byte[] createSignatureOfStream(InputStream inputStream) throws
 		MartusSignatureException;
 	public abstract boolean isValidSignatureOfStream(String publicKeyString, InputStream inputStream, byte[] signature) throws
@@ -187,7 +192,7 @@ public abstract class MartusCrypto
 		String digest = null;
 		try
 		{
-			digest = MartusSecurity.createDigestString(publicKeyString);
+			digest = MartusCrypto.createDigestString(publicKeyString);
 		}
 		catch(Exception e)
 		{
@@ -236,7 +241,7 @@ public abstract class MartusCrypto
 	{
 		try
 		{
-			byte[] rawDigest = MartusSecurity.createDigestBytes(anyString);
+			byte[] rawDigest = MartusCrypto.createDigestBytes(anyString);
 			return MartusUtilities.byteArrayToHexString(rawDigest);
 		}
 		catch (Exception e)
@@ -288,5 +293,31 @@ public abstract class MartusCrypto
 	public static class MartusSignatureException extends CryptoException {}
 	public static class CreateDigestException extends CryptoException {}
 	public static class KeyShareException extends Exception	{}
+	public static String getKeyString(Key key) {
+		if(key == null)
+			return null;
+		return Base64.encode(key.getEncoded());
+	}
+	public static String createDigestString(String inputText) throws CreateDigestException {
+		try
+		{
+			byte[] result = createDigestBytes(inputText);
+			return Base64.encode(result);
+		}
+		catch (Exception e)
+		{
+			throw new CreateDigestException();
+		}
+	}
+	public static byte[] createDigestBytes(String inputText) throws UnsupportedEncodingException, NoSuchAlgorithmException, IOException {
+		byte[] bytesToDigest = inputText.getBytes("UTF-8");
+		return createDigest(bytesToDigest);
+	}
+	public static byte[] createDigest(byte[] bytesToDigest) throws NoSuchAlgorithmException, IOException {
+		ByteArrayInputStream in = new ByteArrayInputStream(bytesToDigest);
+		byte[] result = MartusSecurity.createDigest(in);
+		in.close();
+		return result;
+	}
 
 }

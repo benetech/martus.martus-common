@@ -36,15 +36,16 @@ import java.util.Arrays;
 
 import org.martus.common.MartusXml;
 import org.martus.common.bulletin.AttachmentProxy;
-import org.martus.common.crypto.MartusSecurity;
+import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.crypto.SessionKey;
 import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.UniversalId;
 import org.martus.common.packet.XmlBase64Exporter;
-import org.martus.util.*;
 import org.martus.util.Base64;
 import org.martus.util.ByteArrayInputStreamWithSeek;
 import org.martus.util.FileInputStreamWithSeek;
+import org.martus.util.TestCaseEnhanced;
 import org.martus.util.xml.SimpleXmlParser;
 
 
@@ -69,9 +70,7 @@ public class TestAttachmentPacket extends TestCaseEnhanced
 		}
 		if(security == null)
 		{
-			int SHORTEST_LEGAL_KEY_SIZE = 512;
-			security = new MartusSecurity();
-			security.createKeyPair(SHORTEST_LEGAL_KEY_SIZE);
+			security = MockMartusSecurity.createClient();
 		}
 	}
 
@@ -170,8 +169,7 @@ public class TestAttachmentPacket extends TestCaseEnhanced
 		inFile.close();
 		assertEquals("bad data?", true, Arrays.equals(sampleBytes, fileBytes));
 
-		int SHORTEST_LEGAL_KEY_SIZE = 512;
-		security.createKeyPair(SHORTEST_LEGAL_KEY_SIZE);
+		security = null;
 		
 		decryptedFile.delete();
 	}
@@ -285,5 +283,5 @@ public class TestAttachmentPacket extends TestCaseEnhanced
 */
 	static File tempFile;
 	byte[] sampleBytes = {1,1,2,0,3,5,127,7,11};
-	static MartusSecurity security;
+	static MartusCrypto security;
 }

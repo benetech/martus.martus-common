@@ -38,14 +38,14 @@ import org.martus.common.StandardFieldSpecs;
 import org.martus.common.VersionBuildDate;
 import org.martus.common.XmlWriterFilter;
 import org.martus.common.crypto.MartusCrypto;
-import org.martus.common.crypto.MartusSecurity;
+import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.Packet;
 import org.martus.common.packet.UniversalId;
 import org.martus.common.packet.Packet.WrongAccountException;
-import org.martus.util.*;
 import org.martus.util.ByteArrayInputStreamWithSeek;
+import org.martus.util.TestCaseEnhanced;
 
 public class TestPacket extends TestCaseEnhanced
 {
@@ -59,8 +59,7 @@ public class TestPacket extends TestCaseEnhanced
     	super.setUp();
     	if(security == null)
     	{
-			security = new MartusSecurity();
-			security.createKeyPair(SHORTEST_LEGAL_KEY_SIZE);
+			security = MockMartusSecurity.createClient();
     	}
     }
 
@@ -161,7 +160,7 @@ public class TestPacket extends TestCaseEnhanced
 	public void testWriteAndLoadUtf8() throws Exception
 	{
 		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security);
-		String utf8Data = "ßÑñú";
+		String utf8Data = "????";
 		bhp.setFieldDataPacketId(utf8Data);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		bhp.writeXml(out, security);
@@ -290,14 +289,14 @@ public class TestPacket extends TestCaseEnhanced
 	public void testVerifyGoodPacket() throws Exception
 	{
 		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security);
-		bhp.setPrivateFieldDataPacketId("Josée");
+		bhp.setPrivateFieldDataPacketId("Jos?e");
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		bhp.writeXml(out, security);
 
 		byte[] bytes = out.toByteArray();
 		ByteArrayInputStreamWithSeek in0 = new ByteArrayInputStreamWithSeek(bytes);
 		Packet.verifyPacketSignature(in0, security);
-		assertEquals("UTF", "Josée",bhp.getPrivateFieldDataPacketId());
+		assertEquals("UTF", "Jos?e",bhp.getPrivateFieldDataPacketId());
 	}
 
 	public void testVerifyGoodPacketWithAnotherAccount() throws Exception
@@ -308,8 +307,8 @@ public class TestPacket extends TestCaseEnhanced
 
 		byte[] bytes = out.toByteArray();
 		ByteArrayInputStreamWithSeek in0 = new ByteArrayInputStreamWithSeek(bytes);
-		security.createKeyPair(SHORTEST_LEGAL_KEY_SIZE);
-		Packet.verifyPacketSignature(in0, security);
+		MartusCrypto security2 = MockMartusSecurity.createOtherClient();
+		Packet.verifyPacketSignature(in0, security2);
 	}
 
 	public void testVerifyPacketWithCorruptedStartComment() throws Exception
@@ -546,7 +545,5 @@ public class TestPacket extends TestCaseEnhanced
 
 	}
 
-	static MartusSecurity security;
-	int SHORTEST_LEGAL_KEY_SIZE = 512;
-
+	static MartusCrypto security;
 }

@@ -35,11 +35,12 @@ import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinLoader;
 import org.martus.common.bulletin.BulletinSaver;
-import org.martus.common.crypto.MartusSecurity;
+import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.MockClientDatabase;
 import org.martus.common.database.MockDatabase;
-import org.martus.util.*;
+import org.martus.util.TestCaseEnhanced;
 
 
 public class TestBulletinSaver extends TestCaseEnhanced
@@ -70,8 +71,7 @@ public class TestBulletinSaver extends TestCaseEnhanced
 
 		if(security == null)
 		{
-			security = new MartusSecurity();
-			security.createKeyPair(512);
+			security = MockMartusSecurity.createClient();
 		}
 
 		db = new MockClientDatabase();
@@ -341,6 +341,6 @@ public class TestBulletinSaver extends TestCaseEnhanced
 	static AttachmentProxy proxy6;
 
 	static MockDatabase db;
-	static MartusSecurity security;
+	static MartusCrypto security;
 
 }

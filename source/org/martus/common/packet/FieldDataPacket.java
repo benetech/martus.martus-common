@@ -45,7 +45,6 @@ import org.martus.common.MartusXml;
 import org.martus.common.XmlWriterFilter;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.crypto.MartusCrypto;
-import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.DecryptionException;
 import org.martus.util.Base64;
@@ -222,7 +221,7 @@ public class FieldDataPacket extends Packet
 			String encryptedData = loader.encryptedData;
 			if(encryptedData != null)
 			{
-				String publicCodeOfSecurity = MartusSecurity.computePublicCode(security.getPublicKeyString());
+				String publicCodeOfSecurity = MartusCrypto.computePublicCode(security.getPublicKeyString());
 				SessionKey encryptedHQSessionKey = loader.GetHQSessionKey(publicCodeOfSecurity);
 				loadEncryptedXml(encryptedData, encryptedHQSessionKey, security);
 			}

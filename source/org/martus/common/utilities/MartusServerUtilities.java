@@ -461,7 +461,7 @@ public class MartusServerUtilities
 				bulletinLocalId + newline +
 				timeStamp + newline +
 				Base64.encode(partOfPrivateKey) + newline;
-		String digest = MartusSecurity.createDigestString(stringToDigest);
+		String digest = MartusCrypto.createDigestString(stringToDigest);
 		return 
 			BULLETIN_UPLOAD_RECORD_IDENTIFIER + newline + 
 			bulletinLocalId + newline +

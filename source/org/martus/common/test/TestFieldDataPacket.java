@@ -46,6 +46,7 @@ import org.martus.common.XmlWriterFilter;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusSecurity;
+import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.UniversalId;
 import org.martus.common.packet.Packet.SignatureVerificationException;
@@ -66,13 +67,11 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		super.setUp();
 		if(security == null)
 		{
-			security = new MartusSecurity();
-			security.createKeyPair(SHORTEST_LEGAL_KEY_SIZE);
+			security = MockMartusSecurity.createClient();
 		}
 		if(securityHQ == null)
 		{
-			securityHQ = new MartusSecurity();
-			securityHQ.createKeyPair(SHORTEST_LEGAL_KEY_SIZE);
+			securityHQ = MockMartusSecurity.createHQ();
 		}
 		UniversalId uid = FieldDataPacket.createUniversalId(security);
 		fdp = new FieldDataPacket(uid, fieldTags);
@@ -195,7 +194,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 	{
 		String account = "asbid";
 		String id = "1234567";
-		String data1 = "data 1í";
+		String data1 = "data 1?";
 		String simpleFieldDataPacket =
 			"<FieldDataPacket>\n" +
 			"<" + MartusXml.PacketIdElementName + ">" + id +
@@ -235,7 +234,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 	{
 		String account = "asbid";
 		String id = "1234567";
-		String data1 = "data 1í";
+		String data1 = "data 1?";
 		String label = "\"<Town> \"";
 		String simpleFieldDataPacket =
 			"<FieldDataPacket>\n" +
@@ -330,7 +329,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 	{
 		String account = "asbid";
 		String id = "1234567";
-		String data1 = "data 1í";
+		String data1 = "data 1?";
 		FieldSpec field = LegacyCustomFields.createFromLegacy("custom1");
 		CustomFields fields = new CustomFields(new FieldSpec[] {field});
 		
@@ -551,7 +550,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		UniversalId uid1 = UniversalIdForTesting.createFromAccountAndPrefix(account, "A");
 		UniversalId uid2 = UniversalIdForTesting.createFromAccountAndPrefix(account, "A");
 		AttachmentProxy attach1 = new AttachmentProxy(new File("attachment 1"));
-		AttachmentProxy attach2 = new AttachmentProxy(new File("attachmenté 2"));
+		AttachmentProxy attach2 = new AttachmentProxy(new File("attachment? 2"));
 		attach1.setUniversalIdAndSessionKey(uid1, security.createSessionKey());
 		attach2.setUniversalIdAndSessionKey(uid2, security.createSessionKey());
 		fdp.set(aTag, data1);
@@ -694,8 +693,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 	public void testWriteAndLoadXmlEncryptedWithMultipleHQ() throws Exception
 	{
 		fdp.setEncrypted(true);
-		MartusSecurity seconndHQ = new MartusSecurity();
-		seconndHQ.createKeyPair(SHORTEST_LEGAL_KEY_SIZE);
+		MartusSecurity seconndHQ = MockMartusSecurity.createOtherServer();
 		HQKeys keys = new HQKeys();
 		HQKey key1 = new HQKey(securityHQ.getPublicKeyString());
 		HQKey key2 = new HQKey(seconndHQ.getPublicKeyString());
@@ -817,7 +815,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 	};
 
 	int SHORTEST_LEGAL_KEY_SIZE = 512;
-	static MartusSecurity security;
-	static MartusSecurity securityHQ;
+	static MartusCrypto security;
+	static MartusCrypto securityHQ;
 	static final String fieldListForTesting = "<FieldList>" + aTag + ";" + bTag + ";" + cTag + "</FieldList>";
 }

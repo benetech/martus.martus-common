@@ -80,7 +80,7 @@ public class SimpleX509TrustManager implements X509TrustManager
 			{
 				if(expectedPublicCode == null)
 					throw new CertificateException("No key or code is trusted");
-				String certPublicKeyString = MartusSecurity.getKeyString(cert2.getPublicKey());
+				String certPublicKeyString = MartusCrypto.getKeyString(cert2.getPublicKey());
 				String certPublicCode = MartusCrypto.computePublicCode(certPublicKeyString);
 				if(expectedPublicCode.equals(certPublicCode))
 				{
@@ -91,22 +91,22 @@ public class SimpleX509TrustManager implements X509TrustManager
 			if(tryPublicKey == null)
 				throw new CertificateException("Key is not trusted");
 			cert1.verify(tryPublicKey);
-			String keyString = MartusSecurity.getKeyString(tryPublicKey);
+			String keyString = MartusCrypto.getKeyString(tryPublicKey);
 			setExpectedPublicKey(keyString);
 		}
 		catch (SignatureException e)
 		{
 			e.printStackTrace();
 			System.out.println("Failed cert: " + failedCert);
-			String key0 = MartusSecurity.getKeyString(cert0.getPublicKey());
-			String key1 = MartusSecurity.getKeyString(cert1.getPublicKey());
-			String key2 = MartusSecurity.getKeyString(cert2.getPublicKey());
+			String key0 = MartusCrypto.getKeyString(cert0.getPublicKey());
+			String key1 = MartusCrypto.getKeyString(cert1.getPublicKey());
+			String key2 = MartusCrypto.getKeyString(cert2.getPublicKey());
 			System.out.println("Cert0 public: " + key0);
 			if(!key0.equals(key1))
 				System.out.println("Cert1 public: " + key1);
 			System.out.println("Cert2 public: " + key2);
 			System.out.println("Cert2 public code: " + MartusCrypto.formatAccountIdForLog(key2));
-			String expectedKeyString = MartusSecurity.getKeyString(expectedPublicKey);
+			String expectedKeyString = MartusCrypto.getKeyString(expectedPublicKey);
 			System.out.println("Expected public code: " + MartusCrypto.formatAccountIdForLog(expectedKeyString));
 
 			throw new CertificateException(e.toString());
@@ -138,7 +138,7 @@ public class SimpleX509TrustManager implements X509TrustManager
 	
 	public String getExpectedPublicKey()
 	{
-		return MartusSecurity.getKeyString(expectedPublicKey);
+		return MartusCrypto.getKeyString(expectedPublicKey);
 	}
 	
 	public boolean wasCheckServerTrustedCalled()

@@ -1140,35 +1140,7 @@ public class MartusSecurity extends MartusCrypto
 		return cert;
 	}
 
-	public static String createDigestString(String inputText) throws CreateDigestException 
-	{
-		try
-		{
-			byte[] result = createDigestBytes(inputText);
-			return Base64.encode(result);
-		}
-		catch (Exception e)
-		{
-			throw new CreateDigestException();
-		}
-	}
-
-	public static byte[] createDigestBytes(String inputText) throws UnsupportedEncodingException, NoSuchAlgorithmException, IOException
-	{
-		byte[] bytesToDigest = inputText.getBytes("UTF-8");
-		return createDigest(bytesToDigest);
-	}
-
-	public static byte[] createDigest(byte[] bytesToDigest)
-		throws NoSuchAlgorithmException, IOException
-	{
-		ByteArrayInputStream in = new ByteArrayInputStream(bytesToDigest);
-		byte[] result = createDigest(in);
-		in.close();
-		return result;
-	}
-
-	private static byte[] createDigest(ByteArrayInputStream in)
+	protected static byte[] createDigest(ByteArrayInputStream in)
 		throws NoSuchAlgorithmException, IOException
 	{
 		MessageDigest digester = MessageDigest.getInstance(DIGEST_ALGORITHM);

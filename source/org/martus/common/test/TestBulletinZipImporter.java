@@ -334,5 +334,5 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 	static final int MODE_INVALID_DATA = 4;
 
 	static MockDatabase db;
-	static MartusSecurity security;
+	static MartusCrypto security;
 }

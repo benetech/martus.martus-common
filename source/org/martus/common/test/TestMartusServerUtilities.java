@@ -37,6 +37,7 @@ import java.util.Vector;
 import org.martus.common.ContactInfo;
 import org.martus.common.MartusUtilities.FileVerificationException;
 import org.martus.common.bulletin.Bulletin;
+import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.database.DatabaseKey;
@@ -62,8 +63,7 @@ public class TestMartusServerUtilities extends TestCaseEnhanced
 		
 		if(serverSecurity == null)
 		{
-			serverSecurity = new MartusSecurity();
-			serverSecurity.createKeyPair(512);
+			serverSecurity = MockMartusSecurity.createServer();
 		}
 
 		TRACE_END();
@@ -300,5 +300,5 @@ public class TestMartusServerUtilities extends TestCaseEnhanced
 		return file;
 	}
 
-	static MartusSecurity serverSecurity;
+	static MartusCrypto serverSecurity;
 }

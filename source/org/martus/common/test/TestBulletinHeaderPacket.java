@@ -28,10 +28,12 @@ package org.martus.common.test;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
+
 import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
 import org.martus.common.MartusXml;
-import org.martus.common.crypto.MartusSecurity;
+import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.UniversalId;
 import org.martus.util.Base64;
@@ -50,9 +52,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		super.setUp();
 		if(security == null)
 		{
-			int SHORTEST_LEGAL_KEY_SIZE = 512;
-			security = new MartusSecurity();
-			security.createKeyPair(SHORTEST_LEGAL_KEY_SIZE);
+			security = MockMartusSecurity.createClient();
 		}
 		if(bhp == null)
 			bhp = new BulletinHeaderPacket(security);
@@ -396,5 +396,5 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 	final String attachmentId4 = "4 first";
 
 	static BulletinHeaderPacket bhp;
-	static MartusSecurity security;
+	static MartusCrypto security;
 }
