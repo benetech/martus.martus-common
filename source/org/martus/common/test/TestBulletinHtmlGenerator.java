@@ -33,6 +33,7 @@ import org.martus.common.MiniLocalization;
 import org.martus.common.StandardFieldSpecs;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinHtmlGenerator;
+import org.martus.common.clientside.Localization;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.util.TestCaseEnhanced;
 
@@ -50,7 +51,10 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 		if(security == null)
 			security = MockMartusSecurity.createClient();
 		if(loc == null)
+		{
 			loc = new MiniLocalization(EnglishCommonStrings.strings);
+			loc.setCurrentLanguageCode(Localization.ENGLISH);
+		}
 		if(store == null)
 			store = new MockBulletinStore(this);
 

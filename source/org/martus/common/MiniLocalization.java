@@ -57,7 +57,6 @@ public class MiniLocalization
 	{
 		textResources = new TreeMap();
 		rightToLeftLanguages = new Vector();
-		setCurrentLanguageCode(ENGLISH);
 		setCurrentDateFormatCode(DateUtilities.MDY_SLASH.getCode());
 	}
 	
