@@ -90,6 +90,7 @@ public class UiBasicLocalization extends Localization
 		writer.writeln("#      file in your account's packets directory...)");
 		writer.writeln("#  7.  do not translate the words \"Martus\" or \"Benetech\"");
 		writer.writeln("#  8.  do NOT translate \"#S#\" (used for search string entry)");
+		writer.writeln("#  9.  do not translate #L# as is it used to populate lists of values on various dialogs.");
 		writer.writeln("#");
 		
 		SortedSet sorted = getAllKeysSorted();
