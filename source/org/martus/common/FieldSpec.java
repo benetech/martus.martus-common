@@ -190,6 +190,7 @@ public class FieldSpec
 		map.put(new Integer(TYPE_LANGUAGE), "LANGUAGE");
 		map.put(new Integer(TYPE_GRID), "GRID");
 		map.put(new Integer(TYPE_DROPDOWN), "DROPDOWN");
+		map.put(new Integer(TYPE_MESSAGE), "MESSAGE");
 		map.put(new Integer(TYPE_UNKNOWN), "UNKNOWN");
 		return map;
 	}
@@ -213,6 +214,8 @@ public class FieldSpec
 				spec = new GridFieldSpec();
 			else if(type == TYPE_DROPDOWN)
 				spec = new DropDownFieldSpec();
+			else if(type == TYPE_MESSAGE)
+				spec = new MessageFieldSpec();
 			else
 				spec = new FieldSpec(type);
 			super.startDocument(attrs);
@@ -227,6 +230,8 @@ public class FieldSpec
 				return new GridFieldSpec.GridSpecDetailsLoader((GridFieldSpec)spec);
 			else if(tag.equals(DropDownFieldSpec.DROPDOWN_SPEC_CHOICES_TAG))
 				return new DropDownFieldSpec.DropDownSpecLoader((DropDownFieldSpec)spec);
+			else if(tag.equals(MessageFieldSpec.MESSAGE_SPEC_MESSAGE_TAG))
+				return new MessageFieldSpec.MessageSpecLoader((MessageFieldSpec)spec);
 			
 			return super.startElement(tag);
 		}
@@ -262,6 +267,7 @@ public class FieldSpec
 	public static final int TYPE_BOOLEAN = 6;
 	public static final int TYPE_GRID = 7;
 	public static final int TYPE_DROPDOWN = 8;
+	public static final int TYPE_MESSAGE = 9;
 	public static final int TYPE_UNKNOWN = 99;
 	
 	public static final String FIELD_SPEC_XML_TAG = "Field";
