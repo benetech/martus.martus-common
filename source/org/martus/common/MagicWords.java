@@ -129,7 +129,7 @@ public class MagicWords
 		return magicWords;
 	}
 	
-	public Vector getInactiveMagicWords()
+	public Vector getInactiveMagicWordsWithNoSign()
 	{
 		Vector magicWords = new Vector();		
 		for(int i = 0; i<magicWordEntries.size(); ++i)
@@ -153,7 +153,7 @@ public class MagicWords
 	
 	public int getNumberOfInactiveWords()
 	{
-		return getInactiveMagicWords().size();
+		return getInactiveMagicWordsWithNoSign().size();
 	}
 	
 	public boolean contains(String magicWordToFind)
