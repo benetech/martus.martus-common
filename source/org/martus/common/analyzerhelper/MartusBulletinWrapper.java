@@ -30,12 +30,13 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.zip.ZipFile;
+
+import org.martus.common.BulletinStore;
 import org.martus.common.MartusUtilities.ServerErrorException;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinConstants;
 import org.martus.common.bulletin.BulletinLoader;
-import org.martus.common.bulletin.BulletinZipUtilities;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.database.ClientFileDatabase;
 import org.martus.common.database.DatabaseKey;
@@ -54,14 +55,16 @@ public class MartusBulletinWrapper
 			tempDirectory.deleteOnExit();
 			tempDirectory.delete();
 			tempDirectory.mkdirs();
+			File dbDirectory = new File(tempDirectory, "packets");
 	
-			ClientFileDatabase db = new ClientFileDatabase(tempDirectory, security);
-			db.initialize();
+			BulletinStore store = new BulletinStore();
+			store.setSignatureGenerator(security);
+			store.doAfterSigninInitialization(tempDirectory, new ClientFileDatabase(dbDirectory, security));
 			ZipFile zipFile = new ZipFile(bulletinZipFile);
-			BulletinZipUtilities.importBulletinPacketsFromZipFileToDatabase(db, null, zipFile, security);
+			store.importBulletinZipFile(zipFile);
 			zipFile.close();
 			DatabaseKey key = DatabaseKey.createLegacyKey(uid);
-			bulletin = BulletinLoader.loadFromDatabase(db, key, security);
+			bulletin = BulletinLoader.loadFromDatabase(store.getDatabase(), key, security);
 			if(bulletin == null)
 				throw new ServerErrorException("No Bulletin?");
 
@@ -69,7 +72,7 @@ public class MartusBulletinWrapper
 			//but mark them all deleteOnExit, and also implement a cleanup function which must be called when this object is no longer needed
 			//which will then delete the attachments, and the database.
 			deleteAllAttachments();
-			db.deleteAllData();
+			store.deleteAllData();
 
 		}
 		catch(Exception e)

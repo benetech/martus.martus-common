@@ -27,21 +27,27 @@ Boston, MA 02111-1307, USA.
 package org.martus.common;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.Vector;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import org.martus.common.MartusUtilities.FileVerificationException;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinZipUtilities;
 import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.crypto.StreamEncryptor;
 import org.martus.common.crypto.MartusCrypto.CryptoException;
 import org.martus.common.crypto.MartusCrypto.DecryptionException;
 import org.martus.common.crypto.MartusCrypto.NoKeyPairException;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.ReadableDatabase;
+import org.martus.common.database.Database.RecordHiddenException;
 import org.martus.common.database.FileDatabase.MissingAccountMapException;
 import org.martus.common.database.FileDatabase.MissingAccountMapSignatureException;
 import org.martus.common.packet.BulletinHeaderPacket;
@@ -52,16 +58,16 @@ import org.martus.common.packet.Packet.InvalidPacketException;
 import org.martus.common.packet.Packet.SignatureVerificationException;
 import org.martus.common.packet.Packet.WrongAccountException;
 import org.martus.common.packet.Packet.WrongPacketTypeException;
+import org.martus.common.utilities.MartusServerUtilities;
 import org.martus.util.InputStreamWithSeek;
+import org.martus.util.StreamCopier;
+import org.martus.util.StreamFilter;
+import org.martus.util.ZipEntryInputStream;
 import org.martus.util.Base64.InvalidBase64Exception;
 
 
 public class BulletinStore
 {
-	public BulletinStore()
-	{
-	}
-
 	public void doAfterSigninInitialization(File dataRootDirectory, Database db) throws FileVerificationException, MissingAccountMapException, MissingAccountMapSignatureException
 	{
 		dir = dataRootDirectory;
@@ -168,7 +174,7 @@ public class BulletinStore
 		ZipFile zip = new ZipFile(inputFile);
 		try
 		{
-			BulletinZipUtilities.importBulletinPacketsFromZipFileToDatabase(getWriteableDatabase(), null, zip, getSignatureVerifier());
+			importBulletinZipFile(zip);
 		}
 		catch (Database.RecordHiddenException shouldBeImpossible)
 		{
@@ -319,6 +325,104 @@ public class BulletinStore
 			String publicCode = MartusCrypto.getFormattedPublicCode(uId.getAccountId());
 			logger.log("Deleting " + publicCode + ": " + uId.getLocalId());
 		
+		}
+	}
+	
+	public void importBulletinZipFile(ZipFile zip) 
+		throws InvalidPacketException, 
+		SignatureVerificationException, 
+		DecryptionException, 
+		IOException, 
+		RecordHiddenException, 
+		WrongAccountException
+	{
+		importBulletinZipFile(zip, null);
+	}
+
+	public void importBulletinZipFile(ZipFile zip, String accountIdIfKnown) 
+		throws InvalidPacketException, 
+		SignatureVerificationException, 
+		DecryptionException, 
+		IOException, 
+		RecordHiddenException, 
+		WrongAccountException
+	{
+		importBulletinPacketsFromZipFileToDatabase(getWriteableDatabase(), accountIdIfKnown, zip, getSignatureVerifier());
+	}
+
+	public static void importBulletinPacketsFromZipFileToDatabase(Database db, String authorAccountId, ZipFile zip, MartusCrypto security)
+		throws IOException,
+		Database.RecordHiddenException,
+		Packet.InvalidPacketException,
+		Packet.SignatureVerificationException,
+		Packet.WrongAccountException,
+		MartusCrypto.DecryptionException
+	{
+		BulletinHeaderPacket header = BulletinHeaderPacket.loadFromZipFile(zip, security);
+		if(authorAccountId == null)
+			authorAccountId = header.getAccountId();
+	
+		BulletinZipUtilities.validateIntegrityOfZipFilePackets(authorAccountId, zip, security);
+		MartusUtilities.deleteDraftBulletinPackets(db, header.getUniversalId(), security);
+	
+		HashMap zipEntries = new HashMap();
+		StreamCopier copier = new StreamCopier();
+		StreamEncryptor encryptor = new StreamEncryptor(security);
+	
+		DatabaseKey[] keys = BulletinZipUtilities.getAllPacketKeys(header);
+		for (int i = 0; i < keys.length; i++)
+		{
+			String localId = keys[i].getLocalId();
+			ZipEntry entry = zip.getEntry(localId);
+	
+			InputStreamWithSeek in = new ZipEntryInputStream(zip, entry);
+	
+			final String tempFileName = "$$$importZip";
+			File file = File.createTempFile(tempFileName, null);
+			file.deleteOnExit();
+			FileOutputStream rawOut = new FileOutputStream(file);
+	
+			StreamFilter filter = copier;
+			if(db.mustEncryptLocalData() && MartusUtilities.doesPacketNeedLocalEncryption(header, in))
+				filter = encryptor;
+	
+			MartusUtilities.copyStreamWithFilter(in, rawOut, filter);
+	
+			rawOut.close();
+			in.close();
+	
+			UniversalId uid = UniversalId.createFromAccountAndLocalId(authorAccountId, keys[i].getLocalId());
+			DatabaseKey key = header.createKeyWithHeaderStatus(uid);
+	
+			zipEntries.put(key,file);
+		}
+		db.importFiles(zipEntries);
+	}
+
+	public BulletinHeaderPacket saveZipFileToDatabase(File zipFile, String authorAccountId)
+		throws
+			ZipException,
+			IOException,
+			Database.RecordHiddenException,
+			Packet.InvalidPacketException,
+			Packet.SignatureVerificationException,
+			MartusServerUtilities.SealedPacketExistsException,
+			MartusServerUtilities.DuplicatePacketException,
+			Packet.WrongAccountException,
+			MartusCrypto.DecryptionException
+	{
+		ZipFile zip = null;
+		try
+		{
+			zip = new ZipFile(zipFile);
+			BulletinHeaderPacket header = MartusServerUtilities.validateZipFilePacketsForServerImport(getWriteableDatabase(), authorAccountId, zip, getSignatureVerifier());
+			importBulletinZipFile(zip, authorAccountId);
+			return header;
+		}
+		finally
+		{
+			if(zip != null)
+				zip.close();
 		}
 	}
 

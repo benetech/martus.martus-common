@@ -45,14 +45,12 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import org.martus.common.BulletinStore;
 import org.martus.common.LoggerInterface;
 import org.martus.common.MartusUtilities;
 import org.martus.common.MartusUtilities.FileVerificationException;
-import org.martus.common.bulletin.BulletinZipUtilities;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
@@ -71,33 +69,6 @@ import org.martus.util.UnicodeWriter;
 
 public class MartusServerUtilities
 {
-	public static BulletinHeaderPacket saveZipFileToDatabase(Database db, String authorAccountId, File zipFile, MartusCrypto verifier)
-		throws
-			ZipException,
-			IOException,
-			Database.RecordHiddenException,
-			Packet.InvalidPacketException,
-			Packet.SignatureVerificationException,
-			SealedPacketExistsException,
-			DuplicatePacketException,
-			Packet.WrongAccountException,
-			MartusCrypto.DecryptionException
-	{
-		ZipFile zip = null;
-		try
-		{
-			zip = new ZipFile(zipFile);
-			BulletinHeaderPacket header = MartusServerUtilities.validateZipFilePacketsForServerImport(db, authorAccountId, zip, verifier);
-			BulletinZipUtilities.importBulletinPacketsFromZipFileToDatabase(db, authorAccountId, zip, verifier);
-			return header;
-		}
-		finally
-		{
-			if(zip != null)
-				zip.close();
-		}
-	}
-
 	public static BulletinHeaderPacket validateZipFilePacketsForServerImport(Database db, String authorAccountId, ZipFile zip, MartusCrypto security)
 		throws
 			Packet.InvalidPacketException,
