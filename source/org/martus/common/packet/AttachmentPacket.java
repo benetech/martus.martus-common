@@ -74,6 +74,11 @@ public class AttachmentPacket extends Packet
 		super(UniversalId.createDummyUniversalId());
 		security = crypto;
 	}
+	
+	public long getFileSize()
+	{
+		return rawFile.length();
+	}
 
 	public static UniversalId createUniversalId(MartusCrypto accountSecurity)
 	{
