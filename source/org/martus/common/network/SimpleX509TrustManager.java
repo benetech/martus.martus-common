@@ -35,7 +35,7 @@ import java.security.cert.X509Certificate;
 import javax.net.ssl.X509TrustManager;
 
 import org.martus.common.crypto.MartusCrypto;
-import org.martus.common.crypto.MartusKeyPair;
+import org.martus.common.crypto.MartusJceKeyPair;
 import org.martus.util.Base64;
 
 
@@ -134,7 +134,7 @@ public class SimpleX509TrustManager implements X509TrustManager
 
 	public void setExpectedPublicKey(String expectedPublicKeyToUse)
 	{
-		expectedPublicKey = MartusKeyPair.extractPublicKey(expectedPublicKeyToUse);
+		expectedPublicKey = MartusJceKeyPair.extractPublicKey(expectedPublicKeyToUse);
 		expectedPublicCode = null;
 	}
 	

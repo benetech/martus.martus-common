@@ -92,7 +92,7 @@ public class SignatureEngine
 	
 	private void prepareToVerify(String signedByPublicKey) throws Exception
 	{
-		PublicKey key = MartusKeyPair.extractPublicKey(signedByPublicKey);
+		PublicKey key = MartusJceKeyPair.extractPublicKey(signedByPublicKey);
 		engine.initVerify(key);
 	}
 

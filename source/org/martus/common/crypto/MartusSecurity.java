@@ -112,7 +112,7 @@ public class MartusSecurity extends MartusCrypto
 			sessionKeyGenerator = KeyGenerator.getInstance(SESSION_ALGORITHM_NAME, "BC");
 			keyFactory = SecretKeyFactory.getInstance(PBE_ALGORITHM, "BC");
 
-			keyPair = new MartusKeyPair(rand);
+			keyPair = new MartusJceKeyPair(rand);
 		}
 		catch(Exception e)
 		{
@@ -169,7 +169,7 @@ public class MartusSecurity extends MartusCrypto
 	public String getPrivateKeyString()
 	{
 		PrivateKey privateKey = getKeyPair().getPrivateKey();
-		return(MartusKeyPair.getKeyString(privateKey));
+		return(MartusJceKeyPair.getKeyString(privateKey));
 	}
 
 	public byte[] createSignatureOfStream(InputStream inputStream) throws
@@ -758,7 +758,7 @@ public class MartusSecurity extends MartusCrypto
 
 	public synchronized boolean isKeyPairValid(KeyPair candidatePair)
 	{
-		return MartusKeyPair.isKeyPairValid(candidatePair);
+		return MartusJceKeyPair.isKeyPairValid(candidatePair);
 	}
 
 	public byte[] decryptKeyPair(InputStream inputStream, char[] passPhrase) throws IOException
@@ -807,7 +807,7 @@ public class MartusSecurity extends MartusCrypto
 		try
 		{
 			keyPair.clear();
-			keyPair.createRSA(publicKeyBits, rand);
+			keyPair.createRSA(publicKeyBits);
 		}
 		catch(Exception e)
 		{
