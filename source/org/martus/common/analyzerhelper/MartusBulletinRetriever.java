@@ -112,6 +112,8 @@ public class MartusBulletinRetriever
 		try
 		{
 			File bulletinZipFile = serverSLL.retrieveBulletin(uid, security, NetworkInterfaceConstants.MAX_CHUNK_SIZE, progressMeter);
+			if(progressMeter != null && progressMeter.shouldExit())
+				return null;
 			MartusBulletinWrapper bulletin = new MartusBulletinWrapper(uid, bulletinZipFile, security);
 			bulletinZipFile.delete();
 			return bulletin;

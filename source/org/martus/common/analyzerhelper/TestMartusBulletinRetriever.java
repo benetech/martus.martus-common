@@ -408,6 +408,23 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		assertTrue("Should contain this sealed bulletin for field office 2", allFieldOfficesBulletinIds.contains(bulletinId4));
 	}
 	
+	class exitBulletinRetrieveProgressMeter implements ProgressMeterInterface
+	{
+
+		public void setStatusMessageTag(String message)
+		{
+		}
+
+		public void updateProgressMeter(int currentValue, int maxValue)
+		{
+		}
+
+		public boolean shouldExit()
+		{
+			return true;
+		}
+	}
+
 	public void testGetBulletin() throws Exception
 	{
 		NetworkInterface networkInterface = ClientSideNetworkGateway.buildNetworkInterface("1.2.3.4", serverSecurity.getPublicKeyString());
@@ -451,6 +468,9 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		assertEquals("Didn't get the correct title?", title, retrievedBulletin.getTitle());
 		assertEquals("Didn't get the correct location?", location, retrievedBulletin.getLocation());
 		assertEquals("Didn't get the correct private data?", privateData, retrievedBulletin.getPrivateInfo());
+		
+		MartusBulletinWrapper cancelledBulletin = retriever.getBulletin(bulletin.getUniversalId(), new exitBulletinRetrieveProgressMeter());
+		assertNull("Should return a null bulletin if cancelled.", cancelledBulletin);
 	}
 	
 	
