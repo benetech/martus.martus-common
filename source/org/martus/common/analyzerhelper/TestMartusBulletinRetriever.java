@@ -342,6 +342,7 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 				BulletinSaver.saveToClientDatabase(bulletinToRetrieve, db, true, security);
 				bulletinZipFile = createTempFileFromName("$$$TestBulletinWrapperZipFile");
 				BulletinZipUtilities.exportBulletinPacketsFromDatabaseToZipFile(db, bulletinToRetrieve.getDatabaseKeyForLocalId(bulletinToRetrieve.getLocalId()), bulletinZipFile, security);
+				db.deleteAllData();
 			}
 			catch(Exception e)
 			{
