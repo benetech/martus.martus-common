@@ -60,6 +60,11 @@ public class GridFieldSpec extends FieldSpec
 		return columns;
 	}
 	
+	public String getDefaultValue()
+	{
+		return "";
+	}
+
 	public String getDetailsXml()
 	{
 		String xml = MartusXml.getTagStartWithNewline(GRID_SPEC_DETAILS_TAG);

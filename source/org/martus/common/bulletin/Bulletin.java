@@ -283,9 +283,17 @@ public class Bulletin implements BulletinConstants
 		getPrivateFieldDataPacket().clearAll();
 		pendingPublicAttachments.clear();
 		getPendingPrivateAttachments().clear();
+		
+		FieldSpec[] specs = fieldData.getFieldSpecs();
+		for(int i = 0; i < specs.length; ++i)
+		{
+			set(specs[i].getTag(), specs[i].getDefaultValue());
+		}
+		
 		set(TAGENTRYDATE, getToday());
 		set(TAGEVENTDATE, getFirstOfThisYear());
-		set(TAGLASTSAVED, getLastSavedDateTime());		
+		set(TAGLASTSAVED, getLastSavedDateTime());
+		
 		setDraft();
 	}
 

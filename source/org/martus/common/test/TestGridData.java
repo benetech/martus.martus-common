@@ -212,20 +212,6 @@ public class TestGridData extends TestCaseEnhanced
 		assertEquals(modifiedData, grid.getValueAt(0,1));
 	}
 	
-	public static GridData createSampleGrid()
-	{
-		GridData grid = new GridData(2);
-		GridRow row1 = GridRow.createEmptyRow(2);
-		row1.setCellText(0, SAMPLE_DATA1);
-		row1.setCellText(1, SAMPLE_DATA2_RAW);
-		grid.addRow(row1);
-		GridRow row2 = GridRow.createEmptyRow(2);
-		row2.setCellText(0, SAMPLE_DATA3);
-		row2.setCellText(1, SAMPLE_DATA4);
-		grid.addRow(row2);
-		return grid;
-	}
-	
 	public void testXmlGridLoader() throws Exception
 	{
 		GridData original = createSampleGrid();
@@ -248,6 +234,7 @@ public class TestGridData extends TestCaseEnhanced
 		assertEquals("column 2 not empty?", "", grid.getValueAt(0,1));
 		assertEquals("column 3 not empty?", "", grid.getValueAt(0,2));
 		assertEquals("column 4 not empty?", "", grid.getValueAt(0,3));
+		assertEquals("Should return an empty string for no data", "", grid.getXmlRepresentation());
 	}
 	
 	public void testResetColumns() throws Exception
@@ -263,6 +250,20 @@ public class TestGridData extends TestCaseEnhanced
 		}
 		grid.setMaxColumns(2);
 		
+	}
+
+	public static GridData createSampleGrid()
+	{
+		GridData grid = new GridData(2);
+		GridRow row1 = GridRow.createEmptyRow(2);
+		row1.setCellText(0, SAMPLE_DATA1);
+		row1.setCellText(1, SAMPLE_DATA2_RAW);
+		grid.addRow(row1);
+		GridRow row2 = GridRow.createEmptyRow(2);
+		row2.setCellText(0, SAMPLE_DATA3);
+		row2.setCellText(1, SAMPLE_DATA4);
+		grid.addRow(row2);
+		return grid;
 	}
 
 	static public final String SAMPLE_DATA1 = "data1";

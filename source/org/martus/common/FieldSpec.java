@@ -30,6 +30,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.martus.common.bulletin.Bulletin;
+import org.martus.common.clientside.Localization;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlStringLoader;
 import org.xml.sax.Attributes;
@@ -43,7 +45,7 @@ public class FieldSpec
 		return new FieldSpec(tagToUse, "", typeToUse, false);
 	}
 	
-	FieldSpec(int typeToUse)
+	public FieldSpec(int typeToUse)
 	{
 		this("","",typeToUse,false);
 	}
@@ -87,6 +89,19 @@ public class FieldSpec
 	public int getType()
 	{
 		return type;
+	}
+	
+	public String getDefaultValue()
+	{
+		if(type == TYPE_BOOLEAN)
+			return FieldSpec.FALSESTRING;
+		if(type == TYPE_DATE)
+			return Bulletin.getToday();
+		if(type == TYPE_DATERANGE)
+			return Bulletin.getToday();
+		if(type == TYPE_LANGUAGE)
+			return Localization.LANGUAGE_OTHER;
+		return "";
 	}
 	
 	public boolean hasUnknownStuff()
@@ -209,5 +224,8 @@ public class FieldSpec
 	public static final String FIELD_SPEC_TAG_XML_TAG = "Tag";
 	public static final String FIELD_SPEC_LABEL_XML_TAG = "Label";
 	public static final String FIELD_SPEC_TYPE_ATTR = "type";
+
+	public static final String TRUESTRING = "1";
+	public static final String FALSESTRING = "0";
 
 }

@@ -115,8 +115,25 @@ public class GridData
 		SimpleXmlParser.parse(loader, xmlData);
 	}
 	
+	
+	public boolean isEmpty()
+	{
+		for(int i = 0; i < rows.size(); ++i)
+		{
+			GridRow contents = (GridRow)rows.get(i);
+			for(int j = 0; j < getColumnCount(); ++ j)
+			{
+				if(contents.getCellText(j).length() != 0 )
+					return false;
+			}
+		}
+		return true;
+	}
+	
 	public String getXmlRepresentation()
 	{
+		if(isEmpty())
+			return "";
 		String result = new String();
 		result += MartusXml.getTagStart(GRID_DATA_TAG, GRID_ATTRIBUTE_COLUMNS, Integer.toString(getColumnCount()))+ MartusXml.newLine;
 		for(int i = 0; i< rows.size(); ++i)

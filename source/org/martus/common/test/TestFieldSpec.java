@@ -27,7 +27,10 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.test;
 
 import org.martus.common.FieldSpec;
+import org.martus.common.GridFieldSpec;
 import org.martus.common.LegacyCustomFields;
+import org.martus.common.bulletin.Bulletin;
+import org.martus.common.clientside.Localization;
 import org.martus.util.TestCaseEnhanced;
 
 
@@ -73,6 +76,31 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertEquals("entrydate", dateField.getTag());
 		assertEquals("", dateField.getLabel());
 		assertEquals("not date?", FieldSpec.TYPE_DATE, dateField.getType());
+	}
+	
+	public void testDefaultValues()
+	{
+		String emptyString = "";
+		FieldSpec spec = new FieldSpec(FieldSpec.TYPE_BOOLEAN);
+		assertEquals(FieldSpec.FALSESTRING, spec.getDefaultValue());
+		
+		spec = new FieldSpec(FieldSpec.TYPE_DATE);
+		assertEquals(Bulletin.getToday(), spec.getDefaultValue());
+
+		spec = new FieldSpec(FieldSpec.TYPE_DATERANGE);
+		assertEquals(Bulletin.getToday(), spec.getDefaultValue());
+
+		spec = new GridFieldSpec();
+		assertEquals(emptyString, spec.getDefaultValue());
+		
+		spec = new FieldSpec(FieldSpec.TYPE_LANGUAGE);
+		assertEquals(Localization.LANGUAGE_OTHER, spec.getDefaultValue());
+		
+		spec = new FieldSpec(FieldSpec.TYPE_MULTILINE);
+		assertEquals(emptyString, spec.getDefaultValue());
+
+		spec = new FieldSpec(FieldSpec.TYPE_NORMAL);
+		assertEquals(emptyString, spec.getDefaultValue());
 	}
 	
 	public void testToString()

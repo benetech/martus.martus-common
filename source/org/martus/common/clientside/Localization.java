@@ -312,13 +312,14 @@ public class Localization
 	public static final String MARTUS_LANGUAGE_FILE_PREFIX = "Martus-";
 	public static final String MARTUS_LANGUAGE_FILE_SUFFIX = ".mtf";
 	
+	public static final String LANGUAGE_OTHER = "?";
 	public static final String ENGLISH = "en";
 	public static final String SPANISH = "es";
 	public static final String RUSSIAN = "ru";
 	public static final String THAI = "th";
 	public static final String[] AVAILABLE_MTF_LANGUAGE_RESOURCES = {SPANISH, RUSSIAN, THAI};
 	public static final String[] ALL_LANGUAGE_CODES = {
-				"?", ENGLISH, "ar",
+				LANGUAGE_OTHER, ENGLISH, "ar",
 				"az", "bn", "my","zh", "nl", "eo", "fa", "fr", "de","gu","ha","he","hi","hu",
 				"it", "ja","jv","kn","kk","ky","ko","ml","mr","or","pa","ps","pl","pt","ro",RUSSIAN,"sr",
 				"sr", "sd","si",SPANISH,"ta","tg","te",THAI,"tr","tk","uk","ur","uz","vi"};
