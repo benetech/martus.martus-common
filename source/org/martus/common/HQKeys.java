@@ -36,12 +36,68 @@ import org.xml.sax.SAXParseException;
 
 public class HQKeys
 {
+	public HQKeys()
+	{
+		hqKeys = new Vector();
+	}
+	
 	public HQKeys(Vector keysToUse)
 	{
 		hqKeys = keysToUse;
 	}
 	
+	public HQKeys(HQKey key) 
+	{
+		hqKeys = new Vector();
+		hqKeys.add(key);
+	}
+
+	public HQKeys(String xml) throws HQsException
+	{
+		hqKeys = parseXml(xml);	
+	}
+	
+	public boolean isEmpty()
+	{
+		return hqKeys.isEmpty();
+	}
+	
+	public int size()
+	{
+		return hqKeys.size();
+	}
+	
+	public void add(HQKey keyToAdd)
+	{
+		hqKeys.add(keyToAdd);
+	}
+	
+	public void remove(int index)
+	{
+		hqKeys.remove(index);
+	}
+	
+	public void clear()
+	{
+		hqKeys.clear();
+	}
+	
+	public HQKey get(int index)
+	{
+		return (HQKey)hqKeys.get(index);
+	}
+	
 	public String toString()
+	{
+		return getXMLRepresntation(DONT_INCLUDE_LABEL);
+	}
+
+	public String toStringWithLabel()
+	{
+		return getXMLRepresntation(INCLUDE_LABEL);
+	}
+	
+	private String getXMLRepresntation(boolean includeLabel)
 	{
 		String xmlRepresentation = MartusXml.getTagStartWithNewline(HQ_KEYS_TAG);
 		for(int i = 0; i < hqKeys.size(); ++i)
@@ -50,19 +106,22 @@ public class HQKeys
 			xmlRepresentation += MartusXml.getTagStart(HQ_PUBLIC_KEY_TAG);
 			xmlRepresentation += ((HQKey)hqKeys.get(i)).getPublicKey();
 			xmlRepresentation += MartusXml.getTagEndWithoutNewline(HQ_PUBLIC_KEY_TAG);
-			xmlRepresentation += MartusXml.getTagStart(HQ_LABEL_TAG);
-			xmlRepresentation += ((HQKey)hqKeys.get(i)).getLabel();
-			xmlRepresentation += MartusXml.getTagEndWithoutNewline(HQ_LABEL_TAG);
+			if(includeLabel)
+			{
+				xmlRepresentation += MartusXml.getTagStart(HQ_LABEL_TAG);
+				xmlRepresentation += ((HQKey)hqKeys.get(i)).getLabel();
+				xmlRepresentation += MartusXml.getTagEndWithoutNewline(HQ_LABEL_TAG);
+			}
 			xmlRepresentation += MartusXml.getTagEnd(HQ_KEY_TAG);
 		}
 		xmlRepresentation += MartusXml.getTagEnd(HQ_KEYS_TAG);
 		
 		return xmlRepresentation;
 	}
-	
+
 	public static class HQsException extends Exception {}
 
-	public static boolean containsKey(Vector hqKeys, String publicKey)
+	public boolean containsKey(String publicKey)
 	{
 		for (Iterator iter = hqKeys.iterator(); iter.hasNext();)
 		{
@@ -73,6 +132,17 @@ public class HQKeys
 		return false;
 	}
 
+	public String getLabelIfPresent(String publicKey)
+	{
+		for (Iterator iter = hqKeys.iterator(); iter.hasNext();)
+		{
+			HQKey key = (HQKey) iter.next();
+			if(key.getPublicKey().equals(publicKey))
+				return key.getLabel();
+		}
+		return "";
+	}
+	
 	public static Vector parseXml(String xml) throws HQsException
 	{
 		Vector hQs = new Vector();
@@ -123,5 +193,7 @@ public class HQKeys
 	public static final String HQ_KEY_TAG = "HQ";
 	public static final String HQ_PUBLIC_KEY_TAG = "PublicKey";
 	public static final String HQ_LABEL_TAG = "Label";
+	private final boolean DONT_INCLUDE_LABEL = false;
+	private final boolean INCLUDE_LABEL = true;
 	Vector hqKeys;
 }

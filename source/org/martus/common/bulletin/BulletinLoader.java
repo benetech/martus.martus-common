@@ -27,10 +27,9 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.bulletin;
 
 import java.io.IOException;
-import java.util.Vector;
-
-import org.martus.common.StandardFieldSpecs;
 import org.martus.common.FieldSpec;
+import org.martus.common.HQKeys;
+import org.martus.common.StandardFieldSpecs;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
@@ -87,7 +86,7 @@ public class BulletinLoader
 		}
 		else
 		{
-			Vector emptySetOfKeys = new Vector();
+			HQKeys emptySetOfKeys = new HQKeys();
 			b.setAuthorizedToReadKeys(emptySetOfKeys);
 			if(!isHeaderValid)
 			{

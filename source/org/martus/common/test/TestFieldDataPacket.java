@@ -31,13 +31,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Arrays;
-import java.util.Vector;
-
 import org.martus.common.AuthorizedSessionKeys;
 import org.martus.common.CustomFields;
 import org.martus.common.FieldSpec;
 import org.martus.common.GridData;
 import org.martus.common.HQKey;
+import org.martus.common.HQKeys;
 import org.martus.common.LegacyCustomFields;
 import org.martus.common.MartusConstants;
 import org.martus.common.MartusUtilities;
@@ -50,8 +49,8 @@ import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.UniversalId;
 import org.martus.common.packet.Packet.SignatureVerificationException;
-import org.martus.util.*;
 import org.martus.util.ByteArrayInputStreamWithSeek;
+import org.martus.util.TestCaseEnhanced;
 
 
 
@@ -90,11 +89,12 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		assertEquals("tag list", true, Arrays.equals(fieldTags, fdp.getFieldSpecs()));
 		assertEquals("HQ Keys not 0", 0, fdp.getAuthorizedToReadKeys().size());
 		String hqKey = "12345";
-		Vector keys = new Vector();
-		keys.add(hqKey);
+		HQKey key = new HQKey(hqKey);
+		HQKeys keys = new HQKeys(key);
+		keys.add(key);
 		
 		fdp.setAuthorizedToReadKeys(keys);
-		assertEquals("HQ Key not the same?", hqKey, fdp.getAuthorizedToReadKeys().get(0));
+		assertEquals("HQ Key not the same?", hqKey, fdp.getAuthorizedToReadKeys().get(0).getPublicKey());
 		fdp.clearAll();
 		assertEquals("HQ Key not cleared?", 0, fdp.getAuthorizedToReadKeys().size());
 	}
@@ -644,8 +644,8 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 	public void testWriteAndLoadXmlEncryptedWithHQ() throws Exception
 	{
 		fdp.setEncrypted(true);
-		Vector keys = new Vector();
-		HQKey key = new HQKey(securityHQ.getPublicKeyString(),"");
+		HQKeys keys = new HQKeys();
+		HQKey key = new HQKey(securityHQ.getPublicKeyString());
 		keys.add(key);
 		
 		fdp.setAuthorizedToReadKeys(keys);
@@ -697,9 +697,9 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		fdp.setEncrypted(true);
 		MartusSecurity seconndHQ = new MartusSecurity();
 		seconndHQ.createKeyPair(SHORTEST_LEGAL_KEY_SIZE);
-		Vector keys = new Vector();
-		HQKey key1 = new HQKey(securityHQ.getPublicKeyString(),"");
-		HQKey key2 = new HQKey(seconndHQ.getPublicKeyString(),"");
+		HQKeys keys = new HQKeys();
+		HQKey key1 = new HQKey(securityHQ.getPublicKeyString());
+		HQKey key2 = new HQKey(seconndHQ.getPublicKeyString());
 		keys.add(key1);
 		keys.add(key2);
 		

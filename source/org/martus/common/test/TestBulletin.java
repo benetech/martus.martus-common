@@ -33,12 +33,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Vector;
-
-import org.martus.common.HQKey;
-import org.martus.common.StandardFieldSpecs;
 import org.martus.common.FieldSpec;
+import org.martus.common.HQKey;
+import org.martus.common.HQKeys;
 import org.martus.common.MartusUtilities;
+import org.martus.common.StandardFieldSpecs;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinConstants;
@@ -50,7 +49,7 @@ import org.martus.common.database.MockClientDatabase;
 import org.martus.common.database.MockDatabase;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.FieldDataPacket;
-import org.martus.util.*;
+import org.martus.util.TestCaseEnhanced;
 
 
 public class TestBulletin extends TestCaseEnhanced
@@ -450,8 +449,8 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals("HQKey already set?", 0, original.getAuthorizedToReadKeys().size());
 		original.set(Bulletin.TAGPUBLICINFO, "public info");
 		String key = "12345";
-		Vector keys = new Vector();
-		HQKey key1 = new HQKey(key, "");
+		HQKeys keys = new HQKeys();
+		HQKey key1 = new HQKey(key);
 		keys.add(key1);
 		
 		original.setAuthorizedToReadKeys(keys);

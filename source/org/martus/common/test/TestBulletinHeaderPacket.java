@@ -28,16 +28,15 @@ package org.martus.common.test;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-import java.util.Vector;
-
 import org.martus.common.HQKey;
+import org.martus.common.HQKeys;
 import org.martus.common.MartusXml;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.UniversalId;
-import org.martus.util.*;
 import org.martus.util.Base64;
 import org.martus.util.ByteArrayInputStreamWithSeek;
+import org.martus.util.TestCaseEnhanced;
 
 public class TestBulletinHeaderPacket extends TestCaseEnhanced
 {
@@ -263,8 +262,8 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		String dataId = "this data id";
 		String privateId = "this data id";
 		String hqPublicKey = "hqkey123";
-		Vector hqKeys = new Vector();
-		HQKey hqKey = new HQKey(hqPublicKey, "");
+		HQKeys hqKeys = new HQKeys();
+		HQKey hqKey = new HQKey(hqPublicKey);
 		hqKeys.add(hqKey);
 		bhp.setAuthorizedToReadKeys(hqKeys);
 		bhp.setFieldDataPacketId(dataId);
@@ -343,8 +342,9 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 	public void testLoadXmlWithHQKey() throws Exception
 	{
 		String hqPublicKey = "sdjflksj";
-		Vector hqKeys = new Vector();
-		HQKey hqKey = new HQKey(hqPublicKey, "");
+		String hqLabel = "Should never be shown in BHP";
+		HQKeys hqKeys = new HQKeys();
+		HQKey hqKey = new HQKey(hqPublicKey, hqLabel);
 		hqKeys.add(hqKey);
 		bhp.setAuthorizedToReadKeys(hqKeys);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -358,16 +358,18 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 
 		assertEquals("hqKey", bhp.getLegacyHQPublicKey(), loaded.getLegacyHQPublicKey());
 		assertEquals("The # of authorized accounts not set by just setting the HQ Key?", 1, loaded.getAuthorizedToReadKeys().size());
-		assertEquals("hqKey not present in authorized list?", hqPublicKey, ((HQKey)loaded.getAuthorizedToReadKeys().get(0)).getPublicKey());
+		HQKey loadedKey = (HQKey)loaded.getAuthorizedToReadKeys().get(0);
+		assertEquals("hqKey not present in authorized list?", hqPublicKey, loadedKey.getPublicKey());
+		assertNotEquals("Should not contain label", hqLabel, loadedKey.getLabel());
 	}
 
 	public void testLoadXmlWithMultipleAuthorizedToReadKeys() throws Exception
 	{
 		String hqKey1 = "Key 1";
 		String hqKey2 = "Key 2";
-		Vector hqKeys = new Vector();
-		HQKey key1 = new HQKey(hqKey1, "");
-		HQKey key2 = new HQKey(hqKey2, "");
+		HQKeys hqKeys = new HQKeys();
+		HQKey key1 = new HQKey(hqKey1);
+		HQKey key2 = new HQKey(hqKey2);
 		hqKeys.add(key1);
 		hqKeys.add(key2);
 		bhp.setAuthorizedToReadKeys(hqKeys);

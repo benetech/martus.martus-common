@@ -31,10 +31,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
-import java.util.Vector;
-
 import org.martus.common.AuthorizedSessionKeys;
 import org.martus.common.HQKey;
+import org.martus.common.HQKeys;
 import org.martus.common.MartusXml;
 import org.martus.common.XmlWriterFilter;
 import org.martus.common.crypto.MartusCrypto;
@@ -48,7 +47,7 @@ class EncryptedFieldDataPacket extends Packet
 	EncryptedFieldDataPacket(UniversalId uid, String plainTextData, MartusCrypto crypto) throws IOException
 	{
 		super(uid);
-		authorizedToReadKeys = new Vector();
+		authorizedToReadKeys = new HQKeys();
 		security = crypto;
 		try
 		{
@@ -79,7 +78,7 @@ class EncryptedFieldDataPacket extends Packet
 		return MartusXml.FieldDataPacketElementName;
 	}
 
-	void setHQPublicKeys(Vector hqKeys)
+	void setHQPublicKeys(HQKeys hqKeys)
 	{
 		authorizedToReadKeys = hqKeys;
 	}
@@ -88,7 +87,7 @@ class EncryptedFieldDataPacket extends Packet
 	{
 		super.internalWriteXml(dest);
 		writeElement(dest, MartusXml.EncryptedFlagElementName, "");
-		if(authorizedToReadKeys.size() > 0)
+		if(!authorizedToReadKeys.isEmpty())
 		{
 			try
 			{
@@ -135,6 +134,6 @@ class EncryptedFieldDataPacket extends Packet
 
 	MartusCrypto security;
 	String encryptedData;
-	private Vector authorizedToReadKeys;
+	private HQKeys authorizedToReadKeys;
 	private SessionKey sessionKey;
 }

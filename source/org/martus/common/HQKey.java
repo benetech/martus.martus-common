@@ -31,6 +31,11 @@ import org.martus.util.Base64.InvalidBase64Exception;
 
 public class HQKey
 {
+	public HQKey(String publicKey)
+	{
+		this(publicKey, "");
+	}
+
 	public HQKey(String publicKey, String label)
 	{
 		super();

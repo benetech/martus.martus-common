@@ -66,7 +66,7 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 		if(getTagsContainingStrings().contains(tag))
 			endStringElement(ended);
 		else if(tag.equals(MartusXml.AccountsAuthorizedToReadElementName))
-			bhp.setAuthorizedToReadKeys(((AuthorizedToReadLoader)ended).authorizedKeys);
+			bhp.setAuthorizedToReadKeys(new HQKeys(((AuthorizedToReadLoader)ended).authorizedKeys));
 		else
 			super.endElement(tag, ended);
 	}

@@ -36,6 +36,7 @@ import java.util.GregorianCalendar;
 import java.util.Vector;
 
 import org.martus.common.FieldSpec;
+import org.martus.common.HQKeys;
 import org.martus.common.MartusUtilities;
 import org.martus.common.StandardFieldSpecs;
 import org.martus.common.crypto.MartusCrypto;
@@ -357,12 +358,12 @@ public class Bulletin implements BulletinConstants
 		return true;
 	}
 
-	public Vector getAuthorizedToReadKeys()
+	public HQKeys getAuthorizedToReadKeys()
 	{
 		return getBulletinHeaderPacket().getAuthorizedToReadKeys();
 	}
 
-	public void setAuthorizedToReadKeys(Vector authorizedKeys)
+	public void setAuthorizedToReadKeys(HQKeys authorizedKeys)
 	{
 		getBulletinHeaderPacket().setAuthorizedToReadKeys(authorizedKeys);
 		getFieldDataPacket().setAuthorizedToReadKeys(authorizedKeys);

@@ -32,8 +32,6 @@ import java.util.Enumeration;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
-import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
 import org.martus.common.MartusXml;
 import org.martus.common.XmlWriterFilter;
@@ -131,7 +129,7 @@ public class BulletinHeaderPacket extends Packet
 		return legacyHqPublicKey;
 	}
 
-	public Vector getAuthorizedToReadKeys()
+	public HQKeys getAuthorizedToReadKeys()
 	{
 		return authorizedToReadKeys;
 	}
@@ -147,21 +145,21 @@ public class BulletinHeaderPacket extends Packet
 			allHQsCanProxyUpload = true;
 	}
 
-	public Vector getAuthorizedToUploadKeys()
+	public HQKeys getAuthorizedToUploadKeys()
 	{
 		return authorizedToReadKeys;
 	}
 	
-	public void setAuthorizedToReadKeys(Vector accountsKeys)
+	public void setAuthorizedToReadKeys(HQKeys accountsKeys)
 	{
 		authorizedToReadKeys = accountsKeys;
-		if(accountsKeys.size()>0)
-			legacyHqPublicKey = ((HQKey)accountsKeys.get(0)).getPublicKey();
+		if(!accountsKeys.isEmpty())
+			legacyHqPublicKey = accountsKeys.get(0).getPublicKey();
 	}
 	
 	public boolean isHQAuthorizedToRead(String publicKey)
 	{
-		return(HQKeys.containsKey(authorizedToReadKeys,publicKey));
+		return authorizedToReadKeys.containsKey(publicKey);
 	}
 
 	public boolean isAuthorizedToUpload(String publicKey)
@@ -406,11 +404,10 @@ public class BulletinHeaderPacket extends Packet
 			writeElement(dest, MartusXml.PrivateAttachmentIdElementName, privateAttachmentIds[i]);
 		}
 
-		Vector authorizedToReadKeys = getAuthorizedToReadKeys();
-		if(authorizedToReadKeys.size() > 0)
+		HQKeys authorizedToReadKeys = getAuthorizedToReadKeys();
+		if(!authorizedToReadKeys.isEmpty())
 		{
-			HQKeys keys = new HQKeys(authorizedToReadKeys);
-			String value = keys.toString();
+			String value = authorizedToReadKeys.toString();
 			writeNonEncodedElement(dest, MartusXml.AccountsAuthorizedToReadElementName, value);			
 		}
 		writeElement(dest, MartusXml.AllHQSProxyUploadName, ALL_HQS_PROXY_UPLOAD);
@@ -435,7 +432,7 @@ public class BulletinHeaderPacket extends Packet
 		privateAttachments = new Vector();
 		legacyHqPublicKey = "";
 		lastSavedTime = TIME_UNKNOWN;
-		authorizedToReadKeys = new Vector();
+		authorizedToReadKeys = new HQKeys();
 	}
 
 	private final static String ALL_PRIVATE = "1";
@@ -455,6 +452,6 @@ public class BulletinHeaderPacket extends Packet
 	private Vector publicAttachments;
 	private Vector privateAttachments;
 	private static final String prefix = "B-";
-	private Vector authorizedToReadKeys;
+	private HQKeys authorizedToReadKeys;
 	private boolean allHQsCanProxyUpload;
 }

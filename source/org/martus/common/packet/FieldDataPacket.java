@@ -38,6 +38,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.martus.common.CustomFields;
 import org.martus.common.FieldSpec;
+import org.martus.common.HQKeys;
 import org.martus.common.LegacyCustomFields;
 import org.martus.common.MartusConstants;
 import org.martus.common.MartusXml;
@@ -62,7 +63,7 @@ public class FieldDataPacket extends Packet
 	{
 		super(universalIdToUse);
 		setFieldSpecs(fieldSpecsToUse);
-		authorizedToReadKeys = new Vector();
+		authorizedToReadKeys = new HQKeys();
 		clearAll();
 	}
 	
@@ -101,12 +102,12 @@ public class FieldDataPacket extends Packet
 		encryptedFlag = newValue;
 	}
 
-	public void setAuthorizedToReadKeys(Vector authorizedKeys)
+	public void setAuthorizedToReadKeys(HQKeys authorizedKeys)
 	{
 		authorizedToReadKeys = authorizedKeys;
 	}
 
-	public Vector getAuthorizedToReadKeys()
+	public HQKeys getAuthorizedToReadKeys()
 	{
 		return authorizedToReadKeys;
 	}
@@ -419,6 +420,6 @@ public class FieldDataPacket extends Packet
 	private Vector attachments;
 
 	private static final String prefix = "F-";
-	private Vector authorizedToReadKeys;
+	private HQKeys authorizedToReadKeys;
 }
 

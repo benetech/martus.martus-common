@@ -27,9 +27,8 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.test;
 
 import java.io.File;
-import java.util.Vector;
-
 import org.martus.common.HQKey;
+import org.martus.common.HQKeys;
 import org.martus.common.MartusXml;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.bulletin.Bulletin;
@@ -45,7 +44,7 @@ import org.martus.common.database.MockDatabase;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.UniversalId;
-import org.martus.util.*;
+import org.martus.util.TestCaseEnhanced;
 
 public class TestBulletinLoader extends TestCaseEnhanced
 {
@@ -179,8 +178,8 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		Bulletin original = new Bulletin(security);
 		original.set(Bulletin.TAGPUBLICINFO, "public info");
 		String key = security.getPublicKeyString();
-		Vector keys = new Vector();
-		HQKey key1 = new HQKey(key, "");
+		HQKeys keys = new HQKeys();
+		HQKey key1 = new HQKey(key);
 		keys.add(key1);
 		original.setAuthorizedToReadKeys(keys);
 		BulletinSaver.saveToClientDatabase(original, db, true, security);
@@ -220,8 +219,8 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		Bulletin b = new Bulletin(security);
 		b.set(Bulletin.TAGPUBLICINFO, samplePublic);
 		b.set(Bulletin.TAGPRIVATEINFO, samplePrivate);
-		Vector keys = new Vector();
-		HQKey key1 = new HQKey(b.getAccount(), "");
+		HQKeys keys = new HQKeys();
+		HQKey key1 = new HQKey(b.getAccount());
 		keys.add(key1);
 		b.setAuthorizedToReadKeys(keys);
 		saveAndVerifyValid("freshly created", b);

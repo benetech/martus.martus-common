@@ -40,15 +40,64 @@ public class testHQKeys extends TestCaseEnhanced
 		super(name);
 	}
 	
+	public void testBasics()
+	{
+		HQKeys hqKeys = new HQKeys();
+		assertTrue(hqKeys.isEmpty());
+		assertEquals(0, hqKeys.size());
+		String publicKey1 = "123";
+		HQKey key = new HQKey(publicKey1);
+		hqKeys.add(key);
+		assertEquals(1, hqKeys.size());
+		assertTrue(hqKeys.containsKey(publicKey1));
+		HQKey retrieved = hqKeys.get(0);
+		assertEquals(key.getPublicKey(), retrieved.getPublicKey());
+		assertEquals(key.getLabel(), retrieved.getLabel());
+		hqKeys.remove(0);
+		assertEquals(0, hqKeys.size());
+
+		String publicKey2 = "123";
+		String label2 = "abc";
+		HQKey key2 = new HQKey(publicKey2, label2);
+		hqKeys.add(key2);
+		assertEquals(label2, hqKeys.getLabelIfPresent(publicKey2));
+	}
+	
 	public void testEmpty()
 	{
-		HQKeys hqKeys = new HQKeys(new Vector());
+		HQKeys hqKeys = new HQKeys();
 		String xmlExpected = MartusXml.getTagStartWithNewline(HQKeys.HQ_KEYS_TAG) +
-		 MartusXml.getTagEnd(HQKeys.HQ_KEYS_TAG);
+		MartusXml.getTagEnd(HQKeys.HQ_KEYS_TAG);
 		assertEquals(xmlExpected, hqKeys.toString());
 	}
 	
 	public void testXmlRepresentation()
+	{
+		Vector keys = new Vector();
+		String key1 = "key 1";
+		String label1 = "label 1";
+		String key2 = "key 2";
+		String label2 = "label 2";
+		keys.add(new HQKey(key1, label1));
+		keys.add(new HQKey(key2, label2));
+		HQKeys hqKeys = new HQKeys(keys);
+		String xmlExpected = MartusXml.getTagStartWithNewline(HQKeys.HQ_KEYS_TAG) +
+		 MartusXml.getTagStart(HQKeys.HQ_KEY_TAG) + 
+		 MartusXml.getTagStart(HQKeys.HQ_PUBLIC_KEY_TAG) + 
+		 key1 +
+		 MartusXml.getTagEndWithoutNewline(HQKeys.HQ_PUBLIC_KEY_TAG) +
+		 MartusXml.getTagEnd(HQKeys.HQ_KEY_TAG) +
+		 MartusXml.getTagStart(HQKeys.HQ_KEY_TAG) + 
+		 MartusXml.getTagStart(HQKeys.HQ_PUBLIC_KEY_TAG) + 
+		 key2 +
+		 MartusXml.getTagEndWithoutNewline(HQKeys.HQ_PUBLIC_KEY_TAG) +
+		 MartusXml.getTagEnd(HQKeys.HQ_KEY_TAG) +
+		 MartusXml.getTagEnd(HQKeys.HQ_KEYS_TAG);
+		
+		assertEquals(xmlExpected, hqKeys.toString());
+	}
+
+	public void testXmlRepresentationWithLabels()
 	{
 		Vector keys = new Vector();
 		String key1 = "key 1";
@@ -77,8 +126,9 @@ public class testHQKeys extends TestCaseEnhanced
 		 MartusXml.getTagEnd(HQKeys.HQ_KEY_TAG) +
 		 MartusXml.getTagEnd(HQKeys.HQ_KEYS_TAG);
 		
-		assertEquals(xmlExpected, hqKeys.toString());
+		assertEquals(xmlExpected, hqKeys.toStringWithLabel());
 	}
+
 	
 	public void testParseXml() throws Exception
 	{
@@ -95,8 +145,7 @@ public class testHQKeys extends TestCaseEnhanced
 		HQKeys hqKeys2 = new HQKeys(newKeys);
 		
 		assertEquals(hqKeys.toString(), hqKeys2.toString());
-		
 	}
-	
+
 	
 }
