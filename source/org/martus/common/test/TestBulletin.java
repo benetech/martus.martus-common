@@ -527,6 +527,8 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals(2, original.getAuthorizedToReadKeys().size());
 		assertTrue(original.getAuthorizedToReadKeys().containsKey(key1.getPublicKey()));
 		assertTrue(original.getAuthorizedToReadKeys().containsKey(key2.getPublicKey()));
+		original.addAuthorizedToReadKeys(moreKeys);
+		assertEquals(2, original.getAuthorizedToReadKeys().size());
 		
 	}
 

@@ -34,6 +34,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.martus.common.FieldSpec;
+import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
 import org.martus.common.MartusUtilities;
 import org.martus.common.StandardFieldSpecs;
@@ -290,7 +291,14 @@ public class Bulletin implements BulletinConstants
 	public void addAuthorizedToReadKeys(HQKeys keysToAdd)
 	{
 		HQKeys keys = getAuthorizedToReadKeys();
-		keys.add(keysToAdd);
+		for(int i = 0; i < keysToAdd.size(); ++i)
+		{
+			HQKey keyToAdd = keysToAdd.get(i);
+			if(!keys.containsKey(keyToAdd.getPublicKey()))
+			{
+				keys.add(keyToAdd);
+			}
+		}
 		setAuthorizedToReadKeys(keys);
 	}
 	
