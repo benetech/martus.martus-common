@@ -151,6 +151,7 @@ public class AttachmentPacket extends Packet
 		{
 			throw new IOException(e.toString());
 		}
+		out.close();
 		inEncrypted.close();
 		encryptedFile.delete();
 	}
