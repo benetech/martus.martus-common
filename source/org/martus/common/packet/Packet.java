@@ -417,6 +417,8 @@ public class Packet
 	UniversalId uid;
 	boolean hasUnknown;
 
+	// NOTE: The following variables are used for diagnostics
+	// typically, we print the values to the console when Help/About is done
 	public static int callsToVerifyPacketSignature;
 	public static long millisInVerifyPacketSignature;
 }
