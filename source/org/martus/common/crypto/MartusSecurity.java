@@ -684,20 +684,6 @@ public class MartusSecurity extends MartusCrypto
 		}
 	}
 
-	public synchronized void signatureDigestByte(byte b) throws
-			MartusSignatureException
-	{
-		try
-		{
-			sigEngine.update(b);
-		}
-		catch(SignatureException e)
-		{
-			//System.out.println("signatureGet:" + e);
-			throw(new MartusSignatureException());
-		}
-	}
-
 	public synchronized void signatureDigestBytes(byte[] bytes) throws
 			MartusSignatureException
 	{
@@ -712,6 +698,50 @@ public class MartusSecurity extends MartusCrypto
 		}
 	}
 
+	public synchronized String createSignatureOfVectorOfStrings(Vector dataToSign) throws MartusCrypto.MartusSignatureException 
+	{
+		try
+		{
+			SignatureEngine signer = SignatureEngine.createSigner(getKeyPair());
+			for(int element = 0; element < dataToSign.size(); ++element)
+			{
+				String thisElement = dataToSign.get(element).toString();
+				byte[] bytesToSign = thisElement.getBytes("UTF-8");
+				signer.digest(bytesToSign);
+				signer.digest((byte)0);
+			}
+			return Base64.encode(signer.getSignature());
+		}
+		catch(Exception e)
+		{
+			// TODO: Needs tests!
+			e.printStackTrace();
+			System.out.println("ServerProxy.sign: " + e);
+			throw new MartusCrypto.MartusSignatureException();
+		}
+	}
+	public synchronized boolean verifySignatureOfVectorOfStrings(Vector dataToTest, String signedBy, String sig) 
+	{
+		try
+		{
+			SignatureEngine verifier = SignatureEngine.createVerifier(signedBy);
+			for(int element = 0; element < dataToTest.size(); ++element)
+			{
+				String thisElement = dataToTest.get(element).toString();
+				byte[] bytesToSign = thisElement.getBytes("UTF-8");
+				verifier.digest(bytesToSign);
+				verifier.digest((byte)0);
+			}
+			byte[] sigBytes = Base64.decode(sig);
+			return verifier.isValidSignature(sigBytes);
+		}
+		catch(Exception e)
+		{
+			return false;
+		}
+	}
+		
+	
 	public static String createRandomToken()
 	{
 		byte[] token = new byte[TOKEN_BYTE_COUNT];

@@ -70,58 +70,16 @@ public abstract class MartusCrypto
 		MartusSignatureException;
 	public abstract boolean isValidSignatureOfStream(String publicKeyString, InputStream inputStream, byte[] signature) throws
 		MartusSignatureException;
-	public synchronized String createSignatureOfVectorOfStrings(Vector dataToSign) throws MartusCrypto.MartusSignatureException {
-		try
-		{
-			signatureInitializeSign();
-			for(int element = 0; element < dataToSign.size(); ++element)
-			{
-				String thisElement = dataToSign.get(element).toString();
-				byte[] bytesToSign = thisElement.getBytes("UTF-8");
-				signatureDigestBytes(bytesToSign);
-				signatureDigestByte((byte)0);
-			}
-			return Base64.encode(signatureGet());
-		}
-		catch(Exception e)
-		{
-			// TODO: Needs tests!
-			e.printStackTrace();
-			System.out.println("ServerProxy.sign: " + e);
-			throw new MartusCrypto.MartusSignatureException();
-		}
-	}
+	public abstract String createSignatureOfVectorOfStrings(Vector dataToSign) throws MartusCrypto.MartusSignatureException;
+	public abstract boolean verifySignatureOfVectorOfStrings(Vector dataToTest, String signedBy, String sig);
 	public synchronized boolean verifySignatureOfVectorOfStrings(Vector dataToTestWithSignature, String signedBy) {
 		Vector dataToTest = (Vector)dataToTestWithSignature.clone();
 		String sig = (String)dataToTest.remove(dataToTest.size() - 1);
 		return verifySignatureOfVectorOfStrings(dataToTest, signedBy, sig);
 	}
-	public synchronized boolean verifySignatureOfVectorOfStrings(Vector dataToTest, String signedBy, String sig) {
-		try
-		{
-			signatureInitializeVerify(signedBy);
-			for(int element = 0; element < dataToTest.size(); ++element)
-			{
-				String thisElement = dataToTest.get(element).toString();
-				byte[] bytesToSign = thisElement.getBytes("UTF-8");
-				//TODO: might want to optimize this for speed
-				for(int b = 0; b < bytesToSign.length; ++b)
-					signatureDigestByte(bytesToSign[b]);
-				signatureDigestByte((byte)0);
-			}
-			byte[] sigBytes = Base64.decode(sig);
-			return signatureIsValid(sigBytes);
-		}
-		catch(Exception e)
-		{
-			return false;
-		}
-	}
 		
 	// multi-part signature methods
 	public abstract void signatureInitializeSign() throws
-		MartusSignatureException;
-	public abstract void signatureDigestByte(byte b) throws
 		MartusSignatureException;
 	public abstract void signatureDigestBytes(byte[] bytes) throws
 			MartusSignatureException;
