@@ -29,6 +29,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -39,13 +42,13 @@ public class MagicWords
 {
 	public MagicWords(LoggerInterface loggerToUse)
 	{
-		logger = loggerToUse;
-		magicWordEntries = new Vector();		
+		logger = loggerToUse;		
+		magicWordEntries = Collections.synchronizedList(new ArrayList());	
 	}
 	
-	public void loadMagicWords(File magicWordsFile) throws IOException
+	public synchronized void loadMagicWords(File magicWordsFile) throws IOException
 	{
-		magicWordEntries.removeAllElements();
+		magicWordEntries.clear();
 		try
 		{
 			UnicodeReader reader = new UnicodeReader(magicWordsFile);
@@ -65,7 +68,7 @@ public class MagicWords
 		}
 	}
 
-	public void writeMagicWords(File magicWordsFile, Vector newMagicWordsLineEntries) throws IOException
+	public synchronized void writeMagicWords(File magicWordsFile, Vector newMagicWordsLineEntries) throws IOException
 	{		
 		UnicodeWriter writer = new UnicodeWriter(magicWordsFile);
 		for (int i=0;i<newMagicWordsLineEntries.size();++i)
@@ -75,7 +78,7 @@ public class MagicWords
 		writer.close();			
 	}
 	
-	public MagicWordEntry add(String fileLineEntry)
+	public synchronized MagicWordEntry add(String fileLineEntry)
 	{
 		String magicWord = getMagicWordWithActiveSignFromLineEntry(fileLineEntry);
 		String group = getGroupNameFromLineEntry(fileLineEntry);
@@ -87,20 +90,20 @@ public class MagicWords
 		return entry;
 	}
 	
-	public MagicWordEntry add(String magicWordEntry, String group)
+	public synchronized MagicWordEntry add(String magicWordEntry, String group)
 	{					
 		MagicWordEntry entry = 	new MagicWordEntry(magicWordEntry, group);		
 		add(entry);
 		return entry;				
 	}
 	
-	public void add(MagicWordEntry wordEntry)
+	public synchronized void add(MagicWordEntry wordEntry)
 	{
 		if(!contains(wordEntry.getMagicWord()))			
 			magicWordEntries.add(wordEntry);
 	}
 	
-	public void remove(String magicWord)
+	public synchronized void remove(String magicWord)
 	{	
 		magicWordEntries.remove(getMagicWordEntry(magicWord));
 	}
@@ -115,21 +118,23 @@ public class MagicWords
 	
 	public Vector getAllMagicWords()
 	{
-		Vector magicWords = new Vector();		
-		for(int i = 0; i<magicWordEntries.size(); ++i)
+		Vector magicWords = new Vector();			
+		Collections.reverse(magicWordEntries);
+		
+		for (Iterator itr = magicWordEntries.iterator(); itr.hasNext();)
 		{
-			MagicWordEntry entry = (MagicWordEntry) magicWordEntries.get(i);
+			MagicWordEntry entry = (MagicWordEntry) itr.next();
 			magicWords.add(entry.getLineOfMagicWord());
-		}
+		}					
 		return magicWords;		
 	}
 	
 	public Vector getActiveMagicWords()
 	{
-		Vector magicWords = new Vector();		
-		for(int i = 0; i<magicWordEntries.size(); ++i)
+		Vector magicWords = new Vector();
+		for (Iterator itr = magicWordEntries.iterator(); itr.hasNext();)
 		{
-			MagicWordEntry entry = (MagicWordEntry)magicWordEntries.get(i);
+			MagicWordEntry entry = (MagicWordEntry)itr.next();
 			if(entry.isActive())
 				magicWords.add(entry.getLineOfMagicWord());
 		}
@@ -139,9 +144,9 @@ public class MagicWords
 	public Vector getInactiveMagicWordsWithNoSign()
 	{
 		Vector magicWords = new Vector();		
-		for(int i = 0; i<magicWordEntries.size(); ++i)
+		for (Iterator itr = magicWordEntries.iterator(); itr.hasNext();)
 		{
-			MagicWordEntry entry = (MagicWordEntry)magicWordEntries.get(i);			
+			MagicWordEntry entry = (MagicWordEntry) itr.next();			
 			if(!entry.isActive())
 				magicWords.add(entry.getLineOfMagicWordNoSign());
 		}
@@ -171,12 +176,13 @@ public class MagicWords
 	public MagicWordEntry getMagicWordEntry(String magicWordToFind)
 	{
 		String normalizedMagicWordToFind = normalizeMagicWord(magicWordToFind);
-		for(int i = 0; i<magicWordEntries.size(); ++i)
+		for (Iterator itr = magicWordEntries.iterator(); itr.hasNext();)
 		{
-			MagicWordEntry entry = (MagicWordEntry)magicWordEntries.get(i);
+			MagicWordEntry entry = (MagicWordEntry) itr.next();
 			if(normalizeMagicWord(entry.getMagicWord()).equals(normalizedMagicWordToFind))
 				return entry;
 		}
+	
 		return null;
 	}
 	
@@ -236,6 +242,6 @@ public class MagicWords
 	public static final int ID_GROUP=1;
 	public static final int ID_DATE=2;
 	
-	Vector magicWordEntries; 
+	List magicWordEntries; 
 	LoggerInterface logger;
 }
