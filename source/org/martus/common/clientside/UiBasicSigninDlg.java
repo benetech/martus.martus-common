@@ -81,11 +81,11 @@ public class UiBasicSigninDlg extends JDialog
 		getRootPane().setDefaultButton(ok);
 		signinPane.refreshForNewVirtualMode();
 		setResizable(true);
-		Dimension screenSize = Utilities.getViewableScreenSize(this);
+		Dimension screenSize = Utilities.getViewableScreenSize();
 		if(screenSize.width < 1000)
 		{	
 			setSize(screenSize.width, screenSize.height * 8 / 10);
-			setLocation(Utilities.getViewableRectangle(this).x,screenSize.height/10);
+			setLocation(Utilities.getViewableRectangle().x,screenSize.height/10);
 		}
 		else
 		{	
