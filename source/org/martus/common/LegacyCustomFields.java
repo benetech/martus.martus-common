@@ -87,11 +87,9 @@ public class LegacyCustomFields
 		{
 			char c = cleansedTag[i];
 			boolean isValid = false;
-			if(c >= 256)
+			if(Character.isLetterOrDigit(c) || c == '_')
 				isValid = true;
-			else if(Character.isLetterOrDigit(c))
-				isValid = true;
-			else if(c == '_' || c == '-' || c == '.')
+			if(i > 0 && (c == '-' || c == '.' || c >= 256) )
 				isValid = true;
 
 			if(!isValid)
