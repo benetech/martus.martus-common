@@ -81,7 +81,7 @@ public class Localization
 	public String currentLanguageCode;
 	public String currentDateFormat;
 
-	public static final String MARTUS_LANGUAGE_FILE_PREFIX = "martus-";
+	public static final String MARTUS_LANGUAGE_FILE_PREFIX = "Martus-";
 	public static final String MARTUS_LANGUAGE_FILE_SUFFIX = ".mtf";
 	
 	public static final String ENGLISH = "en";
@@ -171,8 +171,7 @@ public class Localization
 
 	protected static boolean isLanguageFile(String filename)
 	{
-		String lowercasefilename = filename.toLowerCase();
-		return (lowercasefilename.startsWith(MARTUS_LANGUAGE_FILE_PREFIX) && lowercasefilename.endsWith(MARTUS_LANGUAGE_FILE_SUFFIX));
+		return (filename.startsWith(MARTUS_LANGUAGE_FILE_PREFIX) && filename.endsWith(MARTUS_LANGUAGE_FILE_SUFFIX));
 	}
 
 	public void loadTranslationFile(String languageCode)
