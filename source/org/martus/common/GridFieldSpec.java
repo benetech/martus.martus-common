@@ -38,6 +38,7 @@ public class GridFieldSpec extends FieldSpec
 	{
 		super(TYPE_GRID);
 		columns = new Vector();
+		columnZeroLabel = " ";
 	}
 	
 	public int getColumnCount()
@@ -53,6 +54,16 @@ public class GridFieldSpec extends FieldSpec
 	public void addColumn(String headerLabel)
 	{
 		columns.add(headerLabel);
+	}
+	
+	public void setColumnZeroLabel(String columnZeroLabelToUse)
+	{
+		columnZeroLabel = columnZeroLabelToUse;
+	}
+	
+	public String getColumnZeroLabel()
+	{
+		return columnZeroLabel;
 	}
 	
 	public Vector getAllColumnLabels()
@@ -119,4 +130,5 @@ public class GridFieldSpec extends FieldSpec
 	public final static String GRID_COLUMN_LABEL_TAG = "Label";
 	
 	Vector columns;
+	String columnZeroLabel;
 }
