@@ -287,6 +287,7 @@ public class MartusUtilities
 	{
 		Vector tags = new Vector();
 		tags.add(NetworkInterfaceConstants.TAG_BULLETIN_SIZE);
+		tags.add(NetworkInterfaceConstants.TAG_BULLETIN_DATE_SAVED);
 		return tags;
 	}
 

@@ -45,6 +45,7 @@ public interface NetworkInterfaceConstants
 	public static final String INCOMPLETE = "incomplete result";
 	public static final String VERSION = "MartusServer v0.30";
 	public static final String TAG_BULLETIN_SIZE = "bulletin size";
+	public static final String TAG_BULLETIN_DATE_SAVED = "bulletin date saved";
 
 	public static final String UNKNOWN_COMMAND = "unknown command";
 	public static final String NOT_AUTHORIZED = "not authorized";
