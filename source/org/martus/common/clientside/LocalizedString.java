@@ -29,7 +29,7 @@ package org.martus.common.clientside;
 
 public class LocalizedString
 {
-	public static LocalizedString createLocalizedString(String mtfEntryText)
+	public static LocalizedString createFromMtfEntry(String mtfEntryText)
 	{
 		if(mtfEntryText == null)
 			return null;

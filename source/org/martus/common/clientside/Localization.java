@@ -37,6 +37,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.Vector;
 
 import org.martus.common.bulletin.Bulletin;
 import org.martus.util.UnicodeReader;
@@ -114,7 +115,7 @@ public class Localization
 		if(stringMap == null)
 			return;
 	
-		LocalizedString entry = LocalizedString.createLocalizedString(translation);
+		LocalizedString entry = LocalizedString.createFromMtfEntry(translation);
 		if(entry != null)
 			stringMap.put(entry.getTag(), entry);
 	}
@@ -187,7 +188,7 @@ public class Localization
 
 	public void loadTranslations(String languageCode, InputStream inputStream)
 	{
-		createStringMap(languageCode);
+		Vector mtfStrings = new Vector();
 		try
 		{
 			UnicodeReader reader = new UnicodeReader(inputStream);
@@ -197,7 +198,7 @@ public class Localization
 				translation = reader.readLine();
 				if(translation == null)
 					break;
-				addTranslation(languageCode, translation);
+				mtfStrings.add(translation);
 			}
 			reader.close();
 		}
@@ -205,6 +206,10 @@ public class Localization
 		{
 			System.out.println("BulletinDisplay.loadTranslations " + e);
 		}
+
+		String[] strings = new String[mtfStrings.size()];
+		mtfStrings.toArray(strings);
+		loadTranslations(languageCode, strings);
 	}
 
 
