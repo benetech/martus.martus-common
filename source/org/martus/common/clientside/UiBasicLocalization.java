@@ -323,24 +323,11 @@ public class UiBasicLocalization extends Localization
 		return strings;
 	}
 
-	static private boolean isDigit(char characterToTest)
-	{
-		try
-		{
-			Double.valueOf(new String(new char[]{characterToTest}));
-			return true;
-		}
-		catch(NumberFormatException e)
-		{
-			return false;
-		}
-	}
-
 	static public char getDateSeparator(String date) throws NoDateSeparatorException
 	{
 		for(int i = 0; i < date.length(); ++i)
 		{
-			if(!isDigit(date.charAt(i)))
+			if(!Character.isDigit(date.charAt(i)))
 				return date.charAt(i);
 		}
 		throw new NoDateSeparatorException();
