@@ -554,12 +554,13 @@ public class MartusServerUtilities
 		return contactInfo;
 	}
 	
-	public static void loadHiddenPacketsFile(File hiddenFile, Database database, LoggerInterface logger)
-	{		
+	public static Vector loadHiddenPacketsFile(File hiddenFile, Database database, LoggerInterface logger)
+	{	
+		Vector packets = new Vector();	
 		try
 		{
 			UnicodeReader reader = new UnicodeReader(hiddenFile);
-			loadHiddenPacketsList(reader, database, logger);
+			packets = loadHiddenPacketsList(reader, database, logger);
 		}
 		catch(FileNotFoundException nothingToWorryAbout)
 		{
@@ -570,32 +571,37 @@ public class MartusServerUtilities
 			e.printStackTrace();
 			logger.log("Error loading Deleted Packets file: " + hiddenFile.getName());
 		}
+		
+		return packets;
 	}
 
-	public static void loadHiddenPacketsList(UnicodeReader reader, Database db, LoggerInterface logger) throws IOException, InvalidBase64Exception
+	public static Vector loadHiddenPacketsList(UnicodeReader reader, Database db, LoggerInterface logger) throws IOException, InvalidBase64Exception
 	{
 		String accountId = null;
+		Vector hiddenPackets = new Vector();
 		try
 		{
 			while(true)
 			{
 				String thisLine = reader.readLine();
 				if(thisLine == null)
-					return;
+					return hiddenPackets;
 				if(thisLine.startsWith(" "))
-					hidePackets(db, accountId, thisLine, logger);
+					hiddenPackets.addAll(hidePackets(db, accountId, thisLine, logger));
 				else
 					accountId = thisLine;
-			}
+			}				
+			
 		}
 		finally
 		{
 			reader.close();
-		}
+		}		
 	}
 	
-	static void hidePackets(Database db, String accountId, String packetList, LoggerInterface logger) throws InvalidBase64Exception
+	static Vector hidePackets(Database db, String accountId, String packetList, LoggerInterface logger) throws InvalidBase64Exception
 	{
+		Vector uids = new Vector();
 		String publicCode = MartusCrypto.getFormattedPublicCode(accountId);
 		String[] packetIds = packetList.trim().split("\\s+");
 		for (int i = 0; i < packetIds.length; i++)
@@ -603,8 +609,10 @@ public class MartusServerUtilities
 			String localId = packetIds[i].trim();
 			UniversalId uid = UniversalId.createFromAccountAndLocalId(accountId, localId);
 			db.hide(uid);
+			uids.add(uid);
 			logger.log("Deleting " + publicCode + ": " + localId);
 		}
+		return uids;
 	}
 
 	public static class MartusSignatureFileAlreadyExistsException extends Exception {}
