@@ -51,7 +51,7 @@ public class StandardFieldSpecs
 			};
 		}
 		
-		return defaultPublicFieldSpecs;
+		return (FieldSpec[])defaultPublicFieldSpecs.clone();
 	}
 
 	public static FieldSpec[] getDefaultPrivateFieldSpecs()
@@ -64,7 +64,7 @@ public class StandardFieldSpecs
 			};
 		}
 		
-		return defaultPrivateFieldSpecs;
+		return (FieldSpec[])defaultPrivateFieldSpecs.clone();
 	}
 
 	public static int getStandardType(String tag)
