@@ -28,12 +28,19 @@ package org.martus.common;
 public class MagicWordEntry
 {	
 	public MagicWordEntry(String magicWordEntry, String groupEntry)
-	{			
+	{						
+		setMagicWord(magicWordEntry);
+		
+		if (groupEntry == null)
+			groupEntry = "";			
+		groupName = groupEntry;
+	}
+	
+	public void setMagicWord(String magicWordEntry)
+	{
 		if (magicWordEntry == null)
 			magicWordEntry = "";
-		if (groupEntry == null)
-			groupEntry = "";
-		
+					
 		if (magicWordEntry.startsWith(MagicWords.INACTIVE_SIGN))
 		{	
 			magicWord = magicWordEntry.substring(1);
@@ -41,8 +48,6 @@ public class MagicWordEntry
 		}
 		else		
 			magicWord = magicWordEntry;
-			
-		groupName = groupEntry;
 	}
 
 	public String getMagicWord()
@@ -63,6 +68,11 @@ public class MagicWordEntry
 		return groupName;
 	}
 	
+	public String getCreationDate()
+	{
+		return creationDate;
+	}
+	
 	public void setGroupname(String name)
 	{
 		groupName = name;
@@ -78,19 +88,25 @@ public class MagicWordEntry
 		active = status;
 	}
 	
+	public void setCreationDate(String date)
+	{
+		creationDate = date;
+	}
+	
 	public String getLineOfMagicWord()
 	{
-		return getMagicWordWithActiveSign() + MagicWords.FIELD_DELIMITER + getGroupName();
+		return getMagicWordWithActiveSign() + MagicWords.FIELD_DELIMITER + getGroupName() ;
 	}
 	
 	public String getLineOfMagicWordNoSign()
 	{
-		return getMagicWord() + MagicWords.FIELD_DELIMITER + getGroupName();
+		return getMagicWord() + MagicWords.FIELD_DELIMITER + getGroupName() ;
 	}	
 	
 	private String magicWord;
 	private String groupName;
 	private boolean active=true;
+	private String creationDate;
 }
 	
 
