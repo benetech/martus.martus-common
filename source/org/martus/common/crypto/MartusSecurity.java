@@ -402,6 +402,14 @@ public class MartusSecurity extends MartusCryptoImplementation
 		setKeyPairFromData(outDecryptedKeyPair.toByteArray());
 	}
 
+	private byte[] encryptBytes(byte[] rawBytes) throws NoKeyPairException, EncryptionException
+	{
+		ByteArrayOutputStream encryptedResult = new ByteArrayOutputStream();
+		encrypt(new ByteArrayInputStream(rawBytes), encryptedResult);
+		byte[] encryptedBytes = encryptedResult.toByteArray();
+		return encryptedBytes;
+	}
+
 	public void encrypt(InputStream plainStream, OutputStream cipherStream) throws
 			NoKeyPairException,
 			EncryptionException
@@ -482,7 +490,7 @@ public class MartusSecurity extends MartusCryptoImplementation
 		}
 	}
 
-	public byte[] getSessionKeyCache() throws IOException, NoKeyPairException, EncryptionException
+	public byte[] getSessionKeyCache() throws IOException, NoKeyPairException, EncryptionException, MartusSignatureException
 	{
 		ByteArrayOutputStream rawOut = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream(rawOut);
@@ -501,21 +509,24 @@ public class MartusSecurity extends MartusCryptoImplementation
 			out.write(decryptedBytes);
 		}
 		out.writeInt(CACHE_VERSION);
+		out.close();
 		
-		ByteArrayOutputStream encryptedResult = new ByteArrayOutputStream();
-		encrypt(new ByteArrayInputStream(rawOut.toByteArray()), encryptedResult);
+		byte[] encryptedBytes = encryptBytes(rawOut.toByteArray());
+		
+		byte[] bundleBytes = createSignedBundle(encryptedBytes);
 
-		return encryptedResult.toByteArray();
+		return bundleBytes;
 	}
 	
-	public void setSessionKeyCache(byte[] encryptedCache) throws IOException, NoKeyPairException, DecryptionException
+	public void setSessionKeyCache(byte[] encryptedCacheBundle) throws IOException, NoKeyPairException, DecryptionException, MartusSignatureException
 	{
 		flushSessionKeyCache();
 
-		ByteArrayOutputStream cacheBytes = new ByteArrayOutputStream();
-		decrypt(new ByteArrayInputStreamWithSeek(encryptedCache), cacheBytes);
+		byte[] encryptedCacheBytes = extractFromSignedBundle(encryptedCacheBundle);
 		
-		ByteArrayInputStream rawIn = new ByteArrayInputStream(cacheBytes.toByteArray());
+		byte[] decryptedBytes = decryptBytes(encryptedCacheBytes);
+		
+		ByteArrayInputStream rawIn = new ByteArrayInputStream(decryptedBytes);
 		DataInputStream in = new DataInputStream(rawIn);
 		if(in.readInt() != CACHE_VERSION)
 			throw new IOException();
@@ -537,6 +548,39 @@ public class MartusSecurity extends MartusCryptoImplementation
 			throw new IOException();
 	}
 	
+	private byte[] createSignedBundle(byte[] encryptedBytes) throws MartusSignatureException, IOException
+	{
+		byte[] sig = createSignatureOfStream(new ByteArrayInputStream(encryptedBytes));
+		ByteArrayOutputStream bundleRawOut = new ByteArrayOutputStream();
+		DataOutputStream bundleOut = new DataOutputStream(bundleRawOut);
+		bundleOut.writeUTF(getPublicKeyString());
+		bundleOut.writeInt(sig.length);
+		bundleOut.write(sig);
+		bundleOut.writeInt(encryptedBytes.length);
+		bundleOut.write(encryptedBytes);
+		bundleOut.close();
+		byte[] bundleBytes = bundleRawOut.toByteArray();
+		return bundleBytes;
+	}
+
+	private byte[] extractFromSignedBundle(byte[] encryptedCacheBundle) throws IOException, MartusSignatureException
+	{
+		ByteArrayInputStream bundleRawIn = new ByteArrayInputStream(encryptedCacheBundle);
+		DataInputStream bundleIn = new DataInputStream(bundleRawIn);
+		String ourPublicKey = getPublicKeyString();
+		String signerPublicKey = bundleIn.readUTF();
+		if(!signerPublicKey.equals(ourPublicKey))
+			throw new MartusSignatureException();
+		byte[] sig = new byte[bundleIn.readInt()];
+		bundleIn.read(sig);
+		byte[] encryptedCacheBytes = new byte[bundleIn.readInt()];
+		bundleIn.read(encryptedCacheBytes);
+		
+		if(!verifySignature(new ByteArrayInputStream(encryptedCacheBytes), sig))
+			throw new MartusSignatureException();
+		return encryptedCacheBytes;
+	}
+
 	public synchronized void flushSessionKeyCache()
 	{
 		decryptedSessionKeys.clear();
@@ -621,6 +665,14 @@ public class MartusSecurity extends MartusCryptoImplementation
 			throw new DecryptionException();
 		}
 		return new SessionKey(encryptedKeyBytes);
+	}
+
+	private byte[] decryptBytes(byte[] encryptedBytes) throws NoKeyPairException, DecryptionException
+	{
+		ByteArrayOutputStream cacheBytes = new ByteArrayOutputStream();
+		decrypt(new ByteArrayInputStreamWithSeek(encryptedBytes), cacheBytes);
+		byte[] decryptedBytes = cacheBytes.toByteArray();
+		return decryptedBytes;
 	}
 
 	public synchronized void decrypt(InputStreamWithSeek cipherStream, OutputStream plainStream, SessionKey sessionKey) throws

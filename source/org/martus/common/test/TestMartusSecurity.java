@@ -150,6 +150,45 @@ public class TestMartusSecurity extends TestCaseEnhanced
 			assertEquals("after cache restore, bad re-decryption?", plainSessionKeys[i], decrypted);
 		}
 	}
+	
+	public void testSessionKeyCacheSigned() throws Exception
+	{
+		byte[] original = security.getSessionKeyCache();
+		
+		try
+		{
+			MartusSecurity otherSecurity = MockMartusSecurity.createOtherClient();
+			otherSecurity.setSessionKeyCache(original);
+			fail("Should have thrown for not our cache");
+		}
+		catch(MartusSignatureException ignoreExpected)
+		{
+			
+		}
+		
+		try
+		{
+			byte[] partial = new byte[original.length-1];
+			System.arraycopy(original, 0, partial, 0, partial.length);
+			security.setSessionKeyCache(partial);
+			fail("Should have thrown for incomplete cache");
+		}
+		catch(MartusSignatureException ignoreExpected)
+		{
+		}
+
+		try
+		{
+			byte[] middleDamage = new byte[original.length];
+			System.arraycopy(original, 0, middleDamage, 0, middleDamage.length);
+			middleDamage[middleDamage.length/2] ^= 0xff;
+			security.setSessionKeyCache(middleDamage);
+			fail("Should have thrown for middle damaged cache");
+		}
+		catch(MartusSignatureException ignoreExpected)
+		{
+		}
+	}
 
 	public void testGetDigestOfPartOfPrivateKey() throws Exception
 	{
