@@ -49,9 +49,9 @@ import org.martus.util.FileInputStreamWithSeek;
 import org.martus.util.InputStreamWithSeek;
 import org.martus.util.UnicodeReader;
 import org.martus.util.UnicodeWriter;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
+import org.martus.util.xml.SimpleXmlDefaultLoader;
+import org.martus.util.xml.SimpleXmlParser;
+import org.xml.sax.SAXParseException;
 
 public class AttachmentPacket extends Packet
 {
@@ -115,46 +115,75 @@ public class AttachmentPacket extends Packet
 		return sig;
 	}
 
-	public static void exportRawFileFromXml(InputStreamWithSeek xmlIn, SessionKey sessionKey, MartusCrypto verifier, OutputStream out) throws
+	public static void exportRawFileFromXml(InputStreamWithSeek xmlIn, SessionKey sessionKey, MartusCrypto security, OutputStream out) throws
 		IOException,
 		org.martus.common.packet.Packet.InvalidPacketException,
 		org.martus.common.packet.Packet.SignatureVerificationException,
 		org.martus.common.packet.Packet.WrongPacketTypeException,
 		Base64.InvalidBase64Exception
 	{
-		AttachmentPacket ap = new AttachmentPacket(verifier);
+		if(security != null)
+			verifyPacketSignature(xmlIn, null, security);
+		
+		File encryptedTempFile = File.createTempFile("$$$MartusEncryptedAtt", null);
+		encryptedTempFile.deleteOnExit();
+		try
+		{
+			FileOutputStream outEncrypted = new FileOutputStream(encryptedTempFile);
+		
+			exportEncryptedFileContents(xmlIn, outEncrypted, security);
+			decryptFile(encryptedTempFile, out, sessionKey, security);
+		}
+		finally
+		{
+			encryptedTempFile.delete();
+			out.close();
+		}
+	}
 
-		File base64File = File.createTempFile("$$$MartusAttachExtract", null);
-		base64File.deleteOnExit();
-
-		FileOutputStream base64Out = new FileOutputStream(base64File);
-		AttachmentExtractionHandler handler = new AttachmentExtractionHandler(base64Out);
-		ap.loadFromXml(xmlIn, null, verifier, handler);
-		base64Out.close();
-
-		UnicodeReader base64Reader = new UnicodeReader(base64File);
-
-		File encryptedFile = File.createTempFile("$$$MartusEncryptedAtt", null);
-		encryptedFile.deleteOnExit();
-
-		FileOutputStream outEncrypted = new FileOutputStream(encryptedFile);
-		Base64.decode(base64Reader, outEncrypted);
-		outEncrypted.close();
-		base64Reader.close();
-		base64File.delete();
-
+	private static void decryptFile(
+		File encryptedFile,
+		OutputStream out,
+		SessionKey sessionKey,
+		MartusCrypto security)
+		throws IOException
+	{
 		InputStreamWithSeek inEncrypted = new FileInputStreamWithSeek(encryptedFile);
 		try
 		{
-			verifier.decrypt(inEncrypted, out, sessionKey);
+			security.decrypt(inEncrypted, out, sessionKey);
 		}
 		catch(Exception e)
 		{
 			throw new IOException(e.toString());
 		}
-		out.close();
-		inEncrypted.close();
-		encryptedFile.delete();
+		finally
+		{
+			inEncrypted.close();
+		}
+	}
+
+	private static void exportEncryptedFileContents(
+		InputStreamWithSeek xmlIn,
+		FileOutputStream outEncrypted,
+		MartusCrypto security)
+		throws FileNotFoundException, InvalidPacketException, IOException
+	{
+		AttachmentPacket dummyPacket = new AttachmentPacket(security);
+		try
+		{
+			XmlAttachmentExporter exporter = new XmlAttachmentExporter(dummyPacket, outEncrypted); 
+			SimpleXmlParser.parse(exporter, new UnicodeReader(xmlIn));
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			throw new InvalidPacketException(e.toString()); 
+		}
+		finally
+		{
+			outEncrypted.close();
+		}
 	}
 
 	protected String getPacketRootElementName()
@@ -184,7 +213,6 @@ public class AttachmentPacket extends Packet
 		dest.writeEndTag(MartusXml.AttachmentBytesElementName);
 	}
 
-	static final String NEWLINE = "\n";
 	SessionKey sessionKey;
 	File rawFile;
 	MartusCrypto security;
@@ -192,56 +220,37 @@ public class AttachmentPacket extends Packet
 
 }
 
-class AttachmentExtractionHandler extends DefaultHandler
+class XmlAttachmentExporter extends XmlPacketLoader
 {
-	public AttachmentExtractionHandler(OutputStream dest) throws FileNotFoundException
+	public XmlAttachmentExporter(Packet packetToExport, OutputStream destination)
 	{
-		out = dest;
+		super(packetToExport);
+		out = destination;
 	}
-
-	public void startElement(String namespaceURI, String sName, String qName,
-			Attributes attrs) throws SAXException
+	
+	public SimpleXmlDefaultLoader startElement(String tag)
+		throws SAXParseException
 	{
-		if(qName.equals(MartusXml.AttachmentBytesElementName))
+		if(tag.equals(MartusXml.AttachmentBytesElementName))
 		{
-			writing = true;
+			return new XmlBase64Exporter(tag, out);
 		}
-
+		else
+			return super.startElement(tag);
 	}
 
-	public void endElement(String namespaceURI, String sName, String qName) throws SAXException
+	public void endElement(SimpleXmlDefaultLoader ended)
+		throws SAXParseException
 	{
-		if(qName.equals(MartusXml.AttachmentBytesElementName))
+		String tag = ended.getTag();
+		if(tag.equals(MartusXml.AttachmentBytesElementName))
 		{
-			writing = false;
-		}
-	}
-
-	public void characters(char buf[], int offset, int len) throws SAXException
-	{
-		if(!writing)
 			return;
-		char[] bufWithoutNewlines = new char[buf.length];
-		int dest =0;
-		char curChar;
-		for(int i = offset; i < offset + len; ++i)
-		{
-			curChar = buf[i];
-			if(curChar >= ' ')
-				bufWithoutNewlines[dest++] = curChar;
 		}
-
-		String data = new String(bufWithoutNewlines, 0, dest);
-		byte[] bytes = data.getBytes();
-		try
-		{
-			out.write(bytes);
-		}
-		catch(IOException e)
-		{
-			throw new SAXException("IO Exception: " + e.getMessage());
-		}
+		else
+			super.endElement(ended);
 	}
+
 	OutputStream out;
-	boolean writing;
 }
+

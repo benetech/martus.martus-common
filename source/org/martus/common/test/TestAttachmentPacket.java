@@ -31,6 +31,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.StringReader;
 import java.util.Arrays;
 
 import org.martus.common.MartusXml;
@@ -39,9 +40,11 @@ import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.SessionKey;
 import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.UniversalId;
+import org.martus.common.packet.XmlBase64Exporter;
 import org.martus.util.Base64;
 import org.martus.util.ByteArrayInputStreamWithSeek;
 import org.martus.util.FileInputStreamWithSeek;
+import org.martus.util.xml.SimpleXmlParser;
 
 
 
@@ -79,6 +82,21 @@ public class TestAttachmentPacket extends TestCaseEnhanced
 		assertStartsWith("prefix", "A-", uid.getLocalId());
 	}
 
+	public void testXmlBase64Exporter() throws Exception
+	{
+		String baseTag = MartusXml.AttachmentBytesElementName;
+		String xml = MartusXml.getTagStart(baseTag) +
+					Base64.encode(sampleBytes) + "\n" + 
+					Base64.encode(sampleBytes) + "\n" + 
+					MartusXml.getTagEnd(baseTag);
+					
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		XmlBase64Exporter exporter = new XmlBase64Exporter(baseTag, out);
+		SimpleXmlParser.parse(exporter, new StringReader(xml));
+		byte[] result = out.toByteArray();
+		assertEquals(sampleBytes.length*2, result.length);
+	}
+	
 	public void testCreateXmlFromFile() throws Exception
 	{
 		String account = security.getPublicKeyString();
