@@ -27,9 +27,9 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.test;
 
 import java.util.GregorianCalendar;
-
 import org.martus.common.MiniLocalization;
 import org.martus.util.TestCaseEnhanced;
+import org.martus.util.language.LanguageDirection;
 
 
 public class TestMiniLocalization extends TestCaseEnhanced
@@ -52,6 +52,22 @@ public class TestMiniLocalization extends TestCaseEnhanced
     	assertEquals("12/09/2004 13:59", loc.formatDateTime(afternoon.getTimeInMillis()));
 	}
     
+    public void testFormatDateTimeRightToLeft() throws Exception
+	{
+    	MiniLocalization loc = new MiniLocalization();
+    	String rightToLeftLanguageCode = "cc";
+    	loc.addRightToLeftLanguage(rightToLeftLanguageCode);
+		loc.setCurrentLanguageCode(rightToLeftLanguageCode);
+    	final int june = 5;
+    	GregorianCalendar leadingZeros = new GregorianCalendar(1996, june, 1, 7, 4);
+    	assertEquals("07:04 06/01/1996", loc.formatDateTime(leadingZeros.getTimeInMillis()));
+    	
+    	final int december = 11;
+    	GregorianCalendar afternoon = new GregorianCalendar(2004, december, 9, 13, 59);
+    	assertEquals("13:59 12/09/2004", loc.formatDateTime(afternoon.getTimeInMillis()));
+    	LanguageDirection.setDirectionLeftToRight();
+	}
+
     public void testDateUnknown()
     {
     	MiniLocalization loc = new MiniLocalization();

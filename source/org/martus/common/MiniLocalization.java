@@ -1,7 +1,7 @@
 /*
 
 The Martus(tm) free, social justice documentation and
-monitoring software. Copyright (C) 2001-2004, Beneficent
+monitoring software. Copyright (C) 2001-2005, Beneficent
 Technology, Inc. (Benetech).
 
 Martus is free software; you can redistribute it and/or
@@ -326,8 +326,13 @@ public class MiniLocalization
 		DateFormat time24hour = new SimpleDateFormat("HH:mm");
 		
 		Calendar cal = new GregorianCalendar();
-		cal.setTimeInMillis(dateTime);		
-		return dateShort.format(cal.getTime()) + " " + time24hour.format(cal.getTime());
+		cal.setTimeInMillis(dateTime);
+		
+		String date = dateShort.format(cal.getTime());
+		String time = time24hour.format(cal.getTime());
+		if(isRightToLeftLanguage())
+			return time + SPACE + date;
+		return date + SPACE + time;
 	}
 
 	public static final String ENGLISH = "en";
