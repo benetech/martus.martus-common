@@ -70,6 +70,8 @@ public class UiSigninPanel extends UiParagraphPanel implements VirtualKeyboardHa
 		{
 			addOnNewLine(new UiLabel(localization.getFieldLabel("CreateNewUserNamePassword")));
 			addOnNewLine(new UiWrappedTextArea(localization.getFieldLabel("HelpOnCreatingNewPassword"), 100));
+			uiState.setCurrentDefaultKeyboardVirtual(true);
+			uiState.save();
 		}
 		
 		userNameDescription = new UiLabel("");
