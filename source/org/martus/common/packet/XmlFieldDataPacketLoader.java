@@ -91,7 +91,7 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 				if(tag.equals(MartusXml.EncryptedFlagElementName))
 					fdp.setEncrypted(true);
 				else if(tag.equals(MartusXml.FieldListElementName))
-					fdp.setFieldSpecsFromString(value);
+					setLegacyCustomFields(value);
 				else if(tag.equals(MartusXml.EncryptedDataElementName))
 					encryptedData = value;
 				else if(tag.equals(MartusXml.HQSessionKeyElementName))
@@ -105,6 +105,12 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 			e.printStackTrace();
 			throw new SAXParseException("Bad base64 in " + tag, null);
 		} 
+	}
+
+	private void setLegacyCustomFields(String value)
+	{
+		if(fdp.getFieldCount() == 0)
+			fdp.setFieldSpecsFromString(value);
 	}
 	
 	private Vector getTagsContainingStrings()

@@ -319,6 +319,42 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		assertEquals("encrypted lost data after unknown bTag?", "data", fdp.get(bTag));
 	}
 
+	public void testLoadFromXmlLegacyCustomAfterNewCustomFields() throws Exception
+	{
+		String account = "asbid";
+		String id = "1234567";
+		String data1 = "data 1í";
+		String label = "\"<Town> \"";
+		FieldSpec field = LegacyCustomFields.createFromLegacy("custom1");
+		CustomFields fields = new CustomFields(new FieldSpec[] {field});
+		
+		String simpleFieldDataPacket =
+			"<FieldDataPacket>\n" +
+			MartusXml.getTagStart(MartusXml.PacketIdElementName) + id +
+				MartusXml.getTagEnd(MartusXml.PacketIdElementName) + 
+			MartusXml.getTagStart(MartusXml.AccountElementName) + account + 
+				MartusXml.getTagEnd(MartusXml.AccountElementName) + 
+			MartusXml.getTagStart(MartusXml.EncryptedFlagElementName) +  
+				MartusXml.getTagEnd(MartusXml.EncryptedFlagElementName) + 
+			fields.toString() + 
+			MartusXml.getTagStart(MartusXml.FieldListElementName) +
+				MartusConstants.deprecatedCustomFieldSpecs +  
+				MartusXml.getTagEnd(MartusXml.FieldListElementName) + 
+			MartusXml.getTagStart(MartusXml.FieldElementPrefix + "custom1") + data1 +  
+				MartusXml.getTagEnd(MartusXml.FieldElementPrefix + "custom1") + 
+			"</FieldDataPacket>\n";
+
+		FieldSpec[] noTags = {};
+		FieldDataPacket loaded = new FieldDataPacket(UniversalId.createDummyUniversalId(), noTags);
+
+		byte[] bytes = simpleFieldDataPacket.getBytes("UTF-8");
+		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
+		loaded.loadFromXml(in, (MartusCrypto)null);
+		
+		CustomFields loadedFields = new CustomFields(loaded.getFieldSpecs());
+		assertEquals(fields.toString(), loadedFields.toString());
+	}
+	
 	public void testLoadFromXmlWithSpaces() throws Exception
 	{
 		String id = "1234567";
