@@ -82,7 +82,7 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertEquals("DATE", FieldSpec.getTypeString(FieldSpec.TYPE_DATE));
 		assertEquals("DATERANGE", FieldSpec.getTypeString(FieldSpec.TYPE_DATERANGE));
 		assertEquals("BOOLEAN", FieldSpec.getTypeString(FieldSpec.TYPE_BOOLEAN));
-		assertEquals("SINGLECHOICE", FieldSpec.getTypeString(FieldSpec.TYPE_CHOICE));
+		assertEquals("LANGUAGE", FieldSpec.getTypeString(FieldSpec.TYPE_LANGUAGE));
 		assertEquals("UNKNOWN", FieldSpec.getTypeString(-99));
 	}
 	
@@ -94,7 +94,7 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertEquals(FieldSpec.TYPE_DATE, FieldSpec.getTypeCode("DATE"));
 		assertEquals(FieldSpec.TYPE_DATERANGE, FieldSpec.getTypeCode("DATERANGE"));
 		assertEquals(FieldSpec.TYPE_BOOLEAN, FieldSpec.getTypeCode("BOOLEAN"));
-		assertEquals(FieldSpec.TYPE_CHOICE, FieldSpec.getTypeCode("SINGLECHOICE"));
+		assertEquals(FieldSpec.TYPE_LANGUAGE, FieldSpec.getTypeCode("LANGUAGE"));
 		
 	}
 }

@@ -69,7 +69,7 @@ public class TestCustomFields extends TestCase
 			FieldSpec.createStandardField("multi", FieldSpec.TYPE_MULTILINE),
 			FieldSpec.createStandardField("range", FieldSpec.TYPE_DATERANGE),
 			FieldSpec.createStandardField("bool", FieldSpec.TYPE_BOOLEAN),
-			FieldSpec.createStandardField("choice", FieldSpec.TYPE_CHOICE),
+			FieldSpec.createStandardField("language", FieldSpec.TYPE_LANGUAGE),
 			LegacyCustomFields.createFromLegacy("custom,Custom <label>"),
 		};
 	}

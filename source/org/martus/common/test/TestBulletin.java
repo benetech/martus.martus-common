@@ -248,7 +248,7 @@ public class TestBulletin extends TestCaseEnhanced
 			else if(spec.getTag().equals("entrydate"))
 				assertEquals(spec.getTag(), FieldSpec.TYPE_DATE, spec.getType());
 			else if(spec.getTag().equals("language"))
-				assertEquals(spec.getTag(), FieldSpec.TYPE_CHOICE, spec.getType());
+				assertEquals(spec.getTag(), FieldSpec.TYPE_LANGUAGE, spec.getType());
 			else
 				assertEquals(spec.getTag(), FieldSpec.TYPE_NORMAL, spec.getType());
 		}

@@ -38,7 +38,7 @@ public class StandardFieldSpecs
 		{
 			defaultPublicFieldSpecs = new FieldSpec[] 
 			{
-				FieldSpec.createStandardField(BulletinConstants.TAGLANGUAGE, FieldSpec.TYPE_CHOICE),
+				FieldSpec.createStandardField(BulletinConstants.TAGLANGUAGE, FieldSpec.TYPE_LANGUAGE),
 				FieldSpec.createStandardField(BulletinConstants.TAGAUTHOR, FieldSpec.TYPE_NORMAL),
 				FieldSpec.createStandardField(BulletinConstants.TAGORGANIZATION, FieldSpec.TYPE_NORMAL),
 				FieldSpec.createStandardField(BulletinConstants.TAGTITLE, FieldSpec.TYPE_NORMAL),
