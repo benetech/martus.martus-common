@@ -95,7 +95,7 @@ public class UiBasicSigninDlg extends JDialog
 		{	
 			Utilities.centerDlg(this);
 		}
-		show();
+		setVisible(true);
 	}
 	
 	protected JComponent getLanguageComponent()
