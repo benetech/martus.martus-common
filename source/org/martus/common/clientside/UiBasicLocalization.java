@@ -77,6 +77,9 @@ public class UiBasicLocalization extends Localization
 		writer.writeln("#    are logged in, go to Options/Preferences.");
 		writer.writeln("#");
 		writer.writeln("#  1.  do NOT translate \"\\n\" (used for new lines)");
+		writer.writeln("#      And do NOT put spaces before the  equal sign after field:xxx.");
+		writer.writeln("#      [should be \"field:fieldtag=fieldtext\" instead of");
+		writer.writeln("#  	   \"field:fieldtag = fieldtext\" (space before the equals sign)]");
 		writer.writeln("#  2.  do NOT create any user-entered new-lines/carriage-returns");
 		writer.writeln("#      (by using the enter key) in any mtf entry");
 		writer.writeln("#      (from the field:xxx to the end of the translated text),");
