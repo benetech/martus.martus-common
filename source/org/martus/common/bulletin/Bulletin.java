@@ -158,7 +158,7 @@ public class Bulletin implements BulletinConstants
 		return getBulletinHeaderPacket().getLastSavedTime();
 	}
 	
-	public String getLastSavedDate()
+	public String getLastSavedDateTime()
 	{		
 		Calendar cal = new GregorianCalendar();
 		cal.setTimeInMillis(getLastSavedTime());		
@@ -224,7 +224,7 @@ public class Bulletin implements BulletinConstants
 		}
 		
 		if (fieldName.equals(Bulletin.TAGLASTSAVED))
-			 return getLastSavedDate();
+			 return getLastSavedDateTime();
 			 
 		if(isStandardField(fieldName))
 			return fieldData.get(fieldName);
@@ -295,7 +295,7 @@ public class Bulletin implements BulletinConstants
 		getPendingPrivateAttachments().clear();
 		set(TAGENTRYDATE, getToday());
 		set(TAGEVENTDATE, getFirstOfThisYear());
-set(TAGLASTSAVED, getLastSavedDate());		
+set(TAGLASTSAVED, getLastSavedDateTime());		
 		setDraft();
 	}
 
