@@ -83,7 +83,7 @@ public class TestBulletin extends TestCaseEnhanced
 		{
 			security = MockMartusSecurity.createClient();
 		}
-		db = new MockClientDatabase();
+		store = new MockBulletinStore(this);
     }
 
     public void testBasics()
@@ -290,11 +290,14 @@ public class TestBulletin extends TestCaseEnhanced
 			public int encryptWasCalled;
 		}
 
+		BulletinStore store = new BulletinStore();
+		File tempDir = createTempDirectory();
 		MyMockDatabase db = new MyMockDatabase();
+		store.doAfterSigninInitialization(tempDir, db);
 		Bulletin b = new Bulletin(security);
 		b.setSealed();
 		b.setAllPrivate(false);
-		BulletinStore.saveToClientDatabase(b, db, true, security);
+		store.saveEncryptedBulletinForTesting(b);
 		assertEquals("Didn't Encrypt or Encyrpted too many packets.", 1, db.encryptWasCalled);
 	}
 
@@ -315,11 +318,11 @@ public class TestBulletin extends TestCaseEnhanced
 		b1.set(Bulletin.TAGPUBLICINFO, "public info");
 		b1.set(Bulletin.TAGPRIVATEINFO, "private info");
 		b1.setSealed();
-		BulletinStore.saveToClientDatabase(b1, db, true, security);
+		store.saveEncryptedBulletinForTesting(b1);
 		assertEquals(0, b1.getHistory().size());
 		
 		Bulletin b2 = new Bulletin(security);
-		b2.createDraftCopyOf(b1, db);
+		b2.createDraftCopyOf(b1, getDb());
 		assertEquals("Not a draft?", Bulletin.STATUSDRAFT, b2.getStatus());
 		assertEquals("signer", b1.getSignatureGenerator(), b2.getSignatureGenerator());
 		assertEquals("id unchanged", false, b2.getLocalId().equals(b1.getLocalId()));
@@ -335,30 +338,30 @@ public class TestBulletin extends TestCaseEnhanced
 		AttachmentProxy a2 = new AttachmentProxy(tempFile2);
 		b1.addPrivateAttachment(a2);
 
-		b2.createDraftCopyOf(b1, db);
+		b2.createDraftCopyOf(b1, getDb());
 		assertEquals("public attachment count", 1, b2.getPublicAttachments().length);
 		assertEquals("private attachment count", 1, b2.getPrivateAttachments().length);
 		AttachmentProxy clonedPublicAttachment = b2.getPublicAttachments()[0];
 		assertEquals("public attachment1 data", a1, clonedPublicAttachment);
 		AttachmentProxy clonedPrivateAttachment = b2.getPrivateAttachments()[0];
 		assertEquals("private attachment data", a2, clonedPrivateAttachment);
-		b2.createDraftCopyOf(b1, db);
+		b2.createDraftCopyOf(b1, getDb());
 		assertEquals("again public attachment count", 1, b2.getPublicAttachments().length);
 		assertEquals("again private attachment count", 1, b2.getPrivateAttachments().length);
 		assertEquals("again public attachment1 data", a1, clonedPublicAttachment);
 		assertEquals("again private attachment data", a2, clonedPrivateAttachment);
 
 		b1.setAllPrivate(false);
-		b2.createDraftCopyOf(b1, db);
+		b2.createDraftCopyOf(b1, getDb());
 		assertEquals("didn't pull private false?", b1.isAllPrivate(), b2.isAllPrivate());
 
 		b1.setAllPrivate(true);
-		b2.createDraftCopyOf(b1, db);
+		b2.createDraftCopyOf(b1, getDb());
 		assertEquals("didn't pull private true?", b1.isAllPrivate(), b2.isAllPrivate());
 
-		BulletinStore.saveToClientDatabase(b1,db,false,security);
+		store.saveBulletinForTesting(b1);
 
-		b2.createDraftCopyOf(b1,db);
+		b2.createDraftCopyOf(b1,getDb());
 		clonedPublicAttachment = b2.getPublicAttachments()[0];
 		clonedPrivateAttachment = b2.getPrivateAttachments()[0];
 		assertNotEquals("didn't clone the public attachment?", a1.getUniversalId().getLocalId(), clonedPublicAttachment.getUniversalId().getLocalId());
@@ -475,6 +478,11 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals("HQKey not set in private?", key, (original.getPrivateFieldDataPacket().getAuthorizedToReadKeys().get(0)).getPublicKey());
 	}
 
+	static MockDatabase getDb()
+	{
+		return (MockDatabase)store.getDatabase();
+	}
+
 	static final String samplePublic = "some public text";
 	static final String samplePrivate = "a bit of private text";
 
@@ -498,6 +506,6 @@ public class TestBulletin extends TestCaseEnhanced
 	static AttachmentProxy proxy5;
 	static AttachmentProxy proxy6;
 
-	static MockDatabase db;
+	private static BulletinStore store;
 	static MartusCrypto security;
 }

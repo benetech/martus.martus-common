@@ -54,8 +54,8 @@ import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.crypto.MartusCrypto.DecryptionException;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
-import org.martus.common.database.MockClientDatabase;
 import org.martus.common.database.MockServerDatabase;
+import org.martus.common.database.ReadableDatabase;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.UniversalId;
 import org.martus.common.packet.Packet.InvalidPacketException;
@@ -284,14 +284,15 @@ public class TestMartusUtilities extends TestCaseEnhanced
 
 	public void testValidateIntegrityOfZipFilePackets() throws Exception
 	{
-		Database db = new MockClientDatabase();
+		BulletinStore store = new MockBulletinStore(this);
+		ReadableDatabase db = store.getDatabase();
 
 		File sampleAttachment = createTempFileFromName("$$$Martus_This is some data");
 		AttachmentProxy ap = new AttachmentProxy(sampleAttachment);
 
 		Bulletin b = new Bulletin(security);
 		b.addPublicAttachment(ap);
-		BulletinStore.saveToClientDatabase(b, db, true, security);
+		store.saveEncryptedBulletinForTesting(b);
 		String accountId = b.getAccount();
 		DatabaseKey key = DatabaseKey.createKey(b.getUniversalId(), b.getStatus());
 
@@ -426,10 +427,11 @@ public class TestMartusUtilities extends TestCaseEnhanced
 	public void testGetBulletinSize() throws Exception
 	{
 		byte[] b1AttachmentBytes = {1,2,3,4,4,3,2,1};
-		Database db = new MockClientDatabase();
+		BulletinStore store = new MockBulletinStore(this);
+		ReadableDatabase db = store.getDatabase();
 
 		Bulletin b1 = new Bulletin(security);
-		BulletinStore.saveToClientDatabase(b1, db, true, security);
+		store.saveEncryptedBulletinForTesting(b1);
 		BulletinHeaderPacket bhp = b1.getBulletinHeaderPacket();
 		int emptySize = MartusUtilities.getBulletinSize(db, bhp);
 		assertTrue("empty size not correct?", emptySize > 1000 && emptySize < 5000);
@@ -442,12 +444,12 @@ public class TestMartusUtilities extends TestCaseEnhanced
 		out.close();
 		b1.addPublicAttachment(new AttachmentProxy(attachment));
 		b1.addPrivateAttachment(new AttachmentProxy(attachment));
-		BulletinStore.saveToClientDatabase(b1, db, true, security);
+		store.saveEncryptedBulletinForTesting(b1);
 		b1 = BulletinLoader.loadFromDatabase(db, DatabaseKey.createSealedKey(b1.getUniversalId()), security);
 
 		int size = MartusUtilities.getBulletinSize(db, bhp);
 		b1.set(Bulletin.TAGTITLE, "This is an very long title and should change the size of the result if things are working correctly");
-		BulletinStore.saveToClientDatabase(b1, db, true, security);
+		store.saveEncryptedBulletinForTesting(b1);
 		int size2 = MartusUtilities.getBulletinSize(db, bhp);
 		assertTrue("Size too small?", size > 4000);
 		assertNotEquals("Sizes match?", size, size2);

@@ -27,14 +27,13 @@ package org.martus.common.analyzerhelper;
 
 import java.io.File;
 
-import org.martus.common.BulletinStore;
 import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinConstants;
 import org.martus.common.bulletin.BulletinZipUtilities;
 import org.martus.common.crypto.MartusSecurity;
-import org.martus.common.database.ClientFileDatabase;
+import org.martus.common.test.MockBulletinStore;
 import org.martus.util.TestCaseEnhanced;
 
 
@@ -74,11 +73,10 @@ public class TestMartusBulletinWrapper extends TestCaseEnhanced
 		tempDirectory.delete();
 		tempDirectory.mkdirs();
 
-		ClientFileDatabase db = new ClientFileDatabase(tempDirectory, security);
-		db.initialize();
-		BulletinStore.saveToClientDatabase(bulletin, db, true, security);
+		MockBulletinStore store = new MockBulletinStore(this);
+		store.saveEncryptedBulletinForTesting(bulletin);
 		File bulletinZipFile = createTempFileFromName("$$$TestBulletinWrapperZipFile");
-		BulletinZipUtilities.exportBulletinPacketsFromDatabaseToZipFile(db, bulletin.getDatabaseKeyForLocalId(bulletin.getLocalId()), bulletinZipFile, security);
+		BulletinZipUtilities.exportBulletinPacketsFromDatabaseToZipFile(store.getDatabase(), bulletin.getDatabaseKey(), bulletinZipFile, security);
 		
 		MartusBulletinWrapper bulletinWrapper = new MartusBulletinWrapper(bulletin.getUniversalId(), bulletinZipFile, security);
 		assertEquals("Data for author not correct?", author, bulletinWrapper.getAuthor());
@@ -86,7 +84,7 @@ public class TestMartusBulletinWrapper extends TestCaseEnhanced
 		assertEquals("Data for location not correct?", location, bulletinWrapper.getLocation());
 		assertEquals("PrivateData not visible?", privateData, bulletinWrapper.getPrivateInfo());
 		bulletinZipFile.delete();
-		db.deleteAllData();
+		store.deleteAllData();
 	}
 	
 	public void testHQAuthorized() throws Exception
@@ -115,11 +113,10 @@ public class TestMartusBulletinWrapper extends TestCaseEnhanced
 		tempDirectory.delete();
 		tempDirectory.mkdirs();
 
-		ClientFileDatabase db = new ClientFileDatabase(tempDirectory, fosecurity);
-		db.initialize();
-		BulletinStore.saveToClientDatabase(bulletin, db, true, fosecurity);
+		MockBulletinStore store = new MockBulletinStore(this);
+		store.saveEncryptedBulletinForTesting(bulletin);
 		File bulletinZipFile = createTempFileFromName("$$$TestBulletinWrapperHQZipFile");
-		BulletinZipUtilities.exportBulletinPacketsFromDatabaseToZipFile(db, bulletin.getDatabaseKeyForLocalId(bulletin.getLocalId()), bulletinZipFile, fosecurity);
+		BulletinZipUtilities.exportBulletinPacketsFromDatabaseToZipFile(store.getDatabase(), bulletin.getDatabaseKeyForLocalId(bulletin.getLocalId()), bulletinZipFile, fosecurity);
 		
 		MartusBulletinWrapper bulletinWrapper = new MartusBulletinWrapper(bulletin.getUniversalId(), bulletinZipFile, security);
 		assertEquals("Data for author not correct?", author, bulletinWrapper.getAuthor());
@@ -131,7 +128,7 @@ public class TestMartusBulletinWrapper extends TestCaseEnhanced
 		assertEquals("Event Begin Date incorrect?", "2003-08-20", Bulletin.getStoredDateFormat().format(bulletinWrapper.getEventDate().getBeginDate()));
 		assertEquals("Event End Date incorrect?", "2003-08-23", Bulletin.getStoredDateFormat().format(bulletinWrapper.getEventDate().getEndDate()));
 		bulletinZipFile.delete();
-		db.deleteAllData();
+		store.deleteAllData();
 	}
 	private MartusSecurity security;
 	private MartusSecurity fosecurity;

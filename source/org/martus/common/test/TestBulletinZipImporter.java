@@ -49,6 +49,7 @@ import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.MockClientDatabase;
 import org.martus.common.database.MockDatabase;
+import org.martus.common.database.ReadableDatabase;
 import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.FieldDataPacket;
@@ -155,6 +156,8 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 
 	public void testSaveToFileWithAttachment() throws Exception
 	{
+		BulletinStore store = new MockBulletinStore(this);
+		ReadableDatabase db = store.getDatabase();
 		File tempFile1 = createTempFileWithData(sampleBytes1);
 		File tempFile2 = createTempFileWithData(sampleBytes2);
 		UniversalId dummyUid = UniversalId.createDummyUniversalId();
@@ -165,7 +168,7 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 		original.addPublicAttachment(a);
 		original.addPrivateAttachment(aPrivate);
 		original.setSealed();
-		BulletinStore.saveToClientDatabase(original, db, false, security);
+		store.saveBulletinForTesting(original);
 		UniversalId uid = original.getUniversalId();
 
 		original = BulletinLoader.loadFromDatabase(db, DatabaseKey.createSealedKey(uid), security);

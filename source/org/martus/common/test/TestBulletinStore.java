@@ -226,15 +226,15 @@ public class TestBulletinStore extends TestCaseEnhanced
 	public void testImportBulletinPacketsFromZipFileToDatabase() throws Exception
 	{
 		MartusCrypto authorSecurity = MockMartusSecurity.createClient();
-		Database originalDb = new MockClientDatabase();
+		BulletinStore fromStore = new MockBulletinStore(this);
 		Bulletin b = new Bulletin(authorSecurity);
 		b.setAllPrivate(false);
 		b.setSealed();
-		BulletinStore.saveToClientDatabase(b, originalDb, false, authorSecurity);
+		fromStore.saveBulletinForTesting(b);
 		
 		File destFile = createTempFile();
 		DatabaseKey key = DatabaseKey.createSealedKey(b.getUniversalId());
-		BulletinZipUtilities.exportBulletinPacketsFromDatabaseToZipFile(originalDb, key, destFile, authorSecurity);
+		BulletinZipUtilities.exportBulletinPacketsFromDatabaseToZipFile(fromStore.getDatabase(), key, destFile, authorSecurity);
 		ZipFile zip = new ZipFile(destFile);
 		
 		MartusCrypto hqSecurity = MockMartusSecurity.createHQ();
