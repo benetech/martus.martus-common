@@ -143,6 +143,17 @@ public class TestBulletinStore extends TestCaseEnhanced
 		store.removeBulletinFromStore(unrelated);
 		assertEquals("didn't delete unrelated?", 0, store.getBulletinCount());
 	}
+    
+    public void testRemoveBulletinWithIncompleteHistory() throws Exception
+	{
+		Bulletin original = createAndSaveBulletin();
+		Bulletin version1 = createAndSaveClone(original);
+		Bulletin version2 = createAndSaveClone(version1);
+		Bulletin version3 = createAndSaveClone(version2);
+		store.removeBulletinFromStore(version3);
+		store.saveBulletinForTesting(version3);
+		store.removeBulletinFromStore(version3);
+	}
 
 	public void testGetBulletinCount() throws Exception
 	{

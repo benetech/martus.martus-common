@@ -250,7 +250,9 @@ public class BulletinStore
 			{
 				String localIdOfAncestor = history.get(i);
 				UniversalId uidOfAncestor = UniversalId.createFromAccountAndLocalId(b.getAccount(), localIdOfAncestor);
-				deleteBulletinRevision(DatabaseKey.createSealedKey(uidOfAncestor));
+				DatabaseKey key = DatabaseKey.createSealedKey(uidOfAncestor);
+				if(doesBulletinRevisionExist(key))
+					deleteBulletinRevision(key);
 			}
 
 			BulletinHeaderPacket bhpMain = b.getBulletinHeaderPacket();
