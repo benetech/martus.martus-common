@@ -41,6 +41,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
+import org.martus.swing.UiButton;
 import org.martus.swing.UiLabel;
 import org.martus.swing.Utilities;
 
@@ -63,9 +64,9 @@ public class UiBasicSigninDlg extends JDialog
 		
 		signinPane = new UiSigninPanel(this, currentMode, username, password);
 		
-		ok = new JButton(localization.getButtonLabel("ok"));
+		ok = new UiButton(localization.getButtonLabel("ok"));
 		ok.addActionListener(new OkHandler());
-		JButton cancel = new JButton(localization.getButtonLabel("cancel"));
+		JButton cancel = new UiButton(localization.getButtonLabel("cancel"));
 		cancel.addActionListener(new CancelHandler());
 		Box buttonBox = Box.createHorizontalBox();
 		JComponent languageComponent = getLanguageComponent();

@@ -42,6 +42,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
+import org.martus.swing.UiButton;
 import org.martus.swing.UiLabel;
 import org.martus.swing.Utilities;
 
@@ -69,7 +70,7 @@ public class UiVirtualKeyboard
 		for(int i = 0; i < keys.length(); ++i)
 		{
 			String text = keys.substring(i,i+1);
-			JButton key = new JButton(text);
+			JButton key = new UiButton(text);
 			key.setFocusPainted(false);
 			key.addActionListener(updateHandler);
 			key.addMouseListener(new MouseHandler(key));
@@ -78,9 +79,9 @@ public class UiVirtualKeyboard
 
 		Container bottomRow = new Container();
 		bottomRow.setLayout(new GridLayout(1,3));
-		JButton spaceButton = new JButton(space);
+		JButton spaceButton = new UiButton(space);
 		spaceButton.addActionListener(updateHandler);
-		JButton deleteButton = new JButton(delete);
+		JButton deleteButton = new UiButton(delete);
 		deleteButton.addActionListener(updateHandler);
 		bottomRow.add(spaceButton);
 		bottomRow.add(new UiLabel(""));

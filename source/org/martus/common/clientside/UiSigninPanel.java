@@ -38,6 +38,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
+import org.martus.swing.UiButton;
 import org.martus.swing.UiLabel;
 import org.martus.swing.UiParagraphPanel;
 import org.martus.swing.UiWrappedTextArea;
@@ -81,7 +82,7 @@ public class UiSigninPanel extends UiParagraphPanel implements VirtualKeyboardHa
 
 		passwordField = new UiPasswordField(20);
 		passwordField.setPassword(password);
-		switchToNormalKeyboard = new JButton(localization.getButtonLabel("VirtualKeyboardSwitchToNormal"));
+		switchToNormalKeyboard = new UiButton(localization.getButtonLabel("VirtualKeyboardSwitchToNormal"));
 		switchToNormalKeyboard.addActionListener(new SwitchKeyboardHandler());
 		JLabel passwordLabel = new UiLabel(localization.getFieldLabel("password"));
 		passwordArea = new UiParagraphPanel();
