@@ -104,35 +104,35 @@ public class UiBasicLocalization extends Localization
 		setCurrentDateFormatCode(DateUtilities.MDY_SLASH.getCode());
 	}
 	
-	public String getLabel(String languageCode, String category, String tag, String defaultResult)
+	public String getLabel(String languageCode, String category, String tag)
 	{
-		return getLabel(languageCode, category + ":" + tag, defaultResult);
+		return getLabel(languageCode, category + ":" + tag);
 	}
 
-	private String getLabel(String languageCode, String key, String defaultResult)
+	private String getLabel(String languageCode, String key)
 	{
 		String result = null;
 		Map stringMap = getStringMap(languageCode);
 		if(stringMap != null)
 			result = (String)stringMap.get(key);
 		if(result == null && !languageCode.equals(ENGLISH))
-			result = "<" + getLabel(ENGLISH, key, defaultResult) + ">";
+			result = "<" + getLabel(ENGLISH, key) + ">";
 		if(result == null)
-			result = defaultResult;
+			result ="<"+key+">";
 		return result;
 	}
 
 	protected ChoiceItem getLanguageChoiceItem(String filename)
 	{
 		String code = getLanguageCodeFromFilename(filename);
-		String name = getLabel(ENGLISH, "language", code, "Unknown: " + code);
+		String name = getLabel(ENGLISH, "language", code);
 		return new ChoiceItem(code, name);
 	}
 
 	public ChoiceItem[] getUiLanguages()
 	{
 		Vector languages = new Vector();
-		languages.addElement(new ChoiceItem(ENGLISH, getLabel(ENGLISH, "language", ENGLISH, "English")));
+		languages.addElement(new ChoiceItem(ENGLISH, getLabel(ENGLISH, "language", ENGLISH)));
 		languages.addAll(getAllCompiledLanguageResources());
 		languages.addAll(getNonDuplicateLanguageResourcesInDirectory(languages, directory));
 		return (ChoiceItem[])(languages.toArray(new ChoiceItem[0]));
@@ -170,47 +170,47 @@ public class UiBasicLocalization extends Localization
 
 	public String getLocalizedFolderName(String folderName)
 	{
-		return getLabel(getCurrentLanguageCode(), "folder", folderName, "");
+		return getLabel(getCurrentLanguageCode(), "folder", folderName);
 	}
 
 	public String getFieldLabel(String fieldName)
 	{
-		return getLabel(getCurrentLanguageCode(), "field", fieldName, "");
+		return getLabel(getCurrentLanguageCode(), "field", fieldName);
 	}
 
 	public String getLanguageName(String code)
 	{
-		return getLabel(getCurrentLanguageCode(), "language", code, "Unknown");
+		return getLabel(getCurrentLanguageCode(), "language", code);
 	}
 
 	public String getWindowTitle(String code)
 	{
-		return getLabel(getCurrentLanguageCode(), "wintitle", code, "???");
+		return getLabel(getCurrentLanguageCode(), "wintitle", code);
 	}
 
 	public String getButtonLabel(String code)
 	{
-		return getLabel(getCurrentLanguageCode(), "button", code, "???");
+		return getLabel(getCurrentLanguageCode(), "button", code);
 	}
 
 	public String getMenuLabel(String code)
 	{
-		return getLabel(getCurrentLanguageCode(), "menu", code, "???");
+		return getLabel(getCurrentLanguageCode(), "menu", code);
 	}
 
 	public String getStatusLabel(String code)
 	{
-		return getLabel(getCurrentLanguageCode(), "status", code, "???");
+		return getLabel(getCurrentLanguageCode(), "status", code);
 	}
 
 	public String getKeyword(String code)
 	{
-		return getLabel(getCurrentLanguageCode(), "keyword", code, "???");
+		return getLabel(getCurrentLanguageCode(), "keyword", code);
 	}
 
 	public String getMonthLabel(String code)
 	{
-		return getLabel(getCurrentLanguageCode(), "month", code, "???");
+		return getLabel(getCurrentLanguageCode(), "month", code);
 	}
 
 	public String[] getMonthLabels()
@@ -258,7 +258,7 @@ public class UiBasicLocalization extends Localization
 		while(it.hasNext())
 		{
 			String key = (String)it.next();
-			String value = getLabel(languageCode, key, "???");
+			String value = getLabel(languageCode, key);
 			strings.add(key + "=" + value);
 		}
 		return strings;

@@ -52,8 +52,7 @@ public class MockUiLocalization extends UiBasicLocalization
 	public String getLabel(
 		String languageCode,
 		String category,
-		String tag,
-		String defaultResult)
+		String tag)
 	{
 		return "<" + tag + ">";
 	}

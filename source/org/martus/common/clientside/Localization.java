@@ -81,6 +81,7 @@ public class Localization
 	public String currentLanguageCode;
 	public String currentDateFormat;
 
+	public static final String UNUSED_TAG = "";
 	public static final String MARTUS_LANGUAGE_FILE_PREFIX = "Martus-";
 	public static final String MARTUS_LANGUAGE_FILE_SUFFIX = ".mtf";
 	
