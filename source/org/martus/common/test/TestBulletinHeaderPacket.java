@@ -28,6 +28,7 @@ package org.martus.common.test;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
+import java.util.Vector;
 
 import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
@@ -254,6 +255,31 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		assertNotContains(MartusXml.getTagStart(MartusXml.HQPublicKeyElementName), result);
 		
 		assertNotContains(MartusXml.getTagStart(MartusXml.AccountsAuthorizedToReadElementName), result);
+		
+		assertNotContains(MartusXml.getTagStart(MartusXml.HistoryElementName), result);
+	}
+	
+	public void testWriteXmlWithHistory() throws Exception
+	{
+		Vector history = createFakeHistory();
+		bhp.setHistory(history);
+		
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		bhp.writeXml(out, security);
+
+		String result = new String(out.toByteArray(), "UTF-8");
+		assertContains(MartusXml.getTagStart(MartusXml.HistoryElementName), result);
+		assertContains((String)history.get(0), result);
+		assertContains((String)history.get(1), result);
+		
+	}
+
+	private Vector createFakeHistory()
+	{
+		Vector history = new Vector();
+		history.add("pretend local id");
+		history.add("another fake localid");
+		return history;
 	}
 
 	public void testWriteXmlWithHQKeySet() throws Exception
@@ -329,6 +355,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		assertTrue("No unknown?", loaded.hasUnknownTags());
 		assertEquals("AuthorizedToReadKeys", 0, loaded.getAuthorizedToReadKeys().size());
 		assertEquals("AuthorizedToProxyUpload", 0, loaded.getAuthorizedToUploadKeys().size());
+		assertEquals("has history?", 0, loaded.getHistory().size());
 
 		String[] list = loaded.getPublicAttachmentIds();
 		assertEquals("public count", 2, list.length);
@@ -336,6 +363,25 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		String[] list2 = loaded.getPrivateAttachmentIds();
 		assertEquals("private count", 2, list2.length);
 		assertEquals("private attachments wrong?", true, Arrays.equals(bhp.getPrivateAttachmentIds(), list2));
+	}
+	
+	public void testLoadXmlWithHistory() throws Exception
+	{
+		Vector history = createFakeHistory();
+		bhp.setHistory(history);
+		
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		bhp.writeXml(out, security);
+		String result = new String(out.toByteArray(), "UTF-8");
+
+		BulletinHeaderPacket loaded = new BulletinHeaderPacket(security);
+		byte[] bytes = result.getBytes("UTF-8");
+		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
+		loaded.loadFromXml(in, security);
+		
+		Vector loadedHistory = loaded.getHistory();
+		assertEquals("no history?", history.size(), loadedHistory.size());
+		assertEquals("wrong history?", history, loadedHistory);
 	}
 
 	public void testLoadXmlWithHQKey() throws Exception

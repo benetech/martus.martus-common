@@ -156,7 +156,7 @@ public class BulletinZipImporter
 		}
 	}
 
-	public static Bulletin loadFromFile(MartusCrypto security, File inputFile) throws 
+	public static Bulletin loadFromFileAsNewDraft(MartusCrypto security, File inputFile) throws 
 		InvalidPacketException, 
 		SignatureVerificationException, 
 		WrongPacketTypeException, 

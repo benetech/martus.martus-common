@@ -34,6 +34,7 @@ import org.martus.common.HQKeys.XmlHQsLoader;
 import org.martus.util.Base64;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlStringLoader;
+import org.martus.util.xml.SimpleXmlVectorLoader;
 import org.xml.sax.SAXParseException;
 
 
@@ -52,6 +53,8 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 			return new SimpleXmlStringLoader(tag);
 		else if(tag.equals(MartusXml.AccountsAuthorizedToReadElementName))
 			return new AuthorizedToReadLoader();
+		else if(tag.equals(MartusXml.HistoryElementName))
+			return new SimpleXmlVectorLoader(tag, MartusXml.AncestorElementName);
 		return super.startElement(tag);
 	}
 
@@ -67,6 +70,8 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 			endStringElement(ended);
 		else if(tag.equals(MartusXml.AccountsAuthorizedToReadElementName))
 			bhp.setAuthorizedToReadKeys(new HQKeys(((AuthorizedToReadLoader)ended).authorizedKeys));
+		else if(tag.equals(MartusXml.HistoryElementName))
+			bhp.setHistory(((SimpleXmlVectorLoader)ended).getVector());
 		else
 			super.endElement(tag, ended);
 	}

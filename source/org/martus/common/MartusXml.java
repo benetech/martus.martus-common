@@ -118,6 +118,8 @@ public class MartusXml
 	public final static String HQPublicKeyElementName = "HQPublicKey";
 	public final static String AccountsAuthorizedToReadElementName = "AuthorizedToReadKey";
 	public final static String AllHQSProxyUploadName = "AllHQsProxyUpload";
+	public final static String HistoryElementName = "History";
+	public final static String AncestorElementName = "Ancestor";
 	public final static String EncryptedDataElementName = "EncryptedData";
 	public final static String DataPacketIdElementName = "DataPacketId";
 	public final static String PrivateDataPacketIdElementName = "PrivateDataPacketId";

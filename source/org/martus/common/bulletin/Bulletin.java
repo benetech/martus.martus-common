@@ -167,6 +167,16 @@ public class Bulletin implements BulletinConstants
 		cal.setTimeInMillis(getLastSavedTime());		
 		return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(cal.getTime());
 	}
+	
+	public void setHistory(Vector newHistory)
+	{
+		getBulletinHeaderPacket().setHistory(newHistory);
+	}
+	
+	public Vector getHistory()
+	{
+		return getBulletinHeaderPacket().getHistory();
+	}
 
 	public boolean isDraft()
 	{
@@ -422,7 +432,15 @@ public class Bulletin implements BulletinConstants
 		IOException, 
 		InvalidBase64Exception
 	{
-		this.clear();
+		clear();
+		
+		boolean originalIsMine = other.getAccount().equals(getAccount());
+		if(originalIsMine && other.isSealed())
+		{
+			Vector history = other.getHistory();
+			history.add(other.getLocalId());
+			setHistory(history);
+		}
 
 		setDraft();
 		setAllPrivate(other.isAllPrivate());

@@ -108,6 +108,16 @@ public class BulletinHeaderPacket extends Packet
 	{
 		lastSavedTime = System.currentTimeMillis();
 	}
+	
+	public void setHistory(Vector newHistory)
+	{
+		history = newHistory;
+	}
+	
+	public Vector getHistory()
+	{
+		return history;
+	}
 
 	public void setFieldDataPacketId(String id)
 	{
@@ -416,6 +426,16 @@ public class BulletinHeaderPacket extends Packet
 			writeNonEncodedElement(dest, MartusXml.AccountsAuthorizedToReadElementName, value);			
 		}
 		writeElement(dest, MartusXml.AllHQSProxyUploadName, ALL_HQS_PROXY_UPLOAD);
+		
+		if(history.size() > 0)
+		{
+			dest.writeStartTag(MartusXml.HistoryElementName);
+			for(int i=0; i < history.size(); ++i)
+			{
+				writeElement(dest, MartusXml.AncestorElementName, (String)history.get(i));
+			}
+			dest.writeEndTag(MartusXml.HistoryElementName);
+		}
 	}
 
 	void setAllPrivateFromXmlTextValue(String data)
@@ -438,6 +458,7 @@ public class BulletinHeaderPacket extends Packet
 		legacyHqPublicKey = "";
 		lastSavedTime = TIME_UNKNOWN;
 		authorizedToReadKeys = new HQKeys();
+		history = new Vector();
 	}
 
 	private final static String ALL_PRIVATE = "1";
@@ -459,4 +480,5 @@ public class BulletinHeaderPacket extends Packet
 	private static final String prefix = "B-";
 	private HQKeys authorizedToReadKeys;
 	private boolean allHQsCanProxyUpload;
+	private Vector history;
 }
