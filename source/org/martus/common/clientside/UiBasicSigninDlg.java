@@ -31,7 +31,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -41,7 +40,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
-
 import org.martus.swing.UiLanguageDirection;
 import org.martus.swing.Utilities;
 
@@ -71,8 +69,10 @@ public class UiBasicSigninDlg extends JDialog
 		JComponent languageComponent = getLanguageComponent();
 		buttonBox.add(languageComponent);
 		buttonBox.add(Box.createHorizontalGlue());
-		buttonBox.add(ok);
-		buttonBox.add(cancel);
+		
+		JButton[] buttons = {ok, cancel};
+		Utilities.addComponentsRespectingOrientation(buttonBox, buttons);
+
 		buttonBox.add(Box.createHorizontalGlue());
 		
 		buttonBox.setBorder(new EmptyBorder(5,5,5,5));
