@@ -34,6 +34,10 @@ public class GridRow
 	{
 		row = new Vector(maxColumns);
 		this.maxColumns = maxColumns;
+		String[] data = new String[maxColumns];
+		for(int i = 0; i < maxColumns ; ++i)
+			data[i] = "";
+		setRow(data);
 	}
 	
 	public int columns()
@@ -43,12 +47,7 @@ public class GridRow
 	
 	static public GridRow createEmptyRow(int columns)
 	{
-		String[] data = new String[columns];
-		for(int i = 0; i < columns ; ++i)
-			data[i] = "";
-		GridRow empty = new GridRow(columns);
-		empty.setRow(data);
-		return empty;
+		return new GridRow(columns);
 	}
 
 	public void setRow(String[] data) throws ArrayIndexOutOfBoundsException   
@@ -70,12 +69,12 @@ public class GridRow
 		return data;
 	}
 
-	public void setCell(String data, int column) throws ArrayIndexOutOfBoundsException
+	public void setCellText(int column, String data) throws ArrayIndexOutOfBoundsException
 	{
 		row.set(column, data);
 	}
 	
-	public String getCell(int column) throws ArrayIndexOutOfBoundsException
+	public String getCellText(int column) throws ArrayIndexOutOfBoundsException
 	{
 		return (String)row.get(column);
 	}

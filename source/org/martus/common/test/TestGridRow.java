@@ -42,7 +42,10 @@ public class TestGridRow extends TestCaseEnhanced
 	{
 		int max_columns = 2;
 		GridRow row = new GridRow(max_columns);
-		assertEquals ("Should not have any columns yet", 0, row.columns());
+		assertEquals ("Should start with 2 columns", 2, row.columns());
+		String[] empty = {"", ""};
+		assertTrue("Should be empty?", Arrays.equals(empty, row.getRow()));
+		
 		String item1 = "data1";
 		String item2 = "data2";
 		String item3 = "data3";
@@ -51,25 +54,24 @@ public class TestGridRow extends TestCaseEnhanced
 		String[] data = {item1, item2};
 		row.setRow(data);
 		assertEquals ("Now should have 2 columns", 2, row.columns());
-		assertEquals("cell 1 didn't come back with correct data", item1, row.getCell(0));
-		assertEquals("cell 2 didn't come back with correct data", item2, row.getCell(1));
+		assertEquals("cell 1 didn't come back with correct data", item1, row.getCellText(0));
+		assertEquals("cell 2 didn't come back with correct data", item2, row.getCellText(1));
 
 		String[] datab = {item1b, item2b};
 		row.setRow(datab);
 		assertEquals ("Should still have 2 columns", 2, row.columns());
-		assertEquals("cell 1 didn't come back with correct data", item1b, row.getCell(0));
-		assertEquals("cell 2 didn't come back with correct data", item2b, row.getCell(1));
+		assertEquals("cell 1 didn't come back with correct data", item1b, row.getCellText(0));
+		assertEquals("cell 2 didn't come back with correct data", item2b, row.getCellText(1));
 
 		int testCell = 1;
-		row.setCell(item3, testCell);
-		assertEquals("cell 1 didn't come back with new data", item3, row.getCell(testCell));
+		row.setCellText(testCell, item3);
+		assertEquals("cell 1 didn't come back with new data", item3, row.getCellText(testCell));
 		
 		String[] expectedResult = {item1b, item3};
 		assertTrue("Arrays don't match?", Arrays.equals(expectedResult, row.getRow()));
 		
 		GridRow rowEmpty = GridRow.createEmptyRow(max_columns);
 		assertEquals ("Should now have 2 empty columns", 2, rowEmpty.columns());
-		String[] empty = {"", ""};
 		assertTrue("Empty Row don't match?", Arrays.equals(empty, rowEmpty.getRow()));
 
 	}
@@ -105,13 +107,13 @@ public class TestGridRow extends TestCaseEnhanced
 		row.setRow(data2Items);
 		
 		assertEquals ("Now should have 2 columns", data2Items.length, row.columns());
-		assertEquals("cell 1 didn't come back with correct data", item1, row.getCell(0));
-		assertEquals("cell 2 didn't come back with correct data", item2, row.getCell(1));
+		assertEquals("cell 1 didn't come back with correct data", item1, row.getCellText(0));
+		assertEquals("cell 2 didn't come back with correct data", item2, row.getCellText(1));
 	
 	
 		try
 		{
-			row.setCell(item3,-1);
+			row.setCellText(-1,item3);
 			fail("should have thrown invalid column -1");
 		}
 		catch (ArrayIndexOutOfBoundsException expected)
@@ -120,7 +122,7 @@ public class TestGridRow extends TestCaseEnhanced
 	
 		try
 		{
-			row.setCell(item3,2);
+			row.setCellText(2,item3);
 			fail("should have thrown invalid column 2");
 		}
 		catch (ArrayIndexOutOfBoundsException expected)

@@ -61,16 +61,16 @@ public class TestGridData extends TestCaseEnhanced
 		String xmlEncodedString = MartusUtilities.getXmlEncoded(mustEncodeXMLData);
 
 		String expectedXml = 
-			GridData.ROW_START_TAG + 
-				GridData.COL_START_TAG + row1.getCell(0) + GridData.COL_END_TAG +
-				GridData.COL_START_TAG + xmlEncodedString + GridData.COL_END_TAG +
-				GridData.COL_START_TAG + row1.getCell(2) + GridData.COL_END_TAG +
-			GridData.ROW_END_TAG +
-			GridData.ROW_START_TAG +
-				GridData.COL_START_TAG + row2.getCell(0) + GridData.COL_END_TAG +
-				GridData.COL_START_TAG + row2.getCell(1) + GridData.COL_END_TAG +
-				GridData.COL_START_TAG + row2.getCell(2) + GridData.COL_END_TAG +
-			GridData.ROW_END_TAG;
+			"<"+GridData.ROW_TAG + ">\n" + 
+				"<" + GridData.COLUMN_TAG + ">" + row1.getCellText(0) + "</" + GridData.COLUMN_TAG + ">\n" +
+				"<" + GridData.COLUMN_TAG + ">" + xmlEncodedString + "</" + GridData.COLUMN_TAG + ">\n" +
+				"<" + GridData.COLUMN_TAG + ">" + row1.getCellText(2) + "</" + GridData.COLUMN_TAG + ">\n" +
+			"</" + GridData.ROW_TAG + ">\n" +
+			"<" + GridData.ROW_TAG + ">\n" +
+				"<" + GridData.COLUMN_TAG + ">" + row2.getCellText(0) + "</" + GridData.COLUMN_TAG + ">\n" +
+				"<" + GridData.COLUMN_TAG + ">" + row2.getCellText(1) + "</" + GridData.COLUMN_TAG + ">\n" +
+				"<" + GridData.COLUMN_TAG + ">" + row2.getCellText(2) + "</" + GridData.COLUMN_TAG + ">\n" +
+			"</" + GridData.ROW_TAG + ">\n";
 			
 		String xml = grid.getXmlRepresentation();
 		assertEquals("xml incorrect?", expectedXml, xml);

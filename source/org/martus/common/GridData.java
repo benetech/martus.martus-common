@@ -60,13 +60,13 @@ public class GridData
 	public void setValueAt(String data, int row, int col) throws ArrayIndexOutOfBoundsException
 	{
 		GridRow rowData = getRow(row);
-		rowData.setCell(data, col);
+		rowData.setCellText(col, data);
 	}
 
 	public String getValueAt(int row, int col) throws ArrayIndexOutOfBoundsException
 	{
 		GridRow rowData = getRow(row);
-		return rowData.getCell(col);
+		return rowData.getCellText(col);
 	}
 	
 	
@@ -83,20 +83,18 @@ public class GridData
 		for(int i = 0; i< rows.size(); ++i)
 		{
 			GridRow contents = (GridRow)rows.get(i);
-			result += ROW_START_TAG;
+			result += MartusXml.getTagStart(ROW_TAG) + MartusXml.newLine ;
 			for(int j= 0; j < contents.columns(); ++j)
 			{
-				result += COL_START_TAG + MartusUtilities.getXmlEncoded(contents.getCell(j)) + COL_END_TAG;
+				result += MartusXml.getTagStart(COLUMN_TAG) + MartusUtilities.getXmlEncoded(contents.getCellText(j)) + MartusXml.getTagEnd(COLUMN_TAG);
 			}
-			result += ROW_END_TAG;
+			result += MartusXml.getTagEnd(ROW_TAG);
 		}
 		return result;
 	}
 
-	public static final String ROW_START_TAG = "<Row>";
-	public static final String ROW_END_TAG = "</Row>";
-	public static final String COL_START_TAG = "<Col>";
-	public static final String COL_END_TAG = "</Col>";
+	public static final String ROW_TAG = "Row";
+	public static final String COLUMN_TAG = "Column";
 
 	Vector rows;
 	int maxColumns;
