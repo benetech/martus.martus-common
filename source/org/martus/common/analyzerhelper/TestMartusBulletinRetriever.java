@@ -31,7 +31,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Vector;
-import org.martus.common.analyzerhelper.MartusBulletinRetriever.ServerErrorException;
+import org.martus.common.MartusUtilities.ServerErrorException;
 import org.martus.common.analyzerhelper.MartusBulletinRetriever.ServerPublicCodeDoesNotMatchException;
 import org.martus.common.clientside.ClientSideNetworkHandlerUsingXmlRpcForNonSSL;
 import org.martus.common.clientside.Exceptions.ServerNotAvailableException;
