@@ -102,11 +102,6 @@ public class BulletinStore
 		return scanForLeafUids();
 	}
 
-	public void visitAllBulletins(Database.PacketVisitor visitorToUse)
-	{
-		visitAllBulletinRevisions(visitorToUse);
-	}
-
 	public boolean doesBulletinRevisionExist(UniversalId uid)
 	{
 		DatabaseKey key = new DatabaseKey(uid);
@@ -171,11 +166,11 @@ public class BulletinStore
 		}
 	
 		UidCollector uidCollector = new UidCollector();
-		visitAllBulletins(uidCollector);
+		visitAllBulletinRevisions(uidCollector);
 		return uidCollector.uidList;
 	}
 
-	private void visitAllBulletinRevisions(Database.PacketVisitor visitorToUse)
+	public void visitAllBulletinRevisions(Database.PacketVisitor visitorToUse)
 	{
 		class BulletinKeyFilter implements Database.PacketVisitor
 		{

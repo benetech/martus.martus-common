@@ -112,7 +112,7 @@ public class TestBulletinStore extends TestCaseEnhanced
 		assertTrue("missing 2?", two.contains(b2.getUniversalId()));
 	}
 
-	public void testVisitAllBulletins() throws Exception
+	public void testVisitAllBulletinRevisions() throws Exception
 	{
 		TRACE("testVisitAllBulletins");
 
@@ -120,7 +120,7 @@ public class TestBulletinStore extends TestCaseEnhanced
 		{
 			BulletinUidCollector(BulletinStore store)
 			{
-				store.visitAllBulletins(this);
+				store.visitAllBulletinRevisions(this);
 			}
 
 			public void visit(DatabaseKey key)
