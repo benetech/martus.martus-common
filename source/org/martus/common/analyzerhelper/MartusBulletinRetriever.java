@@ -120,6 +120,8 @@ public class MartusBulletinRetriever
 		}
 		catch(Exception e)
 		{
+			if(progressMeter != null && progressMeter.shouldExit())
+				return null;
 			throw new ServerErrorException(e.getMessage());
 		}
 	}
