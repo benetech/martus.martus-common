@@ -137,7 +137,7 @@ public class BulletinSaver
 	}
 
 
-	protected static void deleteRemovedPackets(Database db, String accountId, String[] oldIds, String[] newIds)
+	private static void deleteRemovedPackets(Database db, String accountId, String[] oldIds, String[] newIds)
 	{
 		for(int oldIndex = 0; oldIndex < oldIds.length; ++oldIndex)
 		{

@@ -70,18 +70,21 @@ public class Bulletin implements BulletinConstants
 	{
 		security = securityToUse;
 		String accountId = security.getPublicKeyString();
-		UniversalId headerUid = BulletinHeaderPacket.createUniversalId(accountId);
-		UniversalId dataUid = FieldDataPacket.createUniversalId(accountId);
-		UniversalId privateDataUid = FieldDataPacket.createUniversalId(accountId);
-
 		isValidFlag = true;
+
+		UniversalId headerUid = BulletinHeaderPacket.createUniversalId(accountId);
+		header = createHeaderPacket(headerUid);
+
+		UniversalId dataUid = FieldDataPacket.createUniversalId(accountId);
 		fieldData = createPublicFieldDataPacket(dataUid, publicFieldSpecs);
 		fieldData.setEncrypted(true);
+		header.setFieldDataPacketId(dataUid.getLocalId());
+		
+		UniversalId privateDataUid = FieldDataPacket.createUniversalId(accountId);
 		privateFieldData = createPrivateFieldDataPacket(privateDataUid, privateFieldSpecs);
 		privateFieldData.setEncrypted(true);
-		header = createHeaderPacket(headerUid);
-		header.setFieldDataPacketId(dataUid.getLocalId());
 		header.setPrivateFieldDataPacketId(privateDataUid.getLocalId());
+		
 		setPendingPublicAttachments(new Vector());
 		setPendingPrivateAttachments(new Vector());
 
@@ -202,7 +205,7 @@ public class Bulletin implements BulletinConstants
 	
 	public FieldSpec[] getPrivateFieldSpecs()
 	{
-		return privateFieldData.getFieldSpecs();
+		return getPrivateFieldDataPacket().getFieldSpecs();
 	}
 
 	public void set(String fieldName, String value)
@@ -210,7 +213,7 @@ public class Bulletin implements BulletinConstants
 		if(isFieldInPublicSection(fieldName))
 			fieldData.set(fieldName, value);
 		else
-			privateFieldData.set(fieldName, value);
+			getPrivateFieldDataPacket().set(fieldName, value);
 				
 	}
 
@@ -219,7 +222,7 @@ public class Bulletin implements BulletinConstants
 		if(isFieldInPublicSection(fieldName))
 			return fieldData.get(fieldName);
 		else
-			return privateFieldData.get(fieldName);
+			return getPrivateFieldDataPacket().get(fieldName);
 	}
 
 	public void addPublicAttachment(AttachmentProxy a) throws
@@ -434,7 +437,7 @@ public class Bulletin implements BulletinConstants
 		}
 
 		{
-			FieldSpec privateFields[] = privateFieldData.getFieldSpecs();
+			FieldSpec privateFields[] = getPrivateFieldDataPacket().getFieldSpecs();
 			for(int f = 0; f < privateFields.length; ++f)
 			{
 				set(privateFields[f].getTag(), other.get(privateFields[f].getTag()));

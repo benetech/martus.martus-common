@@ -129,7 +129,7 @@ public class BulletinLoader
 		return true;
 	}
 
-	static boolean loadAnotherPacket(Packet packet, Database db, DatabaseKey key, byte[] expectedSig, MartusCrypto verifier) throws
+	private static boolean loadAnotherPacket(Packet packet, Database db, DatabaseKey key, byte[] expectedSig, MartusCrypto verifier) throws
 			IOException,
 			MartusCrypto.NoKeyPairException
 	{
