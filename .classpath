@@ -5,9 +5,8 @@
 	<classpathentry kind="src" path="/martus-hrdag"/>
 	<classpathentry kind="src" path="/martus-logi"/>
 	<classpathentry kind="src" path="/martus-utils"/>
-	<classpathentry kind="lib" path="C:/EclipseMartus/martus-thirdparty/common/Ant/bin/ant.jar"/>
-	<classpathentry kind="lib" path="C:/EclipseMartus/martus-thirdparty/common/InfiniteMonkey/bin/InfiniteMonkey.jar"/>
-	<classpathentry kind="lib" path="C:/EclipseMartus/martus-thirdparty/common/XMLRPC/bin/xmlrpc-1.2-b1.jar"/>
 	<classpathentry kind="src" path="/martus-swing"/>
+	<classpathentry kind="lib" path="/martus-thirdparty/common/InfiniteMonkey/bin/InfiniteMonkey.jar"/>
+	<classpathentry kind="lib" path="/martus-thirdparty/common/XMLRPC/bin/xmlrpc-1.2-b1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
