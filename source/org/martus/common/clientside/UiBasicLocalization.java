@@ -192,6 +192,8 @@ public class UiBasicLocalization extends Localization
 		String[] languageFiles = languageDirectory.list(new LanguageFilenameFilter());
 		for(int i=0;i<languageFiles.length;++i)
 		{
+			if(includeOfficialLanguagesOnly && !isOfficialTranslationFile(new File(languageDirectory, languageFiles[i])))
+				continue;
 			ChoiceItem languageChoiceItem = getLanguageChoiceItem(languageFiles[i]);
 			String languageCodeToAdd = languageChoiceItem.getCode();
 			boolean nonDuplicateLanguage = true;

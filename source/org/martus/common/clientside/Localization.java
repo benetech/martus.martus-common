@@ -57,6 +57,7 @@ public class Localization
 	public Localization(File directoryToUse)
 	{
 		directory = directoryToUse;
+		includeOfficialLanguagesOnly = true;
 		textResources = new TreeMap();
 		rightToLeftLanguages = new Vector();
 	}
@@ -322,18 +323,33 @@ public class Localization
 	
 	public File getTranslationFile(String languageCode)
 	{
-		File mtfFile = new File(directory, getMtfFilename(languageCode));
-		if(mtfFile.exists())
-			return mtfFile;
-		File mlpkFile = new File(directory, getMlpkFilename(languageCode));
-		if(mlpkFile.exists())
-			return mlpkFile;
+		if(!includeOfficialLanguagesOnly)
+		{
+			File mtfFile = new File(directory, getMtfFilename(languageCode));
+			if(mtfFile.exists())
+				return mtfFile;
+		}
+		File mlpFile = new File(directory, getMlpkFilename(languageCode));
+		if(mlpFile.exists())
+		{
+			if(includeOfficialLanguagesOnly)
+			{ 
+				if(!isOfficialMlpTranslation(mlpFile))
+					return null;
+			}
+			return mlpFile;
+		}
 		return null;
 	}
 	
 	public boolean isTranslationPackFile(File translationFile)
 	{
 		return (translationFile.getName().endsWith(MARTUS_LANGUAGE_PACK_SUFFIX));
+	}
+	
+	public boolean isOfficialTranslationFile(File translationFile)
+	{
+		return isOfficialMlpTranslation(translationFile);
 	}
 	
 	public boolean isOfficialTranslation(String languageCode)
@@ -350,9 +366,14 @@ public class Localization
 		}
 		
 		if(isTranslationPackFile(translationFile))
-			return (JarVerifier.verify(translationFile.getAbsolutePath(),false) == JarVerifier.JAR_VERIFIED_TRUE);
+			return isOfficialMlpTranslation(translationFile);
 
 		return false;
+	}
+	
+	private boolean isOfficialMlpTranslation(File translationFile)
+	{
+		return (JarVerifier.verify(translationFile, false) == JarVerifier.JAR_VERIFIED_TRUE);
 	}
 	
 	private boolean isRightToLeftLanguage()
@@ -437,7 +458,6 @@ public class Localization
 			return DateUtilities.getDefaultDateFormatCode();
 		return (String)defaultLanguageDateFormat.get(languageCode);
 	}
-	
 
 	public File directory;
 	public Map textResources;
@@ -466,4 +486,6 @@ public class Localization
 				"it", "ja","jv","kn","kk","ky","ko","ml","mr","ne","or","pa","ps","pl","pt","ro",RUSSIAN,"sr",
 				"sr", "sd","si",SPANISH,"ta","tg","te",THAI,"tr","tk","uk","ur","uz","vi"};
 	public Vector rightToLeftLanguages;
+	public boolean includeOfficialLanguagesOnly;
+	
 }
