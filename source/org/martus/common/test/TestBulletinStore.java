@@ -79,6 +79,17 @@ public class TestBulletinStore extends TestCaseEnhanced
 		super.tearDown();
 	}
 
+	public void testGetBulletinCount() throws Exception
+	{
+		Bulletin original = createAndSaveBulletin();
+		Bulletin clone = new Bulletin(security);
+		Vector history = new Vector();
+		history.add(original.getLocalId());
+		clone.setHistory(history);
+		BulletinSaver.saveToClientDatabase(clone, db, false, security);
+		assertEquals(1, store.getBulletinCount());
+	}
+	
     
 
 	public void testGetAllBulletinUids() throws Exception
@@ -150,8 +161,6 @@ public class TestBulletinStore extends TestCaseEnhanced
 		verifyCloneIsLeaf(two, one, other.getUniversalId());
 	}
 
-
-	
 	private void verifyCloneIsLeaf(Bulletin original, Bulletin clone, UniversalId otherUid) throws IOException, CryptoException
 	{
 		original.setHistory(new Vector());

@@ -94,69 +94,26 @@ public class BulletinStore
 
 	public int getBulletinCount()
 	{
-		class BulletinCounter implements Database.PacketVisitor
-		{
-			public void visit(DatabaseKey key)
-			{
-				++count;
-			}
-	
-			int count = 0;
-		}
-	
-		BulletinCounter counter = new BulletinCounter();
-		visitAllBulletins(counter);
-		return counter.count;
+		return scanForLeafUids().size();
 	}
 
 	public Vector getAllBulletinUids()
 	{
-		class UidCollector implements Database.PacketVisitor
-		{
-			public void visit(DatabaseKey key)
-			{
-				uidList.add(key.getUniversalId());
-			}
-			Vector uidList = new Vector();
-		}
-	
-		UidCollector uidCollector = new UidCollector();
-		visitAllBulletins(uidCollector);
-		return uidCollector.uidList;
+		return getUidsOfAllBulletinRevisions();
 	}
 
 	public void visitAllBulletins(Database.PacketVisitor visitorToUse)
 	{
-		class BulletinKeyFilter implements Database.PacketVisitor
-		{
-			BulletinKeyFilter(Database db, Database.PacketVisitor visitorToUse2)
-			{
-				visitor = visitorToUse2;
-				db.visitAllRecords(this);
-			}
-	
-			public void visit(DatabaseKey key)
-			{
-				if(BulletinHeaderPacket.isValidLocalId(key.getLocalId()))
-				{
-					++count;
-					visitor.visit(key);
-				}
-			}
-			Database.PacketVisitor visitor;
-			int count;
-		}
-	
-		new BulletinKeyFilter(getDatabase(), visitorToUse);
+		visitAllBulletinRevisions(visitorToUse);
 	}
 
-	public boolean doesBulletinExist(UniversalId uid)
+	public boolean doesBulletinRevisionExist(UniversalId uid)
 	{
 		DatabaseKey key = new DatabaseKey(uid);
-		return doesBulletinExist(key);
+		return doesBulletinRevisionExist(key);
 	}
 
-	protected boolean doesBulletinExist(DatabaseKey key)
+	protected boolean doesBulletinRevisionExist(DatabaseKey key)
 	{
 		return getDatabase().doesRecordExist(key);
 	}
@@ -195,55 +152,101 @@ public class BulletinStore
 	
 	public Vector scanForLeafUids()
 	{
-		class LeafScanner implements Database.PacketVisitor
+		LeafScanner scanner = new LeafScanner(getDatabase(), getSignatureVerifier());
+		visitAllBulletinRevisions(scanner);
+		return scanner.getLeafUids();
+	}
+	
+	
+
+	private Vector getUidsOfAllBulletinRevisions()
+	{
+		class UidCollector implements Database.PacketVisitor
 		{
-			public LeafScanner()
-			{
-				leafUids = new Vector();
-				nonLeafUids = new Vector();
-			}
-			
-			public Vector getLeafUids()
-			{
-				return leafUids;
-			}
-			
 			public void visit(DatabaseKey key)
 			{
-				BulletinHeaderPacket bhp = new BulletinHeaderPacket();
-				try
+				uidList.add(key.getUniversalId());
+			}
+			Vector uidList = new Vector();
+		}
+	
+		UidCollector uidCollector = new UidCollector();
+		visitAllBulletins(uidCollector);
+		return uidCollector.uidList;
+	}
+
+	private void visitAllBulletinRevisions(Database.PacketVisitor visitorToUse)
+	{
+		class BulletinKeyFilter implements Database.PacketVisitor
+		{
+			BulletinKeyFilter(Database db, Database.PacketVisitor visitorToUse2)
+			{
+				visitor = visitorToUse2;
+				db.visitAllRecords(this);
+			}
+	
+			public void visit(DatabaseKey key)
+			{
+				if(BulletinHeaderPacket.isValidLocalId(key.getLocalId()))
 				{
-					UniversalId maybeLeaf = key.getUniversalId();
-					if(!nonLeafUids.contains(maybeLeaf))
-						leafUids.add(maybeLeaf);
-					
-					bhp.loadFromXml(getDatabase().openInputStream(key, security), security);
-					Vector history = bhp.getHistory();
-					for(int i=0; i < history.size(); ++i)
-					{
-						String thisLocalId = (String)history.get(i);
-						UniversalId uidOfNonLeaf = UniversalId.createFromAccountAndLocalId(bhp.getAccountId(), thisLocalId);
-						leafUids.remove(uidOfNonLeaf);
-						nonLeafUids.add(uidOfNonLeaf);
-					}
-				}
-				catch(Exception e)
-				{
-					e.printStackTrace();
+					++count;
+					visitor.visit(key);
 				}
 			}
-			
-			Vector leafUids;
-			Vector nonLeafUids;
-			
+			Database.PacketVisitor visitor;
+			int count;
 		}
-		
-		LeafScanner scanner = new LeafScanner();
-		visitAllBulletins(scanner);
-		return scanner.getLeafUids();
+	
+		new BulletinKeyFilter(getDatabase(), visitorToUse);
 	}
 
 	private MartusCrypto security;
 	private File dir;
 	private Database database;
+}
+
+class LeafScanner implements Database.PacketVisitor
+{
+	public LeafScanner(Database databaseToScan, MartusCrypto cryptoToUse)
+	{
+		db = databaseToScan;
+		crypto = cryptoToUse;
+		leafUids = new Vector();
+		nonLeafUids = new Vector();
+	}
+	
+	public Vector getLeafUids()
+	{
+		return leafUids;
+	}
+	
+	public void visit(DatabaseKey key)
+	{
+		BulletinHeaderPacket bhp = new BulletinHeaderPacket();
+		try
+		{
+			UniversalId maybeLeaf = key.getUniversalId();
+			if(!nonLeafUids.contains(maybeLeaf))
+				leafUids.add(maybeLeaf);
+			
+			bhp.loadFromXml(db.openInputStream(key, crypto), crypto);
+			Vector history = bhp.getHistory();
+			for(int i=0; i < history.size(); ++i)
+			{
+				String thisLocalId = (String)history.get(i);
+				UniversalId uidOfNonLeaf = UniversalId.createFromAccountAndLocalId(bhp.getAccountId(), thisLocalId);
+				leafUids.remove(uidOfNonLeaf);
+				nonLeafUids.add(uidOfNonLeaf);
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	Database db;
+	MartusCrypto crypto;
+	Vector leafUids;
+	Vector nonLeafUids;
 }
