@@ -502,7 +502,8 @@ public class MartusUtilities
 
 	public static boolean isValidCharInFolder(char c)
 	{
-		if (Character.isLetterOrDigit(c) || c > 128)
+		if (Character.isLetterOrDigit(c) || 
+			c > 128 || c == 32)
 			return true;
 
 		return false;		
