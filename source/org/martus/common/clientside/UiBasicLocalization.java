@@ -244,8 +244,8 @@ public class UiBasicLocalization extends Localization
 		while(it.hasNext())
 		{
 			String key = (String)it.next();
-			String value = getLabel(languageCode, key);
-			strings.add(key + "=" + value);
+			String mtfEntry = getMtfEntry(languageCode, key);
+			strings.add(mtfEntry);
 		}
 		return strings;
 	}

@@ -49,7 +49,7 @@ public class Localization
 	public Localization(File directoryToUse)
 	{
 		directory = directoryToUse;
-		localizedText = new TreeMap();
+		textResources = new TreeMap();
 	}
 	
 	/////////////////////////////////////////////////////////////////
@@ -67,20 +67,21 @@ public class Localization
 	
 	protected String getLabel(String languageCode, String key)
 	{
-		String defaultValue = key;
-		Map localizations = (Map)localizedText.get(key);
-		if(localizations != null)
-		{
-			LocalizedString entry = (LocalizedString)localizations.get(languageCode);
-			if(entry != null)
-				return entry.getText();
-	
-			entry = (LocalizedString)localizations.get(ENGLISH);
-			if(entry != null)
-				defaultValue = entry.getText();
-		}
-		return "<" + defaultValue + ">";
+		Map availableTranslations = getAvailableTranslations(key);
+		if(availableTranslations == null)
+			return getAsUntranslated(key);
 
+		String translatedText = (String)availableTranslations.get(languageCode);
+		if(translatedText != null)
+			return translatedText;
+
+		String englishText = (String)availableTranslations.get(ENGLISH);
+		return getAsUntranslated(englishText);
+	}
+	
+	protected String getMtfEntry(String languageCode, String key)
+	{
+		return key + "=" + getLabel(languageCode, key);
 	}
 
 	protected void addEnglishTranslation(String mtfEntry)
@@ -100,19 +101,17 @@ public class Localization
 			return;
 	
 		String key = extractKeyFromMtfEntry(mtfEntryText);
-		String value = extractValueFromMtfEntry(mtfEntryText);
-		LocalizedString entry = new LocalizedString(key, value);
-
-		Map localizations = (Map)localizedText.get(key);
-		if(localizations == null)
+		Map availableTranslations = getAvailableTranslations(key);
+		if(availableTranslations == null)
 		{
 			if(!languageCode.equals(ENGLISH))
 				return;
-			localizations = new TreeMap();
-			localizedText.put(key, localizations);
+			availableTranslations = new TreeMap();
+			textResources.put(key, availableTranslations);
 		}
 		
-		localizations.put(languageCode, entry);
+		String translatedText = extractValueFromMtfEntry(mtfEntryText);
+		availableTranslations.put(languageCode, translatedText);
 	}
 	
 	private String extractKeyFromMtfEntry(String mtfEntryText)
@@ -152,9 +151,19 @@ public class Localization
 	
 	protected SortedSet getAllKeysSorted()
 	{
-		Set allKeys = localizedText.keySet();
+		Set allKeys = textResources.keySet();
 		SortedSet sorted = new TreeSet(allKeys);
 		return sorted;
+	}
+
+	private Map getAvailableTranslations(String key)
+	{
+		return (Map)textResources.get(key);
+	}
+
+	private String getAsUntranslated(String key)
+	{
+		return "<" + key + ">";
 	}
 
 
@@ -295,7 +304,7 @@ public class Localization
 	
 
 	public File directory;
-	public Map localizedText;
+	public Map textResources;
 	public String currentLanguageCode;
 	public String currentDateFormat;
 
