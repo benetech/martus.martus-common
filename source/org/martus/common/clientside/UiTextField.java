@@ -69,7 +69,7 @@ public class UiTextField extends JTextField
 		if(!LanguageOptions.needsLanguagePadding())
 			return super.getPreferredSize();
 
-		final int EXTRA_PIXELS = 12;
+		final int EXTRA_PIXELS = 14;
 		Dimension d = super.getPreferredSize();
 		d.setSize(d.getWidth(), d.getHeight() + EXTRA_PIXELS);
 		return d;
