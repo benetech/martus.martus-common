@@ -111,7 +111,7 @@ public class TestUnicodeFileReader extends TestCaseEnhanced
 		createTempFile(file);
 		UnicodeReader reader = new UnicodeReader(file);
 
-		String result = reader.readAll(100);
+		String result = reader.readAll();
 		assertEquals(text + MartusConstants.NEWLINE + text2 + MartusConstants.NEWLINE, result);
 		reader.close();
 
