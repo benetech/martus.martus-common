@@ -247,7 +247,7 @@ public class Bulletin implements BulletinConstants
 			AttachmentPacket ap = new AttachmentPacket(getAccount(), sessionKey, rawFile, getSignatureGenerator());
 			bhp.addPublicAttachmentLocalId(ap.getLocalId());
 			pendingPublicAttachments.add(ap);
-			a.setUniversalIdAndSessionKey(ap.getUniversalId(), sessionKey);
+			a.setPendingPacket(ap, sessionKey);
 		}
 		else
 		{
@@ -269,7 +269,7 @@ public class Bulletin implements BulletinConstants
 			AttachmentPacket ap = new AttachmentPacket(getAccount(), sessionKeyBytes, rawFile, getSignatureGenerator());
 			bhp.addPrivateAttachmentLocalId(ap.getLocalId());
 			getPendingPrivateAttachments().add(ap);
-			a.setUniversalIdAndSessionKey(ap.getUniversalId(), sessionKeyBytes);
+			a.setPendingPacket(ap, sessionKeyBytes);
 		}
 		else
 		{

@@ -108,9 +108,23 @@ public class AttachmentProxy
 	{
 		return uid;
 	}
+	
+	public void setPendingPacket(AttachmentPacket packet, SessionKey key)
+	{
+		pendingPacket = packet;
+		uid = packet.getUniversalId();
+		file = null;
+		sessionKey = key;
+	}
+	
+	public AttachmentPacket getPendingPacket()
+	{
+		return pendingPacket;
+	}
 
 	String label;
 	File file;
 	SessionKey sessionKey;
 	UniversalId uid;
+	AttachmentPacket pendingPacket;
 }

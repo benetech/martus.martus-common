@@ -33,6 +33,7 @@ import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.crypto.SessionKey;
+import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.UniversalId;
 import org.martus.util.*;
 import org.martus.util.UnicodeWriter;
@@ -67,6 +68,21 @@ public class TestAttachmentProxy extends TestCaseEnhanced
 		assertNull("still has file?", a.getFile());
 
 		file.delete();
+	}
+	
+	public void testSetPending() throws Exception
+	{
+		File file = createTempFile();
+		AttachmentProxy proxy = new AttachmentProxy(file);
+		MartusCrypto security = MockMartusSecurity.createClient();
+		SessionKey sessionKey = new SessionKey(new byte[] {1,2,3});
+		String accountId = security.getPublicKeyString();
+		AttachmentPacket packet = new AttachmentPacket(accountId, sessionKey, file, security); 
+		proxy.setPendingPacket(packet, sessionKey);
+		assertEquals("didn't set packet?", packet, proxy.getPendingPacket());
+		assertEquals("didn't set uid?", packet.getUniversalId(), proxy.getUniversalId());
+		assertNull("didn't clear file?", proxy.getFile());
+		assertEquals("didn't set session key?", sessionKey, proxy.getSessionKey());
 	}
 
 	public void testUidProxy() throws Exception
