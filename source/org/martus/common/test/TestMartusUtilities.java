@@ -40,6 +40,7 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+import org.martus.common.BulletinStore;
 import org.martus.common.MartusUtilities;
 import org.martus.common.MartusUtilities.FileVerificationException;
 import org.martus.common.MartusUtilities.InvalidPublicKeyFileException;
@@ -47,7 +48,6 @@ import org.martus.common.MartusUtilities.PublicInformationInvalidException;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinLoader;
-import org.martus.common.bulletin.BulletinSaver;
 import org.martus.common.bulletin.BulletinZipUtilities;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MockMartusSecurity;
@@ -291,7 +291,7 @@ public class TestMartusUtilities extends TestCaseEnhanced
 
 		Bulletin b = new Bulletin(security);
 		b.addPublicAttachment(ap);
-		BulletinSaver.saveToClientDatabase(b, db, true, security);
+		BulletinStore.saveToClientDatabase(b, db, true, security);
 		String accountId = b.getAccount();
 		DatabaseKey key = DatabaseKey.createKey(b.getUniversalId(), b.getStatus());
 
@@ -429,7 +429,7 @@ public class TestMartusUtilities extends TestCaseEnhanced
 		Database db = new MockClientDatabase();
 
 		Bulletin b1 = new Bulletin(security);
-		BulletinSaver.saveToClientDatabase(b1, db, true, security);
+		BulletinStore.saveToClientDatabase(b1, db, true, security);
 		BulletinHeaderPacket bhp = b1.getBulletinHeaderPacket();
 		int emptySize = MartusUtilities.getBulletinSize(db, bhp);
 		assertTrue("empty size not correct?", emptySize > 1000 && emptySize < 5000);
@@ -442,12 +442,12 @@ public class TestMartusUtilities extends TestCaseEnhanced
 		out.close();
 		b1.addPublicAttachment(new AttachmentProxy(attachment));
 		b1.addPrivateAttachment(new AttachmentProxy(attachment));
-		BulletinSaver.saveToClientDatabase(b1, db, true, security);
+		BulletinStore.saveToClientDatabase(b1, db, true, security);
 		b1 = BulletinLoader.loadFromDatabase(db, DatabaseKey.createSealedKey(b1.getUniversalId()), security);
 
 		int size = MartusUtilities.getBulletinSize(db, bhp);
 		b1.set(Bulletin.TAGTITLE, "This is an very long title and should change the size of the result if things are working correctly");
-		BulletinSaver.saveToClientDatabase(b1, db, true, security);
+		BulletinStore.saveToClientDatabase(b1, db, true, security);
 		int size2 = MartusUtilities.getBulletinSize(db, bhp);
 		assertTrue("Size too small?", size > 4000);
 		assertNotEquals("Sizes match?", size, size2);

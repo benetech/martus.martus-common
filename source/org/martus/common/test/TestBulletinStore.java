@@ -34,7 +34,6 @@ import java.util.zip.ZipFile;
 import org.martus.common.BulletinStore;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinLoader;
-import org.martus.common.bulletin.BulletinSaver;
 import org.martus.common.bulletin.BulletinZipUtilities;
 import org.martus.common.bulletin.Bulletin.DamagedBulletinException;
 import org.martus.common.crypto.MartusCrypto;
@@ -231,7 +230,7 @@ public class TestBulletinStore extends TestCaseEnhanced
 		Bulletin b = new Bulletin(authorSecurity);
 		b.setAllPrivate(false);
 		b.setSealed();
-		BulletinSaver.saveToClientDatabase(b, originalDb, false, authorSecurity);
+		BulletinStore.saveToClientDatabase(b, originalDb, false, authorSecurity);
 		
 		File destFile = createTempFile();
 		DatabaseKey key = DatabaseKey.createSealedKey(b.getUniversalId());
@@ -261,12 +260,12 @@ public class TestBulletinStore extends TestCaseEnhanced
 	private void verifyCloneIsLeaf(Bulletin original, Bulletin clone, UniversalId otherUid) throws IOException, CryptoException
 	{
 		original.setHistory(new BulletinHistory());
-		BulletinSaver.saveToClientDatabase(original, db, false, security);
+		store.saveBulletinForTesting(original);
 
 		BulletinHistory history = new BulletinHistory();
 		history.add(original.getLocalId());
 		clone.setHistory(history);
-		BulletinSaver.saveToClientDatabase(clone, db, false, security);
+		store.saveBulletinForTesting(clone);
 
 		Vector leafKeys = store.scanForLeafKeys();
 		assertEquals("wrong leaf count?", 2, leafKeys.size());
@@ -278,7 +277,7 @@ public class TestBulletinStore extends TestCaseEnhanced
 	private Bulletin createAndSaveBulletin() throws IOException, CryptoException
 	{
 		Bulletin b = new Bulletin(security);
-		BulletinSaver.saveToClientDatabase(b, db, false, security);
+		store.saveBulletinForTesting(b);
 		return b;
 	}
 
@@ -292,7 +291,7 @@ public class TestBulletinStore extends TestCaseEnhanced
 		BulletinHistory history = new BulletinHistory();
 		history.add(original.getLocalId());
 		clone.setHistory(history);
-		BulletinSaver.saveToClientDatabase(clone, db, false, security);
+		store.saveBulletinForTesting(clone);
 		return clone;
 	}
 

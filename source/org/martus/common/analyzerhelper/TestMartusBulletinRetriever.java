@@ -36,13 +36,14 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
+
+import org.martus.common.BulletinStore;
 import org.martus.common.ProgressMeterInterface;
 import org.martus.common.MartusUtilities.ServerErrorException;
 import org.martus.common.analyzerhelper.MartusBulletinRetriever.ServerPublicCodeDoesNotMatchException;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinConstants;
-import org.martus.common.bulletin.BulletinSaver;
 import org.martus.common.bulletin.BulletinZipUtilities;
 import org.martus.common.clientside.ClientSideNetworkGateway;
 import org.martus.common.clientside.ClientSideNetworkHandlerUsingXmlRpcForNonSSL;
@@ -333,7 +334,7 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 			try
 			{
 				db.initialize();
-				BulletinSaver.saveToClientDatabase(bulletinToRetrieve, db, true, security);
+				BulletinStore.saveToClientDatabase(bulletinToRetrieve, db, true, security);
 				bulletinZipFile = createTempFileFromName("$$$TestBulletinWrapperZipFile");
 				BulletinZipUtilities.exportBulletinPacketsFromDatabaseToZipFile(db, bulletinToRetrieve.getDatabaseKeyForLocalId(bulletinToRetrieve.getLocalId()), bulletinZipFile, security);
 				db.deleteAllData();

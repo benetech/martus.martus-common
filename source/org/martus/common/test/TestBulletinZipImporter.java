@@ -37,12 +37,12 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+import org.martus.common.BulletinStore;
 import org.martus.common.StandardFieldSpecs;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinForTesting;
 import org.martus.common.bulletin.BulletinLoader;
-import org.martus.common.bulletin.BulletinSaver;
 import org.martus.common.bulletin.BulletinZipImporter;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MockMartusSecurity;
@@ -165,7 +165,7 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 		original.addPublicAttachment(a);
 		original.addPrivateAttachment(aPrivate);
 		original.setSealed();
-		BulletinSaver.saveToClientDatabase(original, db, false, security);
+		BulletinStore.saveToClientDatabase(original, db, false, security);
 		UniversalId uid = original.getUniversalId();
 
 		original = BulletinLoader.loadFromDatabase(db, DatabaseKey.createSealedKey(uid), security);

@@ -26,11 +26,12 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.analyzerhelper;
 
 import java.io.File;
+
+import org.martus.common.BulletinStore;
 import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinConstants;
-import org.martus.common.bulletin.BulletinSaver;
 import org.martus.common.bulletin.BulletinZipUtilities;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.database.ClientFileDatabase;
@@ -75,7 +76,7 @@ public class TestMartusBulletinWrapper extends TestCaseEnhanced
 
 		ClientFileDatabase db = new ClientFileDatabase(tempDirectory, security);
 		db.initialize();
-		BulletinSaver.saveToClientDatabase(bulletin, db, true, security);
+		BulletinStore.saveToClientDatabase(bulletin, db, true, security);
 		File bulletinZipFile = createTempFileFromName("$$$TestBulletinWrapperZipFile");
 		BulletinZipUtilities.exportBulletinPacketsFromDatabaseToZipFile(db, bulletin.getDatabaseKeyForLocalId(bulletin.getLocalId()), bulletinZipFile, security);
 		
@@ -116,7 +117,7 @@ public class TestMartusBulletinWrapper extends TestCaseEnhanced
 
 		ClientFileDatabase db = new ClientFileDatabase(tempDirectory, fosecurity);
 		db.initialize();
-		BulletinSaver.saveToClientDatabase(bulletin, db, true, fosecurity);
+		BulletinStore.saveToClientDatabase(bulletin, db, true, fosecurity);
 		File bulletinZipFile = createTempFileFromName("$$$TestBulletinWrapperHQZipFile");
 		BulletinZipUtilities.exportBulletinPacketsFromDatabaseToZipFile(db, bulletin.getDatabaseKeyForLocalId(bulletin.getLocalId()), bulletinZipFile, fosecurity);
 		

@@ -34,6 +34,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import org.martus.common.BulletinStore;
 import org.martus.common.FieldSpec;
 import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
@@ -42,7 +43,6 @@ import org.martus.common.StandardFieldSpecs;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinConstants;
-import org.martus.common.bulletin.BulletinSaver;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.database.DatabaseKey;
@@ -294,7 +294,7 @@ public class TestBulletin extends TestCaseEnhanced
 		Bulletin b = new Bulletin(security);
 		b.setSealed();
 		b.setAllPrivate(false);
-		BulletinSaver.saveToClientDatabase(b, db, true, security);
+		BulletinStore.saveToClientDatabase(b, db, true, security);
 		assertEquals("Didn't Encrypt or Encyrpted too many packets.", 1, db.encryptWasCalled);
 	}
 
@@ -315,7 +315,7 @@ public class TestBulletin extends TestCaseEnhanced
 		b1.set(Bulletin.TAGPUBLICINFO, "public info");
 		b1.set(Bulletin.TAGPRIVATEINFO, "private info");
 		b1.setSealed();
-		BulletinSaver.saveToClientDatabase(b1, db, true, security);
+		BulletinStore.saveToClientDatabase(b1, db, true, security);
 		assertEquals(0, b1.getHistory().size());
 		
 		Bulletin b2 = new Bulletin(security);
@@ -356,7 +356,7 @@ public class TestBulletin extends TestCaseEnhanced
 		b2.createDraftCopyOf(b1, db);
 		assertEquals("didn't pull private true?", b1.isAllPrivate(), b2.isAllPrivate());
 
-		BulletinSaver.saveToClientDatabase(b1,db,false,security);
+		BulletinStore.saveToClientDatabase(b1,db,false,security);
 
 		b2.createDraftCopyOf(b1,db);
 		clonedPublicAttachment = b2.getPublicAttachments()[0];

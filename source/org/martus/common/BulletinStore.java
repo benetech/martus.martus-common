@@ -51,6 +51,7 @@ import org.martus.common.database.FileDatabase.MissingAccountMapException;
 import org.martus.common.database.FileDatabase.MissingAccountMapSignatureException;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.BulletinHistory;
+import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.Packet;
 import org.martus.common.packet.UniversalId;
 import org.martus.common.packet.Packet.InvalidPacketException;
@@ -395,6 +396,107 @@ public class BulletinStore
 	protected void deleteSpecificPacket(DatabaseKey burKey)
 	{
 		getWriteableDatabase().discardRecord(burKey);
+	}
+	
+	public void saveBulletinForTesting(Bulletin b) throws IOException, CryptoException
+	{
+		saveToClientDatabase(b, getWriteableDatabase(), false, b.getSignatureGenerator());
+	}
+	
+	public static void saveToClientDatabase(Bulletin b, Database db, boolean mustEncryptPublicData, MartusCrypto signer) throws
+			IOException,
+			MartusCrypto.CryptoException
+	{
+		UniversalId uid = b.getUniversalId();
+		BulletinHeaderPacket oldBhp = new BulletinHeaderPacket(uid);
+		DatabaseKey key = DatabaseKey.createLegacyKey(uid);
+		boolean bulletinAlreadyExisted = false;
+		try
+		{
+			if(db.doesRecordExist(key))
+			{
+				oldBhp = loadBulletinHeaderPacket(db, key, signer);
+				bulletinAlreadyExisted = true;
+			}
+		}
+		catch(Exception ignoreItBecauseWeCantDoAnythingAnyway)
+		{
+			//e.printStackTrace();
+			//System.out.println("Bulletin.saveToDatabase: " + e);
+		}
+	
+		BulletinHeaderPacket bhp = b.getBulletinHeaderPacket();
+	
+		FieldDataPacket publicDataPacket = b.getFieldDataPacket();
+		boolean shouldEncryptPublicData = (b.isDraft() || b.isAllPrivate());
+		publicDataPacket.setEncrypted(shouldEncryptPublicData);
+		Packet packet1 = publicDataPacket;
+		boolean encryptPublicData = mustEncryptPublicData;
+		Database db1 = db;
+		MartusCrypto signer1 = signer;
+	
+		byte[] dataSig = packet1.writeXmlToClientDatabase(db1, encryptPublicData, signer1);
+		bhp.setFieldDataSignature(dataSig);
+		Packet packet2 = b.getPrivateFieldDataPacket();
+		boolean encryptPublicData1 = mustEncryptPublicData;
+		Database db2 = db;
+		MartusCrypto signer2 = signer;
+	
+		byte[] privateDataSig = packet2.writeXmlToClientDatabase(db2, encryptPublicData1, signer2);
+		bhp.setPrivateFieldDataSignature(privateDataSig);
+	
+		for(int i = 0; i < b.getPendingPublicAttachments().size(); ++i)
+		{
+			// TODO: Should the bhp also remember attachment sigs?
+			Packet packet = (Packet)b.getPendingPublicAttachments().get(i);
+			boolean encryptPublicData2 = mustEncryptPublicData;
+			Database db3 = db;
+			MartusCrypto signer3 = signer;
+			packet.writeXmlToClientDatabase(db3, encryptPublicData2, signer3);
+		}
+	
+		for(int i = 0; i < b.getPendingPrivateAttachments().size(); ++i)
+		{
+			// TODO: Should the bhp also remember attachment sigs?
+			Packet packet = (Packet)b.getPendingPrivateAttachments().get(i);
+			Packet packet3 = packet;
+			boolean encryptPublicData2 = mustEncryptPublicData;
+			Database db3 = db;
+			MartusCrypto signer3 = signer;
+			packet3.writeXmlToClientDatabase(db3, encryptPublicData2, signer3);
+		}
+	
+		bhp.updateLastSavedTime();
+		Packet packet = bhp;
+		boolean encryptPublicData2 = mustEncryptPublicData;
+		Database db3 = db;
+		MartusCrypto signer3 = signer;
+		packet.writeXmlToClientDatabase(db3, encryptPublicData2, signer3);
+	
+		if(bulletinAlreadyExisted)
+		{
+			String accountId = b.getAccount();
+			String[] oldPublicAttachmentIds = oldBhp.getPublicAttachmentIds();
+			String[] newPublicAttachmentIds = bhp.getPublicAttachmentIds();
+			BulletinStore.deleteRemovedPackets(db, accountId, oldPublicAttachmentIds, newPublicAttachmentIds);
+	
+			String[] oldPrivateAttachmentIds = oldBhp.getPrivateAttachmentIds();
+			String[] newPrivateAttachmentIds = bhp.getPrivateAttachmentIds();
+			BulletinStore.deleteRemovedPackets(db, accountId, oldPrivateAttachmentIds, newPrivateAttachmentIds);
+		}
+	}
+
+	private static void deleteRemovedPackets(Database db, String accountId, String[] oldIds, String[] newIds)
+	{
+		for(int oldIndex = 0; oldIndex < oldIds.length; ++oldIndex)
+		{
+			String oldLocalId = oldIds[oldIndex];
+			if(!MartusUtilities.isStringInArray(newIds, oldLocalId))
+			{
+				UniversalId auid = UniversalId.createFromAccountAndLocalId(accountId, oldLocalId);
+				db.discardRecord(DatabaseKey.createLegacyKey(auid));
+			}
+		}
 	}
 
 	private MartusCrypto security;
