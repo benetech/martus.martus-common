@@ -34,12 +34,18 @@ public class UiSingleTextField extends JTextField
 	public UiSingleTextField (int columns)
 	{
 		super(columns);
-		setComponentOrientation(UiLanguageDirection.getComponentOrientation());
+		initalizeOrientation();
 	}
 	
 	public UiSingleTextField(String text)
 	{
 		super(text);
+		initalizeOrientation();
+	}
+
+	private void initalizeOrientation()
+	{
 		setComponentOrientation(UiLanguageDirection.getComponentOrientation());
+		setHorizontalAlignment(UiLanguageDirection.getHorizontalAlignment());
 	}
 }
