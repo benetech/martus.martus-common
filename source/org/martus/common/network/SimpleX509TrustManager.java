@@ -26,6 +26,7 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.network;
 
+import java.security.Key;
 import java.security.PublicKey;
 import java.security.SignatureException;
 import java.security.cert.CertificateException;
@@ -35,6 +36,7 @@ import javax.net.ssl.X509TrustManager;
 
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusSecurity;
+import org.martus.util.Base64;
 
 
 public class SimpleX509TrustManager implements X509TrustManager
@@ -80,7 +82,7 @@ public class SimpleX509TrustManager implements X509TrustManager
 			{
 				if(expectedPublicCode == null)
 					throw new CertificateException("No key or code is trusted");
-				String certPublicKeyString = MartusCrypto.getKeyString(cert2.getPublicKey());
+				String certPublicKeyString = SimpleX509TrustManager.getKeyString(cert2.getPublicKey());
 				String certPublicCode = MartusCrypto.computePublicCode(certPublicKeyString);
 				if(expectedPublicCode.equals(certPublicCode))
 				{
@@ -91,22 +93,22 @@ public class SimpleX509TrustManager implements X509TrustManager
 			if(tryPublicKey == null)
 				throw new CertificateException("Key is not trusted");
 			cert1.verify(tryPublicKey);
-			String keyString = MartusCrypto.getKeyString(tryPublicKey);
+			String keyString = SimpleX509TrustManager.getKeyString(tryPublicKey);
 			setExpectedPublicKey(keyString);
 		}
 		catch (SignatureException e)
 		{
 			e.printStackTrace();
 			System.out.println("Failed cert: " + failedCert);
-			String key0 = MartusCrypto.getKeyString(cert0.getPublicKey());
-			String key1 = MartusCrypto.getKeyString(cert1.getPublicKey());
-			String key2 = MartusCrypto.getKeyString(cert2.getPublicKey());
+			String key0 = SimpleX509TrustManager.getKeyString(cert0.getPublicKey());
+			String key1 = SimpleX509TrustManager.getKeyString(cert1.getPublicKey());
+			String key2 = SimpleX509TrustManager.getKeyString(cert2.getPublicKey());
 			System.out.println("Cert0 public: " + key0);
 			if(!key0.equals(key1))
 				System.out.println("Cert1 public: " + key1);
 			System.out.println("Cert2 public: " + key2);
 			System.out.println("Cert2 public code: " + MartusCrypto.formatAccountIdForLog(key2));
-			String expectedKeyString = MartusCrypto.getKeyString(expectedPublicKey);
+			String expectedKeyString = SimpleX509TrustManager.getKeyString(expectedPublicKey);
 			System.out.println("Expected public code: " + MartusCrypto.formatAccountIdForLog(expectedKeyString));
 
 			throw new CertificateException(e.toString());
@@ -138,7 +140,7 @@ public class SimpleX509TrustManager implements X509TrustManager
 	
 	public String getExpectedPublicKey()
 	{
-		return MartusCrypto.getKeyString(expectedPublicKey);
+		return SimpleX509TrustManager.getKeyString(expectedPublicKey);
 	}
 	
 	public boolean wasCheckServerTrustedCalled()
@@ -151,6 +153,13 @@ public class SimpleX509TrustManager implements X509TrustManager
 		calledCheckServerTrusted = false;
 	}
 	
+	public static String getKeyString(Key key) 
+	{
+		if(key == null)
+			return null;
+		return Base64.encode(key.getEncoded());
+	}
+
 	private PublicKey expectedPublicKey;
 	private String expectedPublicCode;
 	private boolean calledCheckServerTrusted;

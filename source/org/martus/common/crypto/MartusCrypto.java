@@ -33,8 +33,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.security.Key;
-import java.security.NoSuchAlgorithmException;
 import java.util.Vector;
 
 import javax.net.ssl.KeyManager;
@@ -168,7 +166,7 @@ public abstract class MartusCrypto
 	public abstract void flushSessionKeyCache();
 	
 	// Secret Share of Private Key
-	public abstract Vector getKeyShareBundles();
+	public abstract Vector buildKeyShareBundles();
 	public abstract void recoverFromKeyShareBundles(Vector shares) throws KeyShareException;
 
 	public void readKeyPair(File keyPairFile, char[] combinedPassPhrase) throws
@@ -292,12 +290,18 @@ public abstract class MartusCrypto
 	public static class DecryptionException extends CryptoException {}
 	public static class MartusSignatureException extends CryptoException {}
 	public static class CreateDigestException extends CryptoException {}
-	public static class KeyShareException extends Exception	{}
-	public static String getKeyString(Key key) {
-		if(key == null)
-			return null;
-		return Base64.encode(key.getEncoded());
+	public static class KeyShareException extends Exception	
+	{
+		public KeyShareException()
+		{
+		}
+		
+		public KeyShareException(String message)
+		{
+			super(message);
+		}
 	}
+	
 	public static String createDigestString(String inputText) throws CreateDigestException {
 		try
 		{
@@ -309,15 +313,22 @@ public abstract class MartusCrypto
 			throw new CreateDigestException();
 		}
 	}
-	public static byte[] createDigestBytes(String inputText) throws UnsupportedEncodingException, NoSuchAlgorithmException, IOException {
+	public static byte[] createDigestBytes(String inputText) throws UnsupportedEncodingException, CreateDigestException, IOException {
 		byte[] bytesToDigest = inputText.getBytes("UTF-8");
 		return createDigest(bytesToDigest);
 	}
-	public static byte[] createDigest(byte[] bytesToDigest) throws NoSuchAlgorithmException, IOException {
+	public static byte[] createDigest(byte[] bytesToDigest) throws CreateDigestException, IOException {
 		ByteArrayInputStream in = new ByteArrayInputStream(bytesToDigest);
 		byte[] result = MartusSecurity.createDigest(in);
 		in.close();
 		return result;
 	}
+	
+	protected static final int bitsInSessionKey = 256;
+	protected static final int bitsInPublicKey = 2048;
+	protected static final int SALT_BYTE_COUNT = 8;
+	protected static final int ITERATION_COUNT = 1000;
+	protected static final int IV_BYTE_COUNT = 16;
+	protected static final int TOKEN_BYTE_COUNT = 16;
 
 }

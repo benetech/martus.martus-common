@@ -37,7 +37,6 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.Key;
@@ -61,7 +60,6 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.spec.EncodedKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
-import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -87,16 +85,10 @@ import javax.net.ssl.KeyManagerFactory;
 import org.bouncycastle.jce.X509Principal;
 import org.bouncycastle.jce.X509V1CertificateGenerator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.logi.crypto.Crypto;
-import org.logi.crypto.secretshare.PolySecretShare;
-import org.logi.crypto.secretshare.SecretSharingException;
 import org.martus.common.MartusConstants;
 import org.martus.util.Base64;
 import org.martus.util.ByteArrayInputStreamWithSeek;
 import org.martus.util.InputStreamWithSeek;
-import org.martus.util.StringInputStream;
-import org.martus.util.UnicodeReader;
-import org.martus.util.UnicodeStringWriter;
 
 import com.isnetworks.provider.random.InfiniteMonkeyProvider;
 
@@ -208,107 +200,14 @@ public class MartusSecurity extends MartusCrypto
 	{
 		return isValidSignatureOfStream(extractPublicKey(publicKeyString), inputStream, signature);
 	}
-	public Vector buildShares(byte[] secretToShare) throws SecretSharingException
-	{
-		Vector shares = new Vector();
-		Crypto.initRandom();
-		byte[] paddedSecret = new byte[secretToShare.length + 1];
-		System.arraycopy(secretToShare,0,paddedSecret,1,secretToShare.length);
-		//We need to pad the secret beginning with a 1 because of a bug found 
-		//in the logi encryption algorithm that any secret
-		//beginning with a 0 or beginning with a byte > 127 will fail.
-		paddedSecret[0] = 1; 
-		int minNumber = MartusConstants.minNumberOfFilesNeededToRecreateSecret;
-		int numberShares = MartusConstants.numberOfFilesInShare;
-		PolySecretShare[] polyShares = PolySecretShare.share(minNumber, numberShares, paddedSecret, 512);
-		for (int i = 0 ; i < numberShares; ++i)
-		{
-			shares.add(polyShares[i].toString());
-		}
-		return shares;
-	}
-
-	public byte[] recoverShares(Vector shares) throws SecretSharingException
-	{
-		try 
-		{
-			int numShares = shares.size();
-			PolySecretShare[] polyShares = new PolySecretShare[numShares];
-			for(int i = 0; i < numShares; ++i)
-			{
-				polyShares[i] = (PolySecretShare)PolySecretShare.fromString((String)shares.get(i));
-			}
-			byte[] recoveredSecret = PolySecretShare.retrieve(polyShares);
-			//We needed to pad the secret beginning with a 1 because of a bug found 
-			//in the logi encryption algorithm that any secret
-			//beginning with a 0 or beginning with a byte > 127 will fail.
-			int unpaddedLength = recoveredSecret.length - 1;
-			byte[] unpaddedSecret = new byte[unpaddedLength];
-			System.arraycopy(recoveredSecret,1,unpaddedSecret,0,unpaddedLength);
-			return unpaddedSecret;
-		} 
-		catch (Exception e) 
-		{
-			throw new SecretSharingException(e.toString());
-		}
-	}
-
-	private static class KeyShareBundle
-	{
-		public KeyShareBundle(String publicKeyToUse, byte[] payloadToUse)
-		{
-			id = MartusConstants.martusSecretShareFileID;
-			timeStamp = (new Timestamp(new Date().getTime())).toString();		
-			publicKey = publicKeyToUse;
-			payload = Base64.encode(payloadToUse);
-		}
-				
-		public KeyShareBundle(String bundleString) throws IOException, KeyShareException
-		{
-			InputStream in = new StringInputStream(bundleString);
-			UnicodeReader reader = new UnicodeReader(in);
-
-			id = reader.readLine();
-			if(!id.equals(MartusConstants.martusSecretShareFileID))
-				throw new KeyShareException();
-
-			timeStamp = reader.readLine();
-			publicKey = reader.readLine();
-			sharePiece = reader.readLine();
-			payload = reader.readLine();
-
-			in.close();
-			reader.close();
-		}
-		
-		public String createBundleString(String sharePieceToWrite) throws IOException
-		{
-			sharePiece = sharePieceToWrite;
-			
-			UnicodeStringWriter writer = UnicodeStringWriter.create();
-			writer.writeln(id);
-			writer.writeln(timeStamp);
-			writer.writeln(publicKey);
-			writer.writeln(sharePiece);
-			writer.writeln(payload);
-			writer.close();
-			return writer.toString();
-		}
-
-		public String id;
-		public String timeStamp;
-		public String publicKey;
-		public String sharePiece;
-		public String payload;
-	}
-
-	public Vector getKeyShareBundles() 
+	
+	public Vector buildKeyShareBundles() 
 	{
 		Vector shareBundles = new Vector();
 		try 
 		{
 			SessionKey sessionKey = createSessionKey();
-			Vector sessionKeyShares = buildShares(sessionKey.getBytes());
+			Vector sessionKeyShares = MartusSecretShare.buildShares(sessionKey.getBytes());
 			
 			ByteArrayInputStream in = new ByteArrayInputStream(getKeyPairData(getKeyPair()));
 			ByteArrayOutputStream encryptedKeypair = new ByteArrayOutputStream();
@@ -343,8 +242,8 @@ public class MartusSecurity extends MartusCrypto
 		try 
 		{
 			Vector shares = new Vector();
-			shares = getSharesFromBundles(bundles);
-			byte[] encryptedKeyPair = getEncryptedKeyPairFromBundles(bundles);
+			shares = MartusSecretShare.getSharesFromBundles(bundles);
+			byte[] encryptedKeyPair = MartusSecretShare.getEncryptedKeyPairFromBundles(bundles);
 			decryptAndSetKeyPair(shares, encryptedKeyPair);
 		}
 		catch  (KeyShareException e)
@@ -358,42 +257,13 @@ public class MartusSecurity extends MartusCrypto
 		}
 	}
 	
-	private Vector getSharesFromBundles(Vector bundles)
-		throws  UnsupportedEncodingException, 
-				IOException, 
-				KeyShareException 
-		{
-			Vector shares = new Vector();
-			for(int i = 0; i < bundles.size(); ++i)
-			{
-				KeyShareBundle bundle = new KeyShareBundle((String) bundles.get(i));
-				shares.add(bundle.sharePiece);
-			}
-			return shares;
-	}
-	
-	private byte[] getEncryptedKeyPairFromBundles(Vector bundles)
-		throws KeyShareException
+	private void decryptAndSetKeyPair(Vector shares, byte[] keyPairEncrypted) throws
+		KeyShareException,
+		DecryptionException,
+		IOException,
+		AuthorizationFailedException 
 	{
-		try 
-		{
-			KeyShareBundle bundle = new KeyShareBundle((String) bundles.get(0));
-			return Base64.decode(bundle.payload);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			throw new KeyShareException();
-		}
-	}
-
-	private void decryptAndSetKeyPair(Vector shares, byte[] keyPairEncrypted) throws 
-						SecretSharingException, 
-						DecryptionException,
-						IOException,
-						AuthorizationFailedException 
-	{
-		SessionKey recoveredSessionKey = new SessionKey(recoverShares(shares));
+		SessionKey recoveredSessionKey = new SessionKey(MartusSecretShare.recoverShares(shares));
 		ByteArrayInputStreamWithSeek inEncryptedKeyPair = new ByteArrayInputStreamWithSeek(keyPairEncrypted);
 		ByteArrayOutputStream outDecryptedKeyPair = new ByteArrayOutputStream();
 		decrypt( inEncryptedKeyPair, outDecryptedKeyPair, recoveredSessionKey);
@@ -1144,15 +1014,22 @@ public class MartusSecurity extends MartusCrypto
 	}
 
 	protected static byte[] createDigest(ByteArrayInputStream in)
-		throws NoSuchAlgorithmException, IOException
+		throws IOException, CreateDigestException
 	{
-		MessageDigest digester = MessageDigest.getInstance(DIGEST_ALGORITHM);
-		digester.reset();
-		int got;
-		byte[] bytes = new byte[MartusConstants.digestBufferSize];
-		while( (got=in.read(bytes)) >= 0)
-			digester.update(bytes, 0, got);
-		return digester.digest();
+		try
+		{
+			MessageDigest digester = MessageDigest.getInstance(DIGEST_ALGORITHM);
+			digester.reset();
+			int got;
+			byte[] bytes = new byte[MartusConstants.digestBufferSize];
+			while( (got=in.read(bytes)) >= 0)
+				digester.update(bytes, 0, got);
+			return digester.digest();
+		}
+		catch(NoSuchAlgorithmException e)
+		{
+			throw new CreateDigestException();
+		}
 	}
 
 	public byte[] getDigestOfPartOfPrivateKey() throws CreateDigestException
@@ -1209,12 +1086,6 @@ public class MartusSecurity extends MartusCrypto
 	private static final String DIGEST_ALGORITHM = "SHA1";
 	private static final String ENCRYPTED_FILE_VERSION_IDENTIFIER = "Martus Encrypted File Version 001";
 
-	private static final int bitsInSessionKey = 256;
-	private static final int bitsInPublicKey = 2048;
-	private static final int SALT_BYTE_COUNT = 8;
-    private static final int ITERATION_COUNT = 1000;
-	private static final int IV_BYTE_COUNT = 16;	// from the book
-	private static final int TOKEN_BYTE_COUNT = 16; //128 bits
 	private static final int CACHE_VERSION = 1;
 	private static final int BUNDLE_VERSION = 1;
 	

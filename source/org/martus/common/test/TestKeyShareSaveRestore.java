@@ -33,15 +33,16 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Vector;
 
-import org.logi.crypto.secretshare.SecretSharingException;
 import org.martus.common.MartusConstants;
+import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.crypto.MartusSecretShare;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.KeyShareException;
-import org.martus.util.*;
 import org.martus.util.Base64;
 import org.martus.util.ByteArrayInputStreamWithSeek;
 import org.martus.util.StringInputStream;
+import org.martus.util.TestCaseEnhanced;
 import org.martus.util.UnicodeReader;
 import org.martus.util.UnicodeStringWriter;
 
@@ -57,34 +58,34 @@ public class TestKeyShareSaveRestore extends TestCaseEnhanced
 	{
 		MartusSecurity tempSecurity = new MartusSecurity();
 		byte[] secret = {1,2,3,4,0,8,5,6,7,0};
-		Vector allShares = tempSecurity.buildShares(secret);
+		Vector allShares = MartusSecretShare.buildShares(secret);
 		assertNotNull("Shares null?",allShares);
 		assertEquals("Incorrect number of Shares",  MartusConstants.numberOfFilesInShare, allShares.size());
 
-		byte[] recoveredSecret = tempSecurity.recoverShares(allShares);
+		byte[] recoveredSecret = MartusSecretShare.recoverShares(allShares);
 		assertNotNull("Recovered Secret Null?", recoveredSecret);
 		assertTrue("Secret didn't match with allparts?", Arrays.equals(secret,recoveredSecret));
 		
 		Vector firstTwoShares = new Vector();
 		firstTwoShares.add(allShares.get(0));
 		firstTwoShares.add(allShares.get(1));
-		recoveredSecret = tempSecurity.recoverShares(firstTwoShares);
+		recoveredSecret = MartusSecretShare.recoverShares(firstTwoShares);
 		assertTrue("Secret didn't match with first and second share?", Arrays.equals(secret,recoveredSecret));
 
 		Vector lastTwoShares = new Vector();
 		lastTwoShares.add(allShares.get(3));
 		lastTwoShares.add(allShares.get(4));
-		recoveredSecret = tempSecurity.recoverShares(lastTwoShares);
+		recoveredSecret = MartusSecretShare.recoverShares(lastTwoShares);
 		assertTrue("Secret didn't match with last two shares?", Arrays.equals(secret,recoveredSecret));
 
 		Vector OneShareOnly = new Vector();
 		OneShareOnly.add(allShares.get(1));
 		try 
 		{
-			recoveredSecret = tempSecurity.recoverShares(OneShareOnly);
+			recoveredSecret = MartusSecretShare.recoverShares(OneShareOnly);
 			fail("Secret returned with only one share?");
 		} 
-		catch (SecretSharingException expectedException)
+		catch (MartusCrypto.KeyShareException expectedException)
 		{
 		}
 
@@ -93,26 +94,26 @@ public class TestKeyShareSaveRestore extends TestCaseEnhanced
 		sameTwoShares.add(allShares.get(2));
 		try 
 		{
-			recoveredSecret = tempSecurity.recoverShares(sameTwoShares);
+			recoveredSecret = MartusSecretShare.recoverShares(sameTwoShares);
 			fail("Secrets matched with only 1 share used twice?");
 		} 
-		catch (SecretSharingException expectedException)
+		catch (MartusCrypto.KeyShareException expectedException)
 		{
 		}
 
 		byte[] allZeroSecret = {0,0,0,0,0,0,0};
-		allShares = tempSecurity.buildShares(allZeroSecret);
+		allShares = MartusSecretShare.buildShares(allZeroSecret);
 		assertNotNull("Shares null for zeroSecret?",allShares);
 		assertEquals("Incorrect number of Shares for zeroSecret",  MartusConstants.numberOfFilesInShare, allShares.size());
-		byte[] recoveredZeroSecret = tempSecurity.recoverShares(allShares);
+		byte[] recoveredZeroSecret = MartusSecretShare.recoverShares(allShares);
 		assertNotNull("Recovered Zero Secret Null?", recoveredZeroSecret);
 		assertTrue("Zero Secret didn't match with allparts?", Arrays.equals(allZeroSecret,recoveredZeroSecret));
 
 		byte[] all255Secret = {(byte)255,(byte)255,(byte)255,(byte)255,(byte)255,(byte)255,(byte)255};
-		allShares = tempSecurity.buildShares(all255Secret);
+		allShares = MartusSecretShare.buildShares(all255Secret);
 		assertNotNull("Shares null for zeroSecret?",allShares);
 		assertEquals("Incorrect number of Shares for zeroSecret",  MartusConstants.numberOfFilesInShare, allShares.size());
-		byte[] recovered255Secret = tempSecurity.recoverShares(allShares);
+		byte[] recovered255Secret = MartusSecretShare.recoverShares(allShares);
 		assertNotNull("Recovered 255 Secret Null?", recovered255Secret);
 		assertTrue("255 Secret didn't match with allparts?", Arrays.equals(all255Secret,recovered255Secret));
 	}
@@ -122,7 +123,7 @@ public class TestKeyShareSaveRestore extends TestCaseEnhanced
 		MartusSecurity originalSecurity = new MartusSecurity();
 		originalSecurity.createKeyPair(SMALLEST_LEGAL_KEY_FOR_TESTING);
 		
-		Vector bundles = originalSecurity.getKeyShareBundles();
+		Vector bundles = originalSecurity.buildKeyShareBundles();
 		assertNotNull("Got a null vector?", bundles);
 		assertEquals("Size of vector incorrect?", MartusConstants.numberOfFilesInShare, bundles.size());
 		InputStream in = new StringInputStream((String)bundles.get(0));
@@ -162,7 +163,7 @@ public class TestKeyShareSaveRestore extends TestCaseEnhanced
 		Vector twoShares = new Vector();
 		twoShares.add(share1SessionKey);
 		twoShares.add(share2SessionKey);
-		SessionKey recoveredSessionKey = new SessionKey(originalSecurity.recoverShares(twoShares));
+		SessionKey recoveredSessionKey = new SessionKey(MartusSecretShare.recoverShares(twoShares));
 		String item5EncodedAndEncryptedKeyPair = reader.readLine();
 		byte[] encryptedKeyPair = Base64.decode(item5EncodedAndEncryptedKeyPair);
 		in.close();
@@ -240,7 +241,7 @@ public class TestKeyShareSaveRestore extends TestCaseEnhanced
 
 		MartusSecurity originalSecurity = new MartusSecurity();
 		originalSecurity.createKeyPair(SMALLEST_LEGAL_KEY_FOR_TESTING);
-		Vector bundles = originalSecurity.getKeyShareBundles();
+		Vector bundles = originalSecurity.buildKeyShareBundles();
 		recoveredSecurity.recoverFromKeyShareBundles(bundles);
 		assertEquals("Public Keys don't Match?",originalSecurity.getPublicKeyString(), recoveredSecurity.getPublicKeyString());
 		assertEquals("Private Keys don't Match?",originalSecurity.getPrivateKeyString(), recoveredSecurity.getPrivateKeyString());
