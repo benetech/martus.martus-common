@@ -58,7 +58,9 @@ public class MartusBulletinWrapper
 			zipFile.close();
 			DatabaseKey key = new DatabaseKey(uid);
 			bulletin = BulletinLoader.loadFromDatabase(db, key, security);
-			
+			if(bulletin == null)
+				throw new ServerErrorException("No Bulletin?");
+
 			//TODO:Once we implement the ability to have attachments we will not delete the attachments
 			//but mark them all deleteOnExit, and also implement a cleanup function which must be called when this object is no longer needed
 			//which will then delete the attachments, and the database.
@@ -81,15 +83,25 @@ public class MartusBulletinWrapper
 	private void deleteAllAttachments()
 	{
 		AttachmentProxy[] publicAttachments = bulletin.getPublicAttachments();
-		for(int i = 0; i < publicAttachments.length; ++i)
+		if(publicAttachments != null)
 		{
-			publicAttachments[i].getFile().delete();
+			for(int i = 0; i < publicAttachments.length; ++i)
+			{
+				File file = publicAttachments[i].getFile();
+				if(file != null)
+					file.delete();
+			}
 		}
 		
 		AttachmentProxy[] privateAttachments = bulletin.getPublicAttachments();
-		for(int i = 0; i < privateAttachments.length; ++i)
+		if(privateAttachments != null)
 		{
-			privateAttachments[i].getFile().delete();
+			for(int i = 0; i < privateAttachments.length; ++i)
+			{
+				File file = privateAttachments[i].getFile();
+				if(file != null)
+					file.delete();
+			}
 		}
 	}
 
