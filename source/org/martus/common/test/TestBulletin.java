@@ -312,7 +312,7 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals("Not Draft Status?", BulletinConstants.STATUSDRAFT, b1.getStatus());
 	}
 
-	public void testPullFrom() throws Exception
+	public void testCreateDraftCopyOf() throws Exception
 	{
 		Bulletin b1 = new Bulletin(security);
 		b1.set(Bulletin.TAGPUBLICINFO, "public info");

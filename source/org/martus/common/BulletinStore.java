@@ -38,6 +38,7 @@ import java.util.zip.ZipFile;
 import org.martus.common.MartusUtilities.FileVerificationException;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinZipUtilities;
+import org.martus.common.bulletin.PendingAttachmentList;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.StreamEncryptor;
 import org.martus.common.crypto.MartusCrypto.CryptoException;
@@ -460,21 +461,8 @@ public class BulletinStore
 		byte[] privateDataSig = packet2.writeXmlToClientDatabase(db, encryptPublicData1, signer);
 		bhp.setPrivateFieldDataSignature(privateDataSig);
 	
-		for(int i = 0; i < b.getPendingPublicAttachments().size(); ++i)
-		{
-			// TODO: Should the bhp also remember attachment sigs?
-			Packet packet = (Packet)b.getPendingPublicAttachments().get(i);
-			boolean encryptPublicData2 = mustEncryptPublicData;
-			packet.writeXmlToClientDatabase(db, encryptPublicData2, signer);
-		}
-	
-		for(int i = 0; i < b.getPendingPrivateAttachments().size(); ++i)
-		{
-			// TODO: Should the bhp also remember attachment sigs?
-			Packet packet = (Packet)b.getPendingPrivateAttachments().get(i);
-			boolean encryptPublicData2 = mustEncryptPublicData;
-			packet.writeXmlToClientDatabase(db, encryptPublicData2, signer);
-		}
+		writePendingAttachments(b.getPendingPublicAttachments(), db, mustEncryptPublicData, signer);
+		writePendingAttachments(b.getPendingPrivateAttachments(), db, mustEncryptPublicData, signer);
 	
 		bhp.updateLastSavedTime();
 		Packet packet = bhp;
@@ -490,6 +478,16 @@ public class BulletinStore
 			String[] oldPrivateAttachmentIds = oldBhp.getPrivateAttachmentIds();
 			String[] newPrivateAttachmentIds = bhp.getPrivateAttachmentIds();
 			BulletinStore.deleteRemovedPackets(db, accountId, oldPrivateAttachmentIds, newPrivateAttachmentIds);
+		}
+	}
+
+	private static void writePendingAttachments(PendingAttachmentList pendingPublicAttachments, Database db, boolean mustEncryptPublicData, MartusCrypto signer) throws IOException, CryptoException
+	{
+		for(int i = 0; i < pendingPublicAttachments.size(); ++i)
+		{
+			// TODO: Should the bhp also remember attachment sigs?
+			Packet packet = pendingPublicAttachments.get(i);
+			packet.writeXmlToClientDatabase(db, mustEncryptPublicData, signer);
 		}
 	}
 

@@ -33,7 +33,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Vector;
 
 import org.martus.common.FieldSpec;
 import org.martus.common.HQKeys;
@@ -87,8 +86,8 @@ public class Bulletin implements BulletinConstants
 		privateFieldData.setEncrypted(true);
 		header.setPrivateFieldDataPacketId(privateDataUid.getLocalId());
 		
-		setPendingPublicAttachments(new Vector());
-		setPendingPrivateAttachments(new Vector());
+		pendingPublicAttachments = new PendingAttachmentList();
+		pendingPrivateAttachments = new PendingAttachmentList();
 
 		clear();
 	}
@@ -462,21 +461,8 @@ public class Bulletin implements BulletinConstants
 		setDraft();
 		setAllPrivate(other.isAllPrivate());
 
-		{
-			FieldSpec fields[] = fieldData.getFieldSpecs();
-			for(int f = 0; f < fields.length; ++f)
-			{
-				set(fields[f].getTag(), other.get(fields[f].getTag()));
-			}
-		}
-
-		{
-			FieldSpec privateFields[] = getPrivateFieldDataPacket().getFieldSpecs();
-			for(int f = 0; f < privateFields.length; ++f)
-			{
-				set(privateFields[f].getTag(), other.get(privateFields[f].getTag()));
-			}
-		}
+		pullFields(other, getFieldDataPacket().getFieldSpecs());
+		pullFields(other, getPrivateFieldDataPacket().getFieldSpecs());
 
 		MartusCrypto security = getSignatureGenerator();
 		AttachmentProxy[] attachmentPublicProxies = other.getPublicAttachments();
@@ -499,6 +485,14 @@ public class Bulletin implements BulletinConstants
 		getPendingPrivateAttachments().addAll(other.getPendingPrivateAttachments());
 	}
 	
+	private void pullFields(Bulletin other, FieldSpec[] fields)
+	{
+		for(int f = 0; f < fields.length; ++f)
+		{
+			set(fields[f].getTag(), other.get(fields[f].getTag()));
+		}
+	}
+
 	public AttachmentProxy getAsFileProxy(AttachmentProxy ap, ReadableDatabase otherDatabase, String status, MartusCrypto security)
 		throws
 			IOException,
@@ -567,22 +561,12 @@ public class Bulletin implements BulletinConstants
 		return privateFieldData;
 	}
 
-	private void setPendingPublicAttachments(Vector pendingPublicAttachments)
-	{
-		this.pendingPublicAttachments = pendingPublicAttachments;
-	}
-
-	public Vector getPendingPublicAttachments()
+	public PendingAttachmentList getPendingPublicAttachments()
 	{
 		return pendingPublicAttachments;
 	}
 
-	private void setPendingPrivateAttachments(Vector pendingPrivateAttachments)
-	{
-		this.pendingPrivateAttachments = pendingPrivateAttachments;
-	}
-
-	public Vector getPendingPrivateAttachments()
+	public PendingAttachmentList getPendingPrivateAttachments()
 	{
 		return pendingPrivateAttachments;
 	}
@@ -618,6 +602,6 @@ public class Bulletin implements BulletinConstants
 	private BulletinHeaderPacket header;
 	private FieldDataPacket fieldData;
 	private FieldDataPacket privateFieldData;
-	private Vector pendingPublicAttachments;
-	private Vector pendingPrivateAttachments;
+	private PendingAttachmentList pendingPublicAttachments;
+	private PendingAttachmentList pendingPrivateAttachments;
 }
