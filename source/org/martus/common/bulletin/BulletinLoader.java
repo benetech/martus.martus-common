@@ -35,6 +35,7 @@ import org.martus.common.database.DatabaseKey;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.Packet;
+import org.martus.common.packet.UniversalId;
 import org.martus.util.InputStreamWithSeek;
 
 
@@ -70,6 +71,11 @@ public class BulletinLoader
 			byte[] privateDataSig = headerPacket.getPrivateFieldDataSignature();
 			boolean isPrivateDataValid = BulletinLoader.loadAnotherPacket(privateDataPacket, db, privateDataKey, privateDataSig, verifier);
 
+			if(isDataValid)
+				isDataValid = isAttachmentsValid(db, verifier, b.getPublicAttachments());
+			if(isPrivateDataValid)
+				isPrivateDataValid = isAttachmentsValid(db, verifier, b.getPrivateAttachments());
+			
 			b.setIsValid(isDataValid && isPrivateDataValid);
 		}
 
@@ -88,6 +94,38 @@ public class BulletinLoader
 		}
 
 		return b;
+	}
+
+	private static boolean isAttachmentsValid(Database db, MartusCrypto verifier, AttachmentProxy[] attachmentProxies)
+	{
+		if(attachmentProxies == null)
+			return true;
+		for(int i = 0; i< attachmentProxies.length; ++i)
+		{
+			UniversalId id = attachmentProxies[i].getUniversalId();
+			DatabaseKey key = DatabaseKey.createSealedKey(id);
+			InputStreamWithSeek in = null;
+			try
+			{
+				in = db.openInputStream(key, verifier);
+			}
+			catch (Exception e)
+			{
+				return false;
+			}
+			if(in == null)
+				return false;
+
+			try
+			{
+				Packet.verifyPacketSignature(in,verifier);
+			}
+			catch (Exception e1)
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	static boolean loadAnotherPacket(Packet packet, Database db, DatabaseKey key, byte[] expectedSig, MartusCrypto verifier) throws

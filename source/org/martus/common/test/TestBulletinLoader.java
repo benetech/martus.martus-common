@@ -29,6 +29,7 @@ package org.martus.common.test;
 import java.io.File;
 
 import org.martus.common.MartusXml;
+import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinForTesting;
 import org.martus.common.bulletin.BulletinLoader;
@@ -41,6 +42,7 @@ import org.martus.common.database.MockClientDatabase;
 import org.martus.common.database.MockDatabase;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.FieldDataPacket;
+import org.martus.common.packet.UniversalId;
 
 public class TestBulletinLoader extends TestCaseEnhanced
 {
@@ -84,6 +86,52 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		assertEquals("not invalid?", false, loaded.isValid());
 		assertEquals("private messed up?", original.get(Bulletin.TAGPRIVATEINFO), loaded.get(Bulletin.TAGPRIVATEINFO));
 	}
+	
+	public void testMissingInvalidAttachment() throws Exception
+	{
+		Bulletin b1 = new Bulletin(security);
+
+		File tempFile1 = createTempFileWithData(sampleBytes1);
+		File tempFile2 = createTempFileWithData(sampleBytes2);
+		AttachmentProxy a1 = new AttachmentProxy(tempFile1);
+		AttachmentProxy a2 = new AttachmentProxy(tempFile2);
+		b1.addPublicAttachment(a1);
+		b1.addPrivateAttachment(a2);
+		assertEquals("Should have 1 public attachment", 1, b1.getPublicAttachments().length);
+		assertEquals("Should have 1 private attachment", 1, b1.getPrivateAttachments().length);
+		b1.setSealed();
+		BulletinSaver.saveToClientDatabase(b1, db, true, security);
+
+		Bulletin loaded = BulletinLoader.loadFromDatabase(db, new DatabaseKey(b1.getUniversalId()), security);
+		assertEquals("not valid?", true, loaded.isValid());
+
+		AttachmentProxy[] privateProxy = loaded.getPrivateAttachments();
+		UniversalId id = privateProxy[0].getUniversalId();
+		DatabaseKey key = DatabaseKey.createSealedKey(id);
+		
+		assertTrue("Attachment should exist",db.doesRecordExist(key));
+
+		db.discardRecord(key);
+		assertFalse("Attachment should not exist",db.doesRecordExist(key));
+		
+		loaded = BulletinLoader.loadFromDatabase(db, new DatabaseKey(b1.getUniversalId()), security);
+		assertEquals("not invalid for private attachment missing?", false, loaded.isValid());
+
+		b1.addPrivateAttachment(a2);
+		BulletinSaver.saveToClientDatabase(b1, db, true, security);
+		
+		loaded = BulletinLoader.loadFromDatabase(db, new DatabaseKey(b1.getUniversalId()), security);
+		assertEquals("Should now be valid both attachments are present.", true, loaded.isValid());
+
+		AttachmentProxy[] publicProxy = loaded.getPrivateAttachments();
+		id = publicProxy[0].getUniversalId();
+		key = DatabaseKey.createSealedKey(id);
+		db.writeRecordEncrypted(key,sampleBytes2.toString(), security);
+		
+		loaded = BulletinLoader.loadFromDatabase(db, new DatabaseKey(b1.getUniversalId()), security);
+		assertEquals("not invalid for modified public attachment?", false, loaded.isValid());
+	}
+	
 
 	public void testDetectPrivateFieldPacketWithWrongSig() throws Exception
 	{
@@ -296,6 +344,8 @@ public class TestBulletinLoader extends TestCaseEnhanced
 
 	static final String samplePublic = "some public text for loading";
 	static final String samplePrivate = "a bit of private text for loading";
+	static final byte[] sampleBytes1 = {1,1,2,3,0,5,7,11};
+	static final byte[] sampleBytes2 = {3,1,4,0,1,5,9,2,7};
 
 	static MockDatabase db;
 	static MartusSecurity security;
