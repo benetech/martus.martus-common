@@ -29,6 +29,7 @@ package org.martus.common.crypto;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigInteger;
 import java.util.Vector;
 
 import javax.net.ssl.KeyManager;
@@ -138,6 +139,21 @@ public abstract class MartusCrypto
 			buf[dest++] = (char)('1' + low);
 		}
 		return new String(buf);
+	}
+	
+	static public String getHexDigest(String anyString)
+	{
+		try
+		{
+			byte[] rawDigest = MartusSecurity.createDigestBytes(anyString);
+			BigInteger bigInt = new BigInteger(rawDigest);
+			return bigInt.abs().toString(16);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public static String formatPublicCode(String publicCode)

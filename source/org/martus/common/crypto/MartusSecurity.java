@@ -997,14 +997,19 @@ public class MartusSecurity extends MartusCryptoImplementation
 	{
 		try
 		{
-			byte[] bytesToDigest = inputText.getBytes("UTF-8");
-			byte[] result = createDigest(bytesToDigest);
+			byte[] result = createDigestBytes(inputText);
 			return Base64.encode(result);
 		}
 		catch (Exception e)
 		{
 			throw new CreateDigestException();
 		}
+	}
+
+	public static byte[] createDigestBytes(String inputText) throws UnsupportedEncodingException, NoSuchAlgorithmException, IOException
+	{
+		byte[] bytesToDigest = inputText.getBytes("UTF-8");
+		return createDigest(bytesToDigest);
 	}
 
 	public static byte[] createDigest(byte[] bytesToDigest)
