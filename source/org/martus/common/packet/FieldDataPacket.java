@@ -61,6 +61,7 @@ public class FieldDataPacket extends Packet
 	{
 		super(universalIdToUse);
 		setFieldSpecs(fieldSpecsToUse);
+		hqPublicKeys = new Vector();
 		clearAll();
 	}
 	
@@ -99,14 +100,14 @@ public class FieldDataPacket extends Packet
 		encryptedFlag = newValue;
 	}
 
-	public void setHQPublicKey(String hqKey)
+	public void setHQPublicKeys(Vector hqKeys)
 	{
-		hqPublicKey = hqKey;
+		hqPublicKeys = hqKeys;
 	}
 
-	public String getHQPublicKey()
+	public Vector getHQPublicKeys()
 	{
-		return hqPublicKey;
+		return hqPublicKeys;
 	}
 
 	public boolean isPublicData()
@@ -167,7 +168,7 @@ public class FieldDataPacket extends Packet
 	{
 		fieldData = new TreeMap();
 		clearAttachments();
-		hqPublicKey="";
+		hqPublicKeys.clear();
 	}
 
 	public void clearAttachments()
@@ -296,7 +297,7 @@ public class FieldDataPacket extends Packet
 		String payload = plainTextWriter.toString();
 
 		EncryptedFieldDataPacket efdp = new EncryptedFieldDataPacket(getUniversalId(), payload, signer);
-		efdp.setHQPublicKey(getHQPublicKey());
+		efdp.setHQPublicKeys(getHQPublicKeys());
 		return efdp.writeXml(writer, signer);
 	}
 
@@ -354,6 +355,6 @@ public class FieldDataPacket extends Packet
 	private Vector attachments;
 
 	private static final String prefix = "F-";
-	private String hqPublicKey;
+	private Vector hqPublicKeys;
 }
 

@@ -144,7 +144,7 @@ public class BulletinZipImporter
 				b.addPrivateAttachment(ap);
 			}
 
-			b.setHQPublicKey(header.getHQPublicKey());
+			b.setHQPublicKeys(header.getAccountsAuthorizedToReadKeys());
 		}
 		catch(Exception e)
 		{

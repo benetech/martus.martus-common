@@ -27,6 +27,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.test;
 
 import java.io.File;
+import java.util.Vector;
 
 import org.martus.common.MartusXml;
 import org.martus.common.bulletin.AttachmentProxy;
@@ -177,18 +178,20 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		Bulletin original = new Bulletin(security);
 		original.set(Bulletin.TAGPUBLICINFO, "public info");
 		String key = security.getPublicKeyString();
-		original.setHQPublicKey(key);
+		Vector keys = new Vector();
+		keys.add(key);
+		original.setHQPublicKeys(keys);
 		BulletinSaver.saveToClientDatabase(original, db, true, security);
 
 		DatabaseKey dbKey = new DatabaseKey(original.getUniversalId());
 		Bulletin loaded = BulletinLoader.loadFromDatabase(db, dbKey, security);
-		assertEquals("Keys not the same?", original.getFieldDataPacket().getHQPublicKey(), loaded.getFieldDataPacket().getHQPublicKey());
+		assertEquals("Keys not the same?", original.getFieldDataPacket().getHQPublicKeys(), loaded.getFieldDataPacket().getHQPublicKeys());
 
 		File tempFile = createTempFile();
 		BulletinForTesting.saveToFile(db, original, tempFile, security);
 		Bulletin loaded2 = new Bulletin(security);
 		BulletinZipImporter.loadFromFile(loaded2, tempFile, security);
-		assertEquals("Loaded Keys not the same?", original.getFieldDataPacket().getHQPublicKey(), loaded2.getFieldDataPacket().getHQPublicKey());
+		assertEquals("Loaded Keys not the same?", original.getFieldDataPacket().getHQPublicKeys(), loaded2.getFieldDataPacket().getHQPublicKeys());
 	}
 
 	
@@ -215,7 +218,9 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		Bulletin b = new Bulletin(security);
 		b.set(Bulletin.TAGPUBLICINFO, samplePublic);
 		b.set(Bulletin.TAGPRIVATEINFO, samplePrivate);
-		b.setHQPublicKey(b.getAccount());
+		Vector keys = new Vector();
+		keys.add(b.getAccount());
+		b.setHQPublicKeys(keys);
 		saveAndVerifyValid("freshly created", b);
 
 		DatabaseKey headerKey = new DatabaseKey(b.getBulletinHeaderPacket().getUniversalId());

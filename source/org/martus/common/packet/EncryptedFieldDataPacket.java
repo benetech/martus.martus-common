@@ -30,6 +30,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Vector;
 
 import org.martus.common.MartusXml;
 import org.martus.common.XmlWriterFilter;
@@ -43,6 +44,7 @@ class EncryptedFieldDataPacket extends Packet
 	EncryptedFieldDataPacket(UniversalId uid, String plainTextData, MartusCrypto crypto) throws IOException
 	{
 		super(uid);
+		hqPublicKeys = new Vector();
 		security = crypto;
 		try
 		{
@@ -73,20 +75,21 @@ class EncryptedFieldDataPacket extends Packet
 		return MartusXml.FieldDataPacketElementName;
 	}
 
-	void setHQPublicKey(String hqKey)
+	void setHQPublicKeys(Vector hqKeys)
 	{
-		hqPublicKey = hqKey;
+		hqPublicKeys = hqKeys;
 	}
 
 	protected void internalWriteXml(XmlWriterFilter dest) throws IOException
 	{
 		super.internalWriteXml(dest);
 		writeElement(dest, MartusXml.EncryptedFlagElementName, "");
-		if(hqPublicKey.length() > 0)
+		if(hqPublicKeys.size() > 0)
 		{
 			try
 			{
-				SessionKey encryptedSessionKey = security.encryptSessionKey(sessionKey, hqPublicKey);
+				//TODO multiple keys
+				SessionKey encryptedSessionKey = security.encryptSessionKey(sessionKey, (String)hqPublicKeys.get(0));
 				String sessionKeyString = Base64.encode(encryptedSessionKey.getBytes());
 				writeElement(dest, MartusXml.HQSessionKeyElementName, sessionKeyString);
 			}
@@ -100,6 +103,6 @@ class EncryptedFieldDataPacket extends Packet
 
 	MartusCrypto security;
 	String encryptedData;
-	private String hqPublicKey = "";
+	private Vector hqPublicKeys;
 	private SessionKey sessionKey;
 }

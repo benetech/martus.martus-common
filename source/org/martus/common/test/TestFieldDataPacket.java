@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Arrays;
+import java.util.Vector;
 
 import org.martus.common.CustomFields;
 import org.martus.common.FieldSpec;
@@ -84,12 +85,15 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		assertEquals("upper", false, fdp.fieldExists(bTag.toUpperCase()));
 
 		assertEquals("tag list", true, Arrays.equals(fieldTags, fdp.getFieldSpecs()));
-		assertEquals("HQ Key not ''?", "", fdp.getHQPublicKey());
+		assertEquals("HQ Keys not 0", 0, fdp.getHQPublicKeys().size());
 		String hqKey = "12345";
-		fdp.setHQPublicKey(hqKey);
-		assertEquals("HQ Key not the same?", hqKey, fdp.getHQPublicKey());
+		Vector keys = new Vector();
+		keys.add(hqKey);
+		
+		fdp.setHQPublicKeys(keys);
+		assertEquals("HQ Key not the same?", hqKey, fdp.getHQPublicKeys().get(0));
 		fdp.clearAll();
-		assertEquals("HQ Key not cleared?", "", fdp.getHQPublicKey());
+		assertEquals("HQ Key not cleared?", 0, fdp.getHQPublicKeys().size());
 	}
 
 	public void testIsEmpty()
@@ -623,7 +627,10 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 	public void testWriteAndLoadXmlEncryptedWithHQ() throws Exception
 	{
 		fdp.setEncrypted(true);
-		fdp.setHQPublicKey(securityHQ.getPublicKeyString());
+		Vector keys = new Vector();
+		keys.add(securityHQ.getPublicKeyString());
+		
+		fdp.setHQPublicKeys(keys);
 
 		String data1 = "data 1";
 		String data2base = "data 2";

@@ -363,11 +363,11 @@ public class Bulletin implements BulletinConstants
 		return getBulletinHeaderPacket().getHQPublicKey();
 	}
 
-	public void setHQPublicKey(String key)
+	public void setHQPublicKeys(Vector keys)
 	{
-		getBulletinHeaderPacket().setHQPublicKey(key);
-		getFieldDataPacket().setHQPublicKey(key);
-		getPrivateFieldDataPacket().setHQPublicKey(key);
+		getBulletinHeaderPacket().setAccountsAuthorizedToReadKeys(keys);
+		getFieldDataPacket().setHQPublicKeys(keys);
+		getPrivateFieldDataPacket().setHQPublicKeys(keys);
 	}
 
 	public static DateFormat getStoredDateFormat()

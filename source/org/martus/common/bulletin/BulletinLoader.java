@@ -27,6 +27,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.bulletin;
 
 import java.io.IOException;
+import java.util.Vector;
 
 import org.martus.common.StandardFieldSpecs;
 import org.martus.common.FieldSpec;
@@ -82,11 +83,13 @@ public class BulletinLoader
 
 		if(b.isValid())
 		{
-			b.setHQPublicKey(headerPacket.getHQPublicKey());
+			b.setHQPublicKeys(headerPacket.getAccountsAuthorizedToReadKeys());
 		}
 		else
 		{
-			b.setHQPublicKey("");
+			Vector emptySetOfKeys = new Vector();
+			emptySetOfKeys.add("");
+			b.setHQPublicKeys(emptySetOfKeys);
 			if(!isHeaderValid)
 			{
 				//System.out.println("Bulletin.loadFromDatabase: Header invalid");
