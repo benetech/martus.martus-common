@@ -454,6 +454,7 @@ public class Localization
 		defaultLanguageDateFormat.put(SPANISH, DateUtilities.DMY_SLASH.getCode());
 		defaultLanguageDateFormat.put(RUSSIAN, DateUtilities.DMY_DOT.getCode());
 		defaultLanguageDateFormat.put(THAI, DateUtilities.DMY_SLASH.getCode());
+		defaultLanguageDateFormat.put(ARABIC, DateUtilities.DMY_SLASH.getCode());
 		return defaultLanguageDateFormat;
 	}
 	
