@@ -58,7 +58,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
-
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
@@ -71,7 +70,6 @@ import javax.crypto.spec.PBEParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
-
 import org.bouncycastle.jce.X509Principal;
 import org.bouncycastle.jce.X509V1CertificateGenerator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -79,8 +77,6 @@ import org.martus.common.MartusConstants;
 import org.martus.util.Base64;
 import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
-
-
 import com.isnetworks.provider.random.InfiniteMonkeyProvider;
 
 public class MartusSecurity extends MartusCrypto
@@ -429,40 +425,55 @@ public class MartusSecurity extends MartusCrypto
 			throw new IOException();
 	}
 	
-	private byte[] createSignedBundle(byte[] encryptedBytes) throws MartusSignatureException, IOException
+	public byte[] createSignedBundle(byte[] dataBytes) throws MartusSignatureException, IOException
 	{
-		byte[] sig = createSignatureOfStream(new ByteArrayInputStream(encryptedBytes));
+		byte[] sig = createSignatureOfStream(new ByteArrayInputStream(dataBytes));
 		ByteArrayOutputStream bundleRawOut = new ByteArrayOutputStream();
 		DataOutputStream bundleOut = new DataOutputStream(bundleRawOut);
 		bundleOut.writeInt(BUNDLE_VERSION);
 		bundleOut.writeUTF(getPublicKeyString());
 		bundleOut.writeInt(sig.length);
 		bundleOut.write(sig);
-		bundleOut.writeInt(encryptedBytes.length);
-		bundleOut.write(encryptedBytes);
+		bundleOut.writeInt(dataBytes.length);
+		bundleOut.write(dataBytes);
 		bundleOut.close();
 		byte[] bundleBytes = bundleRawOut.toByteArray();
 		return bundleBytes;
 	}
 
-	private byte[] extractFromSignedBundle(byte[] encryptedCacheBundle) throws IOException, MartusSignatureException
+	private byte[] extractFromSignedBundle(byte[] dataBundle) throws IOException, MartusSignatureException
 	{
-		ByteArrayInputStream bundleRawIn = new ByteArrayInputStream(encryptedCacheBundle);
+		Vector authorizedKeys = new Vector();
+		authorizedKeys.add(getPublicKeyString());
+		return extractFromSignedBundle(dataBundle, authorizedKeys);
+	}
+
+	public byte[] extractFromSignedBundle(byte[] dataBundle, Vector authorizedKeys) throws IOException, MartusSignatureException
+	{
+		ByteArrayInputStream bundleRawIn = new ByteArrayInputStream(dataBundle);
 		DataInputStream bundleIn = new DataInputStream(bundleRawIn);
 		if(bundleIn.readInt() != BUNDLE_VERSION)
 			throw new IOException();
-		String ourPublicKey = getPublicKeyString();
 		String signerPublicKey = bundleIn.readUTF();
-		if(!signerPublicKey.equals(ourPublicKey))
+		boolean authorized = false;
+		for(int i = 0; i < authorizedKeys.size(); ++i)
+		{
+			String authorizedKey = (String)authorizedKeys.get(i);
+			if(signerPublicKey.equals(authorizedKey))
+			{
+				authorized = true;
+				break;
+			}
+		}
+		if(!authorized)
 			throw new MartusSignatureException();
 		byte[] sig = new byte[bundleIn.readInt()];
 		bundleIn.read(sig);
-		byte[] encryptedCacheBytes = new byte[bundleIn.readInt()];
-		bundleIn.read(encryptedCacheBytes);
-		
-		if(!isValidSignatureOfStream(signerPublicKey, new ByteArrayInputStream(encryptedCacheBytes), sig))
+		byte[] dataBytes = new byte[bundleIn.readInt()];
+		bundleIn.read(dataBytes);
+		if(!isValidSignatureOfStream(signerPublicKey, new ByteArrayInputStream(dataBytes), sig))
 			throw new MartusSignatureException();
-		return encryptedCacheBytes;
+		return dataBytes;
 	}
 
 	public synchronized void flushSessionKeyCache()
