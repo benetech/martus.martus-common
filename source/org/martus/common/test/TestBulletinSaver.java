@@ -273,7 +273,7 @@ public class TestBulletinSaver extends TestCaseEnhanced
 			assertEquals(tag + i + " missing original record?", true,  db.doesRecordExist(key1));
 
 			File tempFile = createTempFileFromName("$$$MartusTestBullSvAtt");
-			BulletinSaver.extractAttachmentToFile(db, gotA, security, tempFile);
+			BulletinLoader.extractAttachmentToFile(db, gotA, security, tempFile);
 			FileInputStream in = new FileInputStream(tempFile);
 			byte[] gotBytes = new byte[in.available()];
 			in.read(gotBytes);
@@ -315,7 +315,7 @@ public class TestBulletinSaver extends TestCaseEnhanced
 		assertEquals("count wrong?", 2, list.length);
 
 		ByteArrayOutputStream result = new ByteArrayOutputStream();
-		BulletinSaver.extractAttachmentToStream(db, list[0], security, result);
+		BulletinLoader.extractAttachmentToStream(db, list[0], security, result);
 		assertTrue("Wrong bytes?", Arrays.equals(result.toByteArray(), sampleBytes1));
 	}
 

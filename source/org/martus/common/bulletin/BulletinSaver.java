@@ -26,30 +26,17 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.bulletin;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 
 import org.martus.common.BulletinStore;
 import org.martus.common.MartusUtilities;
 import org.martus.common.crypto.MartusCrypto;
-import org.martus.common.crypto.SessionKey;
-import org.martus.common.crypto.MartusCrypto.CryptoException;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
-import org.martus.common.database.ReadableDatabase;
-import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.Packet;
 import org.martus.common.packet.UniversalId;
-import org.martus.common.packet.Packet.InvalidPacketException;
-import org.martus.common.packet.Packet.SignatureVerificationException;
-import org.martus.common.packet.Packet.WrongPacketTypeException;
-import org.martus.util.Base64;
-import org.martus.util.InputStreamWithSeek;
-import org.martus.util.Base64.InvalidBase64Exception;
 
 public class BulletinSaver
 {
@@ -149,34 +136,5 @@ public class BulletinSaver
 				db.discardRecord(DatabaseKey.createLegacyKey(auid));
 			}
 		}
-	}
-
-	public static void extractAttachmentToFile(ReadableDatabase db, AttachmentProxy a, MartusCrypto verifier, File destFile) throws
-		IOException,
-		Base64.InvalidBase64Exception,
-		Packet.InvalidPacketException,
-		Packet.SignatureVerificationException,
-		Packet.WrongPacketTypeException,
-		MartusCrypto.CryptoException
-	{
-		FileOutputStream out = new FileOutputStream(destFile);
-		extractAttachmentToStream(db, a, verifier, out);
-	}
-
-
-	public static void extractAttachmentToStream(ReadableDatabase db, AttachmentProxy a, MartusCrypto verifier, OutputStream out)
-		throws
-			IOException,
-			CryptoException,
-			InvalidPacketException,
-			SignatureVerificationException,
-			WrongPacketTypeException,
-			InvalidBase64Exception
-	{
-		UniversalId uid = a.getUniversalId();
-		SessionKey sessionKey = a.getSessionKey();
-		DatabaseKey key = DatabaseKey.createLegacyKey(uid);
-		InputStreamWithSeek xmlIn = db.openInputStream(key, verifier);
-		AttachmentPacket.exportRawFileFromXml(xmlIn, sessionKey, verifier, out);
 	}
 }

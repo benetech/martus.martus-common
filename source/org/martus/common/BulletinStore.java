@@ -189,11 +189,22 @@ public class BulletinStore
 		}
 	}
 	
+	private void clearLeafKeyCache()
+	{
+		leafKeys = null;
+	}
+	
 	public Vector scanForLeafKeys()
 	{
-		LeafScanner scanner = new LeafScanner(getDatabase(), getSignatureVerifier());
-		visitAllBulletinRevisions(scanner);
-		return scanner.getLeafKeys();
+		// TODO: Once the problems are ironed out, this if
+		// can be restored. kevin 2004-10-05
+		//if(leafKeys == null)
+		{
+			LeafScanner scanner = new LeafScanner(getDatabase(), getSignatureVerifier());
+			visitAllBulletinRevisions(scanner);
+			leafKeys = scanner.getLeafKeys();
+		}
+		return leafKeys;
 	}
 	
 	public void visitAllBulletins(Database.PacketVisitor visitor)
@@ -267,6 +278,7 @@ public class BulletinStore
 			MartusCrypto.DecryptionException,
 			MartusCrypto.NoKeyPairException
 	{
+		clearLeafKeyCache();
 		DatabaseKey[] keys = BulletinZipUtilities.getAllPacketKeys(bhp);
 		for (int i = 0; i < keys.length; i++)
 		{
@@ -388,6 +400,7 @@ public class BulletinStore
 	private MartusCrypto security;
 	private File dir;
 	private Database database;
+	private Vector leafKeys;
 }
 
 class LeafScanner implements Database.PacketVisitor
