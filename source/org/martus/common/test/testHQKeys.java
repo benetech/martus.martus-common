@@ -63,6 +63,31 @@ public class testHQKeys extends TestCaseEnhanced
 		assertEquals(label2, hqKeys.getLabelIfPresent(key2));
 	}
 	
+	public void testAddKeys()
+	{
+		HQKeys hqKeys = new HQKeys();
+		String publicKey1 = "123";
+		HQKey key = new HQKey(publicKey1);
+		hqKeys.add(key);
+		String publicKey2 = "123";
+		String label2 = "abc";
+		HQKey key2 = new HQKey(publicKey2, label2);
+		hqKeys.add(key2);
+		assertEquals(2, hqKeys.size());
+		
+		HQKeys newKeys = new HQKeys(hqKeys);
+		assertEquals(2, newKeys.size());
+		assertTrue(newKeys.containsKey(publicKey1));
+		assertTrue(newKeys.containsKey(publicKey2));
+		
+		HQKeys newKeys2 = new HQKeys();
+		newKeys2.add(hqKeys);
+		assertEquals(2, newKeys.size());
+		assertTrue(newKeys2.containsKey(publicKey1));
+		assertTrue(newKeys2.containsKey(publicKey2));
+		
+	}
+	
 	public void testEmpty()
 	{
 		HQKeys hqKeys = new HQKeys();

@@ -49,8 +49,15 @@ public class HQKeys
 	public HQKeys(HQKey key) 
 	{
 		hqKeys = new Vector();
-		hqKeys.add(key);
+		add(key);
 	}
+	
+	public HQKeys(HQKeys keys) 
+	{
+		hqKeys = new Vector();
+		add(keys);
+	}
+	
 
 	public HQKeys(String xml) throws HQsException
 	{
@@ -70,6 +77,14 @@ public class HQKeys
 	public void add(HQKey keyToAdd)
 	{
 		hqKeys.add(keyToAdd);
+	}
+	
+	public void add(HQKeys keysToAdd)
+	{
+		for(int i = 0; i < keysToAdd.size(); ++i)
+		{
+			hqKeys.add(keysToAdd.get(i));
+		}
 	}
 	
 	public void remove(int index)
