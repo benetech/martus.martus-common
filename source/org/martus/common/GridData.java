@@ -27,6 +27,9 @@ package org.martus.common;
 
 import java.util.Vector;
 
+import org.martus.util.xml.SimpleXmlDefaultLoader;
+import org.xml.sax.SAXParseException;
+
 
 public class GridData
 {
@@ -80,6 +83,7 @@ public class GridData
 	public String getXmlRepresentation()
 	{
 		String result = new String();
+		result += MartusXml.getTagStart(GRID_DATA_TAG)+ MartusXml.newLine;
 		for(int i = 0; i< rows.size(); ++i)
 		{
 			GridRow contents = (GridRow)rows.get(i);
@@ -90,9 +94,43 @@ public class GridData
 			}
 			result += MartusXml.getTagEnd(ROW_TAG);
 		}
+		result += MartusXml.getTagEnd(GRID_DATA_TAG);
 		return result;
 	}
+	
+	public static class XmlGridDataLoader extends SimpleXmlDefaultLoader
+	{
+		public XmlGridDataLoader(int maxColumns)
+		{
+			super(GRID_DATA_TAG);
+			grid = new GridData(maxColumns);
+		}
 
+		public GridData getGridData()
+		{
+			return grid;
+		}
+		
+		public SimpleXmlDefaultLoader startElement(String tag)
+				throws SAXParseException
+		{
+			if(tag.equals(GridData.ROW_TAG))
+				return new GridRow.XmlGridRowLoader(grid.getColumnCount());
+			return super.startElement(tag);
+		}
+		
+		public void endElement(SimpleXmlDefaultLoader ended)
+				throws SAXParseException
+		{
+			String tag = ended.getTag();
+			if(tag.equals(GridData.ROW_TAG))
+				grid.addRow(((GridRow.XmlGridRowLoader)ended).getGridRow()); 
+			super.endElement(ended);
+		}
+		GridData grid;
+	}
+
+	public static final String GRID_DATA_TAG = "GridData";
 	public static final String ROW_TAG = "Row";
 	public static final String COLUMN_TAG = "Column";
 
