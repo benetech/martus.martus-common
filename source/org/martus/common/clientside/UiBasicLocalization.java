@@ -74,8 +74,6 @@ public class UiBasicLocalization extends Localization
 		writer.writeln("#  2.  do NOT translate \"#N#\" or \"#M#\" (though move them as appropriate");
 		writer.writeln("#      grammatically for the language to make \"N of M\" [eg \"2 of 5\"] make");
 		writer.writeln("#      sense for creating/restoring secret share key files).");
-		writer.writeln("#      grammatically for the language to make \"N of M\" make sense for");
-		writer.writeln("#      creating/restoring secret share).");  
 		writer.writeln("#  3.  in field:VirtualKeyboardKeys, keep the english alphabet, but include any");
 		writer.writeln("#      non-english characters at the end of the english alphabet/numbers/special");
 		writer.writeln("#      characters (e.g. attach entire Thai alphabet at the end of the line)");
