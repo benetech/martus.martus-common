@@ -365,7 +365,6 @@ public class TestMartusSecurity extends TestCaseEnhanced
 	public void testVerifyDuringReadKeyPair() throws Exception
 	{
 		TRACE_BEGIN("testVerifyDuringReadKeyPair");
-		char[] passPhrase = "Let's put on a show!".toCharArray();
 		KeyPair mismatched = invalidKeyPair;
 		byte[] mismatchedKeyPairData = MartusKeyPair.getKeyPairData(mismatched);
 		
