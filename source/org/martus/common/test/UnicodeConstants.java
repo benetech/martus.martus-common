@@ -25,7 +25,7 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.test;
 
-public class Utf8ConstantsForTests
+public class UnicodeConstants
 {
 	public static final char ACCENT_A_LOWER = 0xE1;
 
