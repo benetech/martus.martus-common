@@ -261,9 +261,12 @@ public class Localization
 
 	public static String getMtfFilename(String languageCode)
 	{
-		String filename;
-		filename = MARTUS_LANGUAGE_FILE_PREFIX + languageCode + MARTUS_LANGUAGE_FILE_SUFFIX;
-		return filename;
+		return MARTUS_LANGUAGE_FILE_PREFIX + languageCode + MARTUS_LANGUAGE_FILE_SUFFIX;
+	}
+
+	public static String getMlpkFilename(String languageCode)
+	{
+		return MARTUS_LANGUAGE_FILE_PREFIX + languageCode + MARTUS_LANGUAGE_PACK_SUFFIX;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -371,6 +374,7 @@ public class Localization
 	public static final String UNUSED_TAG = "";
 	public static final String MARTUS_LANGUAGE_FILE_PREFIX = "Martus-";
 	public static final String MARTUS_LANGUAGE_FILE_SUFFIX = ".mtf";
+	public static final String MARTUS_LANGUAGE_PACK_SUFFIX = ".mlpk";
 	public static final String MTF_COMMENT_FLAG = "#";
 	public static final String MTF_RIGHT_TO_LEFT_LANGUAGE_FLAG = "!right-to-left";
 	
