@@ -36,4 +36,5 @@ public interface MartusConstants
 	public final static String martusSecretShareFileID = "Martus-Share";
 	public final static int minNumberOfFilesNeededToRecreateSecret = 2;
 	public final static int numberOfFilesInShare = 5;
+	public final String NEWLINE = System.getProperty("line.separator");
 }

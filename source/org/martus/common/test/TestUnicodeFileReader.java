@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.martus.common.MartusConstants;
 import org.martus.util.UnicodeReader;
 import org.martus.util.UnicodeWriter;
 
@@ -110,7 +111,7 @@ public class TestUnicodeFileReader extends TestCaseEnhanced
 		UnicodeReader reader = new UnicodeReader(file);
 
 		String result = reader.readAll(100);
-		assertEquals(text + NEWLINE + text2 + NEWLINE, result);
+		assertEquals(text + MartusConstants.NEWLINE + text2 + MartusConstants.NEWLINE, result);
 		reader.close();
 
 		file.delete();
@@ -119,11 +120,10 @@ public class TestUnicodeFileReader extends TestCaseEnhanced
 	void createTempFile(File file) throws Exception
 	{
 		UnicodeWriter writer = new UnicodeWriter(file);
-		writer.write(text + NEWLINE + text2 + NEWLINE);
+		writer.write(text + MartusConstants.NEWLINE + text2 + MartusConstants.NEWLINE);
 		writer.close();
 	}
 
-	final String NEWLINE = System.getProperty("line.separator");
 	final String text = "Test String";
 	final String text2 = "í";
 }
