@@ -34,6 +34,7 @@ import java.util.Arrays;
 
 import org.martus.common.CustomFields;
 import org.martus.common.FieldSpec;
+import org.martus.common.GridData;
 import org.martus.common.LegacyCustomFields;
 import org.martus.common.MartusConstants;
 import org.martus.common.MartusUtilities;
@@ -497,6 +498,30 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		assertContains(fields.toString(), result);
 	}
 
+	public void testWriteAndLoadGrids()throws Exception
+	{
+		UniversalId uid = FieldDataPacket.createUniversalId(security.getPublicKeyString());
+		GridData grid = TestGridData.createSampleGrid();
+		String gridTag = "grid";
+		FieldSpec[] specs = {FieldSpec.createStandardField(gridTag,FieldSpec.TYPE_GRID)};
+		FieldDataPacket fdpCustom = new FieldDataPacket(uid, specs);
+		fdpCustom.set(gridTag, grid.getXmlRepresentation());
+		
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		fdpCustom.writeXml(out, security);
+		String result = new String(out.toByteArray(), "UTF-8");
+		out.close();
+
+		FieldDataPacket got = new FieldDataPacket(uid, fieldTags);
+
+		byte[] bytes = result.getBytes("UTF-8");
+		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
+		got.loadFromXml(in, security);
+		
+		assertEquals(grid.getXmlRepresentation(), got.get(gridTag));
+		
+	}
+	
 	public void testWriteAndLoadXml() throws Exception
 	{
 		String account = fdp.getAccountId();

@@ -34,6 +34,7 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.Arrays;
 
+import org.martus.common.MartusUtilities;
 import org.martus.common.MartusXml;
 import org.martus.common.VersionBuildDate;
 import org.martus.common.XmlWriterFilter;
@@ -382,8 +383,14 @@ public class Packet
 
 	protected void writeElement(XmlWriterFilter dest, String tag, String data) throws IOException
 	{
+		String encodedData = MartusUtilities.getXmlEncoded(data);
+		writeNonEncodedElement(dest, tag, encodedData);
+	}
+
+	protected void writeNonEncodedElement(XmlWriterFilter dest, String tag, String data) throws IOException
+	{
 		dest.writeStartTag(tag);
-		dest.writeEncoded(data);
+		dest.writeDirect(data);
 		dest.writeEndTag(tag);
 	}
 

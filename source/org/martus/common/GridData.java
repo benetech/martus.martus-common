@@ -28,6 +28,7 @@ package org.martus.common;
 import java.util.Vector;
 
 import org.martus.util.xml.SimpleXmlDefaultLoader;
+import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
 
@@ -83,7 +84,7 @@ public class GridData
 	public String getXmlRepresentation()
 	{
 		String result = new String();
-		result += MartusXml.getTagStart(GRID_DATA_TAG)+ MartusXml.newLine;
+		result += MartusXml.getTagStart(GRID_DATA_TAG, GRID_ATTRIBUTE_COLUMNS, Integer.toString(getColumnCount()))+ MartusXml.newLine;
 		for(int i = 0; i< rows.size(); ++i)
 		{
 			GridRow contents = (GridRow)rows.get(i);
@@ -100,10 +101,9 @@ public class GridData
 	
 	public static class XmlGridDataLoader extends SimpleXmlDefaultLoader
 	{
-		public XmlGridDataLoader(int maxColumns)
+		public XmlGridDataLoader()
 		{
 			super(GRID_DATA_TAG);
-			grid = new GridData(maxColumns);
 		}
 
 		public GridData getGridData()
@@ -111,6 +111,13 @@ public class GridData
 			return grid;
 		}
 		
+		public void startDocument(Attributes attrs) throws SAXParseException
+		{
+			String cols = attrs.getValue(GridData.GRID_ATTRIBUTE_COLUMNS);
+			grid = new GridData(Integer.parseInt(cols));
+			super.startDocument(attrs);
+		}
+
 		public SimpleXmlDefaultLoader startElement(String tag)
 				throws SAXParseException
 		{
@@ -131,6 +138,7 @@ public class GridData
 	}
 
 	public static final String GRID_DATA_TAG = "GridData";
+	public static final String GRID_ATTRIBUTE_COLUMNS = "columns";
 	public static final String ROW_TAG = "Row";
 	public static final String COLUMN_TAG = "Column";
 

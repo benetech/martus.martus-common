@@ -62,7 +62,7 @@ public class TestGridData extends TestCaseEnhanced
 		String xmlEncodedString = MartusUtilities.getXmlEncoded(mustEncodeXMLData);
 
 		String expectedXml = 
-			"<"+GridData.GRID_DATA_TAG+ ">\n" +
+			"<"+GridData.GRID_DATA_TAG+ " columns='3'>\n" +
 			"<"+GridData.ROW_TAG + ">\n" + 
 				"<" + GridData.COLUMN_TAG + ">" + row1.getCellText(0) + "</" + GridData.COLUMN_TAG + ">\n" +
 				"<" + GridData.COLUMN_TAG + ">" + xmlEncodedString + "</" + GridData.COLUMN_TAG + ">\n" +
@@ -213,16 +213,16 @@ public class TestGridData extends TestCaseEnhanced
 		assertEquals(modifiedData, grid.getValueAt(0,1));
 	}
 	
-	public GridData createSampleGrid()
+	public static GridData createSampleGrid()
 	{
 		GridData grid = new GridData(2);
 		GridRow row1 = GridRow.createEmptyRow(2);
 		row1.setCellText(0, SAMPLE_DATA1);
-		row1.setCellText(0, SAMPLE_DATA2_RAW);
+		row1.setCellText(1, SAMPLE_DATA2_RAW);
 		grid.addRow(row1);
 		GridRow row2 = GridRow.createEmptyRow(2);
 		row2.setCellText(0, SAMPLE_DATA3);
-		row2.setCellText(0, SAMPLE_DATA4);
+		row2.setCellText(1, SAMPLE_DATA4);
 		grid.addRow(row2);
 		return grid;
 	}
@@ -232,12 +232,13 @@ public class TestGridData extends TestCaseEnhanced
 	{
 		GridData original = createSampleGrid();
 		String xml = original.getXmlRepresentation();
-		GridData.XmlGridDataLoader loader = new GridData.XmlGridDataLoader(original.getColumnCount());
+		GridData.XmlGridDataLoader loader = new GridData.XmlGridDataLoader();
 		SimpleXmlParser.parse(loader, xml);
 		GridData loaded = loader.getGridData();
 		assertEquals("Columns?", original.getColumnCount(), loaded.getColumnCount());
 		assertEquals("Rows?", original.getRowCount(), loaded.getRowCount());
 		assertEquals(xml, loaded.getXmlRepresentation());
+		assertEquals("unescaped xml?", original.getValueAt(0,1), loaded.getValueAt(0,1));
 	}
 	
 

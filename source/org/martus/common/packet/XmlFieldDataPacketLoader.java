@@ -29,6 +29,7 @@ package org.martus.common.packet;
 import java.util.Vector;
 
 import org.martus.common.CustomFields;
+import org.martus.common.GridData;
 import org.martus.common.MartusXml;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.crypto.SessionKey;
@@ -139,6 +140,31 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 			String fieldNameTag = getTag().substring(prefixLength);
 			return fieldNameTag;
 		}
+
+		public String getText()
+		{
+			if(complexData != null)
+				return complexData;
+			return super.getText();
+		}
+
+		public SimpleXmlDefaultLoader startElement(String tag)
+				throws SAXParseException
+		{
+			if(tag.equals(GridData.GRID_DATA_TAG))
+				return new GridData.XmlGridDataLoader();
+			return super.startElement(tag);
+		}
+
+		public void endElement(SimpleXmlDefaultLoader ended)
+				throws SAXParseException
+		{
+			String tag = ended.getTag();
+			if(tag.equals(GridData.GRID_DATA_TAG))
+				complexData = ((GridData.XmlGridDataLoader)ended).getGridData().getXmlRepresentation(); 
+			super.endElement(ended);
+		}
+		String complexData;
 	}
 	
 	static class XmlAttachmentLoader extends SimpleXmlMapLoader

@@ -30,7 +30,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
@@ -315,11 +314,19 @@ public class FieldDataPacket extends Packet
 		writeElement(dest, MartusXml.FieldListElementName, MartusConstants.deprecatedCustomFieldSpecs);
 		dest.writeDirect(fieldSpecs.toString());
 		
-		Iterator iterator = fieldData.keySet().iterator();
-		while(iterator.hasNext())
+		FieldSpec[] specs = fieldSpecs.getSpecs();
+		for(int i = 0; i < specs.length; ++i)
 		{
-			String key = (String)(iterator.next());
-			writeElement(dest, MartusXml.FieldElementPrefix + key, (String)(fieldData.get(key)));
+			FieldSpec spec = specs[i];
+			String key = spec.getTag();
+			String xmlTag = MartusXml.FieldElementPrefix + key;
+			String fieldText = (String)(fieldData.get(key));
+			if(fieldText == null)
+				continue;
+			if(spec.getType() == FieldSpec.TYPE_GRID)
+				writeNonEncodedElement(dest, xmlTag, fieldText);
+			else
+				writeElement(dest, xmlTag, fieldText);
 		}
 
 		for(int i = 0 ; i <attachments.size(); ++i)
