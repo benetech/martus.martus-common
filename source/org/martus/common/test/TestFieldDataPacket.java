@@ -30,8 +30,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.Arrays;
 
+import org.martus.common.CustomFields;
 import org.martus.common.FieldSpec;
 import org.martus.common.LegacyCustomFields;
+import org.martus.common.MartusUtilities;
 import org.martus.common.MartusXml;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.crypto.MartusCrypto;
@@ -384,6 +386,11 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		assertContains(data2base + xmlAmp + xmlLt + xmlGt, result);
 
 		assertContains(fieldListForTesting, result);
+		CustomFields fields = new CustomFields(fieldTags);
+		// The following three lines should be restored as soon as 
+		// FieldDataPackets can correctly read <CustomField> tags
+		//assertContains(MartusConstants.deprecatedCustomFieldSpecs, result);
+		//assertContains(fields.toString(), result);
 	}
 	
 	public void testWriteXmlCustomField() throws Exception
@@ -396,7 +403,14 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		String result = new String(out.toByteArray(), "UTF-8");
 		out.close();
 		
-		assertContains("<FieldList>tag,&lt;label&gt;</FieldList>", result);
+		String rawFieldList = LegacyCustomFields.buildFieldListString(specs);
+		String encodedFieldList = MartusUtilities.getXmlEncoded(rawFieldList);
+		assertContains(encodedFieldList, result);
+		CustomFields fields = new CustomFields(fieldTags);
+		// The following three lines should be restored as soon as 
+		// FieldDataPackets can correctly read <CustomField> tags
+		//assertContains(MartusConstants.deprecatedCustomFieldSpecs, result);
+		//assertContains(fields.toString(), result);
 	}
 
 	public void testWriteAndLoadXml() throws Exception

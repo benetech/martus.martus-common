@@ -30,6 +30,7 @@ import junit.framework.TestCase;
 
 import org.martus.common.CustomFields;
 import org.martus.common.FieldSpec;
+import org.martus.common.LegacyCustomFields;
 
 
 public class TestCustomFields extends TestCase
@@ -69,6 +70,7 @@ public class TestCustomFields extends TestCase
 			FieldSpec.createStandardField("range", FieldSpec.TYPE_DATERANGE),
 			FieldSpec.createStandardField("bool", FieldSpec.TYPE_BOOLEAN),
 			FieldSpec.createStandardField("choice", FieldSpec.TYPE_CHOICE),
+			LegacyCustomFields.createFromLegacy("custom,Custom <label>"),
 		};
 	}
 	

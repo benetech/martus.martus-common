@@ -297,6 +297,11 @@ public class FieldDataPacket extends Packet
 
 		String fieldList = getFieldListString();
 		writeElement(dest, MartusXml.FieldListElementName, fieldList);
+		
+		// The following two lines should be restored as soon as 
+		// FieldDataPackets can correctly read <CustomField> tags
+		//writeElement(dest, MartusXml.FieldListElementName, MartusConstants.deprecatedCustomFieldSpecs);
+		//dest.writeDirect(fieldSpecs.toString());
 		Iterator iterator = fieldData.keySet().iterator();
 		while(iterator.hasNext())
 		{
