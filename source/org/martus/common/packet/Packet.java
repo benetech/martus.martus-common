@@ -106,7 +106,7 @@ public class Packet
 		return uid.getAccountId();
 	}
 
-	private void setAccountId(String accountString)
+	public void setAccountId(String accountString)
 	{
 		uid.setAccountId(accountString);
 	}
@@ -121,7 +121,7 @@ public class Packet
 		uid = newUid;
 	}
 
-	private void setPacketId(String newPacketId)
+	public void setPacketId(String newPacketId)
 	{
 		uid.setLocalId(newPacketId.replace(':', '-'));
 	}
