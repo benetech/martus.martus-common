@@ -285,7 +285,7 @@ public class Bulletin implements BulletinConstants
 		getPendingPrivateAttachments().clear();
 		set(TAGENTRYDATE, getToday());
 		set(TAGEVENTDATE, getFirstOfThisYear());
-set(TAGLASTSAVED, getLastSavedDateTime());		
+		set(TAGLASTSAVED, getLastSavedDateTime());		
 		setDraft();
 	}
 
@@ -453,7 +453,7 @@ set(TAGLASTSAVED, getLastSavedDateTime());
 		pendingPublicAttachments.addAll(other.pendingPublicAttachments);
 		getPendingPrivateAttachments().addAll(other.getPendingPrivateAttachments());
 	}
-
+	
 	public AttachmentProxy getAsFileProxy(AttachmentProxy ap, Database otherDatabase, String status, MartusCrypto security)
 		throws
 			IOException,
