@@ -25,6 +25,7 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common;
 
+import java.util.Iterator;
 import java.util.Vector;
 
 import org.martus.util.xml.SimpleXmlDefaultLoader;
@@ -42,13 +43,16 @@ public class HQKeys
 	
 	public String toString()
 	{
-		String xmlRepresentation = MartusXml.getTagStart(HQ_KEYS_TAG);
+		String xmlRepresentation = MartusXml.getTagStartWithNewline(HQ_KEYS_TAG);
 		for(int i = 0; i < hqKeys.size(); ++i)
 		{
 			xmlRepresentation += MartusXml.getTagStart(HQ_KEY_TAG);
 			xmlRepresentation += MartusXml.getTagStart(HQ_PUBLIC_KEY_TAG);
-			xmlRepresentation += (String)hqKeys.get(i);
+			xmlRepresentation += ((HQKey)hqKeys.get(i)).getPublicKey();
 			xmlRepresentation += MartusXml.getTagEndWithoutNewline(HQ_PUBLIC_KEY_TAG);
+			xmlRepresentation += MartusXml.getTagStart(HQ_LABEL_TAG);
+			xmlRepresentation += ((HQKey)hqKeys.get(i)).getLabel();
+			xmlRepresentation += MartusXml.getTagEndWithoutNewline(HQ_LABEL_TAG);
 			xmlRepresentation += MartusXml.getTagEnd(HQ_KEY_TAG);
 		}
 		xmlRepresentation += MartusXml.getTagEnd(HQ_KEYS_TAG);
@@ -57,6 +61,17 @@ public class HQKeys
 	}
 	
 	public static class HQsException extends Exception {}
+
+	public static boolean containsKey(Vector hqKeys, String publicKey)
+	{
+		for (Iterator iter = hqKeys.iterator(); iter.hasNext();)
+		{
+			HQKey key = (HQKey) iter.next();
+			if(key.getPublicKey().equals(publicKey))
+				return true;
+		}
+		return false;
+	}
 
 	public static Vector parseXml(String xml) throws HQsException
 	{
@@ -96,14 +111,17 @@ public class HQKeys
 			throws SAXParseException
 		{
 			SimpleXmlMapLoader loader = (SimpleXmlMapLoader)ended;
-			keys.add(loader.get(HQ_PUBLIC_KEY_TAG));
+			String publicCode = loader.get(HQ_PUBLIC_KEY_TAG);
+			String label = loader.get(HQ_LABEL_TAG);
+			HQKey key = new HQKey(publicCode, label);
+			keys.add(key);
 		}
-
 		Vector keys;
 	}
 
 	public static final String HQ_KEYS_TAG = "HQs";
 	public static final String HQ_KEY_TAG = "HQ";
 	public static final String HQ_PUBLIC_KEY_TAG = "PublicKey";
+	public static final String HQ_LABEL_TAG = "Label";
 	Vector hqKeys;
 }

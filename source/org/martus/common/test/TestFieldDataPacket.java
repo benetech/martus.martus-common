@@ -37,6 +37,7 @@ import org.martus.common.AuthorizedSessionKeys;
 import org.martus.common.CustomFields;
 import org.martus.common.FieldSpec;
 import org.martus.common.GridData;
+import org.martus.common.HQKey;
 import org.martus.common.LegacyCustomFields;
 import org.martus.common.MartusConstants;
 import org.martus.common.MartusUtilities;
@@ -644,7 +645,8 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 	{
 		fdp.setEncrypted(true);
 		Vector keys = new Vector();
-		keys.add(securityHQ.getPublicKeyString());
+		HQKey key = new HQKey(securityHQ.getPublicKeyString(),"");
+		keys.add(key);
 		
 		fdp.setAuthorizedToReadKeys(keys);
 
@@ -696,8 +698,10 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		MartusSecurity seconndHQ = new MartusSecurity();
 		seconndHQ.createKeyPair(SHORTEST_LEGAL_KEY_SIZE);
 		Vector keys = new Vector();
-		keys.add(securityHQ.getPublicKeyString());
-		keys.add(seconndHQ.getPublicKeyString());
+		HQKey key1 = new HQKey(securityHQ.getPublicKeyString(),"");
+		HQKey key2 = new HQKey(seconndHQ.getPublicKeyString(),"");
+		keys.add(key1);
+		keys.add(key2);
 		
 		fdp.setAuthorizedToReadKeys(keys);
 

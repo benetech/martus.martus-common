@@ -30,6 +30,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.Vector;
 
+import org.martus.common.HQKey;
 import org.martus.common.MartusXml;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.packet.BulletinHeaderPacket;
@@ -261,8 +262,11 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 	{
 		String dataId = "this data id";
 		String privateId = "this data id";
-		String hqKey = "hqkey123";
-		bhp.setHQPublicKey(hqKey);
+		String hqPublicKey = "hqkey123";
+		Vector hqKeys = new Vector();
+		HQKey hqKey = new HQKey(hqPublicKey, "");
+		hqKeys.add(hqKey);
+		bhp.setAuthorizedToReadKeys(hqKeys);
 		bhp.setFieldDataPacketId(dataId);
 		bhp.setPrivateFieldDataPacketId(privateId);
 		bhp.setFieldDataSignature(sampleSig1);
@@ -295,7 +299,6 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		String privateId = "private id";
 		String sampleStatus = "draft or whatever";
 		bhp.updateLastSavedTime();
-		bhp.setHQPublicKey("");
 		bhp.setStatus(sampleStatus);
 		bhp.setFieldDataPacketId(dataId);
 		bhp.setPrivateFieldDataPacketId(privateId);
@@ -324,7 +327,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		assertEquals("status", sampleStatus, loaded.getStatus());
 		assertEquals("data sig", true, Arrays.equals(sampleSig1, loaded.getFieldDataSignature()));
 		assertEquals("private data sig", true, Arrays.equals(sampleSig2, loaded.getPrivateFieldDataSignature()));
-		assertEquals("hqKey", "", loaded.getHQPublicKey());
+		assertEquals("hqKey", "", loaded.getLegacyHQPublicKey());
 		assertTrue("No unknown?", loaded.hasUnknownTags());
 		assertEquals("AuthorizedToReadKeys", 0, loaded.getAuthorizedToReadKeys().size());
 		assertEquals("AuthorizedToProxyUpload", 0, loaded.getAuthorizedToUploadKeys().size());
@@ -339,9 +342,11 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 
 	public void testLoadXmlWithHQKey() throws Exception
 	{
-		String hqKey = "sdjflksj";
-		bhp.setAuthorizedToReadKeys(new Vector());
-		bhp.setHQPublicKey(hqKey);
+		String hqPublicKey = "sdjflksj";
+		Vector hqKeys = new Vector();
+		HQKey hqKey = new HQKey(hqPublicKey, "");
+		hqKeys.add(hqKey);
+		bhp.setAuthorizedToReadKeys(hqKeys);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		bhp.writeXml(out, security);
 		String result = new String(out.toByteArray(), "UTF-8");
@@ -351,9 +356,9 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
 		loaded.loadFromXml(in, security);
 
-		assertEquals("hqKey", bhp.getHQPublicKey(), loaded.getHQPublicKey());
+		assertEquals("hqKey", bhp.getLegacyHQPublicKey(), loaded.getLegacyHQPublicKey());
 		assertEquals("The # of authorized accounts not set by just setting the HQ Key?", 1, loaded.getAuthorizedToReadKeys().size());
-		assertEquals("hqKey not present in authorized list?", hqKey, loaded.getAuthorizedToReadKeys().get(0));
+		assertEquals("hqKey not present in authorized list?", hqPublicKey, ((HQKey)loaded.getAuthorizedToReadKeys().get(0)).getPublicKey());
 	}
 
 	public void testLoadXmlWithMultipleAuthorizedToReadKeys() throws Exception
@@ -361,9 +366,10 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		String hqKey1 = "Key 1";
 		String hqKey2 = "Key 2";
 		Vector hqKeys = new Vector();
-		hqKeys.add(hqKey1);
-		hqKeys.add(hqKey2);
-		bhp.setHQPublicKey("");
+		HQKey key1 = new HQKey(hqKey1, "");
+		HQKey key2 = new HQKey(hqKey2, "");
+		hqKeys.add(key1);
+		hqKeys.add(key2);
 		bhp.setAuthorizedToReadKeys(hqKeys);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		bhp.writeXml(out, security);
@@ -374,30 +380,12 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
 		loaded.loadFromXml(in, security);
 		assertEquals("The # of authorized accounts not set?", hqKeys.size(), loaded.getAuthorizedToReadKeys().size());
-		assertEquals("Key 1 not present?", hqKey1, loaded.getAuthorizedToReadKeys().get(0));
-		assertEquals("Key 2 not present?", hqKey2, loaded.getAuthorizedToReadKeys().get(1));
-		assertEquals("The original hqKey should be set from first key in vector", hqKey1, loaded.getHQPublicKey());
-		assertEquals("Key 1 not allowed to Upload?", hqKey1, loaded.getAuthorizedToUploadKeys().get(0));
-		assertEquals("Key 2 not allowed to upload?", hqKey2, loaded.getAuthorizedToUploadKeys().get(1));
-		
-		//Now re Add the same key2 as the primary HQ.
-		loaded.setHQPublicKey(hqKey2);
-		assertEquals("The original hqKey should now be key2", hqKey2, loaded.getHQPublicKey());
-		assertEquals("The # of authorized accounts should not have changed?", 2, loaded.getAuthorizedToReadKeys().size());
-		assertEquals("Key 2 should now be first in the list?", hqKey2, loaded.getAuthorizedToReadKeys().get(0));
-		assertEquals("Key 1 should be bumped to position 2?", hqKey1, loaded.getAuthorizedToReadKeys().get(1));
-		
-		//Now Add a new key as the primary HQ.
-		String hqKey3 = "Key 3";
-		loaded.setHQPublicKey(hqKey3);
-		assertEquals("The original hqKey should now be key3", hqKey3, loaded.getHQPublicKey());
-		assertEquals("The # of authorized accounts should not have changed?", 3, loaded.getAuthorizedToReadKeys().size());
-		assertEquals("Key 3 should now be first in the list?", hqKey3, loaded.getAuthorizedToReadKeys().get(0));
-		assertEquals("Key 2 should now be 2nd?", hqKey2, loaded.getAuthorizedToReadKeys().get(1));
-		assertEquals("Key 1 should be bumped to the last?", hqKey1, loaded.getAuthorizedToReadKeys().get(2));
+		assertEquals("Key 1 not present?", hqKey1, ((HQKey)loaded.getAuthorizedToReadKeys().get(0)).getPublicKey());
+		assertEquals("Key 2 not present?", hqKey2, ((HQKey)loaded.getAuthorizedToReadKeys().get(1)).getPublicKey());
+		assertEquals("The original hqKey should be set from first key in vector", hqKey1, loaded.getLegacyHQPublicKey());
+		assertEquals("Key 1 not allowed to Upload?", hqKey1, ((HQKey)loaded.getAuthorizedToUploadKeys().get(0)).getPublicKey());
+		assertEquals("Key 2 not allowed to upload?", hqKey2, ((HQKey)loaded.getAuthorizedToUploadKeys().get(1)).getPublicKey());
 	}
-	
-	
 	
 	byte[] sampleSig1 = {1,6,38,0};
 	byte[] sampleSig2 = {7, 9, 9};

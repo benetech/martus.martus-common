@@ -33,6 +33,7 @@ import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
 import org.martus.common.MartusXml;
 import org.martus.common.XmlWriterFilter;
@@ -125,21 +126,9 @@ public class BulletinHeaderPacket extends Packet
 		return privateFieldDataPacketId;
 	}
 
-	public String getHQPublicKey()
+	public String getLegacyHQPublicKey()
 	{
 		return legacyHqPublicKey;
-	}
-
-	public void setHQPublicKey(String key)
-	{
-		legacyHqPublicKey = key;
-		if(key.length() > 0)
-		{
-			int index = authorizedToReadKeys.indexOf(key);
-			if(index != -1)
-				authorizedToReadKeys.remove(index);
-			authorizedToReadKeys.add(0,key);
-		}
 	}
 
 	public Vector getAuthorizedToReadKeys()
@@ -167,12 +156,12 @@ public class BulletinHeaderPacket extends Packet
 	{
 		authorizedToReadKeys = accountsKeys;
 		if(accountsKeys.size()>0)
-			legacyHqPublicKey = (String)accountsKeys.get(0);
+			legacyHqPublicKey = ((HQKey)accountsKeys.get(0)).getPublicKey();
 	}
 	
 	public boolean isHQAuthorizedToRead(String publicKey)
 	{
-		return(authorizedToReadKeys.contains(publicKey));
+		return(HQKeys.containsKey(authorizedToReadKeys,publicKey));
 	}
 
 	public boolean isAuthorizedToUpload(String publicKey)
@@ -181,7 +170,7 @@ public class BulletinHeaderPacket extends Packet
 			return true;
 		if(!allHQsCanProxyUpload)
 			return false;
-		return(authorizedToReadKeys.contains(publicKey));
+		return isHQAuthorizedToRead(publicKey);
 	}
 	
 	public void setAllPrivate(boolean newValue)
@@ -388,7 +377,7 @@ public class BulletinHeaderPacket extends Packet
 			allPrivateValue = NOT_ALL_PRIVATE;
 		writeElement(dest, MartusXml.AllPrivateElementName, allPrivateValue);
 
-		String hqPublicKey = getHQPublicKey();
+		String hqPublicKey = getLegacyHQPublicKey();
 		if(hqPublicKey.length() > 0)
 			writeElement(dest, MartusXml.HQPublicKeyElementName, hqPublicKey);
 		

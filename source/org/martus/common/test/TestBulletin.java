@@ -35,6 +35,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Vector;
 
+import org.martus.common.HQKey;
 import org.martus.common.StandardFieldSpecs;
 import org.martus.common.FieldSpec;
 import org.martus.common.MartusUtilities;
@@ -450,12 +451,13 @@ public class TestBulletin extends TestCaseEnhanced
 		original.set(Bulletin.TAGPUBLICINFO, "public info");
 		String key = "12345";
 		Vector keys = new Vector();
-		keys.add(key);
+		HQKey key1 = new HQKey(key, "");
+		keys.add(key1);
 		
 		original.setAuthorizedToReadKeys(keys);
-		assertEquals("HQKey not set?", key, original.getAuthorizedToReadKeys().get(0));
-		assertEquals("HQKey not set in public?", key, original.getFieldDataPacket().getAuthorizedToReadKeys().get(0));
-		assertEquals("HQKey not set in private?", key, original.getPrivateFieldDataPacket().getAuthorizedToReadKeys().get(0));
+		assertEquals("HQKey not set?", key, ((HQKey)original.getAuthorizedToReadKeys().get(0)).getPublicKey());
+		assertEquals("HQKey not set in public?", key, ((HQKey)original.getFieldDataPacket().getAuthorizedToReadKeys().get(0)).getPublicKey());
+		assertEquals("HQKey not set in private?", key, ((HQKey)original.getPrivateFieldDataPacket().getAuthorizedToReadKeys().get(0)).getPublicKey());
 	}
 
 	static final String samplePublic = "some public text";

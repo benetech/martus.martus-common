@@ -34,10 +34,10 @@ import java.util.HashMap;
 import java.util.Vector;
 
 import org.martus.common.AuthorizedSessionKeys;
+import org.martus.common.HQKey;
 import org.martus.common.MartusXml;
 import org.martus.common.XmlWriterFilter;
 import org.martus.common.crypto.MartusCrypto;
-import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.EncryptionException;
 import org.martus.util.Base64;
@@ -93,19 +93,19 @@ class EncryptedFieldDataPacket extends Packet
 			try
 			{
 				//Legacy HQ
-				String publicKey = (String)authorizedToReadKeys.get(0);
-				String sessionKeyString = getSessionKeyString(publicKey);
+				HQKey publicKey = (HQKey)authorizedToReadKeys.get(0);
+				String sessionKeyString = getSessionKeyString(publicKey.getPublicKey());
 				writeElement(dest, MartusXml.HQSessionKeyElementName, sessionKeyString);
 				
 				HashMap sessionKeysAndPublicCodes = new HashMap();
-				String publicCode = MartusSecurity.computePublicCode(publicKey);
+				String publicCode = publicKey.getRawPublicCode();
 				sessionKeysAndPublicCodes.put(publicCode, sessionKeyString);
 
 				for(int i = 1; i < authorizedToReadKeys.size(); ++i)
 				{
-					publicKey = (String)authorizedToReadKeys.get(i);
-					sessionKeyString = getSessionKeyString(publicKey);
-					publicCode = MartusSecurity.computePublicCode(publicKey);
+					publicKey = (HQKey)authorizedToReadKeys.get(i);
+					sessionKeyString = getSessionKeyString(publicKey.getPublicKey());
+					publicCode = publicKey.getRawPublicCode();
 					sessionKeysAndPublicCodes.put(publicCode, sessionKeyString);
 				}
 				if(!sessionKeysAndPublicCodes.isEmpty())

@@ -27,6 +27,7 @@ package org.martus.common.test;
 
 import java.util.Vector;
 
+import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
 import org.martus.common.MartusXml;
 import org.martus.util.TestCaseEnhanced;
@@ -42,7 +43,7 @@ public class testHQKeys extends TestCaseEnhanced
 	public void testEmpty()
 	{
 		HQKeys hqKeys = new HQKeys(new Vector());
-		String xmlExpected = MartusXml.getTagStart(HQKeys.HQ_KEYS_TAG) +
+		String xmlExpected = MartusXml.getTagStartWithNewline(HQKeys.HQ_KEYS_TAG) +
 		 MartusXml.getTagEnd(HQKeys.HQ_KEYS_TAG);
 		assertEquals(xmlExpected, hqKeys.toString());
 	}
@@ -51,20 +52,28 @@ public class testHQKeys extends TestCaseEnhanced
 	{
 		Vector keys = new Vector();
 		String key1 = "key 1";
+		String label1 = "label 1";
 		String key2 = "key 2";
-		keys.add(key1);
-		keys.add(key2);
+		String label2 = "label 2";
+		keys.add(new HQKey(key1, label1));
+		keys.add(new HQKey(key2, label2));
 		HQKeys hqKeys = new HQKeys(keys);
-		String xmlExpected = MartusXml.getTagStart(HQKeys.HQ_KEYS_TAG) +
+		String xmlExpected = MartusXml.getTagStartWithNewline(HQKeys.HQ_KEYS_TAG) +
 		 MartusXml.getTagStart(HQKeys.HQ_KEY_TAG) + 
 		 MartusXml.getTagStart(HQKeys.HQ_PUBLIC_KEY_TAG) + 
 		 key1 +
 		 MartusXml.getTagEndWithoutNewline(HQKeys.HQ_PUBLIC_KEY_TAG) +
+		 MartusXml.getTagStart(HQKeys.HQ_LABEL_TAG) + 
+		 label1 +
+		 MartusXml.getTagEndWithoutNewline(HQKeys.HQ_LABEL_TAG) +
 		 MartusXml.getTagEnd(HQKeys.HQ_KEY_TAG) +
 		 MartusXml.getTagStart(HQKeys.HQ_KEY_TAG) + 
 		 MartusXml.getTagStart(HQKeys.HQ_PUBLIC_KEY_TAG) + 
 		 key2 +
 		 MartusXml.getTagEndWithoutNewline(HQKeys.HQ_PUBLIC_KEY_TAG) +
+		 MartusXml.getTagStart(HQKeys.HQ_LABEL_TAG) + 
+		 label2 +
+		 MartusXml.getTagEndWithoutNewline(HQKeys.HQ_LABEL_TAG) +
 		 MartusXml.getTagEnd(HQKeys.HQ_KEY_TAG) +
 		 MartusXml.getTagEnd(HQKeys.HQ_KEYS_TAG);
 		
@@ -75,14 +84,14 @@ public class testHQKeys extends TestCaseEnhanced
 	{
 		Vector keys = new Vector();
 		String key1 = "key 1";
+		String label1 = "label 1";
 		String key2 = "key 2";
-		keys.add(key1);
-		keys.add(key2);
+		String label2 = "label 2";
+		keys.add(new HQKey(key1, label1));
+		keys.add(new HQKey(key2, label2));
 		HQKeys hqKeys = new HQKeys(keys);
 		
 		Vector newKeys = HQKeys.parseXml(hqKeys.toString());
-		assertContains(key1,newKeys);
-		assertContains(key2,newKeys);
 		HQKeys hqKeys2 = new HQKeys(newKeys);
 		
 		assertEquals(hqKeys.toString(), hqKeys2.toString());

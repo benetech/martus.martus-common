@@ -160,19 +160,12 @@ public abstract class MartusCrypto
 		}
 		return new String(buf);
 	}
-	
-	static public String getHexDigest(String anyString)
+
+	public static String computeFormattedPublicCode(String publicKeyString) throws
+		Base64.InvalidBase64Exception
 	{
-		try
-		{
-			byte[] rawDigest = MartusSecurity.createDigestBytes(anyString);
-			return MartusUtilities.byteArrayToHexString(rawDigest);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			return null;
-		}
+		String rawCode = computePublicCode(publicKeyString);
+		return MartusCrypto.formatPublicCode(rawCode);
 	}
 
 	public static String formatPublicCode(String publicCode)
@@ -187,6 +180,21 @@ public abstract class MartusCrypto
 		if(formatted.endsWith("."))
 			formatted = formatted.substring(0,formatted.length()-1);
 		return formatted;
+	}
+	
+	
+	static public String getHexDigest(String anyString)
+	{
+		try
+		{
+			byte[] rawDigest = MartusSecurity.createDigestBytes(anyString);
+			return MartusUtilities.byteArrayToHexString(rawDigest);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public static String removeNonDigits(String userEnteredPublicCode)

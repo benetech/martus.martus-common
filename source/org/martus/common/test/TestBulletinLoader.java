@@ -29,6 +29,7 @@ package org.martus.common.test;
 import java.io.File;
 import java.util.Vector;
 
+import org.martus.common.HQKey;
 import org.martus.common.MartusXml;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.bulletin.Bulletin;
@@ -179,19 +180,20 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		original.set(Bulletin.TAGPUBLICINFO, "public info");
 		String key = security.getPublicKeyString();
 		Vector keys = new Vector();
-		keys.add(key);
+		HQKey key1 = new HQKey(key, "");
+		keys.add(key1);
 		original.setAuthorizedToReadKeys(keys);
 		BulletinSaver.saveToClientDatabase(original, db, true, security);
 
 		DatabaseKey dbKey = new DatabaseKey(original.getUniversalId());
 		Bulletin loaded = BulletinLoader.loadFromDatabase(db, dbKey, security);
-		assertEquals("Keys not the same?", original.getFieldDataPacket().getAuthorizedToReadKeys(), loaded.getFieldDataPacket().getAuthorizedToReadKeys());
+		assertEquals("Keys not the same?", ((HQKey)original.getFieldDataPacket().getAuthorizedToReadKeys().get(0)).getPublicKey(), ((HQKey)loaded.getFieldDataPacket().getAuthorizedToReadKeys().get(0)).getPublicKey());
 
 		File tempFile = createTempFile();
 		BulletinForTesting.saveToFile(db, original, tempFile, security);
 		Bulletin loaded2 = new Bulletin(security);
 		BulletinZipImporter.loadFromFile(loaded2, tempFile, security);
-		assertEquals("Loaded Keys not the same?", original.getFieldDataPacket().getAuthorizedToReadKeys(), loaded2.getFieldDataPacket().getAuthorizedToReadKeys());
+		assertEquals("Loaded Keys not the same?", ((HQKey)original.getFieldDataPacket().getAuthorizedToReadKeys().get(0)).getPublicKey(), ((HQKey)loaded2.getFieldDataPacket().getAuthorizedToReadKeys().get(0)).getPublicKey());
 	}
 
 	
@@ -219,7 +221,8 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		b.set(Bulletin.TAGPUBLICINFO, samplePublic);
 		b.set(Bulletin.TAGPRIVATEINFO, samplePrivate);
 		Vector keys = new Vector();
-		keys.add(b.getAccount());
+		HQKey key1 = new HQKey(b.getAccount(), "");
+		keys.add(key1);
 		b.setAuthorizedToReadKeys(keys);
 		saveAndVerifyValid("freshly created", b);
 
