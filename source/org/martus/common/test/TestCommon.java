@@ -26,6 +26,11 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.test;
 
+import org.martus.common.clientside.test.TestChoiceItem;
+import org.martus.common.clientside.test.TestClientSideNetworkHandler;
+import org.martus.common.clientside.test.TestClientSideNetworkHandlerForNonSSL;
+import org.martus.common.clientside.test.TestCurrentUiState;
+import org.martus.common.clientside.test.TestDateUtilities;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -58,9 +63,14 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestBulletinStore.class));
 		suite.addTest(new TestSuite(TestBulletinZipImporter.class));
 		suite.addTest(new TestSuite(TestBulletinZipUtilities.class));
+		suite.addTest(new TestSuite(TestChoiceItem.class));
+		suite.addTest(new TestSuite(TestClientSideNetworkHandler.class));
+		suite.addTest(new TestSuite(TestClientSideNetworkHandlerForNonSSL.class));
 		suite.addTest(new TestSuite(TestClientFileDatabase.class));
+		suite.addTest(new TestSuite(TestCurrentUiState.class));
 		suite.addTest(new TestSuite(TestCustomFields.class));
 		suite.addTest(new TestSuite(TestDatabaseKey.class));
+		suite.addTest(new TestSuite(TestDateUtilities.class));
 		suite.addTest(new TestSuite(TestFieldDataPacket.class));
 		suite.addTest(new TestSuite(TestFieldSpec.class));
 		suite.addTest(new TestSuite(TestFileDatabase.class));
