@@ -56,7 +56,7 @@ public class MagicWords
 			while( (line = reader.readLine()) != null)
 			{
 				if(line.trim().length() == 0)
-					logger.logNotice("Warning: Found blank line in " + magicWordsFile.getPath());
+					logger.logWarning("Found blank line in " + magicWordsFile.getPath());
 				else
 					add(line);					
 			}
@@ -64,7 +64,7 @@ public class MagicWords
 		}
 		catch(FileNotFoundException nothingToWorryAbout)
 		{
-			logger.logNotice("Warning: no magic words file found:" + magicWordsFile.getPath());
+			logger.logWarning("No magic words file found:" + magicWordsFile.getPath());
 		}
 	}
 
