@@ -27,6 +27,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.network;
 
 import java.security.PublicKey;
+import java.security.SignatureException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
@@ -87,6 +88,11 @@ public class SimpleX509TrustManager implements X509TrustManager
 			cert1.verify(tryPublicKey);
 			String keyString = MartusSecurity.getKeyString(tryPublicKey);
 			setExpectedPublicKey(keyString);
+		}
+		catch (SignatureException e)
+		{
+			e.printStackTrace();
+			throw new CertificateException(e.toString());
 		}
 		catch (Exception e)
 		{
