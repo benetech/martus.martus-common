@@ -49,6 +49,7 @@ public class TestCommon
 		// common stuff
 		suite.addTest(new TestSuite(TestAttachmentPacket.class));
 		suite.addTest(new TestSuite(TestAttachmentProxy.class));
+		suite.addTest(new TestSuite(TestAuthorizedSessionKeys.class));
 		suite.addTest(new TestSuite(TestBase64XmlOutputStream.class));
 		suite.addTest(new TestSuite(TestBulletin.class));
 		suite.addTest(new TestSuite(TestBulletinHeaderPacket.class));
@@ -65,6 +66,7 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestGridData.class));
 		suite.addTest(new TestSuite(TestGridFieldSpec.class));
 		suite.addTest(new TestSuite(TestGridRow.class));
+		suite.addTest(new TestSuite(testHQKeys.class));
 		suite.addTest(new TestSuite(TestKeyShareSaveRestore.class));
 		suite.addTest(new TestSuite(TestMagicWordEntry.class));
 		suite.addTest(new TestSuite(TestMagicWords.class));
