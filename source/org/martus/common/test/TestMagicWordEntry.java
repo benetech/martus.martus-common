@@ -34,6 +34,7 @@ public class TestMagicWordEntry extends TestCaseEnhanced
 	{
 		super(name);
 	}
+
 	public void testBasics()
 	{
 		String groupEntry = "group";
@@ -50,5 +51,10 @@ public class TestMagicWordEntry extends TestCaseEnhanced
 		assertNotEquals("inactive magic word is the same?", invalidMagicWord, entry2.getMagicWord());
 		assertEquals("getMagicWordWithActiveSign word not the same?", invalidMagicWord, entry2.getMagicWordWithActiveSign());
 		assertEquals("group not the same?", groupEntry, entry2.getGroupName());
+		
+		MagicWordEntry entry3 = new MagicWordEntry(null, null);
+		assertTrue("magicWord invalid?", entry3.isActive());
+		assertEquals("null magic word not empty?", "", entry3.getMagicWord());
+		assertEquals("null group not empty?", "", entry3.getGroupName());
 	}
 }

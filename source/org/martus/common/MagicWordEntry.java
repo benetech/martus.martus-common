@@ -32,7 +32,9 @@ public class MagicWordEntry
 	{			
 		if (magicWordEntry == null)
 			magicWordEntry = "";
-			
+		if (groupEntry == null)
+			groupEntry = "";
+		
 		if (magicWordEntry.startsWith("#"))
 		{	
 			magicWord = magicWordEntry.substring(1);
