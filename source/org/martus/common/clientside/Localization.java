@@ -109,15 +109,39 @@ public class Localization
 
 
 
-	public void addTranslation(String languageCode, String translation)
+	public void addTranslation(String languageCode, String mtfEntryText)
 	{
-		Map stringMap = getStringMap(languageCode);
-		if(stringMap == null)
+		if(mtfEntryText == null)
+			return;
+			
+		if(mtfEntryText.startsWith("#"))
+			return;
+		
+		if(mtfEntryText.indexOf('=') < 0)
 			return;
 	
-		LocalizedString entry = LocalizedString.createFromMtfEntry(translation);
+		String key = extractKeyFromMtfEntry(mtfEntryText);
+		String value = extractValueFromMtfEntry(mtfEntryText);
+		LocalizedString entry = new LocalizedString(key, value);
+
+		Map stringMap = createStringMap(languageCode);
 		if(entry != null)
 			stringMap.put(entry.getTag(), entry);
+	}
+	
+	private String extractKeyFromMtfEntry(String mtfEntryText)
+	{
+		return mtfEntryText.split("=")[0];
+	}
+	
+	private String extractValueFromMtfEntry(String mtfEntryText)
+	{
+		String[] parts = mtfEntryText.split("=");
+		if(parts.length < 2)
+			return "";
+		String value = parts[1];
+		value = value.replaceAll("\\\\n", "\n");
+		return value;
 	}
 
 	public Map createStringMap(String languageCode)

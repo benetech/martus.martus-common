@@ -29,25 +29,7 @@ package org.martus.common.clientside;
 
 public class LocalizedString
 {
-	public static LocalizedString createFromMtfEntry(String mtfEntryText)
-	{
-		if(mtfEntryText == null)
-			return null;
-			
-		if(mtfEntryText.startsWith("#"))
-			return null;
-	
-		int endKey = mtfEntryText.indexOf('=');
-		if(endKey < 0)
-			return null;
-	
-		String key = mtfEntryText.substring(0,endKey);
-		String value = mtfEntryText.substring(endKey + 1, mtfEntryText.length());
-		value = value.replaceAll("\\\\n", "\n");
-		return new LocalizedString(key, value);
-	}
-	
-	private LocalizedString(String tagToUse, String text)
+	public LocalizedString(String tagToUse, String text)
 	{
 		tag = tagToUse;
 		localizedText = text;
