@@ -77,6 +77,8 @@ public class Localization
 			return translatedText;
 
 		String englishText = (String)availableTranslations.get(ENGLISH);
+		if(englishText == null)
+			System.out.println("Error, probably an invalid Martus-en.mtf file in C:\\Martus, try removing this file.");
 		return formatAsUntranslated(englishText);
 	}
 	
