@@ -228,7 +228,7 @@ public class TestMartusBulletinWrapper extends TestCaseEnhanced
 				"<tr><td width='15%' align='right' valign='top'>Language</td><td valign='top'>-Other-</td></tr>\n"+
 				"<tr><td width='15%' align='right' valign='top'>Author</td><td valign='top'>"+author+"</td></tr>\n"+
 				"<tr><td width='15%' align='right' valign='top'>Organization</td><td valign='top'></td></tr>\n"+
-				"<tr><td width='15%' align='right' valign='top'>Title</td><td valign='top'>"+title+"</td></tr>\n"+
+				"<tr><td width='15%' align='right' valign='top'>Title</td><td valign='top'><strong>"+title+"</strong></td></tr>\n"+
 				"<tr><td width='15%' align='right' valign='top'>Location</td><td valign='top'>"+location+"</td></tr>\n"+
 				"<tr><td width='15%' align='right' valign='top'>Keywords</td><td valign='top'></td></tr>\n"+
 				"<tr><td width='15%' align='right' valign='top'>Date of Event</td><td valign='top'>Between 08/20/2003 and 08/23/2003</td></tr>\n"+
