@@ -196,12 +196,16 @@ public class UiBasicSigninDlg extends JDialog
 	boolean languageChanged;
 	private JButton ok;
 	protected int currentMode;
+	
+	// modes
 	public static final int INITIAL = 1;
 	public static final int TIMED_OUT = 2;
 	public static final int SECURITY_VALIDATE = 3;
 	public static final int RETYPE_USERNAME_PASSWORD = 4;
 	public static final int CREATE_NEW = 5;
 	public static final int INITIAL_NEW_RECOVER_ACCOUNT = 6;
+	
+	// results
 	public static final int CANCEL = 10;
 	public static final int SIGN_IN = 11;
 	public static final int NEW_ACCOUNT = 12;
