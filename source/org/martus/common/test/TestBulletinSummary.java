@@ -28,10 +28,11 @@ package org.martus.common.test;
 
 import java.util.Vector;
 
+import junit.framework.TestCase;
+
 import org.martus.common.BulletinSummary;
 import org.martus.common.network.NetworkInterfaceConstants;
-
-import junit.framework.TestCase;
+import org.martus.common.packet.BulletinHistory;
 
 
 public class TestBulletinSummary extends TestCase
@@ -71,7 +72,7 @@ public class TestBulletinSummary extends TestCase
 
 	public void testCreateFromStrings() throws Exception
 	{
-		String justRight = "bhp=fdp=456=123456789";
+		String justRight = "bhp=fdp=456=123456789=a b c";
 
 		BulletinSummary summary =BulletinSummary.createFromString("account", justRight);
 		assertEquals("account", summary.getAccountId());
@@ -79,6 +80,21 @@ public class TestBulletinSummary extends TestCase
 		assertEquals("fdp", summary.getFieldDataPacketLocalId());
 		assertEquals(456, summary.getSize());
 		assertEquals("123456789", summary.dateTimeSaved);
+		assertEquals(4, summary.getVersionNumber());
+		BulletinHistory history = summary.getHistory();
+		assertEquals(3, history.size());
+		assertEquals("a", history.get(0));
+		assertEquals("b", history.get(1));
+		assertEquals("c", history.get(2));
+	}
+	
+	public void testCreateFromStringsDefaults() throws Exception
+	{
+		String minimal = "bhp=fdp=456";
+		BulletinSummary summary = BulletinSummary.createFromString("account", minimal);
+		assertEquals("", summary.getDateTimeSaved());
+		assertEquals(0, summary.getVersionNumber());
+		assertEquals(0, summary.getHistory().size());
 	}
 
 	public void testGetNormalRetrieveTags() throws Exception

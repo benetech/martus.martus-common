@@ -34,6 +34,7 @@ import java.util.Vector;
 
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.network.NetworkInterfaceConstants;
+import org.martus.common.packet.BulletinHistory;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.UniversalId;
 
@@ -52,18 +53,26 @@ public class BulletinSummary
 		String date = "";
 		if(args.length > at)
 			date = args[at++];
+		BulletinHistory history = null;
+		if(args.length > at)
+			history = createHistory(args[at++]);
 		
 		UniversalId uid = UniversalId.createFromAccountAndLocalId(accountId, bulletinLocalId);
-		return new BulletinSummary(uid, fdpLocalId, size, date);
+		return new BulletinSummary(uid, fdpLocalId, size, date, history);
 	}
 
-	private BulletinSummary(UniversalId bulletinIdToUse, String fieldDataPacketLocalIdToUse, int sizeToUse, String dateSavedToUse)
+	private BulletinSummary(UniversalId bulletinIdToUse, String fieldDataPacketLocalIdToUse, int sizeToUse, String dateSavedToUse, BulletinHistory historyToUse)
 	{
 		accountId = bulletinIdToUse.getAccountId();
 		localId = bulletinIdToUse.getLocalId();
 		fdpLocalId = fieldDataPacketLocalIdToUse;
 		size = sizeToUse;
-		dateTimeSaved = dateSavedToUse; 
+		dateTimeSaved = dateSavedToUse;
+		history = historyToUse;
+		if(history == null)
+			history = new BulletinHistory();
+		else
+			versionNumber = history.size() + 1;
 	}
 	
 	public void setFieldDataPacket(FieldDataPacket fdpToUse)
@@ -130,6 +139,16 @@ public class BulletinSummary
 		cal.setTimeInMillis(Long.parseLong(dateToConvert));		
 		return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(cal.getTime());
 	}
+	
+	public int getVersionNumber()
+	{
+		return versionNumber;
+	}
+	
+	public BulletinHistory getHistory()
+	{
+		return history;
+	}
 
 	public boolean isDownloadable()
 	{
@@ -149,6 +168,15 @@ public class BulletinSummary
 	public FieldDataPacket getFieldDataPacket()
 	{
 		return fdp;
+	}
+	
+	private static BulletinHistory createHistory(String localIdsAsString)
+	{
+		BulletinHistory history = new BulletinHistory();
+		String[] localIds = localIdsAsString.split(" ");
+		for(int i=0; i < localIds.length; ++i)
+			history.add(localIds[i]);
+		return history;
 	}
 
 	public static Vector getNormalRetrieveTags()
@@ -179,6 +207,8 @@ public class BulletinSummary
 	String title;
 	String author;
 	public String dateTimeSaved;
+	private BulletinHistory history;
+	private int versionNumber;
 	int size;
 	boolean checkedFlag;
 	boolean downloadable;
