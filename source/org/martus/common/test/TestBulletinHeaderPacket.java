@@ -39,6 +39,7 @@ import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.UniversalId;
 import org.martus.util.Base64;
 import org.martus.util.ByteArrayInputStreamWithSeek;
+import org.martus.util.InputStreamWithSeek;
 import org.martus.util.TestCaseEnhanced;
 
 public class TestBulletinHeaderPacket extends TestCaseEnhanced
@@ -434,6 +435,34 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		assertEquals("The original hqKey should be set from first key in vector", hqKey1, loaded.getLegacyHQPublicKey());
 		assertEquals("Key 1 not allowed to Upload?", hqKey1, (loaded.getAuthorizedToUploadKeys().get(0)).getPublicKey());
 		assertEquals("Key 2 not allowed to upload?", hqKey2, (loaded.getAuthorizedToUploadKeys().get(1)).getPublicKey());
+	}
+	
+	public void testBackwardHQCompatibility() throws Exception
+	{
+		String authorAccountId = "MIIBIDANBgkqhkiG9w0BAQEFAAOCAQ0AMIIBCAKCAQEAlBOc0WjiSlX6ejv6+QNfMWbVA/fZ8fQEXtvjT/hdpox6Nf02GV+t/PeMM5vf2/uvW1QBKfCzcIHbdObIOZAAwjXhoFqba6eLmaMGAvmSnPD6h2i6mL0/DkZ2QURYU+PDrSzlugIJm6rgaZxyGKdCscxf0Sb6JQPUswfl42TV8e87LlXIqAOY5UnN5DpwmgSNDE1RqVn68Z++Ez3dfFCDMe36BSkyzNXM0D+hTgjTRm0A+opUIa0f6vrUnzsUYoFeGqRMcO5SMuYkdsONrMAgGX57fOFPVEvxlwAlMq/uAPRhdFDTH77th7nIC4vitQxvifFPDJCblZ1DN46hxpQwtwIBEQ==";
+		String hqAccountId = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhNrVbw9MznNACGyy0FgpE+1Qi6D68QoBribm6UQA9VBkTDY+skdXFXae3UqMtkg6S0XQEgR+KdalWk5rNiv0jmowZzjvhnyEkn8z7CRM3imdPzCO1bcoFUjH+XIpO1v8ThLnRusZXBsc5cDl0mhEoDKPVVzUgNvDGiVRz24duFo8W6qOLnMTO44MJxqN7rlrt49mV971+GnVOnaRaQfGJSEMkXcdK6WTvchwPEX1Air5S1/Jn3hIpdk3YVOdBgWNK++Vu/0B8Crzr8cBj82wp+7fvyiqB04FGHBycDjuSVNeyoRQElKvHun6m67yzMwWAvAAUSzejktANVoi5Hg20wIDAQAB";
+		String fieldOfficeBulletinCreatedWithOldMartus = 
+				"<!--MartusPacket;20030212;-->" + "\n" + 
+				"<BulletinHeaderPacket><PacketId>B-eb9f0d-ff08384b4a--8000</PacketId>" + "\n" + 
+				"<Account>" + authorAccountId + "</Account>" + "\n" + 
+				"<BulletinStatus>sealed</BulletinStatus>" + "\n" + 
+				"<LastSavedTime>1095354606644</LastSavedTime>" + "\n" + 
+				"<AllPrivate>0</AllPrivate>" + "\n" + 
+				"<HQPublicKey>" + hqAccountId + "</HQPublicKey>" + "\n" + 
+				"<DataPacketId>F-eb9f0d-ff08384b4a--7fff</DataPacketId>" + "\n" + 
+				"<DataPacketSig>dBZENOPohfe8+3N/F9ly9HbV/FTlUry3/V38ahrpJvSi5ZyfLa7r5tQrTqZXwbzp2q3p5OCeQf/0LQtoUeaONHwUmPCxgty6WylZflUww2lSDSF4Kb+KpLJJYQ0gf6TNd3qKJliPE0tesnsEoGhxlcO6C/u8uEgGMerJ/PZqYRYnljbA2L1ne9X61PDP5TTMN3d6xpR6N5+Y5NVom/hslw0h2VQa5UTHvsbjcorwSj+xTnX4vbq3DAWNGwsvzyF4WEPv6Ahv5AdHTCB0UeThoyRiH4rjDHwx2dP3pmSI21wxD8859BG9Lxr22knlmOypXAhC3hzGiKIG/MM6HYZNjQ==</DataPacketSig>" + "\n" + 
+				"<PrivateDataPacketId>F-eb9f0d-ff08384b4a--7ffe</PrivateDataPacketId>" + "\n" + 
+				"<PrivateDataPacketSig>DLUrPpgAg/fjiJ+MqdYuY68QwSOoLnP8uNIWZmTUeX63BPMdiBKZSCnysxTu/yEO2D9VMst4iegsSpiBE5cpZDy6nGt9zlPZHv/6IaZLxUZHb9agGYWo8EIHNqEk0ryHHEJOWVhmx3G9/nyhdZOe9RNj6eSt7QhppAaqCeRnV9ldTBLt4+jTTmfeehrkEbKECBxiuD9dPQtu9BpXqQ6V5EMP3pgD3IzrCtDFOHFuS/HVUlGCt+70NR0TAReiPt9kdWkbls0ir501qPDmf8XKp8TfzIyRj9iQ1RO18NJCE9GEJupgH5WAv/BXH2GTM22Z+E8RVHNMIULTqqUx9UJMKA==</PrivateDataPacketSig>" + "\n" + 
+				"</BulletinHeaderPacket>" + "\n" + 
+				"<!--sig=QqzQFmrA9rYo7ekVgqjtXBfhRBaVnrpRjnJfynao90pNtF0cjK9R2nYOdGuChrwI9BvEqtX26ylH8iWky9J29RZOYIGOzQwNo/63DfKi4KChhfDd7hVdi6yhfGXdiPoaF3hR4kzalgV5q415xCE+wAOza8NMzmScB8H1m2b4/pU407jVKlKHNYB12OrltEqT6k4OlbS1I6eLJ3bRjBumsgtQLZteUXusAHsI7h8w5UQ3VVaV1d7EDvX5fLAoxVE5cEUegFffIfUjXM2/cUcnqFnLCm5TkIsU5xpVTbPkrd999sMM/zU0+VKCIiDIvfh4rnW72h0jLog5GIwGBzVU+w==-->" + "\n"; 
+		
+		BulletinHeaderPacket bhp = new BulletinHeaderPacket();
+		InputStreamWithSeek in = new ByteArrayInputStreamWithSeek(fieldOfficeBulletinCreatedWithOldMartus.getBytes("UTF-8"));
+		bhp.loadFromXml(in, security);
+		HQKeys hqKeys = bhp.getAuthorizedToReadKeys();
+		assertEquals(1, hqKeys.size());
+		HQKey thisKey = (HQKey)hqKeys.get(0);
+		assertEquals(hqAccountId, thisKey.getPublicKey());
 	}
 	
 	byte[] sampleSig1 = {1,6,38,0};

@@ -28,6 +28,7 @@ package org.martus.common.packet;
 
 import java.util.Vector;
 
+import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
 import org.martus.common.MartusXml;
 import org.martus.common.HQKeys.XmlHQsLoader;
@@ -103,6 +104,8 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 				bhp.addPrivateAttachmentLocalId(value);
 			else if(tag.equals(MartusXml.AllHQSProxyUploadName))
 				bhp.setAllHQsProxyUploadFromXmlTextValue(value);
+			else if(tag.equals(MartusXml.HQPublicKeyElementName))
+				bhp.setAuthorizedToReadKeys(new HQKeys(new HQKey(value)));
 		}
 		catch (Exception e)
 		{
