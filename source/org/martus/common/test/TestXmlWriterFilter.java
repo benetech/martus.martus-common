@@ -32,7 +32,6 @@ import java.util.Arrays;
 
 import org.martus.common.XmlWriterFilter;
 import org.martus.common.crypto.MartusCrypto;
-import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.util.TestCaseEnhanced;
 
@@ -61,7 +60,7 @@ public class TestXmlWriterFilter extends TestCaseEnhanced
 
 	public void testSigningGood() throws Exception
 	{
-		MartusSecurity security = MockMartusSecurity.createClient();
+		MartusCrypto security = MockMartusSecurity.createClient();
 
 		String expectedText = "<a>\r\ncd\n</a>\n";
 		byte[] expectedBytes = expectedText.getBytes();

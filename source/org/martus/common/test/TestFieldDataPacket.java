@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Arrays;
+
 import org.martus.common.AuthorizedSessionKeys;
 import org.martus.common.CustomFields;
 import org.martus.common.FieldSpec;
@@ -45,7 +46,6 @@ import org.martus.common.StandardFieldSpecs;
 import org.martus.common.XmlWriterFilter;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.crypto.MartusCrypto;
-import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.UniversalId;
@@ -677,7 +677,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		got.loadFromXml(in2, security);
 		assertEquals("account", fdp.getAccountId(), got.getAccountId());
 
-		MartusSecurity otherSecurity = new MockMartusSecurity();
+		MartusCrypto otherSecurity = new MockMartusSecurity();
 		otherSecurity.createKeyPair();
 		try
 		{
@@ -742,8 +742,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		assertEquals("encrypted", fdp.isEncrypted(), got.isEncrypted());
 
 		
-		MartusSecurity otherSecurity = new MartusSecurity();
-		otherSecurity.createKeyPair(SHORTEST_LEGAL_KEY_SIZE);
+		MartusCrypto otherSecurity = MockMartusSecurity.createOtherClient();
 		try
 		{
 			ByteArrayInputStreamWithSeek in4 = new ByteArrayInputStreamWithSeek(bytes);
