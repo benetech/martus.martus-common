@@ -43,9 +43,16 @@ import org.martus.util.Base64.InvalidBase64Exception;
 
 public class ContactInfo extends Vector
 {
-	public ContactInfo(ConfigInfo sourceOfInfo)
+	public ContactInfo(String author, String organization, String email, 
+				String webPage, String phone, String address)
 	{
-		data = extractRawContactInfoDataFromConfigInfo(sourceOfInfo);
+		data = new Vector();
+		data.add(author);
+		data.add(organization);
+		data.add(email);
+		data.add(webPage);
+		data.add(phone);
+		data.add(address);
 	}
 
 	public Vector getSignedEncodedVector(
@@ -70,18 +77,6 @@ public class ContactInfo extends Vector
 		String signature = signer.createSignatureOfVectorOfStrings(rawInfo);
 		rawInfo.add(signature);
 		return rawInfo;
-	}
-
-	private Vector extractRawContactInfoDataFromConfigInfo(ConfigInfo configInfo)
-	{
-		data = new Vector();
-		data.add(configInfo.getAuthor());
-		data.add(configInfo.getOrganization());
-		data.add(configInfo.getEmail());
-		data.add(configInfo.getWebPage());
-		data.add(configInfo.getPhone());
-		data.add(configInfo.getAddress());
-		return data;
 	}
 
 
