@@ -45,6 +45,7 @@ import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.Database.RecordHiddenException;
 import org.martus.util.Base64;
+import org.martus.util.Stopwatch;
 import org.martus.util.UnicodeReader;
 import org.martus.util.UnicodeWriter;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
@@ -266,7 +267,7 @@ public class Packet
 			InvalidPacketException,
 			SignatureVerificationException
 	{
-		long startedAt = System.currentTimeMillis();
+		Stopwatch timer = new Stopwatch();
 		UnicodeReader reader = new UnicodeReader(in);
 
 		final String startComment = reader.readLine();
@@ -309,7 +310,7 @@ public class Packet
 
 				in.seek(0);
 				++callsToVerifyPacketSignature;
-				millisInVerifyPacketSignature += (System.currentTimeMillis() - startedAt);
+				millisInVerifyPacketSignature += timer.elapsed();
 				return sigBytes;
 			}
 		}
