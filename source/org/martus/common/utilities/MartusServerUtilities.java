@@ -49,6 +49,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
+import org.martus.common.LoggerInterface;
 import org.martus.common.MartusUtilities;
 import org.martus.common.MartusUtilities.FileVerificationException;
 import org.martus.common.bulletin.BulletinZipUtilities;
@@ -67,6 +68,7 @@ import org.martus.common.packet.UniversalId;
 import org.martus.util.Base64;
 import org.martus.util.UnicodeReader;
 import org.martus.util.UnicodeWriter;
+import org.martus.util.Base64.InvalidBase64Exception;
 
 public class MartusServerUtilities
 {
@@ -521,7 +523,7 @@ public class MartusServerUtilities
 		db.writeRecord(burKey, bur);
 	}
 	
-	static public void writeContatctInfo(String accountId, Vector contactInfo, File contactInfoFile) throws IOException
+	public static void writeContatctInfo(String accountId, Vector contactInfo, File contactInfoFile) throws IOException
 	{
 		contactInfoFile.getParentFile().mkdirs();
 		FileOutputStream contactFileOutputStream = new FileOutputStream(contactInfoFile);
@@ -535,7 +537,7 @@ public class MartusServerUtilities
 		out.close();
 	}
 
-	static public Vector getContactInfo(File contactFile) throws FileNotFoundException, IOException
+	public static Vector getContactInfo(File contactFile) throws FileNotFoundException, IOException
 	{
 		Vector contactInfo = new Vector();
 		FileInputStream contactFileInputStream = new FileInputStream(contactFile);
@@ -550,6 +552,59 @@ public class MartusServerUtilities
 		}			
 		in.close();
 		return contactInfo;
+	}
+	
+	public static void loadHiddenPacketsFile(File hiddenFile, Database database, LoggerInterface logger)
+	{		
+		try
+		{
+			UnicodeReader reader = new UnicodeReader(hiddenFile);
+			loadHiddenPacketsList(reader, database, logger);
+		}
+		catch(FileNotFoundException nothingToWorryAbout)
+		{
+			logger.log("Deleted packets file not found: " + hiddenFile.getName());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			logger.log("Error loading Deleted Packets file: " + hiddenFile.getName());
+		}
+	}
+
+	public static void loadHiddenPacketsList(UnicodeReader reader, Database db, LoggerInterface logger) throws IOException, InvalidBase64Exception
+	{
+		String accountId = null;
+		try
+		{
+			while(true)
+			{
+				String thisLine = reader.readLine();
+				if(thisLine == null)
+					return;
+				if(thisLine.startsWith(" "))
+					hidePackets(db, accountId, thisLine, logger);
+				else
+					accountId = thisLine;
+			}
+		}
+		finally
+		{
+			reader.close();
+		}
+	}
+	
+	static void hidePackets(Database db, String accountId, String packetList, LoggerInterface logger) throws InvalidBase64Exception
+	{
+		String publicCode = MartusCrypto.getFormattedPublicCode(accountId);
+		String[] packetIds = packetList.trim().split("\\s+");
+		for (int i = 0; i < packetIds.length; i++)
+		{
+			String localId = packetIds[i].trim();
+			UniversalId uid = UniversalId.createFromAccountAndLocalId(accountId, localId);
+			db.hide(uid);
+			logger.log("Deleting " + publicCode + ": " + localId);
+		}
 	}
 
 	public static class MartusSignatureFileAlreadyExistsException extends Exception {}
