@@ -34,14 +34,13 @@ import org.martus.common.MartusUtilities.PublicInformationInvalidException;
 import org.martus.common.MartusUtilities.ServerErrorException;
 import org.martus.common.clientside.ClientSideNetworkGateway;
 import org.martus.common.clientside.ClientSideNetworkHandlerUsingXmlRpcForNonSSL;
-import org.martus.common.clientside.ServerUtilities;
 import org.martus.common.clientside.Exceptions.ServerNotAvailableException;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
 import org.martus.common.crypto.MartusCrypto.CryptoInitializationException;
 import org.martus.common.crypto.MartusCrypto.InvalidKeyPairFileVersionException;
-import org.martus.common.network.NetworkInterfaceForNonSSL;
+import org.martus.common.network.NonSSLNetworkAPI;
 import org.martus.util.Base64.InvalidBase64Exception;
 
 
@@ -85,20 +84,19 @@ public class MartusBulletinRetriever
 	public List getListOfAllBulletinIdsOnServer() throws ServerErrorException
 	{
 		List allBulletins = new ArrayList();
-		Vector fieldOffices = ServerUtilities.downloadFieldOfficeAccountIds(serverSLL, security, security.getPublicKeyString());
-		
+		Vector fieldOffices = ClientSideNetworkGateway.downloadFieldOfficeAccountIds(serverSLL, security, security.getPublicKeyString());
 		return allBulletins;
 	}
 	
 	public class ServerNotConfiguredException extends Exception{};
 	public class ServerPublicCodeDoesNotMatchException extends Exception {};
 	
-	public String getServerPublicKey(String serverPublicCode, NetworkInterfaceForNonSSL serverNonSSL) throws ServerNotAvailableException, ServerPublicCodeDoesNotMatchException, ServerErrorException
+	public String getServerPublicKey(String serverPublicCode, NonSSLNetworkAPI serverNonSSL) throws ServerNotAvailableException, ServerPublicCodeDoesNotMatchException, ServerErrorException
 	{
 		String ServerPublicKey;
 		try
 		{
-			ServerPublicKey = ServerUtilities.getServerPublicKey(serverNonSSL, security);
+			ServerPublicKey = NonSSLNetworkAPI.getServerPublicKey(serverNonSSL, security);
 			String serverPublicCodeToTest = MartusSecurity.computePublicCode(ServerPublicKey);
 			
 			if(!MartusCrypto.removeNonDigits(serverPublicCode).equals(serverPublicCodeToTest))
@@ -116,7 +114,7 @@ public class MartusBulletinRetriever
 		}
 	}
 
-	public NetworkInterfaceForNonSSL serverNonSSL;
+	public NonSSLNetworkAPI serverNonSSL;
 	private ClientSideNetworkGateway serverSLL;
 	private MartusSecurity security;
 	private String serverPublicKey;

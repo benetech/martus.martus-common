@@ -23,23 +23,20 @@ Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.
 
 */
-package org.martus.common.clientside;
+
+package org.martus.common.network;
 
 import java.util.Vector;
 import org.martus.common.MartusUtilities;
 import org.martus.common.MartusUtilities.PublicInformationInvalidException;
-import org.martus.common.MartusUtilities.ServerErrorException;
 import org.martus.common.clientside.Exceptions.ServerNotAvailableException;
 import org.martus.common.crypto.MartusCrypto;
-import org.martus.common.network.NetworkInterfaceConstants;
-import org.martus.common.network.NetworkInterfaceForNonSSL;
-import org.martus.common.network.NetworkResponse;
 
-
-public class ServerUtilities
+abstract public class NonSSLNetworkAPI
 {
-
-	public static String getServerPublicKey(NetworkInterfaceForNonSSL server, MartusCrypto verifier) throws ServerNotAvailableException, PublicInformationInvalidException
+	abstract public String ping();
+	abstract public Vector getServerInformation();
+	public static String getServerPublicKey(NonSSLNetworkAPI server, MartusCrypto verifier) throws ServerNotAvailableException, PublicInformationInvalidException
 	{
 		if(server.ping() == null)
 			throw new ServerNotAvailableException();
@@ -55,22 +52,5 @@ public class ServerUtilities
 		String sig = (String)serverInformation.get(2);
 		MartusUtilities.validatePublicInfo(accountId, sig, verifier);
 		return accountId;
-	}
-
-	public static Vector downloadFieldOfficeAccountIds(ClientSideNetworkGateway networkInterfaceGateway, MartusCrypto security, String myAccountId) throws ServerErrorException
-	{
-		try
-		{
-			NetworkResponse response = networkInterfaceGateway.getFieldOfficeAccountIds(security, myAccountId);
-			String resultCode = response.getResultCode();
-			if(!resultCode.equals(NetworkInterfaceConstants.OK))
-				throw new ServerErrorException(resultCode);
-			return response.getResultVector();
-		}
-		catch(MartusCrypto.MartusSignatureException e)
-		{
-			System.out.println("ServerUtilities.getFieldOfficeAccounts: " + e);
-			throw new ServerErrorException();
-		}
 	}
 }

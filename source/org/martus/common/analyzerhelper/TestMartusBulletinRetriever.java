@@ -40,7 +40,7 @@ import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
 import org.martus.common.network.NetworkInterfaceConstants;
-import org.martus.common.network.NetworkInterfaceForNonSSL;
+import org.martus.common.network.NonSSLNetworkAPI;
 import org.martus.util.Base64;
 import org.martus.util.TestCaseEnhanced;
 
@@ -99,7 +99,7 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		streamIn.close();
 	}
 	
-	private class TestServerNetworkInterfaceForNonSSLHandler implements NetworkInterfaceForNonSSL
+	private class TestServerNetworkInterfaceForNonSSLHandler extends NonSSLNetworkAPI
 	{
 
 		public String ping()
@@ -157,7 +157,7 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		ByteArrayInputStream streamIn = new ByteArrayInputStream(streamOut.toByteArray());
 		MartusBulletinRetriever retriever = new MartusBulletinRetriever(streamIn, password );
 		streamIn.close();
-		NetworkInterfaceForNonSSL noServer = new NoServerNetworkInterfaceForNonSSLHandler();
+		NonSSLNetworkAPI noServer = new NoServerNetworkInterfaceForNonSSLHandler();
 		try
 		{
 			retriever.getServerPublicKey("Some Random code", noServer);

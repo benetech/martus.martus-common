@@ -28,10 +28,10 @@ package org.martus.common.clientside.test;
 
 import java.util.Vector;
 
-import org.martus.common.network.NetworkInterfaceForNonSSL;
+import org.martus.common.network.NonSSLNetworkAPI;
 
 public class NoServerNetworkInterfaceForNonSSLHandler
-	implements NetworkInterfaceForNonSSL
+	extends NonSSLNetworkAPI
 {
 
 	public String ping()

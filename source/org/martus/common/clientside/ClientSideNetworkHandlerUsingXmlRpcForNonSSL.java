@@ -36,10 +36,11 @@ import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcClientLite;
 import org.apache.xmlrpc.XmlRpcException;
 import org.martus.common.network.NetworkInterfaceConstants;
-import org.martus.common.network.NetworkInterfaceForNonSSL;
+import org.martus.common.network.NonSSLNetworkAPI;
 import org.martus.common.network.NetworkInterfaceXmlRpcConstants;
 
-public class ClientSideNetworkHandlerUsingXmlRpcForNonSSL implements NetworkInterfaceConstants, NetworkInterfaceXmlRpcConstants, NetworkInterfaceForNonSSL
+public class ClientSideNetworkHandlerUsingXmlRpcForNonSSL extends NonSSLNetworkAPI implements NetworkInterfaceConstants, NetworkInterfaceXmlRpcConstants
+	
 {
 	public ClientSideNetworkHandlerUsingXmlRpcForNonSSL(String serverName)
 	{
@@ -112,7 +113,7 @@ public class ClientSideNetworkHandlerUsingXmlRpcForNonSSL implements NetworkInte
 		System.out.println(stamp + " " + message);
 	}
 
-	public static boolean isNonSSLServerAvailable(NetworkInterfaceForNonSSL server)
+	public static boolean isNonSSLServerAvailable(NonSSLNetworkAPI server)
 	{
 		String result = server.ping();
 		if(result == null)

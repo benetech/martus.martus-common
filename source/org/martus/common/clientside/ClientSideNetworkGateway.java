@@ -28,6 +28,7 @@ package org.martus.common.clientside;
 
 import java.util.Vector;
 import org.martus.common.VersionBuildDate;
+import org.martus.common.MartusUtilities.ServerErrorException;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.network.BulletinRetrieverGatewayInterface;
 import org.martus.common.network.NetworkInterface;
@@ -193,6 +194,23 @@ public class ClientSideNetworkGateway implements BulletinRetrieverGatewayInterfa
 			//TODO propagate to UI and needs a test.
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+	public static Vector downloadFieldOfficeAccountIds(ClientSideNetworkGateway networkInterfaceGateway, MartusCrypto security, String myAccountId) throws ServerErrorException
+	{
+		try
+		{
+			NetworkResponse response = networkInterfaceGateway.getFieldOfficeAccountIds(security, myAccountId);
+			String resultCode = response.getResultCode();
+			if(!resultCode.equals(NetworkInterfaceConstants.OK))
+				throw new ServerErrorException(resultCode);
+			return response.getResultVector();
+		}
+		catch(MartusCrypto.MartusSignatureException e)
+		{
+			System.out.println("ServerUtilities.getFieldOfficeAccounts: " + e);
+			throw new ServerErrorException();
 		}
 	}
 
