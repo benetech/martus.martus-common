@@ -28,16 +28,16 @@ package org.martus.common;
 
 public interface LoggerInterface
 {
-	/**logError - always logged, indicates an error which requires attension*/
+	/**logError - always logged, indicates an error which requires attention*/
 	public abstract void logError(String message);
-
-	/**logNotice - always logged, important sytem status information*/
-	public abstract void logNotice(String message);
 
 	/**logWarning - always logged, could potentially be a problem*/
 	public abstract void logWarning(String message);
 	
-	/**logInfo - may not always be logged, usually used to ensure system calls have finished*/
+	/**logNotice - always logged, describes changes to files or summary of periodic event*/
+	public abstract void logNotice(String message);
+
+	/**logInfo - deleted from archival logs, usually used to ensure system calls have finished*/
 	public abstract void logInfo(String message);
 
 	/**logDebug - may not always be logged, turned on when system is behaving incorrectly*/
