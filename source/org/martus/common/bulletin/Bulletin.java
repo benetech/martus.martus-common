@@ -332,7 +332,22 @@ public class Bulletin implements BulletinConstants
 			return true;
 		if(doesSectionContain(getPrivateFieldDataPacket(), lookFor))
 			return true;
-		
+		if(doesAttachmentsContain(getPublicAttachments(), lookFor))
+			return true;
+		if(doesAttachmentsContain(getPrivateAttachments(), lookFor))
+			return true;
+		return false;
+	}
+
+	private boolean doesAttachmentsContain(AttachmentProxy[] attachments, String lookFor) 
+	{
+		for(int i = 0; i < attachments.length; ++i)
+		{
+			String lookForLowerCase = lookFor.toLowerCase();
+			String label = attachments[i].getLabel().toLowerCase();
+			if(label.indexOf(lookForLowerCase) >=0)
+				return true;
+		}
 		return false;
 	}
 

@@ -117,10 +117,9 @@ public class TestBulletin extends TestCaseEnhanced
     	assertEquals(Bulletin.getToday(), b.getLastSavedDate());
 	}
     
-    public void testContains()
+    public void testContains() throws Exception
     {
     	Bulletin b = new Bulletin(security);
-    	
     	final String sampleAuthor = "Daphne Moon";
     	b.set(Bulletin.TAGAUTHOR, sampleAuthor);
     	assertTrue("didn't find author?", b.contains(sampleAuthor));
@@ -128,6 +127,12 @@ public class TestBulletin extends TestCaseEnhanced
     	final String samplePrivate = "shhh! they might be listening!";
     	b.set(Bulletin.TAGPRIVATEINFO, samplePrivate);
     	assertTrue("didn't find private?", b.contains(samplePrivate));
+
+		b.addPublicAttachment(proxy1);
+    	assertTrue("didn't find public attachment?", b.contains(proxy1.getLabel()));
+    
+		b.addPrivateAttachment(proxy2);
+    	assertTrue("didn't find private attachment?", b.contains(proxy2.getLabel()));
     }
 	
 	public void testUnknownTags()
@@ -516,7 +521,6 @@ public class TestBulletin extends TestCaseEnhanced
 	static final String samplePublic = "some public text";
 	static final String samplePrivate = "a bit of private text";
 
-	static final String sampleLabel = "label for an attachment";
 	static final byte[] sampleBytes1 = {1,1,2,3,0,5,7,11};
 	static final byte[] sampleBytes2 = {3,1,4,0,1,5,9,2,7};
 	static final byte[] sampleBytes3 = {6,5,0,4,7,5,5,4,4,0};
