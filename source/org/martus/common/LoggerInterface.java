@@ -28,5 +28,5 @@ package org.martus.common;
 
 public interface LoggerInterface
 {
-	public void log(String message);
+	public abstract void log(String message);
 }
