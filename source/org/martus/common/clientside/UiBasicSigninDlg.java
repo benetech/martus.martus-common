@@ -78,6 +78,7 @@ public class UiBasicSigninDlg extends JDialog
 		JPanel scrolledPanel = createMainPanel();
 	
 		Container scrollingPane = new JScrollPane(scrolledPanel);
+		scrollingPane.setComponentOrientation(localization.getComponentOrientation());
 		getContentPane().add(scrollingPane);
 		getContentPane().add(buttonBox, BorderLayout.SOUTH);
 		
