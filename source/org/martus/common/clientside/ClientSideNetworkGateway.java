@@ -32,6 +32,7 @@ import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.network.BulletinRetrieverGatewayInterface;
 import org.martus.common.network.NetworkInterface;
 import org.martus.common.network.NetworkInterfaceConstants;
+import org.martus.common.network.NetworkInterfaceXmlRpcConstants;
 import org.martus.common.network.NetworkResponse;
 
 public class ClientSideNetworkGateway implements BulletinRetrieverGatewayInterface
@@ -166,6 +167,35 @@ public class ClientSideNetworkGateway implements BulletinRetrieverGatewayInterfa
 		return new NetworkResponse(server.getServerCompliance(signer.getPublicKeyString(), parameters, signature));
 	}
 	
+	static public ClientSideNetworkGateway buildGateway(String serverName, String serverPublicKey)
+	{
+		NetworkInterface server = buildNetworkInterface(serverName, serverPublicKey);
+		if(server == null)
+			return null;
+		
+		return new ClientSideNetworkGateway(server);
+	}
+
+	public static NetworkInterface buildNetworkInterface(String serverName, String serverPublicKey)
+	{
+		if(serverName.length() == 0)
+			return null;
+	
+		try
+		{
+			int[] ports = NetworkInterfaceXmlRpcConstants.defaultSSLPorts;
+			ClientSideNetworkHandlerUsingXmlRpc handler = new ClientSideNetworkHandlerUsingXmlRpc(serverName, ports);
+			handler.getSimpleX509TrustManager().setExpectedPublicKey(serverPublicKey);
+			return handler;
+		}
+		catch (ClientSideNetworkHandlerUsingXmlRpc.SSLSocketSetupException e)
+		{
+			//TODO propagate to UI and needs a test.
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 	final static String defaultReservedString = "";
 
 	NetworkInterface server;

@@ -27,7 +27,9 @@ package org.martus.common.analyzerhelper;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Vector;
 import org.martus.common.MartusUtilities.PublicInformationInvalidException;
+import org.martus.common.clientside.ClientSideNetworkGateway;
 import org.martus.common.clientside.ClientSideNetworkHandlerUsingXmlRpcForNonSSL;
 import org.martus.common.clientside.Exceptions.ServerNotAvailableException;
 import org.martus.common.crypto.MartusCrypto;
@@ -52,18 +54,36 @@ public class MartusBulletinRetriever
 	{
 		this.serverPublicKey = serverPublicKey;
 		serverNonSSL = new ClientSideNetworkHandlerUsingXmlRpcForNonSSL(serverIPAddress);
+		serverSLL = ClientSideNetworkGateway.buildGateway(serverIPAddress, serverPublicKey);
+	}
+
+	public boolean isServerAvailable() throws ServerNotConfiguredException 
+	{
+		if(serverPublicKey==null)
+			throw new ServerNotConfiguredException();
+		return ClientSideNetworkHandlerUsingXmlRpcForNonSSL.isNonSSLServerAvailable(serverNonSSL);
+	}
+
+	public String getServerPublicKey(String serverIPAddress, String serverPublicCode) throws ServerPublicCodeDoesNotMatchException, ServerNotAvailableException, ServerErrorException
+	{
+		ClientSideNetworkHandlerUsingXmlRpcForNonSSL serverNonSSL = new ClientSideNetworkHandlerUsingXmlRpcForNonSSL(serverIPAddress);
+		return getServerPublicKey(serverPublicCode, serverNonSSL);
+	}
+	
+	public Vector getListOfNewBulletinIds(Vector bulletinIdsAlreadyRetrieved) throws ServerNotConfiguredException
+	{
+		Vector newBulletins = new Vector();
+		if(!isServerAvailable())
+			return newBulletins;
+		
+		
+		return newBulletins;
 	}
 	
 	public class ServerNotConfiguredException extends Exception{};
 	public class ServerPublicCodeDoesNotMatchException extends Exception {};
 	public class ServerErrorException extends Exception {};
 	
-	public String getServerPublicKey(String serverIPAddress, String serverPublicCode) throws ServerPublicCodeDoesNotMatchException, ServerNotAvailableException, ServerErrorException
-	{
-		ClientSideNetworkHandlerUsingXmlRpcForNonSSL serverNonSSL = new ClientSideNetworkHandlerUsingXmlRpcForNonSSL(serverIPAddress);
-		return getServerPublicKey(serverPublicCode, serverNonSSL);
-	}
-
 	public String getServerPublicKey(String serverPublicCode, NetworkInterfaceForNonSSL serverNonSSL) throws ServerNotAvailableException, ServerPublicCodeDoesNotMatchException, ServerErrorException
 	{
 		String ServerPublicKey;
@@ -87,14 +107,8 @@ public class MartusBulletinRetriever
 		}
 	}
 
-	public boolean pingServer() throws ServerNotConfiguredException 
-	{
-		if(serverPublicKey==null)
-			throw new ServerNotConfiguredException();
-		return ClientSideNetworkHandlerUsingXmlRpcForNonSSL.isNonSSLServerAvailable(serverNonSSL);
-	}
-	
 	public NetworkInterfaceForNonSSL serverNonSSL;
+	public ClientSideNetworkGateway serverSLL;
 	private MartusSecurity security;
 	private String serverPublicKey;
 }

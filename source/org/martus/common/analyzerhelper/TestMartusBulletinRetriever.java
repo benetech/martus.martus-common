@@ -137,7 +137,7 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		
 		try
 		{
-			retriever.pingServer();
+			retriever.isServerAvailable();
 			fail("server hasn't been configured yet");
 		}
 		catch(MartusBulletinRetriever.ServerNotConfiguredException expected)
@@ -146,9 +146,9 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		
 		retriever.initalizeServer("1.2.3.4", "some random public key");
 		retriever.serverNonSSL = new NoServerNetworkInterfaceForNonSSLHandler();
-		assertFalse("invalid server should not be pingable", retriever.pingServer());
+		assertFalse("invalid server should not be pingable", retriever.isServerAvailable());
 		retriever.serverNonSSL = new TestServerNetworkInterfaceForNonSSLHandler();
-		assertTrue("a valid server should be pingable", retriever.pingServer());
+		assertTrue("a valid server should be pingable", retriever.isServerAvailable());
 	}
 	
 	public void testGetServerPublicKey() throws Exception
