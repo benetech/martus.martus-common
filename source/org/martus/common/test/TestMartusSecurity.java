@@ -45,6 +45,7 @@ import org.martus.common.crypto.MartusKeyPair;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.crypto.SessionKey;
+import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
 import org.martus.common.crypto.MartusCrypto.DecryptionException;
 import org.martus.common.crypto.MartusCrypto.EncryptionException;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
@@ -165,7 +166,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 			otherSecurity.setSessionKeyCache(original);
 			fail("Should have thrown for not our cache");
 		}
-		catch(MartusSignatureException ignoreExpected)
+		catch(AuthorizationFailedException ignoreExpected)
 		{
 			
 		}
