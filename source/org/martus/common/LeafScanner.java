@@ -52,6 +52,11 @@ class LeafScanner implements Database.PacketVisitor
 		return leafKeys;
 	}
 	
+	public Vector getNonLeafUids()
+	{
+		return nonLeafUids;
+	}
+	
 	public void visit(DatabaseKey key)
 	{
 		try

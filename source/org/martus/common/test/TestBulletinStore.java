@@ -97,10 +97,19 @@ public class TestBulletinStore extends TestCaseEnhanced
 	{
     	Bulletin one = createAndSaveBulletin();
     	store.saveBulletinForTesting(one);
-    	Bulletin clone = createAndSaveClone(one);
+       	assertEquals("Leaf Keys should be 1?", 1, store.scanForLeafKeys().size());
+       	assertEquals("NonLeaf uid should be 0?", 0, store.getNonLeafUids().size());
+       	Bulletin clone = createAndSaveClone(one);
     	assertEquals("not just clone?", 1, store.scanForLeafKeys().size());
+       	assertEquals("NonLeaf uid should be 1?", 1, store.getNonLeafUids().size());
+       	Bulletin clone2 = createAndSaveClone(clone);
+    	assertEquals("not just clone2?", 1, store.scanForLeafKeys().size());
+       	assertEquals("NonLeaf uid should be 2?", 2, store.getNonLeafUids().size());
+    	store.deleteBulletinRevisionFromDatabase(clone2.getBulletinHeaderPacket());
+      	
     	store.deleteBulletinRevisionFromDatabase(clone.getBulletinHeaderPacket());
     	assertEquals("didn't delete?", 1, store.scanForLeafKeys().size());
+       	assertEquals("NonLeaf uid should be 0 after delete?", 0, store.getNonLeafUids().size());
     	
     	File tempZip = createTempFile();
     	store.saveBulletinForTesting(one);
@@ -308,9 +317,11 @@ public class TestBulletinStore extends TestCaseEnhanced
 
 		Vector leafKeys = store.scanForLeafKeys();
 		assertEquals("wrong leaf count?", 2, leafKeys.size());
+		Vector nonLeafKeys = store.getNonLeafUids();
+		assertEquals("wrong nonleaf count?", 1, nonLeafKeys.size());
 		assertContains("missing clone?", DatabaseKey.createSealedKey(clone.getUniversalId()), leafKeys);
-		
 		assertContains("missing other?", DatabaseKey.createSealedKey(otherUid), leafKeys);
+		assertContains("Original uid not in nonleaf?", original.getUniversalId(), nonLeafKeys);
 	}
 
 	private Bulletin createAndSaveBulletin() throws IOException, CryptoException

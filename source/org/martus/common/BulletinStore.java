@@ -137,27 +137,7 @@ public class BulletinStore
 	
 	public boolean hasNewerRevision(UniversalId uid)
 	{
-		Vector leafKeys = scanForLeafKeys();
-		for(int i=0; i < leafKeys.size(); ++i)
-		{
-			DatabaseKey key = (DatabaseKey)leafKeys.get(i);
-			if(!uid.getAccountId().equals(key.getAccountId()))
-				continue;
-			
-			if(!BulletinHeaderPacket.isValidLocalId(key.getLocalId()))
-				continue;
-			try
-			{
-				BulletinHeaderPacket bhp = loadBulletinHeaderPacket(getDatabase(), key, getSignatureVerifier());
-				if(bhp.getHistory().contains(uid.getLocalId()))
-					return true;
-			}
-			catch(Exception nothingWeCanDoAboutIt)
-			{
-			}
-		}
-
-		return false;
+		return getNonLeafUids().contains(uid);
 	}
 
 	public void deleteAllData() throws Exception
@@ -196,6 +176,7 @@ public class BulletinStore
 	public void clearLeafKeyCache()
 	{
 		leafKeys = null;
+		nonLeafUids = null;
 	}
 	
 	public Vector scanForLeafKeys()
@@ -205,8 +186,16 @@ public class BulletinStore
 			LeafScanner scanner = new LeafScanner(getDatabase(), getSignatureVerifier());
 			visitAllBulletinRevisions(scanner);
 			leafKeys = scanner.getLeafKeys();
+			nonLeafUids = scanner.getNonLeafUids();
 		}
 		return leafKeys;
+	}
+	
+	public Vector getNonLeafUids()
+	{
+		if(nonLeafUids == null)
+			scanForLeafKeys();
+		return nonLeafUids;
 	}
 	
 	public void visitAllBulletins(Database.PacketVisitor visitor)
@@ -510,5 +499,6 @@ public class BulletinStore
 	private File dir;
 	private Database database;
 	private Vector leafKeys;
+	private Vector nonLeafUids;
 }
 
