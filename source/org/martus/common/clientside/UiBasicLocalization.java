@@ -209,7 +209,7 @@ public class UiBasicLocalization extends Localization
 		}
 		return nonDuplicateLanguages;
 	}
-
+	
 	public String getLocalizedFolderName(String folderName)
 	{
 		return getLabel(getCurrentLanguageCode(), "folder", folderName);
