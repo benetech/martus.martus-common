@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="source"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="src" path="/martus-hrdag"/>
-	<classpathentry kind="src" path="/martus-logi"/>
-	<classpathentry kind="src" path="/martus-utils"/>
-	<classpathentry kind="lib" path="C:/EclipseMartus/martus-common/ThirdPartyJars/common/ant.jar"/>
-	<classpathentry kind="lib" path="C:/EclipseMartus/martus-common/ThirdPartyJars/common/InfiniteMonkey.jar"/>
-	<classpathentry kind="lib" path="C:/EclipseMartus/martus-common/ThirdPartyJars/common/xmlrpc-1.2-b1.jar"/>
-	<classpathentry kind="output" path="bin"/>
+    <classpathentry kind="src" path="source"/>
+    <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+    <classpathentry kind="src" path="/martus-hrdag"/>
+    <classpathentry kind="src" path="/martus-logi"/>
+    <classpathentry kind="src" path="/martus-utils"/>
+    <classpathentry kind="lib" path="ThirdPartyJars/common/ant.jar"/>
+    <classpathentry kind="lib" path="ThirdPartyJars/common/InfiniteMonkey.jar"/>
+    <classpathentry kind="lib" path="ThirdPartyJars/common/xmlrpc-1.1.jar"/>
+    <classpathentry kind="output" path="bin"/>
 </classpath>
