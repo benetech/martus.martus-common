@@ -34,6 +34,7 @@ import java.io.UnsupportedEncodingException;
 import org.martus.common.MartusXml;
 import org.martus.common.XmlWriterFilter;
 import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.EncryptionException;
 import org.martus.util.Base64;
 
@@ -45,11 +46,11 @@ class EncryptedFieldDataPacket extends Packet
 		security = crypto;
 		try
 		{
-			sessionKeyBytes = security.createSessionKey();
+			sessionKey = security.createSessionKey();
 			byte[] plainTextBytes = plainTextData.getBytes("UTF-8");
 			ByteArrayInputStream inPlain = new ByteArrayInputStream(plainTextBytes);
 			ByteArrayOutputStream outEncrypted = new ByteArrayOutputStream();
-			security.encrypt(inPlain, outEncrypted, sessionKeyBytes);
+			security.encrypt(inPlain, outEncrypted, sessionKey);
 			byte[] encryptedBytes = outEncrypted.toByteArray();
 			encryptedData = Base64.encode(encryptedBytes);
 		}
@@ -85,8 +86,9 @@ class EncryptedFieldDataPacket extends Packet
 		{
 			try
 			{
-				byte[] encryptedSessionKey = security.encryptSessionKey(sessionKeyBytes, hqPublicKey);
-				writeElement(dest, MartusXml.HQSessionKeyElementName, Base64.encode(encryptedSessionKey));
+				SessionKey encryptedSessionKey = security.encryptSessionKey(sessionKey, hqPublicKey);
+				String sessionKeyString = Base64.encode(encryptedSessionKey.getBytes());
+				writeElement(dest, MartusXml.HQSessionKeyElementName, sessionKeyString);
 			}
 			catch(EncryptionException e)
 			{
@@ -99,5 +101,5 @@ class EncryptedFieldDataPacket extends Packet
 	MartusCrypto security;
 	String encryptedData;
 	private String hqPublicKey = "";
-	private byte[] sessionKeyBytes;
+	private SessionKey sessionKey;
 }

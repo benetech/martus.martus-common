@@ -37,6 +37,7 @@ import java.util.Vector;
 import org.martus.common.FieldSpec;
 import org.martus.common.MartusUtilities;
 import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.CryptoException;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
@@ -225,11 +226,11 @@ public class Bulletin implements BulletinConstants
 		File rawFile = a.getFile();
 		if(rawFile != null)
 		{
-			byte[] sessionKeyBytes = getSignatureGenerator().createSessionKey();
-			AttachmentPacket ap = new AttachmentPacket(getAccount(), sessionKeyBytes, rawFile, getSignatureGenerator());
+			SessionKey sessionKey = getSignatureGenerator().createSessionKey();
+			AttachmentPacket ap = new AttachmentPacket(getAccount(), sessionKey, rawFile, getSignatureGenerator());
 			bhp.addPublicAttachmentLocalId(ap.getLocalId());
 			pendingPublicAttachments.add(ap);
-			a.setUniversalIdAndSessionKey(ap.getUniversalId(), sessionKeyBytes);
+			a.setUniversalIdAndSessionKey(ap.getUniversalId(), sessionKey);
 		}
 		else
 		{
@@ -247,7 +248,7 @@ public class Bulletin implements BulletinConstants
 		File rawFile = a.getFile();
 		if(rawFile != null)
 		{
-			byte[] sessionKeyBytes = getSignatureGenerator().createSessionKey();
+			SessionKey sessionKeyBytes = getSignatureGenerator().createSessionKey();
 			AttachmentPacket ap = new AttachmentPacket(getAccount(), sessionKeyBytes, rawFile, getSignatureGenerator());
 			bhp.addPrivateAttachmentLocalId(ap.getLocalId());
 			getPendingPrivateAttachments().add(ap);

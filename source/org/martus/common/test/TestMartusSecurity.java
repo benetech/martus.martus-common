@@ -41,6 +41,7 @@ import java.util.Vector;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.MockMartusSecurity;
+import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.DecryptionException;
 import org.martus.common.crypto.MartusCrypto.EncryptionException;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
@@ -583,14 +584,15 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		for (int i = 0; i < goodSizes.length; i++)
 		{
 			int size = goodSizes[i];
-			byte[] key = new byte[size/8];
-			for(int b = 0; b < key.length; ++b)
-				key[b] = (byte)random.nextInt();
-			byte[] cipherBytes = encryptBytes(textBytes, key);
+			byte[] keyBytes = new byte[size/8];
+			for(int b = 0; b < keyBytes.length; ++b)
+				keyBytes[b] = (byte)random.nextInt();
+			SessionKey sessionKey = new SessionKey(keyBytes);
+			byte[] cipherBytes = encryptBytes(textBytes, sessionKey);
 			assertFalse("Bytes not encypted?", Arrays.equals(cipherBytes,textBytes));
 			assertNotContains(cipherBytes, results);
 			results.add(cipherBytes);
-			String plainText = decryptBytes(cipherBytes, key);
+			String plainText = decryptBytes(cipherBytes, sessionKey);
 			assertEquals(text, plainText);
 		}
 	}
@@ -599,20 +601,21 @@ public class TestMartusSecurity extends TestCaseEnhanced
 	{
 		byte[] sampleBytes = {32,23,5,3,7,53,2,35,54,7,3,23,5,2,45,45,75,8};
 		int keySize = 256;
-		byte[] key = new byte[keySize/8];
-		Arrays.fill(key, (byte)0);
+		byte[] keyBytes = new byte[keySize/8];
+		Arrays.fill(keyBytes, (byte)0);
+		SessionKey key = new SessionKey(keyBytes);
 		byte[] baseResult = encryptBytes(sampleBytes, key);
-		for(int i=0; i < key.length; ++i)
+		for(int i=0; i < keyBytes.length; ++i)
 		{
-			 key[i] = (byte)0xFF;
+			 keyBytes[i] = (byte)0xFF;
 			 byte[] thisResult = encryptBytes(sampleBytes, key);
 			 assertFalse("Not encypted?", Arrays.equals(thisResult, sampleBytes));
 			 assertNotEquals(Base64.encode(baseResult), Base64.encode(thisResult));
-			 key[i] = 0;
+			 keyBytes[i] = 0;
 		}
 	}
 
-	private String decryptBytes(byte[] cipherBytes, byte[] key)
+	private String decryptBytes(byte[] cipherBytes, SessionKey key)
 		throws NoKeyPairException, DecryptionException
 	{
 		ByteArrayInputStreamWithSeek cipherIn = new ByteArrayInputStreamWithSeek(cipherBytes);
@@ -622,7 +625,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		return plainText;
 	}
 
-	private byte[] encryptBytes(byte[] textBytes, byte[] key)
+	private byte[] encryptBytes(byte[] textBytes, SessionKey key)
 		throws NoKeyPairException, EncryptionException
 	{
 		ByteArrayInputStream plainIn = new ByteArrayInputStream(textBytes);

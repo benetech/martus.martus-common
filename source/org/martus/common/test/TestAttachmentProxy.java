@@ -32,6 +32,7 @@ import java.util.Arrays;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MockMartusSecurity;
+import org.martus.common.crypto.SessionKey;
 import org.martus.common.packet.UniversalId;
 import org.martus.util.UnicodeWriter;
 
@@ -50,18 +51,18 @@ public class TestAttachmentProxy extends TestCaseEnhanced
 		writer.close();
 
 		MartusCrypto security = MockMartusSecurity.createClient();
-		byte[] sessionKeyBytes = security.createSessionKey();
+		SessionKey sessionKey = security.createSessionKey();
 
 		AttachmentProxy a = new AttachmentProxy(file);
 		assertEquals(file.getName(), a.getLabel());
 		assertEquals("file", file, a.getFile());
-		assertNull("not null key?", a.getSessionKeyBytes());
+		assertNull("not null key?", a.getSessionKey());
 
 		UniversalId uid = UniversalId.createDummyUniversalId();
 		assertNull("already has a uid?", a.getUniversalId());
-		a.setUniversalIdAndSessionKey(uid, sessionKeyBytes);
+		a.setUniversalIdAndSessionKey(uid, sessionKey);
 		assertEquals("wrong uid?", uid, a.getUniversalId());
-		assertEquals("wrong key?", true, Arrays.equals(sessionKeyBytes, a.getSessionKeyBytes()));
+		assertEquals("wrong key?", true, Arrays.equals(sessionKey.getBytes(), a.getSessionKey().getBytes()));
 		assertNull("still has file?", a.getFile());
 
 		file.delete();

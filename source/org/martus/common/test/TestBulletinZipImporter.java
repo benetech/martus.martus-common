@@ -222,7 +222,7 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 
 		File tempRawFile = createTempFileFromName("$$$MartusTestBullSaveFileAtt2");
 		FileOutputStream out = new FileOutputStream(tempRawFile);
-		AttachmentPacket.exportRawFileFromXml(in, a.getSessionKeyBytes(), security, out);
+		AttachmentPacket.exportRawFileFromXml(in, a.getSessionKey(), security, out);
 		out.close();
 		assertEquals(label + " wrong size2?", bytes.length, tempRawFile.length());
 

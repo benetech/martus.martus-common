@@ -40,6 +40,7 @@ import org.martus.common.Base64XmlOutputStream;
 import org.martus.common.MartusXml;
 import org.martus.common.XmlWriterFilter;
 import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.crypto.SessionKey;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.Database.RecordHiddenException;
@@ -54,12 +55,12 @@ import org.xml.sax.helpers.DefaultHandler;
 
 public class AttachmentPacket extends Packet
 {
-	public AttachmentPacket(String account, byte[] sessionKeyBytes, File fileToAttach, MartusCrypto crypto) throws
+	public AttachmentPacket(String account, SessionKey sessionKeyToUse, File fileToAttach, MartusCrypto crypto) throws
 		IOException
 
 	{
 		super(createUniversalId(account));
-		sessionKey = sessionKeyBytes;
+		sessionKey = sessionKeyToUse;
 		rawFile = fileToAttach;
 		security = crypto;
 	}
@@ -114,7 +115,7 @@ public class AttachmentPacket extends Packet
 		return sig;
 	}
 
-	public static void exportRawFileFromXml(InputStreamWithSeek xmlIn, byte[] sessionKeyBytes, MartusCrypto verifier, OutputStream out) throws
+	public static void exportRawFileFromXml(InputStreamWithSeek xmlIn, SessionKey sessionKey, MartusCrypto verifier, OutputStream out) throws
 		IOException,
 		org.martus.common.packet.Packet.InvalidPacketException,
 		org.martus.common.packet.Packet.SignatureVerificationException,
@@ -145,7 +146,7 @@ public class AttachmentPacket extends Packet
 		InputStreamWithSeek inEncrypted = new FileInputStreamWithSeek(encryptedFile);
 		try
 		{
-			verifier.decrypt(inEncrypted, out, sessionKeyBytes);
+			verifier.decrypt(inEncrypted, out, sessionKey);
 		}
 		catch(Exception e)
 		{
@@ -184,7 +185,7 @@ public class AttachmentPacket extends Packet
 	}
 
 	static final String NEWLINE = "\n";
-	byte[] sessionKey;
+	SessionKey sessionKey;
 	File rawFile;
 	MartusCrypto security;
 	private static final String prefix = "A-";

@@ -80,30 +80,30 @@ public abstract class MartusCrypto
 		MartusSignatureException;
 
 	// session keys
-	public abstract byte[] createSessionKey() throws
+	public abstract SessionKey createSessionKey() throws
 			EncryptionException;
-	public abstract byte[] encryptSessionKey(byte[] sessionKeyBytes, String publicKey) throws
+	public abstract SessionKey encryptSessionKey(SessionKey sessionKey, String publicKey) throws
 		EncryptionException;
-	public abstract byte[] decryptSessionKey(byte[] encryptedSessionKeyBytes) throws
+	public abstract SessionKey decryptSessionKey(SessionKey encryptedSessionKey) throws
 		DecryptionException;
 
 	// encrypt/decrypt
-	public abstract void encrypt(InputStream plainStream, OutputStream cipherStream, byte[] sessionKeyBytes) throws
+	public abstract void encrypt(InputStream plainStream, OutputStream cipherStream, SessionKey sessionKey) throws
 			EncryptionException,
 			NoKeyPairException;
 	public abstract void encrypt(InputStream plainStream, OutputStream cipherStream) throws
 			NoKeyPairException,
 			EncryptionException;
-	public abstract void decrypt(InputStreamWithSeek cipherStream, OutputStream plainStream, byte[] sessionKeyBytes) throws
+	public abstract void decrypt(InputStreamWithSeek cipherStream, OutputStream plainStream, SessionKey sessionKey) throws
 			DecryptionException;
 	public abstract void decrypt(InputStreamWithSeek cipherStream, OutputStream plainStream) throws
 			NoKeyPairException,
 			DecryptionException;
 
 	// cipher streams
-	public abstract OutputStream createEncryptingOutputStream(OutputStream cipherStream, byte[] sessionKeyBytes)
+	public abstract OutputStream createEncryptingOutputStream(OutputStream cipherStream, SessionKey sessionKey)
 		throws EncryptionException;
-	public abstract InputStream createDecryptingInputStream(InputStreamWithSeek cipherStream, byte[] sessionKeyBytes)
+	public abstract InputStream createDecryptingInputStream(InputStreamWithSeek cipherStream, SessionKey sessionKey)
 		throws	DecryptionException;
 
 	// other

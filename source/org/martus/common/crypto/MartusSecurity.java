@@ -300,8 +300,8 @@ public class MartusSecurity extends MartusCryptoImplementation
 		Vector shareBundles = new Vector();
 		try 
 		{
-			byte[] sessionKey = createSessionKey();
-			Vector sessionKeyShares = buildShares(sessionKey);
+			SessionKey sessionKey = createSessionKey();
+			Vector sessionKeyShares = buildShares(sessionKey.getBytes());
 			
 			ByteArrayInputStream in = new ByteArrayInputStream(getKeyPairData(getKeyPair()));
 			ByteArrayOutputStream encryptedKeypair = new ByteArrayOutputStream();
@@ -386,7 +386,7 @@ public class MartusSecurity extends MartusCryptoImplementation
 						IOException,
 						AuthorizationFailedException 
 	{
-		byte[] recoveredSessionKey = recoverShares(shares);
+		SessionKey recoveredSessionKey = new SessionKey(recoverShares(shares));
 		ByteArrayInputStreamWithSeek inEncryptedKeyPair = new ByteArrayInputStreamWithSeek(keyPairEncrypted);
 		ByteArrayOutputStream outDecryptedKeyPair = new ByteArrayOutputStream();
 		decrypt( inEncryptedKeyPair, outDecryptedKeyPair, recoveredSessionKey);
@@ -402,21 +402,21 @@ public class MartusSecurity extends MartusCryptoImplementation
 		encrypt(plainStream, cipherStream, createSessionKey());
 	}
 
-	public synchronized void encrypt(InputStream plainStream, OutputStream cipherStream, byte[] sessionKeyBytes) throws
+	public synchronized void encrypt(InputStream plainStream, OutputStream cipherStream, SessionKey sessionKey) throws
 			EncryptionException,
 			NoKeyPairException
 	{
-		encrypt(plainStream, cipherStream, sessionKeyBytes, getPublicKey());
+		encrypt(plainStream, cipherStream, sessionKey, getPublicKey());
 	}
 
-	public synchronized void encrypt(InputStream plainStream, OutputStream cipherStream, byte[] sessionKeyBytes, PublicKey publicKey) throws
+	public synchronized void encrypt(InputStream plainStream, OutputStream cipherStream, SessionKey sessionKey, PublicKey publicKey) throws
 			EncryptionException,
 			NoKeyPairException
 	{
 		if(publicKey == null)
 			throw new NoKeyPairException();
 
-		CipherOutputStream cos = createCipherOutputStream(cipherStream, sessionKeyBytes, getKeyString(publicKey));
+		CipherOutputStream cos = createCipherOutputStream(cipherStream, sessionKey, getKeyString(publicKey));
 		try
 		{
 			InputStream bufferedPlainStream = new BufferedInputStream(plainStream);
@@ -437,13 +437,13 @@ public class MartusSecurity extends MartusCryptoImplementation
 		}
 	}
 
-	public OutputStream createEncryptingOutputStream(OutputStream cipherStream, byte[] sessionKeyBytes)
+	public OutputStream createEncryptingOutputStream(OutputStream cipherStream, SessionKey sessionKeyBytes)
 		throws EncryptionException
 	{
 		return createCipherOutputStream(cipherStream, sessionKeyBytes, getPublicKeyString());
 	}
 
-	public CipherOutputStream createCipherOutputStream(OutputStream cipherStream, byte[] sessionKeyBytes, String publicKeyString)
+	public CipherOutputStream createCipherOutputStream(OutputStream cipherStream, SessionKey sessionKey, String publicKeyString)
 		throws EncryptionException
 	{
 		try
@@ -451,11 +451,11 @@ public class MartusSecurity extends MartusCryptoImplementation
 			byte[] ivBytes = new byte[IV_BYTE_COUNT];
 			rand.nextBytes(ivBytes);
 
-			byte[] encryptedKeyBytes = encryptSessionKey(sessionKeyBytes, publicKeyString);
+			byte[] encryptedKeyBytes = encryptSessionKey(sessionKey, publicKeyString).getBytes();
 
-			SecretKey sessionKey = new SecretKeySpec(sessionKeyBytes, SESSION_ALGORITHM_NAME);
+			SecretKey secretSessionKey = new SecretKeySpec(sessionKey.getBytes(), SESSION_ALGORITHM_NAME);
 			IvParameterSpec spec = new IvParameterSpec(ivBytes);
-			sessionCipherEngine.init(Cipher.ENCRYPT_MODE, sessionKey, spec, rand);
+			sessionCipherEngine.init(Cipher.ENCRYPT_MODE, secretSessionKey, spec, rand);
 
 			OutputStream bufferedCipherStream = new BufferedOutputStream(cipherStream);
 			DataOutputStream output = new DataOutputStream(bufferedCipherStream);
@@ -475,14 +475,14 @@ public class MartusSecurity extends MartusCryptoImplementation
 		}
 	}
 
-	public synchronized byte[] encryptSessionKey(byte[] sessionKeyBytes, String publicKey) throws
+	public synchronized SessionKey encryptSessionKey(SessionKey sessionKey, String publicKey) throws
 		EncryptionException
 	{
 		try
 		{
 			rsaCipherEngine.init(Cipher.ENCRYPT_MODE, extractPublicKey(publicKey), rand);
-			byte[] encryptedKeyBytes = rsaCipherEngine.doFinal(sessionKeyBytes);
-			return encryptedKeyBytes;
+			byte[] encryptedKeyBytes = rsaCipherEngine.doFinal(sessionKey.getBytes());
+			return new SessionKey(encryptedKeyBytes);
 		}
 		catch (Exception e)
 		{
@@ -502,7 +502,7 @@ public class MartusSecurity extends MartusCryptoImplementation
 		decrypt(cipherStream, plainStream, null);
 	}
 
-	byte[] readSessionKey(DataInputStream dis) throws DecryptionException
+	SessionKey readSessionKey(DataInputStream dis) throws DecryptionException
 	{
 		byte[] encryptedKeyBytes = null;
 
@@ -518,18 +518,17 @@ public class MartusSecurity extends MartusCryptoImplementation
 			//e.printStackTrace();
 			throw new DecryptionException();
 		}
-		return encryptedKeyBytes;
+		return new SessionKey(encryptedKeyBytes);
 	}
 
-	public synchronized byte[] decryptSessionKey(byte[] encryptedSessionKeyBytes) throws
+	public synchronized SessionKey decryptSessionKey(SessionKey encryptedSessionKey) throws
 		DecryptionException
 	{
 		try
 		{
-			byte[] sessionKeyBytes;
 			rsaCipherEngine.init(Cipher.DECRYPT_MODE, getPrivateKey(), rand);
-			sessionKeyBytes = rsaCipherEngine.doFinal(encryptedSessionKeyBytes);
-			return sessionKeyBytes;
+			byte[] sessionKeyBytes = rsaCipherEngine.doFinal(encryptedSessionKey.getBytes());
+			return new SessionKey(sessionKeyBytes);
 		}
 		catch(Exception e)
 		{
@@ -539,10 +538,10 @@ public class MartusSecurity extends MartusCryptoImplementation
 		}
 	}
 
-	public synchronized void decrypt(InputStreamWithSeek cipherStream, OutputStream plainStream, byte[] sessionKeyBytes) throws
+	public synchronized void decrypt(InputStreamWithSeek cipherStream, OutputStream plainStream, SessionKey sessionKey) throws
 			DecryptionException
 	{
-		InputStream cis = createDecryptingInputStream(cipherStream, sessionKeyBytes);
+		InputStream cis = createDecryptingInputStream(cipherStream, sessionKey);
 		BufferedOutputStream bufferedPlainStream = new BufferedOutputStream(plainStream);
 		try
 		{
@@ -563,26 +562,26 @@ public class MartusSecurity extends MartusCryptoImplementation
 		}
 	}
 
-	public InputStream createDecryptingInputStream(InputStreamWithSeek cipherStream, byte[] sessionKeyBytes)
+	public InputStream createDecryptingInputStream(InputStreamWithSeek cipherStream, SessionKey sessionKey)
 		throws	DecryptionException
 	{
 		try
 		{	
 			DataInputStream dis = new DataInputStream(cipherStream);
-			byte[] storedSessionKey = readSessionKey(dis);
-			if(sessionKeyBytes == null)
+			SessionKey storedSessionKey = readSessionKey(dis);
+			if(sessionKey == null)
 			{
-				sessionKeyBytes = decryptSessionKey(storedSessionKey);
+				sessionKey = decryptSessionKey(storedSessionKey);
 			}
 
 			int ivByteCount = dis.readInt();
 			byte[] iv = new byte[ivByteCount];
 			dis.readFully(iv);
 
-			SecretKey sessionKey = new SecretKeySpec(sessionKeyBytes, SESSION_ALGORITHM_NAME);
+			SecretKey secretSessionKey = new SecretKeySpec(sessionKey.getBytes(), SESSION_ALGORITHM_NAME);
 			IvParameterSpec spec = new IvParameterSpec(iv);
 
-			sessionCipherEngine.init(Cipher.DECRYPT_MODE, sessionKey, spec, rand);
+			sessionCipherEngine.init(Cipher.DECRYPT_MODE, secretSessionKey, spec, rand);
 			CipherInputStream cis = new CipherInputStream(dis, sessionCipherEngine);
 
 			return cis;
@@ -594,11 +593,11 @@ public class MartusSecurity extends MartusCryptoImplementation
 		}
 	}
 
-	public synchronized byte[] createSessionKey() throws
+	public synchronized SessionKey createSessionKey() throws
 			EncryptionException
 	{
 		sessionKeyGenerator.init(bitsInSessionKey, rand);
-		return sessionKeyGenerator.generateKey().getEncoded();
+		return new SessionKey(sessionKeyGenerator.generateKey().getEncoded());
 	}
 
 	public synchronized void signatureInitializeSign() throws

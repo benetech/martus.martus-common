@@ -36,6 +36,7 @@ import java.util.Vector;
 import org.logi.crypto.secretshare.SecretSharingException;
 import org.martus.common.MartusConstants;
 import org.martus.common.crypto.MartusSecurity;
+import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.KeyShareException;
 import org.martus.util.Base64;
 import org.martus.util.ByteArrayInputStreamWithSeek;
@@ -160,7 +161,7 @@ public class TestKeyShareSaveRestore extends TestCaseEnhanced
 		Vector twoShares = new Vector();
 		twoShares.add(share1SessionKey);
 		twoShares.add(share2SessionKey);
-		byte[] recoveredSessionKey = originalSecurity.recoverShares(twoShares);
+		SessionKey recoveredSessionKey = new SessionKey(originalSecurity.recoverShares(twoShares));
 		String item5EncodedAndEncryptedKeyPair = reader.readLine();
 		byte[] encryptedKeyPair = Base64.decode(item5EncodedAndEncryptedKeyPair);
 		in.close();

@@ -33,6 +33,7 @@ import java.io.OutputStream;
 
 import org.martus.common.MartusUtilities;
 import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.CryptoException;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
@@ -172,9 +173,9 @@ public class BulletinSaver
 			InvalidBase64Exception
 	{
 		UniversalId uid = a.getUniversalId();
-		byte[] sessionKeyBytes = a.getSessionKeyBytes();
+		SessionKey sessionKey = a.getSessionKey();
 		DatabaseKey key = new DatabaseKey(uid);
 		InputStreamWithSeek xmlIn = db.openInputStream(key, verifier);
-		AttachmentPacket.exportRawFileFromXml(xmlIn, sessionKeyBytes, verifier, out);
+		AttachmentPacket.exportRawFileFromXml(xmlIn, sessionKey, verifier, out);
 	}
 }

@@ -40,6 +40,7 @@ import org.martus.common.MartusXml;
 import org.martus.common.XmlWriterFilter;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.DecryptionException;
 import org.martus.common.crypto.MartusCrypto.NoKeyPairException;
 import org.martus.util.Base64;
@@ -228,8 +229,8 @@ public class FieldDataPacket extends Packet
 			}
 			else if(encryptedHQSessionKeyDuringLoad != null)
 			{
-				byte[] encryptedHQSessionKey = Base64.decode(encryptedHQSessionKeyDuringLoad);
-				byte[] hqSessionKey = verifier.decryptSessionKey(encryptedHQSessionKey);
+				SessionKey encryptedHQSessionKey = new SessionKey(Base64.decode(encryptedHQSessionKeyDuringLoad));
+				SessionKey hqSessionKey = verifier.decryptSessionKey(encryptedHQSessionKey);
 				verifier.decrypt(inEncrypted, outPlain, hqSessionKey);
 			}
 			else
@@ -305,7 +306,8 @@ public class FieldDataPacket extends Packet
 			AttachmentProxy a = (AttachmentProxy)attachments.get(i);
 			dest.writeStartTag(MartusXml.AttachmentElementName);
 			writeElement(dest, MartusXml.AttachmentLocalIdElementName, a.getUniversalId().getLocalId());
-			writeElement(dest, MartusXml.AttachmentKeyElementName, Base64.encode(a.getSessionKeyBytes()));
+			String sessionKeyString = Base64.encode(a.getSessionKey().getBytes());
+			writeElement(dest, MartusXml.AttachmentKeyElementName, sessionKeyString);
 			writeElement(dest, MartusXml.AttachmentLabelElementName, a.getLabel());
 			dest.writeEndTag(MartusXml.AttachmentElementName);
 		}
@@ -344,7 +346,8 @@ public class FieldDataPacket extends Packet
 		else if(elementName.equals(MartusXml.AttachmentLabelElementName))
 		{
 			UniversalId uid = UniversalId.createFromAccountAndLocalId(getAccountId(), pendingAttachmentLocalId);
-			addAttachment(new AttachmentProxy(uid, data, pendingAttachmentKeyBytes));
+			SessionKey sessionKey = new SessionKey(pendingAttachmentKeyBytes);
+			addAttachment(new AttachmentProxy(uid, data, sessionKey));
 		}
 		else if(elementName.equals(MartusXml.HQSessionKeyElementName))
 		{

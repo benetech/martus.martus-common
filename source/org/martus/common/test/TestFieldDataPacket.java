@@ -449,10 +449,10 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		assertEquals("A2 label incorrect?", attach2.getLabel(), got2.getLabel());
 		assertEquals("A1 uid incorrect?", uid1, got1.getUniversalId());
 		assertEquals("A2 uid incorrect?", uid2, got2.getUniversalId());
-		assertNotNull("A1 key null?", got1.getSessionKeyBytes());
-		assertNotNull("A2 key null?", got2.getSessionKeyBytes());
-		assertEquals("A1 key incorrect?", true, Arrays.equals(attach1.getSessionKeyBytes(), got1.getSessionKeyBytes()));
-		assertEquals("A2 key incorrect?", true, Arrays.equals(attach2.getSessionKeyBytes(), got2.getSessionKeyBytes()));
+		assertNotNull("A1 key null?", got1.getSessionKey());
+		assertNotNull("A2 key null?", got2.getSessionKey());
+		assertEquals("A1 key incorrect?", true, Arrays.equals(attach1.getSessionKey().getBytes(), got1.getSessionKey().getBytes()));
+		assertEquals("A2 key incorrect?", true, Arrays.equals(attach2.getSessionKey().getBytes(), got2.getSessionKey().getBytes()));
 
 	}
 

@@ -36,6 +36,7 @@ import java.util.Arrays;
 import org.martus.common.MartusXml;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.crypto.MartusSecurity;
+import org.martus.common.crypto.SessionKey;
 import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.UniversalId;
 import org.martus.util.Base64;
@@ -98,9 +99,9 @@ public class TestAttachmentPacket extends TestCaseEnhanced
 	public void testCreateFileFromXml() throws Exception
 	{
 		String account = security.getPublicKeyString();
-		byte[] sessionKeyBytes = security.createSessionKey();
+		SessionKey sessionKey = security.createSessionKey();
 		AttachmentProxy a = new AttachmentProxy(tempFile);
-		AttachmentPacket ap1 = new AttachmentPacket(account, sessionKeyBytes, a.getFile(), security);
+		AttachmentPacket ap1 = new AttachmentPacket(account, sessionKey, a.getFile(), security);
 		ByteArrayOutputStream dest = new ByteArrayOutputStream();
 		ap1.writeXml(dest, security);
 		byte[] resultBytes = dest.toByteArray();
@@ -109,7 +110,7 @@ public class TestAttachmentPacket extends TestCaseEnhanced
 		destFile.delete();
 		ByteArrayInputStreamWithSeek inBytes = new ByteArrayInputStreamWithSeek(resultBytes);
 		FileOutputStream out = new FileOutputStream(destFile);
-		AttachmentPacket.exportRawFileFromXml(inBytes, sessionKeyBytes, security, out);
+		AttachmentPacket.exportRawFileFromXml(inBytes, sessionKey, security, out);
 		out.close();
 		inBytes.close();
 
@@ -127,9 +128,9 @@ public class TestAttachmentPacket extends TestCaseEnhanced
 	public void testEncrypted() throws Exception
 	{
 		String account = security.getPublicKeyString();
-		byte[] sessionKeyBytes = security.createSessionKey();
+		SessionKey sessionKey = security.createSessionKey();
 		AttachmentProxy a = new AttachmentProxy(tempFile);
-		AttachmentPacket ap = new AttachmentPacket(account, sessionKeyBytes, a.getFile(), security);
+		AttachmentPacket ap = new AttachmentPacket(account, sessionKey, a.getFile(), security);
 
 		ByteArrayOutputStream encryptedDest = new ByteArrayOutputStream();
 		ap.writeXml(encryptedDest, security);
@@ -142,7 +143,7 @@ public class TestAttachmentPacket extends TestCaseEnhanced
 		File decryptedFile = createTempFileFromName("$$$MartusDecryptedAtt");
 		ByteArrayInputStreamWithSeek xmlIn = new ByteArrayInputStreamWithSeek(encryptedBytes);
 		FileOutputStream out = new FileOutputStream(decryptedFile);
-		AttachmentPacket.exportRawFileFromXml(xmlIn, sessionKeyBytes, security, out);
+		AttachmentPacket.exportRawFileFromXml(xmlIn, sessionKey, security, out);
 		out.close();
 
 		byte[] fileBytes = new byte[sampleBytes.length];
@@ -176,8 +177,8 @@ public class TestAttachmentPacket extends TestCaseEnhanced
 		//long writeXmlStartedAt = System.currentTimeMillis();
 		String account = security.getPublicKeyString();
 		AttachmentProxy a = new AttachmentProxy(largeFile);
-		byte[] sessionKeyBytes = security.createSessionKey();
-		AttachmentPacket ap = new AttachmentPacket(account, sessionKeyBytes, a.getFile(), security);
+		SessionKey sessionKey = security.createSessionKey();
+		AttachmentPacket ap = new AttachmentPacket(account, sessionKey, a.getFile(), security);
 
 		File largeXmlFile = createTempFileFromName("$$$MartusTestLargeXmlFile");
 		FileOutputStream dest = new FileOutputStream(largeXmlFile);
@@ -198,7 +199,7 @@ public class TestAttachmentPacket extends TestCaseEnhanced
 		File decryptedFile = createTempFileFromName("$$$MartusDecryptedBufferedAtt");
 		FileInputStreamWithSeek xmlIn = new FileInputStreamWithSeek(largeXmlFile);
 		FileOutputStream finalOut = new FileOutputStream(decryptedFile);
-		AttachmentPacket.exportRawFileFromXml(xmlIn, sessionKeyBytes, security, finalOut);
+		AttachmentPacket.exportRawFileFromXml(xmlIn, sessionKey, security, finalOut);
 		finalOut.close();
 		xmlIn.close();
 		//long readXmlEndedAt = System.currentTimeMillis();

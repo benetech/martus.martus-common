@@ -152,14 +152,15 @@ public class MockMartusSecurity extends MartusSecurity
 			NoKeyPairException,
 			EncryptionException
 	{
-		encrypt(plainStream, cipherStream, new byte[] {0x7F});
+		byte[] sessionKeyBytes = new byte[] {0x7F};
+		encrypt(plainStream, cipherStream, new SessionKey(sessionKeyBytes));
 	}
 
-	public void encrypt(InputStream plainStream, OutputStream cipherStream, byte[] sessionKey) throws
+	public void encrypt(InputStream plainStream, OutputStream cipherStream, SessionKey sessionKey) throws
 			NoKeyPairException,
 			EncryptionException
 	{
-		int sessionKeyByte = sessionKey[0];
+		int sessionKeyByte = sessionKey.getBytes()[0];
 		try
 		{
 			cipherStream.write(sessionKeyByte);
@@ -173,13 +174,14 @@ public class MockMartusSecurity extends MartusSecurity
 		}
 	}
 
-	public byte[] encryptSessionKey(byte[] sessionKeyBytes, String publicKey) throws
+	public SessionKey encryptSessionKey(SessionKey sessionKey, String publicKey) throws
 		EncryptionException
 	{
+			byte[] sessionKeyBytes = sessionKey.getBytes();
 			byte[] encryptedKeyBytes = new byte[sessionKeyBytes.length];
 			System.arraycopy(sessionKeyBytes, 0, encryptedKeyBytes, 0, sessionKeyBytes.length);
 			encryptedKeyBytes[0] ^= 0xFF;
-			return encryptedKeyBytes;
+			return new SessionKey(encryptedKeyBytes);
 	}
 
 
@@ -190,30 +192,31 @@ public class MockMartusSecurity extends MartusSecurity
 		decrypt(cipherStream, plainStream, null);
 	}
 
-	private byte[] readSessionKey(InputStreamWithSeek cipherStream) throws DecryptionException
+	private SessionKey readSessionKey(InputStreamWithSeek cipherStream) throws DecryptionException
 	{
-		byte[] sessionKey = new byte[1];
+		byte[] sessionKeyBytes = new byte[1];
 		try
 		{
-			cipherStream.read(sessionKey);
+			cipherStream.read(sessionKeyBytes);
 		}
 		catch(IOException e)
 		{
 			throw new DecryptionException();
 		}
-		return sessionKey;
+		return new SessionKey(sessionKeyBytes);
 	}
 
-	public void decrypt(InputStreamWithSeek cipherStream, OutputStream plainStream, byte[] sessionKey) throws
+	public void decrypt(InputStreamWithSeek cipherStream, OutputStream plainStream, SessionKey sessionKey) throws
 			DecryptionException
 	{
 		try
 		{
-			byte[] storedSessionKey = readSessionKey(cipherStream);
+			SessionKey storedSessionKey = readSessionKey(cipherStream);
 			if(sessionKey == null)
 				sessionKey = storedSessionKey;
 
-			int sessionKeyByte = sessionKey[0];
+			byte[] sessionKeyBytes = sessionKey.getBytes();
+			int sessionKeyByte = sessionKeyBytes[0];
 			int theByte = 0;
 			while( (theByte = cipherStream.read()) != -1)
 				plainStream.write(theByte ^ sessionKeyByte);
@@ -224,13 +227,14 @@ public class MockMartusSecurity extends MartusSecurity
 		}
 	}
 
-	public byte[] decryptSessionKey(byte[] encryptedSessionKeyBytes) throws
+	public SessionKey decryptSessionKey(SessionKey encryptedSessionKey) throws
 		DecryptionException
 	{
-			byte[] sessionKeyBytes = new byte[encryptedSessionKeyBytes.length];
-			System.arraycopy(encryptedSessionKeyBytes, 0, sessionKeyBytes, 0, encryptedSessionKeyBytes.length);
+			int keyLength = encryptedSessionKey.getBytes().length;
+			byte[] sessionKeyBytes = new byte[keyLength];
+			System.arraycopy(encryptedSessionKey.getBytes(), 0, sessionKeyBytes, 0, keyLength);
 			sessionKeyBytes[0] ^= 0xFF;
-			return sessionKeyBytes;
+			return new SessionKey(sessionKeyBytes);
 	}
 	// end MartusCrypto interface
 

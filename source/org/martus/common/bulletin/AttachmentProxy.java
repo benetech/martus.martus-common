@@ -31,6 +31,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.crypto.SessionKey;
 import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.Packet;
 import org.martus.common.packet.UniversalId;
@@ -45,9 +46,9 @@ public class AttachmentProxy
 		setLabel(file.getName());
 	}
 
-	public AttachmentProxy(UniversalId universalIdToUse, String labelToUse, byte[] sessionKeyBytes)
+	public AttachmentProxy(UniversalId universalIdToUse, String labelToUse, SessionKey sessionKey)
 	{
-		setUniversalIdAndSessionKey(universalIdToUse, sessionKeyBytes);
+		setUniversalIdAndSessionKey(universalIdToUse, sessionKey);
 		setLabel(labelToUse);
 	}
 
@@ -64,11 +65,11 @@ public class AttachmentProxy
 			Packet.WrongPacketTypeException,
 			Base64.InvalidBase64Exception
 	{
-		byte[] sessionKeyBytes = oldProxy.getSessionKeyBytes();
+		SessionKey sessionKey = oldProxy.getSessionKey();
 		File tempFile = File.createTempFile("$$$MartusImportAttachment", null);
 		tempFile.deleteOnExit();
 		FileOutputStream out = new FileOutputStream(tempFile);
-		AttachmentPacket.exportRawFileFromXml(attachmentIn, sessionKeyBytes, verifier, out);
+		AttachmentPacket.exportRawFileFromXml(attachmentIn, sessionKey, verifier, out);
 		out.close();
 		AttachmentProxy ap = new AttachmentProxy(tempFile);
 		ap.setLabel(oldProxy.getLabel());
@@ -90,15 +91,15 @@ public class AttachmentProxy
 		return file;
 	}
 
-	public byte[] getSessionKeyBytes()
+	public SessionKey getSessionKey()
 	{
-		return keyBytes;
+		return sessionKey;
 	}
 
-	public void setUniversalIdAndSessionKey(UniversalId universalId, byte[] sessionKeyString)
+	public void setUniversalIdAndSessionKey(UniversalId universalId, SessionKey sessionKeyToUse)
 	{
 		uid = universalId;
-		keyBytes = sessionKeyString;
+		sessionKey = sessionKeyToUse;
 		file = null;
 	}
 
@@ -109,6 +110,6 @@ public class AttachmentProxy
 
 	String label;
 	File file;
-	byte[] keyBytes;
+	SessionKey sessionKey;
 	UniversalId uid;
 }
