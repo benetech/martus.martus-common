@@ -40,14 +40,14 @@ import org.martus.common.network.NetworkInterfaceConstants;
 import org.martus.util.Base64;
 import org.martus.util.Base64.InvalidBase64Exception;
 
-public class ContactInfo implements Serializable
+public class ConfigInfo implements Serializable
 {
-	public ContactInfo()
+	public ConfigInfo()
 	{
 		clear();
 	}
 
-	public boolean hasContactInfo()
+	public boolean hasEnoughContactInfo()
 	{
 		if(author != null && author.length() > 0)
 			return true;
@@ -173,9 +173,9 @@ public class ContactInfo implements Serializable
 		
 	}
 
-	public static ContactInfo load(InputStream inputStream)
+	public static ConfigInfo load(InputStream inputStream)
 	{
-		ContactInfo loaded =  new ContactInfo();
+		ConfigInfo loaded =  new ConfigInfo();
 		try
 		{
 			DataInputStream in = new DataInputStream(inputStream);
@@ -203,7 +203,7 @@ public class ContactInfo implements Serializable
 		}
 		catch (Exception e)
 		{
-			System.out.println("ContactInfo.load " + e);
+			System.out.println("ConfigInfo.load " + e);
 		}
 		return loaded;
 	}
@@ -231,7 +231,7 @@ public class ContactInfo implements Serializable
 		}
 		catch(Exception e)
 		{
-			System.out.println("ContactInfo.save error: " + e);
+			System.out.println("ConfigInfo.save error: " + e);
 		}
 	}
 
