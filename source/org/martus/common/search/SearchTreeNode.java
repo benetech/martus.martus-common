@@ -40,14 +40,17 @@ public class SearchTreeNode
 
 	public void convertToOr(String left, String right)
 	{
-		nodeOp = OR;
-		nodeValue = null;
-		createChildNodes(left, right);
+		convertToOp(OR, left, right);
 	}
 
 	public void convertToAnd(String left, String right)
 	{
-		nodeOp = AND;
+		convertToOp(AND, left, right);
+	}
+	
+	public void convertToOp(int newOp, String left, String right)
+	{
+		nodeOp = newOp;
 		nodeValue = null;
 		createChildNodes(left, right);
 	}

@@ -30,13 +30,13 @@ public class SearchParser
 {
 	public static SearchParser createEnglishParser()
 	{
-		return new SearchParser("and", "or");
+		return new SearchParser(ENGLISH_AND_KEYWORD, ENGLISH_OR_KEYWORD);
 	}
 
 	public SearchParser(String andKeyword, String orKeyword)
 	{
-		andString = " " + andKeyword + " ";
-		orString = " " + orKeyword + " ";
+		andKeywords = new String[] {spacesAround(andKeyword), ENGLISH_AND_STRING};
+		orKeywords = new String[] {spacesAround(orKeyword), ENGLISH_OR_STRING};
 	}
 
 	public SearchTreeNode parse(String expression)
@@ -48,33 +48,78 @@ public class SearchParser
 
 	private void recursiveParse(SearchTreeNode node)
 	{
-		final int orLen = orString.length();
+		KeywordFinder finder = new KeywordFinder(node.getValue());
 
-		final int andLen = andString.length();
-
-		String lowerText = node.getValue().toLowerCase();
-		int orAt = lowerText.indexOf(orString);
-		int andAt = lowerText.indexOf(andString);
-		if(orAt > 0)
+		int newOp = SearchTreeNode.OR;
+		if(!finder.findFirstKeyword(orKeywords))
 		{
-			String text = node.getValue();
-			String left = text.substring(0, orAt);
-			String right = text.substring(orAt + orLen, text.length());
-			node.convertToOr(left, right);
-			recursiveParse(node.getLeft());
-			recursiveParse(node.getRight());
+			newOp = SearchTreeNode.AND;
+			finder.findFirstKeyword(andKeywords);
 		}
-		else if(andAt > 0)
+
+		if(finder.foundMatch())
 		{
-			String text = node.getValue();
-			String left = text.substring(0, andAt);
-			String right = text.substring(andAt + andLen, text.length());
-			node.convertToAnd(left, right);
+			node.convertToOp(newOp, finder.getLeftText(), finder.getRightText());
 			recursiveParse(node.getLeft());
 			recursiveParse(node.getRight());
 		}
 	}
 
-	String andString;
-	String orString;
+	private static String spacesAround(String andKeyword)
+	{
+		return " " + andKeyword + " ";
+	}
+
+	private static final String ENGLISH_AND_KEYWORD = "and";
+	private static final String ENGLISH_OR_KEYWORD = "or";
+	private static final String ENGLISH_AND_STRING = spacesAround(ENGLISH_AND_KEYWORD);
+	private static final String ENGLISH_OR_STRING = spacesAround(ENGLISH_OR_KEYWORD);
+	private final String[] orKeywords;
+	private final String[] andKeywords;
+}
+
+class KeywordFinder
+{
+	KeywordFinder(String textToSearch)
+	{
+		text = textToSearch.toLowerCase();
+		foundAt = -1;
+	}
+	
+	boolean findFirstKeyword(String[] keywords)
+	{
+		boolean foundOne = false;
+		for(int i=0; i < keywords.length; ++i)
+		{
+			String thisKeyword = keywords[i];
+			int at = text.indexOf(thisKeyword);
+			if(at >= 0 && (foundAt < 0 || at < foundAt) )
+			{
+				foundOne = true;
+				foundAt = at;
+				foundWord = thisKeyword;
+			}
+		}
+		
+		return foundOne;
+	}
+
+	boolean foundMatch()
+	{
+		return (foundAt >= 0);
+	}
+	
+	String getLeftText()
+	{
+		return text.substring(0, foundAt);
+	}
+	
+	String getRightText()
+	{
+		return text.substring(foundAt + foundWord.length(), text.length());
+	}
+	
+	private String text;
+	private int foundAt;
+	private String foundWord;
 }

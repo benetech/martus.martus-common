@@ -44,6 +44,14 @@ public class TestSearchParser extends TestCaseEnhanced
 		assertNotNull("Null root", rootNode);
 		assertEquals(SearchTreeNode.VALUE, rootNode.getOperation());
 	}
+	
+	public void testLowerCase()
+	{
+		SearchParser parser = SearchParser.createEnglishParser();
+		SearchTreeNode rootNode = parser.parse("this OR that");
+		assertNotNull("Null root", rootNode);
+		assertEquals(SearchTreeNode.OR, rootNode.getOperation());
+	}
 
 	public void testSimpleOr()
 	{
@@ -138,5 +146,19 @@ public class TestSearchParser extends TestCaseEnhanced
 		assertEquals("bc", SearchTreeNode.AND, bc.getOperation());
 		assertEquals("b", bc.getLeft().getValue());
 		assertEquals("c", bc.getRight().getValue());
+	}
+	
+	public void testEnglishAndAndOrAlwaysWork()
+	{
+		SearchParser parser = new SearchParser("y", "o");
+		SearchTreeNode o = parser.parse("a o b");
+		assertEquals("'o' not OR?", SearchTreeNode.OR, o.getOperation());
+		SearchTreeNode y = parser.parse("a y b");
+		assertEquals("'y' not AND?", SearchTreeNode.AND, y.getOperation());
+		SearchTreeNode or = parser.parse("a or b");
+		assertEquals("'or' not OR?", SearchTreeNode.OR, or.getOperation());
+		SearchTreeNode and = parser.parse("a and b");
+		assertEquals("'and' not OR?", SearchTreeNode.AND, and.getOperation());
+		
 	}
 }
