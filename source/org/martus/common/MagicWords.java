@@ -53,7 +53,7 @@ public class MagicWords
 				if(line.trim().length() == 0)
 					logger.log("Warning: Found blank line in " + magicWordsFile.getPath());
 				else
-					add(MagicWords.normalizeMagicWord(line), null);
+					add(line);
 			}
 			reader.close();
 		}
@@ -61,49 +61,45 @@ public class MagicWords
 		{
 		}
 	}
-	
-	public void remove(String magicWordEntry)
+
+	public void writeMagicWords(File magicWordsFile, Vector newMagicWordsLineEntries) throws IOException
 	{		
-		for(int i = 0; i<magicWordEntries.size(); ++i)
+		UnicodeWriter writer = new UnicodeWriter(magicWordsFile);
+		for (int i=0;i<newMagicWordsLineEntries.size();++i)
 		{
-			MagicWordEntry entry = (MagicWordEntry)magicWordEntries.get(i);
-			if(entry.getMagicWord().equals(normalizeMagicWord(magicWordEntry)))
-				magicWordEntries.remove(entry);
-		}
+			writer.writeln((String)newMagicWordsLineEntries.get(i));
+		}								
+		writer.close();			
 	}
 	
-	public static String filterActiveSign(String magicWord)
-	{		
-		if (magicWord.startsWith("#"))
-			magicWord = magicWord.substring(1);
-			
-		return magicWord;
+	public void add(String fileLineEntry)
+	{
+		String magicWord = getMagicWordWithActiveSignFromLineEntry(fileLineEntry);
+		String group = getGroupNameFromLineEntry(fileLineEntry);
+		add(magicWord, group);
 	}
 	
-	public void add(String magicWordFileEntry, String group)
+	public void add(String magicWordEntry, String group)
 	{						
-		add(new MagicWordEntry(magicWordFileEntry, group));				
+		add(new MagicWordEntry(magicWordEntry, group));				
 	}
 	
 	public void add(MagicWordEntry wordEntry)
 	{
-		if(!contains(getMagicWordFromFileEntry(wordEntry.getMagicWord())))			
+		if(!contains(wordEntry.getMagicWord()))			
 			magicWordEntries.add(wordEntry);
 	}
 	
-	public boolean isValidMagicWord(String tryMagicWord)
-	{
-		return (contains(normalizeMagicWord(tryMagicWord)));
+	public void remove(String magicWord)
+	{	
+		magicWordEntries.remove(getMagicWordEntry(magicWord));
 	}
-
-	private boolean contains(String magicWordToFind)
+	
+	public boolean isValidMagicWord(String magicWordToFind)
 	{
-		for(int i = 0; i<magicWordEntries.size(); ++i)
-		{
-			MagicWordEntry entry = (MagicWordEntry)magicWordEntries.get(i);
-			if(entry.isActive() && entry.getMagicWord().equals(magicWordToFind))
-				return true;
-		}
+		MagicWordEntry entry = getMagicWordEntry(magicWordToFind);
+		if(entry != null)
+			return entry.isActive();
 		return false;
 	}
 	
@@ -112,8 +108,7 @@ public class MagicWords
 		Vector magicWords = new Vector();		
 		for(int i = 0; i<magicWordEntries.size(); ++i)
 		{
-			MagicWordEntry entry = (MagicWordEntry)magicWordEntries.get(i);	
-			magicWords.add(entry.getMagicWordWithActiveSign());
+			magicWords.add(getLineEntryFromMagicWordEntry((MagicWordEntry)magicWordEntries.get(i)));
 		}
 		return magicWords;		
 	}
@@ -125,7 +120,7 @@ public class MagicWords
 		{
 			MagicWordEntry entry = (MagicWordEntry)magicWordEntries.get(i);
 			if(entry.isActive())
-				magicWords.add(entry.getMagicWord());
+				magicWords.add(getLineEntryFromMagicWordEntry(entry));
 		}
 		return magicWords;
 	}
@@ -137,25 +132,9 @@ public class MagicWords
 		{
 			MagicWordEntry entry = (MagicWordEntry)magicWordEntries.get(i);			
 			if(!entry.isActive())
-				magicWords.add(entry.getMagicWord());
+				magicWords.add(getLineEntryFromMagicWordEntry(entry));
 		}
 		return magicWords;
-	}
-	
-	public void writeMagicWords(File magicWordsFile, Vector newMagicWords) throws IOException
-	{		
-		try
-		{
-			UnicodeWriter writer = new UnicodeWriter(magicWordsFile);
-			for (int i=0;i<newMagicWords.size();++i)
-			{
-				writer.writeln((String) newMagicWords.get(i));
-			}								
-			writer.close();			
-		}
-		catch (FileNotFoundException nothingToWorryAbout)
-		{			
-		}				
 	}
 	
 	public int size()
@@ -163,16 +142,63 @@ public class MagicWords
 		return magicWordEntries.size();
 	}
 	
-	static String normalizeMagicWord(String original)
+	private boolean contains(String magicWordToFind)
+	{
+		return (getMagicWordEntry(magicWordToFind) != null);
+	}
+
+	private MagicWordEntry getMagicWordEntry(String magicWordToFind)
+	{
+		String normalizedMagicWordToFind = normalizeMagicWord(magicWordToFind);
+		for(int i = 0; i<magicWordEntries.size(); ++i)
+		{
+			MagicWordEntry entry = (MagicWordEntry)magicWordEntries.get(i);
+			if(normalizeMagicWord(entry.getMagicWord()).equals(normalizedMagicWordToFind))
+				return entry;
+		}
+		return null;
+	}
+	
+	public static String normalizeMagicWord(String original)
 	{
 		return original.toLowerCase().trim().replaceAll("\\s", "");
 	}
 
-	public String getMagicWordFromFileEntry(String magicWordEntry)
+	public static String getMagicWordWithActiveSignFromLineEntry(String lineEntry)
 	{
-		return magicWordEntry;
-	}	
+		if(lineEntry == null)
+			return "";
+		int index = lineEntry.indexOf(FIELD_DELIMITER);
+		if(index == -1)
+			return lineEntry;
+		return lineEntry.substring(0,index);
+	}
+
+	public static String getGroupNameFromLineEntry(String lineEntry)
+	{
+		if(lineEntry == null)
+			return "";
+		int index = lineEntry.indexOf(FIELD_DELIMITER);
+		if(index == -1)
+			return filterActiveSign(lineEntry);
+		return lineEntry.substring(index+1);
+	}
+	
+	public static String getLineEntryFromMagicWordEntry(MagicWordEntry entry)
+	{
+		return entry.getMagicWordWithActiveSign() + FIELD_DELIMITER + entry.getGroupName();
+	}
+	
+	public static String filterActiveSign(String magicWord)
+	{		
+		if (magicWord.startsWith("#"))
+			magicWord = magicWord.substring(1);
 		
+		return magicWord;
+	}
+	
+	public static final char FIELD_DELIMITER = '\t';
+	
 	Vector magicWordEntries; 
 	LoggerInterface logger;
 }

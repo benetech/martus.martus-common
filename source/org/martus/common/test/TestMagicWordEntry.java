@@ -26,6 +26,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.test;
 
 import org.martus.common.MagicWordEntry;
+import org.martus.common.MagicWords;
 
 
 public class TestMagicWordEntry extends TestCaseEnhanced
@@ -56,5 +57,14 @@ public class TestMagicWordEntry extends TestCaseEnhanced
 		assertTrue("magicWord invalid?", entry3.isActive());
 		assertEquals("null magic word not empty?", "", entry3.getMagicWord());
 		assertEquals("null group not empty?", "", entry3.getGroupName());
+	}
+	
+	public void testToString()
+	{
+		String groupEntry = "group 3";
+		String validMagicWord = "magic 2";
+		MagicWordEntry entry = new MagicWordEntry(validMagicWord, groupEntry);
+		String validLineEntry = validMagicWord + MagicWords.FIELD_DELIMITER + groupEntry;
+		assertEquals("invalid line entry", validLineEntry, entry.toString());
 	}
 }

@@ -25,7 +25,6 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common;
 
-
 public class MagicWordEntry
 {	
 	public MagicWordEntry(String magicWordEntry, String groupEntry)
@@ -35,7 +34,7 @@ public class MagicWordEntry
 		if (groupEntry == null)
 			groupEntry = "";
 		
-		if (magicWordEntry.startsWith("#"))
+		if (magicWordEntry.startsWith(INACTIVE_SIGN))
 		{	
 			magicWord = magicWordEntry.substring(1);
 			setActive(false);
@@ -50,13 +49,13 @@ public class MagicWordEntry
 	{
 		return magicWord;
 	}
-	
+
 	public String getMagicWordWithActiveSign()
 	{
 		if (isActive())
 			return magicWord;
 			
-		return "#"+magicWord;		
+		return INACTIVE_SIGN+magicWord;		
 	}
 
 	public String getGroupName()
@@ -73,10 +72,17 @@ public class MagicWordEntry
 	{
 		active = status;
 	}
+	
+	public String toString()
+	{
+		return MagicWords.getLineEntryFromMagicWordEntry(this);
+	}
 
-	String magicWord;
-	String groupName;
-	boolean active=true;
+	private static final String INACTIVE_SIGN = "#";
+	
+	private String magicWord;
+	private String groupName;
+	private boolean active=true;
 }
 	
 
