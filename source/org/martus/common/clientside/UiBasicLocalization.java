@@ -92,7 +92,7 @@ public class UiBasicLocalization extends Localization
 		writer.writeln("#      in english or the-language-you-are-translating (or/or-translated,");
 		writer.writeln("#      and/and-translated) between multiple search term words");
 		writer.writeln("#      (e.g. prison or jail, prison and assault).");
-		writer.writeln("#  5.  in field:inputCustomFieldsentry, you can translate tags into foreign");
+		writer.writeln("#  5.  in CreateCustomFieldsHelp2/3 fields, you can translate tags into foreign");
 		writer.writeln("#      characters (but without punctuation or spaces)");
 		writer.writeln("#  6.  when there are file or directory names, do not translate them");
 		writer.writeln("#      (e.g.  \"acctmap.txt\" and \"packets\"");
@@ -110,12 +110,14 @@ public class UiBasicLocalization extends Localization
 		writer.writeln("# 15.  Leave standard field tags in English in CreateCustomFieldsHelp1 and");
 		writer.writeln("#      CreateCustomFieldsHelp2, but put translation in parentheses after");
 		writer.writeln("#      english : e.g.  'author' (autor), so users know what they refer to");
-		writer.writeln("# 16.  Leave field types in English in CreateCustomFieldsHelp2 (e.g. BOOLEAN, ");
+		writer.writeln("# 16.  Leave field types in English in CreateCustomFieldsHelp2 (e.g. BOOLEAN,");
 		writer.writeln("#      DATE), but put translation in parentheses after english, so users know");
 		writer.writeln("#      what they refer to."); 
-		writer.writeln("# 17.  Leave field types in English in CreateCustomFieldsHelp3 examples ");
-		writer.writeln("#      (e.g. BOOLEAN, DATE), so users know what they refer to");
-
+		writer.writeln("# 17.  Leave field types in English in CreateCustomFieldsHelp3 examples");
+		writer.writeln("#      (e.g. BOOLEAN, DATE)");
+		writer.writeln("# 18.  Do not translate words used in XML for custom fields such as:");  
+		writer.writeln("#      <Field type='GRID'>, </Field>, <Tag>, </Tag>, <Label>, </Label>,");
+		writer.writeln("#      <GridSpecDetails>, </GridSpecDetails>, <Column>, </Column>");
 		
 		writer.writeln("#");
 		
