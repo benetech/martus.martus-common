@@ -111,6 +111,9 @@ public class TestMartusUtilities extends TestCaseEnhanced
 		catch (IOException ignoreExpectedException)
 		{
 		}
+		
+		keyFile.delete();
+		badFile.delete();
 	}
 	
 	public void testImportServerPublicKeyFromFile() throws Exception
@@ -135,6 +138,8 @@ public class TestMartusUtilities extends TestCaseEnhanced
 		String gotSig = (String)result.get(1);
 		assertEquals("wrong public key?", key, gotKey);
 		assertEquals("wrong sig?", sig, gotSig);
+		
+		keyFile.delete();
 	}
 
 	public void testImportServerPublicKeyFromFileThatIsClient() throws Exception
@@ -149,11 +154,14 @@ public class TestMartusUtilities extends TestCaseEnhanced
 		catch (InvalidPublicKeyFileException ignoreExpectedException)
 		{
 		}
+
+		keyFile.delete();
 	}
 
 	public void testImportServerPublicKeyFromFileBad() throws Exception
 	{
 		File keyFile = new File(BAD_FILENAME);
+		keyFile.deleteOnExit();
 		try
 		{
 			MartusUtilities.importServerPublicKeyFromFile(keyFile, security);
@@ -162,6 +170,7 @@ public class TestMartusUtilities extends TestCaseEnhanced
 		catch (IOException ignoreExpectedException)
 		{
 		}
+		keyFile.delete();
 	}
 
 	public void testImportServerPublicKeyFromFileBadSig() throws Exception
@@ -189,7 +198,8 @@ public class TestMartusUtilities extends TestCaseEnhanced
 		catch (PublicInformationInvalidException ignoreExpectedException)
 		{
 		}
-	}
+		keyFile.delete();
+		}
 
 	public void testExportClientPublicKey() throws Exception
 	{
@@ -202,8 +212,10 @@ public class TestMartusUtilities extends TestCaseEnhanced
 		reader.close();
 		assertEquals("wrong public key?", security.getPublicKeyString(), key);
 		MartusUtilities.validatePublicInfo(key, sig, security);
+		keyFile.delete();
 		
 		File badFile = new File(BAD_FILENAME);
+		badFile.deleteOnExit();
 		try
 		{
 			MartusUtilities.exportClientPublicKey(security, badFile);
@@ -212,6 +224,7 @@ public class TestMartusUtilities extends TestCaseEnhanced
 		catch (IOException ignoreExpectedException)
 		{
 		}
+		badFile.delete();
 	}
 	
 	public void testImportClientPublicKeyFromFile() throws Exception
@@ -229,18 +242,21 @@ public class TestMartusUtilities extends TestCaseEnhanced
 		writer.close();
 
 		Vector result = MartusUtilities.importClientPublicKeyFromFile(keyFile);
+		keyFile.delete();
+		
 		assertEquals(2, result.size());
 		String gotKey = (String)result.get(0);
 		String gotSig = (String)result.get(1);
 		assertEquals("wrong public key?", key, gotKey);
 		assertEquals("wrong sig?", sig, gotSig);
+	
 	}
 
 	public void testValidateIntegrityOfZipFilePackets() throws Exception
 	{
 		Database db = new MockClientDatabase();
 
-		File sampleAttachment = createTempFileFromName("This is some data");
+		File sampleAttachment = createTempFileFromName("$$$Martus_This is some data");
 		AttachmentProxy ap = new AttachmentProxy(sampleAttachment);
 
 		Bulletin b = new Bulletin(security);
@@ -315,6 +331,16 @@ public class TestMartusUtilities extends TestCaseEnhanced
 		catch(InvalidPacketException ignoreExpectedException)
 		{
 		}
+		
+		sampleAttachment.delete();
+		originalZipFile.delete();
+		copiedZipFile.delete();
+		zipWithoutHeaderPacket.delete();
+		zipWithoutDataPackets.delete();
+		zipWithoutAttachmentPackets.delete();
+		zipWithExtraEntry.delete();
+		zipWithRelativePathInformation.delete();
+		zipWithAbsolutePathInformation.delete();
 	}
 
 	private void validateZipFile(String accountId, File copiedZipFile)
@@ -500,6 +526,7 @@ public class TestMartusUtilities extends TestCaseEnhanced
 		catch(InvalidPacketException ignoreExpectedException)
 		{
 		}
+		tempFile.delete();
 	}
 	
 	public void verifyDoesPacketNeedLocalEncryption(String label, boolean expected,
