@@ -161,56 +161,7 @@ public class BulletinHtmlGenerator
 			}
 			else if(spec.getType() == FieldSpec.TYPE_GRID)
 			{
-				GridFieldSpec grid = (GridFieldSpec)spec;
-				value = "<table border='1' align='left'><tr>";
-				String justification = "center";
-				if(!LanguageDirection.isRightToLeftLanguage())
-					value += getItemToAddForTable(grid.getColumnZeroLabel(),TABLE_HEADER, justification);
-				int columnCount = grid.getColumnCount();
-				for(int i = 0; i < columnCount; ++i)
-				{
-					String data = grid.getColumnLabel(i);
-					if(LanguageDirection.isRightToLeftLanguage())
-						data = grid.getColumnLabel((columnCount-1)-i);
-					value += getItemToAddForTable(data,TABLE_HEADER, justification);
-				}
-				if(LanguageDirection.isRightToLeftLanguage())
-					value += getItemToAddForTable(grid.getColumnZeroLabel(),TABLE_HEADER, justification);
-				value += "</tr>";
-				try
-				{
-					GridData gridData = new GridData();
-					gridData.setFromXml(fdp.get(tag));
-					int rowCount = gridData.getRowCount();
-
-					justification = "left";
-					if(LanguageDirection.isRightToLeftLanguage())
-						justification = "right";
-					
-					for(int r =  0; r<rowCount; ++r)
-					{
-						value += "<tr>";
-						if(!LanguageDirection.isRightToLeftLanguage())
-							value += getItemToAddForTable(Integer.toString(r+1),TABLE_DATA, justification);
-						for(int c = 0; c<columnCount; ++c)
-						{
-							String data = gridData.getValueAt(r, c);
-							if(LanguageDirection.isRightToLeftLanguage())
-								data = gridData.getValueAt(r, ((columnCount-1)-c));
-							value += getItemToAddForTable(data, TABLE_DATA, justification);
-						}
-						if(LanguageDirection.isRightToLeftLanguage())
-							value += getItemToAddForTable(Integer.toString(r+1),TABLE_DATA, justification);
-						value += "</tr>";
-					}
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-				
-				value += "</table>";
-				
+				value = getGridHTML(fdp, spec, tag);
 			}
 			
 			if(StandardFieldSpecs.isStandardFieldTag(tag))
@@ -220,6 +171,64 @@ public class BulletinHtmlGenerator
 			sectionHtml += fieldHtml;
 		}
 		return sectionHtml;
+	}
+
+	private String getGridHTML(FieldDataPacket fdp, FieldSpec spec, String tag)
+	{
+		String gridXMLData = fdp.get(tag);
+		if(gridXMLData.length()==0)
+			return "";
+		
+		String value;
+		GridFieldSpec grid = (GridFieldSpec)spec;
+		value = "<table border='1' align='left'><tr>";
+		String justification = "center";
+		if(!LanguageDirection.isRightToLeftLanguage())
+			value += getItemToAddForTable(grid.getColumnZeroLabel(),TABLE_HEADER, justification);
+		int columnCount = grid.getColumnCount();
+		for(int i = 0; i < columnCount; ++i)
+		{
+			String data = grid.getColumnLabel(i);
+			if(LanguageDirection.isRightToLeftLanguage())
+				data = grid.getColumnLabel((columnCount-1)-i);
+			value += getItemToAddForTable(data,TABLE_HEADER, justification);
+		}
+		if(LanguageDirection.isRightToLeftLanguage())
+			value += getItemToAddForTable(grid.getColumnZeroLabel(),TABLE_HEADER, justification);
+		value += "</tr>";
+		try
+		{
+			GridData gridData = new GridData();
+			gridData.setFromXml(gridXMLData);
+			int rowCount = gridData.getRowCount();
+
+			justification = "left";
+			if(LanguageDirection.isRightToLeftLanguage())
+				justification = "right";
+			
+			for(int r =  0; r<rowCount; ++r)
+			{
+				value += "<tr>";
+				if(!LanguageDirection.isRightToLeftLanguage())
+					value += getItemToAddForTable(Integer.toString(r+1),TABLE_DATA, justification);
+				for(int c = 0; c<columnCount; ++c)
+				{
+					String data = gridData.getValueAt(r, c);
+					if(LanguageDirection.isRightToLeftLanguage())
+						data = gridData.getValueAt(r, ((columnCount-1)-c));
+					value += getItemToAddForTable(data, TABLE_DATA, justification);
+				}
+				if(LanguageDirection.isRightToLeftLanguage())
+					value += getItemToAddForTable(Integer.toString(r+1),TABLE_DATA, justification);
+				value += "</tr>";
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		value += "</table>";
+		return value;
 	}
 
 	private String getItemToAddForTable(String data, String type, String justification)

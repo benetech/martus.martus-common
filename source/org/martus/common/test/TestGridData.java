@@ -266,6 +266,14 @@ public class TestGridData extends TestCaseEnhanced
 		return grid;
 	}
 
+	public static GridData createSampleEmptyGrid()
+	{
+		GridData grid = new GridData(2);
+		GridRow row1 = GridRow.createEmptyRow(2);
+		grid.addRow(row1);
+		return grid;
+	}
+
 	static public final String SAMPLE_DATA1 = "data1";
 	static public final String SAMPLE_DATA2_RAW = "<&data2>";
 	static public final String SAMPLE_DATA3 = "data3";
