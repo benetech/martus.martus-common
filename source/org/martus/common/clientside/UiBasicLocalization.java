@@ -57,6 +57,7 @@ public class UiBasicLocalization extends Localization
 		writer.writeln("# Lines beginning with # are comments and are ignored by Martus");
 		writer.writeln("# Each entry has two lines. The first line is the current English");
 		writer.writeln("#    text, and the second line consists of: KEY=VALUE");
+		writer.writeln("#    (e.g. -c47a-button:customHelp=<Help> )");
 		writer.writeln("# Do not modify any KEY. Do localize every VALUE.");
 		writer.writeln("# Each VALUE that needs to be translated has <> around it. ");
 		writer.writeln("#    As you translate each VALUE, remove its <>");
@@ -71,6 +72,8 @@ public class UiBasicLocalization extends Localization
 		writer.writeln("#");
 		writer.writeln("#  1.  do NOT translate \"\\n\" (used for new lines)"); 
 		writer.writeln("#  2.  do NOT translate \"#N#\" or \"#M#\" (though move them as appropriate");
+		writer.writeln("#      grammatically for the language to make \"N of M\" [eg \"2 of 5\"] make sense");
+		writer.writeln("#      for creating/restoring secret share key files).");
 		writer.writeln("#      grammatically for the language to make \"N of M\" make sense for");
 		writer.writeln("#      creating/restoring secret share).");  
 		writer.writeln("#  3.  in field:VirtualKeyboardKeys, keep the english alphabet, but include any");
@@ -79,14 +82,14 @@ public class UiBasicLocalization extends Localization
 		writer.writeln("#  4.  in field:SearchBulletinRules, make sure to translate the english \"and\"");
 		writer.writeln("#      and \"or\" in the text to exactly match the keyword:and= and ");
 		writer.writeln("#      keyword:or= translations");
-		writer.writeln("#  5.  in field:inputCustomFieldsentry, can translate tags into foreign");
+		writer.writeln("#  5.  in field:inputCustomFieldsentry, you can translate tags into foreign");
 		writer.writeln("#      characters (but without punctuation or spaces)");
 		writer.writeln("#  6.  when there are file or directory names, do not translate them");
-		writer.writeln("#      (e.g.  \"acctmap.txt\" and \"packets\")");
+		writer.writeln("#      (e.g.  \"acctmap.txt\" and \"packets\"");
 		writer.writeln("#      in field:confirmWarnMissingAccountMapFilecause=Warning: acctmap.txt");
-		writer.writeln("#      file in your account's packets directory...");
+		writer.writeln("#      file in your account's packets directory...)");
 		writer.writeln("#  7.  do not translate the words \"Martus\" or \"Benetech\"");
-		writer.writeln("#  8.  do NOT translate \"#S#\" (used for search string entry");
+		writer.writeln("#  8.  do NOT translate \"#S#\" (used for search string entry)");
 		writer.writeln("#");
 		
 		SortedSet sorted = getAllKeysSorted();
