@@ -40,4 +40,9 @@ public class Version
 			return dateVersion;
 		return dateVersion.substring(0,4) + "-" + dateVersion.substring(4,6) + "-" + dateVersion.substring(6);
 	}
+	
+	public static boolean isRunningUnderWindows()
+	{
+		return System.getProperty("os.name").indexOf("Windows") >= 0;
+	}
 }
