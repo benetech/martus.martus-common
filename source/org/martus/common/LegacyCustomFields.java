@@ -26,6 +26,8 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common;
 
+import java.util.Vector;
+
 
 public class LegacyCustomFields
 {
@@ -47,7 +49,7 @@ public class LegacyCustomFields
 	
 	static public FieldSpec[] parseFieldSpecsFromString(String delimitedTags)
 	{
-		FieldSpec[] newFieldSpecs = new FieldSpec[0];
+		Vector fieldSpecs = new Vector();
 		int tagStart = 0;
 		while(tagStart >= 0 && tagStart < delimitedTags.length())
 		{
@@ -57,13 +59,33 @@ public class LegacyCustomFields
 			String thisFieldDescription = delimitedTags.substring(tagStart, delimiter);
 			FieldSpec newFieldSpec = LegacyCustomFields.createFromLegacy(thisFieldDescription);
 	
-			newFieldSpecs = CustomFields.addFieldSpec(newFieldSpecs, newFieldSpec);
+			fieldSpecs.add(newFieldSpec);
 			tagStart = delimiter + 1;
 		}
-		return newFieldSpecs;
+
+		return (FieldSpec[])fieldSpecs.toArray(new FieldSpec[0]);
 	}
 	
-	static public String extractFieldSpecElement(String fieldDescription, int elementNumber)
+	public static FieldSpec createFromLegacy(String legacyDescription)
+	{
+		String extractedTag = LegacyCustomFields.extractFieldSpecElement(legacyDescription, LegacyCustomFields.TAG_ELEMENT_NUMBER);
+		String extractedLabel = LegacyCustomFields.extractFieldSpecElement(legacyDescription, LegacyCustomFields.LABEL_ELEMENT_NUMBER);
+		String extractedUnknown = LegacyCustomFields.extractFieldSpecElement(legacyDescription, LegacyCustomFields.UNKNOWN_ELEMENT_NUMBER);
+		boolean extractedHasUnknown = false;
+		if(!extractedUnknown.equals(""))
+		{
+			//System.out.println("FieldSpec.initializeFromDescription unknown: " + extractedTag + ": " + extractedUnknown);
+			extractedHasUnknown = true;
+		}
+	
+		int extractedType = StandardFieldSpecs.getStandardType(extractedTag);
+		if(extractedType == FieldSpec.TYPE_UNKNOWN && !extractedHasUnknown)
+			extractedType = FieldSpec.TYPE_NORMAL;
+	
+		return new FieldSpec(extractedTag, extractedLabel, extractedType, extractedHasUnknown);
+	}
+	
+	static private String extractFieldSpecElement(String fieldDescription, int elementNumber)
 	{
 		int elementStart = 0;
 		for(int i = 0; i < elementNumber; ++i)
@@ -80,25 +102,6 @@ public class LegacyCustomFields
 		return fieldDescription.substring(elementStart, trailingComma);
 	}
 
-	public static FieldSpec createFromLegacy(String legacyDescription)
-	{
-		String extractedTag = LegacyCustomFields.extractFieldSpecElement(legacyDescription, LegacyCustomFields.TAG_ELEMENT_NUMBER);
-		String extractedLabel = LegacyCustomFields.extractFieldSpecElement(legacyDescription, LegacyCustomFields.LABEL_ELEMENT_NUMBER);
-		String extractedUnknown = LegacyCustomFields.extractFieldSpecElement(legacyDescription, LegacyCustomFields.UNKNOWN_ELEMENT_NUMBER);
-		boolean extractedHasUnknown = false;
-		if(!extractedUnknown.equals(""))
-		{
-			//System.out.println("FieldSpec.initializeFromDescription unknown: " + extractedTag + ": " + extractedUnknown);
-			extractedHasUnknown = true;
-		}
-	
-		int extractedType = CustomFields.getStandardType(extractedTag);
-		if(extractedType == FieldSpec.TYPE_UNKNOWN && !extractedHasUnknown)
-			extractedType = FieldSpec.TYPE_NORMAL;
-	
-		return new FieldSpec(extractedTag, extractedLabel, extractedType, extractedHasUnknown);
-	}
-	
 	private static final char FIELD_SPEC_DELIMITER = ';';
 	private static final char FIELD_SPEC_ELEMENT_DELIMITER = ',';
 	static final int TAG_ELEMENT_NUMBER = 0;

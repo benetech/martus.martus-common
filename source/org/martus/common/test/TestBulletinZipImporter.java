@@ -37,7 +37,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
-import org.martus.common.CustomFields;
+import org.martus.common.StandardFieldSpecs;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinForTesting;
@@ -188,13 +188,13 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 
 		ZipEntry dataEntry = (ZipEntry)entries.nextElement();
 		assertStartsWith("data id wrong?", "F", dataEntry.getName());
-		FieldDataPacket fdp = new FieldDataPacket(dummyUid, CustomFields.getDefaultPublicFieldSpecs());
+		FieldDataPacket fdp = new FieldDataPacket(dummyUid, StandardFieldSpecs.getDefaultPublicFieldSpecs());
 		fdp.loadFromXml(new ZipEntryInputStream(zip, dataEntry), security);
 		assertEquals("fdp id?", original.getFieldDataPacket().getUniversalId(), fdp.getUniversalId());
 
 		ZipEntry privateEntry = (ZipEntry)entries.nextElement();
 		assertStartsWith("private id wrong?", "F", privateEntry.getName());
-		FieldDataPacket pdp = new FieldDataPacket(dummyUid, CustomFields.getDefaultPrivateFieldSpecs());
+		FieldDataPacket pdp = new FieldDataPacket(dummyUid, StandardFieldSpecs.getDefaultPrivateFieldSpecs());
 		pdp.loadFromXml(new ZipEntryInputStream(zip, privateEntry), security);
 		assertEquals("pdp id?", original.getPrivateFieldDataPacket().getUniversalId(), pdp.getUniversalId());
 
@@ -254,7 +254,7 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 		ZipEntry dataEntry = (ZipEntry)entries.nextElement();
 		assertNotNull("null data?", dataEntry);
 		InputStreamWithSeek dataIn = new ZipEntryInputStream(zip, dataEntry);
-		FieldDataPacket data = new FieldDataPacket(uid, CustomFields.getDefaultPublicFieldSpecs());
+		FieldDataPacket data = new FieldDataPacket(uid, StandardFieldSpecs.getDefaultPublicFieldSpecs());
 		data.loadFromXml(dataIn, security);
 		assertEquals("data wrong?", b.get(Bulletin.TAGPUBLICINFO), data.get(Bulletin.TAGPUBLICINFO));
 
@@ -262,7 +262,7 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 		ZipEntry privateDataEntry = (ZipEntry)entries.nextElement();
 		assertNotNull("null data?", privateDataEntry);
 		InputStreamWithSeek privateDataIn = new ZipEntryInputStream(zip, privateDataEntry);
-		FieldDataPacket privateData = new FieldDataPacket(uid, CustomFields.getDefaultPrivateFieldSpecs());
+		FieldDataPacket privateData = new FieldDataPacket(uid, StandardFieldSpecs.getDefaultPrivateFieldSpecs());
 		privateData.loadFromXml(privateDataIn, security);
 		assertEquals("data wrong?", b.get(Bulletin.TAGPRIVATEINFO), privateData.get(Bulletin.TAGPRIVATEINFO));
 

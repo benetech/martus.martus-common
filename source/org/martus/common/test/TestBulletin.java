@@ -34,7 +34,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import org.martus.common.CustomFields;
+import org.martus.common.StandardFieldSpecs;
 import org.martus.common.FieldSpec;
 import org.martus.common.MartusUtilities;
 import org.martus.common.bulletin.AttachmentProxy;
@@ -234,7 +234,7 @@ public class TestBulletin extends TestCaseEnhanced
 
 	public void testGetFieldType()
 	{
-		FieldSpec[] standardPublicFields = CustomFields.getDefaultPublicFieldSpecs();
+		FieldSpec[] standardPublicFields = StandardFieldSpecs.getDefaultPublicFieldSpecs();
 		for (int i = 0; i < standardPublicFields.length; i++)
 		{
 			FieldSpec spec = standardPublicFields[i];
@@ -252,7 +252,7 @@ public class TestBulletin extends TestCaseEnhanced
 				assertEquals(spec.getTag(), FieldSpec.TYPE_NORMAL, spec.getType());
 		}
 
-		FieldSpec[] standardPrivateFields = CustomFields.getDefaultPrivateFieldSpecs();
+		FieldSpec[] standardPrivateFields = StandardFieldSpecs.getDefaultPrivateFieldSpecs();
 		for (int i = 0; i < standardPrivateFields.length; i++)
 		{
 			FieldSpec spec = standardPrivateFields[i];

@@ -104,7 +104,7 @@ public class ConfigInfo implements Serializable
 		sendContactInfoToServer = false;
 		mustAskUserToSendToServer = false;
 		serverCompliance = "";
-		customFieldSpecs = LegacyCustomFields.buildFieldListString(CustomFields.getDefaultPublicFieldSpecs());
+		customFieldSpecs = LegacyCustomFields.buildFieldListString(StandardFieldSpecs.getDefaultPublicFieldSpecs());
 	}
 
 	public static ConfigInfo load(InputStream inputStream)

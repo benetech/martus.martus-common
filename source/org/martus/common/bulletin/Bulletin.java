@@ -34,7 +34,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Vector;
 
-import org.martus.common.CustomFields;
+import org.martus.common.StandardFieldSpecs;
 import org.martus.common.FieldSpec;
 import org.martus.common.MartusUtilities;
 import org.martus.common.crypto.MartusCrypto;
@@ -62,7 +62,7 @@ public class Bulletin implements BulletinConstants
 
 	public Bulletin(MartusCrypto securityToUse)
 	{
-		this(securityToUse, CustomFields.getDefaultPublicFieldSpecs(), CustomFields.getDefaultPrivateFieldSpecs());
+		this(securityToUse, StandardFieldSpecs.getDefaultPublicFieldSpecs(), StandardFieldSpecs.getDefaultPrivateFieldSpecs());
 	}
 	
 	public Bulletin(MartusCrypto securityToUse, FieldSpec[] publicFieldSpecs, FieldSpec[] privateFieldSpecs)

@@ -29,17 +29,8 @@ package org.martus.common;
 import org.martus.common.bulletin.BulletinConstants;
 
 
-public class CustomFields
+public class StandardFieldSpecs
 {
-
-	static public FieldSpec[] addFieldSpec(FieldSpec[] existingFieldSpecs, FieldSpec newFieldSpec)
-	{
-		int oldCount = existingFieldSpecs.length;
-		FieldSpec[] tempFieldTags = new FieldSpec[oldCount + 1];
-		System.arraycopy(existingFieldSpecs, 0, tempFieldTags, 0, oldCount);
-		tempFieldTags[oldCount] = newFieldSpec;
-		return tempFieldTags;
-	}
 
 	public static FieldSpec[] getDefaultPublicFieldSpecs()
 	{
@@ -94,14 +85,14 @@ public class CustomFields
 	
 	private static FieldSpec findStandardFieldSpec(String tag)
 	{
-		FieldSpec[] publicSpecs = CustomFields.getDefaultPublicFieldSpecs();
+		FieldSpec[] publicSpecs = StandardFieldSpecs.getDefaultPublicFieldSpecs();
 		for(int i=0; i < publicSpecs.length; ++i)
 			if(publicSpecs[i].getTag().equals(tag))
 			{
 				return publicSpecs[i];
 			}
 				
-		FieldSpec[] privateSpecs = CustomFields.getDefaultPrivateFieldSpecs();
+		FieldSpec[] privateSpecs = StandardFieldSpecs.getDefaultPrivateFieldSpecs();
 		for(int i=0; i < privateSpecs.length; ++i)
 			if(privateSpecs[i].getTag().equals(tag))
 			{
