@@ -32,7 +32,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
@@ -361,7 +360,7 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		retriever.initalizeServer("1.2.3.4", "some random public key");
 		retriever.serverNonSSL = new TestServerNetworkInterfaceForNonSSLHandler();
 		retriever.setSSLServerToUse(mockGateway);
-		List emptyList = retriever.getAllFieldOfficeBulletinUniversalIds();
+		List emptyList = retriever.getListOfAllFieldOfficeBulletinIds();
 		assertEquals("Should be empty",0, emptyList.size());
 		
 		String fieldOffice1 = "field office 1";
@@ -370,7 +369,7 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		fieldOfficeIds.add(fieldOffice1);
 		fieldOfficeIds.add(fieldOffice2);
 		mockGateway.setFieldOfficeAccountIdsToReturn(fieldOfficeIds);
-		emptyList = retriever.getAllFieldOfficeBulletinUniversalIds();
+		emptyList = retriever.getListOfAllFieldOfficeBulletinIds();
 		assertEquals("Should still be empty since there are no bulletins.",0, emptyList.size());
 		
 		String draftBulletinFO1LocalId = "Draft bulletin Field Office 1";
@@ -393,7 +392,7 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		fieldOffice2SealedBulletins.add(sealed1BulletinFO2LocalId);
 		mockGateway.setTestSealedBulletinIdsToReturn(fieldOffice2, fieldOffice2SealedBulletins);
 
-		List allFieldOfficesBulletinIds = retriever.getAllFieldOfficeBulletinUniversalIds();
+		List allFieldOfficesBulletinIds = retriever.getListOfAllFieldOfficeBulletinIds();
 		assertEquals("Should contain 4 bulletins", 4, allFieldOfficesBulletinIds.size());
 		
 		UniversalId bulletinId1 = UniversalId.createFromAccountAndLocalId(fieldOffice1,draftBulletinFO1LocalId);
@@ -405,16 +404,6 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		assertTrue("Should contain this sealed 1 bulletin", allFieldOfficesBulletinIds.contains(bulletinId2));
 		assertTrue("Should contain this sealed 2 bulletin", allFieldOfficesBulletinIds.contains(bulletinId3));
 		assertTrue("Should contain this sealed bulletin for field office 2", allFieldOfficesBulletinIds.contains(bulletinId4));
-		
-		ArrayList currentList = new ArrayList();
-		currentList.add(bulletinId3);
-		
-		List newBulletinsOnly = retriever.getListOfNewBulletinIds(currentList);
-		assertEquals(3, newBulletinsOnly.size());
-		assertFalse("Should not contain bulletin 3", newBulletinsOnly.contains(bulletinId3));
-		assertTrue("Should contain this draft bulletin as well", newBulletinsOnly.contains(bulletinId1));
-		assertTrue("Should contain this sealed 1 bulletin as well", newBulletinsOnly.contains(bulletinId2));
-		assertTrue("Should contain this sealed bulletin for field office 2 as well", newBulletinsOnly.contains(bulletinId4));
 	}
 	
 	public void testGetBulletin() throws Exception

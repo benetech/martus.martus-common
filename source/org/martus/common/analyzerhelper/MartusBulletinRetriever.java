@@ -80,12 +80,22 @@ public class MartusBulletinRetriever
 		return getServerPublicKey(serverPublicCode, serverNonSSL);
 	}
 	
-	public List getListOfNewBulletinIds(List bulletinIdsAlreadyRetrieved) throws ServerNotConfiguredException, MartusSignatureException, ServerErrorException
+	public List getListOfAllFieldOfficeBulletinIds() throws ServerNotConfiguredException, MartusSignatureException, ServerErrorException
 	{
 		if(!isServerAvailable())
 			return new ArrayList();
-		List allBulletins = getAllFieldOfficeBulletinUniversalIds();
-		allBulletins.removeAll(bulletinIdsAlreadyRetrieved);
+		List allBulletins = new ArrayList();
+		Vector fieldOffices = serverSLL.downloadFieldOfficeAccountIds(security, security.getPublicKeyString());
+		Vector noTags = new Vector();
+		for(int a = 0; a < fieldOffices.size(); ++a)
+		{
+			String fieldOfficeAccountId = (String)fieldOffices.get(a);
+			NetworkResponse response = serverSLL.getSealedBulletinIds(security,fieldOfficeAccountId, noTags);
+			allBulletins.addAll(getListOfBulletinUniversalIds(fieldOfficeAccountId, response));
+		
+			response = serverSLL.getDraftBulletinIds(security,fieldOfficeAccountId, noTags);
+			allBulletins.addAll(getListOfBulletinUniversalIds(fieldOfficeAccountId, response));
+		}
 		return allBulletins;
 	}
 	
@@ -102,23 +112,6 @@ public class MartusBulletinRetriever
 		{
 			throw new ServerErrorException(e.getMessage());
 		}
-	}
-	
-	List getAllFieldOfficeBulletinUniversalIds() throws ServerErrorException, MartusSignatureException
-	{
-		List allBulletins = new ArrayList();
-		Vector fieldOffices = serverSLL.downloadFieldOfficeAccountIds(security, security.getPublicKeyString());
-		Vector noTags = new Vector();
-		for(int a = 0; a < fieldOffices.size(); ++a)
-		{
-			String fieldOfficeAccountId = (String)fieldOffices.get(a);
-			NetworkResponse response = serverSLL.getSealedBulletinIds(security,fieldOfficeAccountId, noTags);
-			allBulletins.addAll(getListOfBulletinUniversalIds(fieldOfficeAccountId, response));
-
-			response = serverSLL.getDraftBulletinIds(security,fieldOfficeAccountId, noTags);
-			allBulletins.addAll(getListOfBulletinUniversalIds(fieldOfficeAccountId, response));
-		}
-		return allBulletins;
 	}
 	
 	Vector getListOfBulletinUniversalIds(String fieldOfficeAccountId, NetworkResponse response) throws ServerErrorException
