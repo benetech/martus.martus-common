@@ -172,7 +172,11 @@ public class MiniLocalization
 	
 		String englishText = (String)availableTranslations.get(ENGLISH);
 		if(englishText == null)
+		{
 			System.out.println("Error, probably an invalid Martus-en.mtf file in C:\\Martus, try removing this file.");
+			System.out.println("Possibly obsolete key: " + key);
+			englishText = key;
+		}
 		return formatAsUntranslated(englishText);
 	}
 
