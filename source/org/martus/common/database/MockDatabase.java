@@ -254,7 +254,7 @@ abstract public class MockDatabase extends Database
 		{
 			bytes[i] = 0x55;			
 		}
-		writeRecord(key, new String(bytes));			
+		writeRecord(key, new String(bytes, "UTF-8"));			
 	}
 
 	public String getFolderForAccount(String accountString)
