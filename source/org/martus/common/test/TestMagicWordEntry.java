@@ -59,12 +59,22 @@ public class TestMagicWordEntry extends TestCaseEnhanced
 		assertEquals("null group not empty?", "", entry3.getGroupName());
 	}
 	
-	public void testToString()
+	public void testGetLineOfMagicWord()
 	{
 		String groupEntry = "group 3";
 		String validMagicWord = "magic 2";
 		MagicWordEntry entry = new MagicWordEntry(validMagicWord, groupEntry);
 		String validLineEntry = validMagicWord + MagicWords.FIELD_DELIMITER + groupEntry;
-		assertEquals("invalid line entry", validLineEntry, entry.toString());
+		assertEquals("invalid line entry?", validLineEntry, entry.getLineOfMagicWord());
 	}
+
+	public void testGetLineOfMagicWordNoSign()
+	{
+		String groupEntry = "group 3";
+		String magicWord = "#magic 2";
+		MagicWordEntry entry = new MagicWordEntry(magicWord, groupEntry);
+		String lineEntryWithoutSign = "magic 2" + MagicWords.FIELD_DELIMITER + groupEntry;
+		assertEquals("line entry not correct?", lineEntryWithoutSign, entry.getLineOfMagicWordNoSign());
+	}
+	
 }
