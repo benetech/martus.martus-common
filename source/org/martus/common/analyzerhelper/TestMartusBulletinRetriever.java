@@ -30,6 +30,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -38,6 +39,7 @@ import java.util.Vector;
 import org.martus.common.ProgressMeterInterface;
 import org.martus.common.MartusUtilities.ServerErrorException;
 import org.martus.common.analyzerhelper.MartusBulletinRetriever.ServerPublicCodeDoesNotMatchException;
+import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinConstants;
 import org.martus.common.bulletin.BulletinSaver;
@@ -360,7 +362,7 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		retriever.initalizeServer("1.2.3.4", "some random public key");
 		retriever.serverNonSSL = new TestServerNetworkInterfaceForNonSSLHandler();
 		retriever.setSSLServerToUse(mockGateway);
-		List emptyList = retriever.getListOfAllFieldOfficeBulletinIds();
+		List emptyList = retriever.getFieldOfficeBulletinIds();
 		assertEquals("Should be empty",0, emptyList.size());
 		
 		String fieldOffice1 = "field office 1";
@@ -369,7 +371,7 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		fieldOfficeIds.add(fieldOffice1);
 		fieldOfficeIds.add(fieldOffice2);
 		mockGateway.setFieldOfficeAccountIdsToReturn(fieldOfficeIds);
-		emptyList = retriever.getListOfAllFieldOfficeBulletinIds();
+		emptyList = retriever.getFieldOfficeBulletinIds();
 		assertEquals("Should still be empty since there are no bulletins.",0, emptyList.size());
 		
 		String draftBulletinFO1LocalId = "Draft bulletin Field Office 1";
@@ -392,7 +394,7 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		fieldOffice2SealedBulletins.add(sealed1BulletinFO2LocalId);
 		mockGateway.setTestSealedBulletinIdsToReturn(fieldOffice2, fieldOffice2SealedBulletins);
 
-		List allFieldOfficesBulletinIds = retriever.getListOfAllFieldOfficeBulletinIds();
+		List allFieldOfficesBulletinIds = retriever.getFieldOfficeBulletinIds();
 		assertEquals("Should contain 4 bulletins", 4, allFieldOfficesBulletinIds.size());
 		
 		UniversalId bulletinId1 = UniversalId.createFromAccountAndLocalId(fieldOffice1,draftBulletinFO1LocalId);
@@ -418,6 +420,15 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		retriever.serverNonSSL = new TestServerNetworkInterfaceForNonSSLHandler();
 		retriever.setSSLServerToUse(mockGateway);
 		
+		try
+		{
+			retriever.getBulletin(UniversalId.createDummyUniversalId());
+			fail("should have thrown for invalid UId");
+		}
+		catch(ServerErrorException expected)
+		{
+		}
+
 		Bulletin bulletin = new Bulletin(security);
 		String author = "author";
 		String title = "title";
@@ -427,16 +438,14 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		bulletin.set(BulletinConstants.TAGTITLE, title);
 		bulletin.set(BulletinConstants.TAGLOCATION, location);
 		bulletin.set(BulletinConstants.TAGPRIVATEINFO, privateData);
+		File attachmentFile = createTempFile();
+		FileOutputStream out = new FileOutputStream(attachmentFile);
+		out.write("This is a test file".getBytes());
+		out.close();
+		AttachmentProxy attachmentProxy = new AttachmentProxy(attachmentFile);
+		bulletin.addPublicAttachment(attachmentProxy);
+		
 		mockGateway.setTestBulletinToRetrieve(bulletin);
-
-		try
-		{
-			retriever.getBulletin(UniversalId.createDummyUniversalId());
-			fail("should have thrown for invalid UId");
-		}
-		catch(ServerErrorException expected)
-		{
-		}
 		MartusBulletinWrapper retrievedBulletin = retriever.getBulletin(bulletin.getUniversalId());
 		assertEquals("Didn't get the correct author?", author, retrievedBulletin.getAuthor());
 		assertEquals("Didn't get the correct title?", title, retrievedBulletin.getTitle());

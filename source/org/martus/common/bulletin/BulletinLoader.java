@@ -122,9 +122,20 @@ public class BulletinLoader
 			{
 				Packet.verifyPacketSignature(in,verifier);
 			}
-			catch (Exception e1)
+			catch (Exception e)
 			{
 				return false;
+			}
+			finally
+			{
+				try
+				{
+					in.close();
+				}
+				catch(IOException e)
+				{
+					return false;
+				}
 			}
 		}
 		return true;

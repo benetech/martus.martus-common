@@ -80,25 +80,32 @@ public class MartusBulletinRetriever
 		return getServerPublicKey(serverPublicCode, serverNonSSL);
 	}
 	
-	public List getListOfAllFieldOfficeBulletinIds() throws ServerNotConfiguredException, MartusSignatureException, ServerErrorException
+	public List getFieldOfficeBulletinIds() throws ServerNotConfiguredException, MartusSignatureException, ServerErrorException
 	{
 		if(!isServerAvailable())
 			return new ArrayList();
 		List allBulletins = new ArrayList();
 		Vector fieldOffices = serverSLL.downloadFieldOfficeAccountIds(security, security.getPublicKeyString());
-		Vector noTags = new Vector();
 		for(int a = 0; a < fieldOffices.size(); ++a)
 		{
 			String fieldOfficeAccountId = (String)fieldOffices.get(a);
-			NetworkResponse response = serverSLL.getSealedBulletinIds(security,fieldOfficeAccountId, noTags);
-			allBulletins.addAll(getListOfBulletinUniversalIds(fieldOfficeAccountId, response));
-		
-			response = serverSLL.getDraftBulletinIds(security,fieldOfficeAccountId, noTags);
-			allBulletins.addAll(getListOfBulletinUniversalIds(fieldOfficeAccountId, response));
+			allBulletins.addAll(getBulletinIdsForFieldOffice(fieldOfficeAccountId));
 		}
 		return allBulletins;
 	}
 	
+	private List getBulletinIdsForFieldOffice(String fieldOfficeAccountId) throws MartusSignatureException, ServerErrorException
+	{
+		List allBulletinsForFieldOffice = new ArrayList();
+		Vector noTags = new Vector();
+		NetworkResponse response = serverSLL.getSealedBulletinIds(security, fieldOfficeAccountId, noTags);
+		allBulletinsForFieldOffice.addAll(getListOfBulletinUniversalIds(fieldOfficeAccountId, response));
+
+		response = serverSLL.getDraftBulletinIds(security, fieldOfficeAccountId, noTags);
+		allBulletinsForFieldOffice.addAll(getListOfBulletinUniversalIds(fieldOfficeAccountId, response));
+		return allBulletinsForFieldOffice;
+	}
+
 	public MartusBulletinWrapper getBulletin(UniversalId uid) throws ServerErrorException
 	{
 		try
