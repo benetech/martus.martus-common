@@ -248,7 +248,6 @@ public class BulletinStore
 
 	public synchronized void removeBulletinFromStore(Bulletin b) throws IOException
 	{
-		MartusCrypto crypto = getSignatureVerifier();
 		BulletinHistory history = b.getHistory();
 		try
 		{
@@ -260,7 +259,7 @@ public class BulletinStore
 			}
 
 			BulletinHeaderPacket bhpMain = b.getBulletinHeaderPacket();
-			deleteBulletinRevisionFromDatabase(bhpMain, getWriteableDatabase(), crypto);
+			deleteBulletinRevisionFromDatabase(bhpMain);
 		}
 		catch(Exception e)
 		{
@@ -272,10 +271,10 @@ public class BulletinStore
 	public void deleteBulletinRevision(DatabaseKey keyToDelete) throws IOException, CryptoException, InvalidPacketException, WrongPacketTypeException, SignatureVerificationException, DecryptionException, UnsupportedEncodingException, NoKeyPairException
 	{
 		BulletinHeaderPacket bhp = loadBulletinHeaderPacket(getDatabase(), keyToDelete, getSignatureVerifier());
-		deleteBulletinRevisionFromDatabase(bhp, getWriteableDatabase(), getSignatureVerifier());
+		deleteBulletinRevisionFromDatabase(bhp);
 	}
 
-	public static void deleteBulletinRevisionFromDatabase(BulletinHeaderPacket bhp, Database db, MartusCrypto crypto)
+	public void deleteBulletinRevisionFromDatabase(BulletinHeaderPacket bhp)
 		throws
 			IOException,
 			MartusCrypto.CryptoException,
@@ -289,7 +288,7 @@ public class BulletinStore
 		DatabaseKey[] keys = BulletinZipUtilities.getAllPacketKeys(bhp);
 		for (int i = 0; i < keys.length; i++)
 		{
-			db.discardRecord(keys[i]);
+			deleteSpecificPacket(keys[i]);
 		}
 	}
 
@@ -424,6 +423,11 @@ public class BulletinStore
 			if(zip != null)
 				zip.close();
 		}
+	}
+
+	protected void deleteSpecificPacket(DatabaseKey burKey)
+	{
+		getWriteableDatabase().discardRecord(burKey);
 	}
 
 	private MartusCrypto security;

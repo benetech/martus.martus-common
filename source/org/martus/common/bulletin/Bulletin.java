@@ -42,8 +42,8 @@ import org.martus.common.StandardFieldSpecs;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.CryptoException;
-import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
+import org.martus.common.database.ReadableDatabase;
 import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.BulletinHistory;
@@ -435,7 +435,7 @@ public class Bulletin implements BulletinConstants
 		getBulletinHeaderPacket().setAllPrivate(newValue);
 	}
 
-	public void createDraftCopyOf(Bulletin other, Database otherDatabase) throws
+	public void createDraftCopyOf(Bulletin other, ReadableDatabase otherDatabase) throws
 		CryptoException, 
 		InvalidPacketException, 
 		SignatureVerificationException, 
@@ -493,7 +493,7 @@ public class Bulletin implements BulletinConstants
 		getPendingPrivateAttachments().addAll(other.getPendingPrivateAttachments());
 	}
 	
-	public AttachmentProxy getAsFileProxy(AttachmentProxy ap, Database otherDatabase, String status, MartusCrypto security)
+	public AttachmentProxy getAsFileProxy(AttachmentProxy ap, ReadableDatabase otherDatabase, String status, MartusCrypto security)
 		throws
 			IOException,
 			CryptoException,
