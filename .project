@@ -5,6 +5,7 @@
 	<projects>
 		<project>martus-hrdag</project>
 		<project>martus-logi</project>
+		<project>martus-swing</project>
 		<project>martus-utils</project>
 	</projects>
 	<buildSpec>

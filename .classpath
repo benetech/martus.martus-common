@@ -8,5 +8,6 @@
     <classpathentry kind="lib" path="ThirdPartyJars/common/ant.jar"/>
     <classpathentry kind="lib" path="ThirdPartyJars/common/InfiniteMonkey.jar"/>
     <classpathentry kind="lib" path="ThirdPartyJars/common/xmlrpc-1.2-b1.jar"/>
+    <classpathentry kind="src" path="/martus-swing"/>
     <classpathentry kind="output" path="bin"/>
 </classpath>
