@@ -36,7 +36,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.martus.common.MartusUtilities;
 import org.martus.common.MartusUtilities.FileVerificationException;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusCrypto.DecryptionException;
@@ -47,19 +46,9 @@ import org.martus.common.packet.UniversalId;
 import org.martus.util.ByteArrayInputStreamWithSeek;
 import org.martus.util.InputStreamWithSeek;
 
-abstract public class Database
+abstract public class Database extends ReadableDatabase
 {
 	public static class RecordHiddenException extends Exception {}
-
-	public interface PacketVisitor
-	{
-		void visit(DatabaseKey key);
-	}
-
-	public interface AccountVisitor
-	{
-		void visit(String accountString);
-	}
 
 	protected Database()
 	{
@@ -73,14 +62,7 @@ abstract public class Database
 	abstract public void writeRecord(DatabaseKey key, InputStream record) throws IOException, RecordHiddenException;
 	abstract public void writeRecordEncrypted(DatabaseKey key, String record, MartusCrypto encrypter) throws IOException, RecordHiddenException, MartusCrypto.CryptoException;
 	abstract public void importFiles(HashMap entries) throws IOException, RecordHiddenException;
-	abstract public InputStreamWithSeek openInputStream(DatabaseKey key, MartusCrypto decrypter) throws IOException, MartusCrypto.CryptoException;
-	abstract public String readRecord(DatabaseKey key, MartusCrypto decrypter) throws IOException, MartusCrypto.CryptoException;
 	abstract public void discardRecord(DatabaseKey key);
-	abstract public boolean doesRecordExist(DatabaseKey key);
-	abstract public int getRecordSize(DatabaseKey key) throws IOException, RecordHiddenException;
-	abstract public void visitAllRecords(PacketVisitor visitor);
-	abstract public void visitAllAccounts(AccountVisitor visitor);
-	abstract public void visitAllRecordsForAccount(PacketVisitor visitor, String accountString);
 	abstract public File getIncomingInterimFile(DatabaseKey key) throws IOException, RecordHiddenException;
 	abstract public File getOutgoingInterimFile(DatabaseKey key) throws IOException, RecordHiddenException;
 	abstract public File getOutgoingInterimPublicOnlyFile(DatabaseKey key) throws IOException, RecordHiddenException;
@@ -88,18 +70,11 @@ abstract public class Database
 	abstract public String getFolderForAccount(String accountString) throws IOException;
 	abstract public File getContactInfoFile(String accountId) throws IOException;
 
-	abstract public boolean isInQuarantine(DatabaseKey key) throws RecordHiddenException;
 	abstract public void moveRecordToQuarantine(DatabaseKey key) throws RecordHiddenException;
-	abstract public void verifyAccountMap() throws MartusUtilities.FileVerificationException, MissingAccountMapSignatureException;
 
 	abstract public void signAccountMap() throws IOException, MartusCrypto.MartusSignatureException;
 	abstract public void scrubRecord(DatabaseKey key) throws IOException, RecordHiddenException;
 
-	public void hide(UniversalId uid)
-	{
-		hiddenPacketUids.add(uid);
-	}
-	
 	public boolean isHidden(UniversalId uid)
 	{
 		return hiddenPacketUids.contains(uid);
@@ -110,20 +85,11 @@ abstract public class Database
 		return isHidden(key.getUniversalId());
 	}
 
-	public boolean mustEncryptLocalData()
+	public void hide(UniversalId uid)
 	{
-		return false;
+		hiddenPacketUids.add(uid);
 	}
 	
-	public boolean doesAccountMapExist()
-	{
-		return false;
-	}
-	public boolean doesAccountMapSignatureExist()
-	{
-		return false;
-	}
-
 	boolean isEncryptedRecordStream(InputStreamWithSeek in) throws
 			IOException
 	{

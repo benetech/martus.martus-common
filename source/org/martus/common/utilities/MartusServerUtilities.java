@@ -48,6 +48,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
+import org.martus.common.BulletinStore;
 import org.martus.common.LoggerInterface;
 import org.martus.common.MartusUtilities;
 import org.martus.common.MartusUtilities.FileVerificationException;
@@ -67,7 +68,6 @@ import org.martus.common.packet.UniversalId;
 import org.martus.util.Base64;
 import org.martus.util.UnicodeReader;
 import org.martus.util.UnicodeWriter;
-import org.martus.util.Base64.InvalidBase64Exception;
 
 public class MartusServerUtilities
 {
@@ -540,12 +540,13 @@ public class MartusServerUtilities
 	
 	
 	
-	public static void loadHiddenPacketsFile(File hiddenFile, Database database, LoggerInterface logger)
+	public static void loadHiddenPacketsFile(File hiddenFile, BulletinStore store, LoggerInterface logger)
 	{	
 		try
 		{
 			UnicodeReader reader = new UnicodeReader(hiddenFile);
-			loadHiddenPacketsList(reader, database, logger);
+			Vector hiddenPackets = getHiddenPacketsList(reader);		
+			store.hidePackets(hiddenPackets, logger);
 		}
 		catch(FileNotFoundException nothingToWorryAbout)
 		{
@@ -556,12 +557,6 @@ public class MartusServerUtilities
 			e.printStackTrace();
 			logger.log("Error loading Deleted Packets file: " + hiddenFile.getName());
 		}		
-	}
-
-	public static void loadHiddenPacketsList(UnicodeReader reader, Database db, LoggerInterface logger) throws IOException, InvalidBase64Exception
-	{
-		Vector hiddenPackets = getHiddenPacketsList(reader);		
-		hidePackets(hiddenPackets, db, logger);
 	}
 
 	public static Vector getHiddenPacketsList(UnicodeReader reader) throws IOException
@@ -591,18 +586,6 @@ public class MartusServerUtilities
 		}
 	}
 
-	private static void hidePackets(Vector packetsIdsToHide, Database db, LoggerInterface logger) throws InvalidBase64Exception
-	{
-		for(int i = 0; i < packetsIdsToHide.size(); ++i)
-		{
-			UniversalId uId = (UniversalId)(packetsIdsToHide.get(i));
-			db.hide(uId);
-			String publicCode = MartusCrypto.getFormattedPublicCode(uId.getAccountId());
-			logger.log("Deleting " + publicCode + ": " + uId.getLocalId());
-		
-		}
-	}
-	
 	private static Vector getListOfhiddenPacketsForAccount(String accountId, String packetList)
 	{
 		Vector uids = new Vector();

@@ -41,6 +41,7 @@ import org.martus.common.crypto.MartusCrypto.DecryptionException;
 import org.martus.common.crypto.MartusCrypto.NoKeyPairException;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
+import org.martus.common.database.ReadableDatabase;
 import org.martus.common.database.FileDatabase.MissingAccountMapException;
 import org.martus.common.database.FileDatabase.MissingAccountMapSignatureException;
 import org.martus.common.packet.BulletinHeaderPacket;
@@ -52,6 +53,7 @@ import org.martus.common.packet.Packet.SignatureVerificationException;
 import org.martus.common.packet.Packet.WrongAccountException;
 import org.martus.common.packet.Packet.WrongPacketTypeException;
 import org.martus.util.InputStreamWithSeek;
+import org.martus.util.Base64.InvalidBase64Exception;
 
 
 public class BulletinStore
@@ -82,7 +84,12 @@ public class BulletinStore
 		return security;
 	}
 	
-	public Database getDatabase()
+	public ReadableDatabase getDatabase()
+	{
+		return database;
+	}
+	
+	protected Database getWriteableDatabase()
 	{
 		return database;
 	}
@@ -167,7 +174,7 @@ public class BulletinStore
 		ZipFile zip = new ZipFile(inputFile);
 		try
 		{
-			BulletinZipUtilities.importBulletinPacketsFromZipFileToDatabase(getDatabase(), null, zip, getSignatureVerifier());
+			BulletinZipUtilities.importBulletinPacketsFromZipFileToDatabase(getWriteableDatabase(), null, zip, getSignatureVerifier());
 		}
 		catch (Database.RecordHiddenException shouldBeImpossible)
 		{
@@ -218,7 +225,7 @@ public class BulletinStore
 	{
 		class BulletinKeyFilter implements Database.PacketVisitor
 		{
-			BulletinKeyFilter(Database db, Database.PacketVisitor visitorToUse2)
+			BulletinKeyFilter(ReadableDatabase db, Database.PacketVisitor visitorToUse2)
 			{
 				visitor = visitorToUse2;
 				db.visitAllRecords(this);
@@ -232,7 +239,7 @@ public class BulletinStore
 					visitor.visit(key);
 				}
 			}
-			Database.PacketVisitor visitor;
+			ReadableDatabase.PacketVisitor visitor;
 			int count;
 		}
 	
@@ -253,7 +260,7 @@ public class BulletinStore
 			}
 
 			BulletinHeaderPacket bhpMain = b.getBulletinHeaderPacket();
-			deleteBulletinRevisionFromDatabase(bhpMain, getDatabase(), crypto);
+			deleteBulletinRevisionFromDatabase(bhpMain, getWriteableDatabase(), crypto);
 		}
 		catch(Exception e)
 		{
@@ -266,7 +273,7 @@ public class BulletinStore
 	{
 		DatabaseKey key = DatabaseKey.createSealedKey(uidToDelete);
 		BulletinHeaderPacket bhp = loadBulletinHeaderPacket(getDatabase(), key, getSignatureVerifier());
-		deleteBulletinRevisionFromDatabase(bhp, getDatabase(), getSignatureVerifier());
+		deleteBulletinRevisionFromDatabase(bhp, getWriteableDatabase(), getSignatureVerifier());
 	}
 
 	public static void deleteBulletinRevisionFromDatabase(BulletinHeaderPacket bhp, Database db, MartusCrypto crypto)
@@ -287,7 +294,7 @@ public class BulletinStore
 		}
 	}
 
-	public static BulletinHeaderPacket loadBulletinHeaderPacket(Database db, DatabaseKey key, MartusCrypto security)
+	public static BulletinHeaderPacket loadBulletinHeaderPacket(ReadableDatabase db, DatabaseKey key, MartusCrypto security)
 	throws
 		IOException,
 		CryptoException,
@@ -309,6 +316,19 @@ public class BulletinStore
 		}
 	}
 
+	public void hidePackets(Vector packetsIdsToHide, LoggerInterface logger) throws InvalidBase64Exception
+	{
+		Database db = getWriteableDatabase();
+		for(int i = 0; i < packetsIdsToHide.size(); ++i)
+		{
+			UniversalId uId = (UniversalId)(packetsIdsToHide.get(i));
+			db.hide(uId);
+			String publicCode = MartusCrypto.getFormattedPublicCode(uId.getAccountId());
+			logger.log("Deleting " + publicCode + ": " + uId.getLocalId());
+		
+		}
+	}
+
 	private MartusCrypto security;
 	private File dir;
 	private Database database;
@@ -316,7 +336,7 @@ public class BulletinStore
 
 class LeafScanner implements Database.PacketVisitor
 {
-	public LeafScanner(Database databaseToScan, MartusCrypto cryptoToUse)
+	public LeafScanner(ReadableDatabase databaseToScan, MartusCrypto cryptoToUse)
 	{
 		db = databaseToScan;
 		crypto = cryptoToUse;
@@ -354,7 +374,7 @@ class LeafScanner implements Database.PacketVisitor
 		}
 	}
 	
-	Database db;
+	ReadableDatabase db;
 	MartusCrypto crypto;
 	Vector leafKeys;
 	Vector nonLeafUids;

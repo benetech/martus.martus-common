@@ -51,6 +51,7 @@ import org.martus.common.crypto.MartusCrypto.DecryptionException;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
+import org.martus.common.database.ReadableDatabase;
 import org.martus.common.database.Database.RecordHiddenException;
 import org.martus.common.network.SimpleX509TrustManager;
 import org.martus.common.packet.BulletinHeaderPacket;
@@ -285,7 +286,7 @@ public class MartusUtilities
 		}
 	}
 
-	public static int getBulletinSize(Database db, BulletinHeaderPacket bhp)
+	public static int getBulletinSize(ReadableDatabase db, BulletinHeaderPacket bhp)
 	{
 		int size = 0;
 		DatabaseKey[] bulletinPacketKeys  = BulletinZipUtilities.getAllPacketKeys(bhp);

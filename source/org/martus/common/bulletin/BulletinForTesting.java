@@ -40,8 +40,8 @@ import java.util.zip.ZipOutputStream;
 import org.martus.common.MartusConstants;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusCrypto.CryptoException;
-import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
+import org.martus.common.database.ReadableDatabase;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.Packet;
@@ -73,7 +73,7 @@ public class BulletinForTesting extends Bulletin
 		}
 	}
 
-	public static String saveToZipString(Database db, Bulletin b, MartusCrypto security) throws
+	public static String saveToZipString(ReadableDatabase db, Bulletin b, MartusCrypto security) throws
 		IOException,
 		MartusCrypto.CryptoException
 	{
@@ -96,7 +96,7 @@ public class BulletinForTesting extends Bulletin
 
 	}
 
-	public static void saveToFile(Database db, Bulletin b, File destFile, MartusCrypto security) throws
+	public static void saveToFile(ReadableDatabase db, Bulletin b, File destFile, MartusCrypto security) throws
 		IOException,
 		MartusCrypto.CryptoException
 	{
@@ -127,7 +127,7 @@ public class BulletinForTesting extends Bulletin
 		}
 	}
 
-	public static void writeAttachmentsToZip(Database db, Bulletin b, ZipOutputStream zipOut, AttachmentProxy[] attachments, MartusCrypto sigVerifier) throws
+	public static void writeAttachmentsToZip(ReadableDatabase db, Bulletin b, ZipOutputStream zipOut, AttachmentProxy[] attachments, MartusCrypto sigVerifier) throws
 		IOException,
 		CryptoException
 	{

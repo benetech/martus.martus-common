@@ -38,6 +38,7 @@ import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.CryptoException;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
+import org.martus.common.database.ReadableDatabase;
 import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.FieldDataPacket;
@@ -150,7 +151,7 @@ public class BulletinSaver
 		}
 	}
 
-	public static void extractAttachmentToFile(Database db, AttachmentProxy a, MartusCrypto verifier, File destFile) throws
+	public static void extractAttachmentToFile(ReadableDatabase db, AttachmentProxy a, MartusCrypto verifier, File destFile) throws
 		IOException,
 		Base64.InvalidBase64Exception,
 		Packet.InvalidPacketException,
@@ -163,7 +164,7 @@ public class BulletinSaver
 	}
 
 
-	public static void extractAttachmentToStream(Database db, AttachmentProxy a, MartusCrypto verifier, OutputStream out)
+	public static void extractAttachmentToStream(ReadableDatabase db, AttachmentProxy a, MartusCrypto verifier, OutputStream out)
 		throws
 			IOException,
 			CryptoException,

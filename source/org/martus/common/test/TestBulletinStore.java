@@ -38,7 +38,7 @@ import org.martus.common.crypto.MartusCrypto.CryptoException;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.MockClientDatabase;
-import org.martus.common.database.Database.PacketVisitor;
+import org.martus.common.database.ReadableDatabase.PacketVisitor;
 import org.martus.common.packet.BulletinHistory;
 import org.martus.common.packet.UniversalId;
 import org.martus.util.Stopwatch;

@@ -27,12 +27,13 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.bulletin;
 
 import java.io.IOException;
+
 import org.martus.common.FieldSpec;
 import org.martus.common.HQKeys;
 import org.martus.common.StandardFieldSpecs;
 import org.martus.common.crypto.MartusCrypto;
-import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
+import org.martus.common.database.ReadableDatabase;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.Packet;
@@ -43,7 +44,7 @@ import org.martus.util.InputStreamWithSeek;
 public class BulletinLoader
 {
 
-	public static Bulletin loadFromDatabase(Database db, DatabaseKey key, MartusCrypto verifier) throws
+	public static Bulletin loadFromDatabase(ReadableDatabase db, DatabaseKey key, MartusCrypto verifier) throws
 			IOException,
 			Bulletin.DamagedBulletinException,
 			MartusCrypto.NoKeyPairException
@@ -98,7 +99,7 @@ public class BulletinLoader
 		return b;
 	}
 
-	private static boolean isAttachmentsValid(Database db, MartusCrypto verifier, AttachmentProxy[] attachmentProxies)
+	private static boolean isAttachmentsValid(ReadableDatabase db, MartusCrypto verifier, AttachmentProxy[] attachmentProxies)
 	{
 		if(attachmentProxies == null)
 			return true;
@@ -141,7 +142,7 @@ public class BulletinLoader
 		return true;
 	}
 
-	private static boolean loadAnotherPacket(Packet packet, Database db, DatabaseKey key, byte[] expectedSig, MartusCrypto verifier) throws
+	private static boolean loadAnotherPacket(Packet packet, ReadableDatabase db, DatabaseKey key, byte[] expectedSig, MartusCrypto verifier) throws
 			IOException,
 			MartusCrypto.NoKeyPairException
 	{

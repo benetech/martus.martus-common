@@ -35,6 +35,8 @@ public class UnicodeConstants
 	public static final char ACCENT_I_LOWER = 0xED;
 
 	public static final char ACCENT_O_LOWER = 0xF3;
+	
+	public static final char TILDE_N_LOWER = 0x00F1;
 }
 
 

@@ -49,6 +49,7 @@ import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.StreamEncryptor;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
+import org.martus.common.database.ReadableDatabase;
 import org.martus.common.network.BulletinRetrieverGatewayInterface;
 import org.martus.common.network.NetworkInterfaceConstants;
 import org.martus.common.network.NetworkResponse;
@@ -112,7 +113,7 @@ public class BulletinZipUtilities
 		}
 	}
 
-	public static void exportBulletinPacketsFromDatabaseToZipFile(Database db, DatabaseKey headerKey, File destZipFile, MartusCrypto security) throws
+	public static void exportBulletinPacketsFromDatabaseToZipFile(ReadableDatabase db, DatabaseKey headerKey, File destZipFile, MartusCrypto security) throws
 			IOException,
 			MartusCrypto.CryptoException,
 			UnsupportedEncodingException,
@@ -187,7 +188,7 @@ public class BulletinZipUtilities
 		return keys;
 	}
 
-	public static void extractPacketsToZipStream(String clientId, Database db, DatabaseKey[] packetKeys, OutputStream outputStream, MartusCrypto security) throws
+	public static void extractPacketsToZipStream(String clientId, ReadableDatabase db, DatabaseKey[] packetKeys, OutputStream outputStream, MartusCrypto security) throws
 		IOException,
 		UnsupportedEncodingException
 	{
