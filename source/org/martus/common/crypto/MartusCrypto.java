@@ -107,8 +107,8 @@ public abstract class MartusCrypto
 	public abstract KeyManager [] createKeyManagers() throws Exception;
 	
 	// Secret Share of Private Key
-//	logi put back in after 30 day wait	public abstract Vector getKeyShareBundles();
-//	logi put back in after 30 day wait	public abstract void recoverFromKeyShareBundles(Vector shares) throws KeyShareException;
+	public abstract Vector getKeyShareBundles();
+	public abstract void recoverFromKeyShareBundles(Vector shares) throws KeyShareException;
 
 	// public codes
 	public static String computePublicCode(String publicKeyString) throws
