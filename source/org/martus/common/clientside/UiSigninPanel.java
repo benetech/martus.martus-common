@@ -71,7 +71,7 @@ public class UiSigninPanel extends UiParagraphPanel implements VirtualKeyboardHa
 		userNameDescription = new JLabel("");
 		passwordDescription = new JLabel("");
 
-		nameField = new UiSingleTextField(20);
+		nameField = new UiTextField(20);
 		nameField.setText(username);
 		JLabel userNameLabel = new JLabel(localization.getFieldLabel("username"));
 		addComponents(userNameLabel, createPanel(userNameDescription, nameField));
@@ -212,7 +212,7 @@ public class UiSigninPanel extends UiParagraphPanel implements VirtualKeyboardHa
 	CurrentUiState uiState;
 	private JLabel userNameDescription;
 	private JLabel passwordDescription;
-	private UiSingleTextField nameField;
+	private UiTextField nameField;
 	private UiPasswordField passwordField;
 	private UiParagraphPanel passwordArea;
 	private JPanel virtualKeyboardPanel;

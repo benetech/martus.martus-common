@@ -29,15 +29,21 @@ import javax.swing.JTextField;
 import org.martus.swing.UiLanguageDirection;
 
 
-public class UiSingleTextField extends JTextField
+public class UiTextField extends JTextField
 {
-	public UiSingleTextField (int columns)
+	public UiTextField()
+	{
+		super();
+		initalizeOrientation();
+	}
+	
+	public UiTextField (int columns)
 	{
 		super(columns);
 		initalizeOrientation();
 	}
 	
-	public UiSingleTextField(String text)
+	public UiTextField(String text)
 	{
 		super(text);
 		initalizeOrientation();
