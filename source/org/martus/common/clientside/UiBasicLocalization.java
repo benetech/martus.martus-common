@@ -138,6 +138,11 @@ public class UiBasicLocalization extends Localization
 		if(entry != null)
 			return entry.getText();
 
+		return getDefaultLabel(languageCode, key);
+	}
+
+	private String getDefaultLabel(String languageCode, String key)
+	{
 		String defaultValue = null;
 		if(!languageCode.equals(ENGLISH))
 			defaultValue = getLabel(ENGLISH, key);
