@@ -225,7 +225,7 @@ public class TestKeyShareSaveRestore extends TestCaseEnhanced
 				writer.writeln("corrupted Public code");
 				writer.writeln("date/time stamp");
 				writer.writeln("corrupted Share");
-				writer.writeln(Base64.encode(new String("Corrupted KeyPair").getBytes()));
+				writer.writeln(Base64.encode("Corrupted KeyPair"));
 				writer.close();
 				fakeBundle.add(writer.toString());
 			}			
