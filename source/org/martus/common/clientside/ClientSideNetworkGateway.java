@@ -26,15 +26,24 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.clientside;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Vector;
+import org.martus.common.ProgressMeterInterface;
 import org.martus.common.VersionBuildDate;
 import org.martus.common.MartusUtilities.ServerErrorException;
+import org.martus.common.bulletin.BulletinZipUtilities;
 import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
 import org.martus.common.network.BulletinRetrieverGatewayInterface;
 import org.martus.common.network.NetworkInterface;
 import org.martus.common.network.NetworkInterfaceConstants;
 import org.martus.common.network.NetworkInterfaceXmlRpcConstants;
 import org.martus.common.network.NetworkResponse;
+import org.martus.common.packet.UniversalId;
+import org.martus.util.Base64.InvalidBase64Exception;
 
 public class ClientSideNetworkGateway implements BulletinRetrieverGatewayInterface
 {
@@ -212,6 +221,20 @@ public class ClientSideNetworkGateway implements BulletinRetrieverGatewayInterfa
 			System.out.println("ServerUtilities.getFieldOfficeAccounts: " + e);
 			throw new ServerErrorException();
 		}
+	}
+
+	public File retrieveBulletin(UniversalId uid, MartusCrypto security, int chunkSize, ProgressMeterInterface progressMeter) throws IOException, FileNotFoundException, MartusSignatureException, ServerErrorException, InvalidBase64Exception
+	{
+		File tempFile = File.createTempFile("$$$MartusRetrievedBulletin", null);
+		tempFile.deleteOnExit();
+		FileOutputStream outputStream = new FileOutputStream(tempFile);
+	
+		int masterTotalSize = BulletinZipUtilities.retrieveBulletinZipToStream(uid, outputStream,
+				chunkSize, this,  security,	progressMeter);
+		outputStream.close();
+		if(tempFile.length() != masterTotalSize)
+			throw new ServerErrorException("bulletin totalSize didn't match data length");
+		return tempFile;
 	}
 
 	final static String defaultReservedString = "";
