@@ -184,7 +184,7 @@ public class Bulletin implements BulletinConstants
 	
 	public int getVersion()
 	{
-		return getHistory().size() + 1;
+		return getBulletinHeaderPacket().getVersionNumber();
 	}
 
 	public boolean isDraft()
