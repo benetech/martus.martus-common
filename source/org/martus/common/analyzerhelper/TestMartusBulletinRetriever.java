@@ -422,7 +422,7 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		
 		try
 		{
-			retriever.getBulletin(UniversalId.createDummyUniversalId());
+			retriever.getBulletin(UniversalId.createDummyUniversalId(), null);
 			fail("should have thrown for invalid UId");
 		}
 		catch(ServerErrorException expected)
@@ -446,7 +446,7 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		bulletin.addPublicAttachment(attachmentProxy);
 		
 		mockGateway.setTestBulletinToRetrieve(bulletin);
-		MartusBulletinWrapper retrievedBulletin = retriever.getBulletin(bulletin.getUniversalId());
+		MartusBulletinWrapper retrievedBulletin = retriever.getBulletin(bulletin.getUniversalId(), null);
 		assertEquals("Didn't get the correct author?", author, retrievedBulletin.getAuthor());
 		assertEquals("Didn't get the correct title?", title, retrievedBulletin.getTitle());
 		assertEquals("Didn't get the correct location?", location, retrievedBulletin.getLocation());

@@ -31,6 +31,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import org.martus.common.ProgressMeterInterface;
 import org.martus.common.MartusUtilities.PublicInformationInvalidException;
 import org.martus.common.MartusUtilities.ServerErrorException;
 import org.martus.common.clientside.ClientSideNetworkGateway;
@@ -106,11 +107,11 @@ public class MartusBulletinRetriever
 		return allBulletinsForFieldOffice;
 	}
 
-	public MartusBulletinWrapper getBulletin(UniversalId uid) throws ServerErrorException
+	public MartusBulletinWrapper getBulletin(UniversalId uid, ProgressMeterInterface progressMeter) throws ServerErrorException
 	{
 		try
 		{
-			File bulletinZipFile = serverSLL.retrieveBulletin(uid, security, NetworkInterfaceConstants.MAX_CHUNK_SIZE, null);
+			File bulletinZipFile = serverSLL.retrieveBulletin(uid, security, NetworkInterfaceConstants.MAX_CHUNK_SIZE, progressMeter);
 			MartusBulletinWrapper bulletin = new MartusBulletinWrapper(uid, bulletinZipFile, security);
 			bulletinZipFile.delete();
 			return bulletin;
