@@ -35,10 +35,10 @@ import org.martus.swing.UiNotifyDlg;
 
 public class UiUtilities
 {
-	public static void notifyDlg(UiBasicLocalization localization, JFrame parent, String baseTag, String titleTag)
+	public static void notifyDlg(UiBasicLocalization localization, JFrame parent, String baseTag)
 	{
 		HashMap emptyTokenReplacement = new HashMap();
-		notifyDlg(localization, parent, baseTag, titleTag, emptyTokenReplacement);
+		notifyDlg(localization, parent, baseTag, "notify" + baseTag, emptyTokenReplacement);
 	}
 
 	public static void notifyDlg(UiBasicLocalization localization, JFrame parent, String baseTag, String titleTag, Map tokenReplacement)
