@@ -571,6 +571,16 @@ public class MartusUtilities
 		return list;
 	}
 	
+	public static synchronized void writeListToFile(File outFile, Vector outList) throws IOException
+	{		
+		UnicodeWriter writer = new UnicodeWriter(outFile);
+		for (int i=0;i<outList.size();++i)
+		{
+			writer.writeln((String)outList.get(i));
+		}								
+		writer.close();			
+	}
+	
 	public static synchronized Vector loadListFromFile(BufferedReader readerInput)
 		throws IOException
 	{
