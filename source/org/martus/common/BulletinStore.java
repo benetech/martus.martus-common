@@ -36,6 +36,8 @@ import org.martus.common.MartusUtilities.FileVerificationException;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinZipUtilities;
 import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.crypto.MartusCrypto.CryptoException;
+import org.martus.common.crypto.MartusCrypto.DecryptionException;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.FileDatabase.MissingAccountMapException;
@@ -43,7 +45,11 @@ import org.martus.common.database.FileDatabase.MissingAccountMapSignatureExcepti
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.Packet;
 import org.martus.common.packet.UniversalId;
+import org.martus.common.packet.Packet.InvalidPacketException;
+import org.martus.common.packet.Packet.SignatureVerificationException;
 import org.martus.common.packet.Packet.WrongAccountException;
+import org.martus.common.packet.Packet.WrongPacketTypeException;
+import org.martus.util.InputStreamWithSeek;
 
 
 public class BulletinStore
@@ -201,8 +207,15 @@ public class BulletinStore
 	{
 		MartusCrypto crypto = getSignatureVerifier();
 		BulletinHeaderPacket bhp = b.getBulletinHeaderPacket();
+		Vector history = b.getHistory();
 		try
 		{
+			for(int i = 0; i < history.size(); ++i)
+			{
+				String localIdOfAncestor = (String)history.get(i);
+				UniversalId uidOfAncestor = UniversalId.createFromAccountAndLocalId(b.getAccount(), localIdOfAncestor);
+				
+			}
 			deleteBulletinRevisionFromDatabase(bhp, getDatabase(), crypto);
 		}
 		catch(Exception e)
@@ -230,6 +243,28 @@ public class BulletinStore
 		}
 	}
 
+	public static BulletinHeaderPacket loadBulletinHeaderPacket(Database db, DatabaseKey key, MartusCrypto security)
+	throws
+		IOException,
+		CryptoException,
+		InvalidPacketException,
+		WrongPacketTypeException,
+		SignatureVerificationException,
+		DecryptionException
+	{
+		InputStreamWithSeek in = db.openInputStream(key, security);
+		try
+		{
+			BulletinHeaderPacket bhp = new BulletinHeaderPacket();
+			bhp.loadFromXml(in, security);
+			return bhp;
+		}
+		finally
+		{
+			in.close();
+		}
+	}
+
 	private MartusCrypto security;
 	private File dir;
 	private Database database;
@@ -252,14 +287,13 @@ class LeafScanner implements Database.PacketVisitor
 	
 	public void visit(DatabaseKey key)
 	{
-		BulletinHeaderPacket bhp = new BulletinHeaderPacket();
 		try
 		{
 			UniversalId maybeLeaf = key.getUniversalId();
 			if(!nonLeafUids.contains(maybeLeaf))
 				leafUids.add(maybeLeaf);
 			
-			bhp.loadFromXml(db.openInputStream(key, crypto), crypto);
+			BulletinHeaderPacket bhp = BulletinStore.loadBulletinHeaderPacket(db, key, crypto);
 			Vector history = bhp.getHistory();
 			for(int i=0; i < history.size(); ++i)
 			{

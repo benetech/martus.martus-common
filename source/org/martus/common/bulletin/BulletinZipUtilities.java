@@ -41,6 +41,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+import org.martus.common.BulletinStore;
 import org.martus.common.MartusConstants;
 import org.martus.common.MartusUtilities;
 import org.martus.common.ProgressMeterInterface;
@@ -55,7 +56,6 @@ import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.Packet;
 import org.martus.common.packet.UniversalId;
 import org.martus.util.Base64;
-import org.martus.util.ByteArrayInputStreamWithSeek;
 import org.martus.util.InputStreamWithSeek;
 import org.martus.util.StreamCopier;
 import org.martus.util.StreamFilter;
@@ -76,20 +76,11 @@ public class BulletinZipUtilities
 			MartusCrypto.NoKeyPairException,
 			FileNotFoundException
 	{
-		BulletinHeaderPacket bhp;
-		String headerXml = "";
+		BulletinHeaderPacket bhp = null;
 	
-		bhp = new BulletinHeaderPacket(security);
 		try
 		{
-			headerXml = db.readRecord(headerKey, security);
-	
-			byte[] headerBytes = headerXml.getBytes("UTF-8");
-	
-			ByteArrayInputStreamWithSeek headerIn = new ByteArrayInputStreamWithSeek(headerBytes);
-	
-			MartusCrypto doNotCheckSigDuringDownload = null;
-			bhp.loadFromXml(headerIn, doNotCheckSigDuringDownload);
+			bhp = BulletinStore.loadBulletinHeaderPacket(db, headerKey, security);
 			DatabaseKey[] packetKeys = bhp.getPublicPacketKeys();
 	
 			FileOutputStream outputStream = new FileOutputStream(destZipFile);
@@ -132,14 +123,8 @@ public class BulletinZipUtilities
 			MartusCrypto.NoKeyPairException,
 			FileNotFoundException
 	{
-		String headerXml = db.readRecord(headerKey, security);
-		byte[] headerBytes = headerXml.getBytes("UTF-8");
-	
-		ByteArrayInputStreamWithSeek headerIn = new ByteArrayInputStreamWithSeek(headerBytes);
-		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security);
-	
-		MartusCrypto doNotCheckSigDuringDownload = null;
-		bhp.loadFromXml(headerIn, doNotCheckSigDuringDownload);
+		BulletinHeaderPacket bhp = BulletinStore.loadBulletinHeaderPacket(db, headerKey, security); 
+
 		UniversalId loadedUid = bhp.getUniversalId();
 		if(!loadedUid.equals(headerKey.getUniversalId()))
 			throw new Packet.InvalidPacketException("Loaded uid doesn't match key uid");

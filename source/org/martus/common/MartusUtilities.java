@@ -324,32 +324,30 @@ public class MartusUtilities
 		DatabaseKey headerKey = DatabaseKey.createDraftKey(bulletinUid);
 		if(!db.doesRecordExist(headerKey))
 			return;
-		BulletinHeaderPacket bhp = new BulletinHeaderPacket(bulletinUid);
 		try
 		{
-			InputStreamWithSeek in = db.openInputStream(headerKey, security);
-			bhp.loadFromXml(in, security);
+			BulletinHeaderPacket bhp = BulletinStore.loadBulletinHeaderPacket(db, headerKey, security);
+
+			String accountId = bhp.getAccountId();
+			deleteDraftPacket(db, accountId, bhp.getLocalId());
+			deleteDraftPacket(db, accountId, bhp.getFieldDataPacketId());
+			deleteDraftPacket(db, accountId, bhp.getPrivateFieldDataPacketId());
+	
+			String[] publicAttachmentIds = bhp.getPublicAttachmentIds();
+			for(int i = 0; i < publicAttachmentIds.length; ++i)
+			{
+				deleteDraftPacket(db, accountId, publicAttachmentIds[i]);
+			}
+	
+			String[] privateAttachmentIds = bhp.getPrivateAttachmentIds();
+			for(int i = 0; i < privateAttachmentIds.length; ++i)
+			{
+				deleteDraftPacket(db, accountId, privateAttachmentIds[i]);
+			}
 		}
 		catch (Exception e)
 		{
 			throw new IOException(e.toString());
-		}
-
-		String accountId = bhp.getAccountId();
-		deleteDraftPacket(db, accountId, bhp.getLocalId());
-		deleteDraftPacket(db, accountId, bhp.getFieldDataPacketId());
-		deleteDraftPacket(db, accountId, bhp.getPrivateFieldDataPacketId());
-
-		String[] publicAttachmentIds = bhp.getPublicAttachmentIds();
-		for(int i = 0; i < publicAttachmentIds.length; ++i)
-		{
-			deleteDraftPacket(db, accountId, publicAttachmentIds[i]);
-		}
-
-		String[] privateAttachmentIds = bhp.getPrivateAttachmentIds();
-		for(int i = 0; i < privateAttachmentIds.length; ++i)
-		{
-			deleteDraftPacket(db, accountId, privateAttachmentIds[i]);
 		}
 	}
 

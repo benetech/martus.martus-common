@@ -78,19 +78,44 @@ public class TestBulletinStore extends TestCaseEnhanced
 		store.deleteAllData();
 		super.tearDown();
 	}
+    
+    public void testRemoveBulletinFromStore() throws Exception
+	{
+    	Bulletin unrelated = createAndSaveBulletin();
+		assertEquals("didn't create unrelated bulletin?", 1, store.getBulletinCount());
+
+// ENABLE these tests next to continue work on versioning 2004-08-19 kbs
+//		Bulletin original = createAndSaveBulletin();
+//		Bulletin clone = createAndSaveClone(original);
+//		store.removeBulletinFromStore(clone);
+//		assertEquals("didn't delete clone and ancestor?", 1, store.getBulletinCount());
+		
+		store.removeBulletinFromStore(unrelated);
+		assertEquals("didn't delete unrelated?", 0, store.getBulletinCount());
+	}
 
 	public void testGetBulletinCount() throws Exception
 	{
 		Bulletin original = createAndSaveBulletin();
+		createAndSaveClone(original);
+		assertEquals(1, store.getBulletinCount());
+	}
+	
+    
+
+	private Bulletin createAndSaveClone(Bulletin original) throws IOException, CryptoException
+	{
+		if(original.getFieldDataPacket().getAttachments().length > 0)
+			fail("Not tested for attachments!");
+		if(original.getPrivateFieldDataPacket().getAttachments().length > 0)
+			fail("Not tested for attachments!");
 		Bulletin clone = new Bulletin(security);
 		Vector history = new Vector();
 		history.add(original.getLocalId());
 		clone.setHistory(history);
 		BulletinSaver.saveToClientDatabase(clone, db, false, security);
-		assertEquals(1, store.getBulletinCount());
+		return clone;
 	}
-	
-    
 
 	public void testGetAllBulletinUids() throws Exception
 	{

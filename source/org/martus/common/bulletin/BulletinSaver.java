@@ -31,6 +31,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.martus.common.BulletinStore;
 import org.martus.common.MartusUtilities;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.SessionKey;
@@ -64,8 +65,7 @@ public class BulletinSaver
 		{
 			if(db.doesRecordExist(key))
 			{
-				InputStreamWithSeek in = db.openInputStream(key, signer);
-				oldBhp.loadFromXml(in, signer);
+				oldBhp = BulletinStore.loadBulletinHeaderPacket(db, key, signer);
 				bulletinAlreadyExisted = true;
 			}
 		}

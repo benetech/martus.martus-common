@@ -156,6 +156,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 
 		ByteArrayOutputStream out1 = new ByteArrayOutputStream();
 		bhp.writeXml(out1, security);
+		
 		ByteArrayInputStreamWithSeek in1 = new ByteArrayInputStreamWithSeek(out1.toByteArray());
 		BulletinHeaderPacket loadedBhp1 = new BulletinHeaderPacket(UniversalId.createDummyUniversalId());
 		loadedBhp1.loadFromXml(in1, security);
@@ -194,6 +195,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 
 		ByteArrayOutputStream out1 = new ByteArrayOutputStream();
 		bhp.writeXml(out1, security);
+		
 		ByteArrayInputStreamWithSeek in1 = new ByteArrayInputStreamWithSeek(out1.toByteArray());
 		BulletinHeaderPacket loadedBhp1 = new BulletinHeaderPacket(UniversalId.createDummyUniversalId());
 		loadedBhp1.loadFromXml(in1, security);
