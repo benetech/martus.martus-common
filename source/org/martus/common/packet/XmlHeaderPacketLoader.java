@@ -57,14 +57,13 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 	{
 	}
 
-	public void endElement(SimpleXmlDefaultLoader ended)
+	public void endElement(String tag, SimpleXmlDefaultLoader ended)
 		throws SAXParseException
 	{
-		String tag = ended.getTag();
 		if(getTagsContainingStrings().contains(tag))
 			endStringElement(ended);
 		else
-			super.endElement(ended);
+			super.endElement(tag, ended);
 	}
 
 	private void endStringElement(SimpleXmlDefaultLoader ended)

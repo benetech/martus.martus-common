@@ -121,7 +121,7 @@ public class CustomFields
 			return;
 		}
 
-		public void endElement(SimpleXmlDefaultLoader ended)
+		public void endElement(String tag, SimpleXmlDefaultLoader ended)
 			throws SAXParseException
 		{
 			FieldSpec spec = ((FieldLoader)ended).getFieldSpec();
@@ -152,10 +152,9 @@ public class CustomFields
 			return super.startElement(tag);
 		}
 
-		public void endElement(SimpleXmlDefaultLoader ended)
+		public void endElement(String thisTag, SimpleXmlDefaultLoader ended)
 			throws SAXParseException
 		{
-			String thisTag = ended.getTag();
 			String thisValue = ((SimpleXmlStringLoader)ended).getText(); 
 			if(thisTag.equals("Tag"))
 				tag = thisValue;
@@ -164,7 +163,7 @@ public class CustomFields
 			else if(thisTag.equals("Type"))
 				type = FieldSpec.getTypeCode(thisValue);
 			else
-				super.endElement(ended);
+				super.endElement(thisTag, ended);
 		}
 
 		String tag;

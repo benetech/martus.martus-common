@@ -104,16 +104,15 @@ public class GridRow
 			return super.startElement(tag);
 		}
 		
-		public void endElement(SimpleXmlDefaultLoader ended)
+		public void endElement(String tag, SimpleXmlDefaultLoader ended)
 				throws SAXParseException
 		{
-			String tag = ended.getTag();
 			if(tag.equals(GridData.COLUMN_TAG))
 			{
 				String cellText = ((SimpleXmlStringLoader)ended).getText();
 				thisRow.setCellText(currentColumn++, cellText);
 			}
-			super.endElement(ended);
+			super.endElement(tag, ended);
 		}
 		GridRow thisRow;
 		int currentColumn;

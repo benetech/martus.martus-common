@@ -237,16 +237,15 @@ class XmlAttachmentExporter extends XmlPacketLoader
 			return super.startElement(tag);
 	}
 
-	public void endElement(SimpleXmlDefaultLoader ended)
+	public void endElement(String tag, SimpleXmlDefaultLoader ended)
 		throws SAXParseException
 	{
-		String tag = ended.getTag();
 		if(tag.equals(MartusXml.AttachmentBytesElementName))
 		{
 			return;
 		}
 		else
-			super.endElement(ended);
+			super.endElement(tag, ended);
 	}
 
 	OutputStream out;

@@ -166,13 +166,12 @@ public class GridData
 			return super.startElement(tag);
 		}
 		
-		public void endElement(SimpleXmlDefaultLoader ended)
+		public void endElement(String tag, SimpleXmlDefaultLoader ended)
 				throws SAXParseException
 		{
-			String tag = ended.getTag();
 			if(tag.equals(GridData.ROW_TAG))
 				grid.addRow(((GridRow.XmlGridRowLoader)ended).getGridRow()); 
-			super.endElement(ended);
+			super.endElement(tag, ended);
 		}
 		GridData grid;
 	}

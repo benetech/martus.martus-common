@@ -46,13 +46,12 @@ public class XmlFieldSpecDetailsLoader extends SimpleXmlDefaultLoader
 		return super.startElement(tag);
 	}
 
-	public void endElement(SimpleXmlDefaultLoader ended)
+	public void endElement(String tag, SimpleXmlDefaultLoader ended)
 			throws SAXParseException
 	{
-		String tag = ended.getTag();
 		if(tag.equals(FieldSpecDetails.TAG_GRIDSPEC_DETAILS))
 			details = ((XmlGridSpecDetailsLoader)ended).getDetails();
-		super.endElement(ended);
+		super.endElement(tag, ended);
 	}
 	
 	public FieldSpecDetails getDetails()
@@ -79,13 +78,12 @@ class XmlGridSpecDetailsLoader extends SimpleXmlDefaultLoader
 		return super.startElement(tag);
 	}
 
-	public void endElement(SimpleXmlDefaultLoader ended)
+	public void endElement(String tag, SimpleXmlDefaultLoader ended)
 			throws SAXParseException
 	{
-		String tag = ended.getTag();
 		if(tag.equals(FieldSpecDetails.TAG_GRIDSPEC_COLUMN))
 			details.addColumnLabel(((XmlGridSpecColumnLoader)ended).getLabel());
-		super.endElement(ended);
+		super.endElement(tag, ended);
 	}
 	
 	public FieldSpecDetails getDetails()
@@ -111,13 +109,12 @@ class XmlGridSpecColumnLoader extends SimpleXmlDefaultLoader
 		return super.startElement(tag);
 	}
 
-	public void endElement(SimpleXmlDefaultLoader ended)
+	public void endElement(String tag, SimpleXmlDefaultLoader ended)
 			throws SAXParseException
 	{
-		String tag = ended.getTag();
 		if(tag.equals(FieldSpecDetails.TAG_GRIDSPEC_LABEL))
 			label = ((SimpleXmlStringLoader)ended).getText();
-		super.endElement(ended);
+		super.endElement(tag, ended);
 	}
 	public String getLabel()
 	{

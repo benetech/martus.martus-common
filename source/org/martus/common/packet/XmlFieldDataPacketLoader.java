@@ -64,11 +64,9 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 			return super.startElement(tag);
 	}
 
-	public void endElement(SimpleXmlDefaultLoader ended)
+	public void endElement(String tag, SimpleXmlDefaultLoader ended)
 		throws SAXParseException
 	{
-		String tag = ended.getTag();
-
 		try
 		{
 			if(tag.startsWith(MartusXml.FieldElementPrefix))
@@ -99,7 +97,7 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 					encryptedHQSessionKey = new SessionKey(Base64.decode(value));
 			}
 			else
-				super.endElement(ended);
+				super.endElement(tag, ended);
 		}
 		catch (InvalidBase64Exception e)
 		{
@@ -156,13 +154,12 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 			return super.startElement(tag);
 		}
 
-		public void endElement(SimpleXmlDefaultLoader ended)
+		public void endElement(String tag, SimpleXmlDefaultLoader ended)
 				throws SAXParseException
 		{
-			String tag = ended.getTag();
 			if(tag.equals(GridData.GRID_DATA_TAG))
 				complexData = ((GridData.XmlGridDataLoader)ended).getGridData().getXmlRepresentation(); 
-			super.endElement(ended);
+			super.endElement(tag, ended);
 		}
 		String complexData;
 	}
