@@ -33,6 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Vector;
 
 import org.martus.common.BulletinStore;
 import org.martus.common.FieldSpec;
@@ -49,6 +50,7 @@ import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.MockClientDatabase;
 import org.martus.common.database.MockDatabase;
 import org.martus.common.packet.BulletinHeaderPacket;
+import org.martus.common.packet.BulletinHistory;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.util.TestCaseEnhanced;
 
@@ -247,11 +249,30 @@ public class TestBulletin extends TestCaseEnhanced
 		Bulletin b = new Bulletin(security);
 		b.set(Bulletin.TAGPUBLICINFO, publicInfo);
 		b.set(Bulletin.TAGPRIVATEINFO, privateInfo);
+		HQKey key1 = new HQKey("account1");
+		HQKey key2 = new HQKey("account2");
+		Vector keysToUse = new Vector();
+		keysToUse.add(key1);
+		keysToUse.add(key2);
+		HQKeys keys = new HQKeys(keysToUse);
+		BulletinHeaderPacket bhp = b.getBulletinHeaderPacket();
+		b.setAuthorizedToReadKeys(keys);
+		BulletinHistory history = new BulletinHistory();
+		history.add("some local Id for version 1");
+		b.setHistory(history);
+		assertEquals("legacy key not set?", key1.getPublicKey(), bhp.getLegacyHQPublicKey());
+		assertEquals("authorized to read not set?",keys, b.getAuthorizedToReadKeys());
+		assertEquals("authorized to upload not set?",keys, bhp.getAuthorizedToUploadKeys());
 		assertEquals("public info not set?", publicInfo, b.get(Bulletin.TAGPUBLICINFO));
 		assertEquals("private info not set?", privateInfo, b.get(Bulletin.TAGPRIVATEINFO));
-		b.clear();
+		assertEquals("Version not 2?", 2, b.getVersion());
+		b.clearAllUserData();
 		assertEquals("public info not cleared?", "", b.get(Bulletin.TAGPUBLICINFO));
 		assertEquals("private info not cleared?", "", b.get(Bulletin.TAGPRIVATEINFO));
+		assertEquals("legacy key not cleared?", "", bhp.getLegacyHQPublicKey());
+		assertEquals("authorized to read not cleared?",0, b.getAuthorizedToReadKeys().size());
+		assertEquals("authorized to upload not cleared?",0, bhp.getAuthorizedToUploadKeys().size());
+		assertEquals("Version should still be 2", 2, b.getVersion());
 	}
 
 	public void testGetFieldType()

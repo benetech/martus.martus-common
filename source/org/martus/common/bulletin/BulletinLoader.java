@@ -64,7 +64,7 @@ public class BulletinLoader
 		FieldSpec[] standardFieldNames = StandardFieldSpecs.getDefaultPublicFieldSpecs();
 		FieldSpec[] privateFieldNames = StandardFieldSpecs.getDefaultPrivateFieldSpecs();
 		Bulletin b = new Bulletin(verifier, standardFieldNames, privateFieldNames);
-		b.clear();
+		b.clearAllUserData();
 		b.setIsValid(false);
 
 		BulletinHeaderPacket headerPacket = b.getBulletinHeaderPacket();

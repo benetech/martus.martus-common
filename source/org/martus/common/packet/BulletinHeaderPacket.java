@@ -64,6 +64,21 @@ public class BulletinHeaderPacket extends Packet
 		initialize();
 	}
 
+	protected void initialize()
+	{
+		status = "";
+		allPrivate = true;
+		allHQsCanProxyUpload = false;
+		fieldDataPacketSig = new byte[1];
+		privateFieldDataPacketSig = new byte[1];
+		publicAttachments = new Vector();
+		privateAttachments = new Vector();
+		legacyHqPublicKey = "";
+		lastSavedTime = TIME_UNKNOWN;
+		authorizedToReadKeys = new HQKeys();
+		history = new BulletinHistory();
+	}
+
 	public static UniversalId createUniversalId(MartusCrypto accountSecurity)
 	{
 		return UniversalId.createFromAccountAndLocalId(accountSecurity.getPublicKeyString(), createLocalId(accountSecurity, prefix));
@@ -73,11 +88,23 @@ public class BulletinHeaderPacket extends Packet
 	{
 		return localId.startsWith(prefix);
 	}
+	
+	public void clearAllUserData()
+	{
+		clearAttachments();
+		clearAuthorizedToRead();
+	}
 
-	public void clearAttachments()
+	private void clearAttachments()
 	{
 		publicAttachments.clear();
 		privateAttachments.clear();
+	}
+	
+	private void clearAuthorizedToRead()
+	{
+		authorizedToReadKeys = new HQKeys();
+		legacyHqPublicKey = "";
 	}
 
 	public boolean hasAllPrivateFlag()
@@ -434,21 +461,6 @@ public class BulletinHeaderPacket extends Packet
 			setAllPrivate(false);
 		else
 			setAllPrivate(true);
-	}
-
-	protected void initialize()
-	{
-		status = "";
-		allPrivate = true;
-		allHQsCanProxyUpload = false;
-		fieldDataPacketSig = new byte[1];
-		privateFieldDataPacketSig = new byte[1];
-		publicAttachments = new Vector();
-		privateAttachments = new Vector();
-		legacyHqPublicKey = "";
-		lastSavedTime = TIME_UNKNOWN;
-		authorizedToReadKeys = new HQKeys();
-		history = new BulletinHistory();
 	}
 
 	private final static String ALL_PRIVATE = "1";

@@ -50,7 +50,7 @@ public class BulletinZipImporter
 
 	public static void loadFromFile(Bulletin b, File inputFile, MartusCrypto verifier) throws IOException
 	{
-		b.clear();
+		b.clearAllUserData();
 		ZipFile zip = new ZipFile(inputFile);
 		try
 		{

@@ -198,7 +198,7 @@ public class TestBulletinStoreSaveBulletin extends TestCaseEnhanced
 		store.saveEncryptedBulletinForTesting(b);
 		Bulletin got1 = BulletinLoader.loadFromDatabase(getDatabase(), key, security);
 
-		got1.clear();
+		got1.clearAllUserData();
 		got1.addPublicAttachment(proxy1);
 		got1.addPublicAttachment(proxy2);
 		got1.addPublicAttachment(proxy3);
@@ -231,7 +231,7 @@ public class TestBulletinStoreSaveBulletin extends TestCaseEnhanced
 		AttachmentProxy keep = got1.getPublicAttachments()[1];
 		AttachmentProxy keepPrivate = got1.getPrivateAttachments()[1];
 
-		got1.clear();
+		got1.clearAllUserData();
 		got1.addPublicAttachment(keep);
 		got1.addPrivateAttachment(keepPrivate);
 		store.saveEncryptedBulletinForTesting(got1);

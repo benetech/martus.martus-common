@@ -86,7 +86,7 @@ public class Bulletin implements BulletinConstants
 		privateFieldData.setEncrypted(true);
 		header.setPrivateFieldDataPacketId(privateDataUid.getLocalId());
 		
-		clear();
+		clearAllUserData();
 	}
 
 	public MartusCrypto getSignatureGenerator()
@@ -295,9 +295,9 @@ public class Bulletin implements BulletinConstants
 		return getPrivateFieldDataPacket().getAttachments();
 	}
 
-	public void clear()
+	public void clearAllUserData()
 	{
-		getBulletinHeaderPacket().clearAttachments();
+		getBulletinHeaderPacket().clearAllUserData();
 		getFieldDataPacket().clearAll();
 		getPrivateFieldDataPacket().clearAll();
 		
@@ -460,7 +460,7 @@ public class Bulletin implements BulletinConstants
 		IOException, 
 		InvalidBase64Exception
 	{
-		clear();
+		clearAllUserData();
 		
 		boolean originalIsMine = other.getAccount().equals(getAccount());
 		if(originalIsMine && other.isSealed())

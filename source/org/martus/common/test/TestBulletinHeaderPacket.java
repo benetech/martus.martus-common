@@ -132,7 +132,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		assertEquals("private list4 a3 in wrong position?", 1, Arrays.binarySearch(list4, attachmentId3));
 		assertEquals("private list4 a4 in wrong position?", 0, Arrays.binarySearch(list4, attachmentId4));
 
-		bhp.clearAttachments();
+		bhp.clearAllUserData();
 		assertEquals("private count after clear", 0, bhp.getPrivateAttachmentIds().length);
 		assertEquals("public count after clear", 0, bhp.getPublicAttachmentIds().length);
 
