@@ -32,6 +32,7 @@ import org.martus.common.MartusUtilities;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.database.Database.RecordHiddenException;
 import org.martus.common.database.FileDatabase.MissingAccountMapSignatureException;
+import org.martus.common.packet.UniversalId;
 import org.martus.util.InputStreamWithSeek;
 
 
@@ -46,6 +47,8 @@ public abstract class ReadableDatabase
 	abstract public void visitAllAccounts(AccountVisitor visitor);
 	abstract public void visitAllRecordsForAccount(PacketVisitor visitor, String accountString);
 	
+	abstract public boolean isHidden(UniversalId uid);
+	abstract public boolean isHidden(DatabaseKey key);
 	abstract public String getFolderForAccount(String accountString) throws IOException;
 	abstract public void verifyAccountMap() throws MartusUtilities.FileVerificationException, MissingAccountMapSignatureException;
 	abstract public boolean isInQuarantine(DatabaseKey key) throws RecordHiddenException;
