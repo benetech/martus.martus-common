@@ -197,11 +197,11 @@ public class ClientSideNetworkGateway implements BulletinRetrieverGatewayInterfa
 		}
 	}
 
-	public static Vector downloadFieldOfficeAccountIds(ClientSideNetworkGateway networkInterfaceGateway, MartusCrypto security, String myAccountId) throws ServerErrorException
+	public Vector downloadFieldOfficeAccountIds(MartusCrypto security, String myAccountId) throws ServerErrorException
 	{
 		try
 		{
-			NetworkResponse response = networkInterfaceGateway.getFieldOfficeAccountIds(security, myAccountId);
+			NetworkResponse response = getFieldOfficeAccountIds(security, myAccountId);
 			String resultCode = response.getResultCode();
 			if(!resultCode.equals(NetworkInterfaceConstants.OK))
 				throw new ServerErrorException(resultCode);

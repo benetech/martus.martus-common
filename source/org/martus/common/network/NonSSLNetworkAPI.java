@@ -36,12 +36,12 @@ abstract public class NonSSLNetworkAPI
 {
 	abstract public String ping();
 	abstract public Vector getServerInformation();
-	public static String getServerPublicKey(NonSSLNetworkAPI server, MartusCrypto verifier) throws ServerNotAvailableException, PublicInformationInvalidException
+	public String getServerPublicKey(MartusCrypto verifier) throws ServerNotAvailableException, PublicInformationInvalidException
 	{
-		if(server.ping() == null)
+		if(ping() == null)
 			throw new ServerNotAvailableException();
 	
-		Vector serverInformation = server.getServerInformation();
+		Vector serverInformation = getServerInformation();
 		if(serverInformation == null)
 			throw new ServerNotAvailableException();
 	

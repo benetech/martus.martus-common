@@ -40,6 +40,9 @@ import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
 import org.martus.common.crypto.MartusCrypto.CryptoInitializationException;
 import org.martus.common.crypto.MartusCrypto.InvalidKeyPairFileVersionException;
+import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
+import org.martus.common.network.NetworkInterfaceConstants;
+import org.martus.common.network.NetworkResponse;
 import org.martus.common.network.NonSSLNetworkAPI;
 import org.martus.util.Base64.InvalidBase64Exception;
 
@@ -72,19 +75,33 @@ public class MartusBulletinRetriever
 		return getServerPublicKey(serverPublicCode, serverNonSSL);
 	}
 	
-	public List getListOfNewBulletinIds(List bulletinIdsAlreadyRetrieved) throws ServerNotConfiguredException, ServerErrorException
+	public List getListOfNewBulletinIds(List bulletinIdsAlreadyRetrieved) throws ServerNotConfiguredException, MartusSignatureException, ServerErrorException
 	{
 		if(!isServerAvailable())
 			return new ArrayList();
-		List allBulletins = getListOfAllBulletinIdsOnServer();
+		List allBulletins = getListOfAllFieldOfficeBulletinIdsOnServer();
 		allBulletins.removeAll(bulletinIdsAlreadyRetrieved);
 		return allBulletins;
 	}
 	
-	public List getListOfAllBulletinIdsOnServer() throws ServerErrorException
+	public List getListOfAllFieldOfficeBulletinIdsOnServer() throws ServerErrorException, MartusSignatureException
 	{
 		List allBulletins = new ArrayList();
-		Vector fieldOffices = ClientSideNetworkGateway.downloadFieldOfficeAccountIds(serverSLL, security, security.getPublicKeyString());
+		Vector fieldOffices = serverSLL.downloadFieldOfficeAccountIds(security, security.getPublicKeyString());
+		Vector noTags = new Vector();
+		for(int a = 0; a < fieldOffices.size(); ++a)
+		{
+			String fieldOfficeAccountId = (String)fieldOffices.get(a);
+			NetworkResponse response = serverSLL.getSealedBulletinIds(security,fieldOfficeAccountId, noTags);
+			if(!response.getResultCode().equals(NetworkInterfaceConstants.OK))
+				throw new ServerErrorException();
+			allBulletins.addAll(response.getResultVector());
+
+			response = serverSLL.getDraftBulletinIds(security,fieldOfficeAccountId, noTags);
+			if(!response.getResultCode().equals(NetworkInterfaceConstants.OK))
+				throw new ServerErrorException();
+			allBulletins.addAll(response.getResultVector());
+		}
 		return allBulletins;
 	}
 	
@@ -96,7 +113,7 @@ public class MartusBulletinRetriever
 		String ServerPublicKey;
 		try
 		{
-			ServerPublicKey = NonSSLNetworkAPI.getServerPublicKey(serverNonSSL, security);
+			ServerPublicKey = serverNonSSL.getServerPublicKey(security);
 			String serverPublicCodeToTest = MartusSecurity.computePublicCode(ServerPublicKey);
 			
 			if(!MartusCrypto.removeNonDigits(serverPublicCode).equals(serverPublicCodeToTest))
