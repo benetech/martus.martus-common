@@ -35,6 +35,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.martus.common.CustomFields;
 import org.martus.common.FieldSpec;
 import org.martus.common.LegacyCustomFields;
@@ -44,10 +46,13 @@ import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.DecryptionException;
-import org.martus.common.crypto.MartusCrypto.NoKeyPairException;
 import org.martus.util.Base64;
 import org.martus.util.ByteArrayInputStreamWithSeek;
 import org.martus.util.InputStreamWithSeek;
+import org.martus.util.UnicodeReader;
+import org.martus.util.Base64.InvalidBase64Exception;
+import org.martus.util.xml.SimpleXmlParser;
+import org.xml.sax.SAXException;
 
 
 public class FieldDataPacket extends Packet
@@ -190,7 +195,7 @@ public class FieldDataPacket extends Packet
 		return result;
 	}
 
-	public void loadFromXml(InputStreamWithSeek inputStream, byte[] expectedSig, MartusCrypto verifier) throws
+	public void loadFromXml(InputStreamWithSeek inputStream, byte[] expectedSig, MartusCrypto security) throws
 		IOException,
 		InvalidPacketException,
 		WrongPacketTypeException,
@@ -200,63 +205,62 @@ public class FieldDataPacket extends Packet
 	{
 		setEncrypted(false);
 		fieldData.clear();
-		super.loadFromXmlInternal(inputStream, expectedSig, verifier);
-		if(encryptedDataDuringLoad == null)
-			return;
-
-		if(verifier == null)
-			throw new MartusCrypto.DecryptionException();
-
-		String encryptedData = encryptedDataDuringLoad;
-		encryptedDataDuringLoad = null;
-		loadFromXmlEncrypted(encryptedData, verifier);
-	}
-
-	private void loadFromXmlEncrypted(String encryptedData, MartusCrypto verifier)
-		throws
-			NoKeyPairException,
-			DecryptionException,
-			IOException,
-			InvalidPacketException,
-			WrongPacketTypeException,
-			SignatureVerificationException
-	{
+		if(security != null)
+			verifyPacketSignature(inputStream, expectedSig, security);
 		try
 		{
-			byte[] encryptedBytes = Base64.decode(encryptedData);
-			ByteArrayInputStreamWithSeek inEncrypted = new ByteArrayInputStreamWithSeek(encryptedBytes);
-			ByteArrayOutputStream outPlain = new ByteArrayOutputStream();
-			if(getAccountId().equals(verifier.getPublicKeyString()))
-			{	
-				verifier.decrypt(inEncrypted, outPlain);
-			}
-			else if(encryptedHQSessionKeyDuringLoad != null)
+			XmlFieldDataPacketLoader loader = new XmlFieldDataPacketLoader(this);
+			SimpleXmlParser.parse(loader, new UnicodeReader(inputStream));
+			
+			String encryptedData = loader.encryptedData;
+			if(encryptedData != null)
 			{
-				SessionKey encryptedHQSessionKey = new SessionKey(Base64.decode(encryptedHQSessionKeyDuringLoad));
-				SessionKey hqSessionKey = verifier.decryptSessionKey(encryptedHQSessionKey);
-				verifier.decrypt(inEncrypted, outPlain, hqSessionKey);
-			}
-			else
-			{
-				throw new MartusCrypto.DecryptionException();
-			}
-		
-			byte[] plainXmlBytes = outPlain.toByteArray();
-			ByteArrayInputStreamWithSeek inPlainXml = new ByteArrayInputStreamWithSeek(plainXmlBytes);
-			UniversalId outerId = getUniversalId();
-			loadFromXml(inPlainXml, verifier);
-			if(outerId != getUniversalId())
-			{
-				// TODO: make sure this has a test!
-				throw new InvalidPacketException("Inner and outer ids are different");
+				SessionKey encryptedHQSessionKey = loader.encryptedHQSessionKey;
+				loadEncryptedXml(encryptedData, encryptedHQSessionKey, security);
 			}
 		}
-		catch(Base64.InvalidBase64Exception e)
+		catch(DecryptionException e)
 		{
-			throw new InvalidPacketException("Base64Exception");
+			throw(e);
+		}
+		catch(Exception e)
+		{
+			// TODO: Be more specific with exceptions!
+			//e.printStackTrace();
+			throw new InvalidPacketException(e.getMessage());
 		}
 	}
-	
+
+	private void loadEncryptedXml(
+		String encryptedData,
+		SessionKey encryptedHQSessionKey,
+		MartusCrypto security)
+		throws
+			DecryptionException,
+			InvalidBase64Exception,
+			IOException,
+			InvalidPacketException,
+			SignatureVerificationException,
+			ParserConfigurationException,
+			SAXException
+	{
+		SessionKey sessionKey = null;
+		boolean isOurBulletin = security.getPublicKeyString().equals(getAccountId());
+		if(!isOurBulletin)
+		{
+			sessionKey = security.decryptSessionKey(encryptedHQSessionKey);
+		}
+		
+		byte[] encryptedBytes = Base64.decode(encryptedData);
+		ByteArrayInputStreamWithSeek inEncrypted = new ByteArrayInputStreamWithSeek(encryptedBytes);
+		ByteArrayOutputStream outPlain = new ByteArrayOutputStream();
+		security.decrypt(inEncrypted, outPlain, sessionKey);
+		ByteArrayInputStreamWithSeek inDecrypted = new ByteArrayInputStreamWithSeek(outPlain.toByteArray());
+		verifyPacketSignature(inDecrypted, security);
+		XmlFieldDataPacketLoader innerLoader = new XmlFieldDataPacketLoader(this);
+		SimpleXmlParser.parse(innerLoader, new UnicodeReader(inDecrypted));
+	}
+
 	public void loadFromXml(InputStreamWithSeek inputStream, MartusCrypto verifier) throws
 		IOException,
 		InvalidPacketException,
@@ -326,55 +330,6 @@ public class FieldDataPacket extends Packet
 		return LegacyCustomFields.buildFieldListString(getFieldSpecs());
 	}
 
-	protected void setFromXml(String elementName, String data) throws
-			Base64.InvalidBase64Exception
-	{
-		if(elementName.equals(MartusXml.EncryptedFlagElementName))
-		{
-			this.setEncrypted(true);
-		}
-		else if(elementName.equals(MartusXml.FieldListElementName))
-		{
-			setFieldSpecsFromString(data);
-		}
-		else if(elementName.startsWith(MartusXml.FieldElementPrefix))
-		{
-			int prefixLength = MartusXml.FieldElementPrefix.length();
-			String tag = elementName.substring(prefixLength);
-			set(tag, data);
-		}
-		else if(elementName.equals(MartusXml.AttachmentLocalIdElementName))
-		{
-			pendingAttachmentLocalId = data;
-		}
-		else if(elementName.equals(MartusXml.AttachmentKeyElementName))
-		{
-			pendingAttachmentKeyBytes = Base64.decode(data);
-		}
-		else if(elementName.equals(MartusXml.AttachmentLabelElementName))
-		{
-			UniversalId uid = UniversalId.createFromAccountAndLocalId(getAccountId(), pendingAttachmentLocalId);
-			SessionKey sessionKey = new SessionKey(pendingAttachmentKeyBytes);
-			addAttachment(new AttachmentProxy(uid, data, sessionKey));
-		}
-		else if(elementName.equals(MartusXml.HQSessionKeyElementName))
-		{
-			encryptedHQSessionKeyDuringLoad = data;
-		}
-		else if(elementName.equals(MartusXml.EncryptedDataElementName))
-		{
-			encryptedDataDuringLoad = data;
-		}
-		else if(elementName.equals(MartusXml.AttachmentElementName))
-		{
-			//do nothing
-		}
-		else
-		{
-			super.setFromXml(elementName, data);
-		}
-	}
-
 	final String packetHeaderTag = "packet";
 
 	private boolean encryptedFlag;
@@ -382,10 +337,6 @@ public class FieldDataPacket extends Packet
 	private Map fieldData;
 	private Vector attachments;
 
-	private String encryptedDataDuringLoad;
-	private String encryptedHQSessionKeyDuringLoad;
-	private String pendingAttachmentLocalId;
-	private byte[] pendingAttachmentKeyBytes;
 	private static final String prefix = "F-";
 	private String hqPublicKey;
 }
