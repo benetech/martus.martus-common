@@ -454,9 +454,9 @@ public class TestBulletin extends TestCaseEnhanced
 		keys.add(key1);
 		
 		original.setAuthorizedToReadKeys(keys);
-		assertEquals("HQKey not set?", key, ((HQKey)original.getAuthorizedToReadKeys().get(0)).getPublicKey());
-		assertEquals("HQKey not set in public?", key, ((HQKey)original.getFieldDataPacket().getAuthorizedToReadKeys().get(0)).getPublicKey());
-		assertEquals("HQKey not set in private?", key, ((HQKey)original.getPrivateFieldDataPacket().getAuthorizedToReadKeys().get(0)).getPublicKey());
+		assertEquals("HQKey not set?", key, (original.getAuthorizedToReadKeys().get(0)).getPublicKey());
+		assertEquals("HQKey not set in public?", key, (original.getFieldDataPacket().getAuthorizedToReadKeys().get(0)).getPublicKey());
+		assertEquals("HQKey not set in private?", key, (original.getPrivateFieldDataPacket().getAuthorizedToReadKeys().get(0)).getPublicKey());
 	}
 
 	static final String samplePublic = "some public text";

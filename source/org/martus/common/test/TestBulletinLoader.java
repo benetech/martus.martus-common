@@ -186,13 +186,13 @@ public class TestBulletinLoader extends TestCaseEnhanced
 
 		DatabaseKey dbKey = new DatabaseKey(original.getUniversalId());
 		Bulletin loaded = BulletinLoader.loadFromDatabase(db, dbKey, security);
-		assertEquals("Keys not the same?", ((HQKey)original.getFieldDataPacket().getAuthorizedToReadKeys().get(0)).getPublicKey(), ((HQKey)loaded.getFieldDataPacket().getAuthorizedToReadKeys().get(0)).getPublicKey());
+		assertEquals("Keys not the same?", (original.getFieldDataPacket().getAuthorizedToReadKeys().get(0)).getPublicKey(), (loaded.getFieldDataPacket().getAuthorizedToReadKeys().get(0)).getPublicKey());
 
 		File tempFile = createTempFile();
 		BulletinForTesting.saveToFile(db, original, tempFile, security);
 		Bulletin loaded2 = new Bulletin(security);
 		BulletinZipImporter.loadFromFile(loaded2, tempFile, security);
-		assertEquals("Loaded Keys not the same?", ((HQKey)original.getFieldDataPacket().getAuthorizedToReadKeys().get(0)).getPublicKey(), ((HQKey)loaded2.getFieldDataPacket().getAuthorizedToReadKeys().get(0)).getPublicKey());
+		assertEquals("Loaded Keys not the same?", (original.getFieldDataPacket().getAuthorizedToReadKeys().get(0)).getPublicKey(), (loaded2.getFieldDataPacket().getAuthorizedToReadKeys().get(0)).getPublicKey());
 	}
 
 	

@@ -92,7 +92,7 @@ class EncryptedFieldDataPacket extends Packet
 			try
 			{
 				//Legacy HQ
-				HQKey publicKey = (HQKey)authorizedToReadKeys.get(0);
+				HQKey publicKey = authorizedToReadKeys.get(0);
 				String sessionKeyString = getSessionKeyString(publicKey.getPublicKey());
 				writeElement(dest, MartusXml.HQSessionKeyElementName, sessionKeyString);
 				
@@ -102,7 +102,7 @@ class EncryptedFieldDataPacket extends Packet
 
 				for(int i = 1; i < authorizedToReadKeys.size(); ++i)
 				{
-					publicKey = (HQKey)authorizedToReadKeys.get(i);
+					publicKey = authorizedToReadKeys.get(i);
 					sessionKeyString = getSessionKeyString(publicKey.getPublicKey());
 					publicCode = publicKey.getRawPublicCode();
 					sessionKeysAndPublicCodes.put(publicCode, sessionKeyString);

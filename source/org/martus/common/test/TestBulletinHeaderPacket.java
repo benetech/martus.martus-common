@@ -358,7 +358,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 
 		assertEquals("hqKey", bhp.getLegacyHQPublicKey(), loaded.getLegacyHQPublicKey());
 		assertEquals("The # of authorized accounts not set by just setting the HQ Key?", 1, loaded.getAuthorizedToReadKeys().size());
-		HQKey loadedKey = (HQKey)loaded.getAuthorizedToReadKeys().get(0);
+		HQKey loadedKey = loaded.getAuthorizedToReadKeys().get(0);
 		assertEquals("hqKey not present in authorized list?", hqPublicKey, loadedKey.getPublicKey());
 		assertNotEquals("Should not contain label", hqLabel, loadedKey.getLabel());
 	}
@@ -382,11 +382,11 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
 		loaded.loadFromXml(in, security);
 		assertEquals("The # of authorized accounts not set?", hqKeys.size(), loaded.getAuthorizedToReadKeys().size());
-		assertEquals("Key 1 not present?", hqKey1, ((HQKey)loaded.getAuthorizedToReadKeys().get(0)).getPublicKey());
-		assertEquals("Key 2 not present?", hqKey2, ((HQKey)loaded.getAuthorizedToReadKeys().get(1)).getPublicKey());
+		assertEquals("Key 1 not present?", hqKey1, (loaded.getAuthorizedToReadKeys().get(0)).getPublicKey());
+		assertEquals("Key 2 not present?", hqKey2, (loaded.getAuthorizedToReadKeys().get(1)).getPublicKey());
 		assertEquals("The original hqKey should be set from first key in vector", hqKey1, loaded.getLegacyHQPublicKey());
-		assertEquals("Key 1 not allowed to Upload?", hqKey1, ((HQKey)loaded.getAuthorizedToUploadKeys().get(0)).getPublicKey());
-		assertEquals("Key 2 not allowed to upload?", hqKey2, ((HQKey)loaded.getAuthorizedToUploadKeys().get(1)).getPublicKey());
+		assertEquals("Key 1 not allowed to Upload?", hqKey1, (loaded.getAuthorizedToUploadKeys().get(0)).getPublicKey());
+		assertEquals("Key 2 not allowed to upload?", hqKey2, (loaded.getAuthorizedToUploadKeys().get(1)).getPublicKey());
 	}
 	
 	byte[] sampleSig1 = {1,6,38,0};
