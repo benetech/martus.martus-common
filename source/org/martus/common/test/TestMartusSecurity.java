@@ -39,6 +39,7 @@ import java.util.Random;
 import java.util.Vector;
 
 import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.crypto.MartusKeyPair;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.crypto.SessionKey;
@@ -309,7 +310,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		assertEquals("get/set private", keyPair.getPrivate(), gotKeyPair.getPrivate());
 
 		String publicKeyString = security.getPublicKeyString();
-		PublicKey publicKey = MartusSecurity.extractPublicKey(publicKeyString);
+		PublicKey publicKey = MartusKeyPair.extractPublicKey(publicKeyString);
 		assertEquals("get/extract failed?", publicKey, security.getPublicKey());
 	}
 
@@ -408,15 +409,15 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		assertNull("Should be null", securityWithoutKeyPair.getPublicKeyString());
 		String publicKeyString = security.getPublicKeyString();
 		assertNotNull("no key string?", security.getPublicKeyString());
-		PublicKey publicKey = MartusSecurity.extractPublicKey(publicKeyString);
+		PublicKey publicKey = MartusKeyPair.extractPublicKey(publicKeyString);
 		assertNotNull("extract failed?", publicKey);
 		TRACE_END();
 	}
 
 	public void testExtractPublicKey() throws Exception
 	{
-		assertNull("not base64", MartusSecurity.extractPublicKey("not Base64"));
-		assertNull("not valid key", MartusSecurity.extractPublicKey(Base64.encode(new byte[] {1,2,3})));
+		assertNull("not base64", MartusKeyPair.extractPublicKey("not Base64"));
+		assertNull("not valid key", MartusKeyPair.extractPublicKey(Base64.encode(new byte[] {1,2,3})));
 	}
 
 	public void testCreateSignature() throws MartusSecurity.MartusSignatureException

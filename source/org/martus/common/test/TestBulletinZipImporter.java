@@ -45,7 +45,6 @@ import org.martus.common.bulletin.BulletinLoader;
 import org.martus.common.bulletin.BulletinSaver;
 import org.martus.common.bulletin.BulletinZipImporter;
 import org.martus.common.crypto.MartusCrypto;
-import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.MockClientDatabase;
@@ -54,8 +53,8 @@ import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.UniversalId;
-import org.martus.util.*;
 import org.martus.util.InputStreamWithSeek;
+import org.martus.util.TestCaseEnhanced;
 import org.martus.util.ZipEntryInputStream;
 
 
@@ -291,8 +290,7 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 		original.set(Bulletin.TAGPRIVATEINFO, "private info");
 		File tempFile = createTempFile();
 
-		MartusSecurity otherSecurity = new MartusSecurity();
-		otherSecurity.createKeyPair(512);
+		MartusCrypto otherSecurity = MockMartusSecurity.createOtherClient();
 
 		original.setDraft();
 		original.setAllPrivate(true);

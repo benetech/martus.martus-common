@@ -34,13 +34,11 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.Key;
-import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
@@ -57,10 +55,6 @@ import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.interfaces.RSAPublicKey;
-import java.security.spec.EncodedKeySpec;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.X509EncodedKeySpec;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -108,6 +102,7 @@ public class MartusSecurity extends MartusCrypto
 			rand = new SecureRandom();
 		}
 		initialize(rand);
+		
 	}
 
 	synchronized void initialize(SecureRandom rand)throws CryptoInitializationException
@@ -117,12 +112,12 @@ public class MartusSecurity extends MartusCrypto
 		try
 		{
 			sigEngine = Signature.getInstance(SIGN_ALGORITHM, "BC");
-			rsaCipherEngine = Cipher.getInstance(RSA_ALGORITHM, "BC");
 			pbeCipherEngine = Cipher.getInstance(PBE_ALGORITHM, "BC");
 			sessionCipherEngine = Cipher.getInstance(SESSION_ALGORITHM, "BC");
-			keyPairGenerator = KeyPairGenerator.getInstance(RSA_ALGORITHM_NAME, "BC");
 			sessionKeyGenerator = KeyGenerator.getInstance(SESSION_ALGORITHM_NAME, "BC");
 			keyFactory = SecretKeyFactory.getInstance(PBE_ALGORITHM, "BC");
+
+			keyPair = new MartusKeyPair(rand);
 		}
 		catch(Exception e)
 		{
@@ -136,12 +131,12 @@ public class MartusSecurity extends MartusCrypto
 	// begin MartusCrypto interface
 	public boolean hasKeyPair()
 	{
-		return (jceKeyPair != null);
+		return keyPair.isValid();
 	}
 
 	public void clearKeyPair()
 	{
-		jceKeyPair = null;
+		keyPair.clear();
 	}
 
 	public void createKeyPair()
@@ -154,7 +149,7 @@ public class MartusSecurity extends MartusCrypto
 	public void writeKeyPair(OutputStream outputStream, char[] passPhrase) throws
 			IOException
 	{
-		writeKeyPair(outputStream, passPhrase, jceKeyPair);
+		writeKeyPair(outputStream, passPhrase, keyPair.getJceKeyPair());
 	}
 
 	public void readKeyPair(InputStream inputStream, char[] passPhrase) throws
@@ -162,7 +157,7 @@ public class MartusSecurity extends MartusCrypto
 		InvalidKeyPairFileVersionException,
 		AuthorizationFailedException
 	{
-		jceKeyPair = null;
+		keyPair.clear();
 		byte versionPlaceHolder = (byte)inputStream.read();
 		if(versionPlaceHolder != 0)
 			throw (new InvalidKeyPairFileVersionException());
@@ -198,7 +193,7 @@ public class MartusSecurity extends MartusCrypto
 	public boolean isValidSignatureOfStream(String publicKeyString, InputStream inputStream, byte[] signature) throws
 			MartusSignatureException
 	{
-		return isValidSignatureOfStream(extractPublicKey(publicKeyString), inputStream, signature);
+		return isValidSignatureOfStream(MartusKeyPair.extractPublicKey(publicKeyString), inputStream, signature);
 	}
 	
 	public Vector buildKeyShareBundles() 
@@ -481,8 +476,7 @@ public class MartusSecurity extends MartusCrypto
 	{
 		try
 		{
-			rsaCipherEngine.init(Cipher.ENCRYPT_MODE, extractPublicKey(publicKey), rand);
-			byte[] encryptedKeyBytes = rsaCipherEngine.doFinal(sessionKey.getBytes());
+			byte[] encryptedKeyBytes = keyPair.encryptBytes(sessionKey.getBytes(), publicKey);
 			SessionKey encryptedSessionKey = new SessionKey(encryptedKeyBytes);
 			addSessionKeyToCache(encryptedSessionKey, sessionKey);
 			return encryptedSessionKey;
@@ -501,11 +495,11 @@ public class MartusSecurity extends MartusCrypto
 		SessionKey decrypted = getCachedDecryptedSessionKey(encryptedSessionKey);
 		if(decrypted != null)
 			return decrypted;
-		
+
 		try
 		{
-			rsaCipherEngine.init(Cipher.DECRYPT_MODE, getPrivateKey(), rand);
-			byte[] sessionKeyBytes = rsaCipherEngine.doFinal(encryptedSessionKey.getBytes());
+			byte[] bytesToDecrypt = encryptedSessionKey.getBytes();
+			byte[] sessionKeyBytes = keyPair.decryptBytes(bytesToDecrypt);
 			SessionKey decryptedSessionKey = new SessionKey(sessionKeyBytes);
 			addSessionKeyToCache(encryptedSessionKey, decryptedSessionKey);
 			return decryptedSessionKey;
@@ -636,7 +630,7 @@ public class MartusSecurity extends MartusCrypto
 	public synchronized void signatureInitializeVerify(String publicKeyString) throws
 			MartusSignatureException
 	{
-		PublicKey publicKey = extractPublicKey(publicKeyString);
+		PublicKey publicKey = MartusKeyPair.extractPublicKey(publicKeyString);
 		try
 		{
 			sigEngine.initVerify(publicKey);
@@ -648,32 +642,6 @@ public class MartusSecurity extends MartusCrypto
 			//System.out.println("PublicKeyString : " + publicKeyString);
 			throw(new MartusSignatureException());
 		}
-	}
-
-	public static PublicKey extractPublicKey(String base64PublicKey)
-	{
-		//System.out.println("key=" + base64PublicKey);
-		try
-		{
-			EncodedKeySpec keySpec = new X509EncodedKeySpec(Base64.decode(base64PublicKey));
-			KeyFactory factory = KeyFactory.getInstance(RSA_ALGORITHM_NAME);
-			PublicKey publicKey = factory.generatePublic(keySpec);
-			return publicKey;
-		}
-		catch(NoSuchAlgorithmException e)
-		{
-			System.out.println("MartusSecurity.extractPublicKey: " + e);
-		}
-		catch(InvalidKeySpecException e)
-		{
-			//System.out.println("MartusSecurity.extractPublicKey: " + e);
-		}
-		catch(Base64.InvalidBase64Exception e)
-		{
-			//System.out.println("MartusSecurity.extractPublicKey: " + e);
-		}
-
-		return null;
 	}
 
 	public synchronized byte[] signatureGet() throws
@@ -811,15 +779,10 @@ public class MartusSecurity extends MartusCrypto
 	public void setKeyPairFromData(byte[] data) throws
 		AuthorizationFailedException
 	{
-		jceKeyPair = null;
+		keyPair.clear();
 		try
 		{
-			ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
-			ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-			KeyPair candidatePair = (KeyPair)objectInputStream.readObject();
-			if(!isKeyPairValid(candidatePair))
-				throw (new AuthorizationFailedException());
-			jceKeyPair = candidatePair;
+			keyPair.setFromData(data);
 		}
 		catch(Exception e)
 		{
@@ -830,7 +793,7 @@ public class MartusSecurity extends MartusCrypto
 
 	public KeyPair getKeyPair()
 	{
-		return jceKeyPair;
+		return keyPair.getJceKeyPair();
 	}
 
 
@@ -843,25 +806,7 @@ public class MartusSecurity extends MartusCrypto
 
 	public synchronized boolean isKeyPairValid(KeyPair candidatePair)
 	{
-		if(candidatePair == null)
-			return false;
-
-		try
-		{
-			rsaCipherEngine.init(Cipher.ENCRYPT_MODE, candidatePair.getPublic(), rand);
-			byte[] samplePlainText = {1,2,3,4,127};
-			byte[] cipherText = rsaCipherEngine.doFinal(samplePlainText);
-			rsaCipherEngine.init(Cipher.DECRYPT_MODE, candidatePair.getPrivate(), rand);
-			byte[] result = rsaCipherEngine.doFinal(cipherText);
-			if(!Arrays.equals(samplePlainText, result))
-				return false;
-		}
-		catch(Exception e)
-		{
-			return false;
-		}
-
-		return true;
+		return keyPair.isKeyPairValid(candidatePair);
 	}
 
 	public byte[] decryptKeyPair(InputStream inputStream, char[] passPhrase) throws IOException
@@ -909,9 +854,8 @@ public class MartusSecurity extends MartusCrypto
 	{
 		try
 		{
-			jceKeyPair = null;
-			keyPairGenerator.initialize(publicKeyBits, rand);
-			jceKeyPair = keyPairGenerator.genKeyPair();
+			keyPair.clear();
+			keyPair.createRSA(publicKeyBits, rand);
 		}
 		catch(Exception e)
 		{
@@ -1079,8 +1023,6 @@ public class MartusSecurity extends MartusCrypto
 
 	private static final String SESSION_ALGORITHM_NAME = "AES";
 	private static final String SESSION_ALGORITHM = "AES/CBC/PKCS5Padding";
-	private static final String RSA_ALGORITHM_NAME = "RSA";
-	private static final String RSA_ALGORITHM = "RSA/NONE/PKCS1Padding";
 	private static final String PBE_ALGORITHM = "PBEWithSHAAndTwofish-CBC";
 	private static final String SIGN_ALGORITHM = "SHA1WithRSA";
 	private static final String DIGEST_ALGORITHM = "SHA1";
@@ -1091,14 +1033,12 @@ public class MartusSecurity extends MartusCrypto
 	
 	private static final int ARBITRARY_MAX_SESSION_KEY_LENGTH = 8192;
 	private static SecureRandom rand;
-	private KeyPair jceKeyPair;
+	private MartusKeyPair keyPair;
 	private Map decryptedSessionKeys;
 
 	private Signature sigEngine;
-	private Cipher rsaCipherEngine;
 	private Cipher pbeCipherEngine;
 	private Cipher sessionCipherEngine;
 	private KeyGenerator sessionKeyGenerator;
-	private KeyPairGenerator keyPairGenerator;
 	private SecretKeyFactory keyFactory;
 }
