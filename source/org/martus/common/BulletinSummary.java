@@ -35,18 +35,43 @@ import java.util.Vector;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.network.NetworkInterfaceConstants;
 import org.martus.common.packet.FieldDataPacket;
+import org.martus.common.packet.UniversalId;
 
 public class BulletinSummary
 {
-	public BulletinSummary(String accountIdToUse, String localIdToUse, FieldDataPacket fdpToUse, int sizeToUse, String dateSavedToUse)
+	public static BulletinSummary createFromString(String accountId, String parameters) throws WrongValueCount
 	{
-		accountId = accountIdToUse;
-		localId = localIdToUse;
+		String args[] = parameters.split(fieldDelimeter, -1);
+		if(args.length < 3)
+			throw new WrongValueCount(args.length);
+		
+		int at = 0;
+		String bulletinLocalId= args[at++];
+		String fdpLocalId = args[at++];
+		int size = Integer.parseInt(args[at++]);
+		String date = "";
+		if(args.length > at)
+			date = args[at++];
+		
+		UniversalId uid = UniversalId.createFromAccountAndLocalId(accountId, bulletinLocalId);
+		return new BulletinSummary(uid, fdpLocalId, size, date);
+	}
+
+	private BulletinSummary(UniversalId bulletinIdToUse, String fieldDataPacketLocalIdToUse, int sizeToUse, String dateSavedToUse)
+	{
+		accountId = bulletinIdToUse.getAccountId();
+		localId = bulletinIdToUse.getLocalId();
+		fdpLocalId = fieldDataPacketLocalIdToUse;
 		size = sizeToUse;
+		dateTimeSaved = dateSavedToUse; 
+	}
+	
+	public void setFieldDataPacket(FieldDataPacket fdpToUse)
+	{
+		fdp = fdpToUse;
+		fdpLocalId = fdp.getLocalId();
 		title = fdpToUse.get(Bulletin.TAGTITLE);
 		author = fdpToUse.get(Bulletin.TAGAUTHOR);
-		fdp = fdpToUse;
-		dateTimeSaved = dateSavedToUse; 
 	}
 
 	public void setChecked(boolean newValue)
@@ -59,6 +84,11 @@ public class BulletinSummary
 	{
 		return checkedFlag;
 	}
+	
+	public UniversalId getUniversalId()
+	{
+		return UniversalId.createFromAccountAndLocalId(getAccountId(), getLocalId());
+	}
 
 	public String getAccountId()
 	{
@@ -68,6 +98,11 @@ public class BulletinSummary
 	public String getLocalId()
 	{
 		return localId;
+	}
+	
+	public String getFieldDataPacketLocalId()
+	{
+		return fdpLocalId;
 	}
 
 	public String getTitle()
@@ -124,9 +159,22 @@ public class BulletinSummary
 		tags.add(NetworkInterfaceConstants.TAG_BULLETIN_HISTORY);
 		return tags;
 	}
+	
+	public static class WrongValueCount extends Exception
+	{
+		WrongValueCount(int gotCount)
+		{
+			got = gotCount;
+			expected = getNormalRetrieveTags().size();
+		}
+		
+		public int got;
+		public int expected;
+	}
 
 	private FieldDataPacket fdp;
 	private String accountId;
+	private String fdpLocalId;
 	String localId;
 	String title;
 	String author;
