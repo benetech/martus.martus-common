@@ -27,6 +27,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.clientside;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
@@ -36,6 +37,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 import org.martus.swing.ParagraphLayout;
+import org.martus.swing.UiLanguageDirection;
 import org.martus.swing.UiWrappedTextArea;
 
 public class UiSigninPanel extends JPanel implements VirtualKeyboardHandler
@@ -46,59 +48,43 @@ public class UiSigninPanel extends JPanel implements VirtualKeyboardHandler
 		localization = owner.getLocalization();
 		uiState = owner.getCurrentUiState();
 		setLayout(new ParagraphLayout());
-		
+
 		if(mode == UiBasicSigninDlg.TIMED_OUT)
 		{
-			add(new JLabel(""), ParagraphLayout.NEW_PARAGRAPH);
-			JLabel timedOutNote1 = new JLabel(localization.getFieldLabel("timedout1"));
-			add(timedOutNote1);
+			addComponentToPanel(this, new JLabel(localization.getFieldLabel("timedout1")));
 			if(owner.getCurrentUiState().isModifyingBulletin())
-			{
-				add(new JLabel(""), ParagraphLayout.NEW_PARAGRAPH);
-				JLabel timedOutNote2 = new JLabel(localization.getFieldLabel("timedout2"));
-				add(timedOutNote2);
-			}
+				addComponentToPanel(this, new JLabel(localization.getFieldLabel("timedout2")));
 		}
 		else if(mode == UiBasicSigninDlg.SECURITY_VALIDATE)
 		{
-			add(new JLabel(""), ParagraphLayout.NEW_PARAGRAPH);
-			JLabel securityServerConfigValidate = new JLabel(localization.getFieldLabel("securityServerConfigValidate"));
-			add(securityServerConfigValidate);
+			addComponentToPanel(this, new JLabel(localization.getFieldLabel("securityServerConfigValidate")));
 		}
 		else if(mode == UiBasicSigninDlg.RETYPE_USERNAME_PASSWORD)
 		{
-			add(new JLabel(""), ParagraphLayout.NEW_PARAGRAPH);
-			JLabel retypeUserNamePassword = new JLabel(localization.getFieldLabel("RetypeUserNameAndPassword"));
-			add(retypeUserNamePassword);
+			addComponentToPanel(this, new JLabel(localization.getFieldLabel("RetypeUserNameAndPassword")));
 		}
 		else if(mode == UiBasicSigninDlg.CREATE_NEW)
 		{
-			add(new JLabel(""), ParagraphLayout.NEW_PARAGRAPH);
-			JLabel createNewUserNamePassword = new JLabel(localization.getFieldLabel("CreateNewUserNamePassword"));
-			add(createNewUserNamePassword);
-		
-			add(new JLabel(""), ParagraphLayout.NEW_PARAGRAPH);
-			UiWrappedTextArea helpOnCreatingPassword = new UiWrappedTextArea(localization.getFieldLabel("HelpOnCreatingNewPassword"), 100);
-			add(helpOnCreatingPassword);
-		
+			addComponentToPanel(this, new JLabel(localization.getFieldLabel("CreateNewUserNamePassword")));
+			addComponentToPanel(this, new UiWrappedTextArea(localization.getFieldLabel("HelpOnCreatingNewPassword"), 100));
 		}
 		
 		userNameDescription = new JLabel("");
 		passwordDescription = new JLabel("");
-		
-		add(new JLabel(localization.getFieldLabel("username")), ParagraphLayout.NEW_PARAGRAPH);
+
 		nameField = new UiSingleTextField(20);
 		nameField.setText(username);
-		add(userNameDescription);
-		add(nameField);
-		
-		add(new JLabel(localization.getFieldLabel("password")), ParagraphLayout.NEW_PARAGRAPH);
+		JLabel userNameLabel = new JLabel(localization.getFieldLabel("username"));
+		addComponentsToPanel(this, userNameLabel, createPanel(userNameDescription, nameField));
+
 		passwordField = new UiPasswordField(20);
 		passwordField.setPassword(password);
 		switchToNormalKeyboard = new JButton(localization.getButtonLabel("VirtualKeyboardSwitchToNormal"));
 		switchToNormalKeyboard.addActionListener(new SwitchKeyboardHandler());
+		JLabel passwordLabel = new JLabel(localization.getFieldLabel("password"));
 		passwordArea = new JPanel();
-		add(passwordArea);
+		addComponentsToPanel(this, passwordLabel, passwordArea);
+
 		new UiVirtualKeyboard(localization, this, passwordField);
 		UpdatePasswordArea();
 		
@@ -143,21 +129,15 @@ public class UiSigninPanel extends JPanel implements VirtualKeyboardHandler
 		passwordArea.removeAll();
 		userNameDescription.setText(localization.getFieldLabel("VirtualUserNameDescription"));
 		passwordDescription.setText(localization.getFieldLabel("VirtualPasswordDescription"));
-
 		passwordField.setVirtualMode(true);
-
 		passwordArea.setLayout(new ParagraphLayout());
-		passwordArea.setBorder(new LineBorder(Color.black, 2));
-		passwordArea.add(new JLabel(""));
-		passwordArea.add(passwordDescription);
-		passwordArea.add(passwordField);
-
-		passwordArea.add(new JLabel(""), ParagraphLayout.NEW_PARAGRAPH);
-		passwordArea.add(virtualKeyboardPanel);
-
-		passwordArea.add(new JLabel(""), ParagraphLayout.NEW_PARAGRAPH);
+		passwordArea.setBorder(new LineBorder(Color.BLACK, 2));
 		switchToNormalKeyboard.setText(localization.getButtonLabel("VirtualKeyboardSwitchToNormal"));
-		passwordArea.add(switchToNormalKeyboard);
+
+		addComponentToPanel(passwordArea, createPanel(passwordDescription, passwordField));
+		addComponentToPanel(passwordArea, virtualKeyboardPanel);
+		addComponentToPanel(passwordArea, switchToNormalKeyboard);
+
 		refreshForNewVirtualMode();
 		owner.sizeHasChanged();
 	}
@@ -172,19 +152,16 @@ public class UiSigninPanel extends JPanel implements VirtualKeyboardHandler
 		passwordArea.setBorder(new LineBorder(Color.black, 2));
 
 		passwordField.setVirtualMode(false);
-		passwordArea.add(new JLabel(""), ParagraphLayout.NEW_PARAGRAPH);
-		passwordArea.add(passwordField);
+		addComponentToPanel(passwordArea, passwordField);
 
-		passwordArea.add(new JLabel(""), ParagraphLayout.NEW_PARAGRAPH);
 		JLabel warningNormalKeyboard = new JLabel(localization.getFieldLabel("NormalKeyboardMsg1"));
 		warningNormalKeyboard.setFont(warningNormalKeyboard.getFont().deriveFont(Font.BOLD));
-		passwordArea.add(warningNormalKeyboard);
-		passwordArea.add(new JLabel(""), ParagraphLayout.NEW_PARAGRAPH);
-		passwordArea.add(new JLabel(localization.getFieldLabel("NormalKeyboardMsg2")));
+		addComponentToPanel(passwordArea, warningNormalKeyboard);
+		addComponentToPanel(passwordArea, new JLabel(localization.getFieldLabel("NormalKeyboardMsg2")));
 
-		passwordArea.add(new JLabel(""), ParagraphLayout.NEW_PARAGRAPH);
 		switchToNormalKeyboard.setText(localization.getButtonLabel("VirtualKeyboardSwitchToVirtual"));
-		passwordArea.add(switchToNormalKeyboard);
+		addComponentToPanel(passwordArea, switchToNormalKeyboard);
+		
 		refreshForNewVirtualMode();
 		owner.sizeHasChanged();
 	}
@@ -217,6 +194,32 @@ public class UiSigninPanel extends JPanel implements VirtualKeyboardHandler
 		owner.virtualPasswordHasChanged();
 	}
 
+	private JPanel createPanel(Component component1, Component component2)
+	{
+		JPanel panel = new JPanel();
+		addComponentsToPanel(panel, component1, component2);
+		return panel;
+	}
+
+	private void addComponentToPanel(JPanel panel, Component itemToAdd)
+	{
+		addComponentsToPanel(panel, new JLabel(""), itemToAdd);
+	}
+
+	private void addComponentsToPanel(JPanel panel, Component item1, Component item2)
+	{
+		if(UiLanguageDirection.isRightToLeftLanguage())
+		{
+			panel.add(item2, ParagraphLayout.NEW_PARAGRAPH);
+			panel.add(item1);
+		}
+		else
+		{
+			panel.add(item1, ParagraphLayout.NEW_PARAGRAPH);
+			panel.add(item2);
+		}
+	}
+	
 	UiBasicSigninDlg owner;
 	UiBasicLocalization localization;
 	CurrentUiState uiState;
