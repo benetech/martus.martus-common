@@ -82,7 +82,23 @@ public class LegacyCustomFields
 		if(extractedType == FieldSpec.TYPE_UNKNOWN && !extractedHasUnknown)
 			extractedType = FieldSpec.TYPE_NORMAL;
 	
-		return new FieldSpec(extractedTag, extractedLabel, extractedType, extractedHasUnknown);
+		char[] cleansedTag = extractedTag.toCharArray();
+		for(int i=0; i < cleansedTag.length; ++i)
+		{
+			char c = cleansedTag[i];
+			boolean isValid = false;
+			if(c >= 256)
+				isValid = true;
+			else if(Character.isLetterOrDigit(c))
+				isValid = true;
+			else if(c == '_')
+				isValid = true;
+
+			if(!isValid)
+				cleansedTag[i] = '_';				
+		}
+		String tag = new String(cleansedTag);
+		return new FieldSpec(tag, extractedLabel, extractedType, extractedHasUnknown);
 	}
 	
 	static private String extractFieldSpecElement(String fieldDescription, int elementNumber)

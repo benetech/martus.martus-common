@@ -28,7 +28,7 @@ package org.martus.common.test;
 
 import org.martus.common.FieldSpec;
 import org.martus.common.LegacyCustomFields;
-import org.martus.util.*;
+import org.martus.util.TestCaseEnhanced;
 
 
 public class TestFieldSpec extends TestCaseEnhanced
@@ -51,6 +51,13 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertEquals("c", fieldWithExtra.getTag());
 		assertEquals("d", fieldWithExtra.getLabel());
 		assertEquals("not unknown?", FieldSpec.TYPE_UNKNOWN, fieldWithExtra.getType());
+		
+		FieldSpec fieldWithIllegalCharacters = LegacyCustomFields.createFromLegacy("<a9josée,<a9");
+		assertFalse("has unknown?", fieldWithIllegalCharacters.hasUnknownStuff());
+		assertEquals("_a9josée", fieldWithIllegalCharacters.getTag());
+		assertEquals("<a9", fieldWithIllegalCharacters.getLabel());
+		assertEquals("not normal?", FieldSpec.TYPE_NORMAL, fieldWithIllegalCharacters.getType());
+		
 	}
 	
 	public void testCreateFromTag()
