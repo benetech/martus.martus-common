@@ -46,7 +46,7 @@ public class MartusBulletinWrapper
 		File tempDirectory = null;
 		try
 		{
-			tempDirectory = File.createTempFile("$$$BulletinRetrieverDB", null);
+			tempDirectory = File.createTempFile("$$$BulletinWrapperDB", null);
 			tempDirectory.deleteOnExit();
 			tempDirectory.delete();
 			tempDirectory.mkdirs();
@@ -63,6 +63,7 @@ public class MartusBulletinWrapper
 			//but mark them all deleteOnExit, and also implement a cleanup function which must be called when this object is no longer needed
 			//which will then delete the attachments, and the database.
 			deleteAllAttachments();
+			db.deleteAllData();
 
 		}
 		catch(Exception e)
