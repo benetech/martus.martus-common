@@ -127,9 +127,18 @@ public class UiBasicLocalization extends Localization
 		writer.writeln("#      <GridSpecDetails>, </GridSpecDetails>, <Column>, </Column>");
 		writer.writeln("# 21.  do not translate \"#UseUnofficialTranslationFiles#\" in");
 		writer.writeln("#      field:warningUnofficialTranslation since it contains a file name");
-		writer.writeln("# 22.  If you want your language to appear right to left,");
-		writer.writeln("#      Uncomment the next line (by removing the # infront of #!right-to-left)");
-		writer.writeln("#!right-to-left");
+		if(rightToLeftLanguages.contains(languageCode))
+		{
+			writer.writeln("# 22.  If you want your language to appear left to right,");
+			writer.writeln("#      Comment the next line (by adding a # in front of !right-to-left)");
+			writer.writeln("!right-to-left");
+		}
+		else
+		{
+			writer.writeln("# 22.  If you want your language to appear right to left,");
+			writer.writeln("#      Uncomment the next line (by removing the # in front of #!right-to-left)");
+			writer.writeln("#!right-to-left");
+		}
 		writer.writeln("#");
 		
 		SortedSet sorted = getAllKeysSorted();
