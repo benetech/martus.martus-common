@@ -252,7 +252,6 @@ public class MartusKeyPair
 	private KeyPair jceKeyPair;
 
 
-	private static final String SIGN_ALGORITHM = "SHA1WithRSA";
 	static final String RSA_ALGORITHM_NAME = "RSA";
 	private static final String RSA_ALGORITHM = "RSA/NONE/PKCS1Padding";
 }
