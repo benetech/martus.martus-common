@@ -27,6 +27,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.clientside;
 
 import java.awt.Color;
+import java.awt.ComponentOrientation;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 
@@ -35,7 +36,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
 import org.martus.swing.ParagraphLayout;
@@ -50,6 +50,7 @@ public class UiSigninPanel extends JPanel implements VirtualKeyboardHandler
 		uiState = owner.getCurrentUiState();
 		setLayout(new ParagraphLayout());
 		
+		ComponentOrientation orientation = localization.getComponentOrientation();
 		if(mode == UiBasicSigninDlg.TIMED_OUT)
 		{
 			add(new JLabel(""), ParagraphLayout.NEW_PARAGRAPH);
@@ -81,7 +82,7 @@ public class UiSigninPanel extends JPanel implements VirtualKeyboardHandler
 			add(createNewUserNamePassword);
 		
 			add(new JLabel(""), ParagraphLayout.NEW_PARAGRAPH);
-			UiWrappedTextArea helpOnCreatingPassword = new UiWrappedTextArea(localization.getFieldLabel("HelpOnCreatingNewPassword"), 100, localization.getComponentOrientation());
+			UiWrappedTextArea helpOnCreatingPassword = new UiWrappedTextArea(localization.getFieldLabel("HelpOnCreatingNewPassword"), 100, orientation);
 			add(helpOnCreatingPassword);
 		
 		}
@@ -90,13 +91,13 @@ public class UiSigninPanel extends JPanel implements VirtualKeyboardHandler
 		passwordDescription = new JLabel("");
 		
 		add(new JLabel(localization.getFieldLabel("username")), ParagraphLayout.NEW_PARAGRAPH);
-		nameField = new JTextField(20);
+		nameField = new UiSingleTextField(20, orientation);
 		nameField.setText(username);
 		add(userNameDescription);
 		add(nameField);
 		
 		add(new JLabel(localization.getFieldLabel("password")), ParagraphLayout.NEW_PARAGRAPH);
-		passwordField = new UiPasswordField(20);
+		passwordField = new UiPasswordField(20, orientation);
 		passwordField.setPassword(password);
 		switchToNormalKeyboard = new JButton(localization.getButtonLabel("VirtualKeyboardSwitchToNormal"));
 		switchToNormalKeyboard.addActionListener(new SwitchKeyboardHandler());
@@ -225,7 +226,7 @@ public class UiSigninPanel extends JPanel implements VirtualKeyboardHandler
 	CurrentUiState uiState;
 	private JLabel userNameDescription;
 	private JLabel passwordDescription;
-	private JTextField nameField;
+	private UiSingleTextField nameField;
 	private UiPasswordField passwordField;
 	private JPanel passwordArea;
 	private JPanel virtualKeyboardPanel;
