@@ -24,41 +24,36 @@ Boston, MA 02111-1307, USA.
 
 */
 
-package org.martus.common;
+package org.martus.common.xmlrpc;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
+import java.net.InetAddress;
 
-import org.martus.common.xmlrpc.XmlRpcThread;
-
-
-public class LoggerToConsole implements LoggerInterface
+public class WebServerWithSynchronousStartup extends WebServerWithClientId
 {
-	public LoggerToConsole()
+	public WebServerWithSynchronousStartup(int port, InetAddress addr)
 	{
+		super(port, addr);
+	}
+
+	public boolean isListening()
+	{
+		return (serverSocket != null);
 	}
 	
-	public void log(String message)
+	public void start()
 	{
-		Timestamp stamp = new Timestamp(System.currentTimeMillis());
-		SimpleDateFormat formatDate = new SimpleDateFormat("EE MM/dd HH:mm:ss z");
-		String threadId = getCurrentClientAddress();
-		if(threadId == null)
-			threadId = "";
-		else
-			threadId = threadId + ": ";
-		String logEntry = formatDate.format(stamp) + " " + threadId + message;
-		System.out.println(logEntry);
-	}
-
-	static public String getCurrentClientAddress()
-	{
-		Thread currThread = Thread.currentThread();
-		if( XmlRpcThread.class.getName() == currThread.getClass().getName() )
+		super.start();
+		while(!isListening())
 		{
-			String ip = ((XmlRpcThread) Thread.currentThread()).getClientAddress();
-			return ip;
+			try
+			{
+				Thread.sleep(1000);
+			}
+			catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		return null;
 	}
 }

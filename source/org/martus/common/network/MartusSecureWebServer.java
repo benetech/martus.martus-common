@@ -34,7 +34,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLServerSocketFactory;
 
 import org.martus.common.crypto.MartusCrypto;
-import org.martus.util.xmlrpc.WebServerWithSynchronousStartup;
+import org.martus.common.xmlrpc.WebServerWithSynchronousStartup;
 
 public class MartusSecureWebServer extends WebServerWithSynchronousStartup
 {
