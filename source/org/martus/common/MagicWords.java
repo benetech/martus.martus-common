@@ -73,16 +73,18 @@ public class MagicWords
 		writer.close();			
 	}
 	
-	public void add(String fileLineEntry)
+	public MagicWordEntry add(String fileLineEntry)
 	{
 		String magicWord = getMagicWordWithActiveSignFromLineEntry(fileLineEntry);
 		String group = getGroupNameFromLineEntry(fileLineEntry);
-		add(magicWord, group);
+		return add(magicWord, group);
 	}
 	
-	public void add(String magicWordEntry, String group)
-	{						
-		add(new MagicWordEntry(magicWordEntry, group));				
+	public MagicWordEntry add(String magicWordEntry, String group)
+	{					
+		MagicWordEntry entry = 	new MagicWordEntry(magicWordEntry, group);
+		add(entry);
+		return entry;				
 	}
 	
 	public void add(MagicWordEntry wordEntry)
@@ -134,7 +136,7 @@ public class MagicWords
 		{
 			MagicWordEntry entry = (MagicWordEntry)magicWordEntries.get(i);			
 			if(!entry.isActive())
-				magicWords.add(entry.getLineOfMagicWord());
+				magicWords.add(entry.getLineOfMagicWordNoSign());
 		}
 		return magicWords;
 	}
@@ -154,7 +156,7 @@ public class MagicWords
 		return getInactiveMagicWords().size();
 	}
 	
-	private boolean contains(String magicWordToFind)
+	public boolean contains(String magicWordToFind)
 	{
 		return (getMagicWordEntry(magicWordToFind) != null);
 	}

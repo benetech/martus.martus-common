@@ -62,6 +62,11 @@ public class MagicWordEntry
 	{
 		return groupName;
 	}
+	
+	public void setGroupname(String name)
+	{
+		groupName = name;
+	}
 
 	public boolean isActive()
 	{
