@@ -91,6 +91,7 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 			{
 				CustomFields.XmlCustomFieldsLoader loader = (CustomFields.XmlCustomFieldsLoader)ended;
 				fdp.setCustomFields(loader.getFields());
+				foundModernFieldSpecs = true;
 			}
 			else if(getTagsContainingStrings().contains(tag))
 			{
@@ -127,7 +128,7 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 
 	private void setLegacyCustomFields(String value)
 	{
-		if(fdp.getFieldCount() == 0)
+		if(!foundModernFieldSpecs)
 			fdp.setFieldSpecsFromString(value);
 	}
 	
@@ -212,6 +213,7 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 	}
 	
 	String encryptedData;
+	private boolean foundModernFieldSpecs;
 	private SessionKey encryptedHQSessionKey;
 	private HashMap authorizedEncryptedHQSessionKeys;
 	private HashMap authorizedEncryptedHQSessionKeyStrings;

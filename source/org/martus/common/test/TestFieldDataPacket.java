@@ -41,6 +41,7 @@ import org.martus.common.LegacyCustomFields;
 import org.martus.common.MartusConstants;
 import org.martus.common.MartusUtilities;
 import org.martus.common.MartusXml;
+import org.martus.common.StandardFieldSpecs;
 import org.martus.common.XmlWriterFilter;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.crypto.MartusCrypto;
@@ -209,8 +210,8 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 			"</FieldDataPacket>\n";
 		//System.out.println("{" + simpleFieldDataPacket + "}");
 
-		FieldSpec[] noTags = {};
-		FieldDataPacket loaded = new FieldDataPacket(UniversalId.createDummyUniversalId(), noTags);
+		FieldSpec[] tagsThatWillBeIgnored = StandardFieldSpecs.getDefaultPublicFieldSpecs();
+		FieldDataPacket loaded = new FieldDataPacket(UniversalId.createDummyUniversalId(), tagsThatWillBeIgnored);
 
 		byte[] bytes = simpleFieldDataPacket.getBytes("UTF-8");
 		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
@@ -252,8 +253,8 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 			"</FieldDataPacket>\n";
 		//System.out.println("{" + simpleFieldDataPacket + "}");
 
-		FieldSpec[] noTags = {};
-		FieldDataPacket loaded = new FieldDataPacket(UniversalId.createDummyUniversalId(), noTags);
+		FieldSpec[] specsThatWillBeIgnored = StandardFieldSpecs.getDefaultPublicFieldSpecs();
+		FieldDataPacket loaded = new FieldDataPacket(UniversalId.createDummyUniversalId(), specsThatWillBeIgnored);
 
 		byte[] bytes = simpleFieldDataPacket.getBytes("UTF-8");
 		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
@@ -349,8 +350,8 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 				MartusXml.getTagEnd(MartusXml.FieldElementPrefix + "custom1") + 
 			"</FieldDataPacket>\n";
 
-		FieldSpec[] noTags = {};
-		FieldDataPacket loaded = new FieldDataPacket(UniversalId.createDummyUniversalId(), noTags);
+		FieldSpec[] specsThatWillBeIgnored = StandardFieldSpecs.getDefaultPublicFieldSpecs();
+		FieldDataPacket loaded = new FieldDataPacket(UniversalId.createDummyUniversalId(), specsThatWillBeIgnored);
 
 		byte[] bytes = simpleFieldDataPacket.getBytes("UTF-8");
 		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
