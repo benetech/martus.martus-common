@@ -27,6 +27,8 @@ package org.martus.common.utilities;
 
 import java.io.IOException;
 import java.io.InputStream;
+import org.martus.common.clientside.Exceptions;
+import org.martus.common.clientside.Exceptions.ServerNotAvailableException;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
 import org.martus.common.crypto.MartusCrypto.CryptoInitializationException;
@@ -41,5 +43,23 @@ public class MartusBulletinRetriever
 		security.readKeyPair(keyPair, password);
 	}
 	
+	public void setServer(String serverIPAddress, String serverPublicCode)
+	{
+		this.serverIPAddress = serverIPAddress;
+		this.serverPublicCode = serverPublicCode;
+	}
+	
+	
+	public class ServerNotConfiguredException extends Exception{};
+
+	public boolean pingServer() throws ServerNotAvailableException, ServerNotConfiguredException 
+	{
+		if(serverIPAddress == null || serverPublicCode==null)
+			throw new ServerNotConfiguredException();
+		throw new Exceptions.ServerNotAvailableException();
+	}
+	
 	private MartusSecurity security;
+	private String serverIPAddress;
+	private String serverPublicCode;
 }

@@ -30,6 +30,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import org.martus.common.clientside.Exceptions;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
 import org.martus.util.TestCaseEnhanced;
@@ -41,6 +42,17 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 	{
 		super(name);
 	}
+	
+	public void setUp() throws Exception
+	{
+	  	super.setUp();
+
+	  	if(security == null)
+	  	{
+			security = new MartusSecurity();
+			security.createKeyPair(512);
+	  	}
+	}	
 	
 	public void testInvalidIOStream() throws Exception
 	{
@@ -59,8 +71,6 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 	public void testPassword() throws Exception
 	{
 		char[] password = "the password".toCharArray();
-		MartusSecurity security = new MartusSecurity();
-		security.createKeyPair(512);
 		ByteArrayOutputStream streamOut = new ByteArrayOutputStream();
 		security.writeKeyPair(streamOut, password);
 		streamOut.close();
@@ -80,4 +90,36 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		streamIn.close();
 	}
 	
+	public void testPingServer() throws Exception
+	{
+		char[] password = "the password".toCharArray();
+		ByteArrayOutputStream streamOut = new ByteArrayOutputStream();
+		security.writeKeyPair(streamOut, password);
+		streamOut.close();
+		
+		ByteArrayInputStream streamIn = new ByteArrayInputStream(streamOut.toByteArray());
+		MartusBulletinRetriever retriever = new MartusBulletinRetriever(streamIn, password );
+		streamIn.close();
+		
+		try
+		{
+			retriever.pingServer();
+			fail("server hasn't been configured yet");
+		}
+		catch(MartusBulletinRetriever.ServerNotConfiguredException expected)
+		{
+		}
+		
+		try
+		{
+			retriever.setServer("1.2.3.4", "some random code");
+			retriever.pingServer();
+			fail("server doesn't exist");
+		}
+		catch(Exceptions.ServerNotAvailableException expected)
+		{
+		}
+	}
+	
+	private static MartusSecurity security;
 }
