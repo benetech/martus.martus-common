@@ -81,7 +81,9 @@ public class Localization
 	
 	protected String getMtfEntry(String languageCode, String key)
 	{
-		return key + "=" + getLabel(languageCode, key);
+		String value = getLabel(languageCode, key);
+		value = value.replaceAll("\\n", "\\\\n");
+		return key + "=" + value;
 	}
 
 	protected void addEnglishTranslation(String mtfEntry)

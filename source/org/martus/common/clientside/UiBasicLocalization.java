@@ -26,11 +26,9 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.clientside;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
@@ -87,11 +85,16 @@ public class UiBasicLocalization extends Localization
 		writer.writeln("#  8.  do NOT translate \"#S#\" (used for search string entry");
 		writer.writeln("#");
 		
-		Vector mtfEntries = getAllTranslationStrings(languageCode);
-		for(int i = 0; i < mtfEntries.size(); ++i)
+		SortedSet sorted = getAllKeysSorted();
+		Iterator it = sorted.iterator();
+		while(it.hasNext())
 		{
-			String thisString = (String)mtfEntries.get(i);
-			writeWithNewlinesEncoded(writer, thisString);
+			String key = (String)it.next();
+			//String englishMtfEntry = getMtfEntry(ENGLISH, key);
+			//writer.writeln(englishMtfEntry);
+			String mtfEntry = getMtfEntry(languageCode, key);
+			writer.writeln(mtfEntry);
+			//writer.writeln();
 		}
 	}
 
@@ -256,26 +259,6 @@ public class UiBasicLocalization extends Localization
 		{
 			return UiBasicLocalization.isLanguageFile(name);
 		}
-	}
-
-	private static void writeWithNewlinesEncoded(UnicodeWriter writer, String thisString)
-		throws IOException
-	{
-		final String NEWLINE = System.getProperty("line.separator");
-		BufferedReader reader = new BufferedReader(new StringReader(thisString));
-		boolean additionalLine = false;
-		while(true)
-		{
-			String thisLine = reader.readLine();
-			if(thisLine == null)
-				break;
-			if(additionalLine)
-				writer.write("\\n");
-			additionalLine = true;
-			writer.write(thisLine);
-		}
-		writer.write(NEWLINE);
-		reader.close();
 	}
 	
 }
