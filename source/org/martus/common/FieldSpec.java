@@ -38,6 +38,11 @@ public class FieldSpec
 		return new FieldSpec(tagToUse, "", typeToUse, false);
 	}
 	
+	FieldSpec(int typeToUse)
+	{
+		this("","",typeToUse,false);
+	}
+	
 	FieldSpec(String tagToUse, String labelToUse, int typeToUse, boolean hasUnknownToUse)
 	{
 		tag = tagToUse;
@@ -72,6 +77,16 @@ public class FieldSpec
 	public boolean hasUnknownStuff()
 	{
 		return hasUnknown;
+	}
+	
+	public void setLabel(String label)
+	{
+		this.label = label;
+	}
+
+	public void setTag(String tag)
+	{
+		this.tag = tag;
 	}
 	
 	public static String getTypeString(int type)

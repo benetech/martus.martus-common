@@ -141,12 +141,16 @@ public class CustomFields
 		
 		public FieldSpec getFieldSpec()
 		{
-			return new FieldSpec(tag, label, type, false);
+			return spec;
 		}
 		
 		public void startDocument(Attributes attrs) throws SAXParseException
 		{
-			type = FieldSpec.getTypeCode(attrs.getValue("type"));
+			int type = FieldSpec.getTypeCode(attrs.getValue("type"));
+			if(type == FieldSpec.TYPE_GRID)
+				spec = new GridFieldSpec();
+			else
+				spec = new FieldSpec(type);
 			super.startDocument(attrs);
 		}
 
@@ -163,9 +167,9 @@ public class CustomFields
 			throws SAXParseException
 		{
 			if(thisTag.equals("Tag"))
-				tag = getText(ended);
+				spec.setTag(getText(ended));
 			else if(thisTag.equals("Label"))
-				label = getText(ended);
+				spec.setLabel(getText(ended));
 			else
 				super.endElement(thisTag, ended);
 		}
@@ -174,10 +178,7 @@ public class CustomFields
 		{
 			return ((SimpleXmlStringLoader)ended).getText();
 		}
-
-		String tag;
-		String label;
-		int type;
+		FieldSpec spec;
 	}
 	
 	Vector specs;
