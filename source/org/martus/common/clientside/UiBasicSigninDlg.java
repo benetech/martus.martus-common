@@ -42,6 +42,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
+import org.martus.swing.UiLanguageDirection;
 import org.martus.swing.Utilities;
 
 public class UiBasicSigninDlg extends JDialog

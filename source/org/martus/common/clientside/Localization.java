@@ -43,6 +43,7 @@ import java.util.TreeSet;
 import java.util.Vector;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.crypto.MartusCrypto;
+import org.martus.swing.UiLanguageDirection;
 import org.martus.util.UnicodeReader;
 
 public class Localization

@@ -25,19 +25,19 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.clientside;
 
-import java.awt.ComponentOrientation;
 import java.awt.Toolkit;
 import java.util.Arrays;
 
 import javax.swing.JPasswordField;
+import org.martus.swing.UiLanguageDirection;
 
 
 public class UiPasswordField extends JPasswordField
 {
-	public UiPasswordField(int columns, ComponentOrientation orientation)
+	public UiPasswordField(int columns)
 	{
 		super(columns);
-		setComponentOrientation(orientation);
+		setComponentOrientation(UiLanguageDirection.getComponentOrientation());
 		virtualPassword = new char[MAX_PASSWORD_LENGTH];
 		clearVirtualPassword();
 	}

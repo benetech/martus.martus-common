@@ -25,21 +25,21 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.clientside;
 
-import java.awt.ComponentOrientation;
 import javax.swing.JTextField;
+import org.martus.swing.UiLanguageDirection;
 
 
 public class UiSingleTextField extends JTextField
 {
-	public UiSingleTextField (int columns, ComponentOrientation orientation)
+	public UiSingleTextField (int columns)
 	{
 		super(columns);
-		setComponentOrientation(orientation);
+		setComponentOrientation(UiLanguageDirection.getComponentOrientation());
 	}
 	
-	public UiSingleTextField(String text, ComponentOrientation orientation)
+	public UiSingleTextField(String text)
 	{
 		super(text);
-		setComponentOrientation(orientation);
+		setComponentOrientation(UiLanguageDirection.getComponentOrientation());
 	}
 }
