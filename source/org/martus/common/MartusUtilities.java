@@ -45,6 +45,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 
+import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinZipUtilities;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
@@ -493,18 +494,35 @@ public class MartusUtilities
 			return true;
 		return false;
 	}
+	
+	static public String toFileName(Bulletin bulletin)
+	{
+		return toFileName(bulletin, DEFAULT_FILE_NAME);
+	}
+	
+	static public String toFileName(Bulletin bulletin, String defaultFileName)
+	{
+		String bulletinTitle = bulletin.get(Bulletin.TAGTITLE);
+		return toFileName(bulletinTitle, defaultFileName);
+	}
 
 	static public String toFileName(String text)
+	{
+		return toFileName(text, DEFAULT_FILE_NAME);
+	}
+	
+	static public String toFileName(String text, String defaultFileName)
 	{
 		final int maxLength = 20;
 		final int minLength = 3;
 	
+		text = new String(text).trim();
 		if(text.length() > maxLength)
 			text = text.substring(0, maxLength);
 	
 		text = createValidFileName(text);
 		if(text.length() < minLength)
-			text = "Martus-" + text;
+			text = defaultFileName + text;
 	
 		return text;
 	}
@@ -598,6 +616,7 @@ public class MartusUtilities
 		return hex.substring(1);
 	}
 
+	private static final String DEFAULT_FILE_NAME = "Martus-";
 	static final String PUBLIC_KEY_FILE_IDENTIFIER = "Martus Public Key:";
 	static final String PUBLIC_KEY_TYPE_SERVER = "Server";
 }
