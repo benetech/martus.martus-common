@@ -35,10 +35,11 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
+
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.utilities.DateUtilities;
 import org.martus.common.utilities.MartusFlexidate;
-import org.martus.swing.UiLanguageDirection;
+import org.martus.util.language.LanguageDirection;
 
 
 public class MiniLocalization
@@ -142,9 +143,9 @@ public class MiniLocalization
 	{
 		currentLanguageCode = newLanguageCode;
 		if(isRightToLeftLanguage())
-			UiLanguageDirection.setDirection(UiLanguageDirection.RIGHT_TO_LEFT);
+			LanguageDirection.setDirectionRightToLeft();
 		else
-			UiLanguageDirection.setDirection(UiLanguageDirection.LEFT_TO_RIGHT);
+			LanguageDirection.setDirectionLeftToRight();
 	}
 	
 	public String getCurrentDateFormatCode()
@@ -284,7 +285,7 @@ public class MiniLocalization
 	public String convertStoredDateToDisplayReverseIfNecessary(String date)
 	{
 		String displayDate = convertStoredDateToDisplay(date);
-		if(UiLanguageDirection.isRightToLeftLanguage())
+		if(LanguageDirection.isRightToLeftLanguage())
 			return reverseDate(displayDate);
 		return displayDate;
 	}

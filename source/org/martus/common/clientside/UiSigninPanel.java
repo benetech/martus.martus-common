@@ -30,15 +30,17 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
-import org.martus.swing.UiLanguageDirection;
+
 import org.martus.swing.UiParagraphPanel;
 import org.martus.swing.UiWrappedTextArea;
+import org.martus.util.language.LanguageDirection;
 
 public class UiSigninPanel extends UiParagraphPanel implements VirtualKeyboardHandler
 {
@@ -194,7 +196,7 @@ public class UiSigninPanel extends UiParagraphPanel implements VirtualKeyboardHa
 	private JPanel createPanel(Component component1, Component component2)
 	{
 		JPanel panel = new JPanel();
-		if(UiLanguageDirection.isRightToLeftLanguage())
+		if(LanguageDirection.isRightToLeftLanguage())
 		{
 			panel.add(component2);
 			panel.add(component1);

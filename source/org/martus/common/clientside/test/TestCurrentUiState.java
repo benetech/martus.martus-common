@@ -32,9 +32,10 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
+
 import org.martus.common.clientside.CurrentUiState;
-import org.martus.swing.UiLanguageDirection;
 import org.martus.util.TestCaseEnhanced;
+import org.martus.util.language.LanguageDirection;
 
 
 public class TestCurrentUiState extends TestCaseEnhanced
@@ -58,24 +59,24 @@ public class TestCurrentUiState extends TestCaseEnhanced
 	public void testDefaultValuesRightToLeft() throws Exception
 	{
 		CurrentUiState state = new CurrentUiState();
-		UiLanguageDirection.setDirection(UiLanguageDirection.RIGHT_TO_LEFT);
+		LanguageDirection.setDirectionRightToLeft();
 		int maxScreenWidth = state.getCurrentAppDimension().width;
 		assertEquals("Default FolderSplitterPosition not screen width - 180?", maxScreenWidth - 180, state.getCurrentFolderSplitterPosition());
-		UiLanguageDirection.setDirection(UiLanguageDirection.LEFT_TO_RIGHT);
+		LanguageDirection.setDirectionLeftToRight();
 		assertEquals("Default FolderSplitterPosition not 180?", 180, state.getCurrentFolderSplitterPosition());
 	}
 	
 	public void testRightToLeftGetAndSetCurrentFolderSplitterPosition() throws Exception
 	{
 		CurrentUiState state = new CurrentUiState();
-		UiLanguageDirection.setDirection(UiLanguageDirection.RIGHT_TO_LEFT);
+		LanguageDirection.setDirectionRightToLeft();
 		int maxScreenWidth = state.getCurrentAppDimension().width;
 		int leftToRightPosition = 200;
 		int rightToLeftPosition = maxScreenWidth - leftToRightPosition;
 		
 		state.setCurrentFolderSplitterPosition(rightToLeftPosition);
 		assertEquals("splitter Position not correct? in Right to Left", rightToLeftPosition, state.getCurrentFolderSplitterPosition());
-		UiLanguageDirection.setDirection(UiLanguageDirection.LEFT_TO_RIGHT);
+		LanguageDirection.setDirectionLeftToRight();
 		assertEquals("splitter Position not correct? in Left to Right", leftToRightPosition, state.getCurrentFolderSplitterPosition());
 		leftToRightPosition = 250;
 		state.setCurrentFolderSplitterPosition(leftToRightPosition);

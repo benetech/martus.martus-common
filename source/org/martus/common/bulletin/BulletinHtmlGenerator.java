@@ -29,6 +29,7 @@ package org.martus.common.bulletin;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+
 import org.martus.common.FieldSpec;
 import org.martus.common.GridData;
 import org.martus.common.GridFieldSpec;
@@ -40,7 +41,7 @@ import org.martus.common.database.ReadableDatabase;
 import org.martus.common.database.Database.RecordHiddenException;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.UniversalId;
-import org.martus.swing.UiLanguageDirection;
+import org.martus.util.language.LanguageDirection;
 
 public class BulletinHtmlGenerator
 {
@@ -163,17 +164,17 @@ public class BulletinHtmlGenerator
 				GridFieldSpec grid = (GridFieldSpec)spec;
 				value = "<table border='1' align='left'><tr>";
 				String justification = "center";
-				if(!UiLanguageDirection.isRightToLeftLanguage())
+				if(!LanguageDirection.isRightToLeftLanguage())
 					value += getItemToAddForTable(grid.getColumnZeroLabel(),TABLE_HEADER, justification);
 				int columnCount = grid.getColumnCount();
 				for(int i = 0; i < columnCount; ++i)
 				{
 					String data = grid.getColumnLabel(i);
-					if(UiLanguageDirection.isRightToLeftLanguage())
+					if(LanguageDirection.isRightToLeftLanguage())
 						data = grid.getColumnLabel((columnCount-1)-i);
 					value += getItemToAddForTable(data,TABLE_HEADER, justification);
 				}
-				if(UiLanguageDirection.isRightToLeftLanguage())
+				if(LanguageDirection.isRightToLeftLanguage())
 					value += getItemToAddForTable(grid.getColumnZeroLabel(),TABLE_HEADER, justification);
 				value += "</tr>";
 				try
@@ -183,22 +184,22 @@ public class BulletinHtmlGenerator
 					int rowCount = gridData.getRowCount();
 
 					justification = "left";
-					if(UiLanguageDirection.isRightToLeftLanguage())
+					if(LanguageDirection.isRightToLeftLanguage())
 						justification = "right";
 					
 					for(int r =  0; r<rowCount; ++r)
 					{
 						value += "<tr>";
-						if(!UiLanguageDirection.isRightToLeftLanguage())
+						if(!LanguageDirection.isRightToLeftLanguage())
 							value += getItemToAddForTable(Integer.toString(r+1),TABLE_DATA, justification);
 						for(int c = 0; c<columnCount; ++c)
 						{
 							String data = gridData.getValueAt(r, c);
-							if(UiLanguageDirection.isRightToLeftLanguage())
+							if(LanguageDirection.isRightToLeftLanguage())
 								data = gridData.getValueAt(r, ((columnCount-1)-c));
 							value += getItemToAddForTable(data, TABLE_DATA, justification);
 						}
-						if(UiLanguageDirection.isRightToLeftLanguage())
+						if(LanguageDirection.isRightToLeftLanguage())
 							value += getItemToAddForTable(Integer.toString(r+1),TABLE_DATA, justification);
 						value += "</tr>";
 					}
@@ -274,7 +275,7 @@ public class BulletinHtmlGenerator
 			AttachmentProxy aProxy = attachments[i];
 			String label = aProxy.getLabel();
 			String size = "( " + getAttachmentSize(db, aProxy.getUniversalId())+ " " + localization.getFieldLabel("attachmentSizeForPrinting")+ " )";
-			if(UiLanguageDirection.isRightToLeftLanguage())
+			if(LanguageDirection.isRightToLeftLanguage())
 			{
 				String tmp = label;
 				label = size;
@@ -295,7 +296,7 @@ public class BulletinHtmlGenerator
 	{
 		StringBuffer fieldHtml = new StringBuffer(value.length() + 100);
 		String width = "15%";
-		if(UiLanguageDirection.isRightToLeftLanguage())
+		if(LanguageDirection.isRightToLeftLanguage())
 		{
 			String tmp = label;
 			label = value;
