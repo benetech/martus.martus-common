@@ -67,7 +67,6 @@ abstract public class Database extends ReadableDatabase
 	abstract public File getOutgoingInterimFile(DatabaseKey key) throws IOException, RecordHiddenException;
 	abstract public File getOutgoingInterimPublicOnlyFile(DatabaseKey key) throws IOException, RecordHiddenException;
 
-	abstract public String getFolderForAccount(String accountString) throws IOException;
 	abstract public File getContactInfoFile(String accountId) throws IOException;
 
 	abstract public void moveRecordToQuarantine(DatabaseKey key) throws RecordHiddenException;

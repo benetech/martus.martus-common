@@ -66,7 +66,7 @@ import org.martus.util.ZipEntryInputStream;
 public class BulletinZipUtilities
 {
 
-	public static void exportPublicBulletinPacketsFromDatabaseToZipFile(Database db, DatabaseKey headerKey, File destZipFile, MartusCrypto security) throws
+	public static void exportPublicBulletinPacketsFromDatabaseToZipFile(ReadableDatabase db, DatabaseKey headerKey, File destZipFile, MartusCrypto security) throws
 			IOException,
 			MartusCrypto.CryptoException,
 			UnsupportedEncodingException,

@@ -46,6 +46,7 @@ public abstract class ReadableDatabase
 	abstract public void visitAllAccounts(AccountVisitor visitor);
 	abstract public void visitAllRecordsForAccount(PacketVisitor visitor, String accountString);
 	
+	abstract public String getFolderForAccount(String accountString) throws IOException;
 	abstract public void verifyAccountMap() throws MartusUtilities.FileVerificationException, MissingAccountMapSignatureException;
 	abstract public boolean isInQuarantine(DatabaseKey key) throws RecordHiddenException;
 
