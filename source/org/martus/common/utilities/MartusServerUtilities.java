@@ -27,7 +27,6 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.utilities;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -536,23 +535,8 @@ public class MartusServerUtilities
 		}
 		out.close();
 	}
-
-	public static Vector getContactInfo(File contactFile) throws FileNotFoundException, IOException
-	{
-		Vector contactInfo = new Vector();
-		FileInputStream contactFileInputStream = new FileInputStream(contactFile);
-		DataInputStream in = new DataInputStream(contactFileInputStream);
 	
-		contactInfo.add(in.readUTF());
-		int inputDataCount = in.readInt();
-		contactInfo.add(new Integer(inputDataCount));
-		for(int i = 0; i < inputDataCount + 1; ++i)
-		{
-			contactInfo.add(in.readUTF());
-		}			
-		in.close();
-		return contactInfo;
-	}
+	
 	
 	public static Vector loadHiddenPacketsFile(File hiddenFile, Database database, LoggerInterface logger)
 	{	

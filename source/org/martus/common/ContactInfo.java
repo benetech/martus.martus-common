@@ -26,16 +26,65 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common;
 
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Vector;
 
+import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
 import org.martus.common.network.NetworkInterfaceConstants;
 import org.martus.util.Base64;
 import org.martus.util.Base64.InvalidBase64Exception;
 
 
-public class ContactInfo
+public class ContactInfo extends Vector
 {
+	public ContactInfo(ConfigInfo sourceOfInfo)
+	{
+		data = extractRawContactInfoDataFromConfigInfo(sourceOfInfo);
+	}
+
+	public Vector getSignedEncodedVector(
+		MartusCrypto signer)
+		throws MartusSignatureException, UnsupportedEncodingException
+	{
+		Vector signedVector = getRawSignedVector(signer);
+		Vector encodedContactInfo = ContactInfo.encodeContactInfoVector(signedVector);
+		return encodedContactInfo;
+	}
+
+	private Vector getRawSignedVector(
+		MartusCrypto signer)
+		throws MartusCrypto.MartusSignatureException
+	{
+		final int FIELD_COUNT = data.size();
+		
+		Vector rawInfo = new Vector();
+		rawInfo.add(signer.getPublicKeyString());
+		rawInfo.add(new Integer(FIELD_COUNT));
+		rawInfo.addAll(data);
+		String signature = signer.createSignatureOfVectorOfStrings(rawInfo);
+		rawInfo.add(signature);
+		return rawInfo;
+	}
+
+	private Vector extractRawContactInfoDataFromConfigInfo(ConfigInfo configInfo)
+	{
+		data = new Vector();
+		data.add(configInfo.getAuthor());
+		data.add(configInfo.getOrganization());
+		data.add(configInfo.getEmail());
+		data.add(configInfo.getWebPage());
+		data.add(configInfo.getPhone());
+		data.add(configInfo.getAddress());
+		return data;
+	}
+
+
 
 	public static Vector encodeContactInfoVector(Vector unencodedContactInfo) throws UnsupportedEncodingException
 	{
@@ -82,4 +131,23 @@ public class ContactInfo
 		decodedContactInfo.add(possiblyEncodedContactInfo.get(i));
 		return decodedContactInfo;
 	}
+
+	public static Vector loadFromFile(File contactFile) throws FileNotFoundException, IOException
+	{
+		Vector contactInfo = new Vector();
+		FileInputStream contactFileInputStream = new FileInputStream(contactFile);
+		DataInputStream in = new DataInputStream(contactFileInputStream);
+	
+		contactInfo.add(in.readUTF());
+		int inputDataCount = in.readInt();
+		contactInfo.add(new Integer(inputDataCount));
+		for(int i = 0; i < inputDataCount + 1; ++i)
+		{
+			contactInfo.add(in.readUTF());
+		}			
+		in.close();
+		return contactInfo;
+	}
+
+	Vector data; 
 }

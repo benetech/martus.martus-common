@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Vector;
 
+import org.martus.common.ContactInfo;
 import org.martus.common.MartusUtilities.FileVerificationException;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.crypto.MartusSecurity;
@@ -246,7 +247,7 @@ public class TestMartusServerUtilities extends TestCaseEnhanced
 		File invalidFile = createTempFile();
 		try
 		{
-			MartusServerUtilities.getContactInfo(invalidFile);
+			ContactInfo.loadFromFile(invalidFile);
 			fail("Should have thrown invalid file");
 		}
 		catch (Exception expectedException)
@@ -266,7 +267,7 @@ public class TestMartusServerUtilities extends TestCaseEnhanced
 
 		File contactInfoFile = createTempFile();
 		MartusServerUtilities.writeContatctInfo(clientId, contactInfo, contactInfoFile);
-		Vector retrievedInfo = MartusServerUtilities.getContactInfo(contactInfoFile);
+		Vector retrievedInfo = ContactInfo.loadFromFile(contactInfoFile);
 		assertEquals("Vector wrong size", contactInfo.size(), retrievedInfo.size());
 		
 		String inputPublicKey = (String)retrievedInfo.get(0);

@@ -31,10 +31,6 @@ import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.util.Vector;
-
-import org.martus.common.crypto.MartusCrypto;
-import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
 
 public class ConfigInfo implements Serializable
 {
@@ -111,23 +107,6 @@ public class ConfigInfo implements Serializable
 		customFieldSpecs = FieldSpec.buildFieldListString(FieldSpec.getDefaultPublicFieldSpecs());
 	}
 
-	public Vector getRawContactInfo(MartusCrypto signer)
-		throws MartusSignatureException
-	{
-		Vector contactInfo = new Vector();
-		contactInfo.add(signer.getPublicKeyString());
-		contactInfo.add(new Integer(6));
-		contactInfo.add(author);
-		contactInfo.add(organization);
-		contactInfo.add(email);
-		contactInfo.add(webPage);
-		contactInfo.add(phone);
-		contactInfo.add(address);
-		String signature = signer.createSignatureOfVectorOfStrings(contactInfo);
-		contactInfo.add(signature);
-		return contactInfo;
-	}
-	
 	public static ConfigInfo load(InputStream inputStream)
 	{
 		ConfigInfo loaded =  new ConfigInfo();
