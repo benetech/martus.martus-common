@@ -396,6 +396,11 @@ public class Bulletin implements BulletinConstants
 		df.setLenient(false);
 		return df;
 	}
+	
+	public DatabaseKey getDatabaseKey()
+	{
+		return getDatabaseKeyForLocalId(getLocalId());
+	}
 
 	public DatabaseKey getDatabaseKeyForLocalId(String localId)
 	{

@@ -403,6 +403,12 @@ public class BulletinStore
 		saveToClientDatabase(b, getWriteableDatabase(), false, b.getSignatureGenerator());
 	}
 	
+	public void saveEncryptedBulletinForTesting(Bulletin b) throws IOException, CryptoException
+	{
+		saveToClientDatabase(b, getWriteableDatabase(), true, b.getSignatureGenerator());
+	}
+	
+	
 	public static void saveToClientDatabase(Bulletin b, Database db, boolean mustEncryptPublicData, MartusCrypto signer) throws
 			IOException,
 			MartusCrypto.CryptoException

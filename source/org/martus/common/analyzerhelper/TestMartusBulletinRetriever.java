@@ -53,12 +53,13 @@ import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
-import org.martus.common.database.ClientFileDatabase;
+import org.martus.common.database.DatabaseKey;
 import org.martus.common.network.NetworkInterface;
 import org.martus.common.network.NetworkInterfaceConstants;
 import org.martus.common.network.NetworkResponse;
 import org.martus.common.network.NonSSLNetworkAPI;
 import org.martus.common.packet.UniversalId;
+import org.martus.common.test.MockBulletinStore;
 import org.martus.util.Base64;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.Base64.InvalidBase64Exception;
@@ -243,6 +244,11 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		assertContains(UniversalId.createFromAccountAndLocalId(fieldOfficeAccountId,bulletin3Id), returnedBulletinIDs);
 	}
 	
+	TestCaseEnhanced getThis()
+	{
+		return this;
+	}
+	
 	private class MockClientSideNetworkGateway extends ClientSideNetworkGateway
 	{
 		public MockClientSideNetworkGateway(NetworkInterface serverToUse)
@@ -327,23 +333,22 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		{
 			if(!uid.equals(bulletinToRetrieve.getUniversalId()))
 				throw new ServerErrorException();
-			File tempDirectory = createTempDirectory();
 
-			ClientFileDatabase db = new ClientFileDatabase(tempDirectory, security);
-			File bulletinZipFile = null;
 			try
 			{
-				db.initialize();
-				BulletinStore.saveToClientDatabase(bulletinToRetrieve, db, true, security);
-				bulletinZipFile = createTempFileFromName("$$$TestBulletinWrapperZipFile");
-				BulletinZipUtilities.exportBulletinPacketsFromDatabaseToZipFile(db, bulletinToRetrieve.getDatabaseKeyForLocalId(bulletinToRetrieve.getLocalId()), bulletinZipFile, security);
-				db.deleteAllData();
+				BulletinStore store = new MockBulletinStore(getThis());
+				store.saveBulletinForTesting(bulletinToRetrieve);
+				File bulletinZipFile = createTempFileFromName("$$$TestBulletinWrapperZipFile");
+				DatabaseKey key = bulletinToRetrieve.getDatabaseKey();
+				BulletinZipUtilities.exportBulletinPacketsFromDatabaseToZipFile(store.getDatabase(), key, bulletinZipFile, security);
+				store.deleteAllData();
+				return bulletinZipFile;
 			}
 			catch(Exception e)
 			{
 				e.printStackTrace();
+				throw new RuntimeException();
 			}
-			return bulletinZipFile;
 		}
 		
 		private Vector fieldOfficeAccountIds;
