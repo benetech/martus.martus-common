@@ -500,12 +500,19 @@ abstract public class FileDatabase extends Database
 	public File getFileForRecordWithPrefix(DatabaseKey key, String bucketPrefix)
 		throws IOException, TooManyAccountsException
 	{
-		int hashValue = getHashValue(key.getLocalId()) & 0xFF;
-		String bucketName = bucketPrefix + Integer.toHexString(0xb00 + hashValue);
+		String localId = key.getLocalId();
+		String bucketBaseName = getBaseBucketName(localId);
+		String bucketName = bucketPrefix + bucketBaseName;
 		String accountString = key.getAccountId();
 		File path = new File(getAccountDirectory(accountString), bucketName);
 		path.mkdirs();
-		return new File(path, key.getLocalId());
+		return new File(path, localId);
+	}
+
+	public static String getBaseBucketName(String localId) 
+	{
+		int hashValue = getHashValue(localId) & 0xFF;
+		return Integer.toHexString(0xb00 + hashValue);
 	}
 
 	private File getQuarantineFileForRecord(DatabaseKey key)
