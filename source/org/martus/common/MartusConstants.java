@@ -32,7 +32,6 @@ public interface MartusConstants
 	// faster than a 1k buffer.
 	public final static int streamBufferCopySize = 1024;
 	public final static int digestBufferSize = 1024;
-	public final static String regexEqualsDelimeter = "=";
 	public final static String martusSecretShareFileID = "Martus-Share";
 	public final static int minNumberOfFilesNeededToRecreateSecret = 2;
 	public final static int numberOfFilesInShare = 5;
