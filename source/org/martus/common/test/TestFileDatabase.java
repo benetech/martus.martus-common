@@ -70,7 +70,7 @@ public class TestFileDatabase extends TestCaseEnhanced
 	public void tearDown() throws Exception
 	{
 		db.deleteAllData();
-		assertTrue("Either a test failed or a file was left open.", dir.delete());
+		assertFalse("Either a test failed or a file was left open.", dir.exists());
 		super.tearDown();
 	}
 
@@ -224,7 +224,7 @@ public class TestFileDatabase extends TestCaseEnhanced
 		db.writeRecord(shortKey, sampleString1);
 		db.deleteAllData();
 		assertEquals("count not 0?", 0, getRecordCount());
-		assertEquals("not zero files?", 0, db.absoluteBaseDir.list().length);
+		assertNull("not zero files?", db.absoluteBaseDir.list());
 	}
 
 	public void testInterimFileNames() throws Exception

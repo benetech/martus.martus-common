@@ -44,6 +44,7 @@ import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.StreamEncryptor;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
 import org.martus.common.packet.UniversalId;
+import org.martus.util.DirectoryUtils;
 import org.martus.util.FileInputStreamWithSeek;
 import org.martus.util.InputStreamWithSeek;
 import org.martus.util.ScrubFile;
@@ -73,11 +74,7 @@ abstract public class FileDatabase extends Database
 	// Database interface
 	public void deleteAllData() throws Exception
 	{
-		deleteAllPackets();
-
-		accountMapFile.delete();
-		deleteSignaturesForFile(accountMapFile);
-
+		DirectoryUtils.deleteEntireDirectoryTree(absoluteBaseDir);
 		loadAccountMap();
 	}
 	
@@ -463,30 +460,6 @@ abstract public class FileDatabase extends Database
 		return false;
 	}
 
-	public void deleteAllPackets()
-	{
-		class AccountDeleter implements AccountVisitor
-		{
-			public void visit(String accountString)
-			{
-				File accountDir = getAbsoluteAccountDirectory(accountString);
-				File[] subdirectories = accountDir.listFiles();
-				for (int i = 0; i < subdirectories.length; i++)
-				{
-					deleteAllFilesInDirectory(subdirectories[i]);
-				}
-
-				File parentDir = accountDir.getParentFile();
-				accountDir.delete();
-				parentDir.delete();
-			}
-
-		}
-
-		AccountDeleter deleter = new AccountDeleter();
-		visitAllAccounts(deleter);
-	}
-
 	public File getAbsoluteAccountDirectory(String accountString)
 	{
 		return new File(absoluteBaseDir, (String)accountMap.get(accountString));
@@ -749,19 +722,6 @@ abstract public class FileDatabase extends Database
 	protected String getBucketPrefix(DatabaseKey key)
 	{
 		return defaultBucketPrefix;
-	}
-
-	static void deleteAllFilesInDirectory(File directory)
-	{
-		File[] files = directory.listFiles();
-		if(files != null)
-		{
-			for (int i = 0; i < files.length; i++)
-			{
-				files[i].delete();
-			}
-		}
-		directory.delete();
 	}
 
 	public void signAccountMap() throws IOException, MartusCrypto.MartusSignatureException
