@@ -28,7 +28,6 @@ package org.martus.common.test;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-import java.util.Vector;
 
 import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
@@ -36,6 +35,7 @@ import org.martus.common.MartusXml;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.packet.BulletinHeaderPacket;
+import org.martus.common.packet.BulletinHistory;
 import org.martus.common.packet.UniversalId;
 import org.martus.util.Base64;
 import org.martus.util.ByteArrayInputStreamWithSeek;
@@ -264,7 +264,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 	
 	public void testWriteXmlWithHistory() throws Exception
 	{
-		Vector history = createFakeHistory();
+		BulletinHistory history = createFakeHistory();
 		bhp.setHistory(history);
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -277,9 +277,9 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		
 	}
 
-	private Vector createFakeHistory()
+	private BulletinHistory createFakeHistory()
 	{
-		Vector history = new Vector();
+		BulletinHistory history = new BulletinHistory();
 		history.add("pretend local id");
 		history.add("another fake localid");
 		return history;
@@ -370,7 +370,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 	
 	public void testLoadXmlWithHistory() throws Exception
 	{
-		Vector history = createFakeHistory();
+		BulletinHistory history = createFakeHistory();
 		bhp.setHistory(history);
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -382,9 +382,10 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
 		loaded.loadFromXml(in, security);
 		
-		Vector loadedHistory = loaded.getHistory();
+		BulletinHistory loadedHistory = loaded.getHistory();
 		assertEquals("no history?", history.size(), loadedHistory.size());
-		assertEquals("wrong history?", history, loadedHistory);
+		for(int i=0; i < history.size(); ++i)
+			assertEquals("wrong history " + i + "?", history.get(i), loadedHistory.get(i));
 	}
 
 	public void testLoadXmlWithHQKey() throws Exception

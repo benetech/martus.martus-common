@@ -72,7 +72,11 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 		else if(tag.equals(MartusXml.AccountsAuthorizedToReadElementName))
 			bhp.setAuthorizedToReadKeys(new HQKeys(((AuthorizedToReadLoader)ended).authorizedKeys));
 		else if(tag.equals(MartusXml.HistoryElementName))
-			bhp.setHistory(((SimpleXmlVectorLoader)ended).getVector());
+		{
+			SimpleXmlVectorLoader loader = (SimpleXmlVectorLoader)ended;
+			BulletinHistory history = new BulletinHistory(loader.getVector());
+			bhp.setHistory(history);
+		}
 		else
 			super.endElement(tag, ended);
 	}

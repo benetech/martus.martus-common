@@ -109,12 +109,12 @@ public class BulletinHeaderPacket extends Packet
 		lastSavedTime = System.currentTimeMillis();
 	}
 	
-	public void setHistory(Vector newHistory)
+	public void setHistory(BulletinHistory newHistory)
 	{
 		history = newHistory;
 	}
 	
-	public Vector getHistory()
+	public BulletinHistory getHistory()
 	{
 		return history;
 	}
@@ -421,7 +421,7 @@ public class BulletinHeaderPacket extends Packet
 			dest.writeStartTag(MartusXml.HistoryElementName);
 			for(int i=0; i < history.size(); ++i)
 			{
-				writeElement(dest, MartusXml.AncestorElementName, (String)history.get(i));
+				writeElement(dest, MartusXml.AncestorElementName, history.get(i));
 			}
 			dest.writeEndTag(MartusXml.HistoryElementName);
 		}
@@ -447,7 +447,7 @@ public class BulletinHeaderPacket extends Packet
 		legacyHqPublicKey = "";
 		lastSavedTime = TIME_UNKNOWN;
 		authorizedToReadKeys = new HQKeys();
-		history = new Vector();
+		history = new BulletinHistory();
 	}
 
 	private final static String ALL_PRIVATE = "1";
@@ -469,5 +469,5 @@ public class BulletinHeaderPacket extends Packet
 	private static final String prefix = "B-";
 	private HQKeys authorizedToReadKeys;
 	private boolean allHQsCanProxyUpload;
-	private Vector history;
+	private BulletinHistory history;
 }

@@ -46,6 +46,7 @@ import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.BulletinHeaderPacket;
+import org.martus.common.packet.BulletinHistory;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.UniversalId;
 import org.martus.common.packet.Packet.InvalidPacketException;
@@ -168,12 +169,12 @@ public class Bulletin implements BulletinConstants
 		return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(cal.getTime());
 	}
 	
-	public void setHistory(Vector newHistory)
+	public void setHistory(BulletinHistory newHistory)
 	{
 		getBulletinHeaderPacket().setHistory(newHistory);
 	}
 	
-	public Vector getHistory()
+	public BulletinHistory getHistory()
 	{
 		return getBulletinHeaderPacket().getHistory();
 	}
@@ -437,8 +438,7 @@ public class Bulletin implements BulletinConstants
 		boolean originalIsMine = other.getAccount().equals(getAccount());
 		if(originalIsMine && other.isSealed())
 		{
-			Vector history = new Vector();
-			history.addAll(other.getHistory());
+			BulletinHistory history = new BulletinHistory(other.getHistory());
 			history.add(other.getLocalId());
 			setHistory(history);
 		}

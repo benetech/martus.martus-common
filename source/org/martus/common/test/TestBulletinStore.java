@@ -39,6 +39,7 @@ import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.MockClientDatabase;
 import org.martus.common.database.Database.PacketVisitor;
+import org.martus.common.packet.BulletinHistory;
 import org.martus.common.packet.UniversalId;
 import org.martus.util.Stopwatch;
 import org.martus.util.TestCaseEnhanced;
@@ -213,10 +214,10 @@ public class TestBulletinStore extends TestCaseEnhanced
 
 	private void verifyCloneIsLeaf(Bulletin original, Bulletin clone, UniversalId otherUid) throws IOException, CryptoException
 	{
-		original.setHistory(new Vector());
+		original.setHistory(new BulletinHistory());
 		BulletinSaver.saveToClientDatabase(original, db, false, security);
 
-		Vector history = new Vector();
+		BulletinHistory history = new BulletinHistory();
 		history.add(original.getLocalId());
 		clone.setHistory(history);
 		BulletinSaver.saveToClientDatabase(clone, db, false, security);
@@ -242,7 +243,7 @@ public class TestBulletinStore extends TestCaseEnhanced
 		if(original.getPrivateFieldDataPacket().getAttachments().length > 0)
 			fail("Not tested for attachments!");
 		Bulletin clone = new Bulletin(security);
-		Vector history = new Vector();
+		BulletinHistory history = new BulletinHistory();
 		history.add(original.getLocalId());
 		clone.setHistory(history);
 		BulletinSaver.saveToClientDatabase(clone, db, false, security);

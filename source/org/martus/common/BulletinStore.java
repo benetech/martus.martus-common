@@ -44,6 +44,7 @@ import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.FileDatabase.MissingAccountMapException;
 import org.martus.common.database.FileDatabase.MissingAccountMapSignatureException;
 import org.martus.common.packet.BulletinHeaderPacket;
+import org.martus.common.packet.BulletinHistory;
 import org.martus.common.packet.Packet;
 import org.martus.common.packet.UniversalId;
 import org.martus.common.packet.Packet.InvalidPacketException;
@@ -241,7 +242,7 @@ public class BulletinStore
 	public synchronized void removeBulletinFromStore(Bulletin b) throws IOException
 	{
 		MartusCrypto crypto = getSignatureVerifier();
-		Vector history = b.getHistory();
+		BulletinHistory history = b.getHistory();
 		try
 		{
 			for(int i = 0; i < history.size(); ++i)
@@ -337,7 +338,7 @@ class LeafScanner implements Database.PacketVisitor
 				leafKeys.add(key);
 			
 			BulletinHeaderPacket bhp = BulletinStore.loadBulletinHeaderPacket(db, key, crypto);
-			Vector history = bhp.getHistory();
+			BulletinHistory history = bhp.getHistory();
 			for(int i=0; i < history.size(); ++i)
 			{
 				String thisLocalId = (String)history.get(i);
