@@ -28,6 +28,8 @@ package org.martus.common;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 import java.util.Vector;
 
 import org.martus.util.UnicodeReader;
@@ -53,7 +55,7 @@ public class MagicWords
 				if(line.trim().length() == 0)
 					logger.log("Warning: Found blank line in " + magicWordsFile.getPath());
 				else
-					add(line);
+					add(line);					
 			}
 			reader.close();
 		}
@@ -77,12 +79,17 @@ public class MagicWords
 	{
 		String magicWord = getMagicWordWithActiveSignFromLineEntry(fileLineEntry);
 		String group = getGroupNameFromLineEntry(fileLineEntry);
-		return add(magicWord, group);
+		String date = getDateFromLineEntry(fileLineEntry);
+
+		MagicWordEntry entry = add(magicWord, group);
+		entry.setCreationDate(date);
+				
+		return entry;
 	}
 	
 	public MagicWordEntry add(String magicWordEntry, String group)
 	{					
-		MagicWordEntry entry = 	new MagicWordEntry(magicWordEntry, group);
+		MagicWordEntry entry = 	new MagicWordEntry(magicWordEntry, group);		
 		add(entry);
 		return entry;				
 	}
@@ -180,24 +187,24 @@ public class MagicWords
 		return original.toLowerCase().trim().replaceAll("\\s", "");
 	}
 
-	public static String getMagicWordWithActiveSignFromLineEntry(String lineEntry)
-	{
-		if(lineEntry == null)
-			return "";
-		int index = lineEntry.indexOf(FIELD_DELIMITER);
-		if(index == -1)
-			return lineEntry;
-		return lineEntry.substring(0,index);
-	}
-
 	public static String getGroupNameFromLineEntry(String lineEntry)
 	{
-		if(lineEntry == null)
+		if (lineEntry == null)
 			return "";
-		int index = lineEntry.indexOf(FIELD_DELIMITER);
-		if(index == -1)
-			return filterActiveSign(lineEntry);
-		return lineEntry.substring(index+1);
+		return getFieldFromLine(lineEntry, ID_GROUP).trim();
+	}
+	
+	public static String getDateFromLineEntry(String lineEntry)
+	{				
+		return getFieldFromLine(lineEntry, ID_DATE).trim();
+	}
+	
+	public static String getMagicWordWithActiveSignFromLineEntry(String lineEntry)
+	{
+		if (lineEntry == null)
+			return "";
+			
+		return getFieldFromLine(lineEntry, ID_WORD).trim();
 	}
 	
 	
@@ -209,8 +216,25 @@ public class MagicWords
 		return magicWord;
 	}
 	
+	private static String getFieldFromLine(String lineEntry, int id)
+	{		
+		StringTokenizer st = new StringTokenizer(lineEntry, "\t");
+		ArrayList fields = new ArrayList();		
+		while (st.hasMoreTokens()) 
+			fields.add(st.nextToken());
+		
+		if (fields.size()== 1)
+			fields.add(filterActiveSign((String)fields.get(ID_WORD)));	
+			
+		return (id < fields.size())?(String) fields.get(id):"";
+	}
+	
 	public static final char FIELD_DELIMITER = '\t';
 	public static final String INACTIVE_SIGN = "#";
+	
+	public static final int ID_WORD=0;
+	public static final int ID_GROUP=1;
+	public static final int ID_DATE=2;
 	
 	Vector magicWordEntries; 
 	LoggerInterface logger;

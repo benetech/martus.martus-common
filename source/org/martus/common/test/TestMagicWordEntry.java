@@ -63,8 +63,15 @@ public class TestMagicWordEntry extends TestCaseEnhanced
 	{
 		String groupEntry = "group 3";
 		String validMagicWord = "magic 2";
+		String date = "2/12/2004";
 		MagicWordEntry entry = new MagicWordEntry(validMagicWord, groupEntry);
-		String validLineEntry = validMagicWord + MagicWords.FIELD_DELIMITER + groupEntry;
+		entry.setCreationDate(date);
+		String validLineEntry = validMagicWord + MagicWords.FIELD_DELIMITER + groupEntry+
+				MagicWords.FIELD_DELIMITER + date;
+		assertEquals("invalid line entry?", validLineEntry, entry.getLineOfMagicWord());
+		
+		entry = new MagicWordEntry(validMagicWord, groupEntry);		
+		validLineEntry = validMagicWord + MagicWords.FIELD_DELIMITER + groupEntry;
 		assertEquals("invalid line entry?", validLineEntry, entry.getLineOfMagicWord());
 	}
 

@@ -94,19 +94,27 @@ public class MagicWordEntry
 	}
 	
 	public String getLineOfMagicWord()
-	{
-		return getMagicWordWithActiveSign() + MagicWords.FIELD_DELIMITER + getGroupName() ;
+	{		
+		return getLine(getMagicWordWithActiveSign());
 	}
 	
 	public String getLineOfMagicWordNoSign()
-	{
-		return getMagicWord() + MagicWords.FIELD_DELIMITER + getGroupName() ;
+	{		
+		return getLine(getMagicWord());
 	}	
+	
+	private String getLine(String magicWord)
+	{
+		String lineOfMagicWord = magicWord + MagicWords.FIELD_DELIMITER + getGroupName()+
+				MagicWords.FIELD_DELIMITER + getCreationDate();
+				
+		return lineOfMagicWord.trim();
+	}
 	
 	private String magicWord;
 	private String groupName;
 	private boolean active=true;
-	private String creationDate;
+	private String creationDate="";
 }
 	
 
