@@ -30,16 +30,22 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 import org.martus.common.MartusUtilities.ServerErrorException;
 import org.martus.common.analyzerhelper.MartusBulletinRetriever.ServerPublicCodeDoesNotMatchException;
+import org.martus.common.clientside.ClientSideNetworkGateway;
 import org.martus.common.clientside.ClientSideNetworkHandlerUsingXmlRpcForNonSSL;
 import org.martus.common.clientside.Exceptions.ServerNotAvailableException;
 import org.martus.common.clientside.test.NoServerNetworkInterfaceForNonSSLHandler;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
+import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
+import org.martus.common.network.NetworkInterface;
 import org.martus.common.network.NetworkInterfaceConstants;
+import org.martus.common.network.NetworkResponse;
 import org.martus.common.network.NonSSLNetworkAPI;
 import org.martus.util.Base64;
 import org.martus.util.TestCaseEnhanced;
@@ -189,6 +195,173 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		}
 		retriever.getServerPublicKey(MartusCrypto.computePublicCode(serverPublicKeyString), testServerForNonSSL);
 		retriever.getServerPublicKey(MartusCrypto.computeFormattedPublicCode(serverPublicKeyString), testServerForNonSSL);
+	}
+	
+	public void testGetListOfBulletinIds() throws Exception
+	{
+		NetworkResponse response = new NetworkResponse(null);
+		ByteArrayInputStream streamIn = new ByteArrayInputStream(streamOut.toByteArray());
+		MartusBulletinRetriever retriever = new MartusBulletinRetriever(streamIn, password );
+		streamIn.close();
+		String fieldOfficeAccountId = "SomeFieldOffice";
+		try
+		{
+			retriever.getListOfBulletinIds(fieldOfficeAccountId, response);
+			fail("Should have thrown since this is invalid response from a server.");
+		}
+		catch(ServerErrorException expected)
+		{
+		}
+		
+		String bulletin1Id = "bulletin Local ID 1";
+		String bulletin2Id = "bulletin Local ID 2";
+		String bulletin3Id = "bulletin Local ID 3";
+		String summary1 = bulletin1Id +"=PacketID1";
+		String summary2 = bulletin2Id +"=PacketID2";
+		String summary3 = bulletin3Id +"=PacketID3";
+		
+		Vector testBulletinSummaries = new Vector();
+		testBulletinSummaries.add(summary1);
+		testBulletinSummaries.add(summary2);
+		testBulletinSummaries.add(summary3);
+		
+		Vector bulletinSummaries = new Vector();
+		bulletinSummaries.add(NetworkInterfaceConstants.OK);
+		bulletinSummaries.add(testBulletinSummaries);
+		response = new NetworkResponse(bulletinSummaries);
+		Vector returnedBulletinIDs = retriever.getListOfBulletinIds(fieldOfficeAccountId, response);
+		assertEquals("retriever should have a vector of size 3", 3, returnedBulletinIDs.size());
+		assertContains(fieldOfficeAccountId+bulletin1Id, returnedBulletinIDs);
+		assertContains(fieldOfficeAccountId+bulletin2Id, returnedBulletinIDs);
+		assertContains(fieldOfficeAccountId+bulletin3Id, returnedBulletinIDs);
+	}
+	
+	private class MockClientSideNetworkGateway extends ClientSideNetworkGateway
+	{
+		public MockClientSideNetworkGateway(NetworkInterface serverToUse)
+		{
+			super(serverToUse);
+			fieldOfficeAccountIds = new Vector();
+			draftBulletins = new HashMap();
+			sealedBulletins = new HashMap();
+		}
+		
+		public void setFieldOfficeAccountIdsToReturn(Vector fieldOfficeAccountIdsToUse)
+		{
+			fieldOfficeAccountIds = fieldOfficeAccountIdsToUse;
+		}
+		
+		public void setDraftBulletins(String fieldOffice, Vector bulletinLocalIds)
+		{
+			draftBulletins.put(fieldOffice, bulletinLocalIds);
+		}
+
+		public void setSealedBulletins(String fieldOffice, Vector bulletinLocalIds)
+		{
+			sealedBulletins.put(fieldOffice, bulletinLocalIds);
+		}
+		
+		public Vector downloadFieldOfficeAccountIds(MartusCrypto security,
+				String myAccountId) throws ServerErrorException
+		{
+			return fieldOfficeAccountIds;
+		}
+		
+		public NetworkResponse getDraftBulletinIds(MartusCrypto signer,
+				String authorAccountId, Vector retrieveTags)
+				throws MartusSignatureException
+		{
+			Vector draftBulletinSummaries = new Vector();
+			getListOfBulletinSummaries(authorAccountId, draftBulletinSummaries, draftBulletins);
+			
+			Vector rawResponse = new Vector();
+			rawResponse.add(NetworkInterfaceConstants.OK);
+			rawResponse.add(draftBulletinSummaries);
+			return new NetworkResponse(rawResponse);
+		}
+
+		public NetworkResponse getSealedBulletinIds(MartusCrypto signer,
+				String authorAccountId, Vector retrieveTags)
+				throws MartusSignatureException
+		{
+			Vector sealedBulletinSummaries = new Vector();
+			getListOfBulletinSummaries(authorAccountId, sealedBulletinSummaries, sealedBulletins);
+			
+			Vector rawResponse = new Vector();
+			rawResponse.add(NetworkInterfaceConstants.OK);
+			rawResponse.add(sealedBulletinSummaries);
+			return new NetworkResponse(rawResponse);
+		}
+
+		private void getListOfBulletinSummaries(String authorAccountId, Vector draftBulletinSummaries, HashMap listOfBulletins)
+		{
+			if(listOfBulletins.containsKey(authorAccountId))
+			{
+				Vector draftBulletinIds = (Vector)listOfBulletins.get(authorAccountId);
+				for(int i = 0; i<draftBulletinIds.size();++i)
+				{
+					draftBulletinSummaries.add(draftBulletinIds.get(i) + "=somePacketID");
+				}
+			}
+		}
+
+		private Vector fieldOfficeAccountIds;
+		private HashMap draftBulletins;
+		private HashMap sealedBulletins;
+	}
+	
+	public void testGetListOfAllFieldOfficeBulletinIdsOnServer() throws Exception
+	{
+		NetworkInterface networkInterface = ClientSideNetworkGateway.buildNetworkInterface("1.2.3.4", serverSecurity.getPublicKeyString());
+		MockClientSideNetworkGateway mockGateway = new MockClientSideNetworkGateway(networkInterface);
+		
+		ByteArrayInputStream streamIn = new ByteArrayInputStream(streamOut.toByteArray());
+		MartusBulletinRetriever retriever = new MartusBulletinRetriever(streamIn, password );
+		streamIn.close();
+		retriever.setSSLServerForTests(mockGateway);
+		List emptyList = retriever.getListOfAllFieldOfficeBulletinIdsOnServer();
+		assertEquals("Should be empty",0, emptyList.size());
+		
+		String fieldOffice1 = "field office 1";
+		String fieldOffice2 = "field office 2";
+		Vector fieldOfficeIds = new Vector();
+		fieldOfficeIds.add(fieldOffice1);
+		fieldOfficeIds.add(fieldOffice2);
+		mockGateway.setFieldOfficeAccountIdsToReturn(fieldOfficeIds);
+		emptyList = retriever.getListOfAllFieldOfficeBulletinIdsOnServer();
+		assertEquals("Should still be empty since there are no bulletins.",0, emptyList.size());
+		
+		String draftBulletinFO1LocalId = "Draft bulletin Field Office 1";
+		Vector fieldOffice1DraftBulletins = new Vector();
+		fieldOffice1DraftBulletins.add(draftBulletinFO1LocalId);
+		mockGateway.setDraftBulletins(fieldOffice1, fieldOffice1DraftBulletins);
+
+		String sealed1BulletinFO1LocalId = "Sealed 1 bulletin Field Office 1";
+		String sealed2BulletinFO1LocalId = "Sealed 2 bulletin Field Office 1";
+		Vector fieldOffice1SealedBulletins = new Vector();
+		fieldOffice1SealedBulletins.add(sealed1BulletinFO1LocalId);
+		fieldOffice1SealedBulletins.add(sealed2BulletinFO1LocalId);
+		mockGateway.setSealedBulletins(fieldOffice1, fieldOffice1SealedBulletins);
+		
+		Vector fieldOffice2HasNoDraftBulletins = new Vector();
+		mockGateway.setDraftBulletins(fieldOffice2, fieldOffice2HasNoDraftBulletins);
+
+		String sealed1BulletinFO2LocalId = "Sealed 1 bulletin Field Office 2";
+		Vector fieldOffice2SealedBulletins = new Vector();
+		fieldOffice2SealedBulletins.add(sealed1BulletinFO2LocalId);
+		mockGateway.setSealedBulletins(fieldOffice2, fieldOffice2SealedBulletins);
+
+		List allFieldOfficesBulletinIds = retriever.getListOfAllFieldOfficeBulletinIdsOnServer();
+		assertEquals("Should contain 4 bulletins", 4, allFieldOfficesBulletinIds.size());
+		
+		String bulletinId1 = fieldOffice1+draftBulletinFO1LocalId;
+		assertTrue("Should contain this draft bulletin", allFieldOfficesBulletinIds.contains(bulletinId1));
+		String bulletinId2 = fieldOffice1+sealed1BulletinFO1LocalId;
+		assertTrue("Should contain this sealed 1 bulletin", allFieldOfficesBulletinIds.contains(bulletinId2));
+		String bulletinId3 = fieldOffice1+sealed2BulletinFO1LocalId;
+		assertTrue("Should contain this sealed 2 bulletin", allFieldOfficesBulletinIds.contains(bulletinId3));
+		String bulletinId4 = fieldOffice2+sealed1BulletinFO2LocalId;
+		assertTrue("Should contain this sealed bulletin for field office 2", allFieldOfficesBulletinIds.contains(bulletinId4));
 	}
 	
 	private static MartusSecurity security;

@@ -93,18 +93,30 @@ public class MartusBulletinRetriever
 		{
 			String fieldOfficeAccountId = (String)fieldOffices.get(a);
 			NetworkResponse response = serverSLL.getSealedBulletinIds(security,fieldOfficeAccountId, noTags);
-			if(!response.getResultCode().equals(NetworkInterfaceConstants.OK))
-				throw new ServerErrorException();
-			allBulletins.addAll(response.getResultVector());
+			allBulletins.addAll(getListOfBulletinIds(fieldOfficeAccountId, response));
 
 			response = serverSLL.getDraftBulletinIds(security,fieldOfficeAccountId, noTags);
-			if(!response.getResultCode().equals(NetworkInterfaceConstants.OK))
-				throw new ServerErrorException();
-			allBulletins.addAll(response.getResultVector());
+			allBulletins.addAll(getListOfBulletinIds(fieldOfficeAccountId, response));
 		}
 		return allBulletins;
 	}
 	
+	public Vector getListOfBulletinIds(String fieldOfficeAccountId, NetworkResponse response) throws ServerErrorException
+	{
+		if(!response.getResultCode().equals(NetworkInterfaceConstants.OK))
+			throw new ServerErrorException();
+		Vector result = response.getResultVector();
+		Vector bulletinIds = new Vector();
+		for(int i = 0; i < result.size(); ++i)
+		{
+			String summary = (String)result.get(i);
+			String[] data = summary.split("=");
+			String bulletinId = fieldOfficeAccountId + data[0];
+			bulletinIds.add(bulletinId);
+		}
+		return bulletinIds;
+	}
+
 	public class ServerNotConfiguredException extends Exception{};
 	public class ServerPublicCodeDoesNotMatchException extends Exception {};
 	
@@ -129,6 +141,11 @@ public class MartusBulletinRetriever
 			e.printStackTrace();
 			throw new ServerErrorException();
 		}
+	}
+	
+	public void setSSLServerForTests(ClientSideNetworkGateway sslServerToUse)
+	{
+		serverSLL = sslServerToUse;
 	}
 
 	public NonSSLNetworkAPI serverNonSSL;
