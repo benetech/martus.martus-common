@@ -54,6 +54,12 @@ import org.bouncycastle.crypto.params.RSAKeyParameters;
 import org.martus.util.Base64;
 import org.martus.util.Base64.InvalidBase64Exception;
 
+/*
+ * NOTE!!!!!!!
+ * 
+ * This class is basically a non-functional stub! Do not use it!
+ * 
+ */
 public class MartusDirectCryptoKeyPair extends MartusKeyPair
 {
 	public MartusDirectCryptoKeyPair(SecureRandom rand)
