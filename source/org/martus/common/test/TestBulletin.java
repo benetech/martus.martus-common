@@ -88,14 +88,14 @@ public class TestBulletin extends TestCaseEnhanced
     public void testBasics()
     {
 		Bulletin b = new Bulletin(security);
-		assertEquals(false, b.isStandardField("Nope"));
-		assertEquals(false, b.isStandardField("Location"));
-		assertEquals(true, b.isStandardField("location"));
-		assertEquals(false, b.isStandardField("LOCATION"));
-		assertEquals(false, b.isStandardField(Bulletin.TAGPRIVATEINFO));
+		assertEquals(false, b.isFieldInPublicSection("Nope"));
+		assertEquals(false, b.isFieldInPublicSection("Location"));
+		assertEquals(true, b.isFieldInPublicSection("location"));
+		assertEquals(false, b.isFieldInPublicSection("LOCATION"));
+		assertEquals(false, b.isFieldInPublicSection(Bulletin.TAGPRIVATEINFO));
 
-		assertEquals(false, b.isPrivateField("LOCATION"));
-		assertEquals(true, b.isPrivateField(Bulletin.TAGPRIVATEINFO));
+		assertEquals(false, b.isFieldInPrivateSection("LOCATION"));
+		assertEquals(true, b.isFieldInPrivateSection(Bulletin.TAGPRIVATEINFO));
 
 		b = new Bulletin(security);
 		assertNotEquals("", b.getLocalId());

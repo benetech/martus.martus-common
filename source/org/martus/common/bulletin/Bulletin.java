@@ -207,7 +207,7 @@ public class Bulletin implements BulletinConstants
 
 	public void set(String fieldName, String value)
 	{
-		if(isStandardField(fieldName))
+		if(isFieldInPublicSection(fieldName))
 			fieldData.set(fieldName, value);
 		else
 			privateFieldData.set(fieldName, value);
@@ -216,7 +216,7 @@ public class Bulletin implements BulletinConstants
 
 	public String get(String fieldName)
 	{			 
-		if(isStandardField(fieldName))
+		if(isFieldInPublicSection(fieldName))
 			return fieldData.get(fieldName);
 		else
 			return privateFieldData.get(fieldName);
@@ -380,12 +380,12 @@ public class Bulletin implements BulletinConstants
 		return new DatabaseKey(uidFdp);
 	}
 
-	public boolean isStandardField(String fieldName)
+	public boolean isFieldInPublicSection(String fieldName)
 	{
 		return getFieldDataPacket().fieldExists(fieldName);
 	}
 
-	public boolean isPrivateField(String fieldName)
+	public boolean isFieldInPrivateSection(String fieldName)
 	{
 		return getPrivateFieldDataPacket().fieldExists(fieldName);
 	}
