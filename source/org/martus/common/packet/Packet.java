@@ -26,7 +26,6 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.packet;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -48,9 +47,8 @@ import org.martus.util.Base64;
 import org.martus.util.InputStreamWithSeek;
 import org.martus.util.UnicodeReader;
 import org.martus.util.UnicodeWriter;
-import org.xml.sax.Attributes;
+import org.martus.util.xml.SimpleXmlParser;
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 
 public class Packet
 {
@@ -208,7 +206,7 @@ public class Packet
 			db.writeRecord(headerKey, headerWriter.toString());
 		return sig;
 	}
-
+	
 	static public void validateXml(InputStreamWithSeek inputStream, String accountId, String localId, byte[] expectedSig, MartusCrypto verifier) throws
 		IOException,
 		InvalidPacketException,
@@ -217,20 +215,28 @@ public class Packet
 		MartusCrypto.DecryptionException
 	{
 		verifyPacketSignature(inputStream, expectedSig, verifier);
-		XmlValidateHandler handler = new XmlValidateHandler();
-		BufferedReader reader = new UnicodeReader(inputStream);
+		
+		UniversalId uid = UniversalId.createFromAccountAndLocalId(accountId, localId);
+		Packet dummyPacket = PacketFactory.createEmptyPacket(uid);
+		if(dummyPacket == null)
+			throw new InvalidPacketException("Unknown local id type");
+		XmlPacketLoader verifyLoader = new XmlPacketLoader(dummyPacket);
+		verifyLoader.ignoreUnknownTags();
 		try
 		{
-			MartusXml.loadXmlWithExceptions(reader, handler);
+			SimpleXmlParser.parse(verifyLoader, new UnicodeReader(inputStream));
 		}
 		catch (Exception e)
 		{
-			throw new InvalidPacketException(e.toString());
+			//e.printStackTrace();
+			throw(new InvalidPacketException(e.getMessage()));
 		}
-		if(!accountId.equals(handler.accountId))
+
+		if(!accountId.equals(dummyPacket.getAccountId()))
 			throw new WrongAccountException();
-		if(!localId.equals(handler.localId))
-			throw new InvalidPacketException("Wrong Local ID: expected " + localId + " but was " + handler.localId);
+		if(!localId.equals(dummyPacket.getLocalId()))
+			throw new InvalidPacketException("Wrong Local ID: expected " + localId + " but was " + dummyPacket.getLocalId());
+		
 	}
 
 	public static byte[] verifyPacketSignature(InputStreamWithSeek inputStream, MartusCrypto verifier) throws
@@ -373,53 +379,6 @@ public class Packet
 	{
 		writeElement(dest, MartusXml.PacketIdElementName, getLocalId());
 		writeElement(dest, MartusXml.AccountElementName, getAccountId());
-	}
-
-	static class XmlValidateHandler extends DefaultHandler
-	{
-		XmlValidateHandler()
-		{
-		}
-
-		public void startElement(String namespaceURI, String sName, String qName,
-				Attributes attrs) throws SAXException
-		{
-			currentElementName = qName;
-			data = new StringBuffer();
-		}
-
-		public void endElement(String namespaceURI, String sName, String qName)
-		{
-			String raw = new String(data);
-			byte[] bytes = raw.getBytes();
-			try
-			{
-				if(currentElementName.equals(MartusXml.AccountElementName))
-					accountId = new String(bytes,"UTF-8");
-				if(currentElementName.equals(MartusXml.PacketIdElementName))
-					localId = new String(bytes,"UTF-8");
-			}
-			catch(UnsupportedEncodingException e)
-			{
-				System.out.println("PacketValidate.endelement: " + e);
-			}
-			currentElementName = "";
-			data = new StringBuffer();
-		}
-
-		public void characters(char buf[], int offset, int len) throws SAXException
-		{
-			if(currentElementName.equals(MartusXml.AccountElementName) ||
-				currentElementName.equals(MartusXml.PacketIdElementName))
-			{
-				data.append(buf,offset, len);
-			}
-		}
-
-		String currentElementName;
-		StringBuffer data;
-		String accountId;
-		String localId;
 	}
 
 	protected void writeElement(XmlWriterFilter dest, String tag, String data) throws IOException

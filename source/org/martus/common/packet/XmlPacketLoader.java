@@ -41,11 +41,12 @@ public class XmlPacketLoader extends SimpleXmlDefaultLoader
 		super(packetToFill.getPacketRootElementName());
 		packet = packetToFill;
 	}
-
+	
 	public SimpleXmlDefaultLoader startElement(String tag)
 		throws SAXParseException
 	{
-		if(getTagsContainingStrings().contains(tag))
+		String tag1 = tag;
+		if(getTagsContainingStrings().contains(tag1))
 			return new SimpleXmlStringLoader(tag);
 
 		return super.startElement(tag);
@@ -61,7 +62,10 @@ public class XmlPacketLoader extends SimpleXmlDefaultLoader
 	{
 		String tag = ended.getTag();
 		if(!getTagsContainingStrings().contains(tag))
+		{
 			super.endElement(ended);
+			return;
+		}
 
 		String value = ((SimpleXmlStringLoader)ended).getText();
 		

@@ -26,17 +26,7 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common;
 
-import java.io.IOException;
-import java.io.Reader;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.helpers.DefaultHandler;
 
 
 public class MartusXml
@@ -77,17 +67,6 @@ public class MartusXml
 	public static String getTagEnd(String tagName)
 	{
 		return "</" + tagName + ">\n";
-	}
-
-	static public void loadXmlWithExceptions(Reader xmlReader, DefaultHandler handler) throws
-			ParserConfigurationException,
-			SAXParseException,
-			SAXException,
-			IOException
-	{
-        // Parse the input
-        SAXParser saxParser = factory.newSAXParser();
-        saxParser.parse(new InputSource(xmlReader), handler);
 	}
 
 	// NOTE: Change the version any time the packet format changes in 

@@ -32,13 +32,17 @@ import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 
+import org.martus.common.FieldSpec;
 import org.martus.common.MartusXml;
+import org.martus.common.StandardFieldSpecs;
 import org.martus.common.VersionBuildDate;
 import org.martus.common.XmlWriterFilter;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.packet.BulletinHeaderPacket;
+import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.Packet;
 import org.martus.common.packet.UniversalId;
+import org.martus.common.packet.Packet.WrongAccountException;
 import org.martus.util.ByteArrayInputStreamWithSeek;
 
 public class TestPacket extends TestCaseEnhanced
@@ -211,6 +215,42 @@ public class TestPacket extends TestCaseEnhanced
 			fail("Didn't throw for bad xml?");
 		}
 		catch(Packet.InvalidPacketException expectedException)
+		{
+		}
+	}
+	
+	public void testValidatePacketWithWrongAccountId() throws Exception
+	{
+		BulletinHeaderPacket bhp = new BulletinHeaderPacket(security.getPublicKeyString());
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		bhp.writeXml(out, security);
+
+		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(out.toByteArray());
+		try
+		{
+			Packet.validateXml(in, "Bad account", bhp.getLocalId(), null, security);
+			fail("Should have thrown for wrong account");
+		}
+		catch (WrongAccountException ignoreExpectedException)
+		{
+		}
+	}
+
+	public void testValidatePacketWithWrongLocalId() throws Exception
+	{
+		FieldSpec[] specs = StandardFieldSpecs.getDefaultPublicFieldSpecs();
+		UniversalId uid = FieldDataPacket.createUniversalId(security.getPublicKeyString());
+		FieldDataPacket fdp = new FieldDataPacket(uid, specs);
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		fdp.writeXml(out, security);
+
+		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(out.toByteArray());
+		try
+		{
+			Packet.validateXml(in, fdp.getAccountId(), "F-bad local id", null, security);
+			fail("Should have thrown for wrong local id");
+		}
+		catch (Packet.InvalidPacketException ignoreExpectedException)
 		{
 		}
 	}
