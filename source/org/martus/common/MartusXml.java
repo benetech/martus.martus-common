@@ -26,7 +26,6 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common;
 
-import javax.xml.parsers.SAXParserFactory;
 
 
 public class MartusXml
