@@ -32,7 +32,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -47,6 +46,7 @@ import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
 import org.martus.common.packet.UniversalId;
 import org.martus.util.FileInputStreamWithSeek;
 import org.martus.util.InputStreamWithSeek;
+import org.martus.util.ScrubFile;
 import org.martus.util.StreamCopier;
 import org.martus.util.StreamFilter;
 import org.martus.util.StringInputStream;
@@ -448,16 +448,8 @@ abstract public class FileDatabase extends Database
 	public void scrubRecord(DatabaseKey key) 
 			throws IOException, RecordHiddenException
 	{
-		File file = getFileForRecord(key);		
-		RandomAccessFile randomFile = new RandomAccessFile(file, "rw");
-		randomFile.seek(0);
-			
-		for (int i=0; i< randomFile.length();++i)
-		{
-			randomFile.write(0x55);
-		}
-			
-		randomFile.close();		
+		File file = getFileForRecord(key);
+		ScrubFile.scrub(file);		
 	}
 
 
