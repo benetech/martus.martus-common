@@ -45,6 +45,7 @@ public class TestZipEntryInputStream extends TestCaseEnhanced
 
 	public void setUp() throws Exception
 	{
+		super.setUp();
 		zip = createSampleZipFile();
 		entry = zip.getEntry(sampleEntryName);
 		in = new ZipEntryInputStream(zip, entry);
@@ -54,6 +55,7 @@ public class TestZipEntryInputStream extends TestCaseEnhanced
 	{
 		in.close();
 		zip.close();
+		super.tearDown();
 	}
 
 	public void testSimpleRead() throws Exception

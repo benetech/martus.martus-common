@@ -36,10 +36,6 @@ public class TestSearchTreeNode extends TestCaseEnhanced
         super(name);
     }
 
-    public void setUp()
-    {
-    }
-
     public void testValueNode()
     {
 		SearchTreeNode node = new SearchTreeNode("text");

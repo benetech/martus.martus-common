@@ -54,6 +54,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 
 	public void setUp() throws Exception
 	{
+		super.setUp();
 		TRACE_BEGIN("setUp");
 		if(security == null)
 			security = new MartusSecurity();
@@ -79,10 +80,6 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		assertNotNull("setup: KeyPair returned NULL", security.getKeyPair());
 		assertNotNull("setup: Key returned NULL", security.getPrivateKey());
 		TRACE_END();
-	}
-
-	public void tearDown()
-	{
 	}
 
 	public void testGetDigestOfPartOfPrivateKey() throws Exception

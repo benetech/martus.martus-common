@@ -55,6 +55,7 @@ public class TestMartusServerUtilities extends TestCaseEnhanced
 
 	public void setUp() throws Exception
 	{
+		super.setUp();
 		TRACE_BEGIN("setUp");
 		
 		if(serverSecurity == null)
@@ -70,6 +71,7 @@ public class TestMartusServerUtilities extends TestCaseEnhanced
 	{
 		TRACE_BEGIN("tearDown");
 		TRACE_END();
+		super.tearDown();
 	}
 
 	public void testServerFileSigning() throws Exception

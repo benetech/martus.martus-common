@@ -58,6 +58,7 @@ public class TestFileDatabase extends TestCaseEnhanced
 
 	public void setUp() throws Exception
 	{
+		super.setUp();
 		security = MockMartusSecurity.createClient();
 		dir = createTempFileFromName("$$$MartusTestFileDatabaseSetup");
 		dir.delete();
@@ -70,6 +71,7 @@ public class TestFileDatabase extends TestCaseEnhanced
 	{
 		db.deleteAllData();
 		assertTrue("Either a test failed or a file was left open.", dir.delete());
+		super.tearDown();
 	}
 
 	public void testBasics() throws Exception

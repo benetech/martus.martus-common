@@ -58,6 +58,7 @@ public class TestBulletin extends TestCaseEnhanced
 
     public void setUp() throws Exception
     {
+    	super.setUp();
     	if(tempFile1 == null)
     	{
 			tempFile1 = createTempFileWithData(sampleBytes1);
@@ -80,10 +81,6 @@ public class TestBulletin extends TestCaseEnhanced
 			security.createKeyPair(512);
 		}
 		db = new MockClientDatabase();
-    }
-
-    public void tearDown() throws Exception
-    {
     }
 
     public void testBasics()

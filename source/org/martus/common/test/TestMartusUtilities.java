@@ -77,7 +77,8 @@ public class TestMartusUtilities extends TestCaseEnhanced
 
 	public void setUp() throws Exception
     {
-    	if(security == null)
+		super.setUp();
+		if(security == null)
 		{
 			security = new MartusSecurity();
 			security.createKeyPair(512);

@@ -50,6 +50,7 @@ public class TestBulletinSaver extends TestCaseEnhanced
 
 	public void setUp() throws Exception
 	{
+		super.setUp();
 		if(tempFile1 == null)
 		{
 			tempFile1 = createTempFileWithData(sampleBytes1);

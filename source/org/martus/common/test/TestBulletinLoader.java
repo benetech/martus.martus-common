@@ -54,16 +54,13 @@ public class TestBulletinLoader extends TestCaseEnhanced
 
 	public void setUp() throws Exception
 	{
+		super.setUp();
 		if(security == null)
 		{
 			security = new MartusSecurity();
 			security.createKeyPair(512);
 		}
 		db = new MockClientDatabase();
-	}
-
-	public void tearDown() throws Exception
-	{
 	}
 
 	public void testDetectFieldPacketWithWrongSig() throws Exception

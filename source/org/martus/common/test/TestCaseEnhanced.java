@@ -217,9 +217,32 @@ public class TestCaseEnhanced extends TestCase
 			System.out.println(System.currentTimeMillis() - methodStartedAt);
 	}
 
-	public final static String BAD_FILENAME = "<>//\\..??**::||";
+	protected void setUp() throws Exception
+	{
+		if(SHOW_MODULE_TEST_TIME && testStartTime == 0)
+		{	
+			testStartTime = System.currentTimeMillis();
+			String classNameComplete = getClass().toString();
+			String className = classNameComplete.substring(classNameComplete.lastIndexOf('.')+1);
+			System.out.print(className + " " + getName() + " " );
+		}
+		super.setUp();
+	}
 
+	protected void tearDown() throws Exception
+	{
+		super.tearDown();
+		if(SHOW_MODULE_TEST_TIME)
+		{
+			long testExecutionTimeMillis = System.currentTimeMillis() - testStartTime;
+			System.out.println(testExecutionTimeMillis / 1000 + " seconds.");
+		}
+	}
+
+	public final static String BAD_FILENAME = "<>//\\..??**::||";
+	
 	private long methodStartedAt;
 	public boolean VERBOSE = false;
-
+	public boolean SHOW_MODULE_TEST_TIME = false;
+	public long testStartTime = 0; 
 }

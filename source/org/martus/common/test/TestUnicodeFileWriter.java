@@ -40,10 +40,6 @@ public class TestUnicodeFileWriter extends TestCaseEnhanced
         super(name);
     }
 
-    public void setUp()
-    {
-    }
-
     public void testConstructor() throws Exception
     {
 		File badFile = new File(BAD_FILENAME);

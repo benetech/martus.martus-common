@@ -45,6 +45,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 
 	public void setUp() throws Exception
 	{
+		super.setUp();
 		if(security == null)
 		{
 			int SHORTEST_LEGAL_KEY_SIZE = 512;

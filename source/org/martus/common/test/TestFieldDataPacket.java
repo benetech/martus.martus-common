@@ -51,6 +51,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 
 	public void setUp() throws Exception
 	{
+		super.setUp();
 		if(security == null)
 		{
 			security = new MartusSecurity();

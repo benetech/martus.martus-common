@@ -68,6 +68,7 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 
 	public void setUp() throws Exception
 	{
+		super.setUp();
 		db = new MockClientDatabase();
 		security = MockMartusSecurity.createClient();
 	}

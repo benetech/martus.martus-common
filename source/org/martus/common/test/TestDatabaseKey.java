@@ -39,10 +39,6 @@ public class TestDatabaseKey extends TestCaseEnhanced
 		super(name);
 	}
 
-	public void setUp()
-	{
-	}
-
 	public void TRACE(String text)
 	{
 		//System.out.println(text);

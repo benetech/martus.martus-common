@@ -54,6 +54,7 @@ public class TestAttachmentPacket extends TestCaseEnhanced
 
 	public void setUp() throws Exception
 	{
+		super.setUp();
 		if(tempFile == null)
 		{
 			tempFile = createTempFileFromName("$$$MartusTestAttIn");

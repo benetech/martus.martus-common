@@ -51,15 +51,6 @@ public class TestKeyShareSaveRestore extends TestCaseEnhanced
 		VERBOSE = false;
 	}
 
-	public void setUp() throws Exception
-	{
-	}
-
-	public void tearDown()
-	{
-	}
-
-
 	public void testSecretShare() throws Exception
 	{
 		MartusSecurity tempSecurity = new MartusSecurity();
