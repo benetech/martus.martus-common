@@ -29,7 +29,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Box;
@@ -82,11 +81,11 @@ public class UiBasicSigninDlg extends JDialog
 		getRootPane().setDefaultButton(ok);
 		signinPane.refreshForNewVirtualMode();
 		setResizable(true);
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		Dimension screenSize = Utilities.getViewableScreenSize(this);
 		if(screenSize.width < 1000)
 		{	
 			setSize(screenSize.width, screenSize.height * 8 / 10);
-			setLocation(0,screenSize.height/10);
+			setLocation(Utilities.getViewableRectangle(this).x,screenSize.height/10);
 		}
 		else
 		{	
