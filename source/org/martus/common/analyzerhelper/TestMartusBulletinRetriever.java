@@ -30,6 +30,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
@@ -318,6 +319,8 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		ByteArrayInputStream streamIn = new ByteArrayInputStream(streamOut.toByteArray());
 		MartusBulletinRetriever retriever = new MartusBulletinRetriever(streamIn, password );
 		streamIn.close();
+		retriever.initalizeServer("1.2.3.4", "some random public key");
+		retriever.serverNonSSL = new TestServerNetworkInterfaceForNonSSLHandler();
 		retriever.setSSLServerForTests(mockGateway);
 		List emptyList = retriever.getListOfAllFieldOfficeBulletinIdsOnServer();
 		assertEquals("Should be empty",0, emptyList.size());
@@ -355,13 +358,24 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		assertEquals("Should contain 4 bulletins", 4, allFieldOfficesBulletinIds.size());
 		
 		String bulletinId1 = fieldOffice1+draftBulletinFO1LocalId;
-		assertTrue("Should contain this draft bulletin", allFieldOfficesBulletinIds.contains(bulletinId1));
 		String bulletinId2 = fieldOffice1+sealed1BulletinFO1LocalId;
-		assertTrue("Should contain this sealed 1 bulletin", allFieldOfficesBulletinIds.contains(bulletinId2));
 		String bulletinId3 = fieldOffice1+sealed2BulletinFO1LocalId;
-		assertTrue("Should contain this sealed 2 bulletin", allFieldOfficesBulletinIds.contains(bulletinId3));
 		String bulletinId4 = fieldOffice2+sealed1BulletinFO2LocalId;
+
+		assertTrue("Should contain this draft bulletin", allFieldOfficesBulletinIds.contains(bulletinId1));
+		assertTrue("Should contain this sealed 1 bulletin", allFieldOfficesBulletinIds.contains(bulletinId2));
+		assertTrue("Should contain this sealed 2 bulletin", allFieldOfficesBulletinIds.contains(bulletinId3));
 		assertTrue("Should contain this sealed bulletin for field office 2", allFieldOfficesBulletinIds.contains(bulletinId4));
+		
+		ArrayList currentList = new ArrayList();
+		currentList.add(bulletinId3);
+		
+		List newBulletinsOnly = retriever.getListOfNewBulletinIds(currentList);
+		assertEquals(3, newBulletinsOnly.size());
+		assertFalse("Should not contain bulletin 3", newBulletinsOnly.contains(bulletinId3));
+		assertTrue("Should contain this draft bulletin as well", newBulletinsOnly.contains(bulletinId1));
+		assertTrue("Should contain this sealed 1 bulletin as well", newBulletinsOnly.contains(bulletinId2));
+		assertTrue("Should contain this sealed bulletin for field office 2 as well", newBulletinsOnly.contains(bulletinId4));
 	}
 	
 	private static MartusSecurity security;
