@@ -63,7 +63,7 @@ public class TestMagicWords extends TestCaseEnhanced
 	public void testMagicWords() throws Exception
 	{
 		assertTrue("available active magic words?", magicWords.getActiveMagicWords().size()==2);
-		assertTrue("available inactive magic words?", magicWords.getInActiveMagicWords().size()==1);
+		assertTrue("available inactive magic words?", magicWords.getInactiveMagicWords().size()==1);
 		
 		assertFalse("Not a valid magic word?", magicWords.isValidMagicWord("Test4"));
 		assertTrue("A valid magic word", magicWords.isValidMagicWord("Test1"));
@@ -74,7 +74,7 @@ public class TestMagicWords extends TestCaseEnhanced
 	{				
 		Vector activeWord = magicWords.getActiveMagicWords();
 		assertTrue("Contain size of active magic words", activeWord.size()==2);
-		Vector inActiveWord = magicWords.getInActiveMagicWords();
+		Vector inActiveWord = magicWords.getInactiveMagicWords();
 		assertTrue("COntain size of inactive magic words", inActiveWord.size()==1);
 	
 	}
@@ -90,19 +90,33 @@ public class TestMagicWords extends TestCaseEnhanced
 	
 	}
 	
-	public void testWriteoutMagicWordsToFile() throws Exception
+	public void testNullMagicWord() throws Exception
 	{
+		String duplicateString = null;
+		assertTrue("Current size?", magicWords.size()==3);
+		magicWords.add(duplicateString);
+		assertTrue("Same size?", magicWords.size()==4);
+	}
+	
+	public void testDuplicateMagicWords() throws Exception
+	{
+		String duplicateString = "test2";
+		assertTrue("Current size?", magicWords.size()==3);
+		magicWords.add(duplicateString);
+		assertTrue("Same size?", magicWords.size()==3);
+	}
+	
+	public void testWriteoutMagicWordsToFile() throws Exception
+	{			
 		Vector words = magicWords.getAllMagicWords();
 		magicWords.writeMagicWords(tempFile, words);
 		
 		magicWords = new MagicWords( new LoggerToConsole());	
 		magicWords.loadMagicWords(tempFile);
 		
-		words = magicWords.getInActiveMagicWords();
+		words = magicWords.getInactiveMagicWords();
 		assertEquals("test3", (String) words.get(0));	
 	}	
-	
-	
 		
 	File tempFile;
 	MagicWords magicWords;

@@ -30,9 +30,12 @@ public class MagicWordEntry
 {	
 	public MagicWordEntry(String magicWordEntry)
 	{			
+		if (magicWordEntry == null)
+			magicWordEntry = "";
+			
 		if (magicWordEntry.startsWith("#"))
 		{	
-			magicWord = magicWordEntry.replace('#', '\0').trim();
+			magicWord = magicWordEntry.substring(1);
 			setActive(false);
 		}
 		else		
@@ -48,7 +51,10 @@ public class MagicWordEntry
 	
 	public String getMagicWordWithActiveSign()
 	{
-		return (!isActive())?"#"+magicWord:magicWord;		
+		if (isActive())
+			return magicWord;
+			
+		return "#"+magicWord;		
 	}
 
 	public String getGroupName()

@@ -73,11 +73,11 @@ public class MagicWords
 	}
 	
 	public static String filterActiveSign(String magicWord)
-	{
-		String word =null;
+	{		
 		if (magicWord.startsWith("#"))
-			word = magicWord.replace('#', '\0').trim();
-		return word;
+			magicWord = magicWord.substring(1);
+			
+		return magicWord;
 	}
 	
 	public void add(String magicWordFileEntry)
@@ -130,12 +130,12 @@ public class MagicWords
 		return magicWords;
 	}
 	
-	public Vector getInActiveMagicWords()
+	public Vector getInactiveMagicWords()
 	{
 		Vector magicWords = new Vector();		
 		for(int i = 0; i<magicWordEntries.size(); ++i)
 		{
-			MagicWordEntry entry = (MagicWordEntry)magicWordEntries.get(i);
+			MagicWordEntry entry = (MagicWordEntry)magicWordEntries.get(i);			
 			if(!entry.isActive())
 				magicWords.add(entry.getMagicWord());
 		}
