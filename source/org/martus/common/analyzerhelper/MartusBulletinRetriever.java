@@ -51,6 +51,9 @@ import org.martus.util.Base64.InvalidBase64Exception;
 
 public class MartusBulletinRetriever
 {
+	public class ServerNotConfiguredException extends Exception{};
+	public class ServerPublicCodeDoesNotMatchException extends Exception {};
+	
 	public MartusBulletinRetriever(InputStream keyPair, char[] password) throws CryptoInitializationException, InvalidKeyPairFileVersionException, AuthorizationFailedException, IOException
 	{
 		security = new MartusSecurity();
@@ -64,42 +67,25 @@ public class MartusBulletinRetriever
 		serverSLL = ClientSideNetworkGateway.buildGateway(serverIPAddress, serverPublicKey);
 	}
 
-	public boolean isServerAvailable() throws ServerNotConfiguredException 
+	public boolean isServerAvailable()  
 	{
 		if(serverPublicKey==null)
-			throw new ServerNotConfiguredException();
+			return false;
 		return ClientSideNetworkHandlerUsingXmlRpcForNonSSL.isNonSSLServerAvailable(serverNonSSL);
 	}
 
 	public String getServerPublicKey(String serverIPAddress, String serverPublicCode) throws ServerPublicCodeDoesNotMatchException, ServerNotAvailableException, ServerErrorException
 	{
 		ClientSideNetworkHandlerUsingXmlRpcForNonSSL serverNonSSL = new ClientSideNetworkHandlerUsingXmlRpcForNonSSL(serverIPAddress);
-		return getForInternalUseServerPublicKey(serverPublicCode, serverNonSSL);
+		return getInternalUseServerPublicKey(serverPublicCode, serverNonSSL);
 	}
 	
 	public List getListOfNewBulletinIds(List bulletinIdsAlreadyRetrieved) throws ServerNotConfiguredException, MartusSignatureException, ServerErrorException
 	{
 		if(!isServerAvailable())
 			return new ArrayList();
-		List allBulletins = getAllFieldOfficeBulletinUniversalIds();
+		List allBulletins = getInternalUseAllFieldOfficeBulletinUniversalIds();
 		allBulletins.removeAll(bulletinIdsAlreadyRetrieved);
-		return allBulletins;
-	}
-	
-	public List getAllFieldOfficeBulletinUniversalIds() throws ServerErrorException, MartusSignatureException
-	{
-		List allBulletins = new ArrayList();
-		Vector fieldOffices = serverSLL.downloadFieldOfficeAccountIds(security, security.getPublicKeyString());
-		Vector noTags = new Vector();
-		for(int a = 0; a < fieldOffices.size(); ++a)
-		{
-			String fieldOfficeAccountId = (String)fieldOffices.get(a);
-			NetworkResponse response = serverSLL.getSealedBulletinIds(security,fieldOfficeAccountId, noTags);
-			allBulletins.addAll(getListOfBulletinUniversalIds(fieldOfficeAccountId, response));
-
-			response = serverSLL.getDraftBulletinIds(security,fieldOfficeAccountId, noTags);
-			allBulletins.addAll(getListOfBulletinUniversalIds(fieldOfficeAccountId, response));
-		}
 		return allBulletins;
 	}
 	
@@ -118,7 +104,26 @@ public class MartusBulletinRetriever
 		}
 	}
 	
-	public Vector getListOfBulletinUniversalIds(String fieldOfficeAccountId, NetworkResponse response) throws ServerErrorException
+	//InternalUse methods are public accessible only for tests
+	
+	public List getInternalUseAllFieldOfficeBulletinUniversalIds() throws ServerErrorException, MartusSignatureException
+	{
+		List allBulletins = new ArrayList();
+		Vector fieldOffices = serverSLL.downloadFieldOfficeAccountIds(security, security.getPublicKeyString());
+		Vector noTags = new Vector();
+		for(int a = 0; a < fieldOffices.size(); ++a)
+		{
+			String fieldOfficeAccountId = (String)fieldOffices.get(a);
+			NetworkResponse response = serverSLL.getSealedBulletinIds(security,fieldOfficeAccountId, noTags);
+			allBulletins.addAll(getInternalUseListOfBulletinUniversalIds(fieldOfficeAccountId, response));
+
+			response = serverSLL.getDraftBulletinIds(security,fieldOfficeAccountId, noTags);
+			allBulletins.addAll(getInternalUseListOfBulletinUniversalIds(fieldOfficeAccountId, response));
+		}
+		return allBulletins;
+	}
+	
+	Vector getInternalUseListOfBulletinUniversalIds(String fieldOfficeAccountId, NetworkResponse response) throws ServerErrorException
 	{
 		if(!response.getResultCode().equals(NetworkInterfaceConstants.OK))
 			throw new ServerErrorException();
@@ -133,10 +138,7 @@ public class MartusBulletinRetriever
 		return bulletinIds;
 	}
 
-	public class ServerNotConfiguredException extends Exception{};
-	public class ServerPublicCodeDoesNotMatchException extends Exception {};
-	
-	public String getForInternalUseServerPublicKey(String serverPublicCode, NonSSLNetworkAPI serverNonSSL) throws ServerNotAvailableException, ServerPublicCodeDoesNotMatchException, ServerErrorException
+	public String getInternalUseServerPublicKey(String serverPublicCode, NonSSLNetworkAPI serverNonSSL) throws ServerNotAvailableException, ServerPublicCodeDoesNotMatchException, ServerErrorException
 	{
 		String ServerPublicKey;
 		try
@@ -159,7 +161,7 @@ public class MartusBulletinRetriever
 		}
 	}
 	
-	public void setSSLServerForTests(ClientSideNetworkGateway sslServerToUse)
+	public void setInternalUseSSLServer(ClientSideNetworkGateway sslServerToUse)
 	{
 		serverSLL = sslServerToUse;
 	}

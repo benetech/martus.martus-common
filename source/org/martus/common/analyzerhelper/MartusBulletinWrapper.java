@@ -54,7 +54,7 @@ public class MartusBulletinWrapper
 			ClientFileDatabase db = new ClientFileDatabase(tempDirectory, security);
 			db.initialize();
 			ZipFile zipFile = new ZipFile(bulletinZipFile);
-			BulletinZipUtilities.importBulletinPacketsFromZipFileToDatabase(db, security.getPublicKeyString(), zipFile, security);
+			BulletinZipUtilities.importBulletinPacketsFromZipFileToDatabase(db, null, zipFile, security);
 			zipFile.close();
 			DatabaseKey key = new DatabaseKey(uid);
 			bulletin = BulletinLoader.loadFromDatabase(db, key, security);

@@ -26,6 +26,8 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.analyzerhelper;
 
 import java.io.File;
+import org.martus.common.HQKey;
+import org.martus.common.HQKeys;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinConstants;
 import org.martus.common.bulletin.BulletinSaver;
@@ -49,6 +51,8 @@ public class TestMartusBulletinWrapper extends TestCaseEnhanced
 	  	{
 			security = new MartusSecurity();
 			security.createKeyPair(512);
+			fosecurity = new MartusSecurity();
+			fosecurity.createKeyPair(512);
 	  	}
 	}
 	
@@ -83,5 +87,42 @@ public class TestMartusBulletinWrapper extends TestCaseEnhanced
 		bulletinZipFile.delete();
 		db.deleteAllData();
 	}
+	
+	public void testHQAuthorized() throws Exception
+	{
+		Bulletin bulletin = new Bulletin(fosecurity);
+		String author = "author";
+		String title = "title";
+		String location = "location";
+		String privateData = "private";
+		bulletin.set(BulletinConstants.TAGAUTHOR, author);
+		bulletin.set(BulletinConstants.TAGTITLE, title);
+		bulletin.set(BulletinConstants.TAGLOCATION, location);
+		bulletin.set(BulletinConstants.TAGPRIVATEINFO, privateData);
+		HQKey key = new HQKey(security.getPublicKeyString());
+		HQKeys keys = new HQKeys(key);
+		bulletin.setAuthorizedToReadKeys(keys);
+		
+		
+		File tempDirectory = createTempFileFromName("$$$TestBulletinHQWrapper");
+		tempDirectory.deleteOnExit();
+		tempDirectory.delete();
+		tempDirectory.mkdirs();
+
+		ClientFileDatabase db = new ClientFileDatabase(tempDirectory, fosecurity);
+		db.initialize();
+		BulletinSaver.saveToClientDatabase(bulletin, db, true, fosecurity);
+		File bulletinZipFile = createTempFileFromName("$$$TestBulletinWrapperHQZipFile");
+		BulletinZipUtilities.exportBulletinPacketsFromDatabaseToZipFile(db, bulletin.getDatabaseKeyForLocalId(bulletin.getLocalId()), bulletinZipFile, fosecurity);
+		
+		MartusBulletinWrapper bulletinWrapper = new MartusBulletinWrapper(bulletin.getUniversalId(), bulletinZipFile, security);
+		assertEquals("Data for author not correct?", author, bulletinWrapper.getAuthor());
+		assertEquals("Data for title not correct?", title, bulletinWrapper.getTitle());
+		assertEquals("Data for location not correct?", location, bulletinWrapper.getLocation());
+		assertEquals("PrivateData not visible?", privateData, bulletinWrapper.getPrivateInfo());
+		bulletinZipFile.delete();
+		db.deleteAllData();
+	}
 	private MartusSecurity security;
+	private MartusSecurity fosecurity;
 }
