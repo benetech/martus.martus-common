@@ -29,7 +29,7 @@ package org.martus.common.crypto;
 import java.io.ByteArrayInputStream;
 import java.util.Vector;
 
-import org.martus.util.*;
+import org.martus.util.Base64;
 
 public abstract class MartusCryptoImplementation extends MartusCrypto
 {
