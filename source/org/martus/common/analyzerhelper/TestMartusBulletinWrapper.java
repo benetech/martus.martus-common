@@ -29,6 +29,7 @@ import java.io.File;
 
 import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
+import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinConstants;
 import org.martus.common.bulletin.BulletinZipUtilities;
@@ -84,6 +85,7 @@ public class TestMartusBulletinWrapper extends TestCaseEnhanced
 		assertEquals("Data for title not correct?", title, bulletinWrapper.getTitle());
 		assertEquals("Data for location not correct?", location, bulletinWrapper.getLocation());
 		assertEquals("PrivateData not visible?", privateData, bulletinWrapper.getPrivateInfo());
+		bulletinWrapper.deleteAllData();
 		bulletinZipFile.delete();
 		store.deleteAllData();
 	}
@@ -129,9 +131,54 @@ public class TestMartusBulletinWrapper extends TestCaseEnhanced
 		assertEquals("Entry Date incorrect?", entryDate, Bulletin.getStoredDateFormat().format(bulletinWrapper.getEntryDate()));
 		assertEquals("Event Begin Date incorrect?", "2003-08-20", Bulletin.getStoredDateFormat().format(bulletinWrapper.getEventDate().getBeginDate()));
 		assertEquals("Event End Date incorrect?", "2003-08-23", Bulletin.getStoredDateFormat().format(bulletinWrapper.getEventDate().getEndDate()));
+		assertEquals("Has Public attachments?", 0, bulletinWrapper.getPublicAttachments().length);
+		assertEquals("Has Private attachments?", 0, bulletinWrapper.getPrivateAttachments().length);
+		bulletinWrapper.deleteAllData();
 		bulletinZipFile.delete();
 		store.deleteAllData();
 	}
+	
+	public void testAttachments() throws Exception
+	{
+		Bulletin bulletin = new Bulletin(security);
+		bulletin.setAllPrivate(true);
+		File tempFile1 = createTempFileWithData(sampleBytes1);
+		File tempFile2 = createTempFileWithData(sampleBytes2);
+		File tempFile3 = createTempFileWithData(sampleBytes3);
+		AttachmentProxy a1 = new AttachmentProxy(tempFile1);
+		AttachmentProxy a2 = new AttachmentProxy(tempFile2);
+		AttachmentProxy a3 = new AttachmentProxy(tempFile3);
+		bulletin.addPublicAttachment(a1);
+		bulletin.addPublicAttachment(a2);
+		bulletin.addPrivateAttachment(a3);
+
+		bulletin.setDraft();
+		
+		File tempDirectory = createTempFileFromName("$$$TestBulletinWrapperAttachments");
+		tempDirectory.deleteOnExit();
+		tempDirectory.delete();
+		tempDirectory.mkdirs();
+	
+		MockBulletinStore store = new MockBulletinStore(this);
+		store.saveEncryptedBulletinForTesting(bulletin);
+		File bulletinZipFile = createTempFileFromName("$$$TestBulletinWrapperZipFileAttachments");
+		BulletinZipUtilities.exportBulletinPacketsFromDatabaseToZipFile(store.getDatabase(), bulletin.getDatabaseKey(), bulletinZipFile, security);
+		
+		MartusBulletinWrapper bulletinWrapper = new MartusBulletinWrapper(bulletin.getUniversalId(), bulletinZipFile, security);
+		assertEquals("No Public attachments?", 2, bulletinWrapper.getPublicAttachments().length);
+		assertEquals("No Private attachments?", 1, bulletinWrapper.getPrivateAttachments().length);
+		assertTrue("Public attachment doesn't exist?", bulletinWrapper.getPublicAttachments()[0].exists());
+		assertTrue("Private attachment doesn't exist?", bulletinWrapper.getPrivateAttachments()[0].exists());
+
+		bulletinWrapper.deleteAllData();
+		assertEquals("Public attachments still exist?", 0, bulletinWrapper.getPublicAttachments().length);
+		assertEquals("No Private attachments still exist?", 0, bulletinWrapper.getPrivateAttachments().length);
+	}
+	
 	private MartusSecurity security;
 	private MartusSecurity fosecurity;
+
+	static final byte[] sampleBytes1 = {1,1,2,3,0,5,7,11};
+	static final byte[] sampleBytes2 = {3,1,4,0,1,5,9,2,7};
+	static final byte[] sampleBytes3 = {6,5,0,4,7,5,5,4,4,0};
 }

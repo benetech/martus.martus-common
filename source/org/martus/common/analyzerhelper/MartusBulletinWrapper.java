@@ -30,7 +30,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.zip.ZipFile;
-
 import org.martus.common.BulletinStore;
 import org.martus.common.MartusUtilities.ServerErrorException;
 import org.martus.common.bulletin.AttachmentProxy;
@@ -40,6 +39,7 @@ import org.martus.common.bulletin.BulletinLoader;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.database.ClientFileDatabase;
 import org.martus.common.database.DatabaseKey;
+import org.martus.common.database.ReadableDatabase;
 import org.martus.common.packet.UniversalId;
 import org.martus.common.utilities.MartusFlexidate;
 
@@ -57,7 +57,7 @@ public class MartusBulletinWrapper
 			tempDirectory.mkdirs();
 			File dbDirectory = new File(tempDirectory, "packets");
 	
-			BulletinStore store = new BulletinStore();
+			store = new BulletinStore();
 			store.setSignatureGenerator(security);
 			store.doAfterSigninInitialization(tempDirectory, new ClientFileDatabase(dbDirectory, security));
 			ZipFile zipFile = new ZipFile(bulletinZipFile);
@@ -68,11 +68,6 @@ public class MartusBulletinWrapper
 			if(bulletin == null)
 				throw new ServerErrorException("No Bulletin?");
 
-			//TODO:Once we implement the ability to have attachments we will not delete the attachments
-			//but mark them all deleteOnExit, and also implement a cleanup function which must be called when this object is no longer needed
-			//which will then delete the attachments, and the database.
-			deleteAllAttachments();
-			store.deleteAllData();
 
 		}
 		catch(Exception e)
@@ -87,28 +82,16 @@ public class MartusBulletinWrapper
 		}
 	}
 	
-	private void deleteAllAttachments()
+	public void deleteAllData() 
 	{
-		AttachmentProxy[] publicAttachments = bulletin.getPublicAttachments();
-		if(publicAttachments != null)
+		deleteAllAttachments();
+		try
 		{
-			for(int i = 0; i < publicAttachments.length; ++i)
-			{
-				File file = publicAttachments[i].getFile();
-				if(file != null)
-					file.delete();
-			}
+			store.deleteAllData();
 		}
-		
-		AttachmentProxy[] privateAttachments = bulletin.getPublicAttachments();
-		if(privateAttachments != null)
+		catch(Exception e)
 		{
-			for(int i = 0; i < privateAttachments.length; ++i)
-			{
-				File file = privateAttachments[i].getFile();
-				if(file != null)
-					file.delete();
-			}
+			e.printStackTrace();
 		}
 	}
 	
@@ -182,6 +165,79 @@ public class MartusBulletinWrapper
 			return null;
 		}
 	}
+
+	public File[] getPublicAttachments()
+	{
+		return getFileAttachments(bulletin.getPublicAttachments());
+	}
+	
+	public File[] getPrivateAttachments()
+	{
+		return getFileAttachments(bulletin.getPrivateAttachments());
+	}
+
+	private File[] getFileAttachments(AttachmentProxy[] attachmentProxies)
+	{
+		File[] publicAttachmentFiles = new File[attachmentProxies.length];
+		for(int i = 0; i < attachmentProxies.length; ++i)
+		{
+			publicAttachmentFiles[i] = getFileFromProxy(attachmentProxies[i]);
+		}
+		return publicAttachmentFiles;
+	}
+	
+	private File getFileFromProxy(AttachmentProxy attachmentProxy)
+	{
+		File file = attachmentProxy.getFile();
+		if(file != null)
+			return file;
+
+		try
+		{
+			ReadableDatabase db = store.getDatabase();
+			file = new File(System.getProperty("user.home"), attachmentProxy.getLabel());
+			file.deleteOnExit();
+			BulletinLoader.extractAttachmentToFile(db, attachmentProxy, store.getSignatureVerifier(), file);
+			return file;
+		}
+		catch(Exception e)
+		{
+			System.out.println("Unable to save file :" + e);
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+private void deleteAllAttachments()
+	{
+		
+		AttachmentProxy[] publicAttachments = bulletin.getPublicAttachments();
+		if(publicAttachments != null)
+		{
+			for(int i = 0; i < publicAttachments.length; ++i)
+			{
+				File file = publicAttachments[i].getFile();
+				if(file != null)
+					file.delete();
+			}
+		}
+		bulletin.clearPublicAttachments();
+		
+		AttachmentProxy[] privateAttachments = bulletin.getPublicAttachments();
+		if(privateAttachments != null)
+		{
+			for(int i = 0; i < privateAttachments.length; ++i)
+			{
+				File file = privateAttachments[i].getFile();
+				if(file != null)
+					file.delete();
+			}
+		}
+		bulletin.clearPrivateAttachments();
+	}
+	
+	
 	
 	private Bulletin bulletin;
+	private BulletinStore store;
 }
