@@ -56,7 +56,9 @@ import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.MockServerDatabase;
 import org.martus.common.database.ReadableDatabase;
+import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.BulletinHeaderPacket;
+import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.UniversalId;
 import org.martus.common.packet.Packet.InvalidPacketException;
 import org.martus.common.packet.Packet.SignatureVerificationException;
@@ -511,27 +513,34 @@ public class TestMartusUtilities extends TestCaseEnhanced
 		byte[] binaryEncryptedData = {0, 1, 2, 3};
 		byte[] tagEncryptedData = new String("blah blah blah\n<Encrypted> blah blah").getBytes();
 		byte[] plainTextData = new String("There is nothing here\nto indicate that it is Encrypted!").getBytes();
+		String fdpLocalId = FieldDataPacket.createUniversalId(security).getLocalId();
 
 		verifyDoesPacketNeedLocalEncryption("headerSaysPublic, binary encrypted",
-						false, bhpWithFlagPublic, binaryEncryptedData);
+						false, bhpWithFlagPublic, fdpLocalId, binaryEncryptedData);
 		verifyDoesPacketNeedLocalEncryption("headerSaysPublic, tag encrypted",
-						false, bhpWithFlagPublic, tagEncryptedData);
+						false, bhpWithFlagPublic, fdpLocalId, tagEncryptedData);
 		verifyDoesPacketNeedLocalEncryption("headerSaysPublic, plain text",
-						true, bhpWithFlagPublic, plainTextData);
+						true, bhpWithFlagPublic, fdpLocalId, plainTextData);
 
 		verifyDoesPacketNeedLocalEncryption("headerDoesntKnow, binary encrypted",
-						false, bhpWithoutFlag, binaryEncryptedData);
+						false, bhpWithoutFlag, fdpLocalId, binaryEncryptedData);
 		verifyDoesPacketNeedLocalEncryption("headerDoesntKnow, tag encrypted",
-						false, bhpWithoutFlag, tagEncryptedData);
+						false, bhpWithoutFlag, fdpLocalId, tagEncryptedData);
 		verifyDoesPacketNeedLocalEncryption("headerDoesntKnow, plain text",
-						true, bhpWithoutFlag, plainTextData);
+						true, bhpWithoutFlag, fdpLocalId, plainTextData);
 
 		verifyDoesPacketNeedLocalEncryption("headerSaysPrivate, binary encrypted",
-						false, bhpWithFlagPrivate, binaryEncryptedData);
+						false, bhpWithFlagPrivate, fdpLocalId, binaryEncryptedData);
 		verifyDoesPacketNeedLocalEncryption("headerSaysPrivate, tag encrypted",
-						false, bhpWithFlagPrivate, tagEncryptedData);
+						false, bhpWithFlagPrivate, fdpLocalId, tagEncryptedData);
 		verifyDoesPacketNeedLocalEncryption("headerSaysPrivate, plain text",
-						false, bhpWithFlagPrivate, plainTextData);
+						false, bhpWithFlagPrivate, fdpLocalId, plainTextData);
+
+		String attachmentLocalId = AttachmentPacket.createUniversalId(security).getLocalId();
+		verifyDoesPacketNeedLocalEncryption("headerDoesntKnow, plain text, attachment",
+				false, bhpWithoutFlag, attachmentLocalId, plainTextData);
+		verifyDoesPacketNeedLocalEncryption("headerSaysPublic, plain text, attachment",
+				false, bhpWithFlagPublic, attachmentLocalId, plainTextData);
 	}
 	
 	public void testHeaderInWrongPlace() throws Exception
@@ -559,14 +568,14 @@ public class TestMartusUtilities extends TestCaseEnhanced
 	}
 	
 	public void verifyDoesPacketNeedLocalEncryption(String label, boolean expected,
-							BulletinHeaderPacket bhp, byte[] bytes1)
+							BulletinHeaderPacket bhp, String packetLocalId, byte[] bytes1)
 		throws IOException
 	{
 		InputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes1);
 		int firstByte = in.read();
 		in.seek(0);
 		assertEquals(label, expected,
-				MartusUtilities.doesPacketNeedLocalEncryption(bhp, in));
+				MartusUtilities.doesPacketNeedLocalEncryption(packetLocalId, bhp, in));
 		assertEquals(label + " didn't reset?", firstByte, in.read());
 	}
 

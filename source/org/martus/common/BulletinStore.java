@@ -377,7 +377,7 @@ public class BulletinStore
 			FileOutputStream rawOut = new FileOutputStream(file);
 	
 			StreamFilter filter = copier;
-			if(db.mustEncryptLocalData() && MartusUtilities.doesPacketNeedLocalEncryption(header, in))
+			if(db.mustEncryptLocalData() && MartusUtilities.doesPacketNeedLocalEncryption(localId, header, in))
 				filter = encryptor;
 	
 			MartusUtilities.copyStreamWithFilter(in, rawOut, filter);

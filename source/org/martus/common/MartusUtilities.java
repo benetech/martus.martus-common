@@ -54,6 +54,7 @@ import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.ReadableDatabase;
 import org.martus.common.database.Database.RecordHiddenException;
 import org.martus.common.network.SimpleX509TrustManager;
+import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.UniversalId;
 import org.martus.common.packet.Packet.InvalidPacketException;
@@ -395,9 +396,12 @@ public class MartusUtilities
 		}
 	}
 
-	public static boolean doesPacketNeedLocalEncryption(BulletinHeaderPacket bhp, InputStreamWithSeek fdpInputStream) throws IOException
+	public static boolean doesPacketNeedLocalEncryption(String packetLocalId, BulletinHeaderPacket bhp, InputStreamWithSeek fdpInputStream) throws IOException
 	{
 		if(bhp.hasAllPrivateFlag() && bhp.isAllPrivate())
+			return false;
+		
+		if(AttachmentPacket.isValidLocalId(packetLocalId))
 			return false;
 
 		int firstByteIsZeroIfEncrypted = fdpInputStream.read();
