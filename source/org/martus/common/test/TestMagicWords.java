@@ -31,6 +31,7 @@ import java.util.Vector;
 import org.martus.common.LoggerForTesting;
 import org.martus.common.MagicWordEntry;
 import org.martus.common.MagicWords;
+import org.martus.util.*;
 import org.martus.util.UnicodeReader;
 import org.martus.util.UnicodeWriter;
 

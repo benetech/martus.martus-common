@@ -39,6 +39,7 @@ import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.MockClientDatabase;
 import org.martus.common.database.MockDatabase;
+import org.martus.util.*;
 
 
 public class TestBulletinSaver extends TestCaseEnhanced

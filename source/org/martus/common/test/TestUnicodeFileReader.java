@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.martus.common.MartusConstants;
+import org.martus.util.*;
 import org.martus.util.UnicodeReader;
 import org.martus.util.UnicodeWriter;
 

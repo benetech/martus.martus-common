@@ -43,6 +43,7 @@ import org.martus.common.database.MockDatabase;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.UniversalId;
+import org.martus.util.*;
 
 public class TestBulletinLoader extends TestCaseEnhanced
 {

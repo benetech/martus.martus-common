@@ -28,6 +28,7 @@ package org.martus.common.test;
 
 import org.martus.common.FieldSpec;
 import org.martus.common.LegacyCustomFields;
+import org.martus.util.*;
 
 
 public class TestFieldSpec extends TestCaseEnhanced

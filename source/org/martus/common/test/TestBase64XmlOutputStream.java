@@ -32,6 +32,7 @@ import java.io.Writer;
 
 import org.martus.common.Base64XmlOutputStream;
 import org.martus.common.XmlWriterFilter;
+import org.martus.util.*;
 import org.martus.util.Base64;
 
 public class TestBase64XmlOutputStream extends TestCaseEnhanced

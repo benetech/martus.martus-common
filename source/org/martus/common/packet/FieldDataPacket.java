@@ -205,12 +205,12 @@ public class FieldDataPacket extends Packet
 	{
 		setEncrypted(false);
 		fieldData.clear();
+		setHasUnknownTags(false);
 		if(security != null)
 			verifyPacketSignature(inputStream, expectedSig, security);
 		try
 		{
-			XmlFieldDataPacketLoader loader = new XmlFieldDataPacketLoader(this);
-			SimpleXmlParser.parse(loader, new UnicodeReader(inputStream));
+			XmlFieldDataPacketLoader loader = loadXml(inputStream);
 			
 			String encryptedData = loader.encryptedData;
 			if(encryptedData != null)
@@ -218,6 +218,7 @@ public class FieldDataPacket extends Packet
 				SessionKey encryptedHQSessionKey = loader.encryptedHQSessionKey;
 				loadEncryptedXml(encryptedData, encryptedHQSessionKey, security);
 			}
+			
 		}
 		catch(DecryptionException e)
 		{
@@ -257,8 +258,17 @@ public class FieldDataPacket extends Packet
 		security.decrypt(inEncrypted, outPlain, sessionKey);
 		ByteArrayInputStreamWithSeek inDecrypted = new ByteArrayInputStreamWithSeek(outPlain.toByteArray());
 		verifyPacketSignature(inDecrypted, security);
-		XmlFieldDataPacketLoader innerLoader = new XmlFieldDataPacketLoader(this);
-		SimpleXmlParser.parse(innerLoader, new UnicodeReader(inDecrypted));
+		loadXml(inDecrypted);
+	}
+
+	private XmlFieldDataPacketLoader loadXml(InputStreamWithSeek in)
+		throws IOException, ParserConfigurationException, SAXException
+	{
+		XmlFieldDataPacketLoader loader = new XmlFieldDataPacketLoader(this);
+		SimpleXmlParser.parse(loader, new UnicodeReader(in));
+		if(loader.foundUnknownTags())
+			setHasUnknownTags(true);
+		return loader;
 	}
 
 	public void loadFromXml(InputStreamWithSeek inputStream, MartusCrypto verifier) throws

@@ -41,6 +41,7 @@ import org.martus.common.crypto.SessionKey;
 import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.UniversalId;
 import org.martus.common.packet.XmlBase64Exporter;
+import org.martus.util.*;
 import org.martus.util.Base64;
 import org.martus.util.ByteArrayInputStreamWithSeek;
 import org.martus.util.FileInputStreamWithSeek;

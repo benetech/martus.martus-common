@@ -34,6 +34,7 @@ import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.crypto.SessionKey;
 import org.martus.common.packet.UniversalId;
+import org.martus.util.*;
 import org.martus.util.UnicodeWriter;
 
 public class TestAttachmentProxy extends TestCaseEnhanced

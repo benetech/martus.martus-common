@@ -33,6 +33,7 @@ import java.util.Arrays;
 import org.martus.common.XmlWriterFilter;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusSecurity;
+import org.martus.util.*;
 
 
 public class TestXmlWriterFilter extends TestCaseEnhanced

@@ -28,18 +28,22 @@ package org.martus.common.test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Arrays;
 
 import org.martus.common.FieldSpec;
 import org.martus.common.LegacyCustomFields;
 import org.martus.common.MartusUtilities;
 import org.martus.common.MartusXml;
+import org.martus.common.XmlWriterFilter;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.UniversalId;
 import org.martus.common.packet.Packet.SignatureVerificationException;
+import org.martus.util.*;
 import org.martus.util.ByteArrayInputStreamWithSeek;
 
 
@@ -264,6 +268,53 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 
 		assertEquals("custom data", data1, loaded.get("custom1"));
 		
+	}
+	
+	public void testLoadFromXmlWithUnknownTags() throws Exception
+	{
+		class FieldDataPacketWithUnknownTags extends FieldDataPacket
+		{
+			FieldDataPacketWithUnknownTags(UniversalId uid, FieldSpec[] specs)
+			{
+				super(uid, specs);
+			}
+			
+			protected void internalWriteXml(XmlWriterFilter dest) throws IOException
+			{
+				super.internalWriteXml(dest);
+				writeElement(dest, "UnknownTagHere", "blah");
+				writeElement(dest, MartusXml.FieldElementPrefix + aTag, "data");
+			}
+		}
+		
+		UniversalId uid = FieldDataPacket.createUniversalId(security.getPublicKeyString());
+		FieldDataPacketWithUnknownTags fdp = new FieldDataPacketWithUnknownTags(uid, fieldTags);
+		
+		String id = "1234567";
+		String data1 = "  simple  ";
+		String simpleFieldDataPacket =
+			"<FieldDataPacket>\n" +
+				"<" + MartusXml.PacketIdElementName + ">" + id +
+				"</" + MartusXml.PacketIdElementName + ">\n" +
+				"<UnknownTagHere>Blah</UnknownTagHere>" + 
+				"<" + MartusXml.FieldElementPrefix + aTag + ">" +
+				data1 +
+				"</" + MartusXml.FieldElementPrefix + aTag + ">\n" +
+			"</FieldDataPacket>\n";
+		byte[] bytes = simpleFieldDataPacket.getBytes("UTF-8");
+		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
+		fdp.loadFromXml(in, (MartusCrypto)null);
+		assertTrue("no unknown tags?", fdp.hasUnknownTags());
+		assertEquals("lost data after unknown aTag?", data1, fdp.get(aTag));
+		
+		StringWriter out = new StringWriter();
+		fdp.writeXmlEncrypted(out, security);
+		
+		byte[] bytes2 = out.toString().getBytes("UTF-8");
+		ByteArrayInputStreamWithSeek in2 = new ByteArrayInputStreamWithSeek(bytes2);
+		fdp.loadFromXml(in2, security);
+		assertTrue("encrypted no unknown tags?", fdp.hasUnknownTags());
+		assertEquals("encrypted lost data after unknown aTag?", "data", fdp.get(aTag));
 	}
 
 	public void testLoadFromXmlWithSpaces() throws Exception

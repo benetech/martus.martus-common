@@ -28,6 +28,7 @@ package org.martus.common.test;
 
 import org.martus.common.search.SearchParser;
 import org.martus.common.search.SearchTreeNode;
+import org.martus.util.*;
 
 public class TestSearchParser extends TestCaseEnhanced
 {

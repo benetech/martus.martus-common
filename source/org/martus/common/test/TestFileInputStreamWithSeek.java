@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Arrays;
 
+import org.martus.util.*;
 import org.martus.util.FileInputStreamWithSeek;
 import org.martus.util.InputStreamWithSeek;
 

@@ -32,6 +32,7 @@ import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.search.BulletinSearcher;
 import org.martus.common.search.SearchParser;
 import org.martus.common.search.SearchTreeNode;
+import org.martus.util.*;
 
 
 public class TestBulletinSearcher extends TestCaseEnhanced

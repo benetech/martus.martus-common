@@ -54,6 +54,7 @@ import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.UniversalId;
+import org.martus.util.*;
 import org.martus.util.InputStreamWithSeek;
 import org.martus.util.ZipEntryInputStream;
 

@@ -48,6 +48,7 @@ import org.martus.common.database.MockClientDatabase;
 import org.martus.common.database.MockDatabase;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.FieldDataPacket;
+import org.martus.util.*;
 
 
 public class TestBulletin extends TestCaseEnhanced

@@ -27,6 +27,7 @@ package org.martus.common.test;
 
 import org.martus.common.MagicWordEntry;
 import org.martus.common.MagicWords;
+import org.martus.util.*;
 
 
 public class TestMagicWordEntry extends TestCaseEnhanced

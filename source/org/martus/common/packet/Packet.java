@@ -221,7 +221,6 @@ public class Packet
 		if(dummyPacket == null)
 			throw new InvalidPacketException("Unknown local id type");
 		XmlPacketLoader verifyLoader = new XmlPacketLoader(dummyPacket);
-		verifyLoader.ignoreUnknownTags();
 		try
 		{
 			SimpleXmlParser.parse(verifyLoader, new UnicodeReader(inputStream));

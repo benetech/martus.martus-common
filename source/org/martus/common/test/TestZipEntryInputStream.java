@@ -34,6 +34,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+import org.martus.util.*;
 import org.martus.util.ZipEntryInputStream;
 
 public class TestZipEntryInputStream extends TestCaseEnhanced

@@ -34,7 +34,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 
 import org.martus.common.clientside.CurrentUiState;
-import org.martus.common.test.TestCaseEnhanced;
+import org.martus.util.TestCaseEnhanced;
 
 
 public class TestCurrentUiState extends TestCaseEnhanced

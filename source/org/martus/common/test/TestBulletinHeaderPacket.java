@@ -33,6 +33,7 @@ import org.martus.common.MartusXml;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.UniversalId;
+import org.martus.util.*;
 import org.martus.util.Base64;
 import org.martus.util.ByteArrayInputStreamWithSeek;
 

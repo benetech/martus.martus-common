@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.Arrays;
 
+import org.martus.util.*;
 import org.martus.util.FileOutputStreamViaTemp;
 
 public class TestFileOutputStreamViaTemp extends TestCaseEnhanced
