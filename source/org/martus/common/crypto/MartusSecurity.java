@@ -100,7 +100,7 @@ import org.martus.util.UnicodeStringWriter;
 
 import com.isnetworks.provider.random.InfiniteMonkeyProvider;
 
-public class MartusSecurity extends MartusCryptoImplementation
+public class MartusSecurity extends MartusCrypto
 {
 	public MartusSecurity() throws CryptoInitializationException
 	{
