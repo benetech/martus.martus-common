@@ -266,30 +266,6 @@ public class Localization
 		}
 	}
 	
-	public void hideUnofficialTranslationFiles(String translationFileLanguageCode)
-	{
-		try
-		{
-			File translationFile = getTranslationFile(translationFileLanguageCode);
-			if(translationFile != null)
-				moveFileToUnofficial(translationFile);
-			//TODO move online help files for mtf file.
-		}
-		catch(IOException e)
-		{
-			e.printStackTrace();
-		}
-	}
-	
-	private void moveFileToUnofficial(File fileToMove) throws IOException
-	{
-		File moveTo = new File(getUnofficialTranslationDirectory(), fileToMove.getName());		
-		moveTo.delete();
-		if(!fileToMove.renameTo(moveTo))
-			System.out.println("Rename Failed! " + fileToMove.getAbsolutePath()
-					+ " to " + moveTo.getAbsoluteFile());
-	}
-
 	public File getMtfFile(String translationFileLanguageCode)
 	{
 		return new File(directory, getMtfFilename(translationFileLanguageCode));
@@ -300,13 +276,6 @@ public class Localization
 		return new File(directory, getMlpkFilename(translationFileLanguageCode));
 	}
 	
-	public File getUnofficialTranslationDirectory()
-	{
-		File untrusted = new File(directory, UNTRUSTED_LANGUAGE_DIRECTORY);
-		untrusted.mkdirs();
-		return untrusted;
-	}
-
 	public static String getLanguageCodeFromFilename(String filename)
 	{
 		if(!isLanguageFile(filename))
@@ -481,7 +450,6 @@ public class Localization
 	public static final String MARTUS_LANGUAGE_PACK_SUFFIX = ".mlp";
 	public static final String MTF_COMMENT_FLAG = "#";
 	public static final String MTF_RIGHT_TO_LEFT_LANGUAGE_FLAG = "!right-to-left";
-	public static final String UNTRUSTED_LANGUAGE_DIRECTORY = "Unofficial Martus Translations";
 	
 	public static final int HASH_LENGTH = 4;
 	

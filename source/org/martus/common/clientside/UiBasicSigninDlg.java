@@ -67,8 +67,6 @@ public class UiBasicSigninDlg extends JDialog
 		cancel.addActionListener(new CancelHandler());
 		Box buttonBox = Box.createHorizontalBox();
 		JComponent languageComponent = getLanguageComponent();
-		if(languageComponent == null)
-			return;
 		Component[] buttons = {languageComponent, Box.createHorizontalGlue(), ok, cancel};
 		Utilities.addComponentsRespectingOrientation(buttonBox, buttons);
 
