@@ -154,6 +154,7 @@ public class FieldDataPacket extends Packet
 		fieldData = new TreeMap();
 		clearAttachments();
 		hqPublicKey="";
+		decryptedByAuthor = true;
 	}
 
 	public void clearAttachments()
