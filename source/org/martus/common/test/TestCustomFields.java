@@ -64,26 +64,23 @@ public class TestCustomFields extends TestCase
 	
 	public void testGrid() throws Exception
 	{
-		String header1 = "column1";
-		String header2 = "column2";
-		String xml = "<CustomFields><Field type='GRID'><GridSpecDetails><Column><Label>" +
-				header1 +
-				"</Label></Column><Column><Label>" +
-				header2 +
-				"</Label></Column></GridSpecDetails></Field></CustomFields>";
+		String xml = "<CustomFields>" + TestGridFieldSpec.SAMPLE_GRID_FIELD_XML +
+				"</CustomFields>";
 		CustomFields fields = new CustomFields();
 		CustomFields.CustomFieldLoader loader = new CustomFields.CustomFieldLoader("CustomFields", fields);
 		loader.parse(xml);
 		GridFieldSpec spec = (GridFieldSpec)fields.getSpecs()[0];
 		assertEquals(FieldSpec.TYPE_GRID, spec.getType());
 		assertEquals(2, spec.getColumnCount());
-		assertEquals(header1, spec.getColumnLabel(0));
-		assertEquals(header2, spec.getColumnLabel(1));
+		assertEquals(TestGridFieldSpec.SAMPLE_GRID_HEADER_LABEL_1, spec.getColumnLabel(0));
+		assertEquals(TestGridFieldSpec.SAMPLE_GRID_HEADER_LABEL_2, spec.getColumnLabel(1));
 		
 	}
 
 	private FieldSpec[] getSampleSpecs()
 	{
+		GridFieldSpec gridSpec = new GridFieldSpec();
+		gridSpec.setTag("grid");
 		return new FieldSpec[] {
 			FieldSpec.createStandardField("date", FieldSpec.TYPE_DATE),
 			FieldSpec.createStandardField("text", FieldSpec.TYPE_NORMAL),
@@ -91,9 +88,9 @@ public class TestCustomFields extends TestCase
 			FieldSpec.createStandardField("range", FieldSpec.TYPE_DATERANGE),
 			FieldSpec.createStandardField("bool", FieldSpec.TYPE_BOOLEAN),
 			FieldSpec.createStandardField("language", FieldSpec.TYPE_LANGUAGE),
-			FieldSpec.createStandardField("grid", FieldSpec.TYPE_GRID),
+			gridSpec,
 			LegacyCustomFields.createFromLegacy("custom,Custom <label>"),
 		};
 	}
-	
+
 }

@@ -52,14 +52,31 @@ public class MartusXml
 		return "<" + tagName + ">";
 	}
 
+	public static String getTagStartWithNewline(String tagName)
+	{
+		return getTagStart(tagName) + "\n";
+	}
+	
+	
 	public static String getTagStart(String tagName, String attrName, String attrValue)
 	{
 		return "<" + tagName + " " + attrName + "='" + attrValue + "'>";
 	}
 
+	public static String getTagStartWithNewline(String tagName, String attrName, String attrValue)
+	{
+		return getTagStart(tagName, attrName, attrValue) + "\n";
+	}
+	
+	
 	public static String getTagEnd(String tagName)
 	{
-		return "</" + tagName + ">\n";
+		return getTagEndWithoutNewline(tagName) + "\n";
+	}
+	
+	public static String getTagEndWithoutNewline(String tagName)
+	{
+		return "</" + tagName + ">";
 	}
 
 	// NOTE: Change the version any time the packet format changes in 

@@ -78,7 +78,7 @@ public class TestFieldSpec extends TestCaseEnhanced
 	public void testToString()
 	{
 		FieldSpec plainField = LegacyCustomFields.createFromLegacy("a,<&b>");
-		String xml = "<Field type='STRING'><Tag>a</Tag><Label>&lt;&amp;b&gt;</Label></Field>";
+		String xml = "<Field type='STRING'>\n<Tag>a</Tag>\n<Label>&lt;&amp;b&gt;</Label>\n</Field>\n";
 		assertEquals(xml, plainField.toString());
 	}
 	

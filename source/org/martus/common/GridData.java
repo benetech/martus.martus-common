@@ -123,9 +123,11 @@ public class GridData
 		{
 			GridRow contents = (GridRow)rows.get(i);
 			result += MartusXml.getTagStart(ROW_TAG) + MartusXml.newLine ;
-			for(int j= 0; j < contents.columns(); ++j)
+			int columns = contents.columns();
+			for(int j= 0; j < columns; ++j)
 			{
-				result += MartusXml.getTagStart(COLUMN_TAG) + MartusUtilities.getXmlEncoded(contents.getCellText(j)) + MartusXml.getTagEnd(COLUMN_TAG);
+				String rawCellText = contents.getCellText(j);
+				result += MartusXml.getTagStart(COLUMN_TAG) + MartusUtilities.getXmlEncoded(rawCellText) + MartusXml.getTagEnd(COLUMN_TAG);
 			}
 			result += MartusXml.getTagEnd(ROW_TAG);
 		}

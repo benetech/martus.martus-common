@@ -55,6 +55,27 @@ public class GridFieldSpec extends FieldSpec
 		columns.add(headerLabel);
 	}
 	
+	public Vector getAllColumnLabels()
+	{
+		return columns;
+	}
+	
+	public String getDetailsXml()
+	{
+		String xml = MartusXml.getTagStartWithNewline(GRID_SPEC_DETAILS_TAG);
+		for(int i = 0 ; i < getColumnCount(); ++i)
+		{
+			xml += MartusXml.getTagStart(GRID_COLUMN_TAG) +
+					MartusXml.getTagStart(GRID_COLUMN_LABEL_TAG) +
+					getColumnLabel(i) +
+					MartusXml.getTagEndWithoutNewline(GRID_COLUMN_LABEL_TAG) + 
+					MartusXml.getTagEnd(GRID_COLUMN_TAG);
+		}
+		xml += MartusXml.getTagEnd(GRID_SPEC_DETAILS_TAG);
+		
+		return xml;
+	}
+	
 	static class GridSpecDetailsLoader extends SimpleXmlDefaultLoader
 	{
 		public GridSpecDetailsLoader(GridFieldSpec spec)

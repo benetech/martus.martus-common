@@ -59,11 +59,11 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestDatabaseKey.class));
 		suite.addTest(new TestSuite(TestFieldDataPacket.class));
 		suite.addTest(new TestSuite(TestFieldSpec.class));
-		suite.addTest(new TestSuite(TestFieldSpecDetails.class));
 		suite.addTest(new TestSuite(TestFileDatabase.class));
 		suite.addTest(new TestSuite(TestFileInputStreamWithSeek.class));
 		suite.addTest(new TestSuite(TestFileOutputStreamViaTemp.class));
 		suite.addTest(new TestSuite(TestGridData.class));
+		suite.addTest(new TestSuite(TestGridFieldSpec.class));
 		suite.addTest(new TestSuite(TestGridRow.class));
 		suite.addTest(new TestSuite(TestKeyShareSaveRestore.class));
 		suite.addTest(new TestSuite(TestMagicWordEntry.class));

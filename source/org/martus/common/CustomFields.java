@@ -132,7 +132,7 @@ public class CustomFields
 		CustomFields fields;
 	}
 	
-	static class FieldLoader extends SimpleXmlDefaultLoader
+	public static class FieldLoader extends SimpleXmlDefaultLoader
 	{
 		public FieldLoader(String tag)
 		{

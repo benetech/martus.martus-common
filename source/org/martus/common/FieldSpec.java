@@ -53,10 +53,20 @@ public class FieldSpec
 	
 	public String toString()
 	{
-		return "<Field type='" + MartusUtilities.getXmlEncoded(getTypeString(getType())) +
-				"'><Tag>" + MartusUtilities.getXmlEncoded(getTag()) + 
-				"</Tag><Label>" + MartusUtilities.getXmlEncoded(getLabel()) + 
-				"</Label></Field>";
+		return MartusXml.getTagStartWithNewline("Field", "type", MartusUtilities.getXmlEncoded(getTypeString(getType()))) +  
+				MartusXml.getTagStart("Tag") + 
+				MartusUtilities.getXmlEncoded(getTag()) + 
+				MartusXml.getTagEnd("Tag") +
+				MartusXml.getTagStart("Label") + 
+				MartusUtilities.getXmlEncoded(getLabel()) + 
+				MartusXml.getTagEnd("Label") +
+				getDetailsXml() +
+				MartusXml.getTagEnd("Field");
+	}
+	
+	protected String getDetailsXml()
+	{
+		return "";
 	}
 
 	public String getTag()
