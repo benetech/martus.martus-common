@@ -67,7 +67,7 @@ public class TestCustomFields extends TestCase
 		String xml = "<CustomFields>" + TestGridFieldSpec.SAMPLE_GRID_FIELD_XML +
 				"</CustomFields>";
 		CustomFields fields = new CustomFields();
-		CustomFields.CustomFieldLoader loader = new CustomFields.CustomFieldLoader("CustomFields", fields);
+		CustomFields.XmlCustomFieldsLoader loader = new CustomFields.XmlCustomFieldsLoader(fields);
 		loader.parse(xml);
 		GridFieldSpec spec = (GridFieldSpec)fields.getSpecs()[0];
 		assertEquals(FieldSpec.TYPE_GRID, spec.getType());
@@ -81,6 +81,7 @@ public class TestCustomFields extends TestCase
 	{
 		GridFieldSpec gridSpec = new GridFieldSpec();
 		gridSpec.setTag("grid");
+		
 		return new FieldSpec[] {
 			FieldSpec.createStandardField("date", FieldSpec.TYPE_DATE),
 			FieldSpec.createStandardField("text", FieldSpec.TYPE_NORMAL),

@@ -25,7 +25,7 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.test;
 
-import org.martus.common.CustomFields;
+import org.martus.common.FieldSpec;
 import org.martus.common.GridFieldSpec;
 import org.martus.util.TestCaseEnhanced;
 
@@ -40,7 +40,7 @@ public class TestGridFieldSpec extends TestCaseEnhanced
 	
 	public void testBasics() throws Exception
 	{
-		CustomFields.FieldLoader loader = new CustomFields.FieldLoader("Field");
+		FieldSpec.XmlFieldSpecLoader loader = new FieldSpec.XmlFieldSpecLoader();
 		loader.parse(SAMPLE_GRID_FIELD_XML);
 		GridFieldSpec spec = (GridFieldSpec)loader.getFieldSpec();
 		assertEquals(2, spec.getColumnCount());

@@ -30,8 +30,6 @@ import java.util.Vector;
 
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlParser;
-import org.martus.util.xml.SimpleXmlStringLoader;
-import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
 
@@ -39,12 +37,12 @@ public class CustomFields
 {
 	public CustomFields()
 	{
-		specs = new Vector();
+		this(new FieldSpec[0]);
 	}
 	
 	public CustomFields(FieldSpec[] specsToUse)
 	{
-		this();
+		specs = new Vector();
 		for(int i=0; i < specsToUse.length; ++i)
 			add(specsToUse[i]);
 	}
@@ -82,7 +80,7 @@ public class CustomFields
 	public static FieldSpec[] parseXml(String xml) throws CustomFieldsParseException
 	{
 		CustomFields fields = new CustomFields();
-		CustomFieldLoader loader = new CustomFieldLoader(MartusXml.CustomFieldSpecsElementName, fields);
+		XmlCustomFieldsLoader loader = new XmlCustomFieldsLoader(fields);
 		try
 		{
 			SimpleXmlParser.parse(loader, xml);
@@ -95,11 +93,11 @@ public class CustomFields
 		}
 	}
 	
-	public static class CustomFieldLoader extends SimpleXmlDefaultLoader
+	public static class XmlCustomFieldsLoader extends SimpleXmlDefaultLoader
 	{
-		public CustomFieldLoader(String tag, CustomFields fieldsToLoad)
+		public XmlCustomFieldsLoader(CustomFields fieldsToLoad)
 		{
-			super(tag);
+			super(MartusXml.CustomFieldSpecsElementName);
 			fields = fieldsToLoad;
 		}
 		
@@ -111,8 +109,8 @@ public class CustomFields
 		public SimpleXmlDefaultLoader startElement(String tag)
 			throws SAXParseException
 		{
-			if(tag.equals("Field"))
-				return new FieldLoader(tag);
+			if(tag.equals(FieldSpec.FIELD_SPEC_XML_TAG))
+				return new FieldSpec.XmlFieldSpecLoader();
 			return super.startElement(tag);
 		}
 
@@ -125,62 +123,11 @@ public class CustomFields
 		public void endElement(String tag, SimpleXmlDefaultLoader ended)
 			throws SAXParseException
 		{
-			FieldSpec spec = ((FieldLoader)ended).getFieldSpec();
+			FieldSpec spec = ((FieldSpec.XmlFieldSpecLoader)ended).getFieldSpec();
 			fields.add(spec);
 		}
 
 		CustomFields fields;
-	}
-	
-	public static class FieldLoader extends SimpleXmlDefaultLoader
-	{
-		public FieldLoader(String tag)
-		{
-			super(tag);
-		}
-		
-		public FieldSpec getFieldSpec()
-		{
-			return spec;
-		}
-		
-		public void startDocument(Attributes attrs) throws SAXParseException
-		{
-			int type = FieldSpec.getTypeCode(attrs.getValue("type"));
-			if(type == FieldSpec.TYPE_GRID)
-				spec = new GridFieldSpec();
-			else
-				spec = new FieldSpec(type);
-			super.startDocument(attrs);
-		}
-
-		public SimpleXmlDefaultLoader startElement(String tag)
-			throws SAXParseException
-		{
-			if(tag.equals("Tag") || tag.equals("Label"))
-				return new SimpleXmlStringLoader(tag);
-			else if(tag.equals(GridFieldSpec.GRID_SPEC_DETAILS_TAG))
-				return new GridFieldSpec.GridSpecDetailsLoader((GridFieldSpec)spec);
-			
-			return super.startElement(tag);
-		}
-
-		public void endElement(String thisTag, SimpleXmlDefaultLoader ended)
-			throws SAXParseException
-		{
-			if(thisTag.equals("Tag"))
-				spec.setTag(getText(ended));
-			else if(thisTag.equals("Label"))
-				spec.setLabel(getText(ended));
-			else
-				super.endElement(thisTag, ended);
-		}
-
-		private String getText(SimpleXmlDefaultLoader ended)
-		{
-			return ((SimpleXmlStringLoader)ended).getText();
-		}
-		FieldSpec spec;
 	}
 	
 	Vector specs;

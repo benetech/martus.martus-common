@@ -57,7 +57,7 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 		else if(tag.equals(MartusXml.AttachmentElementName))
 			return new XmlAttachmentLoader(tag);
 		else if(tag.equals(MartusXml.CustomFieldSpecsElementName))
-			return new CustomFields.CustomFieldLoader(tag, new CustomFields());
+			return new CustomFields.XmlCustomFieldsLoader(new CustomFields());
 		else if(getTagsContainingStrings().contains(tag))
 			return new SimpleXmlStringLoader(tag);
 		else
@@ -81,7 +81,7 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 			}
 			else if(tag.equals(MartusXml.CustomFieldSpecsElementName))
 			{
-				CustomFields.CustomFieldLoader loader = (CustomFields.CustomFieldLoader)ended;
+				CustomFields.XmlCustomFieldsLoader loader = (CustomFields.XmlCustomFieldsLoader)ended;
 				fdp.setCustomFields(loader.getFields());
 			}
 			else if(getTagsContainingStrings().contains(tag))

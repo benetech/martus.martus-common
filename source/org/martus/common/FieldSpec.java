@@ -30,6 +30,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.martus.util.xml.SimpleXmlDefaultLoader;
+import org.martus.util.xml.SimpleXmlStringLoader;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXParseException;
+
 
 public class FieldSpec
 {
@@ -135,6 +140,57 @@ public class FieldSpec
 		return map;
 	}
 
+	public static class XmlFieldSpecLoader extends SimpleXmlDefaultLoader
+	{
+		public XmlFieldSpecLoader()
+		{
+			super(FieldSpec.FIELD_SPEC_XML_TAG);
+		}
+		
+		public FieldSpec getFieldSpec()
+		{
+			return spec;
+		}
+		
+		public void startDocument(Attributes attrs) throws SAXParseException
+		{
+			int type = getTypeCode(attrs.getValue(FieldSpec.FIELD_SPEC_TYPE_ATTR));
+			if(type == TYPE_GRID)
+				spec = new GridFieldSpec();
+			else
+				spec = new FieldSpec(type);
+			super.startDocument(attrs);
+		}
+	
+		public SimpleXmlDefaultLoader startElement(String tag)
+			throws SAXParseException
+		{
+			if(tag.equals(FieldSpec.FIELD_SPEC_TAG_XML_TAG) || tag.equals(FieldSpec.FIELD_SPEC_LABEL_XML_TAG))
+				return new SimpleXmlStringLoader(tag);
+			else if(tag.equals(GridFieldSpec.GRID_SPEC_DETAILS_TAG))
+				return new GridFieldSpec.GridSpecDetailsLoader((GridFieldSpec)spec);
+			
+			return super.startElement(tag);
+		}
+	
+		public void endElement(String thisTag, SimpleXmlDefaultLoader ended)
+			throws SAXParseException
+		{
+			if(thisTag.equals(FieldSpec.FIELD_SPEC_TAG_XML_TAG))
+				spec.setTag(getText(ended));
+			else if(thisTag.equals(FieldSpec.FIELD_SPEC_LABEL_XML_TAG))
+				spec.setLabel(getText(ended));
+			else
+				super.endElement(thisTag, ended);
+		}
+	
+		private String getText(SimpleXmlDefaultLoader ended)
+		{
+			return ((SimpleXmlStringLoader)ended).getText();
+		}
+		FieldSpec spec;
+	}
+
 	String tag;
 	int type;
 	String label;
@@ -148,5 +204,10 @@ public class FieldSpec
 	public static final int TYPE_BOOLEAN = 6;
 	public static final int TYPE_GRID = 7;
 	public static final int TYPE_UNKNOWN = 99;
+	
+	public static final String FIELD_SPEC_XML_TAG = "Field";
+	public static final String FIELD_SPEC_TAG_XML_TAG = "Tag";
+	public static final String FIELD_SPEC_LABEL_XML_TAG = "Label";
+	public static final String FIELD_SPEC_TYPE_ATTR = "type";
 
 }
