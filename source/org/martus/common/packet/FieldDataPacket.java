@@ -316,7 +316,8 @@ public class FieldDataPacket extends Packet
 
 		String xmlSpecs = fieldSpecs.toString();
 		FieldSpec[] specs = fieldSpecs.getSpecs();
-		if(xmlSpecs.equals(DEFAULT_LEGACY_SPECS_AS_XML))
+		
+		if(isCustomFieldSpecs(fieldSpecs))
 		{
 			writeElement(dest, MartusXml.FieldListElementName, LegacyCustomFields.buildFieldListString(specs));
 		}
@@ -357,6 +358,11 @@ public class FieldDataPacket extends Packet
 		return LegacyCustomFields.buildFieldListString(getFieldSpecs());
 	}
 
+	public static boolean isCustomFieldSpecs(CustomFields fields)
+	{
+		return fields.toString().equals(DEFAULT_LEGACY_SPECS_AS_XML);
+	}
+	
 	private static final String DEFAULT_LEGACY_SPECS_AS_XML = 
 		"<CustomFields>\n" +
 		"<Field type='LANGUAGE'>\n" +
