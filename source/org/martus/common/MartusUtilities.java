@@ -92,11 +92,6 @@ public class MartusUtilities
 		return (int)rawLength;
 	}
 
-	public static String getVersionDate()
-	{
-		return "#{BUILDDATE}";
-	}
-
 	public static byte[] createSignatureFromFile(File fileToSign, MartusCrypto signer)
 		throws IOException, MartusSignatureException
 	{

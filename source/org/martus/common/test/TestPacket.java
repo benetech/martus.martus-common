@@ -32,8 +32,8 @@ import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 
-import org.martus.common.MartusUtilities;
 import org.martus.common.MartusXml;
+import org.martus.common.VersionBuildDate;
 import org.martus.common.XmlWriterFilter;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.packet.BulletinHeaderPacket;
@@ -92,7 +92,7 @@ public class TestPacket extends TestCaseEnhanced
 		int endCommentPosition = result.indexOf(MartusXml.packetStartCommentEnd);
 		assertTrue("No end startComment?", endCommentPosition >= startCommentLength);
 		String version = result.substring(startCommentLength, endCommentPosition);
-		String fullExpectedVersion = MartusUtilities.getVersionDate() + MartusXml.packetFormatVersion; 
+		String fullExpectedVersion = VersionBuildDate.getVersionBuildDate() + MartusXml.packetFormatVersion; 
 		assertEquals("Invalid Version", fullExpectedVersion, version);
 
 		assertContains(packet.getLocalId(), result);

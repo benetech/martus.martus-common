@@ -23,21 +23,12 @@ Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.
 
 */
-
 package org.martus.common;
 
-public class Version
+public class VersionBuildDate
 {
-	public static void main(String[] args)
+	public static String getVersionBuildDate()
 	{
-		String date = VersionBuildDate.getVersionBuildDate();
-		System.out.println(formatDateVersion(date));
-	}
-
-	static String formatDateVersion(String dateVersion)
-	{
-		if(dateVersion.length() != 8)
-			return dateVersion;
-		return dateVersion.substring(0,4) + "-" + dateVersion.substring(4,6) + "-" + dateVersion.substring(6);
+		return "#{BUILDDATE}";
 	}
 }

@@ -37,15 +37,19 @@ import java.util.Arrays;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.martus.common.MartusUtilities;
 import org.martus.common.MartusXml;
+import org.martus.common.VersionBuildDate;
 import org.martus.common.XmlWriterFilter;
-import org.martus.common.crypto.*;
+import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusCrypto.CryptoException;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
-import org.martus.common.database.*;
+import org.martus.common.database.Database;
+import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.Database.RecordHiddenException;
-import org.martus.util.*;
+import org.martus.util.Base64;
+import org.martus.util.InputStreamWithSeek;
+import org.martus.util.UnicodeReader;
+import org.martus.util.UnicodeWriter;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -155,7 +159,7 @@ public class Packet
 			{
 				dest.startSignature(signer);
 				String startComment = 	MartusXml.packetStartCommentStart +
-										MartusUtilities.getVersionDate() +
+										VersionBuildDate.getVersionBuildDate() +
 										MartusXml.packetFormatVersion +
 										MartusXml.packetStartCommentEnd;
 				dest.writeDirect(startComment + MartusXml.newLine);
