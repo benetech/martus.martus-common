@@ -153,7 +153,7 @@ public class MiniLocalization
 			LanguageOptions.setLanguagePaddingNotRequired();
 	}
 	
-	static public boolean doesLanguageRequirePadding(String languageCode)
+	public boolean doesLanguageRequirePadding(String languageCode)
 	{	
 		return languageCode.equals(ARABIC);
 	}
