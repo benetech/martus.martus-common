@@ -38,6 +38,7 @@ public class UiPasswordField extends JPasswordField
 	{
 		super(columns);
 		setComponentOrientation(UiLanguageDirection.getComponentOrientation());
+		setHorizontalAlignment(UiLanguageDirection.getHorizontalAlignment());
 		virtualPassword = new char[MAX_PASSWORD_LENGTH];
 		clearVirtualPassword();
 	}
