@@ -280,16 +280,15 @@ abstract public class MockDatabase extends Database
 	public String getFolderForAccount(String accountString)
 	{
 		UniversalId uid = UniversalId.createFromAccountAndLocalId(accountString, "");
-		DatabaseKey key = DatabaseKey.createSealedKey(uid);
-		File file = getInterimFile(key, incomingInterimMap);
+		File file = getInterimFile(uid, incomingInterimMap);
 		file.delete();
 		return file.getPath();
 	}
 
-	public File getIncomingInterimFile(DatabaseKey key) throws RecordHiddenException
+	public File getIncomingInterimFile(UniversalId uid) throws RecordHiddenException
 	{
-		throwIfRecordIsHidden(key);
-		File dir = getInterimFile(key, incomingInterimMap);
+		throwIfRecordIsHidden(uid);
+		File dir = getInterimFile(uid, incomingInterimMap);
 		dir.deleteOnExit();
 		dir.mkdirs();
 		File file = new File(dir, "$$$in"+TestCaseEnhanced.getCallingTestClass());
@@ -297,10 +296,10 @@ abstract public class MockDatabase extends Database
 		return file;
 	}
 
-	public File getOutgoingInterimFile(DatabaseKey key) throws RecordHiddenException
+	public File getOutgoingInterimFile(UniversalId uid) throws RecordHiddenException
 	{
-		throwIfRecordIsHidden(key);
-		File dir = getInterimFile(key, outgoingInterimMap);
+		throwIfRecordIsHidden(uid);
+		File dir = getInterimFile(uid, outgoingInterimMap);
 		dir.deleteOnExit();
 		dir.mkdirs();
 		File file = new File(dir, "$$$out"+TestCaseEnhanced.getCallingTestClass());
@@ -310,10 +309,10 @@ abstract public class MockDatabase extends Database
 		return file;
 	}
 
-	public File getOutgoingInterimPublicOnlyFile(DatabaseKey key) throws RecordHiddenException
+	public File getOutgoingInterimPublicOnlyFile(UniversalId uid) throws RecordHiddenException
 	{
-		throwIfRecordIsHidden(key);
-		File dir = getInterimFile(key, outgoingInterimMap);
+		throwIfRecordIsHidden(uid);
+		File dir = getInterimFile(uid, outgoingInterimMap);
 		dir.deleteOnExit();
 		dir.mkdirs();
 		File file = new File(dir, "$$$public"+TestCaseEnhanced.getCallingTestClass());
@@ -372,17 +371,17 @@ abstract public class MockDatabase extends Database
 
 	// end Database interface
 
-	private synchronized File getInterimFile(DatabaseKey key, Map map)
+	private synchronized File getInterimFile(UniversalId uid, Map map)
 	{
-		if(map.containsKey(key))
-			return (File)map.get(key);
+		if(map.containsKey(uid))
+			return (File)map.get(uid);
 
 		try
 		{
 			File interimFile = File.createTempFile("$$$MockDbInterim_"+TestCaseEnhanced.getCallingTestClass(), null);
 			interimFile.deleteOnExit();
 			interimFile.delete();
-			map.put(key, interimFile);
+			map.put(uid, interimFile);
 			return interimFile;
 		}
 		catch (IOException e)

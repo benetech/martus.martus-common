@@ -63,9 +63,9 @@ abstract public class Database extends ReadableDatabase
 	abstract public void writeRecordEncrypted(DatabaseKey key, String record, MartusCrypto encrypter) throws IOException, RecordHiddenException, MartusCrypto.CryptoException;
 	abstract public void importFiles(HashMap entries) throws IOException, RecordHiddenException;
 	abstract public void discardRecord(DatabaseKey key);
-	abstract public File getIncomingInterimFile(DatabaseKey key) throws IOException, RecordHiddenException;
-	abstract public File getOutgoingInterimFile(DatabaseKey key) throws IOException, RecordHiddenException;
-	abstract public File getOutgoingInterimPublicOnlyFile(DatabaseKey key) throws IOException, RecordHiddenException;
+	abstract public File getIncomingInterimFile(UniversalId uid) throws IOException, RecordHiddenException;
+	abstract public File getOutgoingInterimFile(UniversalId uid) throws IOException, RecordHiddenException;
+	abstract public File getOutgoingInterimPublicOnlyFile(UniversalId uid) throws IOException, RecordHiddenException;
 
 	abstract public File getContactInfoFile(String accountId) throws IOException;
 
@@ -130,7 +130,12 @@ abstract public class Database extends ReadableDatabase
 
 	protected void throwIfRecordIsHidden(DatabaseKey key) throws RecordHiddenException
 	{
-		if(isHidden(key))
+		throwIfRecordIsHidden(key.getUniversalId());
+	}
+	
+	protected void throwIfRecordIsHidden(UniversalId uid) throws RecordHiddenException
+	{
+		if(isHidden(uid))
 			throw new RecordHiddenException();
 	}
 

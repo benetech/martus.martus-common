@@ -122,7 +122,7 @@ abstract public class FileDatabase extends Database
 	public int getRecordSize(DatabaseKey key) 
 		throws IOException, RecordHiddenException
 	{
-		throwIfRecordIsHidden(key);
+		throwIfRecordIsHidden(key.getUniversalId());
 
 		try
 		{
@@ -304,29 +304,29 @@ abstract public class FileDatabase extends Database
 		return ContactFolder;
 	}
 
-	public File getIncomingInterimFile(DatabaseKey key) throws
+	public File getIncomingInterimFile(UniversalId uid) throws
 		IOException, RecordHiddenException
 	{
-		return createInterimFile(key, "in");
+		return createInterimFile(uid, "in");
 	}
 
-	public File getOutgoingInterimFile(DatabaseKey key) throws
+	public File getOutgoingInterimFile(UniversalId uid) throws
 		IOException, RecordHiddenException
 	{
-		return createInterimFile(key, "out");
+		return createInterimFile(uid, "out");
 	}
 
-	public File getOutgoingInterimPublicOnlyFile(DatabaseKey key) throws
+	public File getOutgoingInterimPublicOnlyFile(UniversalId uid) throws
 		IOException, RecordHiddenException
 	{
-		return createInterimFile(key, "public");
+		return createInterimFile(uid, "public");
 	}
 
-	private File createInterimFile(DatabaseKey key, String extension) throws RecordHiddenException, IOException
+	private File createInterimFile(UniversalId uid, String extension) throws RecordHiddenException, IOException
 	{
-		throwIfRecordIsHidden(key);
-		File folder = getAbsoluteInterimFolderForAccount(key.getAccountId());
-		return new File(folder, key.getLocalId()+"."+extension);
+		throwIfRecordIsHidden(uid);
+		File folder = getAbsoluteInterimFolderForAccount(uid.getAccountId());
+		return new File(folder, uid.getLocalId()+"."+extension);
 	}
 
 
@@ -339,7 +339,7 @@ abstract public class FileDatabase extends Database
 
 	public boolean isInQuarantine(DatabaseKey key) throws RecordHiddenException
 	{
-		throwIfRecordIsHidden(key);
+		throwIfRecordIsHidden(key.getUniversalId());
 		try
 		{
 			return getQuarantineFileForRecord(key).exists();
@@ -353,7 +353,7 @@ abstract public class FileDatabase extends Database
 
 	public void moveRecordToQuarantine(DatabaseKey key) throws RecordHiddenException
 	{
-		throwIfRecordIsHidden(key);
+		throwIfRecordIsHidden(key.getUniversalId());
 		try
 		{
 			File moveFrom = getFileForRecord(key);
@@ -425,11 +425,11 @@ abstract public class FileDatabase extends Database
 						if(uid.getLocalId().startsWith("BUR-"))
 							continue;
 							
-						DatabaseKey key = new DatabaseKey(uid);
+						DatabaseKey key = null;
 						if(isDraftPacketBucket(packetBuckets[packetBucket]))
-							key.setDraft();
+							key = DatabaseKey.createDraftKey(uid);
 						else
-							key.setSealed();
+							key = DatabaseKey.createSealedKey(uid);
 							
 						try
 						{
@@ -670,7 +670,7 @@ abstract public class FileDatabase extends Database
 		if(key == null)
 			throw new IOException("Null key");
 
-		throwIfRecordIsHidden(key);
+		throwIfRecordIsHidden(key.getUniversalId());
 
 		try
 		{

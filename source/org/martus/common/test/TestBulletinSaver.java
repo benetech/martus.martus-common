@@ -84,8 +84,8 @@ public class TestBulletinSaver extends TestCaseEnhanced
 		Bulletin b = new Bulletin(security);
 		b.set("summary", "New bulletin");
 		BulletinSaver.saveToClientDatabase(b, db, true, security);
-		DatabaseKey headerKey1 = new DatabaseKey(b.getBulletinHeaderPacket().getUniversalId());
-		DatabaseKey dataKey1 = new DatabaseKey(b.getFieldDataPacket().getUniversalId());
+		DatabaseKey headerKey1 = DatabaseKey.createLegacyKey(b.getBulletinHeaderPacket().getUniversalId());
+		DatabaseKey dataKey1 = DatabaseKey.createLegacyKey(b.getFieldDataPacket().getUniversalId());
 		assertEquals("saved 1", 3, db.getAllKeys().size());
 		assertEquals("saved 1 header key", true,db.doesRecordExist(headerKey1));
 		assertEquals("saved 1 data key", true,db.doesRecordExist(dataKey1));
@@ -113,8 +113,8 @@ public class TestBulletinSaver extends TestCaseEnhanced
 		assertEquals("saved another", 6, db.getAllKeys().size());
 		assertEquals("old header key", true, db.doesRecordExist(headerKey1));
 		assertEquals("old data key", true, db.doesRecordExist(dataKey1));
-		DatabaseKey newHeaderKey = new DatabaseKey(b.getBulletinHeaderPacket().getUniversalId());
-		DatabaseKey newDataKey = new DatabaseKey(b.getFieldDataPacket().getUniversalId());
+		DatabaseKey newHeaderKey = DatabaseKey.createLegacyKey(b.getBulletinHeaderPacket().getUniversalId());
+		DatabaseKey newDataKey = DatabaseKey.createLegacyKey(b.getFieldDataPacket().getUniversalId());
 		assertEquals("new header key", true, db.doesRecordExist(newHeaderKey));
 		assertEquals("new data key", true, db.doesRecordExist(newDataKey));
 	}
@@ -129,7 +129,7 @@ public class TestBulletinSaver extends TestCaseEnhanced
 		BulletinSaver.saveToClientDatabase(b, db, true, security);
 		assertEquals("saved", 4, db.getAllKeys().size());
 
-		Bulletin got = BulletinLoader.loadFromDatabase(db, new DatabaseKey(b.getUniversalId()), security);
+		Bulletin got = BulletinLoader.loadFromDatabase(db, DatabaseKey.createLegacyKey(b.getUniversalId()), security);
 		assertEquals("id", b.getLocalId(), got.getLocalId());
 		assertEquals("attachment count", b.getPublicAttachments().length, got.getPublicAttachments().length);
 	}
@@ -137,7 +137,7 @@ public class TestBulletinSaver extends TestCaseEnhanced
 	public void testSaveToDatabaseWithAttachment() throws Exception
 	{
 		Bulletin b = new Bulletin(security);
-		DatabaseKey key = new DatabaseKey(b.getUniversalId());
+		DatabaseKey key = DatabaseKey.createLegacyKey(b.getUniversalId());
 		b.addPublicAttachment(proxy1);
 		b.addPublicAttachment(proxy2);
 		BulletinSaver.saveToClientDatabase(b, db, true, security);
@@ -178,7 +178,7 @@ public class TestBulletinSaver extends TestCaseEnhanced
 	public void testReSaveToDatabaseWithAttachments() throws Exception
 	{
 		Bulletin b = new Bulletin(security);
-		DatabaseKey key = new DatabaseKey(b.getUniversalId());
+		DatabaseKey key = DatabaseKey.createLegacyKey(b.getUniversalId());
 		b.addPublicAttachment(proxy1);
 		b.addPublicAttachment(proxy2);
 		BulletinSaver.saveToClientDatabase(b, db, true, security);
@@ -194,7 +194,7 @@ public class TestBulletinSaver extends TestCaseEnhanced
 	public void testReSaveToDatabaseAddAttachments() throws Exception
 	{
 		Bulletin b = new Bulletin(security);
-		DatabaseKey key = new DatabaseKey(b.getUniversalId());
+		DatabaseKey key = DatabaseKey.createLegacyKey(b.getUniversalId());
 		b.addPublicAttachment(proxy1);
 		b.addPublicAttachment(proxy2);
 		b.addPrivateAttachment(proxy4);
@@ -224,7 +224,7 @@ public class TestBulletinSaver extends TestCaseEnhanced
 	public void testReSaveToDatabaseRemoveAttachment() throws Exception
 	{
 		Bulletin b = new Bulletin(security);
-		DatabaseKey key = new DatabaseKey(b.getUniversalId());
+		DatabaseKey key = DatabaseKey.createLegacyKey(b.getUniversalId());
 		b.addPublicAttachment(proxy1);
 		b.addPublicAttachment(proxy2);
 		b.addPrivateAttachment(proxy3);
@@ -269,7 +269,7 @@ public class TestBulletinSaver extends TestCaseEnhanced
 		{
 			AttachmentProxy gotA = originalAttachments[i];
 			String localId = gotA.getUniversalId().getLocalId();
-			DatabaseKey key1 = new DatabaseKey(gotA.getUniversalId());
+			DatabaseKey key1 = DatabaseKey.createLegacyKey(gotA.getUniversalId());
 			assertEquals(tag + i + " missing original record?", true,  db.doesRecordExist(key1));
 
 			File tempFile = createTempFileFromName("$$$MartusTestBullSvAtt");
@@ -309,7 +309,7 @@ public class TestBulletinSaver extends TestCaseEnhanced
 		BulletinSaver.saveToClientDatabase(original, db, true, security);
 		assertEquals("wrong record count", 5, db.getRecordCount());
 
-		Bulletin loaded = BulletinLoader.loadFromDatabase(db, new DatabaseKey(original.getUniversalId()), security);
+		Bulletin loaded = BulletinLoader.loadFromDatabase(db, DatabaseKey.createLegacyKey(original.getUniversalId()), security);
 		assertNotNull("not saved?", loaded);
 		AttachmentProxy[] list = loaded.getPublicAttachments();
 		assertEquals("count wrong?", 2, list.length);

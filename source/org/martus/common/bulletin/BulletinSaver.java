@@ -60,7 +60,7 @@ public class BulletinSaver
 	{
 		UniversalId uid = b.getUniversalId();
 		BulletinHeaderPacket oldBhp = new BulletinHeaderPacket(uid);
-		DatabaseKey key = new DatabaseKey(uid);
+		DatabaseKey key = DatabaseKey.createLegacyKey(uid);
 		boolean bulletinAlreadyExisted = false;
 		try
 		{
@@ -146,7 +146,7 @@ public class BulletinSaver
 			if(!MartusUtilities.isStringInArray(newIds, oldLocalId))
 			{
 				UniversalId auid = UniversalId.createFromAccountAndLocalId(accountId, oldLocalId);
-				db.discardRecord(new DatabaseKey(auid));
+				db.discardRecord(DatabaseKey.createLegacyKey(auid));
 			}
 		}
 	}
@@ -175,7 +175,7 @@ public class BulletinSaver
 	{
 		UniversalId uid = a.getUniversalId();
 		SessionKey sessionKey = a.getSessionKey();
-		DatabaseKey key = new DatabaseKey(uid);
+		DatabaseKey key = DatabaseKey.createLegacyKey(uid);
 		InputStreamWithSeek xmlIn = db.openInputStream(key, verifier);
 		AttachmentPacket.exportRawFileFromXml(xmlIn, sessionKey, verifier, out);
 	}

@@ -60,7 +60,7 @@ public class MartusBulletinWrapper
 			ZipFile zipFile = new ZipFile(bulletinZipFile);
 			BulletinZipUtilities.importBulletinPacketsFromZipFileToDatabase(db, null, zipFile, security);
 			zipFile.close();
-			DatabaseKey key = new DatabaseKey(uid);
+			DatabaseKey key = DatabaseKey.createLegacyKey(uid);
 			bulletin = BulletinLoader.loadFromDatabase(db, key, security);
 			if(bulletin == null)
 				throw new ServerErrorException("No Bulletin?");

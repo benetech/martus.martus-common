@@ -123,13 +123,7 @@ public class BulletinStore
 		return uids;
 	}
 
-	public boolean doesBulletinRevisionExist(UniversalId uid)
-	{
-		DatabaseKey key = new DatabaseKey(uid);
-		return doesBulletinRevisionExist(key);
-	}
-	
-	protected boolean doesBulletinRevisionExist(DatabaseKey key)
+	public boolean doesBulletinRevisionExist(DatabaseKey key)
 	{
 		return getDatabase().doesRecordExist(key);
 	}
@@ -256,7 +250,7 @@ public class BulletinStore
 			{
 				String localIdOfAncestor = history.get(i);
 				UniversalId uidOfAncestor = UniversalId.createFromAccountAndLocalId(b.getAccount(), localIdOfAncestor);
-				deleteBulletinRevision(uidOfAncestor);
+				deleteBulletinRevision(DatabaseKey.createSealedKey(uidOfAncestor));
 			}
 
 			BulletinHeaderPacket bhpMain = b.getBulletinHeaderPacket();
@@ -269,10 +263,9 @@ public class BulletinStore
 		}
 	}
 
-	public void deleteBulletinRevision(UniversalId uidToDelete) throws IOException, CryptoException, InvalidPacketException, WrongPacketTypeException, SignatureVerificationException, DecryptionException, UnsupportedEncodingException, NoKeyPairException
+	public void deleteBulletinRevision(DatabaseKey keyToDelete) throws IOException, CryptoException, InvalidPacketException, WrongPacketTypeException, SignatureVerificationException, DecryptionException, UnsupportedEncodingException, NoKeyPairException
 	{
-		DatabaseKey key = DatabaseKey.createSealedKey(uidToDelete);
-		BulletinHeaderPacket bhp = loadBulletinHeaderPacket(getDatabase(), key, getSignatureVerifier());
+		BulletinHeaderPacket bhp = loadBulletinHeaderPacket(getDatabase(), keyToDelete, getSignatureVerifier());
 		deleteBulletinRevisionFromDatabase(bhp, getWriteableDatabase(), getSignatureVerifier());
 	}
 

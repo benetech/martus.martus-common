@@ -114,8 +114,7 @@ public class MartusServerUtilities
 		{
 			ZipEntry entry = (ZipEntry)entries.nextElement();
 			UniversalId uid = UniversalId.createFromAccountAndLocalId(authorAccountId, entry.getName());
-			DatabaseKey trySealedKey = new DatabaseKey(uid);
-			trySealedKey.setSealed();
+			DatabaseKey trySealedKey = DatabaseKey.createSealedKey(uid);
 			if(db.doesRecordExist(trySealedKey))
 			{
 				DatabaseKey newKey = header.createKeyWithHeaderStatus(uid);
@@ -509,11 +508,10 @@ public class MartusServerUtilities
 	public static DatabaseKey getBurKey(DatabaseKey key)
 	{
 		UniversalId burUid = UniversalId.createFromAccountAndLocalId(key.getAccountId(), "BUR-" + key.getLocalId());
-		DatabaseKey burKey = new DatabaseKey(burUid);
 		
 		if(key.isDraft())
-			burKey.setDraft();
-		return burKey;
+			return DatabaseKey.createDraftKey(burUid);
+		return DatabaseKey.createSealedKey(burUid);
 	}
 
 	public static void writeSpecificBurToDatabase(Database db, BulletinHeaderPacket bhp, String bur)

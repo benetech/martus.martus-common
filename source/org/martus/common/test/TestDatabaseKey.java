@@ -77,10 +77,10 @@ public class TestDatabaseKey extends TestCaseEnhanced
 		UniversalId uid1 = UniversalId.createDummyUniversalId();
 		UniversalId uid2 = UniversalId.createDummyUniversalId();
 
-		DatabaseKey key1 = new DatabaseKey(uid1);
-		DatabaseKey key2 = new DatabaseKey(UniversalId.createFromAccountAndLocalId(uid1.getAccountId(), uid1.getLocalId()));
-		DatabaseKey key3 = new DatabaseKey(uid2);
-		DatabaseKey key4 = new DatabaseKey(uid1);
+		DatabaseKey key1 = DatabaseKey.createSealedKey(uid1);
+		DatabaseKey key2 = DatabaseKey.createSealedKey(UniversalId.createFromAccountAndLocalId(uid1.getAccountId(), uid1.getLocalId()));
+		DatabaseKey key3 = DatabaseKey.createSealedKey(uid2);
+		DatabaseKey key4 = DatabaseKey.createSealedKey(uid1);
 		key4.setDraft();
 		assertEquals("self should match", key1, key1);
 		assertEquals("never match null", false, key1.equals(null));
@@ -100,9 +100,9 @@ public class TestDatabaseKey extends TestCaseEnhanced
 	{
 		UniversalId uid = UniversalId.createDummyUniversalId();
 
-		DatabaseKey key1 = new DatabaseKey(uid);
-		DatabaseKey key2 = new DatabaseKey(uid);
-		DatabaseKey key3 = new DatabaseKey(UniversalId.createDummyUniversalId());
+		DatabaseKey key1 = DatabaseKey.createSealedKey(uid);
+		DatabaseKey key2 = DatabaseKey.createSealedKey(uid);
+		DatabaseKey key3 = DatabaseKey.createSealedKey(UniversalId.createDummyUniversalId());
 		assertEquals("self should match", key1, key1);
 		assertEquals("never match null", false, key1.equals(null));
 		assertEquals("never match string", false, key1.equals(uid));
@@ -118,7 +118,7 @@ public class TestDatabaseKey extends TestCaseEnhanced
 	public void testGetAccount() throws Exception
 	{
 		UniversalId uid = UniversalId.createDummyUniversalId();
-		DatabaseKey key = new DatabaseKey(uid);
+		DatabaseKey key = DatabaseKey.createSealedKey(uid);
 		assertEquals("wrong account?", uid.getAccountId(), key.getAccountId());
 	}
 

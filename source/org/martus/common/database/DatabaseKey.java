@@ -61,7 +61,7 @@ public class DatabaseKey implements Comparable
 		return createSealedKey(uidToUse);
 	}
 
-	public DatabaseKey(UniversalId uidToUse)
+	private DatabaseKey(UniversalId uidToUse)
 	{
 		uid = uidToUse;
 		status = statusSealed;

@@ -230,9 +230,9 @@ public class TestFileDatabase extends TestCaseEnhanced
 
 	public void testInterimFileNames() throws Exception
 	{
-		File interimIn = db.getIncomingInterimFile(shortKey);
+		File interimIn = db.getIncomingInterimFile(shortKey.getUniversalId());
 		assertEndsWith(".in", interimIn.getName());
-		File interimOut = db.getOutgoingInterimFile(shortKey);
+		File interimOut = db.getOutgoingInterimFile(shortKey.getUniversalId());
 		assertEndsWith(".out", interimOut.getName());
 	}
 
@@ -351,7 +351,7 @@ public class TestFileDatabase extends TestCaseEnhanced
 		{
 			String a1 = "account" + i;
 			UniversalId uid1 = UniversalIdForTesting.createFromAccountAndPrefix(a1, "x");
-			DatabaseKey key1 = new DatabaseKey(uid1);
+			DatabaseKey key1 = DatabaseKey.createSealedKey(uid1);
 			int accountHash1 = FileDatabase.getHashValue(uid1.getAccountId()) & 0xFF;
 			String accountHashString1 = Integer.toHexString(accountHash1 + 0xb00);
 			String expectedAccountBucket = baseDir + "/a" + accountHashString1;
@@ -418,7 +418,7 @@ public class TestFileDatabase extends TestCaseEnhanced
 		File mapFile = db.accountMapFile;
 		String accountId = "accountForTesting";
 		UniversalId uid = UniversalIdForTesting.createFromAccountAndPrefix(accountId, "x");
-		DatabaseKey key = new DatabaseKey(uid);
+		DatabaseKey key = DatabaseKey.createSealedKey(uid);
 
 		db.writeRecord(key, "Some record text");
 		long lastLength = mapFile.length();
@@ -515,7 +515,7 @@ public class TestFileDatabase extends TestCaseEnhanced
 
 		db.writeRecord(shortKey, sampleString1);
 		db.writeRecord(shortKey2, sampleString2);
-		DatabaseKey shortKey3 = new DatabaseKey(UniversalIdForTesting.createFromAccountAndPrefix(accountString1 , "x"));
+		DatabaseKey shortKey3 = DatabaseKey.createSealedKey(UniversalIdForTesting.createFromAccountAndPrefix(accountString1 , "x"));
 		db.writeRecord(shortKey3, sampleString2);
 		db.hide(shortKey3.getUniversalId());
 		
@@ -570,9 +570,9 @@ public class TestFileDatabase extends TestCaseEnhanced
 	MyFileDatabase db;
 	File dir;
 	String accountString1 = "acct1";
-	DatabaseKey shortKey = new DatabaseKey(UniversalIdForTesting.createFromAccountAndPrefix(accountString1 , "x"));
-	DatabaseKey shortKey2 = new DatabaseKey(UniversalIdForTesting.createFromAccountAndPrefix(accountString1 , "x"));
-	DatabaseKey otherKey = new DatabaseKey(UniversalIdForTesting.createFromAccountAndPrefix("acct2", "x"));
+	DatabaseKey shortKey = DatabaseKey.createSealedKey(UniversalIdForTesting.createFromAccountAndPrefix(accountString1 , "x"));
+	DatabaseKey shortKey2 = DatabaseKey.createSealedKey(UniversalIdForTesting.createFromAccountAndPrefix(accountString1 , "x"));
+	DatabaseKey otherKey = DatabaseKey.createSealedKey(UniversalIdForTesting.createFromAccountAndPrefix("acct2", "x"));
 	String sampleString1 = "This is just a little bit of data as a sample";
 	String sampleString2 = "Here is a somewhat different sample string";
 	byte[] sampleBytes1 = {127,44,17,0,27,99};

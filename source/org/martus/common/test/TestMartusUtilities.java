@@ -540,7 +540,7 @@ public class TestMartusUtilities extends TestCaseEnhanced
 		BulletinHeaderPacket bhp1 = new BulletinHeaderPacket(realUid);
 
 		Database db = new MockServerDatabase();
-		DatabaseKey wrongKey = new DatabaseKey(wrongUid);
+		DatabaseKey wrongKey = DatabaseKey.createSealedKey(wrongUid);
 		bhp1.writeXmlToDatabase(db, wrongKey, false, client1);
 
 		File tempFile = createTempFile();

@@ -93,7 +93,7 @@ public class AttachmentPacket extends Packet
 		
 		byte[] sig = writeAttachmentXmlFile(signer, temp);
 
-		DatabaseKey headerKey = new DatabaseKey(getUniversalId());
+		DatabaseKey headerKey = DatabaseKey.createLegacyKey(getUniversalId());
 		HashMap importMap = new HashMap();
 		importMap.put(headerKey, temp);
 		try

@@ -399,8 +399,8 @@ public class Bulletin implements BulletinConstants
 
 	public DatabaseKey getDatabaseKeyForLocalId(String localId)
 	{
-		UniversalId uidFdp = UniversalId.createFromAccountAndLocalId(getAccount(), localId);
-		return new DatabaseKey(uidFdp);
+		UniversalId uid = UniversalId.createFromAccountAndLocalId(getAccount(), localId);
+		return getBulletinHeaderPacket().createKeyWithHeaderStatus(uid);
 	}
 
 	public boolean isFieldInPublicSection(String fieldName)

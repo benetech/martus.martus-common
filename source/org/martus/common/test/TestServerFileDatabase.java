@@ -72,7 +72,7 @@ public class TestServerFileDatabase extends TestCaseEnhanced
 
 		Bulletin b = new Bulletin(security);
 		b.setSealed();
-		DatabaseKey key = new DatabaseKey(b.getUniversalId());
+		DatabaseKey key = DatabaseKey.createSealedKey(b.getUniversalId());
 		key.setSealed();
 
 		String bur = MartusServerUtilities.createBulletinUploadRecord(b.getLocalId(), security);
@@ -105,7 +105,7 @@ public class TestServerFileDatabase extends TestCaseEnhanced
 	public void testBasics() throws Exception
 	{
 		UniversalId uid = UniversalId.createDummyUniversalId();
-		DatabaseKey key = new DatabaseKey(uid);
+		DatabaseKey key = DatabaseKey.createSealedKey(uid);
 		File dir = createTempFileFromName("$$$MartusTestServerFileDatabase");
 		dir.delete();
 		dir.mkdir();
@@ -137,10 +137,8 @@ public class TestServerFileDatabase extends TestCaseEnhanced
 	private void internalTestDrafts(Database db) throws Exception
 	{
 		UniversalId uid = UniversalId.createDummyUniversalId();
-		DatabaseKey draftKey = new DatabaseKey(uid);
-		draftKey.setDraft();
-		DatabaseKey sealedKey = new DatabaseKey(uid);
-		sealedKey.setSealed();
+		DatabaseKey draftKey = DatabaseKey.createDraftKey(uid);
+		DatabaseKey sealedKey = DatabaseKey.createSealedKey(uid);
 		
 		db.writeRecord(draftKey, smallString);
 		db.writeRecord(sealedKey, smallString2);

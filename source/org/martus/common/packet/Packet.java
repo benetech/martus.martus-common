@@ -197,7 +197,7 @@ public class Packet
 			IOException,
 			MartusCrypto.CryptoException
 	{
-		DatabaseKey headerKey = new DatabaseKey(getUniversalId());
+		DatabaseKey headerKey = DatabaseKey.createLegacyKey(getUniversalId());
 		try
 		{
 			return writeXmlToDatabase(db, headerKey, mustEncrypt, signer);

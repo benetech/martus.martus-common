@@ -74,7 +74,7 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		original.setSealed();
 		BulletinSaver.saveToClientDatabase(original, db, true, security);
 
-		Bulletin loaded = BulletinLoader.loadFromDatabase(db, new DatabaseKey(original.getUniversalId()), security);
+		Bulletin loaded = BulletinLoader.loadFromDatabase(db, DatabaseKey.createLegacyKey(original.getUniversalId()), security);
 		assertEquals("not valid?", true, loaded.isValid());
 
 		FieldDataPacket fdp = loaded.getFieldDataPacket();
@@ -82,7 +82,7 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		boolean encryptPublicData = true;
 		fdp.writeXmlToClientDatabase(db, encryptPublicData, security);
 
-		loaded = BulletinLoader.loadFromDatabase(db, new DatabaseKey(original.getUniversalId()), security);
+		loaded = BulletinLoader.loadFromDatabase(db, DatabaseKey.createLegacyKey(original.getUniversalId()), security);
 		assertEquals("not invalid?", false, loaded.isValid());
 		assertEquals("private messed up?", original.get(Bulletin.TAGPRIVATEINFO), loaded.get(Bulletin.TAGPRIVATEINFO));
 	}
@@ -102,7 +102,7 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		b1.setSealed();
 		BulletinSaver.saveToClientDatabase(b1, db, true, security);
 
-		Bulletin loaded = BulletinLoader.loadFromDatabase(db, new DatabaseKey(b1.getUniversalId()), security);
+		Bulletin loaded = BulletinLoader.loadFromDatabase(db, DatabaseKey.createLegacyKey(b1.getUniversalId()), security);
 		assertEquals("not valid?", true, loaded.isValid());
 
 		AttachmentProxy[] privateProxy = loaded.getPrivateAttachments();
@@ -114,13 +114,13 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		db.discardRecord(key);
 		assertFalse("Attachment should not exist",db.doesRecordExist(key));
 		
-		loaded = BulletinLoader.loadFromDatabase(db, new DatabaseKey(b1.getUniversalId()), security);
+		loaded = BulletinLoader.loadFromDatabase(db, DatabaseKey.createLegacyKey(b1.getUniversalId()), security);
 		assertEquals("not invalid for private attachment missing?", false, loaded.isValid());
 
 		b1.addPrivateAttachment(a2);
 		BulletinSaver.saveToClientDatabase(b1, db, true, security);
 		
-		loaded = BulletinLoader.loadFromDatabase(db, new DatabaseKey(b1.getUniversalId()), security);
+		loaded = BulletinLoader.loadFromDatabase(db, DatabaseKey.createLegacyKey(b1.getUniversalId()), security);
 		assertEquals("Should now be valid both attachments are present.", true, loaded.isValid());
 
 		AttachmentProxy[] publicProxy = loaded.getPrivateAttachments();
@@ -128,7 +128,7 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		key = DatabaseKey.createSealedKey(id);
 		db.writeRecordEncrypted(key,sampleBytes2.toString(), security);
 		
-		loaded = BulletinLoader.loadFromDatabase(db, new DatabaseKey(b1.getUniversalId()), security);
+		loaded = BulletinLoader.loadFromDatabase(db, DatabaseKey.createLegacyKey(b1.getUniversalId()), security);
 		assertEquals("not invalid for modified public attachment?", false, loaded.isValid());
 	}
 	
@@ -141,7 +141,7 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		original.setSealed();
 		BulletinSaver.saveToClientDatabase(original, db, true, security);
 
-		Bulletin loaded = BulletinLoader.loadFromDatabase(db, new DatabaseKey(original.getUniversalId()), security);
+		Bulletin loaded = BulletinLoader.loadFromDatabase(db, DatabaseKey.createLegacyKey(original.getUniversalId()), security);
 		assertEquals("not valid?", true, loaded.isValid());
 
 		FieldDataPacket fdp = loaded.getPrivateFieldDataPacket();
@@ -149,7 +149,7 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		boolean encryptPublicData = true;
 		fdp.writeXmlToClientDatabase(db, encryptPublicData, security);
 
-		loaded = BulletinLoader.loadFromDatabase(db, new DatabaseKey(original.getUniversalId()), security);
+		loaded = BulletinLoader.loadFromDatabase(db, DatabaseKey.createLegacyKey(original.getUniversalId()), security);
 		assertEquals("not invalid?", false, loaded.isValid());
 		assertEquals("public messed up?", original.get(Bulletin.TAGPUBLICINFO), loaded.get(Bulletin.TAGPUBLICINFO));
 	}
@@ -165,7 +165,7 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		BulletinSaver.saveToClientDatabase(b, db, true, security);
 		assertEquals("saved 1", 3, db.getAllKeys().size());
 
-		DatabaseKey key = new DatabaseKey(b.getUniversalId());
+		DatabaseKey key = DatabaseKey.createLegacyKey(b.getUniversalId());
 		Bulletin loaded = new Bulletin(security);
 		loaded = BulletinLoader.loadFromDatabase(db, key, security);
 		assertEquals("id", b.getLocalId(), loaded.getLocalId());
@@ -185,7 +185,7 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		original.setAuthorizedToReadKeys(keys);
 		BulletinSaver.saveToClientDatabase(original, db, true, security);
 
-		DatabaseKey dbKey = new DatabaseKey(original.getUniversalId());
+		DatabaseKey dbKey = DatabaseKey.createLegacyKey(original.getUniversalId());
 		Bulletin loaded = BulletinLoader.loadFromDatabase(db, dbKey, security);
 		assertEquals("Keys not the same?", (original.getFieldDataPacket().getAuthorizedToReadKeys().get(0)).getPublicKey(), (loaded.getFieldDataPacket().getAuthorizedToReadKeys().get(0)).getPublicKey());
 
@@ -207,7 +207,7 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		BulletinSaver.saveToClientDatabase(b, db, true, security);
 		assertEquals("saved 1", 3, db.getAllKeys().size());
 
-		DatabaseKey key = new DatabaseKey(b.getUniversalId());
+		DatabaseKey key = DatabaseKey.createLegacyKey(b.getUniversalId());
 		Bulletin loaded = new Bulletin(security);
 		loaded = BulletinLoader.loadFromDatabase(db, key, security);
 		assertEquals("id", b.getLocalId(), loaded.getLocalId());
@@ -226,13 +226,13 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		b.setAuthorizedToReadKeys(keys);
 		saveAndVerifyValid("freshly created", b);
 
-		DatabaseKey headerKey = new DatabaseKey(b.getBulletinHeaderPacket().getUniversalId());
+		DatabaseKey headerKey = DatabaseKey.createLegacyKey(b.getBulletinHeaderPacket().getUniversalId());
 		verifyVariousTypesOfDamage("bad header", b, false, headerKey, "", "");
 
-		DatabaseKey dataKey = new DatabaseKey(b.getFieldDataPacket().getUniversalId());
+		DatabaseKey dataKey = DatabaseKey.createLegacyKey(b.getFieldDataPacket().getUniversalId());
 		verifyVariousTypesOfDamage("bad field data", b, true, dataKey, "", samplePrivate);
 
-		DatabaseKey privateDataKey = new DatabaseKey(b.getPrivateFieldDataPacket().getUniversalId());
+		DatabaseKey privateDataKey = DatabaseKey.createLegacyKey(b.getPrivateFieldDataPacket().getUniversalId());
 		verifyVariousTypesOfDamage("bad private field data", b, true, privateDataKey, samplePublic, "");
 	}
 
@@ -315,7 +315,7 @@ public class TestBulletinLoader extends TestCaseEnhanced
 	void saveAndVerifyValid(String label, Bulletin b) throws Exception
 	{
 		BulletinSaver.saveToClientDatabase(b, db, true, security);
-		DatabaseKey headerKey = new DatabaseKey(b.getBulletinHeaderPacket().getUniversalId());
+		DatabaseKey headerKey = DatabaseKey.createLegacyKey(b.getBulletinHeaderPacket().getUniversalId());
 		Bulletin stillValid = BulletinLoader.loadFromDatabase(db, headerKey, security);
 		assertEquals(label + " not valid after save?", true, stillValid.isValid());
 	}
@@ -323,7 +323,7 @@ public class TestBulletinLoader extends TestCaseEnhanced
 	void verifyBulletinIsInvalid(String label, Bulletin b, boolean headerIsValid,
 				String expectedPublic, String expectedPrivate) throws Exception
 	{
-		DatabaseKey headerKey = new DatabaseKey(b.getBulletinHeaderPacket().getUniversalId());
+		DatabaseKey headerKey = DatabaseKey.createLegacyKey(b.getBulletinHeaderPacket().getUniversalId());
 
 		if(!headerIsValid)
 		{

@@ -136,7 +136,8 @@ public class BulletinForTesting extends Bulletin
 			UniversalId uid = attachments[i].getUniversalId();
 			ZipEntry attachmentEntry = new ZipEntry(uid.getLocalId());
 			zipOut.putNextEntry(attachmentEntry);
-			InputStream in = new BufferedInputStream(db.openInputStream(new DatabaseKey(uid), sigVerifier));
+			DatabaseKey key = b.getDatabaseKeyForLocalId(uid.getLocalId());
+			InputStream in = new BufferedInputStream(db.openInputStream(key, sigVerifier));
 
 			byte[] bytes = new byte[MartusConstants.streamBufferCopySize];
 			int got;
