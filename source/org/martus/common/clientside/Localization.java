@@ -202,7 +202,7 @@ public class Localization
 	public void loadTranslationFile(String languageCode)
 	{
 		InputStream transStream = null;
-		String fileShortName = MARTUS_LANGUAGE_FILE_PREFIX + languageCode + MARTUS_LANGUAGE_FILE_SUFFIX;
+		String fileShortName = getMtfFilename(languageCode);
 		File file = new File(directory, fileShortName);
 		try
 		{
@@ -245,6 +245,12 @@ public class Localization
 		return (filenameLower.startsWith(martusLanguageFilePrefixLower) && filenameLower.endsWith(martusLanguageFileSufixLower));
 	}
 
+	public static String getMtfFilename(String languageCode)
+	{
+		String filename;
+		filename = MARTUS_LANGUAGE_FILE_PREFIX + languageCode + MARTUS_LANGUAGE_FILE_SUFFIX;
+		return filename;
+	}
 
 	/////////////////////////////////////////////////////////////////
 	// Language-oriented stuff

@@ -268,7 +268,7 @@ public class UiBasicLocalization extends Localization
 	{
 		public boolean accept(File dir, String name)
 		{
-			return UiBasicLocalization.isLanguageFile(name);
+			return isLanguageFile(name);
 		}
 	}
 	
