@@ -350,10 +350,13 @@ public class TestBulletin extends TestCaseEnhanced
 		Bulletin b1 = new Bulletin(security);
 		b1.set(Bulletin.TAGPUBLICINFO, "public info");
 		b1.set(Bulletin.TAGPRIVATEINFO, "private info");
+		HQKey hq = new HQKey(security.getPublicKeyString());
+		b1.setAuthorizedToReadKeys(new HQKeys(hq));
 		b1.setSealed();
 		store.saveEncryptedBulletinForTesting(b1);
 		assertEquals(0, b1.getHistory().size());
 		assertEquals(1, b1.getVersion());
+		assertEquals(1, b1.getAuthorizedToReadKeys().size());
 		
 		Bulletin b2 = new Bulletin(security);
 		b2.createDraftCopyOf(b1, getDb());
@@ -366,6 +369,8 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals("wrong private?", b1.isAllPrivate(), b2.isAllPrivate());
 		assertEquals("modified history?", 0, b1.getHistory().size());
 		assertEquals(1, b1.getVersion());
+		assertEquals(1, b2.getAuthorizedToReadKeys().size());
+		assertEquals("HQKeys doesn't match?", b1.getBulletinHeaderPacket().getLegacyHQPublicKey(), b2.getBulletinHeaderPacket().getLegacyHQPublicKey());
 
 		AttachmentProxy a1 = new AttachmentProxy(tempFile1);
 		b1.addPublicAttachment(a1);

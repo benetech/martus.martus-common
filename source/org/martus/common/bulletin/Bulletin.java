@@ -482,6 +482,8 @@ public class Bulletin implements BulletinConstants
 		pullFields(other, getFieldDataPacket().getFieldSpecs());
 		pullFields(other, getPrivateFieldDataPacket().getFieldSpecs());
 
+		setAuthorizedToReadKeys(other.getAuthorizedToReadKeys());
+		
 		MartusCrypto security = getSignatureGenerator();
 		AttachmentProxy[] attachmentPublicProxies = other.getPublicAttachments();
 		for(int aIndex = 0; aIndex < attachmentPublicProxies.length; ++aIndex)
