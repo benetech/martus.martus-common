@@ -102,13 +102,13 @@ public class TestBulletinSummary extends TestCase
 		String allData2 = "bhp=fdp=16=123456=33";
 		BulletinSummary summary = BulletinSummary.createFromString("account", allData1);
 		assertEquals(15, summary.getSize());
-		assertEquals("12/31/69 4:02 PM", summary.getDateTimeSaved());
+		assertEquals(BulletinSummary.getLastDateTimeSaved("123456"), summary.getDateTimeSaved());
 		assertEquals(4, summary.getVersionNumber());
 		assertEquals(3, summary.getHistory().size());
 
 		BulletinSummary summary2 = BulletinSummary.createFromString("account", allData2);
 		assertEquals(16, summary2.getSize());
-		assertEquals("12/31/69 4:02 PM", summary2.getDateTimeSaved());
+		assertEquals(BulletinSummary.getLastDateTimeSaved("123456"), summary2.getDateTimeSaved());
 		assertEquals(2, summary2.getVersionNumber());
 		assertEquals(1, summary2.getHistory().size());
 	}

@@ -55,7 +55,7 @@ public class BulletinSummary
 			date = args[at++];
 		BulletinHistory history = null;
 		if(args.length > at)
-			history = createHistory(args[at++]);
+			history = BulletinHistory.createFromHistoryString(args[at++]);
 		
 		UniversalId uid = UniversalId.createFromAccountAndLocalId(accountId, bulletinLocalId);
 		return new BulletinSummary(uid, fdpLocalId, size, date, history);
@@ -168,18 +168,6 @@ public class BulletinSummary
 		return fdp;
 	}
 	
-	private static BulletinHistory createHistory(String localIdsAsString)
-	{
-		BulletinHistory history = new BulletinHistory();
-		String[] localIds = localIdsAsString.split(" ");
-		for(int i=0; i < localIds.length; ++i)
-		{
-			if(localIds[i].length() > 0)
-				history.add(localIds[i]);
-		}
-		return history;
-	}
-
 	public static Vector getNormalRetrieveTags()
 	{
 		Vector tags = new Vector();

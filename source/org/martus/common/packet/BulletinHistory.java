@@ -48,6 +48,18 @@ public class BulletinHistory
 		this(pullFrom.localIds);
 	}
 	
+	public static BulletinHistory createFromHistoryString(String localIdsAsString)
+	{
+		BulletinHistory history = new BulletinHistory();
+		String[] localIds = localIdsAsString.split(" ");
+		for(int i=0; i < localIds.length; ++i)
+		{
+			if(localIds[i].length() > 0)
+				history.add(localIds[i]);
+		}
+		return history;
+	}
+
 	public int size()
 	{
 		return localIds.size();
@@ -73,5 +85,13 @@ public class BulletinHistory
 		throw new RuntimeException("Equals not supported!");
 	}
 	
+	public String toString()
+	{
+		StringBuffer localIds = new StringBuffer();
+		for(int i = 0; i < size(); ++i)
+			localIds.append(get(i) + " ");
+		return new String(localIds);
+	}
+
 	Vector localIds;
 }
