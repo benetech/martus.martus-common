@@ -106,8 +106,12 @@ public class UiVirtualKeyboard
 			else
 				passwordField.appendChar(passChar.charAt(0));
 			handler.virtualPasswordHasChanged();
-
-
+			ensureLastButtonPressedIsNotHighlighted();
+		}
+		
+		void ensureLastButtonPressedIsNotHighlighted()
+		{
+			passwordField.requestFocus();
 		}
 	}
 	VirtualKeyboardHandler handler;
