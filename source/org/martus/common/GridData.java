@@ -104,6 +104,11 @@ public class GridData
 	public void setFromXml(String xmlData) throws IOException, ParserConfigurationException, SAXException
 	{
 		rows.clear();
+		if(xmlData.equals(""))
+		{
+			addEmptyRow();
+			return;
+		}
 		GridData.XmlGridDataLoader loader = new GridData.XmlGridDataLoader(this);
 		SimpleXmlParser.parse(loader, xmlData);
 	}

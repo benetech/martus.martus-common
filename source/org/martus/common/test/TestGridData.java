@@ -239,6 +239,17 @@ public class TestGridData extends TestCaseEnhanced
 		assertEquals("unescaped xml?", original.getValueAt(0,1), loaded.getValueAt(0,1));
 	}
 	
+	public void testEmptyGridText() throws Exception
+	{
+		GridData grid = new GridData(4);
+		grid.setFromXml("");
+		assertEquals("No first row?", 1, grid.getRowCount());
+		assertEquals("column 1 not empty?", "", grid.getValueAt(0,0));
+		assertEquals("column 2 not empty?", "", grid.getValueAt(0,1));
+		assertEquals("column 3 not empty?", "", grid.getValueAt(0,2));
+		assertEquals("column 4 not empty?", "", grid.getValueAt(0,3));
+	}
+	
 	public void testResetColumns()
 	{
 		GridData grid = createSampleGrid();
