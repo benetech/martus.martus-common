@@ -50,9 +50,10 @@ public class UiBasicSigninDlg extends JDialog
 		initalize(localizationToUse, uiStateToUse, owner, mode, username, password);
 	}
 
-	public void initalize(UiBasicLocalization localizationToUse, CurrentUiState uiStateToUse, JFrame owner, int mode, String username, char[] password)
+	public void initalize(UiBasicLocalization localizationToUse, CurrentUiState uiStateToUse, JFrame ownerToUse, int mode, String username, char[] password)
 	{
 		currentMode = mode;
+		owner = ownerToUse;
 		localization = localizationToUse;
 		uiState = uiStateToUse;
 		usersChoice = CANCEL;
@@ -187,6 +188,7 @@ public class UiBasicSigninDlg extends JDialog
 	public UiSigninPanel signinPane;
 	public UiBasicLocalization localization;
 	public CurrentUiState uiState;
+	public JFrame owner;
 	public int usersChoice;
 	boolean languageChanged;
 	private JButton ok;
