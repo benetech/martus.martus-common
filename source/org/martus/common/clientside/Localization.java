@@ -354,13 +354,13 @@ public class Localization
 	
 	public static final String LANGUAGE_OTHER = "?";
 	public static final String ENGLISH = "en";
+	public static final String FRENCH = "fr";
 	public static final String SPANISH = "es";
 	public static final String RUSSIAN = "ru";
 	public static final String THAI = "th";	
-	public static final String[] AVAILABLE_MTF_LANGUAGE_RESOURCES = {SPANISH, RUSSIAN, THAI};
 	public static final String[] ALL_LANGUAGE_CODES = {
 				LANGUAGE_OTHER, ENGLISH, "ar",
-				"az", "bn", "km","my","zh", "nl", "eo", "fa", "fr", "de","gu","ha","he","hi","hu",
+				"az", "bn", "km","my","zh", "nl", "eo", "fa", FRENCH, "de","gu","ha","he","hi","hu",
 				"it", "ja","jv","kn","kk","ky","ko","ml","mr","ne","or","pa","ps","pl","pt","ro",RUSSIAN,"sr",
 				"sr", "sd","si",SPANISH,"ta","tg","te",THAI,"tr","tk","uk","ur","uz","vi"};
 }
