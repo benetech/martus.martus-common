@@ -42,7 +42,7 @@ public class BulletinSummary
 	public static BulletinSummary createFromString(String accountId, String parameters) throws WrongValueCount
 	{
 		String args[] = parameters.split(fieldDelimeter, -1);
-		if(args.length < 3)
+		if(args.length < 3 || args.length > 2+getNormalRetrieveTags().size())
 			throw new WrongValueCount(args.length);
 		
 		int at = 0;
@@ -178,7 +178,7 @@ public class BulletinSummary
 	String localId;
 	String title;
 	String author;
-	String dateTimeSaved;
+	public String dateTimeSaved;
 	int size;
 	boolean checkedFlag;
 	boolean downloadable;

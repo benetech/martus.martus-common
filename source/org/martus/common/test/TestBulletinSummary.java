@@ -41,6 +41,45 @@ public class TestBulletinSummary extends TestCase
 	{
 		super(name);
 	}
+	
+	public void testCreateFromStringsTooFewValues() throws Exception
+	{
+		String tooFew = "bhp=fdp=27";
+	
+		BulletinSummary summary = BulletinSummary.createFromString("account", tooFew);
+		assertEquals("account", summary.getAccountId());
+		assertEquals("bhp", summary.getLocalId());
+		assertEquals("fdp", summary.getFieldDataPacketLocalId());
+		assertEquals(27, summary.getSize());
+		assertEquals("", summary.getDateTimeSaved());
+	}
+	
+	public void testCreateFromStringsTooManyValues() throws Exception
+	{
+		String tooMany = "bhp=fdp=456=date=yyy=zzz";
+
+		try
+		{
+			BulletinSummary.createFromString("account", tooMany);
+			fail("Should have thrown for too many values");
+		}
+		catch(BulletinSummary.WrongValueCount ignoreExpected)
+		{
+			
+		}
+	}
+
+	public void testCreateFromStrings() throws Exception
+	{
+		String justRight = "bhp=fdp=456=123456789";
+
+		BulletinSummary summary =BulletinSummary.createFromString("account", justRight);
+		assertEquals("account", summary.getAccountId());
+		assertEquals("bhp", summary.getLocalId());
+		assertEquals("fdp", summary.getFieldDataPacketLocalId());
+		assertEquals(456, summary.getSize());
+		assertEquals("123456789", summary.dateTimeSaved);
+	}
 
 	public void testGetNormalRetrieveTags() throws Exception
 	{
