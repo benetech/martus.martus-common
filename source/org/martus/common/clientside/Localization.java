@@ -110,27 +110,14 @@ public class Localization
 
 	public void addTranslation(String languageCode, String translation)
 	{
-		if(translation == null)
-			return;
-			
-		if(translation.startsWith("#"))
-			return;
-	
 		Map stringMap = getStringMap(languageCode);
 		if(stringMap == null)
 			return;
 	
-		int endKey = translation.indexOf('=');
-		if(endKey < 0)
-			return;
-	
-		String key = translation.substring(0,endKey);
-		String value = translation.substring(endKey + 1, translation.length());
-		value = value.replaceAll("\\\\n", "\n");
-		stringMap.put(key, new LocalizedString(key, value));
+		LocalizedString entry = LocalizedString.createLocalizedString(translation);
+		if(entry != null)
+			stringMap.put(entry.getTag(), entry);
 	}
-
-
 
 	public Map createStringMap(String languageCode)
 	{
