@@ -368,7 +368,7 @@ public class BulletinHeaderPacket extends Packet
 		{
 			HQKeys keys = new HQKeys(authorizedToReadKeys);
 			String value = keys.toString();
-			writeElement(dest, MartusXml.AccountsAuthorizedToReadElementName, value);			
+			writeNonEncodedElement(dest, MartusXml.AccountsAuthorizedToReadElementName, value);			
 		}
 
 		String dataId = getFieldDataPacketId();

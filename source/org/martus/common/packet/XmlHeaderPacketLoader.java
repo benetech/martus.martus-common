@@ -30,6 +30,7 @@ import java.util.Vector;
 
 import org.martus.common.HQKeys;
 import org.martus.common.MartusXml;
+import org.martus.common.HQKeys.XmlHQsLoader;
 import org.martus.util.Base64;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlStringLoader;
@@ -49,7 +50,8 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 	{
 		if(getTagsContainingStrings().contains(tag))
 			return new SimpleXmlStringLoader(tag);
-
+		else if(tag.equals(MartusXml.AccountsAuthorizedToReadElementName))
+			return new AuthorizedToReadLoader();
 		return super.startElement(tag);
 	}
 
@@ -63,10 +65,12 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 	{
 		if(getTagsContainingStrings().contains(tag))
 			endStringElement(ended);
+		else if(tag.equals(MartusXml.AccountsAuthorizedToReadElementName))
+			bhp.setAuthorizedToReadKeys(((AuthorizedToReadLoader)ended).authorizedKeys);
 		else
 			super.endElement(tag, ended);
 	}
-
+	
 	private void endStringElement(SimpleXmlDefaultLoader ended)
 		throws SAXParseException
 	{
@@ -92,10 +96,6 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 				bhp.addPublicAttachmentLocalId(value);
 			else if(tag.equals(MartusXml.PrivateAttachmentIdElementName))
 				bhp.addPrivateAttachmentLocalId(value);
-			else if(tag.equals(MartusXml.HQPublicKeyElementName))
-				bhp.setHQPublicKey(value);
-			else if(tag.equals(MartusXml.AccountsAuthorizedToReadElementName))
-				bhp.setAuthorizedToReadKeys(HQKeys.parseXml(value));
 		}
 		catch (Exception e)
 		{
@@ -103,6 +103,26 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 			throw new SAXParseException(e.getMessage(), null);
 		}
 	}
+	
+	class AuthorizedToReadLoader extends SimpleXmlDefaultLoader
+	{
+		public AuthorizedToReadLoader()
+		{
+			super(MartusXml.AccountsAuthorizedToReadElementName);
+		}
+
+		public SimpleXmlDefaultLoader startElement(String tag)
+			throws SAXParseException
+		{
+			if(tag.equals(HQKeys.HQ_KEYS_TAG))
+				return new XmlHQsLoader(authorizedKeys);
+			return super.startElement(tag);
+		}
+		Vector authorizedKeys = new Vector();
+	}
+	
+	
+	
 
 	private Vector getTagsContainingStrings()
 	{
@@ -119,11 +139,11 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 			stringTags.add(MartusXml.PublicAttachmentIdElementName);
 			stringTags.add(MartusXml.PrivateAttachmentIdElementName);
 			stringTags.add(MartusXml.HQPublicKeyElementName);
-			stringTags.add(MartusXml.AccountsAuthorizedToReadElementName);
 		}
 		return stringTags;
 	}
 
 	BulletinHeaderPacket bhp;
 	private static Vector stringTags;
+
 }

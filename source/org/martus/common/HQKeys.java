@@ -101,9 +101,7 @@ public class HQKeys
 
 		Vector keys;
 	}
-	
-	
-	
+
 	public static final String HQ_KEYS_TAG = "HQs";
 	public static final String HQ_KEY_TAG = "HQ";
 	public static final String HQ_PUBLIC_KEY_TAG = "PublicKey";

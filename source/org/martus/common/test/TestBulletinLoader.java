@@ -344,7 +344,7 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		assertEquals(label + " wrong private fdp localId?", bhp.getPrivateFieldDataPacketId(), invalid.getPrivateFieldDataPacket().getLocalId());
 		assertEquals(label + " public info", expectedPublic, invalid.get(Bulletin.TAGPUBLICINFO));
 		assertEquals(label + " private info", expectedPrivate, invalid.get(Bulletin.TAGPRIVATEINFO));
-		assertEquals(label + " hq keys", "", invalid.getAuthorizedToReadKeys().get(0));
+		assertEquals(label + " hq keys", 0, invalid.getAuthorizedToReadKeys().size());
 	}
 
 	static final String samplePublic = "some public text for loading";

@@ -88,7 +88,6 @@ public class BulletinLoader
 		else
 		{
 			Vector emptySetOfKeys = new Vector();
-			emptySetOfKeys.add("");
 			b.setAuthorizedToReadKeys(emptySetOfKeys);
 			if(!isHeaderValid)
 			{
