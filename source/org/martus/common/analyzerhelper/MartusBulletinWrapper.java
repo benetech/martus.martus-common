@@ -31,6 +31,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.zip.ZipFile;
 import org.martus.common.BulletinStore;
+import org.martus.common.EnglishCommonStrings;
 import org.martus.common.MartusUtilities.ServerErrorException;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.bulletin.Bulletin;
@@ -53,7 +54,7 @@ public class MartusBulletinWrapper
 		File tempDirectory = null;
 		try
 		{
-			localization  = new UiBasicLocalization(getHomeDirectory(), EnglishStrings.strings);	
+			localization  = new UiBasicLocalization(getHomeDirectory(), EnglishCommonStrings.strings);	
 			localization.currentLanguageCode = Localization.ENGLISH;			
 			
 			tempDirectory = File.createTempFile("$$$BulletinWrapperDB", null);

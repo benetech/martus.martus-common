@@ -1,7 +1,7 @@
 /*
 
 The Martus(tm) free, social justice documentation and
-monitoring software. Copyright (C) 2001-2004, Beneficent
+monitoring software. Copyright (C) 2001-2005, Beneficent
 Technology, Inc. (Benetech).
 
 Martus is free software; you can redistribute it and/or
@@ -23,16 +23,17 @@ Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.
 
 */
-package org.martus.common.analyzerhelper;
+package org.martus.common;
 
 
-public class EnglishStrings
+public class EnglishCommonStrings
 {
 	public static String strings[] = {
 		"language:?=-Other-",
 		"language:en=English",
 		"language:ar=Arabic",
 		"language:az=Azerbaijani",
+		"language:bg=Bulgarian",
 		"language:bn=Bengali, Bangla",
 		"language:my=Burmese",
 		"language:zh=Chinese",
