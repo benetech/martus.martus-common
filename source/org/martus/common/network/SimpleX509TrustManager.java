@@ -32,7 +32,8 @@ import java.security.cert.X509Certificate;
 
 import javax.net.ssl.X509TrustManager;
 
-import org.martus.common.crypto.*;
+import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.crypto.MartusSecurity;
 
 
 public class SimpleX509TrustManager implements X509TrustManager

@@ -29,6 +29,8 @@ package org.martus.common;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
+import org.martus.util.*;
+
 
 public class LoggerToConsole implements LoggerInterface
 {
