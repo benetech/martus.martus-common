@@ -110,12 +110,17 @@ public abstract class MartusCrypto
 	// other
 	public abstract KeyManager [] createKeyManagers() throws Exception;
 	public abstract byte[] getSessionKeyCache() throws IOException, NoKeyPairException, EncryptionException, MartusSignatureException;
-	public abstract void setSessionKeyCache(byte[] encryptedCacheBundle) throws IOException, NoKeyPairException, DecryptionException, MartusSignatureException;
+	public abstract void setSessionKeyCache(byte[] encryptedCacheBundle) throws IOException, NoKeyPairException, DecryptionException, MartusSignatureException, AuthorizationFailedException;
 	public abstract void flushSessionKeyCache();
 	
 	// Secret Share of Private Key
 	public abstract Vector buildKeyShareBundles();
 	public abstract void recoverFromKeyShareBundles(Vector shares) throws KeyShareException;
+	
+	public abstract byte[] createSignedBundle(byte[] dataBytes) throws MartusSignatureException, IOException;
+	public abstract byte[] extractFromSignedBundle(byte[] dataBundle, Vector authorizedKeys) throws IOException, MartusSignatureException, AuthorizationFailedException;
+	
+
 
 	public void readKeyPair(File keyPairFile, char[] combinedPassPhrase) throws
 	IOException, InvalidKeyPairFileVersionException, AuthorizationFailedException

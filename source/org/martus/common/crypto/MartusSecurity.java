@@ -395,7 +395,7 @@ public class MartusSecurity extends MartusCrypto
 		return bundleBytes;
 	}
 	
-	public void setSessionKeyCache(byte[] encryptedCacheBundle) throws IOException, NoKeyPairException, DecryptionException, MartusSignatureException
+	public void setSessionKeyCache(byte[] encryptedCacheBundle) throws IOException, NoKeyPairException, DecryptionException, MartusSignatureException, AuthorizationFailedException
 	{
 		flushSessionKeyCache();
 
@@ -441,14 +441,14 @@ public class MartusSecurity extends MartusCrypto
 		return bundleBytes;
 	}
 
-	private byte[] extractFromSignedBundle(byte[] dataBundle) throws IOException, MartusSignatureException
+	private byte[] extractFromSignedBundle(byte[] dataBundle) throws IOException, MartusSignatureException, AuthorizationFailedException
 	{
 		Vector authorizedKeys = new Vector();
 		authorizedKeys.add(getPublicKeyString());
 		return extractFromSignedBundle(dataBundle, authorizedKeys);
 	}
 
-	public byte[] extractFromSignedBundle(byte[] dataBundle, Vector authorizedKeys) throws IOException, MartusSignatureException
+	public byte[] extractFromSignedBundle(byte[] dataBundle, Vector authorizedKeys) throws IOException, MartusSignatureException, AuthorizationFailedException
 	{
 		ByteArrayInputStream bundleRawIn = new ByteArrayInputStream(dataBundle);
 		DataInputStream bundleIn = new DataInputStream(bundleRawIn);
@@ -466,7 +466,7 @@ public class MartusSecurity extends MartusCrypto
 			}
 		}
 		if(!authorized)
-			throw new MartusSignatureException();
+			throw new AuthorizationFailedException();
 		byte[] sig = new byte[bundleIn.readInt()];
 		bundleIn.read(sig);
 		byte[] dataBytes = new byte[bundleIn.readInt()];
