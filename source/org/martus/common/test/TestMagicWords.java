@@ -28,7 +28,7 @@ package org.martus.common.test;
 import java.io.File;
 import java.util.Vector;
 
-import org.martus.common.LoggerToConsole;
+import org.martus.common.LoggerForTesting;
 import org.martus.common.MagicWordEntry;
 import org.martus.common.MagicWords;
 import org.martus.util.UnicodeReader;
@@ -52,7 +52,7 @@ public class TestMagicWords extends TestCaseEnhanced
 		writer.writeln(INACTIVE_MAGICWORD3 + MagicWords.FIELD_DELIMITER + INACTIVE_GROUPNAME3);
 		writer.close();
 		
-		magicWords = new MagicWords( new LoggerToConsole());	
+		magicWords = new MagicWords( new LoggerForTesting());	
 		magicWords.loadMagicWords(tempFile);	
 		tempFile.delete();
 	}
@@ -169,7 +169,7 @@ public class TestMagicWords extends TestCaseEnhanced
 		Vector wordsLineEntry = magicWords.getAllMagicWords();
 		magicWords.writeMagicWords(tempFile, wordsLineEntry);
 		
-		MagicWords magicWords2 = new MagicWords( new LoggerToConsole());	
+		MagicWords magicWords2 = new MagicWords( new LoggerForTesting());	
 		magicWords2.loadMagicWords(tempFile);
 		
 	
@@ -199,7 +199,7 @@ public class TestMagicWords extends TestCaseEnhanced
 		writer.writeln(INACTIVE_MAGICWORD4);
 		writer.close();
 		
-		MagicWords magicWords3 = new MagicWords( new LoggerToConsole());	
+		MagicWords magicWords3 = new MagicWords( new LoggerForTesting());	
 		magicWords3.loadMagicWords(tempFile1);
 		tempFile1.delete();
 		
