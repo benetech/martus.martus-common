@@ -411,7 +411,7 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 	class exitBulletinRetrieveProgressMeter implements ProgressMeterInterface
 	{
 
-		public void setStatusMessageTag(String message)
+		public void setStatusMessage(String message)
 		{
 		}
 
