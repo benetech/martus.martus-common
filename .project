@@ -3,9 +3,6 @@
 	<name>martus-common</name>
 	<comment></comment>
 	<projects>
-		<project>martus-hrdag</project>
-		<project>martus-logi</project>
-		<project>martus-utils</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
