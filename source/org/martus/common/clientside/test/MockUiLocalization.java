@@ -36,7 +36,7 @@ public class MockUiLocalization extends UiBasicLocalization
 
 	public MockUiLocalization() throws IOException
 	{
-		super(createTempDirectory());
+		super(createTempDirectory(), new String[0]);
 		// TODO Auto-generated constructor stub
 	}
 

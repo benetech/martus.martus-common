@@ -191,6 +191,12 @@ public class Localization
 	}
 
 
+	protected void loadTranslations(String languageCode, String[] englishTranslations)
+	{
+		createStringMap(languageCode);
+		for(int i=0; i < englishTranslations.length; ++i)
+			addTranslation(languageCode, englishTranslations[i]);
+	}
 
 	public void loadTranslations(String languageCode, InputStream inputStream)
 	{

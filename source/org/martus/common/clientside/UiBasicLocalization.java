@@ -118,13 +118,14 @@ public class UiBasicLocalization extends Localization
 		reader.close();
 	}
 
-	public UiBasicLocalization (File directoryToUse)
+	public UiBasicLocalization (File directoryToUse, String[] englishTranslations)
 	{
 		super(directoryToUse);
-		createStringMap(ENGLISH);
+		loadTranslations(ENGLISH, englishTranslations);
+
 		setCurrentDateFormatCode(DateUtilities.MDY_SLASH.getCode());
 	}
-	
+
 	public String getLabel(String languageCode, String category, String tag)
 	{
 		return getLabel(languageCode, category + ":" + tag);
