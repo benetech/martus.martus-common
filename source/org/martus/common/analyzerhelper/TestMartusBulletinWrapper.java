@@ -26,7 +26,6 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.analyzerhelper;
 
 import java.io.File;
-
 import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
 import org.martus.common.bulletin.AttachmentProxy;
@@ -174,6 +173,82 @@ public class TestMartusBulletinWrapper extends TestCaseEnhanced
 		assertEquals("Public attachments still exist?", 0, bulletinWrapper.getPublicAttachments().length);
 		assertEquals("No Private attachments still exist?", 0, bulletinWrapper.getPrivateAttachments().length);
 	}
+
+	public void testHTML() throws Exception
+	{
+		Bulletin bulletin = new Bulletin(fosecurity);
+		String author = "author3";
+		String title = "title4";
+		String location = "location5";
+		String privateData = "private6";
+		String entryDate = "2004-01-23";
+		
+		bulletin.set(BulletinConstants.TAGAUTHOR, author);
+		bulletin.set(BulletinConstants.TAGTITLE, title);
+		bulletin.set(BulletinConstants.TAGLOCATION, location);
+		bulletin.set(BulletinConstants.TAGPRIVATEINFO, privateData);
+		bulletin.set(BulletinConstants.TAGENTRYDATE, entryDate);
+		bulletin.set(BulletinConstants.TAGEVENTDATE, "2003-08-20,20030820+3");
+
+		File tempFile1 = createTempFileWithData(sampleBytes1);
+		File tempFile2 = createTempFileWithData(sampleBytes2);
+		File tempFile3 = createTempFileWithData(sampleBytes3);
+		AttachmentProxy a1 = new AttachmentProxy(tempFile1);
+		AttachmentProxy a2 = new AttachmentProxy(tempFile2);
+		AttachmentProxy a3 = new AttachmentProxy(tempFile3);
+		bulletin.addPublicAttachment(a1);
+		bulletin.addPublicAttachment(a2);
+		bulletin.addPrivateAttachment(a3);
+		
+		bulletin.setSealed();
+		
+		HQKey key = new HQKey(security.getPublicKeyString());
+		HQKeys keys = new HQKeys(key);
+		bulletin.setAuthorizedToReadKeys(keys);
+		
+		
+		File tempDirectory = createTempFileFromName("$$$TestBulletinHQWrapper");
+		tempDirectory.deleteOnExit();
+		tempDirectory.delete();
+		tempDirectory.mkdirs();
+
+		MockBulletinStore store = new MockBulletinStore(this);
+		store.saveEncryptedBulletinForTesting(bulletin);
+		File bulletinZipFile = createTempFileFromName("$$$TestBulletinWrapperHQZipFile");
+		BulletinZipUtilities.exportBulletinPacketsFromDatabaseToZipFile(store.getDatabase(), bulletin.getDatabaseKeyForLocalId(bulletin.getLocalId()), bulletinZipFile, fosecurity);
+		
+		MartusBulletinWrapper bulletinWrapper = new MartusBulletinWrapper(bulletin.getUniversalId(), bulletinZipFile, security);
+		String expectedHtmlResult = "<html><table width='100'><tr><td width='15%' align='right' valign='top'>Last Saved</td><td valign='top'>"+bulletin.getLastSavedDateTime()+"</td></tr>\n" +
+				"<tr><td width='15%' align='right' valign='top'>Version</td><td valign='top'>1</td></tr>\n"+
+				"<tr><td width='15%' align='right' valign='top'>Bulletin Status:</td><td valign='top'>Sealed</td></tr>\n"+
+				"<tr></tr><tr></tr><tr><td width='15%' align='right' valign='top'>Field Desk Bulletin</td><td valign='top'></td></tr>\n"+
+				"<tr></tr><tr><td colspan='2'><tr><td width='15%' align='right' valign='top'><u><b>Private Information</b></u></td><td valign='top'></td></tr>\n"+
+				"</td></tr>\n"+
+				"<tr><td width='15%' align='right' valign='top'>Keep ALL Information Private</td><td valign='top'>Yes</td></tr>\n"+
+				"<tr><td width='15%' align='right' valign='top'>Language</td><td valign='top'>-Other-</td></tr>\n"+
+				"<tr><td width='15%' align='right' valign='top'>Author</td><td valign='top'>"+author+"</td></tr>\n"+
+				"<tr><td width='15%' align='right' valign='top'>Organization</td><td valign='top'></td></tr>\n"+
+				"<tr><td width='15%' align='right' valign='top'>Title</td><td valign='top'>"+title+"</td></tr>\n"+
+				"<tr><td width='15%' align='right' valign='top'>Location</td><td valign='top'>"+location+"</td></tr>\n"+
+				"<tr><td width='15%' align='right' valign='top'>Keywords</td><td valign='top'></td></tr>\n"+
+				"<tr><td width='15%' align='right' valign='top'>Date of Event</td><td valign='top'>Between 08/20/2003 and 08/23/2003</td></tr>\n"+
+				"<tr><td width='15%' align='right' valign='top'>Date Created</td><td valign='top'>01/23/2004</td></tr>\n"+
+				"<tr><td width='15%' align='right' valign='top'>Summary</td><td valign='top'><p></p></td></tr>\n"+
+				"<tr><td width='15%' align='right' valign='top'>&lt;field:publicinfo&gt;</td><td valign='top'><p></p></td></tr>\n"+
+				"<tr><td width='15%' align='right' valign='top'>Attachments</td><td valign='top'><p>"+tempFile1.getName()+"    ( 1 Kb )</p><p>"+tempFile2.getName()+"    ( 1 Kb )</p></td></tr>\n"+
+				"<tr></tr><tr><td colspan='2'><tr><td width='15%' align='right' valign='top'><u><b>Private Information</b></u></td><td valign='top'></td></tr>\n"+
+				"</td></tr>\n"+
+				"<tr><td width='15%' align='right' valign='top'>&lt;field:privateinfo&gt;</td><td valign='top'><p>"+privateData+"</p><p></p></td></tr>\n"+
+				"<tr><td width='15%' align='right' valign='top'>Attachments</td><td valign='top'><p>"+tempFile3.getName()+"    ( 1 Kb )</p></td></tr>\n"+
+				"<tr></tr><tr><td width='15%' align='right' valign='top'>Bulletin Id:</td><td valign='top'>"+bulletin.getLocalId()+"</td></tr>\n"+
+				"</table></html>";				
+	
+		assertEquals("Html not the same?", expectedHtmlResult, bulletinWrapper.getHTML());
+		bulletinWrapper.deleteAllData();
+		bulletinZipFile.delete();
+		store.deleteAllData();
+	}
+	
 	
 	private MartusSecurity security;
 	private MartusSecurity fosecurity;

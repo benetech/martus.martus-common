@@ -35,14 +35,16 @@ import org.martus.common.MartusUtilities.ServerErrorException;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinConstants;
+import org.martus.common.bulletin.BulletinHtmlGenerator;
 import org.martus.common.bulletin.BulletinLoader;
+import org.martus.common.clientside.Localization;
+import org.martus.common.clientside.UiBasicLocalization;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.database.ClientFileDatabase;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.ReadableDatabase;
 import org.martus.common.packet.UniversalId;
 import org.martus.common.utilities.MartusFlexidate;
-
 
 public class MartusBulletinWrapper
 {
@@ -51,6 +53,9 @@ public class MartusBulletinWrapper
 		File tempDirectory = null;
 		try
 		{
+			localization  = new UiBasicLocalization(getHomeDirectory(), EnglishStrings.strings);	
+			localization.currentLanguageCode = Localization.ENGLISH;			
+			
 			tempDirectory = File.createTempFile("$$$BulletinWrapperDB", null);
 			tempDirectory.deleteOnExit();
 			tempDirectory.delete();
@@ -67,8 +72,6 @@ public class MartusBulletinWrapper
 			bulletin = BulletinLoader.loadFromDatabase(store.getDatabase(), key, security);
 			if(bulletin == null)
 				throw new ServerErrorException("No Bulletin?");
-
-
 		}
 		catch(Exception e)
 		{
@@ -93,6 +96,13 @@ public class MartusBulletinWrapper
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	public String getHTML()
+	{
+		BulletinHtmlGenerator htmlGenerator = new BulletinHtmlGenerator(100, localization);
+		//TODO: Once HQ's can retrieve their own bulletins we will need to pass in the HQ's account ID to determin if it is their own bulletin.
+		return htmlGenerator.getHtmlString(bulletin, store.getDatabase(), true, false);
 	}
 	
 	public boolean isAllPrivate()
@@ -195,7 +205,7 @@ public class MartusBulletinWrapper
 		try
 		{
 			ReadableDatabase db = store.getDatabase();
-			file = new File(System.getProperty("user.home"), attachmentProxy.getLabel());
+			file = new File(getHomeDirectoryName(), attachmentProxy.getLabel());
 			file.deleteOnExit();
 			BulletinLoader.extractAttachmentToFile(db, attachmentProxy, store.getSignatureVerifier(), file);
 			return file;
@@ -208,7 +218,17 @@ public class MartusBulletinWrapper
 		}
 	}
 
-private void deleteAllAttachments()
+	private File getHomeDirectory()
+	{
+		return new File(getHomeDirectoryName());
+	}
+
+	private String getHomeDirectoryName()
+	{
+		return System.getProperty("user.home");
+	}
+	
+	private void deleteAllAttachments()
 	{
 		
 		AttachmentProxy[] publicAttachments = bulletin.getPublicAttachments();
@@ -240,4 +260,5 @@ private void deleteAllAttachments()
 	
 	private Bulletin bulletin;
 	private BulletinStore store;
+	private UiBasicLocalization localization;
 }
