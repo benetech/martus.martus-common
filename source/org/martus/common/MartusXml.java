@@ -112,6 +112,4 @@ public class MartusXml
 	public final static String AttachmentElementName = "Attachment";
 	public final static String AttachmentBytesElementName = "AttachmentData";
 	public final static String AttachmentKeyElementName = "AttachmentSessionKey";
-
-	private static SAXParserFactory factory = SAXParserFactory.newInstance();
 }
