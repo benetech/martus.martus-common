@@ -72,6 +72,9 @@ public class MartusXmlrpcClient
 		Object result = null;
 		try
 		{
+			// NOTE: We **MUST** create a new XmlRpcClient for each call, because
+			// there is a memory leak in apache xmlrpc 1.1 that will cause out of 
+			// memory exceptions if we reuse an XmlRpcClient object
 			XmlRpcClient client = new XmlRpcClient(serverUrl);
 			result = client.execute(serverObjectName + "." + method, params);
 		}
