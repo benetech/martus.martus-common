@@ -96,7 +96,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 	{
 		TRACE_BEGIN("testPbe");
 		byte[] original = {65,66,67,78,79};
-		String passPhrase = "secret";
+		char[] passPhrase = "secret".toCharArray();
 
 		byte[] salt = security.createRandomSalt();
 
@@ -134,7 +134,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		TRACE_BEGIN("testWriteKeyPairBadStream");
 		try
 		{
-			security.writeKeyPair(null, "whatever");
+			security.writeKeyPair(null, "whatever".toCharArray());
 			fail("expected an exception");
 		}
 		catch(Exception e)
@@ -147,7 +147,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 	public void testWriteKeyPairFormat() throws Exception
 	{
 		TRACE_BEGIN("testWriteKeyPairFormat");
-		String passPhrase = "whatever";
+		char[] passPhrase = "whatever".toCharArray();
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		security.writeKeyPair(outputStream, passPhrase);
 		byte[] encryptedData = outputStream.toByteArray();
@@ -166,7 +166,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 	public void testReadKeyPairIncorrectVersion() throws Exception
 	{
 		TRACE_BEGIN("testReadKeyPairIncorrectVersion");
-		String passPhrase = "newpassphase";
+		char[] passPhrase = "newpassphase".toCharArray();
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		security.writeKeyPair(outputStream, passPhrase);
 		byte[] encryptedData = outputStream.toByteArray();
@@ -210,7 +210,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 
 	public void testWriteAndReadKeyPair() throws Exception
 	{
-		String passPhrase = "My dog has fleas";
+		char[] passPhrase = "My dog has fleas".toCharArray();
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		security.writeKeyPair(outputStream, passPhrase);
 		byte[] bytes = outputStream.toByteArray();
@@ -243,7 +243,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 			ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
 			try
 			{
-				tempSecurity.readKeyPair(inputStream, passPhrase + passPhrase);
+				tempSecurity.readKeyPair(inputStream, "different pass".toCharArray());
 			}
 			catch (MartusSecurity.AuthorizationFailedException e)
 			{
@@ -257,7 +257,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 	public void testVerifyDuringReadKeyPair() throws Exception
 	{
 		TRACE_BEGIN("testVerifyDuringReadKeyPair");
-		String passPhrase = "Let's put on a show!";
+		char[] passPhrase = "Let's put on a show!".toCharArray();
 		KeyPair mismatched = invalidKeyPair;
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		security.writeKeyPair(outputStream, passPhrase, mismatched);

@@ -130,7 +130,7 @@ public class MartusServerUtilities
 		return header;
 	}
 
-	public static MartusCrypto loadCurrentMartusSecurity(File keyPairFile, String passphrase)
+	public static MartusCrypto loadCurrentMartusSecurity(File keyPairFile, char[] passphrase)
 		throws CryptoInitializationException, FileNotFoundException, IOException, InvalidKeyPairFileVersionException, AuthorizationFailedException
 	{
 		MartusCrypto security = new MartusSecurity();
@@ -427,8 +427,9 @@ public class MartusServerUtilities
 		try
 		{
 			UnicodeReader reader = new UnicodeReader(System.in);
+			//TODO security issue here password is a string
 			String passphrase = reader.readLine();
-			return MartusServerUtilities.loadCurrentMartusSecurity(keyPairFile, passphrase);
+			return MartusServerUtilities.loadCurrentMartusSecurity(keyPairFile, passphrase.toCharArray());
 		}
 		catch (MartusCrypto.AuthorizationFailedException e)
 		{

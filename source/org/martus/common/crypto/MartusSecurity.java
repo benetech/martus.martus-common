@@ -88,9 +88,8 @@ import org.logi.crypto.secretshare.PolySecretShare;
 import org.logi.crypto.secretshare.SecretSharingException;
 import org.martus.common.MartusConstants;
 import org.martus.util.Base64;
-
-import org.martus.util.InputStreamWithSeek;
 import org.martus.util.ByteArrayInputStreamWithSeek;
+import org.martus.util.InputStreamWithSeek;
 import org.martus.util.StringInputStream;
 import org.martus.util.UnicodeReader;
 import org.martus.util.UnicodeStringWriter;
@@ -153,13 +152,13 @@ public class MartusSecurity extends MartusCryptoImplementation
 		createKeyPair(bitsInPublicKey);
 	}
 
-	public void writeKeyPair(OutputStream outputStream, String passPhrase) throws
+	public void writeKeyPair(OutputStream outputStream, char[] passPhrase) throws
 			IOException
 	{
 		writeKeyPair(outputStream, passPhrase, jceKeyPair);
 	}
 
-	public void readKeyPair(InputStream inputStream, String passPhrase) throws
+	public void readKeyPair(InputStream inputStream, char[] passPhrase) throws
 		IOException,
 		InvalidKeyPairFileVersionException,
 		AuthorizationFailedException
@@ -766,7 +765,7 @@ public class MartusSecurity extends MartusCryptoImplementation
 		return pair.getPublic();
 	}
 
-	public void writeKeyPair(OutputStream outputStream, String passPhrase, KeyPair keyPair) throws
+	public void writeKeyPair(OutputStream outputStream, char[] passPhrase, KeyPair keyPair) throws
 			IOException
 	{
 		byte[] randomSalt = createRandomSalt();
@@ -845,7 +844,7 @@ public class MartusSecurity extends MartusCryptoImplementation
 		return true;
 	}
 
-	public byte[] decryptKeyPair(InputStream inputStream, String passPhrase) throws IOException
+	public byte[] decryptKeyPair(InputStream inputStream, char[] passPhrase) throws IOException
 	{
 		byte[] salt = new byte[SALT_BYTE_COUNT];
 		inputStream.read(salt);
@@ -856,24 +855,21 @@ public class MartusSecurity extends MartusCryptoImplementation
 		return pbeDecrypt(cipherText, passPhrase, salt);
 	}
 
-	public byte[] pbeEncrypt(byte[] inputText, String passPhrase, byte[] salt)
+	public byte[] pbeEncrypt(byte[] inputText, char[] passPhrase, byte[] salt)
 	{
 		return pbeEncryptDecrypt(Cipher.ENCRYPT_MODE, inputText, passPhrase, salt);
 	}
 
-	public byte[] pbeDecrypt(byte[] inputText, String passPhrase, byte[] salt)
+	public byte[] pbeDecrypt(byte[] inputText, char[] passPhrase, byte[] salt)
 	{
 		return pbeEncryptDecrypt(Cipher.DECRYPT_MODE, inputText, passPhrase, salt);
 	}
 
-	private synchronized byte[] pbeEncryptDecrypt(int mode, byte[] inputText, String passPhrase, byte[] salt)
+	private synchronized byte[] pbeEncryptDecrypt(int mode, byte[] inputText, char[] passPhrase, byte[] salt)
 	{
-		char[] passPhraseChars = new char[passPhrase.length()];
-		passPhrase.getChars(0, passPhrase.length(), passPhraseChars, 0);
-
 		try
 		{
-			PBEKeySpec keySpec = new PBEKeySpec(passPhraseChars);
+			PBEKeySpec keySpec = new PBEKeySpec(passPhrase);
 			SecretKey key = keyFactory.generateSecret(keySpec);
 			PBEParameterSpec paramSpec = new PBEParameterSpec(salt, ITERATION_COUNT);
 
@@ -1100,5 +1096,4 @@ public class MartusSecurity extends MartusCryptoImplementation
 	private KeyGenerator sessionKeyGenerator;
 	private KeyPairGenerator keyPairGenerator;
 	private SecretKeyFactory keyFactory;
-
 }

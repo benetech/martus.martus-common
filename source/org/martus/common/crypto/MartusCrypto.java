@@ -42,9 +42,9 @@ public abstract class MartusCrypto
 	public abstract boolean hasKeyPair();
 	public abstract void clearKeyPair();
 	public abstract void createKeyPair();
-	public abstract void writeKeyPair(OutputStream outputStream, String passPhrase) throws
+	public abstract void writeKeyPair(OutputStream outputStream, char[] passPhrase) throws
 		IOException;
-	public abstract void readKeyPair(InputStream inputStream, String passPhrase) throws
+	public abstract void readKeyPair(InputStream inputStream, char[] passPhrase) throws
 		IOException, InvalidKeyPairFileVersionException, AuthorizationFailedException;
 	public abstract String getPublicKeyString();
 	public abstract byte[] getDigestOfPartOfPrivateKey() throws CreateDigestException;

@@ -87,7 +87,7 @@ public class MockMartusSecurity extends MartusSecurity
 		//System.out.println("MockMartusSecurity.speedWarning: " + message);
 	}
 
-	public void readKeyPair(InputStream inputStream, String passPhrase) throws
+	public void readKeyPair(InputStream inputStream, char[] passPhrase) throws
 		IOException,
 		InvalidKeyPairFileVersionException,
 		AuthorizationFailedException
