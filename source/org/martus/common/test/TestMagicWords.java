@@ -128,7 +128,7 @@ public class TestMagicWords extends TestCaseEnhanced
 		assertContains(INACTIVE_MAGICWORD3, magicWordsVector);
 		
 		assertContains(GROUPNAME1, groupNames);
-		assertContains(MAGICWORD2, groupNames);
+		assertContains(UNKNOWN_FIELD, groupNames);
 		assertContains(INACTIVE_GROUPNAME3, groupNames);
 		
 		assertEquals("All incorrect", 3, magicWords.getNumberOfAllMagicWords());
@@ -151,7 +151,7 @@ public class TestMagicWords extends TestCaseEnhanced
 		assertContains(MAGICWORD2, magicWords);
 		
 		assertContains(GROUPNAME1, groupNames);
-		assertContains(MAGICWORD2, groupNames);
+		assertContains(UNKNOWN_FIELD, groupNames);
 	}
 	
 	public void testGetInactiveMagicWords()
@@ -194,7 +194,7 @@ public class TestMagicWords extends TestCaseEnhanced
 	{			
 		File tempFile1 = createTempFileFromName("$$$MartusTestFileMagicWordsLowLevel");
 		UnicodeWriter writer = new UnicodeWriter(tempFile1);
-		String lineEntry1 = MAGICWORD1 + MagicWords.FIELD_DELIMITER + GROUPNAME1;
+		String lineEntry1 = MAGICWORD1 + MagicWords.FIELD_DELIMITER + GROUPNAME1 + MagicWords.FIELD_DELIMITER + DATE1;
 		writer.writeln(lineEntry1);
 		writer.writeln(MAGICWORD2);
 		String lineEntry3 = INACTIVE_MAGICWORD3 + MagicWords.FIELD_DELIMITER + INACTIVE_GROUPNAME3;
@@ -219,11 +219,11 @@ public class TestMagicWords extends TestCaseEnhanced
 		String line1 = reader.readLine();
 		assertEquals("Line 1 should match since we had all fields originally", lineEntry1, line1);
 		String line2 = reader.readLine();
-		assertEquals("Line 2 should have magicword2 as its group name", MAGICWORD2 + MagicWords.FIELD_DELIMITER +MAGICWORD2, line2);
+		assertEquals("Line 2 should have ? as its group name", MAGICWORD2 + MagicWords.FIELD_DELIMITER + UNKNOWN_FIELD + MagicWords.FIELD_DELIMITER + UNKNOWN_FIELD, line2);
 		String line3 = reader.readLine();
-		assertEquals("Line 3 should match since we had all fields originally", lineEntry3, line3);
+		assertEquals("Line 3 should match since we had all fields originally", lineEntry3 + MagicWords.FIELD_DELIMITER + UNKNOWN_FIELD , line3);
 		String line4 = reader.readLine();
-		assertEquals("Line 4 should have magicword4 as its group name", INACTIVE_MAGICWORD4 + MagicWords.FIELD_DELIMITER +MagicWords.filterActiveSign(INACTIVE_MAGICWORD4), line4);
+		assertEquals("Line 4 should have magicword4 as its group name", INACTIVE_MAGICWORD4 + MagicWords.FIELD_DELIMITER + UNKNOWN_FIELD + MagicWords.FIELD_DELIMITER + UNKNOWN_FIELD, line4);
 		assertNull("There shouldn't be a line 5", reader.readLine());
 		reader.close();
 		tempFile2.delete();
@@ -254,7 +254,7 @@ public class TestMagicWords extends TestCaseEnhanced
 		assertEquals("didn't get back correct group", groupName, MagicWords.getGroupNameFromLineEntry(multiFieldLine));
 
 		assertEquals("didn't get back correct magic words when not given a group", magicWord, MagicWords.getMagicWordWithActiveSignFromLineEntry(magicWord));
-		assertEquals("didn't get back correct group when not given a group", magicWord, MagicWords.getGroupNameFromLineEntry(magicWord));
+		assertEquals("didn't get back ? when not given a group", UNKNOWN_FIELD, MagicWords.getGroupNameFromLineEntry(magicWord));
 
 		assertEquals("didn't get back correct empty string when null", "", MagicWords.getMagicWordWithActiveSignFromLineEntry(null));
 		assertEquals("didn't get back correct empty string when null", "", MagicWords.getGroupNameFromLineEntry(null));
@@ -283,6 +283,9 @@ public class TestMagicWords extends TestCaseEnhanced
 	
 	private static final String GROUPNAME1 = "Group 1";
 	private static final String INACTIVE_GROUPNAME3 = "Group 3";
+	private static final String UNKNOWN_FIELD = "?";
+	
+	private static final String DATE1 = "2004-09-02";
 	
 	File tempFile;
 	MagicWords magicWords;

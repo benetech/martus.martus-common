@@ -229,15 +229,16 @@ public class MagicWords
 		while (st.hasMoreTokens()) 
 			fields.add(st.nextToken());
 		
-		if (fields.size()== 1)
-			fields.add(filterActiveSign((String)fields.get(ID_WORD)));	
+//		if (fields.size()== 1)
+//			fields.add(filterActiveSign((String)fields.get(ID_WORD)));	
 			
-		return (id < fields.size())?(String) fields.get(id):"";
+		return (id < fields.size())?(String) fields.get(id):MISSING_FIELD;
 	}
 	
 	public static final char FIELD_DELIMITER = '\t';
 	public static final String INACTIVE_SIGN = "#";
 	
+	private static final String MISSING_FIELD = "?";
 	public static final int ID_WORD=0;
 	public static final int ID_GROUP=1;
 	public static final int ID_DATE=2;
