@@ -102,6 +102,7 @@ public class UiBasicLocalization extends Localization
 		writer.writeln("# 11.  do not translate \"#A#\" (used for bulletin details: Author Public Code)");
 		writer.writeln("# 12.  do not translate \"#I#\" (used for bulletin details: Bulletin ID)");
 		writer.writeln("# 13.  do not translate \"#H#\" (used for bulletin details: Headquarter entries)");
+		writer.writeln("# 14.  do not translate \"#NumberOfHQs#\" in various dialogs");
 		writer.writeln("#");
 		
 		SortedSet sorted = getAllKeysSorted();
