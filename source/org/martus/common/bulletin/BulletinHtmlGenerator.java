@@ -136,6 +136,8 @@ public class BulletinHtmlGenerator
 			String tag = spec.getTag();
 			String label = getHTMLEscaped(spec.getLabel());			
 			String value = getHTMLEscaped(fdp.get(tag));
+			if(tag.equals(Bulletin.TAGTITLE))
+				value = "<strong>" + value + "</strong>";
 			if(spec.getType() == FieldSpec.TYPE_DATE)
 				value = localization.convertStoredDateToDisplayReverseIfNecessary(value);
 			else if(spec.getType() == FieldSpec.TYPE_LANGUAGE)
