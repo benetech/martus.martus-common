@@ -555,6 +555,13 @@ public class MartusServerUtilities
 
 	public static void loadHiddenPacketsList(UnicodeReader reader, Database db, LoggerInterface logger) throws IOException, InvalidBase64Exception
 	{
+		Vector hiddenPackets = getHiddenPacketsList(reader);		
+		hidePackets(hiddenPackets, db, logger);
+	}
+
+	public static Vector getHiddenPacketsList(UnicodeReader reader) throws IOException
+	{
+		Vector hiddenPackets = new Vector();
 		String accountId = null;
 		try
 		{
@@ -562,32 +569,44 @@ public class MartusServerUtilities
 			{
 				String thisLine = reader.readLine();
 				if(thisLine == null)
-					return;
+					return hiddenPackets;
 				if(thisLine.startsWith(" "))
-					hidePackets(db, accountId, thisLine, logger);
+				{
+					hiddenPackets.addAll(getListOfhiddenPacketsForAccount(accountId, thisLine));
+				}
 				else
+				{
 					accountId = thisLine;
+				}
 			}				
-			
 		}
 		finally
 		{
 			reader.close();
-		}		
+		}
+	}
+
+	private static void hidePackets(Vector packetsIdsToHide, Database db, LoggerInterface logger) throws InvalidBase64Exception
+	{
+		for(int i = 0; i < packetsIdsToHide.size(); ++i)
+		{
+			UniversalId uId = (UniversalId)(packetsIdsToHide.get(i));
+			db.hide(uId);
+			String publicCode = MartusCrypto.getFormattedPublicCode(uId.getAccountId());
+			logger.log("Deleting " + publicCode + ": " + uId.getLocalId());
+		
+		}
 	}
 	
-	static Vector hidePackets(Database db, String accountId, String packetList, LoggerInterface logger) throws InvalidBase64Exception
+	private static Vector getListOfhiddenPacketsForAccount(String accountId, String packetList)
 	{
 		Vector uids = new Vector();
-		String publicCode = MartusCrypto.getFormattedPublicCode(accountId);
 		String[] packetIds = packetList.trim().split("\\s+");
 		for (int i = 0; i < packetIds.length; i++)
 		{
 			String localId = packetIds[i].trim();
 			UniversalId uid = UniversalId.createFromAccountAndLocalId(accountId, localId);
-			db.hide(uid);
 			uids.add(uid);
-			logger.log("Deleting " + publicCode + ": " + localId);
 		}
 		return uids;
 	}
