@@ -38,14 +38,13 @@ import org.martus.common.ContactInfo;
 import org.martus.common.MartusUtilities.FileVerificationException;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.crypto.MartusCrypto;
-import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.packet.UniversalId;
 import org.martus.common.utilities.MartusServerUtilities;
 import org.martus.common.utilities.MartusServerUtilities.MartusSignatureFileDoesntExistsException;
-import org.martus.util.*;
 import org.martus.util.Base64;
+import org.martus.util.TestCaseEnhanced;
 import org.martus.util.UnicodeWriter;
 
 
@@ -164,10 +163,10 @@ public class TestMartusServerUtilities extends TestCaseEnhanced
 		String gotDigest = reader.readLine();
 		byte[] partOfPrivateKey = serverSecurity.getDigestOfPartOfPrivateKey();
 		String stringToDigest = gotFileTypeIdentifier + "\n" + b1.getLocalId() + "\n" + gotTimeStamp + "\n" + Base64.encode(partOfPrivateKey) + "\n"; 
-		assertEquals(gotDigest, MartusSecurity.createDigestString(stringToDigest));
+		assertEquals(gotDigest, MartusCrypto.createDigestString(stringToDigest));
 
 		String bogusStringToDigest = gotFileTypeIdentifier + gotTimeStamp + b1.getLocalId() + Base64.encode(partOfPrivateKey); 
-		assertNotEquals(MartusSecurity.createDigestString(bogusStringToDigest), gotDigest);
+		assertNotEquals(MartusCrypto.createDigestString(bogusStringToDigest), gotDigest);
 		TRACE_END();
 	}
 	

@@ -665,6 +665,8 @@ public class MartusSecurity extends MartusCrypto
 		try
 		{
 			int keyByteCount = dis.readInt();
+			if(keyByteCount > ARBITRARY_MAX_SESSION_KEY_LENGTH)
+				throw new DecryptionException();
 			encryptedKeyBytes = new byte[keyByteCount];
 			dis.readFully(encryptedKeyBytes);
 		}
@@ -736,6 +738,7 @@ public class MartusSecurity extends MartusCrypto
 		catch(Exception e)
 		{
 			//System.out.println("MartusSecurity.createCipherInputStream: " + e);
+			//e.printStackTrace();
 			throw new DecryptionException();
 		}
 	}
@@ -1214,6 +1217,8 @@ public class MartusSecurity extends MartusCrypto
 	private static final int TOKEN_BYTE_COUNT = 16; //128 bits
 	private static final int CACHE_VERSION = 1;
 	private static final int BUNDLE_VERSION = 1;
+	
+	private static final int ARBITRARY_MAX_SESSION_KEY_LENGTH = 8192;
 	private static SecureRandom rand;
 	private KeyPair jceKeyPair;
 	private Map decryptedSessionKeys;

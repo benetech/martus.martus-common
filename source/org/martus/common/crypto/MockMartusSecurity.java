@@ -28,11 +28,9 @@ package org.martus.common.crypto;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.security.KeyPair;
 
 import org.martus.util.Base64;
-import org.martus.util.InputStreamWithSeek;
 
 public class MockMartusSecurity extends MartusSecurity
 {
@@ -147,96 +145,6 @@ public class MockMartusSecurity extends MartusSecurity
 
 		return super.signatureIsValid(sig);
 	}
-
-	public void encrypt(InputStream plainStream, OutputStream cipherStream) throws
-			NoKeyPairException,
-			EncryptionException
-	{
-		byte[] sessionKeyBytes = new byte[] {0x7F};
-		encrypt(plainStream, cipherStream, new SessionKey(sessionKeyBytes));
-	}
-
-	public void encrypt(InputStream plainStream, OutputStream cipherStream, SessionKey sessionKey) throws
-			NoKeyPairException,
-			EncryptionException
-	{
-		int sessionKeyByte = sessionKey.getBytes()[0];
-		try
-		{
-			cipherStream.write(sessionKeyByte);
-			int theByte = 0;
-			while( (theByte = plainStream.read()) != -1)
-				cipherStream.write(theByte ^ sessionKeyByte);
-		}
-		catch(IOException e)
-		{
-			throw new EncryptionException();
-		}
-	}
-
-	public SessionKey encryptSessionKey(SessionKey sessionKey, String publicKey) throws
-		EncryptionException
-	{
-			byte[] sessionKeyBytes = sessionKey.getBytes();
-			byte[] encryptedKeyBytes = new byte[sessionKeyBytes.length];
-			System.arraycopy(sessionKeyBytes, 0, encryptedKeyBytes, 0, sessionKeyBytes.length);
-			encryptedKeyBytes[0] ^= 0xFF;
-			return new SessionKey(encryptedKeyBytes);
-	}
-
-
-	public void decrypt(InputStreamWithSeek cipherStream, OutputStream plainStream) throws
-			NoKeyPairException,
-			DecryptionException
-	{
-		decrypt(cipherStream, plainStream, null);
-	}
-
-	private SessionKey readSessionKey(InputStreamWithSeek cipherStream) throws DecryptionException
-	{
-		byte[] sessionKeyBytes = new byte[1];
-		try
-		{
-			cipherStream.read(sessionKeyBytes);
-		}
-		catch(IOException e)
-		{
-			throw new DecryptionException();
-		}
-		return new SessionKey(sessionKeyBytes);
-	}
-
-	public void decrypt(InputStreamWithSeek cipherStream, OutputStream plainStream, SessionKey sessionKey) throws
-			DecryptionException
-	{
-		try
-		{
-			SessionKey storedSessionKey = readSessionKey(cipherStream);
-			if(sessionKey == null)
-				sessionKey = storedSessionKey;
-
-			byte[] sessionKeyBytes = sessionKey.getBytes();
-			int sessionKeyByte = sessionKeyBytes[0];
-			int theByte = 0;
-			while( (theByte = cipherStream.read()) != -1)
-				plainStream.write(theByte ^ sessionKeyByte);
-		}
-		catch(IOException e)
-		{
-			throw new DecryptionException();
-		}
-	}
-
-	public SessionKey decryptSessionKey(SessionKey encryptedSessionKey) throws
-		DecryptionException
-	{
-			int keyLength = encryptedSessionKey.getBytes().length;
-			byte[] sessionKeyBytes = new byte[keyLength];
-			System.arraycopy(encryptedSessionKey.getBytes(), 0, sessionKeyBytes, 0, keyLength);
-			sessionKeyBytes[0] ^= 0xFF;
-			return new SessionKey(sessionKeyBytes);
-	}
-	// end MartusCrypto interface
 
 	KeyPair createSunKeyPair(int bitsInKey) throws Exception
 	{

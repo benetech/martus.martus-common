@@ -677,8 +677,8 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		got.loadFromXml(in2, security);
 		assertEquals("account", fdp.getAccountId(), got.getAccountId());
 
-		MartusSecurity otherSecurity = new MartusSecurity();
-		otherSecurity.createKeyPair(SHORTEST_LEGAL_KEY_SIZE);
+		MartusSecurity otherSecurity = new MockMartusSecurity();
+		otherSecurity.createKeyPair();
 		try
 		{
 			ByteArrayInputStreamWithSeek in3 = new ByteArrayInputStreamWithSeek(bytes);
@@ -693,7 +693,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 	public void testWriteAndLoadXmlEncryptedWithMultipleHQ() throws Exception
 	{
 		fdp.setEncrypted(true);
-		MartusSecurity seconndHQ = MockMartusSecurity.createOtherServer();
+		MartusCrypto seconndHQ = MockMartusSecurity.createOtherServer();
 		HQKeys keys = new HQKeys();
 		HQKey key1 = new HQKey(securityHQ.getPublicKeyString());
 		HQKey key2 = new HQKey(seconndHQ.getPublicKeyString());

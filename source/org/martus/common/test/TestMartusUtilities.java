@@ -50,7 +50,6 @@ import org.martus.common.bulletin.BulletinLoader;
 import org.martus.common.bulletin.BulletinSaver;
 import org.martus.common.bulletin.BulletinZipUtilities;
 import org.martus.common.crypto.MartusCrypto;
-import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.crypto.MartusCrypto.DecryptionException;
 import org.martus.common.database.Database;
@@ -457,8 +456,7 @@ public class TestMartusUtilities extends TestCaseEnhanced
 	public void testCreateSignatureFromFile()
 		throws Exception
 	{
-		MartusSecurity otherSecurity = new MartusSecurity();
-		otherSecurity.createKeyPair(512);
+		MartusCrypto otherSecurity = MockMartusSecurity.createClient();
 
 		String string1 = "The string to write into the file to sign.";
 		String string2 = "The other string to write to another file to sign.";

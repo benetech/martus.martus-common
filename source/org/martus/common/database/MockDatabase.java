@@ -158,6 +158,7 @@ abstract public class MockDatabase extends Database
 		catch(Exception e)
 		{
 			System.out.println("MockDatabase.openInputStream: " + e);
+			e.printStackTrace();
 			return null;
 		}
 	}

@@ -33,7 +33,8 @@ import java.util.Arrays;
 import org.martus.common.XmlWriterFilter;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusSecurity;
-import org.martus.util.*;
+import org.martus.common.crypto.MockMartusSecurity;
+import org.martus.util.TestCaseEnhanced;
 
 
 public class TestXmlWriterFilter extends TestCaseEnhanced
@@ -60,9 +61,7 @@ public class TestXmlWriterFilter extends TestCaseEnhanced
 
 	public void testSigningGood() throws Exception
 	{
-		int SHORTEST_LEGAL_KEY_SIZE = 512;
-		MartusSecurity security = new MartusSecurity();
-		security.createKeyPair(SHORTEST_LEGAL_KEY_SIZE);
+		MartusSecurity security = MockMartusSecurity.createClient();
 
 		String expectedText = "<a>\r\ncd\n</a>\n";
 		byte[] expectedBytes = expectedText.getBytes();

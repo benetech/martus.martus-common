@@ -489,7 +489,7 @@ public class MartusServerUtilities
 					timeStamp + newline +
 					Base64.encode(security.getDigestOfPartOfPrivateKey()) + newline;
 
-			digestCreatedFromThisCrypto = MartusSecurity.createDigestString(stringToDigest);
+			digestCreatedFromThisCrypto = MartusCrypto.createDigestString(stringToDigest);
 
 		}
 		catch (Exception e)
