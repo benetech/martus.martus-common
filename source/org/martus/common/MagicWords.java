@@ -35,9 +35,9 @@ import org.martus.util.UnicodeWriter;
 
 public class MagicWords
 {
-	public MagicWords(LoggerInterface currentLogger)
+	public MagicWords(LoggerInterface loggerToUse)
 	{
-		logger = currentLogger;
+		logger = loggerToUse;
 		magicWordEntries = new Vector();		
 	}
 	
@@ -59,6 +59,7 @@ public class MagicWords
 		}
 		catch(FileNotFoundException nothingToWorryAbout)
 		{
+			logger.log("Warning: no magic words file found:" + magicWordsFile.getPath());
 		}
 	}
 
@@ -161,6 +162,8 @@ public class MagicWords
 	
 	public static String normalizeMagicWord(String original)
 	{
+		if(original == null)
+			return null;
 		return original.toLowerCase().trim().replaceAll("\\s", "");
 	}
 
