@@ -39,6 +39,7 @@ public class MartusXmlRpcServer
 		{
 			WebServerWithClientId webServer = new WebServerWithClientId(port, address);
 			webServer.addHandler(handlerName, server);
+			webServer.start();
 			return webServer;
 		}
 		catch (Exception e)
@@ -55,6 +56,7 @@ public class MartusXmlRpcServer
 		{
 			MartusSecureWebServer secureWebServer = new MartusSecureWebServer(port, address);
 			secureWebServer.addHandler(destObjectName, server);
+			secureWebServer.start();
 			return secureWebServer;
 		}
 		catch (Exception e)
