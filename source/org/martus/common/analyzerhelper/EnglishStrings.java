@@ -99,6 +99,8 @@ public class EnglishStrings
 		"field:eventdaterange=Dates of Event",
 		"field:entrydate=Date Created",
 		"field:keywords=Keywords",
+		"field:publicinfo=Details",
+		"field:privateinfo=Private",
 		"field:summary=Summary",
 		"field:attachments=Attachments",
 
