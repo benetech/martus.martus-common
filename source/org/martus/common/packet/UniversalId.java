@@ -76,7 +76,7 @@ public class UniversalId implements Comparable, Serializable
 
 	public String getAccountId()
 	{
-		return accountId;
+		return accountId.toString();
 	}
 
 	public String getLocalId()
@@ -119,14 +119,14 @@ public class UniversalId implements Comparable, Serializable
 
 	public void setAccountId(String newAccountId)
 	{
-		accountId = newAccountId;
+		accountId = AccountId.create(newAccountId);
 	}
 
 	public void setLocalId(String newLocalId)
 	{
 		localId = newLocalId.replace(':', '-');
 	}
-
-	private String accountId;
+	
+	private AccountId accountId;
 	private String localId;
 }

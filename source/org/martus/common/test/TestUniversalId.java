@@ -27,7 +27,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.test;
 
 import org.martus.common.packet.UniversalId;
-import org.martus.util.*;
+import org.martus.util.TestCaseEnhanced;
 
 
 public class TestUniversalId extends TestCaseEnhanced
@@ -126,7 +126,7 @@ public class TestUniversalId extends TestCaseEnhanced
 		{
 		}
 	}
-
+	
 	final String sampleAccountId = "an account id";
 	final String sampleLocalId = "a local id";
 }
