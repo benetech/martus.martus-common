@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -81,7 +82,7 @@ abstract public class MockDatabase extends Database
 
 		throwIfRecordIsHidden(key);
 
-		addKeyToMap(key, record);
+		addKeyToMap(key, record.getBytes("UTF-8"));
 	}
 
 	public void importFiles(HashMap fileMapping) throws 
@@ -107,7 +108,7 @@ abstract public class MockDatabase extends Database
 		throwIfRecordIsHidden(key);
 		try
 		{
-			return readRecord(key).getBytes("UTF-8").length;
+			return readRawRecord(key).length;
 		}
 		catch (Exception e)
 		{
@@ -135,9 +136,22 @@ abstract public class MockDatabase extends Database
 			out.write(theByte);
 
 		byte[] bytes = out.toByteArray();
-		data = new String(bytes, "UTF-8");
-
-		writeRecord(key, data);
+		addKeyToMap(key, bytes);
+	}
+	
+	public String readRecord(DatabaseKey key, MartusCrypto decrypter)
+	{
+		byte[] bytes = readRawRecord(key, decrypter);
+		if(bytes == null)
+			return null;
+		try
+		{
+			return new String(bytes, "UTF-8");
+		} catch (UnsupportedEncodingException e)
+		{
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
 	}
 
 	public InputStreamWithSeek openInputStream(DatabaseKey key, MartusCrypto decrypter)
@@ -145,13 +159,12 @@ abstract public class MockDatabase extends Database
 		if(isHidden(key))
 			return null;
 
-		String data = readRecord(key, decrypter);
-		if(data == null)
+		byte[] bytes = readRawRecord(key, decrypter);
+		if(bytes == null)
 			return null;
 
 		try
 		{
-			byte[] bytes = data.getBytes("UTF-8");
 			MockRecordInputStream in = new MockRecordInputStream(key, bytes, streamsThatAreOpen);
 			return convertToDecryptingStreamIfNecessary(in, decrypter);
 		}
@@ -163,9 +176,9 @@ abstract public class MockDatabase extends Database
 		}
 	}
 
-	public String readRecord(DatabaseKey key, MartusCrypto decrypter)
+	public byte[] readRawRecord(DatabaseKey key, MartusCrypto decrypter)
 	{
-		return readRecord(key);
+		return readRawRecord(key);
 	}
 
 	public void discardRecord(DatabaseKey key)
@@ -175,7 +188,15 @@ abstract public class MockDatabase extends Database
 
 	public boolean doesRecordExist(DatabaseKey key)
 	{
-		return (readRecord(key) != null);
+		try
+		{
+			return (readRawRecord(key) != null);
+		} catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
 	}
 
 	public void visitAllRecords(PacketVisitor visitor)
@@ -249,8 +270,7 @@ abstract public class MockDatabase extends Database
 	public void scrubRecord(DatabaseKey key) 
 			throws IOException, RecordHiddenException
 	{
-		String record = readRecord(key);
-		byte[] bytes = record.getBytes("UTF-8");
+		byte[] bytes = readRawRecord(key);
 		for (int i = 0; i < bytes.length; i++)
 		{
 			bytes[i] = 0x55;			
@@ -327,9 +347,9 @@ abstract public class MockDatabase extends Database
 		if(!doesRecordExist(key))
 			return;
 
-		String data = readRecord(key);
+		byte[] bytes = readRawRecord(key);
 		Map quarantine = getQuarantineFor(key);
-		quarantine.put(key, data);
+		quarantine.put(key, bytes);
 		discardRecord(key);
 	}
 
@@ -372,8 +392,8 @@ abstract public class MockDatabase extends Database
 		}
 	}
 
-	abstract void addKeyToMap(DatabaseKey key, String record);
-	abstract String readRecord(DatabaseKey key);
+	abstract byte[] readRawRecord(DatabaseKey key);
+	abstract void addKeyToMap(DatabaseKey key, byte[] record);
 	abstract Map getPacketMapFor(DatabaseKey key);
 	abstract Set internalGetAllKeys();
 	abstract void internalDiscardRecord(DatabaseKey key);

@@ -26,60 +26,39 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.database;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.io.File;
 
 import org.martus.common.MartusUtilities;
-import org.martus.common.database.FileDatabase.MissingAccountMapSignatureException;
+import org.martus.common.crypto.MartusCrypto;
 
-public class MockClientDatabase extends MockDatabase
+public class ClientFileDatabase extends FileDatabase
 {
+	public ClientFileDatabase(File directory, MartusCrypto security)
+	{
+		super(directory, security);
+	}
+
 	public boolean mustEncryptLocalData()
 	{
 		return true;
 	}
+	
 	public void verifyAccountMap() throws MartusUtilities.FileVerificationException, MissingAccountMapSignatureException
 	{
+		if( !accountMapSignatureFile.exists() )
+		{
+			throw new MissingAccountMapSignatureException();
+		}
+		MartusUtilities.verifyFileAndSignature(accountMapFile, accountMapSignatureFile, security, security.getPublicKeyString());
 	}
 	
-
-	public void deleteAllData()
+	public boolean doesAccountMapExist()
 	{
-		packetMap = new TreeMap();
-		super.deleteAllData();
+		return accountMapFile.exists();
 	}
 
-	synchronized void addKeyToMap(DatabaseKey key, byte[] record)
+	public boolean doesAccountMapSignatureExist()
 	{
-		DatabaseKey newKey = DatabaseKey.createLegacyKey(key.getUniversalId());
-		packetMap.put(newKey, record);
+		return accountMapSignatureFile.exists();
 	}
-
-	synchronized byte[] readRawRecord(DatabaseKey key)
-	{
-		DatabaseKey newKey = DatabaseKey.createLegacyKey(key.getUniversalId());
-		return (byte[])packetMap.get(newKey);
-	}
-
-	synchronized void internalDiscardRecord(DatabaseKey key)
-	{
-		DatabaseKey newKey = DatabaseKey.createLegacyKey(key.getUniversalId());
-		packetMap.remove(newKey);
-	}
-
-	Map getPacketMapFor(DatabaseKey key)
-	{
-		return packetMap;
-	}
-
-	public synchronized Set internalGetAllKeys()
-	{
-		Set keys = new HashSet();
-		keys.addAll(packetMap.keySet());
-		return keys;
-	}
-
-	Map packetMap;
 }

@@ -66,18 +66,18 @@ public class MockServerDatabase extends MockDatabase
 		return keys;
 	}
 
-	synchronized void addKeyToMap(DatabaseKey key, String record)
+	synchronized void addKeyToMap(DatabaseKey key, byte[] record)
 	{
 		getPacketMapFor(key).put(key, record);
 	}
 
-	synchronized String readRecord(DatabaseKey key)
+	synchronized byte[] readRawRecord(DatabaseKey key)
 	{
 		if(isHidden(key))
 			return null;
 
 		Map map = getPacketMapFor(key);
-		return (String)map.get(key);
+		return (byte[])map.get(key);
 	}
 
 	Set getAllSealedKeys()
