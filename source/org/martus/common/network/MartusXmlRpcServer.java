@@ -29,6 +29,7 @@ package org.martus.common.network;
 import java.net.InetAddress;
 
 import org.martus.util.xmlrpc.WebServerWithClientId;
+import org.martus.util.xmlrpc.WebServerWithSynchronousStartup;
 
 
 public class MartusXmlRpcServer
@@ -37,7 +38,7 @@ public class MartusXmlRpcServer
 	{
 		try
 		{
-			WebServerWithClientId webServer = new WebServerWithClientId(port, address);
+			WebServerWithClientId webServer = new WebServerWithSynchronousStartup(port, address);
 			webServer.addHandler(handlerName, server);
 			webServer.start();
 			return webServer;

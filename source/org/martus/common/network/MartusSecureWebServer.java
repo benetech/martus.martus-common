@@ -34,9 +34,9 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLServerSocketFactory;
 
 import org.martus.common.crypto.MartusCrypto;
-import org.martus.util.xmlrpc.WebServerWithClientId;
+import org.martus.util.xmlrpc.WebServerWithSynchronousStartup;
 
-public class MartusSecureWebServer extends WebServerWithClientId
+public class MartusSecureWebServer extends WebServerWithSynchronousStartup
 {
 	public MartusSecureWebServer(int port) throws IOException
 	{
@@ -74,6 +74,7 @@ public class MartusSecureWebServer extends WebServerWithClientId
 		sslContext.init( security.createKeyManagers(), null, null );
 		return sslContext;
 	}
+	
 	
 	
 	public static MartusCrypto security;
