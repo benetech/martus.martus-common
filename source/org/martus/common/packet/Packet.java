@@ -32,7 +32,6 @@ import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Arrays;
-
 import org.martus.common.MartusUtilities;
 import org.martus.common.MartusXml;
 import org.martus.common.VersionBuildDate;
@@ -214,6 +213,9 @@ public class Packet
 	public byte[] writeXmlToDatabase(Database db, DatabaseKey headerKey, boolean mustEncrypt, MartusCrypto signer)
 		throws IOException, Database.RecordHiddenException, CryptoException
 	{
+//FIXME:add this valid check back and fix tests which are failing.	
+//		if(headerKey.getAccountId() != signer.getPublicKeyString())
+//			throw new CryptoException();//Only the owner can write an xml file into the database. 
 		StringWriter headerWriter = new StringWriter();
 		byte[] sig = writeXml(headerWriter, signer);
 		if(mustEncrypt && isPublicData())
