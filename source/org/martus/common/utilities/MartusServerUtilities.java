@@ -332,7 +332,6 @@ public class MartusServerUtilities
 
 			if(!key.equals(accountId))
 				throw new FileVerificationException();
-
 			inData = new FileInputStream(fileToVerify);
 			if( !verifier.isValidSignatureOfStream(key, inData, Base64.decode(signature)) )
 				throw new FileVerificationException();

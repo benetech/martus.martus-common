@@ -301,7 +301,6 @@ abstract public class FileDatabase extends Database
 	{
 		File accountFolder = new File(absoluteBaseDir, getFolderForAccount(accountString));
 		File ContactFolder = new File(accountFolder, CONTACTINFO_FOLDER_NAME);
-		ContactFolder.mkdirs();
 		return ContactFolder;
 	}
 
