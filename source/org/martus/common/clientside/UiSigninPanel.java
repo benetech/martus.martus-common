@@ -38,6 +38,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
+import org.martus.swing.UiLabel;
 import org.martus.swing.UiParagraphPanel;
 import org.martus.swing.UiWrappedTextArea;
 import org.martus.util.language.LanguageOptions;
@@ -52,37 +53,37 @@ public class UiSigninPanel extends UiParagraphPanel implements VirtualKeyboardHa
 
 		if(mode == UiBasicSigninDlg.TIMED_OUT)
 		{
-			addOnNewLine(new JLabel(localization.getFieldLabel("timedout1")));
+			addOnNewLine(new UiLabel(localization.getFieldLabel("timedout1")));
 			if(owner.getCurrentUiState().isModifyingBulletin())
-				addOnNewLine(new JLabel(localization.getFieldLabel("timedout2")));
+				addOnNewLine(new UiLabel(localization.getFieldLabel("timedout2")));
 		}
 		else if(mode == UiBasicSigninDlg.SECURITY_VALIDATE)
 		{
-			addOnNewLine(new JLabel(localization.getFieldLabel("securityServerConfigValidate")));
+			addOnNewLine(new UiLabel(localization.getFieldLabel("securityServerConfigValidate")));
 		}
 		else if(mode == UiBasicSigninDlg.RETYPE_USERNAME_PASSWORD)
 		{
-			addOnNewLine(new JLabel(localization.getFieldLabel("RetypeUserNameAndPassword")));
+			addOnNewLine(new UiLabel(localization.getFieldLabel("RetypeUserNameAndPassword")));
 		}
 		else if(mode == UiBasicSigninDlg.CREATE_NEW)
 		{
-			addOnNewLine(new JLabel(localization.getFieldLabel("CreateNewUserNamePassword")));
+			addOnNewLine(new UiLabel(localization.getFieldLabel("CreateNewUserNamePassword")));
 			addOnNewLine(new UiWrappedTextArea(localization.getFieldLabel("HelpOnCreatingNewPassword"), 100));
 		}
 		
-		userNameDescription = new JLabel("");
-		passwordDescription = new JLabel("");
+		userNameDescription = new UiLabel("");
+		passwordDescription = new UiLabel("");
 
 		nameField = new UiTextField(20);
 		nameField.setText(username);
-		JLabel userNameLabel = new JLabel(localization.getFieldLabel("username"));
+		JLabel userNameLabel = new UiLabel(localization.getFieldLabel("username"));
 		addComponents(userNameLabel, createPanel(userNameDescription, nameField));
 
 		passwordField = new UiPasswordField(20);
 		passwordField.setPassword(password);
 		switchToNormalKeyboard = new JButton(localization.getButtonLabel("VirtualKeyboardSwitchToNormal"));
 		switchToNormalKeyboard.addActionListener(new SwitchKeyboardHandler());
-		JLabel passwordLabel = new JLabel(localization.getFieldLabel("password"));
+		JLabel passwordLabel = new UiLabel(localization.getFieldLabel("password"));
 		passwordArea = new UiParagraphPanel();
 		addComponents(passwordLabel, passwordArea);
 
@@ -153,10 +154,10 @@ public class UiSigninPanel extends UiParagraphPanel implements VirtualKeyboardHa
 		passwordField.setVirtualMode(false);
 		passwordArea.addOnNewLine(passwordField);
 
-		JLabel warningNormalKeyboard = new JLabel(localization.getFieldLabel("NormalKeyboardMsg1"));
+		JLabel warningNormalKeyboard = new UiLabel(localization.getFieldLabel("NormalKeyboardMsg1"));
 		warningNormalKeyboard.setFont(warningNormalKeyboard.getFont().deriveFont(Font.BOLD));
 		passwordArea.addOnNewLine(warningNormalKeyboard);
-		passwordArea.addOnNewLine(new JLabel(localization.getFieldLabel("NormalKeyboardMsg2")));
+		passwordArea.addOnNewLine(new UiLabel(localization.getFieldLabel("NormalKeyboardMsg2")));
 
 		switchToNormalKeyboard.setText(localization.getButtonLabel("VirtualKeyboardSwitchToVirtual"));
 		passwordArea.addOnNewLine(switchToNormalKeyboard);

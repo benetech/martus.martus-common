@@ -39,10 +39,10 @@ import java.awt.event.MouseListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
+import org.martus.swing.UiLabel;
 import org.martus.swing.Utilities;
 
 
@@ -83,7 +83,7 @@ public class UiVirtualKeyboard
 		JButton deleteButton = new JButton(delete);
 		deleteButton.addActionListener(updateHandler);
 		bottomRow.add(spaceButton);
-		bottomRow.add(new JLabel(""));
+		bottomRow.add(new UiLabel(""));
 		bottomRow.add(deleteButton);
 
 		Container entireKeyboard = new Container();

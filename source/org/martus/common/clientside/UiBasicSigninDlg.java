@@ -31,15 +31,17 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
+
+import org.martus.swing.UiLabel;
 import org.martus.swing.Utilities;
 
 public class UiBasicSigninDlg extends JDialog
@@ -97,7 +99,7 @@ public class UiBasicSigninDlg extends JDialog
 	
 	protected JComponent getLanguageComponent()
 	{
-		return new JLabel();
+		return new UiLabel();
 	}
 
 	protected JPanel createMainPanel()
