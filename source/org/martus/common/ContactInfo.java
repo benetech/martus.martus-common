@@ -39,9 +39,9 @@ import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
 import org.martus.util.Base64;
 import org.martus.util.Base64.InvalidBase64Exception;
 
-public class ConfigInfo implements Serializable
+public class ContactInfo implements Serializable
 {
-	public ConfigInfo()
+	public ContactInfo()
 	{
 		clear();
 	}
@@ -172,9 +172,9 @@ public class ConfigInfo implements Serializable
 		
 	}
 
-	public static ConfigInfo load(InputStream inputStream)
+	public static ContactInfo load(InputStream inputStream)
 	{
-		ConfigInfo loaded =  new ConfigInfo();
+		ContactInfo loaded =  new ContactInfo();
 		try
 		{
 			DataInputStream in = new DataInputStream(inputStream);
@@ -202,7 +202,7 @@ public class ConfigInfo implements Serializable
 		}
 		catch (Exception e)
 		{
-			System.out.println("ConfigInfo.load " + e);
+			System.out.println("ContactInfo.load " + e);
 		}
 		return loaded;
 	}
@@ -230,7 +230,7 @@ public class ConfigInfo implements Serializable
 		}
 		catch(Exception e)
 		{
-			System.out.println("ConfigInfo.save error: " + e);
+			System.out.println("ContactInfo.save error: " + e);
 		}
 	}
 
