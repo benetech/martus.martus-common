@@ -324,7 +324,6 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		String account = "asbid";
 		String id = "1234567";
 		String data1 = "data 1í";
-		String label = "\"<Town> \"";
 		FieldSpec field = LegacyCustomFields.createFromLegacy("custom1");
 		CustomFields fields = new CustomFields(new FieldSpec[] {field});
 		
