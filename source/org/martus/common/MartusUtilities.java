@@ -393,7 +393,7 @@ public class MartusUtilities
 				buf.replace(i, i+1, "&gt;");
 			}
 		}
-		return new String(buf);
+		return buf.toString();
 	}
 
 	public static void copyStreamWithFilter(InputStream in, OutputStream rawOut,
