@@ -67,5 +67,9 @@ public class ClientFileDatabase extends FileDatabase
 	{
 		return DatabaseKey.createSealedKey(uid);
 	}
-
+	
+	protected String getBucketPrefix(DatabaseKey key)
+	{
+		return defaultBucketPrefix;
+	}
 }

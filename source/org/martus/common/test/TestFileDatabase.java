@@ -570,6 +570,11 @@ public class TestFileDatabase extends TestCaseEnhanced
 			return DatabaseKey.createSealedKey(uid);
 		}
 
+		protected String getBucketPrefix(DatabaseKey key)
+		{
+			return defaultBucketPrefix;
+		}
+
 	}
 
 	MockMartusSecurity security;

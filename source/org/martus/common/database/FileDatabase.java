@@ -122,11 +122,16 @@ abstract public class FileDatabase extends Database
 	public int getRecordSize(DatabaseKey key) 
 		throws IOException, RecordHiddenException
 	{
-		throwIfRecordIsHidden(key.getUniversalId());
+		UniversalId uid = key.getUniversalId();
+		throwIfRecordIsHidden(uid);
 
 		try
 		{
-			return (int)getFileForRecord(key).length();
+			return (int)getExistingFileForRecord(uid).length();
+		}
+		catch (FileNotFoundException e)
+		{
+			return 0;
 		}
 		catch (TooManyAccountsException e)
 		{
@@ -464,34 +469,51 @@ abstract public class FileDatabase extends Database
 	{
 		return new File(absoluteBaseDir, (String)accountMap.get(accountString));
 	}
+	
+	private File getExistingFileForRecord(UniversalId uid) throws IOException, TooManyAccountsException
+	{
+		File sealed = getFileForRecordWithPrefix(uid, defaultBucketPrefix);
+		if(sealed.exists())
+			return sealed;
+		
+		File draft = getFileForRecordWithPrefix(uid, draftBucketPrefix);
+		if(draft.exists())
+			return draft;
+		
+		throw new FileNotFoundException();
+	}
 
 	public File getFileForRecord(DatabaseKey key) throws IOException, TooManyAccountsException
 	{
-		return getFileForRecordWithPrefix(key, getBucketPrefix(key));
+		File result = getFileForRecordWithPrefix(key.getUniversalId(), getBucketPrefix(key));
+		result.getParentFile().mkdirs();
+		return result;
 	}
 
-	public File getFileForRecordWithPrefix(DatabaseKey key, String bucketPrefix)
+	private File getQuarantineFileForRecord(DatabaseKey key)
 		throws IOException, TooManyAccountsException
 	{
-		String localId = key.getLocalId();
+		File result = getFileForRecordWithPrefix(key.getUniversalId(), getQuarantinePrefix(key));
+		result.getParentFile().mkdirs();
+		return result;
+	}
+	
+	public File getFileForRecordWithPrefix(UniversalId uid, String bucketPrefix)
+		throws IOException, TooManyAccountsException
+	{
+		String localId = uid.getLocalId();
 		String bucketBaseName = getBaseBucketName(localId);
 		String bucketName = bucketPrefix + bucketBaseName;
-		String accountString = key.getAccountId();
+		String accountString = uid.getAccountId();
 		File path = new File(getAccountDirectory(accountString), bucketName);
-		path.mkdirs();
-		return new File(path, localId);
+		File result = new File(path, localId); 
+		return result;
 	}
 
 	public static String getBaseBucketName(String localId) 
 	{
 		int hashValue = getHashValue(localId) & 0xFF;
 		return Integer.toHexString(0xb00 + hashValue);
-	}
-
-	private File getQuarantineFileForRecord(DatabaseKey key)
-		throws IOException, TooManyAccountsException
-	{
-		return getFileForRecordWithPrefix(key, getQuarantinePrefix(key));
 	}
 
 	private String getQuarantinePrefix(DatabaseKey key)
@@ -704,10 +726,7 @@ abstract public class FileDatabase extends Database
 		return result;
 	}
 
-	protected String getBucketPrefix(DatabaseKey key)
-	{
-		return defaultBucketPrefix;
-	}
+	protected abstract String getBucketPrefix(DatabaseKey key);
 
 	public void signAccountMap() throws IOException, MartusCrypto.MartusSignatureException
 	{
@@ -720,8 +739,9 @@ abstract public class FileDatabase extends Database
 	}
 	
 	protected static final String defaultBucketPrefix = "p";
-	protected static final String draftQuarantinePrefix = "qd-p";
+	protected static final String draftBucketPrefix = "d" + defaultBucketPrefix;
 	protected static final String sealedQuarantinePrefix = "qs-p";
+	protected static final String draftQuarantinePrefix = "qd-p";
 	protected static final String INTERIM_FOLDER_NAME = "interim";
 	protected static final String CONTACTINFO_FOLDER_NAME = "contactInfo";
 	protected static final String ACCOUNTMAP_FILENAME = "acctmap.txt";

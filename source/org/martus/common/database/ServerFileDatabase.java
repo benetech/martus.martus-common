@@ -50,13 +50,13 @@ public class ServerFileDatabase extends FileDatabase
 	protected String getBucketPrefix(DatabaseKey key) 
 	{
 		if(key.isDraft())
-			return draftPrefix;
-		return super.getBucketPrefix(key);
+			return draftBucketPrefix;
+		return defaultBucketPrefix;
 	}
 
 	public boolean isDraftPacketBucket(String folderName)
 	{
-		return folderName.startsWith(draftPrefix);
+		return folderName.startsWith(draftBucketPrefix);
 	}
 
 	public synchronized void loadAccountMap() throws FileVerificationException, MissingAccountMapSignatureException
@@ -142,6 +142,4 @@ public class ServerFileDatabase extends FileDatabase
 			key = DatabaseKey.createSealedKey(uid);
 		return key;
 	}
-
-	private static final String draftPrefix = "d" + defaultBucketPrefix;
 }
