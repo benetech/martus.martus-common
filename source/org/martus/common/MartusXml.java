@@ -62,6 +62,11 @@ public class MartusXml
 	{
 		return "<" + tagName + " " + attrName + "='" + attrValue + "'>";
 	}
+	
+	public static String getTagWithData(String tag, String data)
+	{
+		return getTagStart(tag) + data + getTagEnd(tag);
+	}
 
 	public static String getTagStartWithNewline(String tagName, String attrName, String attrValue)
 	{
