@@ -97,11 +97,11 @@ public class UiBasicLocalization extends Localization
 		writer.writeln("#      file in your account's packets directory...)");
 		writer.writeln("#  7.  do not translate the words \"Martus\" or \"Benetech\"");
 		writer.writeln("#  8.  do NOT translate \"#S#\" (used for search string entry)");
-		writer.writeln("#  9.  do not translate #L# as is it used to populate lists of values on various dialogs.");
-		writer.writeln("# 10.  do not translate #Title# (used for bulletin title entry)");
-		writer.writeln("# 11.  do not translate #A# (used for bulletin details: Author Public Code)");
-		writer.writeln("# 12.  do not translate #I# (used for bulletin details: Bulletin ID)");
-		writer.writeln("# 13.  do not translate #H# (used for bulletin details: Headquarter entries)");
+		writer.writeln("#  9.  do not translate \"#L#\" as is it used to populate lists of values on various dialogs.");
+		writer.writeln("# 10.  do not translate \"#Title#\" (used for bulletin title entry)");
+		writer.writeln("# 11.  do not translate \"#A#\" (used for bulletin details: Author Public Code)");
+		writer.writeln("# 12.  do not translate \"#I#\" (used for bulletin details: Bulletin ID)");
+		writer.writeln("# 13.  do not translate \"#H#\" (used for bulletin details: Headquarter entries)");
 		writer.writeln("#");
 		
 		SortedSet sorted = getAllKeysSorted();
