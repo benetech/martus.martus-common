@@ -86,9 +86,6 @@ public class Bulletin implements BulletinConstants
 		privateFieldData.setEncrypted(true);
 		header.setPrivateFieldDataPacketId(privateDataUid.getLocalId());
 		
-		pendingPublicAttachments = new PendingAttachmentList();
-		pendingPrivateAttachments = new PendingAttachmentList();
-
 		clear();
 	}
 
@@ -246,7 +243,6 @@ public class Bulletin implements BulletinConstants
 			SessionKey sessionKey = getSignatureGenerator().createSessionKey();
 			AttachmentPacket ap = new AttachmentPacket(getAccount(), sessionKey, rawFile, getSignatureGenerator());
 			bhp.addPublicAttachmentLocalId(ap.getLocalId());
-			pendingPublicAttachments.add(ap);
 			a.setPendingPacket(ap, sessionKey);
 		}
 		else
@@ -268,7 +264,6 @@ public class Bulletin implements BulletinConstants
 			SessionKey sessionKeyBytes = getSignatureGenerator().createSessionKey();
 			AttachmentPacket ap = new AttachmentPacket(getAccount(), sessionKeyBytes, rawFile, getSignatureGenerator());
 			bhp.addPrivateAttachmentLocalId(ap.getLocalId());
-			getPendingPrivateAttachments().add(ap);
 			a.setPendingPacket(ap, sessionKeyBytes);
 		}
 		else
@@ -294,8 +289,6 @@ public class Bulletin implements BulletinConstants
 		getBulletinHeaderPacket().clearAttachments();
 		getFieldDataPacket().clearAll();
 		getPrivateFieldDataPacket().clearAll();
-		pendingPublicAttachments.clear();
-		getPendingPrivateAttachments().clear();
 		
 		FieldSpec[] specs = fieldData.getFieldSpecs();
 		for(int i = 0; i < specs.length; ++i)
@@ -481,8 +474,6 @@ public class Bulletin implements BulletinConstants
 			addPrivateAttachment(ap);
 		}
 
-		pendingPublicAttachments.addAll(other.pendingPublicAttachments);
-		getPendingPrivateAttachments().addAll(other.getPendingPrivateAttachments());
 	}
 	
 	private void pullFields(Bulletin other, FieldSpec[] fields)
@@ -563,14 +554,27 @@ public class Bulletin implements BulletinConstants
 
 	public PendingAttachmentList getPendingPublicAttachments()
 	{
-		return pendingPublicAttachments;
+		return getPendingAttachments(getFieldDataPacket());
 	}
 
 	public PendingAttachmentList getPendingPrivateAttachments()
 	{
-		return pendingPrivateAttachments;
+		return getPendingAttachments(getPrivateFieldDataPacket());
 	}
 	
+	private PendingAttachmentList getPendingAttachments(FieldDataPacket fdp)
+	{
+		AttachmentProxy[] proxies = fdp.getAttachments();
+		PendingAttachmentList pending = new PendingAttachmentList(); 
+		for(int i=0; i < proxies.length; ++i)
+		{
+			AttachmentPacket packet = proxies[i].getPendingPacket(); 
+			if(packet != null)
+				pending.add(packet);
+		}
+		return pending;
+	}
+
 	protected BulletinHeaderPacket createHeaderPacket(UniversalId headerUid)
 	{
 		return new BulletinHeaderPacket(headerUid);
@@ -602,6 +606,4 @@ public class Bulletin implements BulletinConstants
 	private BulletinHeaderPacket header;
 	private FieldDataPacket fieldData;
 	private FieldDataPacket privateFieldData;
-	private PendingAttachmentList pendingPublicAttachments;
-	private PendingAttachmentList pendingPrivateAttachments;
 }
