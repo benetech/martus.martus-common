@@ -107,6 +107,19 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals("field data account?", security.getPublicKeyString(), b.getFieldDataPacket().getAccountId());
 
 	}
+    
+    public void testContains()
+    {
+    	Bulletin b = new Bulletin(security);
+    	
+    	final String sampleAuthor = "Daphne Moon";
+    	b.set(Bulletin.TAGAUTHOR, sampleAuthor);
+    	assertTrue("didn't find author?", b.contains(sampleAuthor));
+    	
+    	final String samplePrivate = "shhh! they might be listening!";
+    	b.set(Bulletin.TAGPRIVATEINFO, samplePrivate);
+    	assertTrue("didn't find private?", b.contains(samplePrivate));
+    }
 	
 	public void testUnknownTags()
 	{

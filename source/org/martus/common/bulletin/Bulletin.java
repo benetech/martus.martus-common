@@ -324,7 +324,17 @@ public class Bulletin implements BulletinConstants
 
 	public boolean contains(String lookFor)
 	{
-		FieldSpec fields[] = fieldData.getFieldSpecs();
+		if(doesSectionContain(getFieldDataPacket(), lookFor))
+			return true;
+		if(doesSectionContain(getPrivateFieldDataPacket(), lookFor))
+			return true;
+		
+		return false;
+	}
+
+	private boolean doesSectionContain(FieldDataPacket section, String lookFor)
+	{
+		FieldSpec fields[] = section.getFieldSpecs();
 		String lookForLowerCase = lookFor.toLowerCase();
 		for(int f = 0; f < fields.length; ++f)
 		{
