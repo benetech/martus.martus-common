@@ -27,6 +27,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.test;
 
 import org.martus.common.analyzerhelper.TestMartusBulletinRetriever;
+import org.martus.common.analyzerhelper.TestMartusBulletinWrapper;
 import org.martus.common.clientside.test.TestChoiceItem;
 import org.martus.common.clientside.test.TestClientSideNetworkHandler;
 import org.martus.common.clientside.test.TestClientSideNetworkHandlerForNonSSL;
@@ -86,6 +87,7 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestMagicWords.class));
 		suite.addTest(new TestSuite(TestMartusKeyPair.class));
 		suite.addTest(new TestSuite(TestMartusBulletinRetriever.class));
+		suite.addTest(new TestSuite(TestMartusBulletinWrapper.class));
 		suite.addTest(new TestSuite(TestMartusSecurity.class));
 		suite.addTest(new TestSuite(TestMartusUtilities.class));
 		suite.addTest(new TestSuite(TestMartusXml.class));

@@ -25,20 +25,81 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.analyzerhelper;
 
+import java.io.File;
+import java.util.zip.ZipFile;
+import org.martus.common.MartusUtilities.ServerErrorException;
+import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinConstants;
+import org.martus.common.bulletin.BulletinLoader;
+import org.martus.common.bulletin.BulletinZipUtilities;
+import org.martus.common.crypto.MartusSecurity;
+import org.martus.common.database.ClientFileDatabase;
+import org.martus.common.database.DatabaseKey;
+import org.martus.common.packet.UniversalId;
 
 
 public class MartusBulletinWrapper
 {
-	public MartusBulletinWrapper(Bulletin bulletinToUse)
+	public MartusBulletinWrapper(UniversalId uid, File bulletinZipFile, MartusSecurity security) throws ServerErrorException
 	{
-		bulletin = bulletinToUse;
+		File tempDirectory = null;
+		try
+		{
+			tempDirectory = File.createTempFile("$$$BulletinRetrieverDB", null);
+			tempDirectory.deleteOnExit();
+			tempDirectory.delete();
+			tempDirectory.mkdirs();
+	
+			ClientFileDatabase db = new ClientFileDatabase(tempDirectory, security);
+			db.initialize();
+			ZipFile zipFile = new ZipFile(bulletinZipFile);
+			BulletinZipUtilities.importBulletinPacketsFromZipFileToDatabase(db, security.getPublicKeyString(), zipFile, security);
+			zipFile.close();
+			DatabaseKey key = new DatabaseKey(uid);
+			bulletin = BulletinLoader.loadFromDatabase(db, key, security);
+			
+			//TODO:Once we implement the ability to have attachments we will not delete the attachments
+			//but mark them all deleteOnExit, and also implement a cleanup function which must be called when this object is no longer needed
+			//which will then delete the attachments, and the database.
+			deleteAllAttachments();
+
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			throw new ServerErrorException(e.getMessage());
+		}
+		finally
+		{
+			bulletinZipFile.delete();
+			tempDirectory.delete();
+		}
 	}
 	
+	private void deleteAllAttachments()
+	{
+		AttachmentProxy[] publicAttachments = bulletin.getPublicAttachments();
+		for(int i = 0; i < publicAttachments.length; ++i)
+		{
+			publicAttachments[i].getFile().delete();
+		}
+		
+		AttachmentProxy[] privateAttachments = bulletin.getPublicAttachments();
+		for(int i = 0; i < privateAttachments.length; ++i)
+		{
+			privateAttachments[i].getFile().delete();
+		}
+	}
+
 	public String getTitle()
 	{
 		return bulletin.get(BulletinConstants.TAGTITLE);
+	}
+	
+	public String getAuthor()
+	{
+		return bulletin.get(BulletinConstants.TAGAUTHOR);
 	}
 	
 	public String getKeyWords()

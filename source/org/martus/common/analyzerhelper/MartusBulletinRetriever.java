@@ -25,6 +25,7 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.analyzerhelper;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -100,6 +101,22 @@ public class MartusBulletinRetriever
 			allBulletins.addAll(getListOfBulletinUniversalIds(fieldOfficeAccountId, response));
 		}
 		return allBulletins;
+	}
+	
+	public MartusBulletinWrapper getBulletin(UniversalId uid) throws ServerErrorException
+	{
+		try
+		{
+			File bulletinZipFile = serverSLL.retrieveBulletin(uid, security, NetworkInterfaceConstants.MAX_CHUNK_SIZE, null);
+			MartusBulletinWrapper bulletin = new MartusBulletinWrapper(uid, bulletinZipFile, security);
+			return bulletin;
+			
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			throw new ServerErrorException(e.getMessage());
+		}
 	}
 	
 	public Vector getListOfBulletinUniversalIds(String fieldOfficeAccountId, NetworkResponse response) throws ServerErrorException
