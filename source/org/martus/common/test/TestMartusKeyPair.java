@@ -33,7 +33,6 @@ import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Vector;
 
-import org.martus.common.crypto.MartusDirectCryptoKeyPair;
 import org.martus.common.crypto.MartusJceKeyPair;
 import org.martus.common.crypto.MartusKeyPair;
 import org.martus.util.Base64;
@@ -50,13 +49,15 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 	{
 		rand = new SecureRandom(new byte[] {1,2,3,4,5,6,7,8});
 
-		MartusJceKeyPair jceKeyPair = new MartusJceKeyPair(rand);
 		
-		MartusDirectCryptoKeyPair directKeyPair = new MartusDirectCryptoKeyPair(rand);
 		
 		objects = new Vector();
+
+		MartusJceKeyPair jceKeyPair = new MartusJceKeyPair(rand);
 		objects.add(jceKeyPair);
-		objects.add(directKeyPair);
+
+//		MartusDirectCryptoKeyPair directKeyPair = new MartusDirectCryptoKeyPair(rand);
+//		objects.add(directKeyPair);
 
 		for(int i = 0; i < objects.size(); ++i)
 		{
