@@ -316,7 +316,7 @@ public class BulletinStore
 			db.hide(uId);
 			clearLeafKeyCache();
 			String publicCode = MartusCrypto.getFormattedPublicCode(uId.getAccountId());
-			logger.log("Deleting " + publicCode + ": " + uId.getLocalId());
+			logger.logNotice("Deleting " + publicCode + ": " + uId.getLocalId());
 		
 		}
 	}

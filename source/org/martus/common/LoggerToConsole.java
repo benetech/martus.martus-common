@@ -38,7 +38,7 @@ public class LoggerToConsole implements LoggerInterface
 	{
 	}
 	
-	public void log(String message)
+	private void log(String message)
 	{
 		Timestamp stamp = new Timestamp(System.currentTimeMillis());
 		SimpleDateFormat formatDate = new SimpleDateFormat("EE MM/dd HH:mm:ss z");

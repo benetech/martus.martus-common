@@ -404,12 +404,12 @@ public class MartusServerUtilities
 		}
 		catch(FileNotFoundException nothingToWorryAbout)
 		{
-			logger.log("Deleted packets file not found: " + hiddenFile.getName());
+			logger.logInfo("Deleted packets file not found: " + hiddenFile.getName());
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
-			logger.log("Error loading Deleted Packets file: " + hiddenFile.getName());
+			logger.logError("loading Deleted Packets file: " + hiddenFile.getName());
 		}		
 	}
 
