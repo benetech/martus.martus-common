@@ -146,9 +146,9 @@ public class TestMartusBulletinRetriever extends TestCaseEnhanced
 		
 		retriever.initalizeServer("1.2.3.4", "some random public key");
 		retriever.serverNonSSL = new NoServerNetworkInterfaceForNonSSLHandler();
-		assertFalse(retriever.pingServer());
+		assertFalse("invalid server should not be pingable", retriever.pingServer());
 		retriever.serverNonSSL = new TestServerNetworkInterfaceForNonSSLHandler();
-		assertTrue(retriever.pingServer());
+		assertTrue("a valid server should be pingable", retriever.pingServer());
 	}
 	
 	public void testGetServerPublicKey() throws Exception
