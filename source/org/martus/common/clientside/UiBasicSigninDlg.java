@@ -41,7 +41,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
-import org.martus.swing.UiLanguageDirection;
 import org.martus.swing.Utilities;
 
 public class UiBasicSigninDlg extends JDialog
@@ -67,7 +66,10 @@ public class UiBasicSigninDlg extends JDialog
 		JButton cancel = new JButton(localization.getButtonLabel("cancel"));
 		cancel.addActionListener(new CancelHandler());
 		Box buttonBox = Box.createHorizontalBox();
-		Component[] buttons = {getLanguageComponent(), Box.createHorizontalGlue(), ok, cancel};
+		JComponent languageComponent = getLanguageComponent();
+		if(languageComponent == null)
+			return;
+		Component[] buttons = {languageComponent, Box.createHorizontalGlue(), ok, cancel};
 		Utilities.addComponentsRespectingOrientation(buttonBox, buttons);
 
 		buttonBox.add(Box.createHorizontalGlue());
@@ -76,7 +78,6 @@ public class UiBasicSigninDlg extends JDialog
 		JPanel scrolledPanel = createMainPanel();
 	
 		Container scrollingPane = new JScrollPane(scrolledPanel);
-		scrollingPane.setComponentOrientation(UiLanguageDirection.getComponentOrientation());
 		getContentPane().add(scrollingPane);
 		getContentPane().add(buttonBox, BorderLayout.SOUTH);
 		

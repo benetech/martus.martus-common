@@ -242,17 +242,29 @@ public class Localization
 			if(transStream == null)
 				return;
 			loadTranslations(languageCode, transStream);
-			transStream.close();
-			if(zip != null)
-				zip.close();
 		}
 		catch (IOException e)
 		{
-			System.out.println("BulletinDisplay.loadTranslationFile " + e);
+			System.out.println("Localization.loadTranslationFile " + e);
+		}
+		finally
+		{
+			try
+			{
+				if(transStream != null)
+					transStream.close();
+				if(zip != null)
+					zip.close();
+			}
+			catch(IOException e1)
+			{
+				e1.printStackTrace();
+			}
+			
 		}
 	}
 	
-	public void hideUntrustedTranslationFiles(String translationFileLanguageCode)
+	public void hideUnofficialTranslationFiles(String translationFileLanguageCode)
 	{
 		try
 		{
@@ -271,7 +283,9 @@ public class Localization
 	{
 		File moveTo = new File(getUnofficialTranslationDirectory(), fileToMove.getName());		
 		moveTo.delete();
-		fileToMove.renameTo(moveTo);
+		if(!fileToMove.renameTo(moveTo))
+			System.out.println("Rename Failed! " + fileToMove.getAbsolutePath()
+					+ " to " + moveTo.getAbsoluteFile());
 	}
 
 	public File getMtfFile(String translationFileLanguageCode)
@@ -462,10 +476,10 @@ public class Localization
 	public static final String UNUSED_TAG = "";
 	public static final String MARTUS_LANGUAGE_FILE_PREFIX = "Martus-";
 	public static final String MARTUS_LANGUAGE_FILE_SUFFIX = ".mtf";
-	public static final String MARTUS_LANGUAGE_PACK_SUFFIX = ".mlpk";
+	public static final String MARTUS_LANGUAGE_PACK_SUFFIX = ".mlp";
 	public static final String MTF_COMMENT_FLAG = "#";
 	public static final String MTF_RIGHT_TO_LEFT_LANGUAGE_FLAG = "!right-to-left";
-	public static final String UNTRUSTED_LANGUAGE_DIRECTORY = "Untrusted Martus Translations";
+	public static final String UNTRUSTED_LANGUAGE_DIRECTORY = "Unofficial Martus Translations";
 	
 	public static final int HASH_LENGTH = 4;
 	
