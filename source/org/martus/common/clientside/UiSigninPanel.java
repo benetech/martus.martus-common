@@ -32,6 +32,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -195,8 +196,8 @@ public class UiSigninPanel extends JPanel implements VirtualKeyboardHandler
 	{
 		boolean viewingVirtualKeyboard = uiState.isCurrentDefaultKeyboardVirtual();
 		if(viewingVirtualKeyboard)
-		{
-			if(!UiUtilities.confirmDlg(localization, null, "WarningSwitchToNormalKeyboard"))
+		{				
+			if(!UiUtilities.confirmDlg(localization, (JFrame)owner.getParent(), "WarningSwitchToNormalKeyboard"))
 				return;
 		}
 
