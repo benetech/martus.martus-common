@@ -56,16 +56,21 @@ public class LoggerToConsole implements LoggerInterface
 		log("ERROR: " + message);
 	}
 	
-	public void logInfo(String message)
-	{
-		log("Info: " + message);
-		
-	}
 	public void logNotice(String message)
 	{
 		log("Notice: " + message);
-		
 	}
+
+	public void logWarning(String message)
+	{
+		log("Warning: " + message);
+	}
+
+	public void logInfo(String message)
+	{
+		log("Info: " + message);
+	}
+
 	public void logDebug(String message)
 	{
 		log("Debug: " + message);
