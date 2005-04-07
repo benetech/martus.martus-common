@@ -575,8 +575,7 @@ public class Bulletin implements BulletinConstants
 
 	public static String getToday()
 	{
-		DateFormat df = getStoredDateFormat();
-		return df.format(new Date());
+		return MartusFlexidate.toStoredDateFormat(new Date());
 	}
 
 	public BulletinHeaderPacket getBulletinHeaderPacket()
