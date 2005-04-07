@@ -106,7 +106,7 @@ public class EnglishCommonStrings
 		"field:attachments=Attachments",
 		"field:HQSummaryLabel=Headquarters",
 		"field:HQNotConfigured=(not currently configured)",
-		"field:NoHQsConfigured=No Headquarter accounts currently configured",
+		"field:NoHQsConfigured=No Headquarters accounts selected for this bulletin.",
 
 		"button:yes=Yes",
 		"button:no=No",
