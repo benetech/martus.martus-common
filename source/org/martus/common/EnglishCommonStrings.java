@@ -39,7 +39,7 @@ public class EnglishCommonStrings
 		"language:zh=Chinese",
 		"language:nl=Dutch",
 		"language:eo=Esperanto",
-		"language:fa=Farsi, Dari",
+		"language:fa=Persian (Farsi, Dari)",
 		"language:fr=French",
 		"language:de=German",
 		"language:gu=Gujarati",
