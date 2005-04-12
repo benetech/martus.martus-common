@@ -399,8 +399,9 @@ public class MartusServerUtilities
 		try
 		{
 			UnicodeReader reader = new UnicodeReader(hiddenFile);
-			Vector hiddenPackets = getHiddenPacketsList(reader);		
+			Vector hiddenPackets = getHiddenPacketsList(reader);
 			store.hidePackets(hiddenPackets, logger);
+			logger.logInfo(hiddenPackets.size() + " bulletins hidden.");
 		}
 		catch(FileNotFoundException nothingToWorryAbout)
 		{
