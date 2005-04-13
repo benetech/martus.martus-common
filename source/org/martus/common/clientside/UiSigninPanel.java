@@ -41,6 +41,8 @@ import javax.swing.border.LineBorder;
 import org.martus.swing.UiButton;
 import org.martus.swing.UiLabel;
 import org.martus.swing.UiParagraphPanel;
+import org.martus.swing.UiPasswordField;
+import org.martus.swing.UiTextField;
 import org.martus.swing.UiWrappedTextArea;
 import org.martus.util.language.LanguageOptions;
 

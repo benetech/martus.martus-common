@@ -44,6 +44,7 @@ import javax.swing.border.LineBorder;
 
 import org.martus.swing.UiButton;
 import org.martus.swing.UiLabel;
+import org.martus.swing.UiPasswordField;
 import org.martus.swing.Utilities;
 
 
