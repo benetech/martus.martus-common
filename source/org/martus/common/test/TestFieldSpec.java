@@ -26,9 +26,12 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.test;
 
+import java.util.Vector;
+import org.martus.common.DropDownFieldSpec;
 import org.martus.common.FieldSpec;
 import org.martus.common.GridFieldSpec;
 import org.martus.common.LegacyCustomFields;
+import org.martus.common.MessageFieldSpec;
 import org.martus.common.StandardFieldSpecs;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.clientside.Localization;
@@ -105,10 +108,19 @@ public class TestFieldSpec extends TestCaseEnhanced
 
 		spec = new FieldSpec(FieldSpec.TYPE_DROPDOWN);
 		assertEquals(emptyString, spec.getDefaultValue());
-
+		
 		spec = new FieldSpec(FieldSpec.TYPE_MESSAGE);
 		assertEquals(emptyString, spec.getDefaultValue());
 	
+		DropDownFieldSpec dropdownSpec = new DropDownFieldSpec();
+		dropdownSpec.setChoices(new Vector());
+		assertEquals(DropDownFieldSpec.EMPTY_FIRST_CHOICE, dropdownSpec.getDefaultValue());
+
+		String message = "Message in FieldSpec";
+		MessageFieldSpec messageSpec = new MessageFieldSpec();
+		messageSpec.putMessage(message);
+		assertEquals(message, messageSpec.getDefaultValue());
+
 	}
 	
 	public void testToString()

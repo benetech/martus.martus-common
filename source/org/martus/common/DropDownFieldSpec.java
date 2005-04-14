@@ -42,7 +42,7 @@ public class DropDownFieldSpec extends FieldSpec
 	
 	public String getDefaultValue()
 	{
-		return "";
+		return EMPTY_FIRST_CHOICE;
 	}
 
 	public String getDetailsXml()
@@ -95,6 +95,7 @@ public class DropDownFieldSpec extends FieldSpec
 	
 	private Vector choices;
 	
+	public final static String EMPTY_FIRST_CHOICE = " ";
 	public final static String DROPDOWN_SPEC_CHOICES_TAG = "Choices";
 	public final static String DROPDOWN_SPEC_CHOICE_TAG = "Choice";
 }

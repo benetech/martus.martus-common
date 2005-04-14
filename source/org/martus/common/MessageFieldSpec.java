@@ -39,7 +39,7 @@ public class MessageFieldSpec extends FieldSpec
 	
 	public String getDefaultValue()
 	{
-		return "";
+		return getMessage();
 	}
 
 	public String getDetailsXml()
