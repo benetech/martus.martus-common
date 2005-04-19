@@ -181,27 +181,22 @@ public class BulletinStore
 	
 	public void clearLeafKeyCache()
 	{
-		leafKeys = null;
-		nonLeafUids = null;
+		cache = null;
 	}
 	
 	public Vector scanForLeafKeys()
 	{
-		if(leafKeys == null)
-		{
-			LeafScanner scanner = new LeafScanner(getDatabase(), getSignatureVerifier());
-			visitAllBulletinRevisions(scanner);
-			leafKeys = scanner.getLeafKeys();
-			nonLeafUids = scanner.getNonLeafUids();
-		}
-		return leafKeys;
+		if(cache == null)
+			cache = new Cache(this);
+
+		return cache.getLeafKeys();
 	}
 	
 	public Vector getNonLeafUids()
 	{
-		if(nonLeafUids == null)
+		if(cache == null)
 			scanForLeafKeys();
-		return nonLeafUids;
+		return cache.getNonLeafUids();
 	}
 	
 	public void visitAllBulletins(Database.PacketVisitor visitor)
@@ -500,11 +495,34 @@ public class BulletinStore
 			}
 		}
 	}
+	
+	public static class Cache
+	{
+		public Cache(BulletinStore store)
+		{
+			LeafScanner scanner = new LeafScanner(store.getDatabase(), store.getSignatureVerifier());
+			store.visitAllBulletinRevisions(scanner);
+			leafKeys = scanner.getLeafKeys();
+			nonLeafUids = scanner.getNonLeafUids();
+		}
+
+		public Vector getLeafKeys()
+		{
+			return leafKeys;
+		}
+		
+		public Vector getNonLeafUids()
+		{
+			return nonLeafUids;
+		}
+		
+		private Vector leafKeys;
+		private Vector nonLeafUids;
+	}
 
 	private MartusCrypto security;
 	private File dir;
 	private Database database;
-	private Vector leafKeys;
-	private Vector nonLeafUids;
+	private Cache cache;
 }
 
