@@ -496,14 +496,16 @@ public class BulletinStore
 		}
 	}
 	
-	public static class Cache
+	public static class Cache implements Database.PacketVisitor
 	{
-		public Cache(BulletinStore store)
+		public Cache(BulletinStore storeToUse)
 		{
-			LeafScanner scanner = new LeafScanner(store.getDatabase(), store.getSignatureVerifier());
-			store.visitAllBulletinRevisions(scanner);
-			leafKeys = scanner.getLeafKeys();
-			nonLeafUids = scanner.getNonLeafUids();
+			store = storeToUse;
+
+			leafKeys = new Vector();
+			nonLeafUids = new Vector();
+			
+			store.visitAllBulletinRevisions(this);
 		}
 
 		public Vector getLeafKeys()
@@ -516,6 +518,42 @@ public class BulletinStore
 			return nonLeafUids;
 		}
 		
+		public ReadableDatabase getDatabase()
+		{
+			return store.getDatabase();
+		}
+		
+		public MartusCrypto getSecurity()
+		{
+			return store.getSignatureVerifier();
+		}
+		
+		public void visit(DatabaseKey key)
+		{
+			try
+			{
+				UniversalId maybeLeaf = key.getUniversalId();
+				if(!nonLeafUids.contains(maybeLeaf))
+					leafKeys.add(key);
+				
+				BulletinHeaderPacket bhp = BulletinStore.loadBulletinHeaderPacket(getDatabase(), key, getSecurity());
+				BulletinHistory history = bhp.getHistory();
+				for(int i=0; i < history.size(); ++i)
+				{
+					String thisLocalId = history.get(i);
+					UniversalId uidOfNonLeaf = UniversalId.createFromAccountAndLocalId(bhp.getAccountId(), thisLocalId);
+					leafKeys.remove(DatabaseKey.createSealedKey(uidOfNonLeaf));
+					leafKeys.remove(DatabaseKey.createDraftKey(uidOfNonLeaf));
+					nonLeafUids.add(uidOfNonLeaf);
+				}
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+
+		private BulletinStore store;
 		private Vector leafKeys;
 		private Vector nonLeafUids;
 	}
