@@ -29,9 +29,9 @@ package org.martus.common.test;
 import junit.framework.TestCase;
 
 import org.martus.common.CustomFields;
-import org.martus.common.FieldSpec;
-import org.martus.common.GridFieldSpec;
 import org.martus.common.LegacyCustomFields;
+import org.martus.common.fieldspec.FieldSpec;
+import org.martus.common.fieldspec.GridFieldSpec;
 
 
 public class TestCustomFields extends TestCase

@@ -24,12 +24,13 @@ Boston, MA 02111-1307, USA.
 
 */
 
-package org.martus.common;
+package org.martus.common.fieldspec;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
+import org.martus.common.MartusUtilities;
+import org.martus.common.MartusXml;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.clientside.Localization;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
@@ -55,7 +56,7 @@ public class FieldSpec
 		this("","",typeToUse,false);
 	}
 	
-	FieldSpec(String tagToUse, String labelToUse, int typeToUse, boolean hasUnknownToUse)
+	public FieldSpec(String tagToUse, String labelToUse, int typeToUse, boolean hasUnknownToUse)
 	{
 		tag = tagToUse;
 		label = labelToUse;

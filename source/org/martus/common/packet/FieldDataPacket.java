@@ -37,7 +37,6 @@ import java.util.Vector;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.martus.common.CustomFields;
-import org.martus.common.FieldSpec;
 import org.martus.common.HQKeys;
 import org.martus.common.LegacyCustomFields;
 import org.martus.common.MartusConstants;
@@ -47,6 +46,7 @@ import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.DecryptionException;
+import org.martus.common.fieldspec.FieldSpec;
 import org.martus.util.Base64;
 import org.martus.util.UnicodeReader;
 import org.martus.util.Base64.InvalidBase64Exception;

@@ -23,10 +23,11 @@ Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.
 
 */
-package org.martus.common;
+package org.martus.common.fieldspec;
 
 import java.util.Vector;
 
+import org.martus.common.MartusXml;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlMapLoader;
 import org.xml.sax.SAXParseException;

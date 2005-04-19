@@ -26,7 +26,7 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.packet;
 
-import org.martus.common.FieldSpec;
+import org.martus.common.fieldspec.FieldSpec;
 
 
 public class PacketFactory

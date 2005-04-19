@@ -27,14 +27,14 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.test;
 
 import java.util.Vector;
-import org.martus.common.DropDownFieldSpec;
-import org.martus.common.FieldSpec;
-import org.martus.common.GridFieldSpec;
 import org.martus.common.LegacyCustomFields;
-import org.martus.common.MessageFieldSpec;
-import org.martus.common.StandardFieldSpecs;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.clientside.Localization;
+import org.martus.common.fieldspec.DropDownFieldSpec;
+import org.martus.common.fieldspec.FieldSpec;
+import org.martus.common.fieldspec.GridFieldSpec;
+import org.martus.common.fieldspec.MessageFieldSpec;
+import org.martus.common.fieldspec.StandardFieldSpecs;
 import org.martus.util.TestCaseEnhanced;
 
 

@@ -23,8 +23,8 @@ Boston, MA 02111-1307, USA.
 
 */
 package org.martus.common.test;
-import org.martus.common.DropDownFieldSpec;
-import org.martus.common.FieldSpec;
+import org.martus.common.fieldspec.DropDownFieldSpec;
+import org.martus.common.fieldspec.FieldSpec;
 import org.martus.util.TestCaseEnhanced;
 
 

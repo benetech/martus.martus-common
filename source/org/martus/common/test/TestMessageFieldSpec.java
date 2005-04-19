@@ -24,8 +24,8 @@ Boston, MA 02111-1307, USA.
 
 */
 package org.martus.common.test;
-import org.martus.common.FieldSpec;
-import org.martus.common.MessageFieldSpec;
+import org.martus.common.fieldspec.FieldSpec;
+import org.martus.common.fieldspec.MessageFieldSpec;
 import org.martus.util.TestCaseEnhanced;
 
 

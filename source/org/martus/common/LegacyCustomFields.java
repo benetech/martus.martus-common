@@ -27,6 +27,8 @@ Boston, MA 02111-1307, USA.
 package org.martus.common;
 
 import java.util.Vector;
+import org.martus.common.fieldspec.FieldSpec;
+import org.martus.common.fieldspec.StandardFieldSpecs;
 
 
 public class LegacyCustomFields

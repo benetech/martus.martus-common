@@ -28,6 +28,7 @@ package org.martus.common;
 
 import java.util.Vector;
 
+import org.martus.common.fieldspec.FieldSpec;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlParser;
 import org.xml.sax.SAXParseException;

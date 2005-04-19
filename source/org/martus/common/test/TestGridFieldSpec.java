@@ -25,8 +25,8 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.test;
 
-import org.martus.common.FieldSpec;
-import org.martus.common.GridFieldSpec;
+import org.martus.common.fieldspec.FieldSpec;
+import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.util.TestCaseEnhanced;
 
 
