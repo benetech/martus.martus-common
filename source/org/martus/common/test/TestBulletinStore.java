@@ -32,6 +32,8 @@ import java.util.Vector;
 import java.util.zip.ZipFile;
 
 import org.martus.common.BulletinStore;
+import org.martus.common.HQKey;
+import org.martus.common.HQKeys;
 import org.martus.common.LoggerToNull;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinLoader;
@@ -91,6 +93,37 @@ public class TestBulletinStore extends TestCaseEnhanced
     	assertEquals("Still some mock streams open?", 0, db.getOpenStreamCount());
 		store.deleteAllData();
 		super.tearDown();
+	}
+    
+    public void testCacheHqs() throws Exception
+	{
+    	Vector none = store.getFieldOffices("not a real account");
+    	assertEquals(0, none.size());
+    	
+    	MartusCrypto hqSecurity = MockMartusSecurity.createHQ();
+		Bulletin b = new Bulletin(security);
+		b.addAuthorizedToReadKeys(new HQKeys(new HQKey(hqSecurity.getPublicKeyString())));
+		store.saveBulletinForTesting(b);
+    	Vector one = store.getFieldOffices(hqSecurity.getPublicKeyString());
+    	assertEquals(1, one.size());
+    	assertEquals(security.getPublicKeyString(), one.get(0));
+    	
+    	MartusCrypto hqOther = MockMartusSecurity.createOtherClient();
+    	Bulletin b2 = new Bulletin(security);
+    	HQKeys twoHqs = new HQKeys();
+    	twoHqs.add(new HQKey(hqSecurity.getPublicKeyString()));
+    	twoHqs.add(new HQKey(hqOther.getPublicKeyString()));
+		b2.addAuthorizedToReadKeys(twoHqs);
+		store.saveBulletinForTesting(b2);
+		
+    	Vector stillOne = store.getFieldOffices(hqSecurity.getPublicKeyString());
+    	assertEquals(1, stillOne.size());
+    	assertEquals(security.getPublicKeyString(), stillOne.get(0));
+    	
+    	Vector otherHqHasOne = store.getFieldOffices(hqOther.getPublicKeyString());
+    	assertEquals(1, otherHqHasOne.size());
+    	assertEquals(security.getPublicKeyString(), otherHqHasOne.get(0));
+		
 	}
     
     public void testLeafKeyCache() throws Exception

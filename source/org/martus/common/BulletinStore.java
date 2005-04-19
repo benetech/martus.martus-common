@@ -154,7 +154,7 @@ public class BulletinStore
 	public void deleteAllBulletins() throws Exception
 	{
 		database.deleteAllData();
-		clearLeafKeyCache();
+		clearCache();
 	}
 
 	public void importZipFileToStoreWithSameUids(File inputFile) throws IOException, MartusCrypto.CryptoException, Packet.InvalidPacketException, Packet.SignatureVerificationException
@@ -179,15 +179,25 @@ public class BulletinStore
 		}
 	}
 	
-	public void clearLeafKeyCache()
+	public void clearCache()
 	{
 		cache = null;
+	}
+	
+	public boolean hadErrorsWhileCacheing()
+	{
+		return cache.hadErrors();
+	}
+	
+	private void populateCache()
+	{
+		cache = new Cache(this);
 	}
 	
 	public Vector scanForLeafKeys()
 	{
 		if(cache == null)
-			cache = new Cache(this);
+			populateCache();
 
 		return cache.getLeafKeys();
 	}
@@ -195,10 +205,19 @@ public class BulletinStore
 	public Vector getNonLeafUids()
 	{
 		if(cache == null)
-			scanForLeafKeys();
+			populateCache();
+		
 		return cache.getNonLeafUids();
 	}
 	
+	public Vector getFieldOffices(String hqAccountId)
+	{
+		if(cache == null)
+			populateCache();
+		
+		return cache.getFieldOffices(hqAccountId);
+	}
+
 	public void visitAllBulletins(Database.PacketVisitor visitor)
 	{
 		Vector leafKeys = scanForLeafKeys();
@@ -276,7 +295,7 @@ public class BulletinStore
 		for (int i = 0; i < keys.length; i++)
 		{
 			deleteSpecificPacket(keys[i]);
-			clearLeafKeyCache();
+			clearCache();
 		}
 	}
 
@@ -309,7 +328,7 @@ public class BulletinStore
 		{
 			UniversalId uId = (UniversalId)(packetsIdsToHide.get(i));
 			db.hide(uId);
-			clearLeafKeyCache();
+			clearCache();
 			String publicCode = MartusCrypto.getFormattedPublicCode(uId.getAccountId());
 			logger.logNotice("Deleting " + publicCode + ": " + uId.getLocalId());
 		
@@ -336,7 +355,7 @@ public class BulletinStore
 		WrongAccountException
 	{
 		importBulletinPacketsFromZipFileToDatabase(getWriteableDatabase(), accountIdIfKnown, zip, getSignatureVerifier());
-		clearLeafKeyCache();
+		clearCache();
 	}
 
 	private static void importBulletinPacketsFromZipFileToDatabase(Database db, String authorAccountId, ZipFile zip, MartusCrypto security)
@@ -412,7 +431,7 @@ public class BulletinStore
 	protected void saveBulletin(Bulletin b, boolean mustEncryptPublicData) throws IOException, CryptoException
 	{
 		saveToClientDatabase(b, getWriteableDatabase(), mustEncryptPublicData, b.getSignatureGenerator());
-		clearLeafKeyCache();
+		clearCache();
 	}
 	
 	private static void saveToClientDatabase(Bulletin b, Database db, boolean mustEncryptPublicData, MartusCrypto signer) throws
@@ -504,6 +523,7 @@ public class BulletinStore
 
 			leafKeys = new Vector();
 			nonLeafUids = new Vector();
+			fieldOfficesPerHq = new HashMap();
 			
 			store.visitAllBulletinRevisions(this);
 		}
@@ -518,12 +538,26 @@ public class BulletinStore
 			return nonLeafUids;
 		}
 		
-		public ReadableDatabase getDatabase()
+		public Vector getFieldOffices(String hqAccountId)
+		{
+			Vector results = (Vector)fieldOfficesPerHq.get(hqAccountId);
+			if(results == null)
+				results = new Vector();
+			
+			return results;
+		}
+		
+		public boolean hadErrors()
+		{
+			return hitErrorsDuringScan;
+		}
+		
+		private ReadableDatabase getDatabase()
 		{
 			return store.getDatabase();
 		}
 		
-		public MartusCrypto getSecurity()
+		private MartusCrypto getSecurity()
 		{
 			return store.getSignatureVerifier();
 		}
@@ -532,30 +566,55 @@ public class BulletinStore
 		{
 			try
 			{
-				UniversalId maybeLeaf = key.getUniversalId();
-				if(!nonLeafUids.contains(maybeLeaf))
-					leafKeys.add(key);
-				
 				BulletinHeaderPacket bhp = BulletinStore.loadBulletinHeaderPacket(getDatabase(), key, getSecurity());
-				BulletinHistory history = bhp.getHistory();
-				for(int i=0; i < history.size(); ++i)
-				{
-					String thisLocalId = history.get(i);
-					UniversalId uidOfNonLeaf = UniversalId.createFromAccountAndLocalId(bhp.getAccountId(), thisLocalId);
-					leafKeys.remove(DatabaseKey.createSealedKey(uidOfNonLeaf));
-					leafKeys.remove(DatabaseKey.createDraftKey(uidOfNonLeaf));
-					nonLeafUids.add(uidOfNonLeaf);
-				}
+				addToCachedLeafInformation(key, bhp);
+				addToCachedHqInformation(bhp);
 			}
 			catch(Exception e)
 			{
-				e.printStackTrace();
+				hitErrorsDuringScan = true;
+				// FIXME: change this to use a logger so we see problems on the server!
+				//e.printStackTrace();
+			}
+		}
+
+		private void addToCachedHqInformation(BulletinHeaderPacket bhp)
+		{
+			HQKeys hqs = bhp.getAuthorizedToReadKeys();
+			for(int i=0; i < hqs.size(); ++i)
+			{
+				String thisHqKey = hqs.get(i).getPublicKey();
+				Vector fieldOffices = getFieldOffices(thisHqKey);
+				if(!fieldOffices.contains(bhp.getAccountId()))
+				{
+					fieldOffices.add(bhp.getAccountId());
+					fieldOfficesPerHq.put(thisHqKey, fieldOffices);
+				}
+			}
+		}
+
+		private void addToCachedLeafInformation(DatabaseKey key, BulletinHeaderPacket bhp)
+		{
+			UniversalId maybeLeaf = bhp.getUniversalId();
+			if(!nonLeafUids.contains(maybeLeaf))
+				leafKeys.add(key);
+			
+			BulletinHistory history = bhp.getHistory();
+			for(int i=0; i < history.size(); ++i)
+			{
+				String thisLocalId = history.get(i);
+				UniversalId uidOfNonLeaf = UniversalId.createFromAccountAndLocalId(bhp.getAccountId(), thisLocalId);
+				leafKeys.remove(DatabaseKey.createSealedKey(uidOfNonLeaf));
+				leafKeys.remove(DatabaseKey.createDraftKey(uidOfNonLeaf));
+				nonLeafUids.add(uidOfNonLeaf);
 			}
 		}
 
 		private BulletinStore store;
+		private boolean hitErrorsDuringScan;
 		private Vector leafKeys;
 		private Vector nonLeafUids;
+		private HashMap fieldOfficesPerHq;
 	}
 
 	private MartusCrypto security;
