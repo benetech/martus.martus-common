@@ -587,8 +587,8 @@ public class BulletinStore
 			try
 			{
 				BulletinHeaderPacket bhp = BulletinStore.loadBulletinHeaderPacket(getDatabase(), key, getSecurity());
-				addToCachedLeafInformation(key, bhp);
-				addToCachedHqInformation(bhp);
+				addToCachedHqInformation(key, bhp.getAuthorizedToReadKeys());
+				addToCachedLeafInformation(key, bhp.getHistory());
 			}
 			catch(Exception e)
 			{
@@ -608,32 +608,30 @@ public class BulletinStore
 			return store.getSignatureVerifier();
 		}
 		
-		private void addToCachedHqInformation(BulletinHeaderPacket bhp)
+		private void addToCachedHqInformation(DatabaseKey key, HQKeys hqs)
 		{
-			HQKeys hqs = bhp.getAuthorizedToReadKeys();
 			for(int i=0; i < hqs.size(); ++i)
 			{
 				String thisHqKey = hqs.get(i).getPublicKey();
 				Vector fieldOffices = internalGetFieldOffices(thisHqKey);
-				if(!fieldOffices.contains(bhp.getAccountId()))
+				if(!fieldOffices.contains(key.getAccountId()))
 				{
-					fieldOffices.add(bhp.getAccountId());
+					fieldOffices.add(key.getAccountId());
 					fieldOfficesPerHq.put(thisHqKey, fieldOffices);
 				}
 			}
 		}
 
-		private void addToCachedLeafInformation(DatabaseKey key, BulletinHeaderPacket bhp)
+		private void addToCachedLeafInformation(DatabaseKey key, BulletinHistory history)
 		{
-			UniversalId maybeLeaf = bhp.getUniversalId();
+			UniversalId maybeLeaf = key.getUniversalId();
 			if(!nonLeafUids.contains(maybeLeaf))
 				leafKeys.add(key);
 			
-			BulletinHistory history = bhp.getHistory();
 			for(int i=0; i < history.size(); ++i)
 			{
 				String thisLocalId = history.get(i);
-				UniversalId uidOfNonLeaf = UniversalId.createFromAccountAndLocalId(bhp.getAccountId(), thisLocalId);
+				UniversalId uidOfNonLeaf = UniversalId.createFromAccountAndLocalId(key.getAccountId(), thisLocalId);
 				leafKeys.remove(DatabaseKey.createSealedKey(uidOfNonLeaf));
 				leafKeys.remove(DatabaseKey.createDraftKey(uidOfNonLeaf));
 				nonLeafUids.add(uidOfNonLeaf);
