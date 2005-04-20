@@ -69,6 +69,11 @@ import org.martus.util.inputstreamwithseek.ZipEntryInputStreamWithSeek;
 
 public class BulletinStore
 {
+	public BulletinStore()
+	{
+		cache = new Cache(this);
+	}
+	
 	public void doAfterSigninInitialization(File dataRootDirectory, Database db) throws FileVerificationException, MissingAccountMapException, MissingAccountMapSignatureException
 	{
 		dir = dataRootDirectory;
@@ -181,7 +186,7 @@ public class BulletinStore
 	
 	public void clearCache()
 	{
-		cache = null;
+		cache.clear();
 	}
 	
 	public boolean hadErrorsWhileCacheing()
@@ -189,32 +194,18 @@ public class BulletinStore
 		return cache.hadErrors();
 	}
 	
-	private void populateCache()
-	{
-		cache = new Cache(this);
-	}
-	
 	public Vector scanForLeafKeys()
 	{
-		if(cache == null)
-			populateCache();
-
 		return cache.getLeafKeys();
 	}
 	
 	public Vector getNonLeafUids()
 	{
-		if(cache == null)
-			populateCache();
-		
 		return cache.getNonLeafUids();
 	}
 	
 	public Vector getFieldOffices(String hqAccountId)
 	{
-		if(cache == null)
-			populateCache();
-		
 		return cache.getFieldOffices(hqAccountId);
 	}
 
@@ -521,24 +512,57 @@ public class BulletinStore
 		{
 			store = storeToUse;
 
-			leafKeys = new Vector();
-			nonLeafUids = new Vector();
-			fieldOfficesPerHq = new HashMap();
-			
-			store.visitAllBulletinRevisions(this);
+			clear();
 		}
-
-		public Vector getLeafKeys()
+		
+		public synchronized void clear()
 		{
+			isValid = false;
+		}
+		
+		public synchronized Vector getLeafKeys()
+		{
+			fill();
 			return leafKeys;
 		}
 		
-		public Vector getNonLeafUids()
+		public synchronized Vector getNonLeafUids()
 		{
+			fill();
 			return nonLeafUids;
 		}
 		
-		public Vector getFieldOffices(String hqAccountId)
+		public synchronized Vector getFieldOffices(String hqAccountId)
+		{
+			fill();
+			return internalGetFieldOffices(hqAccountId);
+		}
+		
+		public synchronized boolean hadErrors()
+		{
+			return hitErrorsDuringScan;
+		}
+		
+		
+		
+		
+		
+		
+		
+		private void fill()
+		{
+			if(isValid)
+				return;
+
+			hitErrorsDuringScan = false;
+			leafKeys = new Vector();
+			nonLeafUids = new Vector();
+			fieldOfficesPerHq = new HashMap();
+			store.visitAllBulletinRevisions(this);
+			isValid = true;
+		}
+
+		private Vector internalGetFieldOffices(String hqAccountId)
 		{
 			Vector results = (Vector)fieldOfficesPerHq.get(hqAccountId);
 			if(results == null)
@@ -546,20 +570,10 @@ public class BulletinStore
 			
 			return results;
 		}
-		
-		public boolean hadErrors()
+
+		public synchronized boolean isCacheValid()
 		{
-			return hitErrorsDuringScan;
-		}
-		
-		private ReadableDatabase getDatabase()
-		{
-			return store.getDatabase();
-		}
-		
-		private MartusCrypto getSecurity()
-		{
-			return store.getSignatureVerifier();
+			return isValid;
 		}
 		
 		public void visit(DatabaseKey key)
@@ -578,13 +592,23 @@ public class BulletinStore
 			}
 		}
 
+		private ReadableDatabase getDatabase()
+		{
+			return store.getDatabase();
+		}
+		
+		private MartusCrypto getSecurity()
+		{
+			return store.getSignatureVerifier();
+		}
+		
 		private void addToCachedHqInformation(BulletinHeaderPacket bhp)
 		{
 			HQKeys hqs = bhp.getAuthorizedToReadKeys();
 			for(int i=0; i < hqs.size(); ++i)
 			{
 				String thisHqKey = hqs.get(i).getPublicKey();
-				Vector fieldOffices = getFieldOffices(thisHqKey);
+				Vector fieldOffices = internalGetFieldOffices(thisHqKey);
 				if(!fieldOffices.contains(bhp.getAccountId()))
 				{
 					fieldOffices.add(bhp.getAccountId());
@@ -611,6 +635,7 @@ public class BulletinStore
 		}
 
 		private BulletinStore store;
+		private boolean isValid;
 		private boolean hitErrorsDuringScan;
 		private Vector leafKeys;
 		private Vector nonLeafUids;
