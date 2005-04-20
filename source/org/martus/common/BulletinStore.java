@@ -538,6 +538,12 @@ public class BulletinStore
 			return internalGetFieldOffices(hqAccountId);
 		}
 		
+		// TODO: NOTE! There is a corner case where this could return an incorrect value:
+		// Client A starts a scan, and gets an error
+		// Client B clears the cache and starts their own scan
+		// Client A asks if there were errors, and is told "no"
+		// The proper way to handle it is for all the getXxx calls to return an 
+		// object that contains both the data, and whether or not there was an error
 		public synchronized boolean hadErrors()
 		{
 			return hitErrorsDuringScan;
