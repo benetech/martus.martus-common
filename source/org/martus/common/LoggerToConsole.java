@@ -30,6 +30,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
 import org.martus.common.xmlrpc.XmlRpcThread;
+import org.martus.util.LoggerUtil;
 
 
 public class LoggerToConsole implements LoggerInterface
@@ -54,6 +55,11 @@ public class LoggerToConsole implements LoggerInterface
 	public void logError(String message)
 	{
 		log("ERROR: " + message);
+	}
+	
+	public void logError(Exception e)
+	{
+		logError(LoggerUtil.getStackTrace(e));
 	}
 	
 	public void logNotice(String message)

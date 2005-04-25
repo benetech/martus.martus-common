@@ -32,6 +32,7 @@ public class LoggerToNull implements LoggerInterface
 	public LoggerToNull(){}
 	public void log(String message){}
 	public void logError(String message){}
+	public void logError(Exception e){}
 	public void logNotice(String message){}
 	public void logWarning(String message){}
 	public void logInfo(String message){}

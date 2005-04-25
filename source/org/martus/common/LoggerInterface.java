@@ -31,6 +31,9 @@ public interface LoggerInterface
 	/**logError - always logged, indicates an error which requires attention*/
 	public abstract void logError(String message);
 
+	/**logError - always logged, indicates an error which requires attention, prints the stack trace as well*/
+	public abstract void logError(Exception e);
+	
 	/**logWarning - always logged, could potentially be a problem*/
 	public abstract void logWarning(String message);
 	
