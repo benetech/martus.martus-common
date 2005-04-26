@@ -34,8 +34,8 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 
+import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.DERInputStream;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DERObject;
 import org.bouncycastle.asn1.DEROutputStream;
@@ -177,7 +177,7 @@ public class MartusDirectCryptoKeyPair extends MartusKeyPair
 	{
 		byte[] publicKeyBytes = Base64.decode(recipientPublicKeyX509);
 		ByteArrayInputStream rawIn = new ByteArrayInputStream(publicKeyBytes);
-		DERInputStream in = new DERInputStream(rawIn);
+		ASN1InputStream in = new ASN1InputStream(rawIn);
 		SubjectPublicKeyInfo info = new SubjectPublicKeyInfo((ASN1Sequence)(in.readObject()));
 		RSAPublicKeyStructure pubKey = new RSAPublicKeyStructure((ASN1Sequence)info.getPublicKey());
 		

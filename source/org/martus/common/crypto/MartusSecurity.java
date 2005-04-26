@@ -58,6 +58,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
@@ -70,13 +71,15 @@ import javax.crypto.spec.PBEParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
+
 import org.bouncycastle.jce.X509Principal;
-import org.bouncycastle.jce.X509V1CertificateGenerator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.x509.X509V1CertificateGenerator;
 import org.martus.common.MartusConstants;
 import org.martus.util.Base64;
 import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
+
 import com.isnetworks.provider.random.InfiniteMonkeyProvider;
 
 public class MartusSecurity extends MartusCrypto
