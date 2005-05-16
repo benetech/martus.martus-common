@@ -103,7 +103,7 @@ public class MartusSecurity extends MartusCrypto
 
 	synchronized void initialize(SecureRandom rand)throws CryptoInitializationException
 	{
-		Security.addProvider(new BouncyCastleProvider());
+		Security.insertProviderAt(new BouncyCastleProvider(), 2);
 
 		try
 		{
