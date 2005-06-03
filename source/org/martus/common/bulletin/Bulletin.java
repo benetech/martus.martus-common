@@ -363,11 +363,17 @@ public class Bulletin implements BulletinConstants
 		String lookForLowerCase = lookFor.toLowerCase();
 		for(int f = 0; f < fields.length; ++f)
 		{
-			String contents = get(fields[f].getTag()).toLowerCase();
-			if(contents.indexOf(lookForLowerCase) >= 0)
+			String fieldTag = fields[f].getTag();
+			if(doesFieldContain(fieldTag, lookForLowerCase))
 				return true;
 		}
 		return false;
+	}
+
+	public boolean doesFieldContain(String fieldTag, String lookForLowerCase)
+	{
+		String contents = get(fieldTag).toLowerCase();
+		return (contents.indexOf(lookForLowerCase) >= 0);
 	}
 
 	public boolean withinDates(String beginDate, String endDate)
