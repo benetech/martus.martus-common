@@ -70,7 +70,7 @@ public class BulletinHtmlGenerator
 		html.append("'>\n");
 		int leftColumnWidthPercentage = 15;
 		if(LanguageOptions.isRightToLeftLanguage())
-			leftColumnWidthPercentage = 70;
+			leftColumnWidthPercentage = (100-leftColumnWidthPercentage);
 		int rightColumnWidthPercentage = (100-leftColumnWidthPercentage);
 		html.append("<tr>");
 		html.append("<td width='" + leftColumnWidthPercentage + "%'></td>");
