@@ -107,9 +107,8 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 			"<tr><td align='right' valign='top'>Last Saved</td><td valign='top'>"+loc.formatDateTime(b.getLastSavedTime())+"</td></tr>\n"+
 			"<tr><td align='right' valign='top'>Version</td><td valign='top'>1</td></tr>\n"+
 			"<tr><td align='right' valign='top'>Bulletin Status:</td><td valign='top'>Sealed</td></tr>\n"+
-			"<tr></tr><tr><td colspan='2'>" +
-				"<tr><td align='right' valign='top'><u><b>Private Information</b></u></td><td valign='top'></td></tr>\n"+
-			"</td></tr>\n"+
+			"<tr></tr>\n" + 
+			"<tr><td colspan='2' align='left'><u><b>Private Information</b></u></td></tr>\n"+
 			"<tr><td align='right' valign='top'>Keep ALL Information Private</td><td valign='top'>Yes</td></tr>\n"+
 			"<tr><td align='right' valign='top'>Language</td><td valign='top'>-Other-</td></tr>\n"+
 			"<tr><td align='right' valign='top'>Author</td><td valign='top'></td></tr>\n"+
@@ -122,16 +121,15 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 			"<tr><td align='right' valign='top'>Summary</td><td valign='top'><p></p></td></tr>\n"+
 			"<tr><td align='right' valign='top'>Details</td><td valign='top'><p></p></td></tr>\n"+
 			"<tr><td align='right' valign='top'>Attachments</td><td valign='top'></td></tr>\n"+
-			"<tr></tr><tr><td colspan='2'>" +
-				"<tr><td align='right' valign='top'><u><b>Private Information</b></u></td><td valign='top'></td></tr>\n"+
-			"</td></tr>\n"+
+			"<tr></tr>\n" + 
+			"<tr><td colspan='2' align='left'><u><b>Private Information</b></u></td></tr>\n"+
 			"<tr><td align='right' valign='top'>Private</td><td valign='top'><p></p></td></tr>\n"+
 			"<tr><td align='right' valign='top'>Attachments</td><td valign='top'></td></tr>\n"+
-			"<tr><td colspan='2'>" +
-				"<tr><td align='right' valign='top'><u><b>Headquarters</b></u></td><td valign='top'></td></tr>\n"+
-			"</td></tr>\n"+
+			"<tr></tr>\n" + 
+			"<tr><td colspan='2' align='left'><u><b>Headquarters</b></u></td></tr>\n"+
 			"<tr><td align='right' valign='top'></td><td valign='top'>No Headquarters accounts selected for this bulletin.</td></tr>\n"+
-			"<tr></tr><tr><td align='right' valign='top'>Bulletin Id:</td><td valign='top'>"+b.getLocalId()+"</td></tr>\n"+
+			"<tr></tr>\n" + 
+			"<tr><td align='right' valign='top'>Bulletin Id:</td><td valign='top'>"+b.getLocalId()+"</td></tr>\n"+
 			"</table></html>";
 		assertEquals("Entire Bulletin's HTML not correct", expectedHtml, generator.getHtmlString(b, store.getDatabase(), true, true));
 	}
@@ -153,11 +151,10 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 			"<tr><td align='right' valign='top'>Last Saved</td><td valign='top'>"+loc.formatDateTime(b.getLastSavedTime())+"</td></tr>\n"+
 			"<tr><td align='right' valign='top'>Version</td><td valign='top'>1</td></tr>\n"+
 			"<tr><td align='right' valign='top'>Bulletin Status:</td><td valign='top'>Draft</td></tr>\n"+
-			"<tr></tr><tr></tr>" +
+			"<tr></tr>\n" + 
 			"<tr><td align='right' valign='top'>Field Desk Bulletin</td><td valign='top'></td></tr>\n"+
-			"<tr></tr><tr><td colspan='2'>" +
-				"<tr><td align='right' valign='top'><u><b>Public Information</b></u></td><td valign='top'></td></tr>\n"+
-			"</td></tr>\n"+
+			"<tr></tr>\n" + 
+			"<tr><td colspan='2' align='left'><u><b>Public Information</b></u></td></tr>\n"+
 			"<tr><td align='right' valign='top'>Keep ALL Information Private</td><td valign='top'>No</td></tr>\n"+
 			"<tr><td align='right' valign='top'>Language</td><td valign='top'>-Other-</td></tr>\n"+
 			"<tr><td align='right' valign='top'>Author</td><td valign='top'></td></tr>\n"+
@@ -170,11 +167,10 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 			"<tr><td align='right' valign='top'>Summary</td><td valign='top'><p></p></td></tr>\n"+
 			"<tr><td align='right' valign='top'>Details</td><td valign='top'><p></p></td></tr>\n"+
 			"<tr><td align='right' valign='top'>Attachments</td><td valign='top'></td></tr>\n"+
-			"<tr><td colspan='2'><tr>" +
-				"<td align='right' valign='top'><u><b>Headquarters</b></u></td><td valign='top'></td></tr>\n"+
-			"</td></tr>\n"+
+			"<tr></tr>\n" + 
+			"<tr><td colspan='2' align='left'><u><b>Headquarters</b></u></td></tr>\n"+
 			"<tr><td align='right' valign='top'></td><td valign='top'>No Headquarters accounts selected for this bulletin.</td></tr>\n"+
-			"<tr></tr>" +
+			"<tr></tr>\n" + 
 			"<tr><td align='right' valign='top'>Bulletin Id:</td><td valign='top'>"+b.getLocalId()+"</td></tr>\n"+
 			"</table></html>";
 		assertEquals("Entire Bulletin's HTML not correct", expectedHtml, generator.getHtmlString(b, store.getDatabase(), false, false));
@@ -252,8 +248,9 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 		{
 			BulletinHtmlGenerator generator = new BulletinHtmlGenerator(loc);
 			String html = generator.getHtmlString(b, store.getDatabase(), true, true);
-			assertStartsWith("column widths not reversed?", "<html><table width='80'>\n<tr><td width='70%'></td><td width='30%'></td></tr>\n", html);
+			assertStartsWith("column widths not reversed?", "<html><table width='80'>\n<tr><td width='85%'></td><td width='15%'></td></tr>\n", html);
 			assertContains("column values not reversed?", "<tr><td align='right' valign='top'>Bradbury</td><td valign='top'>Author</td></tr>\n", html);
+			assertContains("heading not aligned right?", "<tr><td colspan='2' align='right'><u><b>Headquarters</b></u></td></tr>\n", html);
 		}
 		finally
 		{

@@ -47,7 +47,6 @@ import org.martus.util.language.LanguageOptions;
 
 public class BulletinHtmlGenerator
 {
-	
 	public BulletinHtmlGenerator(MiniLocalization localizationToUse)
 	{
 		this(80, localizationToUse);
@@ -68,7 +67,7 @@ public class BulletinHtmlGenerator
 		html.append("<table width='");
 		html.append(Integer.toString(width));
 		html.append("'>\n");
-		int leftColumnWidthPercentage = 15;
+		int leftColumnWidthPercentage = LABEL_COLUMN_WIDTH_PERCENTAGE;
 		if(LanguageOptions.isRightToLeftLanguage())
 			leftColumnWidthPercentage = (100-leftColumnWidthPercentage);
 		int rightColumnWidthPercentage = (100-leftColumnWidthPercentage);
@@ -77,12 +76,10 @@ public class BulletinHtmlGenerator
 		html.append("<td width='" + rightColumnWidthPercentage + "%'></td>");
 		html.append("</tr>\n");
 		appendHeadHtml(html, b);
-		
 		if(!yourBulletin)
 		{
-			html.append("<tr></tr>");
+			html.append("<tr></tr>\n");
 			html.append(getHtmlEscapedFieldHtmlString(localization.getFieldLabel("BulletinNotYours"),""));		
-			html.append("<tr></tr>");	
 		}
 
 		String publicSectionTitle =  localization.getFieldLabel("publicsection");
@@ -108,7 +105,6 @@ public class BulletinHtmlGenerator
 
 		if (includePrivateData)
 		{	
-			html.append("<tr></tr>");
 			appendTitleOfSection(html, localization.getFieldLabel("privatesection"));
 			html.append(getSectionHtmlString(b.getPrivateFieldDataPacket()));
 			html.append(getAttachmentsHtmlString(b.getPrivateAttachments(), database));
@@ -120,8 +116,12 @@ public class BulletinHtmlGenerator
 	
 	private void appendTitleOfSection(StringBuffer html, String title)
 	{
-		html.append("<tr><td colspan='2'>");
-		html.append(getFieldHtmlString("<u><b>"+title+"</b></u>",""));
+		html.append("<tr></tr>\n");
+		String align = "left";
+		if(LanguageOptions.isRightToLeftLanguage())
+			align = "right";
+		html.append("<tr><td colspan='2' align='" + align + "'>");
+		html.append("<u><b>"+title+"</b></u>");
 		html.append("</td></tr>");
 		html.append("\n");
 	}	
@@ -131,12 +131,11 @@ public class BulletinHtmlGenerator
 		html.append(getHtmlEscapedFieldHtmlString(localization.getFieldLabel("BulletinLastSaved"), localization.formatDateTime(b.getLastSavedTime())));
 		html.append(getHtmlEscapedFieldHtmlString(localization.getFieldLabel("BulletinVersionNumber"), (new Integer(b.getVersion())).toString()));
 		html.append(getHtmlEscapedFieldHtmlString(localization.getFieldLabel("BulletinStatus"), localization.getStatusLabel(b.getStatus())));
-		html.append("<tr></tr>");		
 	}
 	
 	private void appendTailHtml(StringBuffer html, Bulletin b )
 	{
-		html.append("<tr></tr>");
+		html.append("<tr></tr>\n");
 		html.append(getHtmlEscapedFieldHtmlString(localization.getFieldLabel("BulletinId"),b.getLocalId()));
 		html.append("</table>");
 		html.append("</html>");
@@ -401,6 +400,7 @@ public class BulletinHtmlGenerator
 	MiniLocalization localization;
 	Bulletin bulletin;
 
+	private static final int LABEL_COLUMN_WIDTH_PERCENTAGE = 15;
 	private static final String TABLE_HEADER = "th";
 	private static final String TABLE_DATA = "td";
 	
