@@ -67,7 +67,15 @@ public class BulletinHtmlGenerator
 		
 		html.append("<table width='");
 		html.append(Integer.toString(width));
-		html.append("'>");		
+		html.append("'>\n");
+		int leftColumnWidthPercentage = 15;
+		if(LanguageOptions.isRightToLeftLanguage())
+			leftColumnWidthPercentage = 70;
+		int rightColumnWidthPercentage = (100-leftColumnWidthPercentage);
+		html.append("<tr>");
+		html.append("<td width='" + leftColumnWidthPercentage + "%'></td>");
+		html.append("<td width='" + rightColumnWidthPercentage + "%'></td>");
+		html.append("</tr>\n");
 		appendHeadHtml(html, b);
 		
 		if(!yourBulletin)
@@ -337,20 +345,21 @@ public class BulletinHtmlGenerator
 
 	private String getFieldHtmlString(String label, String value)
 	{
-		StringBuffer fieldHtml = new StringBuffer(value.length() + 100);
-		String width = "15%";
+		String leftData = label;
+		String rightData = value;
+		
 		if(LanguageOptions.isRightToLeftLanguage())
 		{
-			String tmp = label;
-			label = value;
-			value = tmp;
-			width = "70%";
+			leftData = value;
+			rightData = label;
 		}
-		fieldHtml.append("<tr><td width='"+width+"' align='right' valign='top'>");		
-		fieldHtml.append(label);
+
+		StringBuffer fieldHtml = new StringBuffer(label.length() + value.length() + 100);
+		fieldHtml.append("<tr><td align='right' valign='top'>");
+		fieldHtml.append(leftData);
 		fieldHtml.append("</td>");
 		fieldHtml.append("<td valign='top'>");
-		fieldHtml.append(value);
+		fieldHtml.append(rightData);
 		fieldHtml.append("</td></tr>");
 		fieldHtml.append("\n");
 		return new String(fieldHtml);
