@@ -50,7 +50,10 @@ public class GridData
 		rows = new Vector();
 	}
 	
-	public class AlreadyInitalizedException extends Exception{}
+	public class AlreadyInitalizedException extends Exception
+	{
+		private static final long serialVersionUID = 1;
+	}
 	
 	public void setMaxColumns(int maxColumns) throws AlreadyInitalizedException
 	{

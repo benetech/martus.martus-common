@@ -36,6 +36,8 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
+import java.io.NotSerializableException;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -122,6 +124,13 @@ public class UiVirtualKeyboard
 		{
 			passwordField.requestFocus();
 		}
+
+		private static final long serialVersionUID = 1;
+		private void writeObject(java.io.ObjectOutputStream stream) throws IOException
+		{
+			throw new NotSerializableException();
+		}
+
 	}
 	
 	public class MouseHandler implements MouseListener

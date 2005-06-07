@@ -27,6 +27,8 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common;
 
+import java.io.IOException;
+import java.io.NotSerializableException;
 import java.util.Vector;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.network.NetworkInterfaceConstants;
@@ -178,6 +180,12 @@ public class BulletinSummary
 			expected = getNormalRetrieveTags().size();
 		}
 		
+		private static final long serialVersionUID = 1;
+		private void writeObject(java.io.ObjectOutputStream stream) throws IOException
+		{
+			throw new NotSerializableException();
+		}
+
 		public int got;
 		public int expected;
 	}

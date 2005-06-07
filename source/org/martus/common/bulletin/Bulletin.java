@@ -61,6 +61,7 @@ public class Bulletin implements BulletinConstants
 
 	public static class DamagedBulletinException extends Exception
 	{
+		private static final long serialVersionUID = 1;
 	}
 
 	public Bulletin(MartusCrypto securityToUse)

@@ -49,7 +49,10 @@ import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 
 abstract public class Database extends ReadableDatabase
 {
-	public static class RecordHiddenException extends Exception {}
+	public static class RecordHiddenException extends Exception 
+	{
+		private static final long serialVersionUID = 1;
+	}
 
 	protected Database()
 	{

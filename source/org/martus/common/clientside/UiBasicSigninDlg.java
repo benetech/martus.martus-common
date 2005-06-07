@@ -31,6 +31,8 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.NotSerializableException;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -188,6 +190,13 @@ public class UiBasicSigninDlg extends JDialog
 		}
 	}
 	
+
+	private static final long serialVersionUID = 1;
+	private void writeObject(java.io.ObjectOutputStream stream) throws IOException
+	{
+		throw new NotSerializableException();
+	}
+
 	public UiSigninPanel signinPane;
 	public UiBasicLocalization localization;
 	public CurrentUiState uiState;

@@ -45,7 +45,10 @@ public class ClientSideNetworkHandlerUsingXmlRpc
 	implements NetworkInterfaceConstants, NetworkInterfaceXmlRpcConstants, NetworkInterface
 {
 
-	public static class SSLSocketSetupException extends Exception {}
+	public static class SSLSocketSetupException extends Exception 
+	{
+		private static final long serialVersionUID = 1;
+	}
 
 	public ClientSideNetworkHandlerUsingXmlRpc(String serverName, int[] portsToUse) throws SSLSocketSetupException
 	{

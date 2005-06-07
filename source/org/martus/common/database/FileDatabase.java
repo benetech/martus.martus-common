@@ -69,8 +69,15 @@ abstract public class FileDatabase extends Database
 	}
 
 
-	public static class MissingAccountMapException extends Exception {}
-	public static class MissingAccountMapSignatureException extends Exception {}
+	public static class MissingAccountMapException extends Exception 
+	{
+		private static final long serialVersionUID = 1;
+	}
+
+	public static class MissingAccountMapSignatureException extends Exception 
+	{
+		private static final long serialVersionUID = 1;
+	}
 
 	// Database interface
 	public void deleteAllData() throws Exception
@@ -524,7 +531,10 @@ abstract public class FileDatabase extends Database
 		return sealedQuarantinePrefix;
 	}
 
-	public class TooManyAccountsException extends IOException {}
+	public class TooManyAccountsException extends IOException 
+	{
+		private static final long serialVersionUID = 1;
+	}
 
 	public File getAccountDirectory(String accountString) throws IOException, TooManyAccountsException
 	{

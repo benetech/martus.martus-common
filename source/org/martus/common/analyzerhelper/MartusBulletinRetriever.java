@@ -31,6 +31,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+
 import org.martus.common.ProgressMeterInterface;
 import org.martus.common.MartusUtilities.PublicInformationInvalidException;
 import org.martus.common.MartusUtilities.ServerErrorException;
@@ -52,8 +53,15 @@ import org.martus.util.Base64.InvalidBase64Exception;
 
 public class MartusBulletinRetriever
 {
-	public class ServerNotConfiguredException extends Exception{};
-	public class ServerPublicCodeDoesNotMatchException extends Exception {};
+	public class ServerNotConfiguredException extends Exception
+	{
+		private static final long serialVersionUID = 1;
+	}
+	
+	public class ServerPublicCodeDoesNotMatchException extends Exception 
+	{
+		private static final long serialVersionUID = 1;
+	}
 	
 	public MartusBulletinRetriever(InputStream keyPair, char[] password) throws CryptoInitializationException, InvalidKeyPairFileVersionException, AuthorizationFailedException, IOException
 	{

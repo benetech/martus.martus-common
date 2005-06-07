@@ -30,30 +30,37 @@ public class Exceptions
 {
 	public static class MartusClientApplicationException extends Exception
 	{
+		private static final long serialVersionUID = 1;
 	}
 
 	public static class InvalidUserNameOrPassword extends MartusClientApplicationException
 	{
+		private static final long serialVersionUID = 1;
 	}
 
 	public static class BlankUserNameException extends InvalidUserNameOrPassword
 	{
+		private static final long serialVersionUID = 1;
 	}
 
 	public static class PasswordMatchedUserNameException extends InvalidUserNameOrPassword
 	{
+		private static final long serialVersionUID = 1;
 	}
 
 	public static class PasswordTooShortException extends InvalidUserNameOrPassword
 	{
+		private static final long serialVersionUID = 1;
 	}
 	
 	public static class ServerCallFailedException extends Exception
 	{
+		private static final long serialVersionUID = 1;
 	}
 	
 	public static class ServerNotAvailableException extends Exception
 	{
+		private static final long serialVersionUID = 1;
 	}
 
 }

@@ -32,6 +32,7 @@ import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Arrays;
+
 import org.martus.common.MartusUtilities;
 import org.martus.common.MartusXml;
 import org.martus.common.VersionBuildDate;
@@ -60,6 +61,8 @@ public class Packet
 		{
 			super(message);
 		}
+
+		private static final long serialVersionUID = 1;
 	}
 
 	public static class WrongPacketTypeException extends SAXException
@@ -68,6 +71,8 @@ public class Packet
 		{
 			super(message);
 		}
+
+		private static final long serialVersionUID = 1;
 	}
 
 	public static class SignatureVerificationException extends SAXException
@@ -76,11 +81,14 @@ public class Packet
 		{
 			super("Signature verification exception");
 		}
+
+		private static final long serialVersionUID = 1;
 	}
 
 
 	public static class WrongAccountException extends Exception
 	{
+		private static final long serialVersionUID = 1;
 	}
 
 	public Packet()

@@ -76,7 +76,10 @@ public class CustomFields
 		return result;
 	}
 	
-	public static class CustomFieldsParseException extends Exception {}
+	public static class CustomFieldsParseException extends Exception 
+	{
+		private static final long serialVersionUID = 1;
+	}
 	
 	public static FieldSpec[] parseXml(String xml) throws CustomFieldsParseException
 	{

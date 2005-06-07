@@ -134,7 +134,10 @@ public class HQKeys
 		return xmlRepresentation;
 	}
 
-	public static class HQsException extends Exception {}
+	public static class HQsException extends Exception 
+	{
+		private static final long serialVersionUID = 1;
+	}
 
 	public boolean containsKey(String publicKey)
 	{

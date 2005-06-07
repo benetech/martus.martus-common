@@ -75,7 +75,10 @@ public class AuthorizedSessionKeys
 		return xmlRepresentation;
 	}
 	
-	public static class AuthorizedSessionKeysException extends Exception {}
+	public static class AuthorizedSessionKeysException extends Exception 
+	{
+		private static final long serialVersionUID = 1;
+	}
 
 	public static HashMap parseXml(String xml) throws AuthorizedSessionKeysException
 	{

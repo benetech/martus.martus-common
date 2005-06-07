@@ -39,7 +39,10 @@ import org.martus.common.network.SimpleX509TrustManager;
 
 public class CallerSideMirroringGatewayForXmlRpc implements MirroringInterface
 {
-	public static class SSLSocketSetupException extends Exception {}
+	public static class SSLSocketSetupException extends Exception
+	{
+		private static final long serialVersionUID = 1;
+	}
 
 	public CallerSideMirroringGatewayForXmlRpc(String serverName, int portToUse) throws SSLSocketSetupException
 	{

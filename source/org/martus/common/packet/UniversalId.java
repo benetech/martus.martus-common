@@ -26,12 +26,15 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.packet;
 
-import java.io.Serializable;
+// TODO: Remove this reference...use whatever we're using to create new uids from scratch
 import java.rmi.server.UID;
 
-public class UniversalId implements Comparable, Serializable
+public class UniversalId implements Comparable
 {
-	public static class NotUniversalIdException extends Exception {}
+	public static class NotUniversalIdException extends Exception 
+	{
+		private static final long serialVersionUID = 1;
+	}
 
 	public static UniversalId createFromAccountAndLocalId(String accountId, String localId)
 	{
