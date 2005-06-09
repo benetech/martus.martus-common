@@ -232,6 +232,12 @@ public class Bulletin implements BulletinConstants
 
 	public String get(String fieldName)
 	{			 
+		if(fieldName.equals("M_LocalId"))
+			return getLocalId();
+		
+		if(fieldName.equals("M_LastSavedDate"))
+			return getLastSavedDate();
+		
 		if(isFieldInPublicSection(fieldName))
 			return fieldData.get(fieldName);
 		return getPrivateFieldDataPacket().get(fieldName);

@@ -110,6 +110,13 @@ public class TestBulletin extends TestCaseEnhanced
 
 	}
     
+    public void testPseudoFields()
+    {
+    	Bulletin b = new Bulletin(security);
+    	assertEquals(b.getLocalId(), b.get("M_LocalId"));
+    	assertEquals(b.getLastSavedDate(), b.get("M_LastSavedDate"));
+    }
+    
     public void testGetLastSavedDate() throws Exception
 	{
     	Bulletin b = new Bulletin(security);
