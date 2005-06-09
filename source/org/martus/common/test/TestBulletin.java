@@ -117,6 +117,15 @@ public class TestBulletin extends TestCaseEnhanced
     	assertEquals(b.getLastSavedDate(), b.get("M_LastSavedDate"));
     }
     
+    public void testGetFieldType()
+    {
+    	Bulletin b = new Bulletin(security);
+    	assertEquals(FieldSpec.TYPE_UNKNOWN, b.getFieldType("Not a real field tag"));
+    	assertEquals(FieldSpec.TYPE_DATE, b.getFieldType(BulletinConstants.TAGENTRYDATE));
+    	assertEquals(FieldSpec.TYPE_DATERANGE, b.getFieldType(BulletinConstants.TAGEVENTDATE));
+    	assertEquals(FieldSpec.TYPE_MULTILINE, b.getFieldType(BulletinConstants.TAGPRIVATEINFO));
+    }
+    
     public void testGetLastSavedDate() throws Exception
 	{
     	Bulletin b = new Bulletin(security);
@@ -287,7 +296,7 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals("Version should still be 2", 2, b.getVersion());
 	}
 
-	public void testGetFieldType()
+	public void testGetStandardFieldTypes()
 	{
 		FieldSpec[] standardPublicFields = StandardFieldSpecs.getDefaultPublicFieldSpecs();
 		for (int i = 0; i < standardPublicFields.length; i++)

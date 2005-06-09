@@ -140,13 +140,28 @@ public class FieldDataPacket extends Packet
 
 	public boolean fieldExists(String fieldTag)
 	{
+		return (getFieldSpec(fieldTag) != null);
+	}
+	
+	public int getFieldType(String fieldTag)
+	{
+		FieldSpec spec = getFieldSpec(fieldTag);
+		if(spec == null)
+			return FieldSpec.TYPE_UNKNOWN;
+		
+		return spec.getType();
+	}
+	
+	private FieldSpec getFieldSpec(String fieldTag)
+	{
 		FieldSpec[] specs = getFieldSpecs();
 		for(int f = 0; f < specs.length; ++f)
 		{
 			if(specs[f].getTag().equals(fieldTag))
-				return true;
+				return specs[f];
 		}
-		return false;
+		
+		return null;
 	}
 
 	public String get(String fieldTag)

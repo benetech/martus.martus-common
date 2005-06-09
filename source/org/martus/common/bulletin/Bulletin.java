@@ -242,6 +242,17 @@ public class Bulletin implements BulletinConstants
 			return fieldData.get(fieldName);
 		return getPrivateFieldDataPacket().get(fieldName);
 	}
+	
+	public int getFieldType(String tag)
+	{
+		if(isFieldInPublicSection(tag))
+			return getFieldDataPacket().getFieldType(tag);
+		
+		if(isFieldInPrivateSection(tag))
+			return getPrivateFieldDataPacket().getFieldType(tag);
+		
+		return FieldSpec.TYPE_UNKNOWN;
+	}
 
 	public void addPublicAttachment(AttachmentProxy a) throws
 		IOException,
