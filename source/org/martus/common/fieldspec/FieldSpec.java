@@ -53,9 +53,14 @@ public class FieldSpec
 	
 	public FieldSpec(int typeToUse)
 	{
-		this("","",typeToUse,false);
+		this("", typeToUse);
 	}
 	
+	public FieldSpec(String labelToUse, int typeToUse)
+	{
+		this("",labelToUse,typeToUse,false);
+	}
+
 	public FieldSpec(String tagToUse, String labelToUse, int typeToUse, boolean hasUnknownToUse)
 	{
 		tag = tagToUse;

@@ -180,8 +180,14 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 	{
 		GridData grid = TestGridData.createSampleGrid();
 		GridFieldSpec gridSpec = new GridFieldSpec();
-		gridSpec.addColumn("Column 1");
-		gridSpec.addColumn("Column 2");
+		String label1 = "Column 1";
+		FieldSpec column1 = new FieldSpec(label1, FieldSpec.TYPE_NORMAL);
+
+		String label2 = "Column 2";
+		FieldSpec column2 = new FieldSpec(label2, FieldSpec.TYPE_NORMAL);
+
+		gridSpec.addColumn(column1);
+		gridSpec.addColumn(column2);
 		FieldSpec[] gridSpecs = {gridSpec};
 		FieldSpec[] standardPrivateFields = StandardFieldSpecs.getDefaultPrivateFieldSpecs();
 		
@@ -220,8 +226,13 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 	{
 		GridData grid = TestGridData.createSampleEmptyGrid();
 		GridFieldSpec gridSpec = new GridFieldSpec();
-		gridSpec.addColumn("Column 1");
-		gridSpec.addColumn("Column 2");
+		String label1 = "Column 1";
+		FieldSpec column1 = new FieldSpec(label1, FieldSpec.TYPE_NORMAL);
+		String label2 = "Column 2";
+		FieldSpec column2 = new FieldSpec(label2, FieldSpec.TYPE_NORMAL);
+
+		gridSpec.addColumn(column1);
+		gridSpec.addColumn(column2);
 		FieldSpec[] gridSpecs = {gridSpec};
 		FieldSpec[] standardPrivateFields = StandardFieldSpecs.getDefaultPrivateFieldSpecs();
 		

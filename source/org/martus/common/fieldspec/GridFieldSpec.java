@@ -25,6 +25,7 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.fieldspec;
 
+import java.util.Iterator;
 import java.util.Vector;
 
 import org.martus.common.MartusXml;
@@ -49,12 +50,20 @@ public class GridFieldSpec extends FieldSpec
 	
 	public String getColumnLabel(int column)
 	{
-		return (String)columns.get(column);
+		FieldSpec columnSpec = (FieldSpec)columns.get(column);
+		return columnSpec.getLabel();
 	}
 	
-	public void addColumn(String headerLabel)
+	public class UnsupportedFieldTypeException extends Exception
 	{
-		columns.add(headerLabel);
+		private static final long serialVersionUID = 1;
+	}
+
+	public void addColumn(FieldSpec columnSpec) throws UnsupportedFieldTypeException
+	{
+		if(columnSpec.getType() != TYPE_NORMAL)
+			throw new UnsupportedFieldTypeException();
+		columns.add(columnSpec);
 	}
 	
 	public void setColumnZeroLabel(String columnZeroLabelToUse)
@@ -69,7 +78,13 @@ public class GridFieldSpec extends FieldSpec
 	
 	public Vector getAllColumnLabels()
 	{
-		return columns;
+		Vector columnLabels = new Vector();
+		for(Iterator iter = columns.iterator(); iter.hasNext();)
+		{
+			FieldSpec element = (FieldSpec) iter.next();
+			columnLabels.add(element.getLabel());
+		}
+		return columnLabels;
 	}
 	
 	public String getDefaultValue()
@@ -115,7 +130,18 @@ public class GridFieldSpec extends FieldSpec
 			if(thisTag.equals(GRID_COLUMN_TAG))
 			{
 				SimpleXmlMapLoader loader = (SimpleXmlMapLoader)ended;
-				spec.addColumn(loader.get(GRID_COLUMN_LABEL_TAG));
+				//TODO fix this to a new XML loader for FieldSpecs
+				FieldSpec newColumnSpec = new FieldSpec(FieldSpec.TYPE_NORMAL);
+				newColumnSpec.setLabel(loader.get(GRID_COLUMN_LABEL_TAG));
+				try
+				{
+					spec.addColumn(newColumnSpec);
+				}
+				catch(UnsupportedFieldTypeException e)
+				{
+					e.printStackTrace();
+					throw new SAXParseException("UnsupportedFieldTypeException", null);
+				}
 			}
 			else
 			{

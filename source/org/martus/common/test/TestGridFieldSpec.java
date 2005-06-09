@@ -27,6 +27,7 @@ package org.martus.common.test;
 
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.GridFieldSpec;
+import org.martus.common.fieldspec.GridFieldSpec.UnsupportedFieldTypeException;
 import org.martus.util.TestCaseEnhanced;
 
 
@@ -48,9 +49,108 @@ public class TestGridFieldSpec extends TestCaseEnhanced
 		assertContains(SAMPLE_GRID_HEADER_LABEL_2, spec.getAllColumnLabels());
 		assertEquals(SAMPLE_GRID_FIELD_XML, spec.toString());
 	}
+	
+	public void testAddColumn() throws Exception
+	{
+		GridFieldSpec spec = new GridFieldSpec();
 
-	public static final String SAMPLE_GRID_HEADER_LABEL_1 = "column1";
-	public static final String SAMPLE_GRID_HEADER_LABEL_2 = "column2";
+		FieldSpec stringSpec = new FieldSpec("TYPE_NORMAL", FieldSpec.TYPE_NORMAL);
+		spec.addColumn(stringSpec);
+		assertEquals("TYPE_NORMAL", spec.getColumnLabel(0));
+
+		FieldSpec dropdownSpec = new FieldSpec("TYPE_DROPDOWN", FieldSpec.TYPE_DROPDOWN);
+		try
+		{
+			spec.addColumn(dropdownSpec);
+			fail("TYPE_DROPDOWN: Not yet implemented should have thrown exception");
+		}
+		catch(UnsupportedFieldTypeException expected)
+		{
+		}
+
+		FieldSpec booleanSpec = new FieldSpec("TYPE_BOOLEAN", FieldSpec.TYPE_BOOLEAN);
+		try
+		{
+			spec.addColumn(booleanSpec);
+			fail("TYPE_BOOLEAN: Not yet implemented should have thrown exception");
+		}
+		catch(UnsupportedFieldTypeException expected)
+		{
+		}
+
+		FieldSpec dateSpec = new FieldSpec("TYPE_DATE", FieldSpec.TYPE_DATE);
+		try
+		{
+			spec.addColumn(dateSpec);
+			fail("TYPE_DATE: Not yet implemented should have thrown exception");
+		}
+		catch(UnsupportedFieldTypeException expected)
+		{
+		}
+		
+		FieldSpec dateRangeSpec = new FieldSpec("TYPE_DATERANGE", FieldSpec.TYPE_DATERANGE);
+		try
+		{
+			spec.addColumn(dateRangeSpec);
+			fail("TYPE_DATERANGE: Not yet implemented should have thrown exception");
+		}
+		catch(UnsupportedFieldTypeException expected)
+		{
+		}
+
+		FieldSpec langSpec = new FieldSpec("TYPE_LANGUAGE", FieldSpec.TYPE_LANGUAGE);
+		try
+		{
+			spec.addColumn(langSpec);
+			fail("TYPE_LANGUAGE: Not yet implemented should have thrown exception");
+		}
+		catch(UnsupportedFieldTypeException expected)
+		{
+		}
+
+		FieldSpec multiLineSpec = new FieldSpec("TYPE_MULTILINE", FieldSpec.TYPE_MULTILINE);
+		try
+		{
+			spec.addColumn(multiLineSpec);
+			fail("TYPE_MULTILINE: Not yet implemented should have thrown exception");
+		}
+		catch(UnsupportedFieldTypeException expected)
+		{
+		}
+
+		FieldSpec gridSpec = new FieldSpec("TYPE_GRID", FieldSpec.TYPE_GRID);
+		try
+		{
+			spec.addColumn(gridSpec);
+			fail("TYPE_GRID: Can NOT have a Grid inside of a Grid.");
+		}
+		catch(UnsupportedFieldTypeException expected)
+		{
+		}
+
+		FieldSpec messageSpec = new FieldSpec("TYPE_MESSAGE", FieldSpec.TYPE_MESSAGE);
+		try
+		{
+			spec.addColumn(messageSpec);
+			fail("TYPE_MESSAGE: Can NOT have a Message inside of a Grid.");
+		}
+		catch(UnsupportedFieldTypeException expected)
+		{
+		}
+
+		FieldSpec unknownSpec = new FieldSpec("TYPE_UNKNOWN", FieldSpec.TYPE_UNKNOWN);
+		try
+		{
+			spec.addColumn(unknownSpec);
+			fail("TYPE_UNKNOWN: Can NOT have an Unknown type inside of a Grid.");
+		}
+		catch(UnsupportedFieldTypeException expected)
+		{
+		}
+	}
+
+	public static final String SAMPLE_GRID_HEADER_LABEL_1 = "label1";
+	public static final String SAMPLE_GRID_HEADER_LABEL_2 = "label2";
 	public static final String SAMPLE_GRID_FIELD_XML = "<Field type='GRID'>\n" +
 			"<Tag>custom</Tag>\n" +
 			"<Label>me</Label>\n" +
