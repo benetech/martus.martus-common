@@ -232,10 +232,10 @@ public class Bulletin implements BulletinConstants
 
 	public String get(String fieldName)
 	{			 
-		if(fieldName.equals("M_LocalId"))
+		if(fieldName.equals("_localId"))
 			return getLocalId();
 		
-		if(fieldName.equals("M_LastSavedDate"))
+		if(fieldName.equals("_lastSavedDate"))
 			return getLastSavedDate();
 		
 		if(isFieldInPublicSection(fieldName))
@@ -378,20 +378,19 @@ public class Bulletin implements BulletinConstants
 	private boolean doesSectionContain(FieldDataPacket section, String lookFor)
 	{
 		FieldSpec fields[] = section.getFieldSpecs();
-		String lookForLowerCase = lookFor.toLowerCase();
 		for(int f = 0; f < fields.length; ++f)
 		{
 			String fieldTag = fields[f].getTag();
-			if(doesFieldContain(fieldTag, lookForLowerCase))
+			if(doesFieldContain(fieldTag, lookFor))
 				return true;
 		}
 		return false;
 	}
 
-	public boolean doesFieldContain(String fieldTag, String lookForLowerCase)
+	public boolean doesFieldContain(String fieldTag, String lookFor)
 	{
 		String contents = get(fieldTag).toLowerCase();
-		return (contents.indexOf(lookForLowerCase) >= 0);
+		return (contents.indexOf(lookFor.toLowerCase()) >= 0);
 	}
 
 	public boolean withinDates(String beginDate, String endDate)
