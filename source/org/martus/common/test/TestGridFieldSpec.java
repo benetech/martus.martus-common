@@ -39,7 +39,18 @@ public class TestGridFieldSpec extends TestCaseEnhanced
 		super(name);
 	}
 	
-	public void testBasics() throws Exception
+	public void testGridXmlFieldSpecLoaderLegacy() throws Exception
+	{
+		FieldSpec.XmlFieldSpecLoader loader = new FieldSpec.XmlFieldSpecLoader();
+		loader.parse(SAMPLE_GRID_FIELD_XML_LEGACY);
+		GridFieldSpec spec = (GridFieldSpec)loader.getFieldSpec();
+		assertEquals(2, spec.getColumnCount());
+		assertContains(SAMPLE_GRID_HEADER_LABEL_1, spec.getAllColumnLabels());
+		assertContains(SAMPLE_GRID_HEADER_LABEL_2, spec.getAllColumnLabels());
+		assertEquals(SAMPLE_GRID_FIELD_XML, spec.toString());
+	}
+	
+	public void testGridXmlFieldSpecLoader() throws Exception
 	{
 		FieldSpec.XmlFieldSpecLoader loader = new FieldSpec.XmlFieldSpecLoader();
 		loader.parse(SAMPLE_GRID_FIELD_XML);
@@ -49,7 +60,7 @@ public class TestGridFieldSpec extends TestCaseEnhanced
 		assertContains(SAMPLE_GRID_HEADER_LABEL_2, spec.getAllColumnLabels());
 		assertEquals(SAMPLE_GRID_FIELD_XML, spec.toString());
 	}
-	
+
 	public void testAddColumn() throws Exception
 	{
 		GridFieldSpec spec = new GridFieldSpec();
@@ -151,7 +162,7 @@ public class TestGridFieldSpec extends TestCaseEnhanced
 
 	public static final String SAMPLE_GRID_HEADER_LABEL_1 = "label1";
 	public static final String SAMPLE_GRID_HEADER_LABEL_2 = "label2";
-	public static final String SAMPLE_GRID_FIELD_XML = "<Field type='GRID'>\n" +
+	public static final String SAMPLE_GRID_FIELD_XML_LEGACY = "<Field type='GRID'>\n" +
 			"<Tag>custom</Tag>\n" +
 			"<Label>me</Label>\n" +
 			"<GridSpecDetails>\n<Column><Label>" +
@@ -159,4 +170,22 @@ public class TestGridFieldSpec extends TestCaseEnhanced
 			"</Label></Column>\n<Column><Label>" +
 			SAMPLE_GRID_HEADER_LABEL_2 +
 			"</Label></Column>\n</GridSpecDetails>\n</Field>\n";
+
+	public static final String SAMPLE_GRID_FIELD_XML = "<Field type='GRID'>\n" +
+	"<Tag>custom</Tag>\n" +
+	"<Label>me</Label>\n" +
+	"<GridSpecDetails>\n<Column>" +
+	"<Label>" +
+	SAMPLE_GRID_HEADER_LABEL_1 +
+	"</Label>" +
+	"<Type>" +
+	"STRING" +
+	"</Type>" +
+	"</Column>\n<Column><Label>" +
+	SAMPLE_GRID_HEADER_LABEL_2 +
+	"</Label>" +
+	"<Type>" +
+	"STRING" +
+	"</Type>" +
+	"</Column>\n</GridSpecDetails>\n</Field>\n";
 }

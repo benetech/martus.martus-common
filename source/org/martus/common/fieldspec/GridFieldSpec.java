@@ -54,6 +54,12 @@ public class GridFieldSpec extends FieldSpec
 		return columnSpec.getLabel();
 	}
 	
+	public int getColumnType(int column)
+	{
+		FieldSpec columnSpec = (FieldSpec)columns.get(column);
+		return columnSpec.getType();
+	}
+
 	public class UnsupportedFieldTypeException extends Exception
 	{
 		private static final long serialVersionUID = 1;
@@ -101,6 +107,9 @@ public class GridFieldSpec extends FieldSpec
 					MartusXml.getTagStart(GRID_COLUMN_LABEL_TAG) +
 					getColumnLabel(i) +
 					MartusXml.getTagEndWithoutNewline(GRID_COLUMN_LABEL_TAG) + 
+					MartusXml.getTagStart(GRID_COLUMN_TYPE_TAG) +
+					getTypeString(getColumnType(i)) +
+					MartusXml.getTagEndWithoutNewline(GRID_COLUMN_TYPE_TAG) + 
 					MartusXml.getTagEnd(GRID_COLUMN_TAG);
 		}
 		xml += MartusXml.getTagEnd(GRID_SPEC_DETAILS_TAG);
@@ -130,9 +139,12 @@ public class GridFieldSpec extends FieldSpec
 			if(thisTag.equals(GRID_COLUMN_TAG))
 			{
 				SimpleXmlMapLoader loader = (SimpleXmlMapLoader)ended;
-				//TODO fix this to a new XML loader for FieldSpecs
-				FieldSpec newColumnSpec = new FieldSpec(FieldSpec.TYPE_NORMAL);
-				newColumnSpec.setLabel(loader.get(GRID_COLUMN_LABEL_TAG));
+				String label = loader.get(GRID_COLUMN_LABEL_TAG);
+				String type = loader.get(GRID_COLUMN_TYPE_TAG);
+				if(type == null)//Legacy XML
+					type = getTypeString(TYPE_NORMAL);
+				
+				FieldSpec newColumnSpec = new FieldSpec(label, getTypeCode(type));
 				try
 				{
 					spec.addColumn(newColumnSpec);
@@ -155,6 +167,7 @@ public class GridFieldSpec extends FieldSpec
 	public final static String GRID_SPEC_DETAILS_TAG = "GridSpecDetails";
 	public final static String GRID_COLUMN_TAG = "Column";
 	public final static String GRID_COLUMN_LABEL_TAG = "Label";
+	public final static String GRID_COLUMN_TYPE_TAG = "Type";
 	
 	Vector columns;
 	String columnZeroLabel;

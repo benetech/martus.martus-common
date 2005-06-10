@@ -64,7 +64,7 @@ public class TestCustomFields extends TestCase
 	
 	public void testGrid() throws Exception
 	{
-		String xml = "<CustomFields>" + TestGridFieldSpec.SAMPLE_GRID_FIELD_XML +
+		String xml = "<CustomFields>" + TestGridFieldSpec.SAMPLE_GRID_FIELD_XML_LEGACY +
 				"</CustomFields>";
 		CustomFields fields = new CustomFields();
 		CustomFields.XmlCustomFieldsLoader loader = new CustomFields.XmlCustomFieldsLoader(fields);
