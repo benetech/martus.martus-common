@@ -38,6 +38,20 @@ public class MartusDateRangeField extends MartusField
 		super(specToUse);
 	}
 
+	public boolean contains(String value)
+	{
+		MartusFlexidate searchForDate = MartusFlexidate.createFromMartusDateString(value);
+		MartusFlexidate thisDate = MartusFlexidate.createFromMartusDateString(getData());
+		
+		if(searchForDate.getBeginDate().getTime() < thisDate.getBeginDate().getTime())
+			return false;
+		
+		if(searchForDate.getEndDate().getTime() > thisDate.getEndDate().getTime())
+			return false;
+		
+		return true;
+	}
+
 	public MartusField getSubField(String tag)
 	{
 		MartusFlexidate date = MartusFlexidate.createFromMartusDateString(getData());

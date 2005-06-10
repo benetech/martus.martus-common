@@ -28,71 +28,11 @@ package org.martus.common.field;
 
 import org.martus.common.fieldspec.FieldSpec;
 
-public class MartusField
+public class MartusDateField extends MartusField
 {
-	public MartusField(FieldSpec specToUse)
+	public MartusDateField(FieldSpec specToUse)
 	{
-		spec = specToUse;
-	}
-	
-	public MartusField getSubField(String tag)
-	{
-		return null;
-	}
-	
-	public String getTag()
-	{
-		return spec.getTag();
-	}
-	
-	public String getLabel()
-	{
-		return spec.getLabel();
-	}
-	
-	public int getType()
-	{
-		return spec.getType();
-	}
-	
-	public String getData()
-	{
-		if(data == null)
-			return "";
-		
-		return data;
-	}
-	
-	public void clearData()
-	{
-		data = null;
-	}
-	
-	public FieldSpec getFieldSpec()
-	{
-		return spec;
-	}
-	
-	public void setData(String newValue)
-	{
-		data = newValue;
-	}
-	
-	public boolean contains(String value)
-	{
-		return (data.toLowerCase().indexOf(value.toLowerCase()) >= 0);
-	}
-	
-	public int compareTo(String value)
-	{
-		return data.compareTo(value);
-	}
-	
-	public String toString()
-	{
-		return data;
+		super(specToUse);
 	}
 
-	FieldSpec spec;
-	String data;
 }

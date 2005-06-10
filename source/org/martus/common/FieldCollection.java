@@ -28,6 +28,7 @@ package org.martus.common;
 
 import java.util.Vector;
 
+import org.martus.common.field.MartusDateField;
 import org.martus.common.field.MartusDateRangeField;
 import org.martus.common.field.MartusField;
 import org.martus.common.fieldspec.FieldSpec;
@@ -56,6 +57,9 @@ public class FieldCollection
 		{
 			case FieldSpec.TYPE_DATERANGE:
 				fields.add(new MartusDateRangeField(newSpec));
+				break;
+			case FieldSpec.TYPE_DATE:
+				fields.add(new MartusDateField(newSpec));
 				break;
 			default:
 				fields.add(new MartusField(newSpec));
