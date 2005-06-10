@@ -41,6 +41,7 @@ import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.CryptoException;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.ReadableDatabase;
+import org.martus.common.field.MartusField;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.StandardFieldSpecs;
 import org.martus.common.packet.AttachmentPacket;
@@ -221,37 +222,53 @@ public class Bulletin implements BulletinConstants
 		return getPrivateFieldDataPacket().getFieldSpecs();
 	}
 
-	public void set(String fieldName, String value)
+	public void set(String fieldTag, String value)
 	{
-		if(isFieldInPublicSection(fieldName))
-			fieldData.set(fieldName, value);
-		else
-			getPrivateFieldDataPacket().set(fieldName, value);
+		MartusField field = getField(fieldTag);
+		if(field == null)
+			return;
+		
+		field.setData(value);
 				
 	}
+	
+	public MartusField getField(String fieldTag)
+	{
+		if(fieldTag.equals("_localId"))
+		{
+			MartusField localIdField = new MartusField(FieldSpec.createStandardField(fieldTag, FieldSpec.TYPE_NORMAL));
+			localIdField.setData(getLocalId());
+			return localIdField;
+		}
+		
+		if(fieldTag.equals("_lastSavedDate"))
+		{
+			MartusField lastSavedDateField = new MartusField(FieldSpec.createStandardField(fieldTag, FieldSpec.TYPE_DATE));
+			lastSavedDateField.setData(getLastSavedDate());
+			return lastSavedDateField;
+		}
+		
+		if(isFieldInPublicSection(fieldTag))
+			return fieldData.getField(fieldTag);
+		return getPrivateFieldDataPacket().getField(fieldTag);
+	}
 
-	public String get(String fieldName)
-	{			 
-		if(fieldName.equals("_localId"))
-			return getLocalId();
+	public String get(String fieldTag)
+	{
+		MartusField field = getField(fieldTag);
+		if(field == null)
+			return "";
 		
-		if(fieldName.equals("_lastSavedDate"))
-			return getLastSavedDate();
-		
-		if(isFieldInPublicSection(fieldName))
-			return fieldData.get(fieldName);
-		return getPrivateFieldDataPacket().get(fieldName);
+		return field.getData();
 	}
 	
-	public int getFieldType(String tag)
+	public int getFieldType(String fieldTag)
 	{
-		if(isFieldInPublicSection(tag))
-			return getFieldDataPacket().getFieldType(tag);
+		MartusField field = getField(fieldTag);
+		if(field == null)
+			return FieldSpec.TYPE_UNKNOWN;
 		
-		if(isFieldInPrivateSection(tag))
-			return getPrivateFieldDataPacket().getFieldType(tag);
-		
-		return FieldSpec.TYPE_UNKNOWN;
+		return field.getType();
 	}
 
 	public void addPublicAttachment(AttachmentProxy a) throws

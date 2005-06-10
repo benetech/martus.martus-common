@@ -136,6 +136,11 @@ public class FieldDataPacket extends Packet
 	{
 		return fields.getSpecs();
 	}
+	
+	public MartusField getField(String fieldTag)
+	{
+		return fields.findByTag(fieldTag);
+	}
 
 	public boolean fieldExists(String fieldTag)
 	{
@@ -144,28 +149,25 @@ public class FieldDataPacket extends Packet
 	
 	public int getFieldType(String fieldTag)
 	{
-		FieldSpec spec = getFieldSpec(fieldTag);
-		if(spec == null)
+		MartusField field = getField(fieldTag);
+		if(field == null)
 			return FieldSpec.TYPE_UNKNOWN;
 		
-		return spec.getType();
+		return field.getType();
 	}
 	
 	private FieldSpec getFieldSpec(String fieldTag)
 	{
-		FieldSpec[] specs = getFieldSpecs();
-		for(int f = 0; f < specs.length; ++f)
-		{
-			if(specs[f].getTag().equals(fieldTag))
-				return specs[f];
-		}
+		MartusField field = getField(fieldTag);
+		if(field == null)
+			return null;
 		
-		return null;
+		return field.getFieldSpec();
 	}
 
 	public String get(String fieldTag)
 	{
-		MartusField field = fields.findByTag(fieldTag);
+		MartusField field = getField(fieldTag);
 		if(field == null)
 			return "";
 		
@@ -178,7 +180,7 @@ public class FieldDataPacket extends Packet
 
 	public void set(String fieldTag, String data)
 	{
-		MartusField field = fields.findByTag(fieldTag);
+		MartusField field = getField(fieldTag);
 		if(field == null)
 			return;
 

@@ -72,6 +72,11 @@ public class MartusField
 	{
 		data = newValue;
 	}
+	
+	public String toString()
+	{
+		return data;
+	}
 
 	FieldSpec spec;
 	String data;
