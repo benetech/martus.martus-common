@@ -30,8 +30,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -46,6 +44,7 @@ import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.DecryptionException;
+import org.martus.common.field.MartusField;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.util.Base64;
 import org.martus.util.UnicodeReader;
@@ -69,12 +68,12 @@ public class FieldDataPacket extends Packet
 	
 	void setCustomFields(CustomFields fieldsToUse)
 	{
-		fieldSpecs = fieldsToUse;
+		fields = fieldsToUse;
 	}
 
 	void setFieldSpecs(FieldSpec[] fieldSpecsToUse)
 	{
-		fieldSpecs = new CustomFields(fieldSpecsToUse);
+		fields = new CustomFields(fieldSpecsToUse);
 	}
 	
 	void setFieldSpecsFromString(String delimitedFieldSpecs)
@@ -119,7 +118,7 @@ public class FieldDataPacket extends Packet
 
 	public boolean isEmpty()
 	{
-		if(fieldData.size() > 0)
+		if(!fields.isEmpty())
 			return false;
 
 		if(attachments.size() > 0)
@@ -130,12 +129,12 @@ public class FieldDataPacket extends Packet
 
 	public int getFieldCount()
 	{
-		return fieldSpecs.count();
+		return fields.count();
 	}
 
 	public FieldSpec[] getFieldSpecs()
 	{
-		return fieldSpecs.getSpecs();
+		return fields.getSpecs();
 	}
 
 	public boolean fieldExists(String fieldTag)
@@ -166,24 +165,29 @@ public class FieldDataPacket extends Packet
 
 	public String get(String fieldTag)
 	{
-		Object value = fieldData.get(fieldTag);
+		MartusField field = fields.findByTag(fieldTag);
+		if(field == null)
+			return "";
+		
+		String value = field.getData();
 		if(value == null)
 			return "";
 
-		return (String)value;
+		return value;
 	}
 
 	public void set(String fieldTag, String data)
 	{
-		if(!fieldExists(fieldTag))
+		MartusField field = fields.findByTag(fieldTag);
+		if(field == null)
 			return;
 
-		fieldData.put(fieldTag, data);
+		field.setData(data);
 	}
 
 	public void clearAll()
 	{
-		fieldData = new TreeMap();
+		fields.clearAllData();
 		clearAttachments();
 		authorizedToReadKeys.clear();
 	}
@@ -227,7 +231,7 @@ public class FieldDataPacket extends Packet
 		MartusCrypto.NoKeyPairException
 	{
 		setEncrypted(false);
-		fieldData.clear();
+		clearAll();
 		if(security != null)
 			verifyPacketSignature(inputStream, expectedSig, security);
 		try
@@ -319,12 +323,11 @@ public class FieldDataPacket extends Packet
 		if(isEncrypted() && !isEmpty())
 			writeElement(dest, MartusXml.EncryptedFlagElementName, "");
 
-		String xmlSpecs = fieldSpecs.toString();
-		FieldSpec[] specs = fieldSpecs.getSpecs();
+		String xmlSpecs = fields.toString();
 		
-		if(isNonCustomFieldSpecs(fieldSpecs))
+		if(isNonCustomFieldSpecs(fields))
 		{
-			writeElement(dest, MartusXml.FieldListElementName, LegacyCustomFields.buildFieldListString(specs));
+			writeElement(dest, MartusXml.FieldListElementName, LegacyCustomFields.buildFieldListString(fields.getSpecs()));
 		}
 		else
 		{
@@ -332,15 +335,15 @@ public class FieldDataPacket extends Packet
 			dest.writeDirect(xmlSpecs);
 		}
 		
-		for(int i = 0; i < specs.length; ++i)
+		for(int i = 0; i < fields.count(); ++i)
 		{
-			FieldSpec spec = specs[i];
-			String key = spec.getTag();
+			MartusField field = fields.getField(i);
+			String key = field.getTag();
 			String xmlTag = MartusXml.FieldElementPrefix + key;
-			String fieldText = (String)(fieldData.get(key));
+			String fieldText = field.getData();
 			if(fieldText == null)
 				continue;
-			if(spec.getType() == FieldSpec.TYPE_GRID)
+			if(field.getType() == FieldSpec.TYPE_GRID)
 				writeNonEncodedElement(dest, xmlTag, fieldText);
 			else
 				writeElement(dest, xmlTag, fieldText);
@@ -425,8 +428,7 @@ public class FieldDataPacket extends Packet
 	final String packetHeaderTag = "packet";
 
 	private boolean encryptedFlag;
-	private CustomFields fieldSpecs;
-	private Map fieldData;
+	private CustomFields fields;
 	private Vector attachments;
 
 	private static final String prefix = "F-";

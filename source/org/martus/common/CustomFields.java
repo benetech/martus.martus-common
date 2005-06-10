@@ -28,6 +28,7 @@ package org.martus.common;
 
 import java.util.Vector;
 
+import org.martus.common.field.MartusField;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlParser;
@@ -43,32 +44,67 @@ public class CustomFields
 	
 	public CustomFields(FieldSpec[] specsToUse)
 	{
-		specs = new Vector();
+		fields = new Vector();
 		for(int i=0; i < specsToUse.length; ++i)
 			add(specsToUse[i]);
 	}
 	
 	public void add(FieldSpec newSpec)
 	{
-		specs.add(newSpec);
+		fields.add(new MartusField(newSpec));
 	}
 	
 	public int count()
 	{
-		return specs.size();
+		return fields.size();
+	}
+	
+	public MartusField getField(int i)
+	{
+		return ((MartusField)fields.get(i));
+	}
+	
+	public MartusField findByTag(String fieldTag)
+	{
+		for(int i=0; i < count(); ++i)
+		{
+			MartusField thisField = getField(i);
+			if(thisField.getTag().equals(fieldTag))
+				return thisField;
+		}
+		
+		return null;
 	}
 	
 	public FieldSpec[] getSpecs()
 	{
-		return (FieldSpec[])specs.toArray(new FieldSpec[0]);
+		FieldSpec[] specs = new FieldSpec[count()];
+		for(int i=0; i < specs.length; ++i)
+			specs[i] = getField(i).getFieldSpec();
+		return specs;
+	}
+	
+	public boolean isEmpty()
+	{
+		for(int i=0; i < count(); ++i)
+			if(getField(i).getData().length() != 0)
+				return false;
+		
+		return true;
+	}
+	
+	public void clearAllData()
+	{
+		for(int i=0; i < count(); ++i)
+			getField(i).clearData();
 	}
 	
 	public String toString()
 	{
 		String result = "<" + MartusXml.CustomFieldSpecsElementName + ">\n";
-		for (int i = 0; i < specs.size(); i++)
+		for (int i = 0; i < fields.size(); i++)
 		{
-			FieldSpec spec = (FieldSpec)specs.get(i);
+			FieldSpec spec = ((MartusField)fields.get(i)).getFieldSpec();
 			result += spec.toString();
 			result += "\n";
 		}
@@ -134,5 +170,5 @@ public class CustomFields
 		CustomFields fields;
 	}
 	
-	Vector specs;
+	Vector fields;
 }

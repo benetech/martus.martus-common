@@ -26,17 +26,18 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.test;
 
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 import org.martus.common.analyzerhelper.TestMartusBulletinRetriever;
 import org.martus.common.analyzerhelper.TestMartusBulletinWrapper;
 import org.martus.common.clientside.test.TestChoiceItem;
 import org.martus.common.clientside.test.TestClientSideNetworkHandler;
 import org.martus.common.clientside.test.TestClientSideNetworkHandlerForNonSSL;
 import org.martus.common.clientside.test.TestCurrentUiState;
+import org.martus.common.field.TestMartusField;
 import org.martus.common.utilities.TestDateUtilities;
 import org.martus.common.utilities.TestMartusFlexidate;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 
 public class TestCommon
@@ -80,6 +81,7 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestDatabaseKey.class));
 		suite.addTest(new TestSuite(TestDateUtilities.class));
 		suite.addTest(new TestSuite(TestDropDownFieldSpec.class));
+		suite.addTest(new TestSuite(TestMartusField.class));
 		suite.addTest(new TestSuite(TestFieldDataPacket.class));
 		suite.addTest(new TestSuite(TestFieldSpec.class));
 		suite.addTest(new TestSuite(TestFileDatabase.class));
