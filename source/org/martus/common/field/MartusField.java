@@ -80,12 +80,12 @@ public class MartusField
 	
 	public boolean contains(String value)
 	{
-		return (data.toLowerCase().indexOf(value.toLowerCase()) >= 0);
+		return (getData().toLowerCase().indexOf(value.toLowerCase()) >= 0);
 	}
 	
 	public int compareTo(String value)
 	{
-		return data.compareTo(value);
+		return getData().compareTo(value);
 	}
 	
 	public String toString()
