@@ -33,7 +33,7 @@ import java.io.StringWriter;
 import java.util.Arrays;
 
 import org.martus.common.AuthorizedSessionKeys;
-import org.martus.common.CustomFields;
+import org.martus.common.FieldCollection;
 import org.martus.common.GridData;
 import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
@@ -332,7 +332,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		String id = "1234567";
 		String data1 = "data 1?";
 		FieldSpec field = LegacyCustomFields.createFromLegacy("custom1");
-		CustomFields fields = new CustomFields(new FieldSpec[] {field});
+		FieldCollection fields = new FieldCollection(new FieldSpec[] {field});
 		
 		String simpleFieldDataPacket =
 			"<FieldDataPacket>\n" +
@@ -357,7 +357,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
 		loaded.loadFromXml(in, (MartusCrypto)null);
 		
-		CustomFields loadedFields = new CustomFields(loaded.getFieldSpecs());
+		FieldCollection loadedFields = new FieldCollection(loaded.getFieldSpecs());
 		assertEquals(fields.toString(), loadedFields.toString());
 	}
 	
@@ -480,7 +480,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		assertContains(data2base + xmlAmp + xmlLt + xmlGt, result);
 
 		assertNotContains(fieldListForTesting, result);
-		CustomFields fields = new CustomFields(fieldTags);
+		FieldCollection fields = new FieldCollection(fieldTags);
 		assertContains(MartusConstants.deprecatedCustomFieldSpecs, result);
 		assertContains(fields.toString(), result);
 	}
@@ -499,7 +499,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		String encodedFieldList = MartusUtilities.getXmlEncoded(rawFieldList);
 		assertNotContains(encodedFieldList, result);
 
-		CustomFields fields = new CustomFields(specs);
+		FieldCollection fields = new FieldCollection(specs);
 		assertContains(MartusConstants.deprecatedCustomFieldSpecs, result);
 		assertContains(fields.toString(), result);
 	}

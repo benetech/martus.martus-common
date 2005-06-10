@@ -34,7 +34,7 @@ import java.util.Vector;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.martus.common.CustomFields;
+import org.martus.common.FieldCollection;
 import org.martus.common.HQKeys;
 import org.martus.common.LegacyCustomFields;
 import org.martus.common.MartusConstants;
@@ -66,14 +66,14 @@ public class FieldDataPacket extends Packet
 		clearAll();
 	}
 	
-	void setCustomFields(CustomFields fieldsToUse)
+	void setCustomFields(FieldCollection fieldsToUse)
 	{
 		fields = fieldsToUse;
 	}
 
 	void setFieldSpecs(FieldSpec[] fieldSpecsToUse)
 	{
-		fields = new CustomFields(fieldSpecsToUse);
+		fields = new FieldCollection(fieldSpecsToUse);
 	}
 	
 	void setFieldSpecsFromString(String delimitedFieldSpecs)
@@ -368,7 +368,7 @@ public class FieldDataPacket extends Packet
 		return LegacyCustomFields.buildFieldListString(getFieldSpecs());
 	}
 
-	public static boolean isNonCustomFieldSpecs(CustomFields fields)
+	public static boolean isNonCustomFieldSpecs(FieldCollection fields)
 	{
 		return fields.toString().equals(DEFAULT_LEGACY_SPECS_AS_XML);
 	}
@@ -430,7 +430,7 @@ public class FieldDataPacket extends Packet
 	final String packetHeaderTag = "packet";
 
 	private boolean encryptedFlag;
-	private CustomFields fields;
+	private FieldCollection fields;
 	private Vector attachments;
 
 	private static final String prefix = "F-";

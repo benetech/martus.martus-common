@@ -28,7 +28,7 @@ package org.martus.common.test;
 
 import junit.framework.TestCase;
 
-import org.martus.common.CustomFields;
+import org.martus.common.FieldCollection;
 import org.martus.common.LegacyCustomFields;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.GridFieldSpec;
@@ -44,7 +44,7 @@ public class TestCustomFields extends TestCase
 	public void testToString() throws Exception
 	{
 		FieldSpec[] specs = getSampleSpecs();
-		CustomFields fields = new CustomFields(specs);
+		FieldCollection fields = new FieldCollection(specs);
 		String xml = "<CustomFields>\n";
 		for(int i=0; i < specs.length; ++i)
 			xml += specs[i].toString() + "\n";
@@ -55,10 +55,10 @@ public class TestCustomFields extends TestCase
 	public void testParseXml() throws Exception
 	{
 		FieldSpec[] specs = getSampleSpecs();
-		CustomFields fields = new CustomFields(specs);
+		FieldCollection fields = new FieldCollection(specs);
 		String xml = fields.toString();
 		
-		CustomFields parsed = new CustomFields(CustomFields.parseXml(xml));
+		FieldCollection parsed = new FieldCollection(FieldCollection.parseXml(xml));
 		assertEquals(fields.toString(), parsed.toString());
 	}
 	
@@ -66,8 +66,8 @@ public class TestCustomFields extends TestCase
 	{
 		String xml = "<CustomFields>" + TestGridFieldSpec.SAMPLE_GRID_FIELD_XML_LEGACY +
 				"</CustomFields>";
-		CustomFields fields = new CustomFields();
-		CustomFields.XmlCustomFieldsLoader loader = new CustomFields.XmlCustomFieldsLoader(fields);
+		FieldCollection fields = new FieldCollection();
+		FieldCollection.XmlCustomFieldsLoader loader = new FieldCollection.XmlCustomFieldsLoader(fields);
 		loader.parse(xml);
 		GridFieldSpec spec = (GridFieldSpec)fields.getSpecs()[0];
 		assertEquals(FieldSpec.TYPE_GRID, spec.getType());

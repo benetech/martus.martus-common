@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.martus.common.AuthorizedSessionKeys;
-import org.martus.common.CustomFields;
+import org.martus.common.FieldCollection;
 import org.martus.common.GridData;
 import org.martus.common.MartusXml;
 import org.martus.common.bulletin.AttachmentProxy;
@@ -63,7 +63,7 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 		else if(tag.equals(MartusXml.AttachmentElementName))
 			return new XmlAttachmentLoader(tag);
 		else if(tag.equals(MartusXml.CustomFieldSpecsElementName))
-			return new CustomFields.XmlCustomFieldsLoader(new CustomFields());
+			return new FieldCollection.XmlCustomFieldsLoader(new FieldCollection());
 		else if(getTagsContainingStrings().contains(tag))
 			return new SimpleXmlStringLoader(tag);
 		else if(tag.equals(AuthorizedSessionKeys.AUTHORIZED_SESSION_KEYS_TAG))
@@ -89,7 +89,7 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 			}
 			else if(tag.equals(MartusXml.CustomFieldSpecsElementName))
 			{
-				CustomFields.XmlCustomFieldsLoader loader = (CustomFields.XmlCustomFieldsLoader)ended;
+				FieldCollection.XmlCustomFieldsLoader loader = (FieldCollection.XmlCustomFieldsLoader)ended;
 				fdp.setCustomFields(loader.getFields());
 				foundModernFieldSpecs = true;
 			}

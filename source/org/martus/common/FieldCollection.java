@@ -35,14 +35,14 @@ import org.martus.util.xml.SimpleXmlParser;
 import org.xml.sax.SAXParseException;
 
 
-public class CustomFields
+public class FieldCollection
 {
-	public CustomFields()
+	public FieldCollection()
 	{
 		this(new FieldSpec[0]);
 	}
 	
-	public CustomFields(FieldSpec[] specsToUse)
+	public FieldCollection(FieldSpec[] specsToUse)
 	{
 		fields = new Vector();
 		for(int i=0; i < specsToUse.length; ++i)
@@ -119,7 +119,7 @@ public class CustomFields
 	
 	public static FieldSpec[] parseXml(String xml) throws CustomFieldsParseException
 	{
-		CustomFields fields = new CustomFields();
+		FieldCollection fields = new FieldCollection();
 		XmlCustomFieldsLoader loader = new XmlCustomFieldsLoader(fields);
 		try
 		{
@@ -135,13 +135,13 @@ public class CustomFields
 	
 	public static class XmlCustomFieldsLoader extends SimpleXmlDefaultLoader
 	{
-		public XmlCustomFieldsLoader(CustomFields fieldsToLoad)
+		public XmlCustomFieldsLoader(FieldCollection fieldsToLoad)
 		{
 			super(MartusXml.CustomFieldSpecsElementName);
 			fields = fieldsToLoad;
 		}
 		
-		public CustomFields getFields()
+		public FieldCollection getFields()
 		{
 			return fields;
 		}
@@ -167,7 +167,7 @@ public class CustomFields
 			fields.add(spec);
 		}
 
-		CustomFields fields;
+		FieldCollection fields;
 	}
 	
 	Vector fields;
