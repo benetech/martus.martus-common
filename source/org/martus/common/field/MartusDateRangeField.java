@@ -26,63 +26,38 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.field;
 
-import org.martus.common.fieldspec.FieldSpec;
+import java.util.Date;
 
-public class MartusField
+import org.martus.common.fieldspec.FieldSpec;
+import org.martus.common.utilities.MartusFlexidate;
+
+public class MartusDateRangeField extends MartusField
 {
-	public MartusField(FieldSpec specToUse)
+	public MartusDateRangeField(FieldSpec specToUse)
 	{
-		spec = specToUse;
+		super(specToUse);
 	}
-	
+
 	public MartusField getSubField(String tag)
 	{
+		MartusFlexidate date = MartusFlexidate.createFromMartusDateString(getData());
+		if(tag.equals(SUBFIELD_FIRST))
+			return createDateSubField(date.getBeginDate());
+		
+		if(tag.equals(SUBFIELD_LAST))
+			return createDateSubField(date.getEndDate());
+		
 		return null;
 	}
-	
-	public String getTag()
+
+	private MartusField createDateSubField(Date singleDateString)
 	{
-		return spec.getTag();
-	}
-	
-	public String getLabel()
-	{
-		return spec.getLabel();
-	}
-	
-	public int getType()
-	{
-		return spec.getType();
-	}
-	
-	public String getData()
-	{
-		if(data == null)
-			return "";
-		
-		return data;
-	}
-	
-	public void clearData()
-	{
-		data = null;
-	}
-	
-	public FieldSpec getFieldSpec()
-	{
-		return spec;
-	}
-	
-	public void setData(String newValue)
-	{
-		data = newValue;
-	}
-	
-	public String toString()
-	{
-		return data;
+		MartusField sub = new MartusField(new FieldSpec(FieldSpec.TYPE_DATE));
+		sub.setData(MartusFlexidate.toStoredDateFormat(singleDateString));
+		return sub;
 	}
 
-	FieldSpec spec;
-	String data;
+	public static final String SUBFIELD_LAST = "last";
+	public static final String SUBFIELD_FIRST = "first";
+
 }
