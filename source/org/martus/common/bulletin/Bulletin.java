@@ -397,58 +397,11 @@ public class Bulletin implements BulletinConstants
 		FieldSpec fields[] = section.getFieldSpecs();
 		for(int f = 0; f < fields.length; ++f)
 		{
-			String fieldTag = fields[f].getTag();
-			if(doesFieldContain(fieldTag, lookFor))
+			MartusField field = getField(fields[f].getTag());
+			if(field.contains(lookFor))
 				return true;
 		}
 		return false;
-	}
-
-	public boolean doesFieldContain(String fieldTag, String lookFor)
-	{
-		String contents = get(fieldTag).toLowerCase();
-		return (contents.indexOf(lookFor.toLowerCase()) >= 0);
-	}
-
-	public boolean withinDates(String beginDate, String endDate)
-	{
-		String eventDate = fieldData.get(Bulletin.TAGEVENTDATE);
-		String entryDate = fieldData.get(Bulletin.TAGENTRYDATE);
-		String savedDate = getLastSavedDate();
-		
-		if(areInAscendingOrder(beginDate, eventDate, endDate))
-			return true;
-		if(areInAscendingOrder(beginDate, entryDate, endDate))
-			return true;
-		if(areInAscendingOrder(beginDate, savedDate, endDate))
-			return true;
-			
-		int comma = eventDate.indexOf(MartusFlexidate.DATE_RANGE_SEPARATER);		
-		if (comma > 0 && isWithinFlexiDates(eventDate.substring(comma+1), beginDate, endDate))
-			return true;
-
-		return false;
-	}
-	
-	private boolean areInAscendingOrder(String beginDate, String eventDate, String endDate)
-	{
-		return eventDate.compareTo(beginDate) >= 0 && eventDate.compareTo(endDate) <= 0;
-	}
-
-	private boolean isWithinFlexiDates(String flexiDate, String searchBeginDate, String searchEndDate)
-	{		
-		if (flexiDate.indexOf(MartusFlexidate.FLEXIDATE_RANGE_DELIMITER) < 0)
-			return false;
-					
-		MartusFlexidate mf = new MartusFlexidate(flexiDate);		
-		DateFormat df = Bulletin.getStoredDateFormat();						
-		String beginDate = df.format(mf.getBeginDate());
-		String endDate = df.format(mf.getEndDate());
-
-		if (beginDate.compareTo(searchEndDate) > 0 ||
-			endDate.compareTo(searchBeginDate) < 0)
-			return false;		
-		return true;
 	}
 
 	public HQKeys getAuthorizedToReadKeys()
