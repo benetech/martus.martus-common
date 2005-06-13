@@ -25,8 +25,10 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.test;
 
+import org.martus.common.fieldspec.DropDownFieldSpec;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.GridFieldSpec;
+import org.martus.common.fieldspec.GridFieldSpec.InvalidFieldTypeException;
 import org.martus.common.fieldspec.GridFieldSpec.UnsupportedFieldTypeException;
 import org.martus.util.TestCaseEnhanced;
 
@@ -50,7 +52,7 @@ public class TestGridFieldSpec extends TestCaseEnhanced
 		assertEquals(SAMPLE_GRID_FIELD_XML, spec.toString());
 	}
 	
-	public void testGridXmlFieldSpecLoader() throws Exception
+	public void testGridXmlFieldSpecLoaderNormal() throws Exception
 	{
 		FieldSpec.XmlFieldSpecLoader loader = new FieldSpec.XmlFieldSpecLoader();
 		loader.parse(SAMPLE_GRID_FIELD_XML);
@@ -61,6 +63,18 @@ public class TestGridFieldSpec extends TestCaseEnhanced
 		assertEquals(SAMPLE_GRID_FIELD_XML, spec.toString());
 	}
 
+	public void testGridXmlFieldSpecLoaderDropdown() throws Exception
+	{
+		FieldSpec.XmlFieldSpecLoader loader = new FieldSpec.XmlFieldSpecLoader();
+		loader.parse(SAMPLE_GRID_FIELD_XML_DROPDOWN);
+		GridFieldSpec spec = (GridFieldSpec)loader.getFieldSpec();
+		assertEquals(3, spec.getColumnCount());
+		assertContains(SAMPLE_GRID_HEADER_LABEL_1, spec.getAllColumnLabels());
+		assertContains(SAMPLE_GRID_HEADER_LABEL_2, spec.getAllColumnLabels());
+		assertContains(TestDropDownFieldSpec.SAMPLE_DROPDOWN_LABEL, spec.getAllColumnLabels());
+		assertEquals(SAMPLE_GRID_FIELD_XML_DROPDOWN, spec.toString());
+	}
+
 	public void testAddColumn() throws Exception
 	{
 		GridFieldSpec spec = new GridFieldSpec();
@@ -68,16 +82,28 @@ public class TestGridFieldSpec extends TestCaseEnhanced
 		FieldSpec stringSpec = new FieldSpec("TYPE_NORMAL", FieldSpec.TYPE_NORMAL);
 		spec.addColumn(stringSpec);
 		assertEquals("TYPE_NORMAL", spec.getColumnLabel(0));
-
-		FieldSpec dropdownSpec = new FieldSpec("TYPE_DROPDOWN", FieldSpec.TYPE_DROPDOWN);
+		assertEquals(FieldSpec.TYPE_NORMAL, spec.getColumnType(0));
 		try
 		{
-			spec.addColumn(dropdownSpec);
-			fail("TYPE_DROPDOWN: Not yet implemented should have thrown exception");
+			spec.getDropDownFieldSpec(0);
+			fail("Should have throw since type is TYPE_NORMAL");
 		}
-		catch(UnsupportedFieldTypeException expected)
+		catch(InvalidFieldTypeException expected)
 		{
 		}
+
+		FieldSpec.XmlFieldSpecLoader loader = new FieldSpec.XmlFieldSpecLoader();
+		loader.parse(TestDropDownFieldSpec.SAMPLE_DROPDOWN_FIELD_XML);
+		DropDownFieldSpec dropdownSpecToAdd = (DropDownFieldSpec)loader.getFieldSpec();
+		spec.addColumn(dropdownSpecToAdd);
+		assertEquals(TestDropDownFieldSpec.SAMPLE_DROPDOWN_LABEL, spec.getColumnLabel(1));
+		assertEquals(FieldSpec.TYPE_DROPDOWN, spec.getColumnType(1));
+
+		DropDownFieldSpec dropdownSpecRetrieved = spec.getDropDownFieldSpec(1);
+		assertEquals(2, dropdownSpecRetrieved.getCount());
+		assertContains(TestDropDownFieldSpec.SAMPLE_DROPDOWN_CHOICE1, dropdownSpecRetrieved.getChoices());
+		assertContains(TestDropDownFieldSpec.SAMPLE_DROPDOWN_CHOICE2, dropdownSpecRetrieved.getChoices());
+
 
 		FieldSpec booleanSpec = new FieldSpec("TYPE_BOOLEAN", FieldSpec.TYPE_BOOLEAN);
 		try
@@ -184,4 +210,21 @@ public class TestGridFieldSpec extends TestCaseEnhanced
 	"</Field>\n" +
 	"</GridSpecDetails>\n" +
 	"</Field>\n";
+	
+	public static final String SAMPLE_GRID_FIELD_XML_DROPDOWN = "<Field type='GRID'>\n" +
+	"<Tag>custom with dropdowns</Tag>\n" +
+	"<Label>dropdowns</Label>\n" +
+	"<GridSpecDetails>\n" +
+	"<Field type='STRING'>\n" +
+	"<Tag></Tag>\n" +
+	"<Label>"+SAMPLE_GRID_HEADER_LABEL_1+"</Label>\n" +
+	"</Field>\n" +
+	"<Field type='STRING'>\n" +
+	"<Tag></Tag>\n" +
+	"<Label>"+SAMPLE_GRID_HEADER_LABEL_2+"</Label>\n" +
+	"</Field>\n" +
+	TestDropDownFieldSpec.SAMPLE_DROPDOWN_FIELD_XML +
+	"</GridSpecDetails>\n" +
+	"</Field>\n";
+	
 }

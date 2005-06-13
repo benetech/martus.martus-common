@@ -59,6 +59,18 @@ public class GridFieldSpec extends FieldSpec
 		FieldSpec columnSpec = (FieldSpec)columns.get(column);
 		return columnSpec.getType();
 	}
+	
+	public class InvalidFieldTypeException extends Exception
+	{
+		private static final long serialVersionUID = 1;
+	}
+
+	public DropDownFieldSpec getDropDownFieldSpec(int column) throws InvalidFieldTypeException
+	{
+		if(getColumnType(column) != FieldSpec.TYPE_DROPDOWN)
+			throw new InvalidFieldTypeException();
+		return (DropDownFieldSpec)columns.get(column);
+	}
 
 	public class UnsupportedFieldTypeException extends Exception
 	{
@@ -67,8 +79,10 @@ public class GridFieldSpec extends FieldSpec
 
 	public void addColumn(FieldSpec columnSpec) throws UnsupportedFieldTypeException
 	{
-		if(columnSpec.getType() != TYPE_NORMAL)
-			throw new UnsupportedFieldTypeException();
+		int columnType = columnSpec.getType(); 
+		if( columnType != TYPE_NORMAL &&
+			columnType != TYPE_DROPDOWN)
+				throw new UnsupportedFieldTypeException();
 		columns.add(columnSpec);
 	}
 	

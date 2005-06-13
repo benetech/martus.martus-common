@@ -57,9 +57,10 @@ public class TestDropDownFieldSpec extends TestCaseEnhanced
 
 	public static final String SAMPLE_DROPDOWN_CHOICE1 = "choice #1";
 	public static final String SAMPLE_DROPDOWN_CHOICE2 = "choice #2";
+	public static final String SAMPLE_DROPDOWN_LABEL = "Dropdown Label";
 	public static final String SAMPLE_DROPDOWN_FIELD_XML = "<Field type='DROPDOWN'>\n" +
 			"<Tag>custom</Tag>\n" +
-			"<Label>me</Label>\n" +
+			"<Label>"+SAMPLE_DROPDOWN_LABEL+"</Label>\n" +
 			"<Choices>\n" +
 			"<Choice>" +
 			SAMPLE_DROPDOWN_CHOICE1 +
