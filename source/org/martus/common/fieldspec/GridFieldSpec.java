@@ -103,14 +103,7 @@ public class GridFieldSpec extends FieldSpec
 		String xml = MartusXml.getTagStartWithNewline(GRID_SPEC_DETAILS_TAG);
 		for(int i = 0 ; i < getColumnCount(); ++i)
 		{
-			xml += MartusXml.getTagStart(GRID_COLUMN_TAG) +
-					MartusXml.getTagStart(GRID_COLUMN_LABEL_TAG) +
-					getColumnLabel(i) +
-					MartusXml.getTagEndWithoutNewline(GRID_COLUMN_LABEL_TAG) + 
-					MartusXml.getTagStart(GRID_COLUMN_TYPE_TAG) +
-					getTypeString(getColumnType(i)) +
-					MartusXml.getTagEndWithoutNewline(GRID_COLUMN_TYPE_TAG) + 
-					MartusXml.getTagEnd(GRID_COLUMN_TAG);
+			xml += (FieldSpec)columns.get(i);
 		}
 		xml += MartusXml.getTagEnd(GRID_SPEC_DETAILS_TAG);
 		
@@ -130,44 +123,48 @@ public class GridFieldSpec extends FieldSpec
 		{
 			if(tag.equals(GRID_COLUMN_TAG))
 				return new SimpleXmlMapLoader(tag);
+			else if(tag.equals(FieldSpec.FIELD_SPEC_XML_TAG))
+				return new FieldSpec.XmlFieldSpecLoader();
+
 			return super.startElement(tag);
 		}
 
 		public void endElement(String thisTag, SimpleXmlDefaultLoader ended)
 			throws SAXParseException
 		{
-			if(thisTag.equals(GRID_COLUMN_TAG))
+			FieldSpec specToAdd = null;
+			if(thisTag.equals(GRID_COLUMN_TAG))//Legacy XML
 			{
 				SimpleXmlMapLoader loader = (SimpleXmlMapLoader)ended;
 				String label = loader.get(GRID_COLUMN_LABEL_TAG);
-				String type = loader.get(GRID_COLUMN_TYPE_TAG);
-				if(type == null)//Legacy XML
-					type = getTypeString(TYPE_NORMAL);
-				
-				FieldSpec newColumnSpec = new FieldSpec(label, getTypeCode(type));
-				try
-				{
-					spec.addColumn(newColumnSpec);
-				}
-				catch(UnsupportedFieldTypeException e)
-				{
-					e.printStackTrace();
-					throw new SAXParseException("UnsupportedFieldTypeException", null);
-				}
+				String type = getTypeString(TYPE_NORMAL); 
+				specToAdd = new FieldSpec(label, getTypeCode(type));
+			}
+			else if (thisTag.equals(FIELD_SPEC_XML_TAG))
+			{
+				specToAdd = ((FieldSpec.XmlFieldSpecLoader)ended).getFieldSpec();
 			}
 			else
 			{
 				super.endElement(thisTag, ended);
+				return;
 			}
-		}
-		
+			try
+			{
+				spec.addColumn(specToAdd);
+			}
+			catch(UnsupportedFieldTypeException e)
+			{
+				e.printStackTrace();
+				throw new SAXParseException("UnsupportedFieldTypeException", null);
+			}
+		}		
 		GridFieldSpec spec;
 	}
 	
 	public final static String GRID_SPEC_DETAILS_TAG = "GridSpecDetails";
 	public final static String GRID_COLUMN_TAG = "Column";
 	public final static String GRID_COLUMN_LABEL_TAG = "Label";
-	public final static String GRID_COLUMN_TYPE_TAG = "Type";
 	
 	Vector columns;
 	String columnZeroLabel;

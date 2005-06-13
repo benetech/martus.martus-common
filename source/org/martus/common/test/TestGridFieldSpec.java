@@ -174,18 +174,14 @@ public class TestGridFieldSpec extends TestCaseEnhanced
 	public static final String SAMPLE_GRID_FIELD_XML = "<Field type='GRID'>\n" +
 	"<Tag>custom</Tag>\n" +
 	"<Label>me</Label>\n" +
-	"<GridSpecDetails>\n<Column>" +
-	"<Label>" +
-	SAMPLE_GRID_HEADER_LABEL_1 +
-	"</Label>" +
-	"<Type>" +
-	"STRING" +
-	"</Type>" +
-	"</Column>\n<Column><Label>" +
-	SAMPLE_GRID_HEADER_LABEL_2 +
-	"</Label>" +
-	"<Type>" +
-	"STRING" +
-	"</Type>" +
-	"</Column>\n</GridSpecDetails>\n</Field>\n";
+	"<GridSpecDetails>\n<Field type='STRING'>\n" +
+	"<Tag></Tag>\n" +
+	"<Label>"+SAMPLE_GRID_HEADER_LABEL_1+"</Label>\n" +
+	"</Field>\n" +
+	"<Field type='STRING'>\n" +
+	"<Tag></Tag>\n" +
+	"<Label>"+SAMPLE_GRID_HEADER_LABEL_2+"</Label>\n" +
+	"</Field>\n" +
+	"</GridSpecDetails>\n" +
+	"</Field>\n";
 }
