@@ -151,8 +151,7 @@ public class GridFieldSpec extends FieldSpec
 			{
 				SimpleXmlMapLoader loader = (SimpleXmlMapLoader)ended;
 				String label = loader.get(GRID_COLUMN_LABEL_TAG);
-				String type = getTypeString(TYPE_NORMAL); 
-				specToAdd = new FieldSpec(label, getTypeCode(type));
+				specToAdd = new FieldSpec(label, TYPE_NORMAL);
 			}
 			else if (thisTag.equals(FIELD_SPEC_XML_TAG))
 			{
