@@ -28,7 +28,6 @@ package org.martus.common.test;
 import org.martus.common.fieldspec.DropDownFieldSpec;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.GridFieldSpec;
-import org.martus.common.fieldspec.GridFieldSpec.InvalidFieldTypeException;
 import org.martus.common.fieldspec.GridFieldSpec.UnsupportedFieldTypeException;
 import org.martus.util.TestCaseEnhanced;
 
@@ -79,18 +78,12 @@ public class TestGridFieldSpec extends TestCaseEnhanced
 	{
 		GridFieldSpec spec = new GridFieldSpec();
 
-		FieldSpec stringSpec = new FieldSpec("TYPE_NORMAL", FieldSpec.TYPE_NORMAL);
+		String labelStringColumn = "TYPE_NORMAL";
+		FieldSpec stringSpec = new FieldSpec(labelStringColumn, FieldSpec.TYPE_NORMAL);
 		spec.addColumn(stringSpec);
-		assertEquals("TYPE_NORMAL", spec.getColumnLabel(0));
+		assertEquals(labelStringColumn, spec.getColumnLabel(0));
 		assertEquals(FieldSpec.TYPE_NORMAL, spec.getColumnType(0));
-		try
-		{
-			spec.getDropDownFieldSpec(0);
-			fail("Should have throw since type is TYPE_NORMAL");
-		}
-		catch(InvalidFieldTypeException expected)
-		{
-		}
+		assertEquals(labelStringColumn, spec.getFieldSpec(0).getLabel());
 
 		FieldSpec.XmlFieldSpecLoader loader = new FieldSpec.XmlFieldSpecLoader();
 		loader.parse(TestDropDownFieldSpec.SAMPLE_DROPDOWN_FIELD_XML);
@@ -99,7 +92,7 @@ public class TestGridFieldSpec extends TestCaseEnhanced
 		assertEquals(TestDropDownFieldSpec.SAMPLE_DROPDOWN_LABEL, spec.getColumnLabel(1));
 		assertEquals(FieldSpec.TYPE_DROPDOWN, spec.getColumnType(1));
 
-		DropDownFieldSpec dropdownSpecRetrieved = spec.getDropDownFieldSpec(1);
+		DropDownFieldSpec dropdownSpecRetrieved = (DropDownFieldSpec)spec.getFieldSpec(1);
 		assertEquals(2, dropdownSpecRetrieved.getCount());
 		assertContains(TestDropDownFieldSpec.SAMPLE_DROPDOWN_CHOICE1, dropdownSpecRetrieved.getChoices());
 		assertContains(TestDropDownFieldSpec.SAMPLE_DROPDOWN_CHOICE2, dropdownSpecRetrieved.getChoices());

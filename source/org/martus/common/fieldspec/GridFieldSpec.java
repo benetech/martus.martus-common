@@ -60,16 +60,9 @@ public class GridFieldSpec extends FieldSpec
 		return columnSpec.getType();
 	}
 	
-	public class InvalidFieldTypeException extends Exception
+	public FieldSpec getFieldSpec(int column)
 	{
-		private static final long serialVersionUID = 1;
-	}
-
-	public DropDownFieldSpec getDropDownFieldSpec(int column) throws InvalidFieldTypeException
-	{
-		if(getColumnType(column) != FieldSpec.TYPE_DROPDOWN)
-			throw new InvalidFieldTypeException();
-		return (DropDownFieldSpec)columns.get(column);
+		return (FieldSpec)columns.get(column);
 	}
 
 	public class UnsupportedFieldTypeException extends Exception
@@ -79,11 +72,18 @@ public class GridFieldSpec extends FieldSpec
 
 	public void addColumn(FieldSpec columnSpec) throws UnsupportedFieldTypeException
 	{
-		int columnType = columnSpec.getType(); 
+		if(!isValidGridColumnType(columnSpec))
+			throw new UnsupportedFieldTypeException();
+		columns.add(columnSpec);
+	}
+
+	private boolean isValidGridColumnType(FieldSpec columnSpec) throws UnsupportedFieldTypeException
+	{
+		int columnType = columnSpec.getType();
 		if( columnType != TYPE_NORMAL &&
 			columnType != TYPE_DROPDOWN)
-				throw new UnsupportedFieldTypeException();
-		columns.add(columnSpec);
+				return false;
+		return true;
 	}
 	
 	public void setColumnZeroLabel(String columnZeroLabelToUse)
