@@ -59,9 +59,9 @@ public class DropDownFieldSpec extends FieldSpec
 		return xml;
 	}
 
-	public void setChoices(Vector choicesToUse)
+	public void setChoices(Vector stringChoicesToUse)
 	{
-		choices = choicesToUse;
+		choices = stringChoicesToUse;
 	}
 	
 	public Vector getChoices()
