@@ -234,7 +234,7 @@ public class FieldSpec
 				return new SimpleXmlStringLoader(tag);
 			else if(tag.equals(GridFieldSpec.GRID_SPEC_DETAILS_TAG))
 				return new GridFieldSpec.GridSpecDetailsLoader((GridFieldSpec)spec);
-			else if(tag.equals(DropDownFieldSpec.DROPDOWN_SPEC_CHOICES_TAG))
+			else if(tag.equals(CustomDropDownFieldSpec.DROPDOWN_SPEC_CHOICES_TAG))
 				return new CustomDropDownFieldSpec.DropDownSpecLoader((CustomDropDownFieldSpec)spec);
 			else if(tag.equals(MessageFieldSpec.MESSAGE_SPEC_MESSAGE_TAG))
 				return new MessageFieldSpec.MessageSpecLoader((MessageFieldSpec)spec);

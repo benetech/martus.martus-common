@@ -28,6 +28,7 @@ package org.martus.common.fieldspec;
 
 import java.util.Vector;
 
+import org.martus.common.MartusXml;
 import org.martus.common.clientside.ChoiceItem;
 import org.martus.util.xml.SimpleXmlVectorLoader;
 import org.xml.sax.SAXParseException;
@@ -35,10 +36,21 @@ import org.xml.sax.SAXParseException;
 public class CustomDropDownFieldSpec extends DropDownFieldSpec
 {
 
+	public int getCount()
+	{
+		return super.getCount() + 1;
+	}
+	
+	public ChoiceItem getChoice(int index)
+	{
+		if(index > 0)
+			return super.getChoice(index - 1);
+		
+		return new ChoiceItem(EMPTY_FIRST_CHOICE, EMPTY_FIRST_CHOICE);
+	}
+	
 	public String getDefaultValue()
 	{
-		// FIXME: Need to insert blank first entry for custom fields and custom grid columns, 
-		// but not for language, date format, or fancy search ops 
 		return EMPTY_FIRST_CHOICE;
 	}
 
@@ -51,6 +63,21 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 			choicesArray[i] = new ChoiceItem(item,item);
 		}
 		setChoices(choicesArray);
+	}
+
+	public String getDetailsXml()
+	{
+		String xml = MartusXml.getTagStartWithNewline(DROPDOWN_SPEC_CHOICES_TAG);
+		
+		// skip fake/blank first entry
+		for(int i = 1 ; i < getCount(); ++i)
+		{
+			xml += MartusXml.getTagStart(DROPDOWN_SPEC_CHOICE_TAG) +
+					getValue(i) +
+					MartusXml.getTagEnd(DROPDOWN_SPEC_CHOICE_TAG);
+		}
+		xml += MartusXml.getTagEnd(DROPDOWN_SPEC_CHOICES_TAG);
+		return xml;
 	}
 
 	static class DropDownSpecLoader extends SimpleXmlVectorLoader
@@ -70,4 +97,6 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 	}
 	
 	public final static String EMPTY_FIRST_CHOICE = " ";
+	public final static String DROPDOWN_SPEC_CHOICES_TAG = "Choices";
+	public final static String DROPDOWN_SPEC_CHOICE_TAG = "Choice";
 }

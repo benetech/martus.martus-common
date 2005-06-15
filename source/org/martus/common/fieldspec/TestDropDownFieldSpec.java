@@ -35,48 +35,44 @@ public class TestDropDownFieldSpec extends TestCaseEnhanced
 		super(name);
 	}
 	
-	public void testBasics() throws Exception
+	public void testGetValueFromTag() throws Exception
 	{
-		FieldSpec.XmlFieldSpecLoader loader = new FieldSpec.XmlFieldSpecLoader();
-		loader.parse(SAMPLE_DROPDOWN_FIELD_XML);
-		DropDownFieldSpec spec = (DropDownFieldSpec)loader.getFieldSpec();
-		assertEquals(2, spec.getCount());
-		assertEquals(SAMPLE_DROPDOWN_CHOICE1, spec.getValue(0));
-		assertEquals(SAMPLE_DROPDOWN_CHOICE2, spec.getValue(1));
-		assertEquals(SAMPLE_DROPDOWN_FIELD_XML, spec.toString());
-		try
-		{
-			spec.getValue(3);
-			fail("Should have thrown");
-		}
-		catch(ArrayIndexOutOfBoundsException expected)
-		{
-		}
-	}
-	
-	public void testGetValue() throws Exception
-	{
-		ChoiceItem[] choices = {new ChoiceItem("tag", "value"), new ChoiceItem("othertag", "othervalue"),};
 		DropDownFieldSpec spec = new DropDownFieldSpec(choices);
 		assertNull("found a non-existant tag?", spec.getValue("nontag"));
 		assertNull("not case sensitive?", spec.getValue("TAG"));
 		assertEquals("value", spec.getValue("tag"));
 		assertEquals("othervalue", spec.getValue("othertag"));
 	}
+	
+	public void testGetValueFromIndex() throws Exception
+	{
+		DropDownFieldSpec spec = new DropDownFieldSpec(choices);
+		assertEquals("value", spec.getValue(0));
+		assertEquals("othervalue", spec.getValue(1));
+	}
+	
+	public void testGetChoice() throws Exception
+	{
+		DropDownFieldSpec spec = new DropDownFieldSpec(choices);
+		assertEquals(choices[0], spec.getChoice(0));
+		assertEquals(choices[1], spec.getChoice(1));
+		
+	}
+	
+	public void testFindCode()
+	{
+		DropDownFieldSpec spec = new DropDownFieldSpec(choices);
+		assertEquals(0, spec.findCode(choices[0].getCode()));
+		assertEquals(1, spec.findCode(choices[1].getCode()));
+		assertEquals(-1, spec.findCode("no such code"));
+	}
+	
+	public void testSetChoices()
+	{
+		DropDownFieldSpec spec = new DropDownFieldSpec();
+		spec.setChoices(choices);
+		assertEquals("didn't add all choices?", choices.length, spec.getCount());
+	}
 
-	public static final String SAMPLE_DROPDOWN_CHOICE1 = "choice #1";
-	public static final String SAMPLE_DROPDOWN_CHOICE2 = "choice #2";
-	public static final String SAMPLE_DROPDOWN_LABEL = "Dropdown Label";
-	public static final String SAMPLE_DROPDOWN_FIELD_XML = "<Field type='DROPDOWN'>\n" +
-			"<Tag>custom</Tag>\n" +
-			"<Label>"+SAMPLE_DROPDOWN_LABEL+"</Label>\n" +
-			"<Choices>\n" +
-			"<Choice>" +
-			SAMPLE_DROPDOWN_CHOICE1 +
-			"</Choice>\n" +
-			"<Choice>" +
-			SAMPLE_DROPDOWN_CHOICE2 +
-			"</Choice>\n" +
-			"</Choices>\n" +
-			"</Field>\n";
+	static final ChoiceItem[] choices = {new ChoiceItem("tag", "value"), new ChoiceItem("othertag", "othervalue"),};
 }

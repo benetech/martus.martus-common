@@ -25,10 +25,11 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.test;
 
+import org.martus.common.fieldspec.CustomDropDownFieldSpec;
 import org.martus.common.fieldspec.DropDownFieldSpec;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.GridFieldSpec;
-import org.martus.common.fieldspec.TestDropDownFieldSpec;
+import org.martus.common.fieldspec.TestCustomDropDownFieldSpec;
 import org.martus.common.fieldspec.GridFieldSpec.UnsupportedFieldTypeException;
 import org.martus.util.TestCaseEnhanced;
 
@@ -71,7 +72,7 @@ public class TestGridFieldSpec extends TestCaseEnhanced
 		assertEquals(3, spec.getColumnCount());
 		assertContains(SAMPLE_GRID_HEADER_LABEL_1, spec.getAllColumnLabels());
 		assertContains(SAMPLE_GRID_HEADER_LABEL_2, spec.getAllColumnLabels());
-		assertContains(TestDropDownFieldSpec.SAMPLE_DROPDOWN_LABEL, spec.getAllColumnLabels());
+		assertContains(TestCustomDropDownFieldSpec.SAMPLE_DROPDOWN_LABEL, spec.getAllColumnLabels());
 		assertEquals(SAMPLE_GRID_FIELD_XML_DROPDOWN, spec.toString());
 	}
 
@@ -87,16 +88,17 @@ public class TestGridFieldSpec extends TestCaseEnhanced
 		assertEquals(labelStringColumn, spec.getFieldSpec(0).getLabel());
 
 		FieldSpec.XmlFieldSpecLoader loader = new FieldSpec.XmlFieldSpecLoader();
-		loader.parse(TestDropDownFieldSpec.SAMPLE_DROPDOWN_FIELD_XML);
+		loader.parse(TestCustomDropDownFieldSpec.SAMPLE_DROPDOWN_FIELD_XML);
 		DropDownFieldSpec dropdownSpecToAdd = (DropDownFieldSpec)loader.getFieldSpec();
 		spec.addColumn(dropdownSpecToAdd);
-		assertEquals(TestDropDownFieldSpec.SAMPLE_DROPDOWN_LABEL, spec.getColumnLabel(1));
+		assertEquals(TestCustomDropDownFieldSpec.SAMPLE_DROPDOWN_LABEL, spec.getColumnLabel(1));
 		assertEquals(FieldSpec.TYPE_DROPDOWN, spec.getColumnType(1));
 
 		DropDownFieldSpec dropdownSpecRetrieved = (DropDownFieldSpec)spec.getFieldSpec(1);
-		assertEquals(2, dropdownSpecRetrieved.getCount());
-		assertEquals(TestDropDownFieldSpec.SAMPLE_DROPDOWN_CHOICE1, dropdownSpecRetrieved.getValue(0));
-		assertEquals(TestDropDownFieldSpec.SAMPLE_DROPDOWN_CHOICE2, dropdownSpecRetrieved.getValue(1));
+		assertEquals(3, dropdownSpecRetrieved.getCount());
+		assertEquals(CustomDropDownFieldSpec.EMPTY_FIRST_CHOICE, dropdownSpecRetrieved.getValue(0));
+		assertEquals(TestCustomDropDownFieldSpec.SAMPLE_DROPDOWN_CHOICE1, dropdownSpecRetrieved.getValue(1));
+		assertEquals(TestCustomDropDownFieldSpec.SAMPLE_DROPDOWN_CHOICE2, dropdownSpecRetrieved.getValue(2));
 
 
 		FieldSpec booleanSpec = new FieldSpec("TYPE_BOOLEAN", FieldSpec.TYPE_BOOLEAN);
@@ -217,7 +219,7 @@ public class TestGridFieldSpec extends TestCaseEnhanced
 	"<Tag></Tag>\n" +
 	"<Label>"+SAMPLE_GRID_HEADER_LABEL_2+"</Label>\n" +
 	"</Field>\n" +
-	TestDropDownFieldSpec.SAMPLE_DROPDOWN_FIELD_XML +
+	TestCustomDropDownFieldSpec.SAMPLE_DROPDOWN_FIELD_XML +
 	"</GridSpecDetails>\n" +
 	"</Field>\n";
 	
