@@ -219,7 +219,7 @@ public class FieldSpec
 			if(type == TYPE_GRID)
 				spec = new GridFieldSpec();
 			else if(type == TYPE_DROPDOWN)
-				spec = new DropDownFieldSpec();
+				spec = new CustomDropDownFieldSpec();
 			else if(type == TYPE_MESSAGE)
 				spec = new MessageFieldSpec();
 			else
@@ -235,7 +235,7 @@ public class FieldSpec
 			else if(tag.equals(GridFieldSpec.GRID_SPEC_DETAILS_TAG))
 				return new GridFieldSpec.GridSpecDetailsLoader((GridFieldSpec)spec);
 			else if(tag.equals(DropDownFieldSpec.DROPDOWN_SPEC_CHOICES_TAG))
-				return new DropDownFieldSpec.DropDownSpecLoader((DropDownFieldSpec)spec);
+				return new CustomDropDownFieldSpec.DropDownSpecLoader((CustomDropDownFieldSpec)spec);
 			else if(tag.equals(MessageFieldSpec.MESSAGE_SPEC_MESSAGE_TAG))
 				return new MessageFieldSpec.MessageSpecLoader((MessageFieldSpec)spec);
 			

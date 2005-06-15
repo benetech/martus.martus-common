@@ -36,6 +36,7 @@ import org.martus.common.clientside.test.TestClientSideNetworkHandler;
 import org.martus.common.clientside.test.TestClientSideNetworkHandlerForNonSSL;
 import org.martus.common.clientside.test.TestCurrentUiState;
 import org.martus.common.field.TestMartusField;
+import org.martus.common.fieldspec.TestDropDownFieldSpec;
 import org.martus.common.utilities.TestDateUtilities;
 import org.martus.common.utilities.TestMartusFlexidate;
 

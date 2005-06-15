@@ -22,9 +22,8 @@ Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.
 
 */
-package org.martus.common.test;
-import org.martus.common.fieldspec.DropDownFieldSpec;
-import org.martus.common.fieldspec.FieldSpec;
+package org.martus.common.fieldspec;
+import org.martus.common.clientside.ChoiceItem;
 import org.martus.util.TestCaseEnhanced;
 
 
@@ -42,17 +41,27 @@ public class TestDropDownFieldSpec extends TestCaseEnhanced
 		loader.parse(SAMPLE_DROPDOWN_FIELD_XML);
 		DropDownFieldSpec spec = (DropDownFieldSpec)loader.getFieldSpec();
 		assertEquals(2, spec.getCount());
-		assertContains(SAMPLE_DROPDOWN_CHOICE1, spec.getChoices());
-		assertContains(SAMPLE_DROPDOWN_CHOICE2, spec.getChoices());
+		assertEquals(SAMPLE_DROPDOWN_CHOICE1, spec.getValue(0));
+		assertEquals(SAMPLE_DROPDOWN_CHOICE2, spec.getValue(1));
 		assertEquals(SAMPLE_DROPDOWN_FIELD_XML, spec.toString());
 		try
 		{
-			spec.get(3);
+			spec.getValue(3);
 			fail("Should have thrown");
 		}
 		catch(ArrayIndexOutOfBoundsException expected)
 		{
 		}
+	}
+	
+	public void testGetValue() throws Exception
+	{
+		ChoiceItem[] choices = {new ChoiceItem("tag", "value"), new ChoiceItem("othertag", "othervalue"),};
+		DropDownFieldSpec spec = new DropDownFieldSpec(choices);
+		assertNull("found a non-existant tag?", spec.getValue("nontag"));
+		assertNull("not case sensitive?", spec.getValue("TAG"));
+		assertEquals("value", spec.getValue("tag"));
+		assertEquals("othervalue", spec.getValue("othertag"));
 	}
 
 	public static final String SAMPLE_DROPDOWN_CHOICE1 = "choice #1";

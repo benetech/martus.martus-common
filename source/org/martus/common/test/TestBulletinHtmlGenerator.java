@@ -26,6 +26,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.test;
 
 import java.util.Vector;
+
 import org.martus.common.EnglishCommonStrings;
 import org.martus.common.GridData;
 import org.martus.common.MiniLocalization;
@@ -34,7 +35,7 @@ import org.martus.common.bulletin.BulletinConstants;
 import org.martus.common.bulletin.BulletinHtmlGenerator;
 import org.martus.common.clientside.Localization;
 import org.martus.common.crypto.MockMartusSecurity;
-import org.martus.common.fieldspec.DropDownFieldSpec;
+import org.martus.common.fieldspec.CustomDropDownFieldSpec;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.common.fieldspec.StandardFieldSpecs;
@@ -202,7 +203,7 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 
 	public void testGetHtmlStringWithDropDowns() throws Exception
 	{
-		DropDownFieldSpec dropdownSpec = new DropDownFieldSpec();
+		CustomDropDownFieldSpec dropdownSpec = new CustomDropDownFieldSpec();
 		Vector choices = new Vector();
 		choices.add("green");
 		choices.add("blue");

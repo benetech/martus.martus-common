@@ -26,10 +26,8 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.fieldspec;
 
-import java.util.Vector;
 import org.martus.common.MartusXml;
-import org.martus.util.xml.SimpleXmlVectorLoader;
-import org.xml.sax.SAXParseException;
+import org.martus.common.clientside.ChoiceItem;
 
 
 
@@ -37,66 +35,70 @@ public class DropDownFieldSpec extends FieldSpec
 {
 	public DropDownFieldSpec()
 	{
-		super(TYPE_DROPDOWN);
-		choices = new Vector();
+		this(new ChoiceItem[] {});
 	}
 	
-	public String getDefaultValue()
+	public DropDownFieldSpec(ChoiceItem[] choicesToUse)
 	{
-		return EMPTY_FIRST_CHOICE;
+		super(TYPE_DROPDOWN);
+		setChoices(choicesToUse);
 	}
-
+	
 	public String getDetailsXml()
 	{
 		String xml = MartusXml.getTagStartWithNewline(DROPDOWN_SPEC_CHOICES_TAG);
 		for(int i = 0 ; i < getCount(); ++i)
 		{
 			xml += MartusXml.getTagStart(DROPDOWN_SPEC_CHOICE_TAG) +
-					get(i) +
+					getValue(i) +
 					MartusXml.getTagEnd(DROPDOWN_SPEC_CHOICE_TAG);
 		}
 		xml += MartusXml.getTagEnd(DROPDOWN_SPEC_CHOICES_TAG);
 		return xml;
 	}
+	
+	public void setChoices(ChoiceItem[] choicesToUse)
+	{
+		choices = choicesToUse;
+	}
 
-	public void setChoices(Vector stringChoicesToUse)
-	{
-		choices = stringChoicesToUse;
-	}
-	
-	public Vector getChoices()
-	{
-		return choices;
-	}
-	
 	public int getCount()
 	{
-		return choices.size();
+		return choices.length;
 	}
 	
-	public String get(int index) throws ArrayIndexOutOfBoundsException 
+	public ChoiceItem getChoice(int index)
 	{
-		return (String)choices.get(index);
+		return choices[index];
 	}
 	
-	static class DropDownSpecLoader extends SimpleXmlVectorLoader
+	public String getValue(int index) throws ArrayIndexOutOfBoundsException 
 	{
-		public DropDownSpecLoader(DropDownFieldSpec spec)
-		{
-			super(DROPDOWN_SPEC_CHOICES_TAG, DROPDOWN_SPEC_CHOICE_TAG);
-			this.spec = spec;
-		}
-
-		public void endDocument() throws SAXParseException
-		{
-			spec.setChoices(getVector());
-		}
-		DropDownFieldSpec spec;
+		return choices[index].toString();
 	}
 	
-	private Vector choices;
+	public String getValue(String code)
+	{
+		int at = findCode(code);
+		if(at < 0)
+			return null;
+		
+		return choices[at].toString();
+	}
 	
-	public final static String EMPTY_FIRST_CHOICE = " ";
+	public int findCode(String code)
+	{
+		for(int i=0; i < choices.length; ++i)
+			if(choices[i].getCode().equals(code))
+				return i;
+		
+		return -1;
+	}
+	
+	
+	
+	private ChoiceItem[] choices;
+	
 	public final static String DROPDOWN_SPEC_CHOICES_TAG = "Choices";
 	public final static String DROPDOWN_SPEC_CHOICE_TAG = "Choice";
 }
