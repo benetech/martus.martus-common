@@ -72,18 +72,15 @@ public class GridFieldSpec extends FieldSpec
 
 	public void addColumn(FieldSpec columnSpec) throws UnsupportedFieldTypeException
 	{
-		if(!isValidGridColumnType(columnSpec))
+		if(!isValidGridColumnType(columnSpec.getType()))
 			throw new UnsupportedFieldTypeException();
 		columns.add(columnSpec);
 	}
 
-	private boolean isValidGridColumnType(FieldSpec columnSpec) throws UnsupportedFieldTypeException
+	private boolean isValidGridColumnType(int columnType)
 	{
-		int columnType = columnSpec.getType();
-		if( columnType != TYPE_NORMAL &&
-			columnType != TYPE_DROPDOWN)
-				return false;
-		return true;
+		return (columnType == TYPE_NORMAL ||
+				columnType == TYPE_DROPDOWN);
 	}
 	
 	public void setColumnZeroLabel(String columnZeroLabelToUse)
