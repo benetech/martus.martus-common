@@ -63,7 +63,7 @@ public class DropDownFieldSpec extends FieldSpec
 		return getChoice(index).toString();
 	}
 	
-	public String getValue(String code)
+	public String getDisplayString(String code)
 	{
 		int at = findCode(code);
 		if(at < 0)

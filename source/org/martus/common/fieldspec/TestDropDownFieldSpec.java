@@ -38,10 +38,10 @@ public class TestDropDownFieldSpec extends TestCaseEnhanced
 	public void testGetValueFromTag() throws Exception
 	{
 		DropDownFieldSpec spec = new DropDownFieldSpec(choices);
-		assertNull("found a non-existant tag?", spec.getValue("nontag"));
-		assertNull("not case sensitive?", spec.getValue("TAG"));
-		assertEquals("value", spec.getValue("tag"));
-		assertEquals("othervalue", spec.getValue("othertag"));
+		assertNull("found a non-existant tag?", spec.getDisplayString("nontag"));
+		assertNull("not case sensitive?", spec.getDisplayString("TAG"));
+		assertEquals("value", spec.getDisplayString("tag"));
+		assertEquals("othervalue", spec.getDisplayString("othertag"));
 	}
 	
 	public void testGetValueFromIndex() throws Exception
