@@ -80,7 +80,8 @@ public class GridFieldSpec extends FieldSpec
 	private boolean isValidGridColumnType(int columnType)
 	{
 		return (columnType == TYPE_NORMAL ||
-				columnType == TYPE_DROPDOWN);
+				columnType == TYPE_DROPDOWN ||
+				columnType == TYPE_BOOLEAN);
 	}
 	
 	public void setColumnZeroLabel(String columnZeroLabelToUse)

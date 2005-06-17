@@ -101,15 +101,12 @@ public class TestGridFieldSpec extends TestCaseEnhanced
 		assertEquals(TestCustomDropDownFieldSpec.SAMPLE_DROPDOWN_CHOICE2, dropdownSpecRetrieved.getValue(2));
 
 
-		FieldSpec booleanSpec = new FieldSpec("TYPE_BOOLEAN", FieldSpec.TYPE_BOOLEAN);
-		try
-		{
-			spec.addColumn(booleanSpec);
-			fail("TYPE_BOOLEAN: Not yet implemented should have thrown exception");
-		}
-		catch(UnsupportedFieldTypeException expected)
-		{
-		}
+		String labelBooleanColumn = "TYPE_BOOLEAN";
+		FieldSpec booleanSpec = new FieldSpec(labelBooleanColumn, FieldSpec.TYPE_BOOLEAN);
+		spec.addColumn(booleanSpec);
+		assertEquals(labelBooleanColumn, spec.getColumnLabel(2));
+		assertEquals(FieldSpec.TYPE_BOOLEAN, spec.getColumnType(2));
+		assertEquals(labelBooleanColumn, spec.getFieldSpec(2).getLabel());
 
 		FieldSpec dateSpec = new FieldSpec("TYPE_DATE", FieldSpec.TYPE_DATE);
 		try
