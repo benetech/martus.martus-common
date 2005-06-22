@@ -195,10 +195,7 @@ public class BulletinHtmlGenerator
 				value = localization.getViewableDateRange(value);
 			else if(spec.getType() == FieldSpec.TYPE_BOOLEAN)
 			{
-				if(value.equals(FieldSpec.TRUESTRING))
-					value = getHTMLEscaped(localization.getButtonLabel("yes"));
-				else
-					value = getHTMLEscaped(localization.getButtonLabel("no"));
+				value = getPrintableBooleanValue(value);
 			}
 			else if(spec.getType() == FieldSpec.TYPE_GRID)
 			{
@@ -212,6 +209,15 @@ public class BulletinHtmlGenerator
 			sectionHtml += fieldHtml;
 		}
 		return sectionHtml;
+	}
+
+	private String getPrintableBooleanValue(String value)
+	{
+		if(value.equals(FieldSpec.TRUESTRING))
+			value = getHTMLEscaped(localization.getButtonLabel("yes"));
+		else
+			value = getHTMLEscaped(localization.getButtonLabel("no"));
+		return value;
 	}
 
 	private String getGridHTML(FieldDataPacket fdp, FieldSpec spec, String tag)
@@ -257,6 +263,8 @@ public class BulletinHtmlGenerator
 					String data = gridData.getValueAt(r, c);
 					if(LanguageOptions.isRightToLeftLanguage())
 						data = gridData.getValueAt(r, ((columnCount-1)-c));
+					if(grid.getColumnType(c) == FieldSpec.TYPE_BOOLEAN)
+						data = getPrintableBooleanValue(data);
 					value += getItemToAddForTable(data, TABLE_DATA, justification);
 				}
 				if(LanguageOptions.isRightToLeftLanguage())
