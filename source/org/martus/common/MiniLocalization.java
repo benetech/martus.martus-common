@@ -64,7 +64,7 @@ public class MiniLocalization
 		setCurrentDateFormatCode(DateUtilities.MDY_SLASH.getCode());
 	}
 	
-	protected void addEnglishTranslations(String[] translations)
+	public void addEnglishTranslations(String[] translations)
 	{
 		for(int i=0; i < translations.length; ++i)
 		{

@@ -55,10 +55,10 @@ public class MartusDateRangeField extends MartusField
 	public MartusField getSubField(String tag)
 	{
 		MartusFlexidate date = MartusFlexidate.createFromMartusDateString(getData());
-		if(tag.equals(SUBFIELD_FIRST))
+		if(tag.equals(SUBFIELD_BEGIN))
 			return createDateSubField(date.getBeginDate());
 		
-		if(tag.equals(SUBFIELD_LAST))
+		if(tag.equals(SUBFIELD_END))
 			return createDateSubField(date.getEndDate());
 		
 		return null;
@@ -71,7 +71,7 @@ public class MartusDateRangeField extends MartusField
 		return sub;
 	}
 
-	public static final String SUBFIELD_LAST = "last";
-	public static final String SUBFIELD_FIRST = "first";
+	public static final String SUBFIELD_END = "end";
+	public static final String SUBFIELD_BEGIN = "begin";
 
 }
