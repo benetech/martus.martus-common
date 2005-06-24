@@ -245,7 +245,7 @@ public class BulletinHtmlGenerator
 		value += "</tr>";
 		try
 		{
-			GridData gridData = new GridData();
+			GridData gridData = new GridData(grid);
 			gridData.setFromXml(gridXMLData);
 			int rowCount = gridData.getRowCount();
 

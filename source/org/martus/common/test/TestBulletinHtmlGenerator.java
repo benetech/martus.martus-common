@@ -179,16 +179,9 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 	
 	public void testGetHtmlStringWithGrids() throws Exception
 	{
-		GridData grid = TestGridData.createSampleGrid();
-		GridFieldSpec gridSpec = new GridFieldSpec();
-		String label1 = "Column 1";
-		FieldSpec column1 = new FieldSpec(label1, FieldSpec.TYPE_NORMAL);
+		GridData grid = TestGridData.createSampleGridWithData();
+		GridFieldSpec gridSpec = TestGridData.createSampleGridSpec();
 
-		String label2 = "Column 2";
-		FieldSpec column2 = new FieldSpec(label2, FieldSpec.TYPE_NORMAL);
-
-		gridSpec.addColumn(column1);
-		gridSpec.addColumn(column2);
 		FieldSpec[] gridSpecs = {gridSpec};
 		FieldSpec[] standardPrivateFields = StandardFieldSpecs.getDefaultPrivateFieldSpecs();
 		
@@ -197,7 +190,12 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 		
 		
 		BulletinHtmlGenerator generator = new BulletinHtmlGenerator(loc);
-		String expectedHtml ="<tr><td align='right' valign='top'></td><td valign='top'><table border='1' align='left'><tr><th align='center'> </th><th align='center'>Column 1</th><th align='center'>Column 2</th></tr><tr><td align='left'>1</td><td align='left'>data1</td><td align='left'>&lt;&amp;data2&gt;</td></tr><tr><td align='left'>2</td><td align='left'>data3</td><td align='left'>data4</td></tr></table></td></tr>\n";
+		String expectedHtml ="<tr><td align='right' valign='top'></td><td valign='top'>" +
+				"<table border='1' align='left'>" +
+				"<tr><th align='center'> </th><th align='center'>Column 1</th><th align='center'>Column 2</th></tr>" +
+				"<tr><td align='left'>1</td><td align='left'>data1</td><td align='left'>&lt;&amp;data2&gt;</td></tr>" +
+				"<tr><td align='left'>2</td><td align='left'>data3</td><td align='left'>data4</td></tr>" +
+				"</table></td></tr>\n";
 		assertEquals("HTML Grids not correct?", expectedHtml, generator.getSectionHtmlString(b.getFieldDataPacket()));
 	}
 
@@ -225,7 +223,7 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 
 	public void testGetHtmlStringWithEmptyGrids() throws Exception
 	{
-		GridData grid = TestGridData.createSampleEmptyGrid();
+		GridData grid = TestGridData.createSampleGridWithOneEmptyRow();
 		GridFieldSpec gridSpec = new GridFieldSpec();
 		String label1 = "Column 1";
 		FieldSpec column1 = new FieldSpec(label1, FieldSpec.TYPE_NORMAL);

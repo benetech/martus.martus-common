@@ -28,6 +28,9 @@ package org.martus.common.test;
 import org.martus.common.GridData;
 import org.martus.common.GridRow;
 import org.martus.common.MartusUtilities;
+import org.martus.common.fieldspec.FieldSpec;
+import org.martus.common.fieldspec.GridFieldSpec;
+import org.martus.common.fieldspec.GridFieldSpec.UnsupportedFieldTypeException;
 import org.martus.util.TestCaseEnhanced;
 
 
@@ -38,19 +41,26 @@ public class TestGridData extends TestCaseEnhanced
 		super(name);
 	}
 	
+	public void setUp() throws Exception
+	{
+
+		gridSpec2Colunns = new GridFieldSpec();
+		gridSpec2Colunns.addColumn(FieldSpec.createStandardField("a", FieldSpec.TYPE_NORMAL));
+		gridSpec2Colunns.addColumn(FieldSpec.createStandardField("b", FieldSpec.TYPE_NORMAL));
+	}
+	
 	public void testBasics()
 	{
-		final int MAX_COLS = 3;
-		
-		GridData grid = new GridData(MAX_COLS);
-		assertEquals(MAX_COLS, grid.getColumnCount());
-		GridRow row1 = new GridRow(MAX_COLS);
+		GridData grid = new GridData(gridSpec2Colunns);
+		int cols = grid.getColumnCount();
+		assertEquals(gridSpec2Colunns.getColumnCount(), cols);
+		GridRow row1 = new GridRow(cols);
 		String mustEncodeXMLData = "<&>";
-		String[] row1Data = {"column1a", mustEncodeXMLData, "column3a"};
+		String[] row1Data = {"column1a", mustEncodeXMLData};
 		row1.setRow(row1Data);
 		
-		GridRow row2 = new GridRow(MAX_COLS);
-		String[] row2Data = {"column1b", "column2b", "column3b"};
+		GridRow row2 = new GridRow(cols);
+		String[] row2Data = {"column1b", "column2b"};
 		row2.setRow(row2Data);
 		
 		assertEquals("row count should start at 0", 0, grid.getRowCount());
@@ -61,16 +71,14 @@ public class TestGridData extends TestCaseEnhanced
 		String xmlEncodedString = MartusUtilities.getXmlEncoded(mustEncodeXMLData);
 
 		String expectedXml = 
-			"<"+GridData.GRID_DATA_TAG+ " columns='3'>\n" +
+			"<"+GridData.GRID_DATA_TAG+ " columns='2'>\n" +
 			"<"+GridData.ROW_TAG + ">\n" + 
 				"<" + GridData.COLUMN_TAG + ">" + row1.getCellText(0) + "</" + GridData.COLUMN_TAG + ">\n" +
 				"<" + GridData.COLUMN_TAG + ">" + xmlEncodedString + "</" + GridData.COLUMN_TAG + ">\n" +
-				"<" + GridData.COLUMN_TAG + ">" + row1.getCellText(2) + "</" + GridData.COLUMN_TAG + ">\n" +
 			"</" + GridData.ROW_TAG + ">\n" +
 			"<" + GridData.ROW_TAG + ">\n" +
 				"<" + GridData.COLUMN_TAG + ">" + row2.getCellText(0) + "</" + GridData.COLUMN_TAG + ">\n" +
 				"<" + GridData.COLUMN_TAG + ">" + row2.getCellText(1) + "</" + GridData.COLUMN_TAG + ">\n" +
-				"<" + GridData.COLUMN_TAG + ">" + row2.getCellText(2) + "</" + GridData.COLUMN_TAG + ">\n" +
 			"</" + GridData.ROW_TAG + ">\n"+
 			"</" + GridData.GRID_DATA_TAG+ ">\n";
 			
@@ -80,29 +88,28 @@ public class TestGridData extends TestCaseEnhanced
 		assertEquals("Show now have 2 rows", 2 , grid.getRowCount());
 		grid.addEmptyRow();
 		assertEquals("Show now have an empty row", 3, grid.getRowCount());
-		assertEquals("should be empty", "", grid.getValueAt(2,2));
+		assertEquals("should be empty", "", grid.getValueAt(2,1));
 	}
 	
 	public void testArrayBoundries()
 	{
-		final int MAX_COLS = 3;
+		GridData grid = new GridData(gridSpec2Colunns);
 		
-		GridData grid = new GridData(MAX_COLS);
-		String[] row1Data = {"column1a", "column2a"};
-		GridRow row1 = new GridRow(2);
+		String[] row1Data = {"column1a"};
+		GridRow row1 = new GridRow(1);
 		row1.setRow(row1Data);
 		try
 		{
 			grid.addRow(row1);
-			fail("Should have thrown only 2 columns");
+			fail("Should have thrown for too few columns");
 		}
 		catch (ArrayIndexOutOfBoundsException expected)
 		{
 		}
 		//assertEquals("row count should still be at 1", 1, grid.getRowCount());
 
-		String[] row2Data = {"column1b", "column2b", "column3b", "column4b"};
-		GridRow row2 = new GridRow(4);
+		String[] row2Data = {"column1b", "column2b", "column3b"};
+		GridRow row2 = new GridRow(3);
 		row2.setRow(row2Data);
 		try
 		{
@@ -132,9 +139,8 @@ public class TestGridData extends TestCaseEnhanced
 		}
 		String data1 = "column1 data";
 		String data2 = "column2 data";
-		String data3 = "column3 data";
-		String[] rowValidData = {data1, data2, data3};
-		GridRow rowValid = new GridRow(3);
+		String[] rowValidData = {data1, data2};
+		GridRow rowValid = new GridRow(rowValidData.length);
 		rowValid.setRow(rowValidData);
 		grid.addRow(rowValid);
 
@@ -158,18 +164,15 @@ public class TestGridData extends TestCaseEnhanced
 	
 		assertEquals(data1, grid.getValueAt(0,0));
 		assertEquals(data2, grid.getValueAt(0,1));
-		assertEquals(data3, grid.getValueAt(0,2));
 
 		String data1a = "column1 data";
 		String data2a = "column2 data";
-		String data3a = "column3 data";
-		String[] rowValidaData = {data1a, data2a, data3a};
-		GridRow rowValida = new GridRow(3);
+		String[] rowValidaData = {data1a, data2a};
+		GridRow rowValida = new GridRow(rowValidaData.length);
 		rowValida.setRow(rowValidaData);
 		grid.addRow(rowValida);
 		assertEquals(data1a, grid.getValueAt(1,0));
 		assertEquals(data2a, grid.getValueAt(1,1));
-		assertEquals(data3a, grid.getValueAt(1,2));
 
 		String modifiedData = "new Text";
 		try
@@ -214,9 +217,9 @@ public class TestGridData extends TestCaseEnhanced
 	
 	public void testXmlGridLoader() throws Exception
 	{
-		GridData original = createSampleGrid();
+		GridData original = createSampleGridWithData();
 		String xml = original.getXmlRepresentation();
-		GridData loaded = new GridData(0);
+		GridData loaded = new GridData(createSampleGridSpec());
 		loaded.addEmptyRow();
 		loaded.setFromXml(xml);
 		assertEquals("Columns?", original.getColumnCount(), loaded.getColumnCount());
@@ -227,51 +230,47 @@ public class TestGridData extends TestCaseEnhanced
 	
 	public void testEmptyGridText() throws Exception
 	{
-		GridData grid = new GridData(4);
+		GridData grid = new GridData(gridSpec2Colunns);
 		grid.setFromXml("");
 		assertEquals("No first row?", 1, grid.getRowCount());
 		assertEquals("column 1 not empty?", "", grid.getValueAt(0,0));
 		assertEquals("column 2 not empty?", "", grid.getValueAt(0,1));
-		assertEquals("column 3 not empty?", "", grid.getValueAt(0,2));
-		assertEquals("column 4 not empty?", "", grid.getValueAt(0,3));
 		assertEquals("Should return an empty string for no data", "", grid.getXmlRepresentation());
 	}
 	
-	public void testResetColumns() throws Exception
+	public static GridData createSampleGridWithData() throws Exception
 	{
 		GridData grid = createSampleGrid();
-		try
-		{
-			grid.setMaxColumns(1);
-			fail("Didn't throw after we reset the # of columns?");
-		}
-		catch (GridData.AlreadyInitalizedException expectedException)
-		{
-		}
-		grid.setMaxColumns(2);
-		
-	}
-
-	public static GridData createSampleGrid()
-	{
-		GridData grid = new GridData(2);
-		GridRow row1 = GridRow.createEmptyRow(2);
-		row1.setCellText(0, SAMPLE_DATA1);
-		row1.setCellText(1, SAMPLE_DATA2_RAW);
-		grid.addRow(row1);
-		GridRow row2 = GridRow.createEmptyRow(2);
-		row2.setCellText(0, SAMPLE_DATA3);
-		row2.setCellText(1, SAMPLE_DATA4);
-		grid.addRow(row2);
+		grid.addEmptyRow();
+		grid.setValueAt(SAMPLE_DATA1, 0, 0);
+		grid.setValueAt(SAMPLE_DATA2_RAW, 0, 1);
+		grid.addEmptyRow();
+		grid.setValueAt(SAMPLE_DATA3, 1, 0);
+		grid.setValueAt(SAMPLE_DATA4, 1, 1);
 		return grid;
 	}
 
-	public static GridData createSampleEmptyGrid()
+	public static GridData createSampleGridWithOneEmptyRow() throws Exception
 	{
-		GridData grid = new GridData(2);
+		GridData grid = createSampleGrid();
 		GridRow row1 = GridRow.createEmptyRow(2);
 		grid.addRow(row1);
 		return grid;
+	}
+
+	public static GridData createSampleGrid() throws UnsupportedFieldTypeException
+	{
+		GridFieldSpec spec = createSampleGridSpec();
+		GridData grid = new GridData(spec);
+		return grid;
+	}
+
+	public static GridFieldSpec createSampleGridSpec() throws UnsupportedFieldTypeException
+	{
+		GridFieldSpec spec = new GridFieldSpec();
+		spec.addColumn(FieldSpec.createCustomField("a", "Column 1", FieldSpec.TYPE_NORMAL));
+		spec.addColumn(FieldSpec.createCustomField("b", "Column 2", FieldSpec.TYPE_NORMAL));
+		return spec;
 	}
 
 	static public final String SAMPLE_DATA1 = "data1";
@@ -279,4 +278,5 @@ public class TestGridData extends TestCaseEnhanced
 	static public final String SAMPLE_DATA3 = "data3";
 	static public final String SAMPLE_DATA4 = "data4";
 	
+	private GridFieldSpec gridSpec2Colunns;
 }

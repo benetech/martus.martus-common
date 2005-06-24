@@ -37,6 +37,8 @@ import org.martus.common.GridData;
 import org.martus.common.MartusXml;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.crypto.SessionKey;
+import org.martus.common.fieldspec.FieldSpec;
+import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.util.Base64;
 import org.martus.util.Base64.InvalidBase64Exception;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
@@ -59,7 +61,7 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 		throws SAXParseException
 	{
 		if(tag.startsWith(MartusXml.FieldElementPrefix))
-			return new XmlFieldLoader(tag);
+			return new XmlFieldLoader(tag, fdp);
 		else if(tag.equals(MartusXml.AttachmentElementName))
 			return new XmlAttachmentLoader(tag);
 		else if(tag.equals(MartusXml.CustomFieldSpecsElementName))
@@ -147,9 +149,10 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 	
 	static class XmlFieldLoader extends SimpleXmlStringLoader
 	{
-		XmlFieldLoader(String tag)
+		XmlFieldLoader(String tag, FieldDataPacket fdp)
 		{
 			super(tag);
+			spec = fdp.getField(getFieldNameTag()).getFieldSpec();
 		}
 		
 		String getFieldNameTag()
@@ -170,7 +173,7 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 				throws SAXParseException
 		{
 			if(tag.equals(GridData.GRID_DATA_TAG))
-				return new GridData.XmlGridDataLoader(new GridData());
+				return new GridData.XmlGridDataLoader(new GridData((GridFieldSpec)spec));
 			return super.startElement(tag);
 		}
 
@@ -181,6 +184,8 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 				complexData = ((GridData.XmlGridDataLoader)ended).getGridData().getXmlRepresentation(); 
 			super.endElement(tag, ended);
 		}
+		
+		FieldSpec spec;
 		String complexData;
 	}
 	

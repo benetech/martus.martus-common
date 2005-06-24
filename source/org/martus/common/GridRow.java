@@ -57,7 +57,7 @@ public class GridRow
 	public void setRow(String[] data) throws ArrayIndexOutOfBoundsException   
 	{
 		if(data.length != maxColumns)
-			throw new ArrayIndexOutOfBoundsException("columns incorrect");
+			throw new ArrayIndexOutOfBoundsException("columns incorrect expected " + maxColumns + " but was " + data.length);
 		row.clear();
 		for(int i = 0; i < data.length; ++i)
 			row.add(data[i]);

@@ -30,6 +30,7 @@ import java.util.Vector;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlParser;
 import org.xml.sax.Attributes;
@@ -39,32 +40,12 @@ import org.xml.sax.SAXParseException;
 
 public class GridData
 {
-	public GridData(int columns)
+	public GridData(GridFieldSpec spec)
 	{
-		this();
-		maxColumns = columns;
-	}
-
-	public GridData()
-	{
+		gridSpec = spec;
 		rows = new Vector();
 	}
-	
-	public class AlreadyInitalizedException extends Exception
-	{
-		private static final long serialVersionUID = 1;
-	}
-	
-	public void setMaxColumns(int maxColumns) throws AlreadyInitalizedException
-	{
-		if(this.maxColumns == maxColumns)
-			return;
-		if(this.maxColumns != 0)
-			throw new AlreadyInitalizedException();
-		this.maxColumns = maxColumns;
-	}
-	
-	
+
 	public void addEmptyRow()
 	{
 		GridRow row = GridRow.createEmptyRow(getColumnCount());
@@ -78,7 +59,7 @@ public class GridData
 	
 	public int getColumnCount()
 	{
-		return maxColumns;
+		return gridSpec.getColumnCount();
 	}
 	
 	private GridRow getRow(int row)
@@ -171,15 +152,11 @@ public class GridData
 		public void startDocument(Attributes attrs) throws SAXParseException
 		{
 			String cols = attrs.getValue(GridData.GRID_ATTRIBUTE_COLUMNS);
-			try
-			{
-				grid.setMaxColumns(Integer.parseInt(cols));
-				super.startDocument(attrs);
-			}
-			catch (AlreadyInitalizedException e)
-			{
-				e.printStackTrace();
-			}
+			int gotCols = Integer.parseInt(cols);
+			int expectedCols = grid.getColumnCount();
+			if(gotCols != expectedCols)
+				System.out.println("XmlGridDataLoader.startDocument: wrong column count! expected " + expectedCols + " but was " + gotCols);
+			super.startDocument(attrs);
 		}
 
 		public SimpleXmlDefaultLoader startElement(String tag)
@@ -205,6 +182,6 @@ public class GridData
 	public static final String ROW_TAG = "Row";
 	public static final String COLUMN_TAG = "Column";
 
-	Vector rows;
-	int maxColumns;
+	private Vector rows;
+	private GridFieldSpec gridSpec;
 }
