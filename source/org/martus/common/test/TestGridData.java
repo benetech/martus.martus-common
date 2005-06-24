@@ -54,12 +54,12 @@ public class TestGridData extends TestCaseEnhanced
 		GridData grid = new GridData(gridSpec2Colunns);
 		int cols = grid.getColumnCount();
 		assertEquals(gridSpec2Colunns.getColumnCount(), cols);
-		GridRow row1 = new GridRow(cols);
+		GridRow row1 = new GridRow(gridSpec2Colunns);
 		String mustEncodeXMLData = "<&>";
 		String[] row1Data = {"column1a", mustEncodeXMLData};
 		row1.setRow(row1Data);
 		
-		GridRow row2 = new GridRow(cols);
+		GridRow row2 = new GridRow(gridSpec2Colunns);
 		String[] row2Data = {"column1b", "column2b"};
 		row2.setRow(row2Data);
 		
@@ -91,12 +91,15 @@ public class TestGridData extends TestCaseEnhanced
 		assertEquals("should be empty", "", grid.getValueAt(2,1));
 	}
 	
-	public void testArrayBoundries()
+	public void testArrayBoundries() throws Exception
 	{
 		GridData grid = new GridData(gridSpec2Colunns);
 		
 		String[] row1Data = {"column1a"};
-		GridRow row1 = new GridRow(1);
+		
+		GridFieldSpec gridSpecWithOneColumn = new GridFieldSpec();
+		gridSpecWithOneColumn.addColumn(FieldSpec.createStandardField("a", FieldSpec.TYPE_NORMAL));
+		GridRow row1 = new GridRow(gridSpecWithOneColumn);
 		row1.setRow(row1Data);
 		try
 		{
@@ -109,7 +112,12 @@ public class TestGridData extends TestCaseEnhanced
 		//assertEquals("row count should still be at 1", 1, grid.getRowCount());
 
 		String[] row2Data = {"column1b", "column2b", "column3b"};
-		GridRow row2 = new GridRow(3);
+
+		GridFieldSpec gridSpecWithThreeColumns = new GridFieldSpec();
+		gridSpecWithThreeColumns.addColumn(FieldSpec.createStandardField("a", FieldSpec.TYPE_NORMAL));
+		gridSpecWithThreeColumns.addColumn(FieldSpec.createStandardField("b", FieldSpec.TYPE_NORMAL));
+		gridSpecWithThreeColumns.addColumn(FieldSpec.createStandardField("c", FieldSpec.TYPE_NORMAL));
+		GridRow row2 = new GridRow(gridSpecWithThreeColumns);
 		row2.setRow(row2Data);
 		try
 		{
@@ -140,7 +148,7 @@ public class TestGridData extends TestCaseEnhanced
 		String data1 = "column1 data";
 		String data2 = "column2 data";
 		String[] rowValidData = {data1, data2};
-		GridRow rowValid = new GridRow(rowValidData.length);
+		GridRow rowValid = new GridRow(gridSpec2Colunns);
 		rowValid.setRow(rowValidData);
 		grid.addRow(rowValid);
 
@@ -168,7 +176,7 @@ public class TestGridData extends TestCaseEnhanced
 		String data1a = "column1 data";
 		String data2a = "column2 data";
 		String[] rowValidaData = {data1a, data2a};
-		GridRow rowValida = new GridRow(rowValidaData.length);
+		GridRow rowValida = new GridRow(gridSpec2Colunns);
 		rowValida.setRow(rowValidaData);
 		grid.addRow(rowValida);
 		assertEquals(data1a, grid.getValueAt(1,0));
@@ -253,7 +261,7 @@ public class TestGridData extends TestCaseEnhanced
 	public static GridData createSampleGridWithOneEmptyRow() throws Exception
 	{
 		GridData grid = createSampleGrid();
-		GridRow row1 = GridRow.createEmptyRow(2);
+		GridRow row1 = GridRow.createEmptyRow(grid.getSpec());
 		grid.addRow(row1);
 		return grid;
 	}

@@ -27,6 +27,7 @@ package org.martus.common;
 
 import java.util.Vector;
 
+import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlStringLoader;
 import org.xml.sax.SAXParseException;
@@ -34,8 +35,9 @@ import org.xml.sax.SAXParseException;
 
 public class GridRow
 {
-	public GridRow(int maxColumns)
+	public GridRow(GridFieldSpec gridSpec)
 	{
+		int maxColumns = gridSpec.getColumnCount();
 		row = new Vector(maxColumns);
 		this.maxColumns = maxColumns;
 		String[] data = new String[maxColumns];
@@ -49,9 +51,9 @@ public class GridRow
 		return row.size();
 	}
 	
-	static public GridRow createEmptyRow(int columns)
+	static public GridRow createEmptyRow(GridFieldSpec gridSpec)
 	{
-		return new GridRow(columns);
+		return new GridRow(gridSpec);
 	}
 
 	public void setRow(String[] data) throws ArrayIndexOutOfBoundsException   
@@ -85,10 +87,10 @@ public class GridRow
 	
 	public static class XmlGridRowLoader extends SimpleXmlDefaultLoader
 	{
-		public XmlGridRowLoader(int maxColumns)
+		public XmlGridRowLoader(GridFieldSpec gridSpec)
 		{
 			super(GridData.ROW_TAG);
-			thisRow = new GridRow(maxColumns);
+			thisRow = new GridRow(gridSpec);
 		}
 		
 		public GridRow getGridRow()

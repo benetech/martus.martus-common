@@ -48,7 +48,7 @@ public class GridData
 
 	public void addEmptyRow()
 	{
-		GridRow row = GridRow.createEmptyRow(getColumnCount());
+		GridRow row = GridRow.createEmptyRow(gridSpec);
 		addRow(row);
 	}
 	
@@ -60,6 +60,11 @@ public class GridData
 	public int getColumnCount()
 	{
 		return gridSpec.getColumnCount();
+	}
+	
+	public GridFieldSpec getSpec()
+	{
+		return gridSpec;
 	}
 	
 	private GridRow getRow(int row)
@@ -163,7 +168,7 @@ public class GridData
 				throws SAXParseException
 		{
 			if(tag.equals(GridData.ROW_TAG))
-				return new GridRow.XmlGridRowLoader(grid.getColumnCount());
+				return new GridRow.XmlGridRowLoader(grid.getSpec());
 			return super.startElement(tag);
 		}
 		

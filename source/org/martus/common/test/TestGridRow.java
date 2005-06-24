@@ -29,6 +29,7 @@ import java.util.Arrays;
 
 import org.martus.common.GridRow;
 import org.martus.common.MartusUtilities;
+import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.xml.SimpleXmlParser;
 
@@ -40,10 +41,10 @@ public class TestGridRow extends TestCaseEnhanced
 		super(name);
 	}
 	
-	public void testBasics()
+	public void testBasics() throws Exception
 	{
-		int max_columns = 2;
-		GridRow row = new GridRow(max_columns);
+		GridFieldSpec gridSpecWithTwoColumns = TestGridData.createSampleGridSpec();
+		GridRow row = new GridRow(gridSpecWithTwoColumns);
 		assertEquals ("Should start with 2 columns", 2, row.columns());
 		String[] empty = {"", ""};
 		assertTrue("Should be empty?", Arrays.equals(empty, row.getRow()));
@@ -72,16 +73,16 @@ public class TestGridRow extends TestCaseEnhanced
 		String[] expectedResult = {item1b, item3};
 		assertTrue("Arrays don't match?", Arrays.equals(expectedResult, row.getRow()));
 		
-		GridRow rowEmpty = GridRow.createEmptyRow(max_columns);
+		GridRow rowEmpty = GridRow.createEmptyRow(gridSpecWithTwoColumns);
 		assertEquals ("Should now have 2 empty columns", 2, rowEmpty.columns());
 		assertTrue("Empty Row don't match?", Arrays.equals(empty, rowEmpty.getRow()));
 
 	}
 
-	public void testBoundries()
+	public void testBoundries() throws Exception
 	{
-		int max_columns = 2;
-		GridRow row = new GridRow(max_columns);
+		GridFieldSpec gridSpecWithTwoColumns = TestGridData.createSampleGridSpec();
+		GridRow row = new GridRow(gridSpecWithTwoColumns);
 		String item1 = "data1";
 		String item2 = "data2";
 		String item3 = "data3";
@@ -134,11 +135,12 @@ public class TestGridRow extends TestCaseEnhanced
 	
 	public void testXmlRowLoader() throws Exception
 	{
+		GridFieldSpec gridSpec = TestGridData.createSampleGridSpec();
 		String data1 = "data1";
 		String data2Raw = "data2";
 		String data2 = MartusUtilities.getXmlEncoded(data2Raw);
 		String xml = "<Row>\n<Column>" + data1 + "</Column><Column>" + data2 + "</Column></Row>";
-		GridRow.XmlGridRowLoader loader = new GridRow.XmlGridRowLoader(2);
+		GridRow.XmlGridRowLoader loader = new GridRow.XmlGridRowLoader(gridSpec);
 		SimpleXmlParser.parse(loader, xml);
 		GridRow row = loader.getGridRow();
 		assertEquals(data1, row.getCellText(0));
