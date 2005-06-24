@@ -25,6 +25,7 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common;
 
+import org.martus.common.field.MartusField;
 import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlStringLoader;
@@ -35,10 +36,9 @@ public class GridRow
 {
 	public GridRow(GridFieldSpec gridSpec)
 	{
-		data = new String[gridSpec.getColumnCount()];
+		data = new MartusField[gridSpec.getColumnCount()];
 		for(int i = 0; i < getColumnCount(); ++i)
-			data[i] = "";
-		setRow(data);
+			data[i] = new MartusField(gridSpec.getFieldSpec(i));
 	}
 	
 	public int getColumnCount()
@@ -51,33 +51,34 @@ public class GridRow
 		return new GridRow(gridSpec);
 	}
 
-	public void setRow(String[] newData) throws ArrayIndexOutOfBoundsException   
-	{
-		if(newData.length != getColumnCount())
-			throw new ArrayIndexOutOfBoundsException("columns incorrect expected " + getColumnCount() + " but was " + newData.length);
-		data = newData;
-	}
-	
-	public String[] getRow() throws ArrayIndexOutOfBoundsException
-	{
-		return data;
-	}
-
 	public void setCellText(int column, String value) throws ArrayIndexOutOfBoundsException
 	{
-		data[column] = value;
+		data[column].setData(value);
 	}
 	
 	public String getCellText(int column) throws ArrayIndexOutOfBoundsException
 	{
-		return data[column];
+		return data[column].getData();
 	}
 	
+	public String getXmlRepresentation()
+	{
+		String rowXml = MartusXml.getTagStart(ROW_TAG) + MartusXml.newLine ;
+		int columns = getColumnCount();
+		for(int j= 0; j < columns; ++j)
+		{
+			String rawCellText = getCellText(j);
+			rowXml += MartusXml.getTagStart(COLUMN_TAG) + MartusUtilities.getXmlEncoded(rawCellText) + MartusXml.getTagEnd(COLUMN_TAG);
+		}
+		rowXml += MartusXml.getTagEnd(ROW_TAG);
+		return rowXml;
+	}
+
 	public static class XmlGridRowLoader extends SimpleXmlDefaultLoader
 	{
 		public XmlGridRowLoader(GridFieldSpec gridSpec)
 		{
-			super(GridData.ROW_TAG);
+			super(ROW_TAG);
 			thisRow = new GridRow(gridSpec);
 		}
 		
@@ -89,7 +90,7 @@ public class GridRow
 		public SimpleXmlDefaultLoader startElement(String tag)
 			throws SAXParseException
 		{
-			if(tag.equals(GridData.COLUMN_TAG))
+			if(tag.equals(COLUMN_TAG))
 				return new SimpleXmlStringLoader(tag);
 			return super.startElement(tag);
 		}
@@ -97,7 +98,7 @@ public class GridRow
 		public void endElement(String tag, SimpleXmlDefaultLoader ended)
 				throws SAXParseException
 		{
-			if(tag.equals(GridData.COLUMN_TAG))
+			if(tag.equals(COLUMN_TAG))
 			{
 				String cellText = ((SimpleXmlStringLoader)ended).getText();
 				thisRow.setCellText(currentColumn++, cellText);
@@ -109,5 +110,7 @@ public class GridRow
 
 	}
 	
-	String[] data;
+	MartusField[] data;
+	public static final String COLUMN_TAG = "Column";
+	public static final String ROW_TAG = "Row";
 }

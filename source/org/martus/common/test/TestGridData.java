@@ -54,14 +54,16 @@ public class TestGridData extends TestCaseEnhanced
 		GridData grid = new GridData(gridSpec2Colunns);
 		int cols = grid.getColumnCount();
 		assertEquals(gridSpec2Colunns.getColumnCount(), cols);
-		GridRow row1 = new GridRow(gridSpec2Colunns);
+
 		String mustEncodeXMLData = "<&>";
+
+		GridRow row1 = new GridRow(gridSpec2Colunns);
 		String[] row1Data = {"column1a", mustEncodeXMLData};
-		row1.setRow(row1Data);
+		fillGridRow(row1, row1Data);
 		
 		GridRow row2 = new GridRow(gridSpec2Colunns);
 		String[] row2Data = {"column1b", "column2b"};
-		row2.setRow(row2Data);
+		fillGridRow(row2, row2Data);
 		
 		assertEquals("row count should start at 0", 0, grid.getRowCount());
 		grid.addRow(row1);
@@ -72,14 +74,14 @@ public class TestGridData extends TestCaseEnhanced
 
 		String expectedXml = 
 			"<"+GridData.GRID_DATA_TAG+ " columns='2'>\n" +
-			"<"+GridData.ROW_TAG + ">\n" + 
-				"<" + GridData.COLUMN_TAG + ">" + row1.getCellText(0) + "</" + GridData.COLUMN_TAG + ">\n" +
-				"<" + GridData.COLUMN_TAG + ">" + xmlEncodedString + "</" + GridData.COLUMN_TAG + ">\n" +
-			"</" + GridData.ROW_TAG + ">\n" +
-			"<" + GridData.ROW_TAG + ">\n" +
-				"<" + GridData.COLUMN_TAG + ">" + row2.getCellText(0) + "</" + GridData.COLUMN_TAG + ">\n" +
-				"<" + GridData.COLUMN_TAG + ">" + row2.getCellText(1) + "</" + GridData.COLUMN_TAG + ">\n" +
-			"</" + GridData.ROW_TAG + ">\n"+
+			"<"+GridRow.ROW_TAG + ">\n" + 
+				"<" + GridRow.COLUMN_TAG + ">" + row1.getCellText(0) + "</" + GridRow.COLUMN_TAG + ">\n" +
+				"<" + GridRow.COLUMN_TAG + ">" + xmlEncodedString + "</" + GridRow.COLUMN_TAG + ">\n" +
+			"</" + GridRow.ROW_TAG + ">\n" +
+			"<" + GridRow.ROW_TAG + ">\n" +
+				"<" + GridRow.COLUMN_TAG + ">" + row2.getCellText(0) + "</" + GridRow.COLUMN_TAG + ">\n" +
+				"<" + GridRow.COLUMN_TAG + ">" + row2.getCellText(1) + "</" + GridRow.COLUMN_TAG + ">\n" +
+			"</" + GridRow.ROW_TAG + ">\n"+
 			"</" + GridData.GRID_DATA_TAG+ ">\n";
 			
 		String xml = grid.getXmlRepresentation();
@@ -100,7 +102,7 @@ public class TestGridData extends TestCaseEnhanced
 		GridFieldSpec gridSpecWithOneColumn = new GridFieldSpec();
 		gridSpecWithOneColumn.addColumn(FieldSpec.createStandardField("a", FieldSpec.TYPE_NORMAL));
 		GridRow row1 = new GridRow(gridSpecWithOneColumn);
-		row1.setRow(row1Data);
+		fillGridRow(row1, row1Data);
 		try
 		{
 			grid.addRow(row1);
@@ -118,7 +120,8 @@ public class TestGridData extends TestCaseEnhanced
 		gridSpecWithThreeColumns.addColumn(FieldSpec.createStandardField("b", FieldSpec.TYPE_NORMAL));
 		gridSpecWithThreeColumns.addColumn(FieldSpec.createStandardField("c", FieldSpec.TYPE_NORMAL));
 		GridRow row2 = new GridRow(gridSpecWithThreeColumns);
-		row2.setRow(row2Data);
+		fillGridRow(row2, row2Data);
+			
 		try
 		{
 			grid.addRow(row2);
@@ -149,7 +152,7 @@ public class TestGridData extends TestCaseEnhanced
 		String data2 = "column2 data";
 		String[] rowValidData = {data1, data2};
 		GridRow rowValid = new GridRow(gridSpec2Colunns);
-		rowValid.setRow(rowValidData);
+		fillGridRow(rowValid, rowValidData);
 		grid.addRow(rowValid);
 
 		try
@@ -177,7 +180,7 @@ public class TestGridData extends TestCaseEnhanced
 		String data2a = "column2 data";
 		String[] rowValidaData = {data1a, data2a};
 		GridRow rowValida = new GridRow(gridSpec2Colunns);
-		rowValida.setRow(rowValidaData);
+		fillGridRow(rowValida, rowValidaData);
 		grid.addRow(rowValida);
 		assertEquals(data1a, grid.getValueAt(1,0));
 		assertEquals(data2a, grid.getValueAt(1,1));
@@ -221,6 +224,12 @@ public class TestGridData extends TestCaseEnhanced
 		assertEquals(data2, grid.getValueAt(0,1));
 		grid.setValueAt(modifiedData,0,1);
 		assertEquals(modifiedData, grid.getValueAt(0,1));
+	}
+
+	private void fillGridRow(GridRow row2, String[] row2Data)
+	{
+		for(int col = 0; col < row2Data.length; ++col)
+			row2.setCellText(col, row2Data[col]);
 	}
 	
 	public void testXmlGridLoader() throws Exception

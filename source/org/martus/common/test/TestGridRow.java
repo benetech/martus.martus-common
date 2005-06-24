@@ -25,8 +25,6 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.test;
 
-import java.util.Arrays;
-
 import org.martus.common.GridRow;
 import org.martus.common.MartusUtilities;
 import org.martus.common.fieldspec.GridFieldSpec;
@@ -46,22 +44,22 @@ public class TestGridRow extends TestCaseEnhanced
 		GridFieldSpec gridSpecWithTwoColumns = TestGridData.createSampleGridSpec();
 		GridRow row = new GridRow(gridSpecWithTwoColumns);
 		assertEquals ("Should start with 2 columns", 2, row.getColumnCount());
-		String[] empty = {"", ""};
-		assertTrue("Should be empty?", Arrays.equals(empty, row.getRow()));
+		for(int col = 0; col < row.getColumnCount(); ++col)
+			assertEquals("column " + col + " not empty?", "", row.getCellText(col));
 		
 		String item1 = "data1";
 		String item2 = "data2";
 		String item3 = "data3";
 		String item1b = "data1b";
 		String item2b = "data2b";
-		String[] data = {item1, item2};
-		row.setRow(data);
+		row.setCellText(0, item1);
+		row.setCellText(1, item2);
 		assertEquals ("Now should have 2 columns", 2, row.getColumnCount());
 		assertEquals("cell 1 didn't come back with correct data", item1, row.getCellText(0));
 		assertEquals("cell 2 didn't come back with correct data", item2, row.getCellText(1));
 
-		String[] datab = {item1b, item2b};
-		row.setRow(datab);
+		row.setCellText(0, item1b);
+		row.setCellText(1, item2b);
 		assertEquals ("Should still have 2 columns", 2, row.getColumnCount());
 		assertEquals("cell 1 didn't come back with correct data", item1b, row.getCellText(0));
 		assertEquals("cell 2 didn't come back with correct data", item2b, row.getCellText(1));
@@ -70,12 +68,13 @@ public class TestGridRow extends TestCaseEnhanced
 		row.setCellText(testCell, item3);
 		assertEquals("cell 1 didn't come back with new data", item3, row.getCellText(testCell));
 		
-		String[] expectedResult = {item1b, item3};
-		assertTrue("Arrays don't match?", Arrays.equals(expectedResult, row.getRow()));
+		assertEquals("column 0 wrong value?", item1b, row.getCellText(0));
+		assertEquals("column 1 wrong value?", item3, row.getCellText(1));
 		
 		GridRow rowEmpty = GridRow.createEmptyRow(gridSpecWithTwoColumns);
 		assertEquals ("Should now have 2 empty columns", 2, rowEmpty.getColumnCount());
-		assertTrue("Empty Row don't match?", Arrays.equals(empty, rowEmpty.getRow()));
+		for(int col = 0; col < row.getColumnCount(); ++col)
+			assertEquals("column " + col + " not empty?", "", rowEmpty.getCellText(col));
 
 	}
 
@@ -86,28 +85,10 @@ public class TestGridRow extends TestCaseEnhanced
 		String item1 = "data1";
 		String item2 = "data2";
 		String item3 = "data3";
-		String[] data1Item = {item1};
-		try
-		{
-			row.setRow(data1Item);
-			fail("Should have thrown only one column.");
-		}
-		catch (ArrayIndexOutOfBoundsException expected)
-		{
-		}
-
-		try
-		{
-			String[] data3Items = {item1, item2, item2};
-			row.setRow(data3Items);
-			fail("Should have thrown 3 columns.");
-		}
-		catch (ArrayIndexOutOfBoundsException expected)
-		{
-		}
 
 		String[] data2Items = {item1, item2};
-		row.setRow(data2Items);
+		row.setCellText(0, item1);
+		row.setCellText(1, item2);
 		
 		assertEquals ("Now should have 2 columns", data2Items.length, row.getColumnCount());
 		assertEquals("cell 1 didn't come back with correct data", item1, row.getCellText(0));
