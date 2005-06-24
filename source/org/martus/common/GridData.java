@@ -87,7 +87,7 @@ public class GridData
 	
 	public void addRow(GridRow rowToAdd) throws ArrayIndexOutOfBoundsException
 	{
-		if(rowToAdd.columns() != getColumnCount())
+		if(rowToAdd.getColumnCount() != getColumnCount())
 			throw new ArrayIndexOutOfBoundsException("Column out of bounds");
 		rows.add(rowToAdd);
 	}
@@ -129,7 +129,7 @@ public class GridData
 		{
 			GridRow contents = (GridRow)rows.get(i);
 			result += MartusXml.getTagStart(ROW_TAG) + MartusXml.newLine ;
-			int columns = contents.columns();
+			int columns = contents.getColumnCount();
 			for(int j= 0; j < columns; ++j)
 			{
 				String rawCellText = contents.getCellText(j);

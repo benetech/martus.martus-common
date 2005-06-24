@@ -45,7 +45,7 @@ public class TestGridRow extends TestCaseEnhanced
 	{
 		GridFieldSpec gridSpecWithTwoColumns = TestGridData.createSampleGridSpec();
 		GridRow row = new GridRow(gridSpecWithTwoColumns);
-		assertEquals ("Should start with 2 columns", 2, row.columns());
+		assertEquals ("Should start with 2 columns", 2, row.getColumnCount());
 		String[] empty = {"", ""};
 		assertTrue("Should be empty?", Arrays.equals(empty, row.getRow()));
 		
@@ -56,13 +56,13 @@ public class TestGridRow extends TestCaseEnhanced
 		String item2b = "data2b";
 		String[] data = {item1, item2};
 		row.setRow(data);
-		assertEquals ("Now should have 2 columns", 2, row.columns());
+		assertEquals ("Now should have 2 columns", 2, row.getColumnCount());
 		assertEquals("cell 1 didn't come back with correct data", item1, row.getCellText(0));
 		assertEquals("cell 2 didn't come back with correct data", item2, row.getCellText(1));
 
 		String[] datab = {item1b, item2b};
 		row.setRow(datab);
-		assertEquals ("Should still have 2 columns", 2, row.columns());
+		assertEquals ("Should still have 2 columns", 2, row.getColumnCount());
 		assertEquals("cell 1 didn't come back with correct data", item1b, row.getCellText(0));
 		assertEquals("cell 2 didn't come back with correct data", item2b, row.getCellText(1));
 
@@ -74,7 +74,7 @@ public class TestGridRow extends TestCaseEnhanced
 		assertTrue("Arrays don't match?", Arrays.equals(expectedResult, row.getRow()));
 		
 		GridRow rowEmpty = GridRow.createEmptyRow(gridSpecWithTwoColumns);
-		assertEquals ("Should now have 2 empty columns", 2, rowEmpty.columns());
+		assertEquals ("Should now have 2 empty columns", 2, rowEmpty.getColumnCount());
 		assertTrue("Empty Row don't match?", Arrays.equals(empty, rowEmpty.getRow()));
 
 	}
@@ -109,7 +109,7 @@ public class TestGridRow extends TestCaseEnhanced
 		String[] data2Items = {item1, item2};
 		row.setRow(data2Items);
 		
-		assertEquals ("Now should have 2 columns", data2Items.length, row.columns());
+		assertEquals ("Now should have 2 columns", data2Items.length, row.getColumnCount());
 		assertEquals("cell 1 didn't come back with correct data", item1, row.getCellText(0));
 		assertEquals("cell 2 didn't come back with correct data", item2, row.getCellText(1));
 	
