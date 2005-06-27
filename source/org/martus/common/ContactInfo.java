@@ -31,7 +31,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.NotSerializableException;
 import java.io.UnsupportedEncodingException;
 import java.util.Vector;
 
@@ -143,12 +142,6 @@ public class ContactInfo extends Vector
 		}			
 		in.close();
 		return contactInfo;
-	}
-
-	private static final long serialVersionUID = 1;
-	private void writeObject(java.io.ObjectOutputStream stream) throws IOException
-	{
-		throw new NotSerializableException();
 	}
 
 	Vector data; 

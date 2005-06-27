@@ -51,7 +51,6 @@ abstract public class Database extends ReadableDatabase
 {
 	public static class RecordHiddenException extends Exception 
 	{
-		private static final long serialVersionUID = 1;
 	}
 
 	protected Database()

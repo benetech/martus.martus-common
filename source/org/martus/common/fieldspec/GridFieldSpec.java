@@ -67,7 +67,6 @@ public class GridFieldSpec extends FieldSpec
 
 	public class UnsupportedFieldTypeException extends Exception
 	{
-		private static final long serialVersionUID = 1;
 	}
 
 	public void addColumn(FieldSpec columnSpec) throws UnsupportedFieldTypeException

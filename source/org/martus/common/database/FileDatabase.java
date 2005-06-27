@@ -71,12 +71,10 @@ abstract public class FileDatabase extends Database
 
 	public static class MissingAccountMapException extends Exception 
 	{
-		private static final long serialVersionUID = 1;
 	}
 
 	public static class MissingAccountMapSignatureException extends Exception 
 	{
-		private static final long serialVersionUID = 1;
 	}
 
 	// Database interface
@@ -533,7 +531,6 @@ abstract public class FileDatabase extends Database
 
 	public class TooManyAccountsException extends IOException 
 	{
-		private static final long serialVersionUID = 1;
 	}
 
 	public File getAccountDirectory(String accountString) throws IOException, TooManyAccountsException

@@ -48,7 +48,6 @@ public class MiniLocalization
 {
 	static public class NoDateSeparatorException extends Exception
 	{
-		private static final long serialVersionUID = 1;
 	}
 	
 	public MiniLocalization(String[] englishStrings)

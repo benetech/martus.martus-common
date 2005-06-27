@@ -136,7 +136,6 @@ public class HQKeys
 
 	public static class HQsException extends Exception 
 	{
-		private static final long serialVersionUID = 1;
 	}
 
 	public boolean containsKey(String publicKey)

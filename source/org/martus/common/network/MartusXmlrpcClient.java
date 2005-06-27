@@ -42,7 +42,6 @@ public class MartusXmlrpcClient
 
 	public class SSLSocketSetupException extends Exception 
 	{
-		private static final long serialVersionUID = 1;
 	}
 
 	public MartusXmlrpcClient (String serverIPAddressToUse, int portToUse) throws SSLSocketSetupException

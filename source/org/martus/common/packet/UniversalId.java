@@ -33,7 +33,6 @@ public class UniversalId implements Comparable
 {
 	public static class NotUniversalIdException extends Exception 
 	{
-		private static final long serialVersionUID = 1;
 	}
 
 	public static UniversalId createFromAccountAndLocalId(String accountId, String localId)

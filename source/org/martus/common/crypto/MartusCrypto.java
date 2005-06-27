@@ -235,52 +235,42 @@ public abstract class MartusCrypto
 	// exceptions
 	public static class CryptoException extends Exception
 	{
-		private static final long serialVersionUID = 1;
 	}
 
 	public static class CryptoInitializationException extends CryptoException
 	{
-		private static final long serialVersionUID = 1;
 	}
 
 	public static class InvalidKeyPairFileVersionException extends CryptoException 
 	{
-		private static final long serialVersionUID = 1;
 	}
 
 	public static class AuthorizationFailedException extends CryptoException 
 	{
-		private static final long serialVersionUID = 1;
 	}
 
 	public static class VerifySignatureException extends CryptoException 
 	{
-		private static final long serialVersionUID = 1;
 	}
 
 	public static class NoKeyPairException extends CryptoException 
 	{
-		private static final long serialVersionUID = 1;
 	}
 
 	public static class EncryptionException extends CryptoException 
 	{
-		private static final long serialVersionUID = 1;
 	}
 
 	public static class DecryptionException extends CryptoException 
 	{
-		private static final long serialVersionUID = 1;
 	}
 
 	public static class MartusSignatureException extends CryptoException 
 	{
-		private static final long serialVersionUID = 1;
 	}
 
 	public static class CreateDigestException extends CryptoException 
 	{
-		private static final long serialVersionUID = 1;
 	}
 
 	
@@ -295,7 +285,6 @@ public abstract class MartusCrypto
 			super(message);
 		}
 
-		private static final long serialVersionUID = 1;
 	}
 	
 	public static String createDigestString(String inputText) throws CreateDigestException {

@@ -62,7 +62,6 @@ public class Packet
 			super(message);
 		}
 
-		private static final long serialVersionUID = 1;
 	}
 
 	public static class WrongPacketTypeException extends SAXException
@@ -72,7 +71,6 @@ public class Packet
 			super(message);
 		}
 
-		private static final long serialVersionUID = 1;
 	}
 
 	public static class SignatureVerificationException extends SAXException
@@ -82,13 +80,11 @@ public class Packet
 			super("Signature verification exception");
 		}
 
-		private static final long serialVersionUID = 1;
 	}
 
 
 	public static class WrongAccountException extends Exception
 	{
-		private static final long serialVersionUID = 1;
 	}
 
 	public Packet()

@@ -456,17 +456,14 @@ public class MartusServerUtilities
 
 	public static class MartusSignatureFileAlreadyExistsException extends Exception 
 	{
-		private static final long serialVersionUID = 1;
 	}
 	
 	public static class MartusSignatureFileDoesntExistsException extends Exception 
 	{
-		private static final long serialVersionUID = 1;
 	}
 
 	public static class FileTooLargeException extends IOException 
 	{
-		private static final long serialVersionUID = 1;
 	}
 
 	private static final String MARTUS_SIGNATURE_FILE_DATE_FORMAT = "yyyyMMdd-HHmmss";

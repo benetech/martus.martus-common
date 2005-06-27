@@ -30,8 +30,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
-import java.io.NotSerializableException;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -194,12 +192,6 @@ public class UiSigninPanel extends UiParagraphPanel implements VirtualKeyboardHa
 			switchKeyboards();
 		}
 
-		private static final long serialVersionUID = 1;
-		private void writeObject(java.io.ObjectOutputStream stream) throws IOException
-		{
-			throw new NotSerializableException();
-		}
-
 	}
 	
 	public void virtualPasswordHasChanged()
@@ -224,12 +216,6 @@ public class UiSigninPanel extends UiParagraphPanel implements VirtualKeyboardHa
 		return panel;
 	}
 	
-
-	private static final long serialVersionUID = 1;
-	private void writeObject(java.io.ObjectOutputStream stream) throws IOException
-	{
-		throw new NotSerializableException();
-	}
 
 	UiBasicSigninDlg owner;
 	UiBasicLocalization localization;

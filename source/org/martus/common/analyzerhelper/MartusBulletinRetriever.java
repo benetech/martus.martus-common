@@ -55,12 +55,10 @@ public class MartusBulletinRetriever
 {
 	public class ServerNotConfiguredException extends Exception
 	{
-		private static final long serialVersionUID = 1;
 	}
 	
 	public class ServerPublicCodeDoesNotMatchException extends Exception 
 	{
-		private static final long serialVersionUID = 1;
 	}
 	
 	public MartusBulletinRetriever(InputStream keyPair, char[] password) throws CryptoInitializationException, InvalidKeyPairFileVersionException, AuthorizationFailedException, IOException

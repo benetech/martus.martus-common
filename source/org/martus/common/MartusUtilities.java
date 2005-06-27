@@ -72,17 +72,14 @@ public class MartusUtilities
 {
 	public static class FileTooLargeException extends Exception 
 	{
-		private static final long serialVersionUID = 1;
 	}
 
 	public static class FileVerificationException extends Exception 
 	{
-		private static final long serialVersionUID = 1;
 	}
 
 	public static class FileSigningException extends Exception 
 	{
-		private static final long serialVersionUID = 1;
 	}
 
 	public static class ServerErrorException extends Exception
@@ -97,7 +94,6 @@ public class MartusUtilities
 			this("");
 		}
 
-		private static final long serialVersionUID = 1;
 	}
 
 	public static void deleteAllFiles(Vector filesToDelete)
@@ -211,7 +207,6 @@ public class MartusUtilities
 
 	public static class InvalidPublicKeyFileException extends Exception 
 	{
-		private static final long serialVersionUID = 1;
 	}
 	
 	public static Vector importServerPublicKeyFromFile(File file, MartusCrypto verifier) throws 
@@ -454,7 +449,6 @@ public class MartusUtilities
 
 	public static class PublicInformationInvalidException extends Exception 
 	{
-		private static final long serialVersionUID = 1;
 	}
 
 
