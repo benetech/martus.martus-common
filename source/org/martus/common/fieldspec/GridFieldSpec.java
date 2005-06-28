@@ -80,7 +80,8 @@ public class GridFieldSpec extends FieldSpec
 	{
 		return (columnType == TYPE_NORMAL ||
 				columnType == TYPE_DROPDOWN ||
-				columnType == TYPE_BOOLEAN);
+				columnType == TYPE_BOOLEAN ||
+				columnType == TYPE_MORPHIC);
 	}
 	
 	public void setColumnZeroLabel(String columnZeroLabelToUse)

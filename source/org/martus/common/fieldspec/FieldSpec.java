@@ -275,6 +275,7 @@ public class FieldSpec
 	public static final int TYPE_DROPDOWN = 8;
 	public static final int TYPE_MESSAGE = 9;
 	public static final int TYPE_UNKNOWN = 99;
+	public static final int TYPE_MORPHIC = 100;		// only used internally
 	
 	public static final String FIELD_SPEC_XML_TAG = "Field";
 	public static final String FIELD_SPEC_TAG_XML_TAG = "Tag";
