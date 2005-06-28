@@ -26,12 +26,25 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.clientside;
 
+import org.martus.common.fieldspec.FieldSpec;
+
 public class ChoiceItem implements Comparable
 {
 	public ChoiceItem(String codeToUse, String displayToUse)
 	{
+		this(codeToUse, displayToUse, FieldSpec.TYPE_UNKNOWN);
+	}
+	
+	public ChoiceItem(FieldSpec specToUse)
+	{
+		this(specToUse.getTag(), specToUse.getLabel(), specToUse.getType());
+	}
+	
+	public ChoiceItem(String codeToUse, String displayToUse, int typeToUse)
+	{
 		code = codeToUse;
 		display = displayToUse;
+		type = typeToUse;
 	}
 
 	public String toString()
@@ -43,6 +56,11 @@ public class ChoiceItem implements Comparable
 	{
 		return code;
 	}
+	
+	public int getType()
+	{
+		return type;
+	}
 
 	public int compareTo(Object other)
 	{
@@ -51,6 +69,7 @@ public class ChoiceItem implements Comparable
 
 	private String code;
 	private String display;
+	private int type;
 
 }
 
