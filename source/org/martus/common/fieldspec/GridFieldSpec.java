@@ -30,7 +30,6 @@ import java.util.Vector;
 
 import org.martus.common.MartusXml;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
-import org.martus.util.xml.SimpleXmlMapLoader;
 import org.xml.sax.SAXParseException;
 
 
@@ -115,7 +114,8 @@ public class GridFieldSpec extends FieldSpec
 		String xml = MartusXml.getTagStartWithNewline(GRID_SPEC_DETAILS_TAG);
 		for(int i = 0 ; i < getColumnCount(); ++i)
 		{
-			xml += (FieldSpec)columns.get(i);
+			FieldSpec thisColumn = (FieldSpec)columns.get(i);
+			xml += thisColumn.toXml(GRID_COLUMN_TAG);
 		}
 		xml += MartusXml.getTagEnd(GRID_SPEC_DETAILS_TAG);
 		
@@ -134,9 +134,7 @@ public class GridFieldSpec extends FieldSpec
 			throws SAXParseException
 		{
 			if(tag.equals(GRID_COLUMN_TAG))
-				return new SimpleXmlMapLoader(tag);
-			else if(tag.equals(FieldSpec.FIELD_SPEC_XML_TAG))
-				return new FieldSpec.XmlFieldSpecLoader();
+				return new FieldSpec.XmlFieldSpecLoader(tag);
 
 			return super.startElement(tag);
 		}
@@ -147,9 +145,9 @@ public class GridFieldSpec extends FieldSpec
 			FieldSpec specToAdd = null;
 			if(thisTag.equals(GRID_COLUMN_TAG))//Legacy XML
 			{
-				SimpleXmlMapLoader loader = (SimpleXmlMapLoader)ended;
-				String label = loader.get(GRID_COLUMN_LABEL_TAG);
-				specToAdd = new FieldSpec(label, TYPE_NORMAL);
+				specToAdd = ((FieldSpec.XmlFieldSpecLoader)ended).getFieldSpec();
+				if(specToAdd.getType() == FieldSpec.TYPE_UNKNOWN)
+					specToAdd.setType(FieldSpec.TYPE_NORMAL);
 			}
 			else if (thisTag.equals(FIELD_SPEC_XML_TAG))
 			{

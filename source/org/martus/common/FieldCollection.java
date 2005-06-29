@@ -162,7 +162,7 @@ public class FieldCollection
 			throws SAXParseException
 		{
 			if(tag.equals(FieldSpec.FIELD_SPEC_XML_TAG))
-				return new FieldSpec.XmlFieldSpecLoader();
+				return new FieldSpec.XmlFieldSpecLoader(tag);
 			return super.startElement(tag);
 		}
 

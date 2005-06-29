@@ -193,31 +193,48 @@ public class TestGridFieldSpec extends TestCaseEnhanced
 	public static final String SAMPLE_GRID_FIELD_XML = "<Field type='GRID'>\n" +
 	"<Tag>custom</Tag>\n" +
 	"<Label>me</Label>\n" +
-	"<GridSpecDetails>\n<Field type='STRING'>\n" +
+	"<GridSpecDetails>\n<Column type='STRING'>\n" +
 	"<Tag></Tag>\n" +
 	"<Label>"+SAMPLE_GRID_HEADER_LABEL_1+"</Label>\n" +
-	"</Field>\n" +
-	"<Field type='STRING'>\n" +
+	"</Column>\n" +
+	"<Column type='STRING'>\n" +
 	"<Tag></Tag>\n" +
 	"<Label>"+SAMPLE_GRID_HEADER_LABEL_2+"</Label>\n" +
-	"</Field>\n" +
+	"</Column>\n" +
 	"</GridSpecDetails>\n" +
 	"</Field>\n";
 	
+	public static final String SAMPLE_DROPDOWN_CHOICE1 = "choice #1";
+	public static final String SAMPLE_DROPDOWN_CHOICE2 = "choice #2";
+	public static final String SAMPLE_DROPDOWN_LABEL = "Dropdown Label";
+	public static final String SAMPLE_DROPDOWN_FIELD_XML = "<Column type='DROPDOWN'>\n" +
+	"<Tag>custom</Tag>\n" +
+	"<Label>"+SAMPLE_DROPDOWN_LABEL+"</Label>\n" +
+	"<Choices>\n" +
+	"<Choice>" +
+	SAMPLE_DROPDOWN_CHOICE1 +
+	"</Choice>\n" +
+	"<Choice>" +
+	SAMPLE_DROPDOWN_CHOICE2 +
+	"</Choice>\n" +
+	"</Choices>\n" +
+	"</Column>\n";
+
 	public static final String SAMPLE_GRID_FIELD_XML_DROPDOWN = "<Field type='GRID'>\n" +
 	"<Tag>custom with dropdowns</Tag>\n" +
 	"<Label>dropdowns</Label>\n" +
 	"<GridSpecDetails>\n" +
-	"<Field type='STRING'>\n" +
+	"<Column type='STRING'>\n" +
 	"<Tag></Tag>\n" +
 	"<Label>"+SAMPLE_GRID_HEADER_LABEL_1+"</Label>\n" +
-	"</Field>\n" +
-	"<Field type='STRING'>\n" +
+	"</Column>\n" +
+	"<Column type='STRING'>\n" +
 	"<Tag></Tag>\n" +
 	"<Label>"+SAMPLE_GRID_HEADER_LABEL_2+"</Label>\n" +
-	"</Field>\n" +
-	TestCustomDropDownFieldSpec.SAMPLE_DROPDOWN_FIELD_XML +
+	"</Column>\n" +
+	SAMPLE_DROPDOWN_FIELD_XML +
 	"</GridSpecDetails>\n" +
 	"</Field>\n";
 	
+
 }

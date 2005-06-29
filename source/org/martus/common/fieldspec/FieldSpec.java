@@ -71,15 +71,23 @@ public class FieldSpec
 	
 	public String toString()
 	{
-		return MartusXml.getTagStartWithNewline("Field", "type", MartusUtilities.getXmlEncoded(getTypeString(getType()))) +  
-				MartusXml.getTagStart("Tag") + 
+		String rootTag = FIELD_SPEC_XML_TAG;
+		return toXml(rootTag);
+	}
+
+	public String toXml(String rootTag)
+	{
+		String typeString = MartusUtilities.getXmlEncoded(getTypeString(getType()));
+		String rootTagLine = MartusXml.getTagStartWithNewline(rootTag, FIELD_SPEC_TYPE_ATTR, typeString);
+		return rootTagLine +  
+				MartusXml.getTagStart(FIELD_SPEC_TAG_XML_TAG) + 
 				MartusUtilities.getXmlEncoded(getTag()) + 
-				MartusXml.getTagEnd("Tag") +
-				MartusXml.getTagStart("Label") + 
+				MartusXml.getTagEnd(FIELD_SPEC_TAG_XML_TAG) +
+				MartusXml.getTagStart(FIELD_SPEC_LABEL_XML_TAG) + 
 				MartusUtilities.getXmlEncoded(getLabel()) + 
-				MartusXml.getTagEnd("Label") +
+				MartusXml.getTagEnd(FIELD_SPEC_LABEL_XML_TAG) +
 				getDetailsXml() +
-				MartusXml.getTagEnd("Field");
+				MartusXml.getTagEnd(rootTag);
 	}
 	
 	protected String getDetailsXml()
@@ -128,6 +136,11 @@ public class FieldSpec
 	public void setTag(String tag)
 	{
 		this.tag = tag;
+	}
+	
+	public void setType(int type)
+	{
+		this.type = type;
 	}
 	
 	public static boolean isAllFieldsPresent(FieldSpec[] previousSpec, FieldSpec[] currentSpec)
@@ -205,7 +218,12 @@ public class FieldSpec
 	{
 		public XmlFieldSpecLoader()
 		{
-			super(FieldSpec.FIELD_SPEC_XML_TAG);
+			this(FieldSpec.FIELD_SPEC_XML_TAG);
+		}
+		
+		public XmlFieldSpecLoader(String rootTag)
+		{
+			super(rootTag);
 		}
 		
 		public FieldSpec getFieldSpec()
