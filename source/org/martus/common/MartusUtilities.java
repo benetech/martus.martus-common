@@ -363,28 +363,6 @@ public class MartusUtilities
 		db.discardRecord(key);
 	}
 
-	public static String getXmlEncoded(String text)
-	{
-		StringBuffer buf = new StringBuffer(text);
-		for(int i = 0; i < buf.length(); ++i)
-		{
-			char c = buf.charAt(i);
-			if(c == '&')
-			{
-				buf.replace(i, i+1, "&amp;");
-			}
-			else if(c == '<')
-			{
-				buf.replace(i, i+1, "&lt;");
-			}
-			else if(c == '>')
-			{
-				buf.replace(i, i+1, "&gt;");
-			}
-		}
-		return buf.toString();
-	}
-
 	public static void copyStreamWithFilter(InputStream in, OutputStream rawOut,
 									StreamFilter filter) throws IOException
 	{

@@ -33,7 +33,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Arrays;
 
-import org.martus.common.MartusUtilities;
 import org.martus.common.MartusXml;
 import org.martus.common.VersionBuildDate;
 import org.martus.common.XmlWriterFilter;
@@ -50,6 +49,7 @@ import org.martus.util.UnicodeReader;
 import org.martus.util.UnicodeWriter;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 import org.martus.util.xml.SimpleXmlParser;
+import org.martus.util.xml.XmlUtilities;
 import org.xml.sax.SAXException;
 
 
@@ -415,7 +415,7 @@ public class Packet
 
 	protected void writeElement(XmlWriterFilter dest, String tag, String data) throws IOException
 	{
-		String encodedData = MartusUtilities.getXmlEncoded(data);
+		String encodedData = XmlUtilities.getXmlEncoded(data);
 		writeNonEncodedElement(dest, tag, encodedData);
 	}
 

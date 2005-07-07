@@ -29,12 +29,12 @@ package org.martus.common.fieldspec;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import org.martus.common.MartusUtilities;
 import org.martus.common.MartusXml;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.clientside.Localization;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlStringLoader;
+import org.martus.util.xml.XmlUtilities;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
@@ -77,14 +77,14 @@ public class FieldSpec
 
 	public String toXml(String rootTag)
 	{
-		String typeString = MartusUtilities.getXmlEncoded(getTypeString(getType()));
+		String typeString = XmlUtilities.getXmlEncoded(getTypeString(getType()));
 		String rootTagLine = MartusXml.getTagStartWithNewline(rootTag, FIELD_SPEC_TYPE_ATTR, typeString);
 		return rootTagLine +  
 				MartusXml.getTagStart(FIELD_SPEC_TAG_XML_TAG) + 
-				MartusUtilities.getXmlEncoded(getTag()) + 
+				XmlUtilities.getXmlEncoded(getTag()) + 
 				MartusXml.getTagEnd(FIELD_SPEC_TAG_XML_TAG) +
 				MartusXml.getTagStart(FIELD_SPEC_LABEL_XML_TAG) + 
-				MartusUtilities.getXmlEncoded(getLabel()) + 
+				XmlUtilities.getXmlEncoded(getLabel()) + 
 				MartusXml.getTagEnd(FIELD_SPEC_LABEL_XML_TAG) +
 				getDetailsXml() +
 				MartusXml.getTagEnd(rootTag);

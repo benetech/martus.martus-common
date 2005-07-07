@@ -32,6 +32,7 @@ import java.util.Map;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlParser;
 import org.martus.util.xml.SimpleXmlStringLoader;
+import org.martus.util.xml.XmlUtilities;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
@@ -68,7 +69,7 @@ public class AuthorizedSessionKeys
 			String publicCode = (String)entry.getKey();
 			xmlRepresentation += MartusXml.getTagStart(AUTHORIZED_SESSION_KEY_TAG,AUTHORIZED_PUBLIC_CODE_ATTRIBUTE,publicCode);
 			String sessionKey = (String)entry.getValue();
-			xmlRepresentation += MartusUtilities.getXmlEncoded(sessionKey);
+			xmlRepresentation += XmlUtilities.getXmlEncoded(sessionKey);
 			xmlRepresentation += MartusXml.getTagEnd(AUTHORIZED_SESSION_KEY_TAG);
 		}
 		xmlRepresentation += MartusXml.getTagEnd(AUTHORIZED_SESSION_KEYS_TAG);

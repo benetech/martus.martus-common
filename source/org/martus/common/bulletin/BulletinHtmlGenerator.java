@@ -32,7 +32,6 @@ import java.io.StringReader;
 
 import org.martus.common.GridData;
 import org.martus.common.HQKeys;
-import org.martus.common.MartusUtilities;
 import org.martus.common.MiniLocalization;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.ReadableDatabase;
@@ -44,6 +43,7 @@ import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.UniversalId;
 import org.martus.util.Base64.InvalidBase64Exception;
 import org.martus.util.language.LanguageOptions;
+import org.martus.util.xml.XmlUtilities;
 
 public class BulletinHtmlGenerator
 {
@@ -401,7 +401,7 @@ public class BulletinHtmlGenerator
 	
 	private String getHTMLEscaped(String text)
 	{
-		return MartusUtilities.getXmlEncoded(text);
+		return XmlUtilities.getXmlEncoded(text);
 	}
 
 	int width;

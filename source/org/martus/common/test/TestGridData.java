@@ -27,11 +27,11 @@ package org.martus.common.test;
 
 import org.martus.common.GridData;
 import org.martus.common.GridRow;
-import org.martus.common.MartusUtilities;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.common.fieldspec.GridFieldSpec.UnsupportedFieldTypeException;
 import org.martus.util.TestCaseEnhanced;
+import org.martus.util.xml.XmlUtilities;
 
 
 public class TestGridData extends TestCaseEnhanced
@@ -70,7 +70,7 @@ public class TestGridData extends TestCaseEnhanced
 		assertEquals("row count should still be at 1", 1, grid.getRowCount());
 		grid.addRow(row2);
 		assertEquals("row count should now be 2", 2, grid.getRowCount());
-		String xmlEncodedString = MartusUtilities.getXmlEncoded(mustEncodeXMLData);
+		String xmlEncodedString = XmlUtilities.getXmlEncoded(mustEncodeXMLData);
 
 		String expectedXml = 
 			"<"+GridData.GRID_DATA_TAG+ " columns='2'>\n" +

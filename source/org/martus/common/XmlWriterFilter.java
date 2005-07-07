@@ -31,6 +31,7 @@ import java.io.Writer;
 
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.SignatureEngine;
+import org.martus.util.xml.XmlUtilities;
 
 public class XmlWriterFilter
 {
@@ -52,7 +53,7 @@ public class XmlWriterFilter
 
 	public void writeEncoded(String text) throws IOException
 	{
-		writeDirect(MartusUtilities.getXmlEncoded(text));
+		writeDirect(XmlUtilities.getXmlEncoded(text));
 	}
 
 	public void writeDirect(String s) throws IOException

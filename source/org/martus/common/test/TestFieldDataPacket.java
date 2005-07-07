@@ -39,7 +39,6 @@ import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
 import org.martus.common.LegacyCustomFields;
 import org.martus.common.MartusConstants;
-import org.martus.common.MartusUtilities;
 import org.martus.common.MartusXml;
 import org.martus.common.XmlWriterFilter;
 import org.martus.common.bulletin.AttachmentProxy;
@@ -52,6 +51,7 @@ import org.martus.common.packet.UniversalId;
 import org.martus.common.packet.Packet.SignatureVerificationException;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
+import org.martus.util.xml.XmlUtilities;
 
 
 
@@ -496,7 +496,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		out.close();
 		
 		String rawFieldList = LegacyCustomFields.buildFieldListString(specs);
-		String encodedFieldList = MartusUtilities.getXmlEncoded(rawFieldList);
+		String encodedFieldList = XmlUtilities.getXmlEncoded(rawFieldList);
 		assertNotContains(encodedFieldList, result);
 
 		FieldCollection fields = new FieldCollection(specs);

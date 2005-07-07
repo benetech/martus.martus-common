@@ -29,6 +29,7 @@ import org.martus.common.field.MartusField;
 import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlStringLoader;
+import org.martus.util.xml.XmlUtilities;
 import org.xml.sax.SAXParseException;
 
 
@@ -68,7 +69,7 @@ public class GridRow
 		for(int j= 0; j < columns; ++j)
 		{
 			String rawCellText = getCellText(j);
-			rowXml += MartusXml.getTagStart(COLUMN_TAG) + MartusUtilities.getXmlEncoded(rawCellText) + MartusXml.getTagEnd(COLUMN_TAG);
+			rowXml += MartusXml.getTagStart(COLUMN_TAG) + XmlUtilities.getXmlEncoded(rawCellText) + MartusXml.getTagEnd(COLUMN_TAG);
 		}
 		rowXml += MartusXml.getTagEnd(ROW_TAG);
 		return rowXml;

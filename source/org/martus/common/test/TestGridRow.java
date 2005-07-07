@@ -26,10 +26,10 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.test;
 
 import org.martus.common.GridRow;
-import org.martus.common.MartusUtilities;
 import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.xml.SimpleXmlParser;
+import org.martus.util.xml.XmlUtilities;
 
 
 public class TestGridRow extends TestCaseEnhanced
@@ -119,7 +119,7 @@ public class TestGridRow extends TestCaseEnhanced
 		GridFieldSpec gridSpec = TestGridData.createSampleGridSpec();
 		String data1 = "data1";
 		String data2Raw = "data2";
-		String data2 = MartusUtilities.getXmlEncoded(data2Raw);
+		String data2 = XmlUtilities.getXmlEncoded(data2Raw);
 		String xml = "<Row>\n<Column>" + data1 + "</Column><Column>" + data2 + "</Column></Row>";
 		GridRow.XmlGridRowLoader loader = new GridRow.XmlGridRowLoader(gridSpec);
 		SimpleXmlParser.parse(loader, xml);
