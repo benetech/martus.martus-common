@@ -45,6 +45,7 @@ import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.fieldspec.FieldSpec;
+import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.common.fieldspec.StandardFieldSpecs;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.UniversalId;
@@ -523,7 +524,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		UniversalId uid = FieldDataPacket.createUniversalId(security);
 		GridData grid = TestGridData.createSampleGrid();
 		String gridTag = "grid";
-		FieldSpec[] specs = {FieldSpec.createStandardField(gridTag,FieldSpec.TYPE_GRID)};
+		FieldSpec[] specs = {new GridFieldSpec()};
 		FieldDataPacket fdpCustom = new FieldDataPacket(uid, specs);
 		fdpCustom.set(gridTag, grid.getXmlRepresentation());
 		

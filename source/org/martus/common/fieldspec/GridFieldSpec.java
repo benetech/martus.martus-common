@@ -75,12 +75,18 @@ public class GridFieldSpec extends FieldSpec
 		columns.add(columnSpec);
 	}
 
-	private boolean isValidGridColumnType(int columnType)
+	public static boolean isValidGridColumnType(int columnType)
 	{
-		return (columnType == TYPE_NORMAL ||
-				columnType == TYPE_DROPDOWN ||
-				columnType == TYPE_BOOLEAN ||
-				columnType == TYPE_MORPHIC);
+		boolean[] typeIsValid = new boolean[INSERT_NEXT_TYPE_HERE_AND_INCREASE_THIS_BY_ONE];
+		typeIsValid[TYPE_NORMAL] = true;
+		typeIsValid[TYPE_DROPDOWN] = true;
+		typeIsValid[TYPE_BOOLEAN] = true;
+		
+		if(columnType == TYPE_MORPHIC)
+			return true;
+		if(columnType == TYPE_UNKNOWN)
+			return false;
+		return typeIsValid[columnType];
 	}
 	
 	public void setColumnZeroLabel(String columnZeroLabelToUse)

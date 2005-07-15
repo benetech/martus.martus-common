@@ -112,15 +112,24 @@ public class FieldSpec
 	
 	public String getDefaultValue()
 	{
-		if(type == TYPE_BOOLEAN)
-			return FieldSpec.FALSESTRING;
-		if(type == TYPE_DATE)
-			return Bulletin.getToday();
-		if(type == TYPE_DATERANGE)
-			return Bulletin.getToday();
-		if(type == TYPE_LANGUAGE)
-			return Localization.LANGUAGE_OTHER;
-		return "";
+		switch(getType())
+		{
+			case TYPE_BOOLEAN:
+				return FieldSpec.FALSESTRING;
+			case TYPE_DATE:
+			case TYPE_DATERANGE:
+				return Bulletin.getToday();
+			case TYPE_LANGUAGE:
+				return Localization.LANGUAGE_OTHER;
+			case TYPE_NORMAL:
+			case TYPE_MULTILINE:
+			case TYPE_MESSAGE:
+			case TYPE_UNKNOWN:
+			case TYPE_MORPHIC:
+				return "";
+			default:
+				throw new RuntimeException("This class or a subclass needs to define the default value for type " + getType());
+		}
 	}
 	
 	public boolean hasUnknownStuff()
@@ -292,6 +301,8 @@ public class FieldSpec
 	public static final int TYPE_GRID = 7;
 	public static final int TYPE_DROPDOWN = 8;
 	public static final int TYPE_MESSAGE = 9;
+	public static final int INSERT_NEXT_TYPE_HERE_AND_INCREASE_THIS_BY_ONE = 10;
+	
 	public static final int TYPE_UNKNOWN = 99;
 	public static final int TYPE_MORPHIC = 100;		// only used internally
 	

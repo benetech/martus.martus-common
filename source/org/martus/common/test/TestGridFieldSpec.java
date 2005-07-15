@@ -30,7 +30,6 @@ import org.martus.common.fieldspec.DropDownFieldSpec;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.common.fieldspec.TestCustomDropDownFieldSpec;
-import org.martus.common.fieldspec.GridFieldSpec.UnsupportedFieldTypeException;
 import org.martus.util.TestCaseEnhanced;
 
 
@@ -107,74 +106,24 @@ public class TestGridFieldSpec extends TestCaseEnhanced
 		assertEquals(labelBooleanColumn, spec.getColumnLabel(2));
 		assertEquals(FieldSpec.TYPE_BOOLEAN, spec.getColumnType(2));
 		assertEquals(labelBooleanColumn, spec.getFieldSpec(2).getLabel());
-
-		FieldSpec dateSpec = new FieldSpec("TYPE_DATE", FieldSpec.TYPE_DATE);
-		try
-		{
-			spec.addColumn(dateSpec);
-			fail("TYPE_DATE: Not yet implemented should have thrown exception");
-		}
-		catch(UnsupportedFieldTypeException expected)
-		{
-		}
+	}
+	
+	public void testAddColumnWithDisallowedTypes()
+	{
+		assertFalse("date column allowed?", GridFieldSpec.isValidGridColumnType(FieldSpec.TYPE_DATE));
+		assertFalse("date range column allowed?", GridFieldSpec.isValidGridColumnType(FieldSpec.TYPE_DATERANGE));
+		assertFalse("language column allowed?", GridFieldSpec.isValidGridColumnType(FieldSpec.TYPE_LANGUAGE));
+		assertFalse("multiline column allowed?", GridFieldSpec.isValidGridColumnType(FieldSpec.TYPE_MULTILINE));
+		assertFalse("grid column allowed?", GridFieldSpec.isValidGridColumnType(FieldSpec.TYPE_GRID));
+		assertFalse("date column allowed?", GridFieldSpec.isValidGridColumnType(FieldSpec.TYPE_MESSAGE));
+		assertFalse("date column allowed?", GridFieldSpec.isValidGridColumnType(FieldSpec.TYPE_UNKNOWN));
 		
-		FieldSpec dateRangeSpec = new FieldSpec("TYPE_DATERANGE", FieldSpec.TYPE_DATERANGE);
 		try
 		{
-			spec.addColumn(dateRangeSpec);
-			fail("TYPE_DATERANGE: Not yet implemented should have thrown exception");
+			GridFieldSpec.isValidGridColumnType(10);
+			fail("New column types have been added, so they need to be tested here!");
 		}
-		catch(UnsupportedFieldTypeException expected)
-		{
-		}
-
-		FieldSpec langSpec = new FieldSpec("TYPE_LANGUAGE", FieldSpec.TYPE_LANGUAGE);
-		try
-		{
-			spec.addColumn(langSpec);
-			fail("TYPE_LANGUAGE: Not yet implemented should have thrown exception");
-		}
-		catch(UnsupportedFieldTypeException expected)
-		{
-		}
-
-		FieldSpec multiLineSpec = new FieldSpec("TYPE_MULTILINE", FieldSpec.TYPE_MULTILINE);
-		try
-		{
-			spec.addColumn(multiLineSpec);
-			fail("TYPE_MULTILINE: Not yet implemented should have thrown exception");
-		}
-		catch(UnsupportedFieldTypeException expected)
-		{
-		}
-
-		FieldSpec gridSpec = new FieldSpec("TYPE_GRID", FieldSpec.TYPE_GRID);
-		try
-		{
-			spec.addColumn(gridSpec);
-			fail("TYPE_GRID: Can NOT have a Grid inside of a Grid.");
-		}
-		catch(UnsupportedFieldTypeException expected)
-		{
-		}
-
-		FieldSpec messageSpec = new FieldSpec("TYPE_MESSAGE", FieldSpec.TYPE_MESSAGE);
-		try
-		{
-			spec.addColumn(messageSpec);
-			fail("TYPE_MESSAGE: Can NOT have a Message inside of a Grid.");
-		}
-		catch(UnsupportedFieldTypeException expected)
-		{
-		}
-
-		FieldSpec unknownSpec = new FieldSpec("TYPE_UNKNOWN", FieldSpec.TYPE_UNKNOWN);
-		try
-		{
-			spec.addColumn(unknownSpec);
-			fail("TYPE_UNKNOWN: Can NOT have an Unknown type inside of a Grid.");
-		}
-		catch(UnsupportedFieldTypeException expected)
+		catch(RuntimeException ignoreExpected)
 		{
 		}
 	}

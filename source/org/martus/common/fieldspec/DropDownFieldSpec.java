@@ -81,6 +81,10 @@ public class DropDownFieldSpec extends FieldSpec
 		return -1;
 	}
 	
+	public String getDefaultValue()
+	{
+		return getChoice(0).getCode();
+	}
 	
 	
 	private ChoiceItem[] choices;

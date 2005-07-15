@@ -30,8 +30,10 @@ import java.util.Vector;
 
 import org.martus.common.LegacyCustomFields;
 import org.martus.common.bulletin.Bulletin;
+import org.martus.common.clientside.ChoiceItem;
 import org.martus.common.clientside.Localization;
 import org.martus.common.fieldspec.CustomDropDownFieldSpec;
+import org.martus.common.fieldspec.DropDownFieldSpec;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.common.fieldspec.MessageFieldSpec;
@@ -107,8 +109,11 @@ public class TestFieldSpec extends TestCaseEnhanced
 		spec = new FieldSpec(FieldSpec.TYPE_NORMAL);
 		assertEquals(emptyString, spec.getDefaultValue());
 
-		spec = new FieldSpec(FieldSpec.TYPE_DROPDOWN);
+		spec = new FieldSpec(FieldSpec.TYPE_MORPHIC);
 		assertEquals(emptyString, spec.getDefaultValue());
+		
+		spec = new DropDownFieldSpec(new ChoiceItem[] {new ChoiceItem("first", "First item")});
+		assertEquals("first", spec.getDefaultValue());
 		
 		spec = new FieldSpec(FieldSpec.TYPE_MESSAGE);
 		assertEquals(emptyString, spec.getDefaultValue());
@@ -122,6 +127,8 @@ public class TestFieldSpec extends TestCaseEnhanced
 		messageSpec.putMessage(message);
 		assertEquals(message, messageSpec.getDefaultValue());
 
+		assertEquals("Need to make sure this test covers new types", 10, FieldSpec.INSERT_NEXT_TYPE_HERE_AND_INCREASE_THIS_BY_ONE);
+		
 	}
 	
 	public void testToString()

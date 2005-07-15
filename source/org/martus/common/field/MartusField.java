@@ -33,6 +33,7 @@ public class MartusField
 	public MartusField(FieldSpec specToUse)
 	{
 		spec = specToUse;
+		setData(getDefaultValue());
 	}
 	
 	public MartusField getSubField(String tag)
@@ -92,6 +93,12 @@ public class MartusField
 	{
 		return data;
 	}
+	
+	private String getDefaultValue()
+	{
+		return spec.getDefaultValue();
+	}
+	
 
 	FieldSpec spec;
 	String data;
