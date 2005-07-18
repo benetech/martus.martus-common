@@ -35,13 +35,13 @@ import org.martus.swing.UiNotifyDlg;
 
 public class UiUtilities
 {
-	public static void notifyDlg(UiBasicLocalization localization, JFrame parent, String baseTag)
+	public static void notifyDlg(UiLocalization localization, JFrame parent, String baseTag)
 	{
 		HashMap emptyTokenReplacement = new HashMap();
 		notifyDlg(localization, parent, baseTag, "notify" + baseTag, emptyTokenReplacement);
 	}
 
-	public static void notifyDlg(UiBasicLocalization localization, JFrame parent, String baseTag, String titleTag, Map tokenReplacement)
+	public static void notifyDlg(UiLocalization localization, JFrame parent, String baseTag, String titleTag, Map tokenReplacement)
 	{
 		String title = localization.getWindowTitle(titleTag);
 		String cause = localization.getFieldLabel("notify" + baseTag + "cause");
@@ -52,7 +52,7 @@ public class UiUtilities
 		new UiNotifyDlg(parent, title, contents, buttons, tokenReplacement);
 	}
 
-	public static void messageDlg(UiBasicLocalization localization, JFrame parent, String baseTag, String message, Map tokenReplacement)
+	public static void messageDlg(UiLocalization localization, JFrame parent, String baseTag, String message, Map tokenReplacement)
 	{
 		String title = localization.getWindowTitle(baseTag);
 		String cause = localization.getFieldLabel("message" + baseTag + "cause");
@@ -63,13 +63,13 @@ public class UiUtilities
 		new UiNotifyDlg(parent, title, contents, buttons, tokenReplacement);
 	}
 
-	public static boolean confirmDlg(UiBasicLocalization localization, JFrame parent, String baseTag)
+	public static boolean confirmDlg(UiLocalization localization, JFrame parent, String baseTag)
 	{
 		HashMap emptyTokenReplacement = new HashMap();
 		return confirmDlg(localization, parent, baseTag, emptyTokenReplacement);
 	}
 	
-	public static boolean confirmDlg(UiBasicLocalization localization, JFrame parent, String baseTag, Map tokenReplacement)
+	public static boolean confirmDlg(UiLocalization localization, JFrame parent, String baseTag, Map tokenReplacement)
 	{
 		String title = localization.getWindowTitle("confirm" + baseTag);
 		String cause = localization.getFieldLabel("confirm" + baseTag + "cause");
@@ -79,13 +79,13 @@ public class UiUtilities
 		return confirmDlg(localization, parent, title, contents, tokenReplacement);
 	}
 
-	public static boolean confirmDlg(UiBasicLocalization localization, JFrame parent, String title, String[] contents)
+	public static boolean confirmDlg(UiLocalization localization, JFrame parent, String title, String[] contents)
 	{
 		HashMap emptyTokenReplacement = new HashMap();
 		return confirmDlg(localization, parent, title, contents, emptyTokenReplacement);
 	}
 
-	public static boolean confirmDlg(UiBasicLocalization localization, JFrame parent, String title, String[] contents, Map tokenReplacement)
+	public static boolean confirmDlg(UiLocalization localization, JFrame parent, String title, String[] contents, Map tokenReplacement)
 	{
 		String yes = localization.getButtonLabel("yes");
 		String no = localization.getButtonLabel("no");

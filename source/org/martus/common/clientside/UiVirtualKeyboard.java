@@ -52,7 +52,7 @@ import org.martus.swing.Utilities;
 public class UiVirtualKeyboard
 {
 
-	public UiVirtualKeyboard(UiBasicLocalization localization, VirtualKeyboardHandler uiHandler, UiPasswordField passwordFieldToUse)
+	public UiVirtualKeyboard(UiLocalization localization, VirtualKeyboardHandler uiHandler, UiPasswordField passwordFieldToUse)
 	{
 		handler = uiHandler;
 		passwordField = passwordFieldToUse;

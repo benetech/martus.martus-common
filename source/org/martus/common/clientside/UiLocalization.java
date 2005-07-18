@@ -38,7 +38,7 @@ import org.martus.common.VersionBuildDate;
 import org.martus.util.UnicodeWriter;
 
 
-public class UiBasicLocalization extends Localization
+public class UiLocalization extends MtfAwareLocalization
 {
     public void exportTranslations(String languageCode, String versionLabel, UnicodeWriter writer)
 		throws IOException 
@@ -165,7 +165,7 @@ public class UiBasicLocalization extends Localization
 		}
 	}
 
-	public UiBasicLocalization (File directoryToUse, String[] englishTranslations)
+	public UiLocalization (File directoryToUse, String[] englishTranslations)
 	{
 		super(directoryToUse);
 		addEnglishTranslations(englishTranslations);

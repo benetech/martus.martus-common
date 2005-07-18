@@ -31,7 +31,7 @@ import java.util.Vector;
 import org.martus.common.LegacyCustomFields;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.clientside.ChoiceItem;
-import org.martus.common.clientside.Localization;
+import org.martus.common.clientside.MtfAwareLocalization;
 import org.martus.common.fieldspec.CustomDropDownFieldSpec;
 import org.martus.common.fieldspec.DropDownFieldSpec;
 import org.martus.common.fieldspec.FieldSpec;
@@ -101,7 +101,7 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertEquals(emptyString, spec.getDefaultValue());
 		
 		spec = new FieldSpec(FieldSpec.TYPE_LANGUAGE);
-		assertEquals(Localization.LANGUAGE_OTHER, spec.getDefaultValue());
+		assertEquals(MtfAwareLocalization.LANGUAGE_OTHER, spec.getDefaultValue());
 		
 		spec = new FieldSpec(FieldSpec.TYPE_MULTILINE);
 		assertEquals(emptyString, spec.getDefaultValue());

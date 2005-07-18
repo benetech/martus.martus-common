@@ -38,8 +38,8 @@ import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinConstants;
 import org.martus.common.bulletin.BulletinHtmlGenerator;
 import org.martus.common.bulletin.BulletinLoader;
-import org.martus.common.clientside.Localization;
-import org.martus.common.clientside.UiBasicLocalization;
+import org.martus.common.clientside.MtfAwareLocalization;
+import org.martus.common.clientside.UiLocalization;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.database.ClientFileDatabase;
 import org.martus.common.database.DatabaseKey;
@@ -54,8 +54,8 @@ public class MartusBulletinWrapper
 		File tempDirectory = null;
 		try
 		{
-			localization  = new UiBasicLocalization(getHomeDirectory(), EnglishCommonStrings.strings);	
-			localization.setCurrentLanguageCode(Localization.ENGLISH);			
+			localization  = new UiLocalization(getHomeDirectory(), EnglishCommonStrings.strings);	
+			localization.setCurrentLanguageCode(MtfAwareLocalization.ENGLISH);			
 			
 			tempDirectory = File.createTempFile("$$$BulletinWrapperDB", null);
 			tempDirectory.deleteOnExit();
@@ -261,5 +261,5 @@ public class MartusBulletinWrapper
 	
 	private Bulletin bulletin;
 	private BulletinStore store;
-	private UiBasicLocalization localization;
+	private UiLocalization localization;
 }

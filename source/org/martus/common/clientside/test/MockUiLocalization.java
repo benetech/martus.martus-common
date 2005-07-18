@@ -29,10 +29,10 @@ package org.martus.common.clientside.test;
 import java.io.File;
 import java.io.IOException;
 
-import org.martus.common.clientside.UiBasicLocalization;
+import org.martus.common.clientside.UiLocalization;
 import org.martus.util.TestCaseEnhanced;
 
-public class MockUiLocalization extends UiBasicLocalization
+public class MockUiLocalization extends UiLocalization
 {
 
 	public MockUiLocalization() throws IOException

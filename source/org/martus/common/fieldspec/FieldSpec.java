@@ -31,7 +31,7 @@ import java.util.Iterator;
 import java.util.Map;
 import org.martus.common.MartusXml;
 import org.martus.common.bulletin.Bulletin;
-import org.martus.common.clientside.Localization;
+import org.martus.common.clientside.MtfAwareLocalization;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlStringLoader;
 import org.martus.util.xml.XmlUtilities;
@@ -120,7 +120,7 @@ public class FieldSpec
 			case TYPE_DATERANGE:
 				return Bulletin.getToday();
 			case TYPE_LANGUAGE:
-				return Localization.LANGUAGE_OTHER;
+				return MtfAwareLocalization.LANGUAGE_OTHER;
 			case TYPE_NORMAL:
 			case TYPE_MULTILINE:
 			case TYPE_MESSAGE:

@@ -43,9 +43,9 @@ import org.martus.util.UnicodeReader;
 import org.martus.util.inputstreamwithseek.ZipEntryInputStreamWithSeekThatClosesZipFile;
 
 
-public class Localization extends MiniLocalization
+public class MtfAwareLocalization extends MiniLocalization
 {
-	public Localization(File directoryToUse)
+	public MtfAwareLocalization(File directoryToUse)
 	{
 		super();
 		directory = directoryToUse;

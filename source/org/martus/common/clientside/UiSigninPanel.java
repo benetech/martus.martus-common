@@ -218,7 +218,7 @@ public class UiSigninPanel extends UiParagraphPanel implements VirtualKeyboardHa
 	
 
 	UiBasicSigninDlg owner;
-	UiBasicLocalization localization;
+	UiLocalization localization;
 	CurrentUiState uiState;
 	private JLabel userNameDescription;
 	private JLabel passwordDescription;

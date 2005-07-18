@@ -47,13 +47,13 @@ import org.martus.swing.Utilities;
 
 public class UiBasicSigninDlg extends JDialog
 {
-	public UiBasicSigninDlg(UiBasicLocalization localizationToUse, CurrentUiState uiStateToUse, JFrame owner, int mode, String username, char[] password)
+	public UiBasicSigninDlg(UiLocalization localizationToUse, CurrentUiState uiStateToUse, JFrame owner, int mode, String username, char[] password)
 	{
 		super(owner, true);
 		initalize(localizationToUse, uiStateToUse, owner, mode, username, password);
 	}
 
-	public void initalize(UiBasicLocalization localizationToUse, CurrentUiState uiStateToUse, JFrame ownerToUse, int mode, String username, char[] password)
+	public void initalize(UiLocalization localizationToUse, CurrentUiState uiStateToUse, JFrame ownerToUse, int mode, String username, char[] password)
 	{
 		currentMode = mode;
 		owner = ownerToUse;
@@ -110,7 +110,7 @@ public class UiBasicSigninDlg extends JDialog
 		return scrolledPanel;
 	}
 
-	public String getTextForTitle(UiBasicLocalization localization, int mode)
+	public String getTextForTitle(UiLocalization localization, int mode)
 	{		
 		switch (mode)
 		{
@@ -125,7 +125,7 @@ public class UiBasicSigninDlg extends JDialog
 		}			
 	}
 
-	public static String getInitialSigninTitle(UiBasicLocalization localization)
+	public static String getInitialSigninTitle(UiLocalization localization)
 	{
 		return localization.getWindowTitle("MartusSignIn");
 	}
@@ -161,7 +161,7 @@ public class UiBasicSigninDlg extends JDialog
 		dispose();
 	}
 
-	public UiBasicLocalization getLocalization()
+	public UiLocalization getLocalization()
 	{
 		return localization;
 	}
@@ -190,7 +190,7 @@ public class UiBasicSigninDlg extends JDialog
 	
 
 	public UiSigninPanel signinPane;
-	public UiBasicLocalization localization;
+	public UiLocalization localization;
 	public CurrentUiState uiState;
 	public JFrame owner;
 	public int usersChoice;
