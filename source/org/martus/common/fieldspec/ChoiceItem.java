@@ -24,36 +24,51 @@ Boston, MA 02111-1307, USA.
 
 */
 
-package org.martus.common.clientside;
+package org.martus.common.fieldspec;
 
-public class Exceptions
+
+public class ChoiceItem implements Comparable
 {
-	public static class MartusClientApplicationException extends Exception
+	public ChoiceItem(String codeToUse, String displayToUse)
 	{
-	}
-
-	public static class InvalidUserNameOrPassword extends MartusClientApplicationException
-	{
-	}
-
-	public static class BlankUserNameException extends InvalidUserNameOrPassword
-	{
-	}
-
-	public static class PasswordMatchedUserNameException extends InvalidUserNameOrPassword
-	{
-	}
-
-	public static class PasswordTooShortException extends InvalidUserNameOrPassword
-	{
+		this(codeToUse, displayToUse, FieldSpec.TYPE_UNKNOWN);
 	}
 	
-	public static class ServerCallFailedException extends Exception
+	public ChoiceItem(FieldSpec specToUse)
 	{
+		this(specToUse.getTag(), specToUse.getLabel(), specToUse.getType());
 	}
 	
-	public static class ServerNotAvailableException extends Exception
+	public ChoiceItem(String codeToUse, String displayToUse, int typeToUse)
 	{
+		code = codeToUse;
+		display = displayToUse;
+		type = typeToUse;
 	}
+
+	public String toString()
+	{
+		return display;
+	}
+
+	public String getCode()
+	{
+		return code;
+	}
+	
+	public int getType()
+	{
+		return type;
+	}
+
+	public int compareTo(Object other)
+	{
+		return toString().compareTo(other.toString());
+	}
+
+	private String code;
+	private String display;
+	private int type;
 
 }
+

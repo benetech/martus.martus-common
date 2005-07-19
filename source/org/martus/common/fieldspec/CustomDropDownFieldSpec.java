@@ -29,7 +29,6 @@ package org.martus.common.fieldspec;
 import java.util.Vector;
 
 import org.martus.common.MartusXml;
-import org.martus.common.clientside.ChoiceItem;
 import org.martus.util.xml.SimpleXmlVectorLoader;
 import org.xml.sax.SAXParseException;
 

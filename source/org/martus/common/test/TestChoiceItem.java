@@ -24,23 +24,35 @@ Boston, MA 02111-1307, USA.
 
 */
 
-package org.martus.common.clientside.test;
+package org.martus.common.test;
 
-import java.util.Vector;
+import org.martus.common.fieldspec.ChoiceItem;
+import org.martus.common.fieldspec.FieldSpec;
+import org.martus.util.TestCaseEnhanced;
 
-import org.martus.common.network.NonSSLNetworkAPI;
-
-public class NoServerNetworkInterfaceForNonSSLHandler
-	extends NonSSLNetworkAPI
+public class TestChoiceItem extends TestCaseEnhanced
 {
-
-	public String ping()
+    public TestChoiceItem(String name)
 	{
-		return null;
+		super(name);
 	}
 
-	public Vector getServerInformation()
+	public void testBasics()
 	{
-		return null;
+		ChoiceItem item = new ChoiceItem("a", "b");
+		assertEquals("a", item.getCode());
+		assertEquals("b", item.toString());
+	}
+	
+	public void testTypes()
+	{
+		ChoiceItem basicItem = new ChoiceItem("a", "b");
+		assertEquals(FieldSpec.TYPE_UNKNOWN, basicItem.getType());
+		
+		FieldSpec spec = FieldSpec.createCustomField("tag", "label", FieldSpec.TYPE_DROPDOWN);
+		ChoiceItem specItem = new ChoiceItem(spec);
+		assertEquals(spec.getTag(), specItem.getCode());
+		assertEquals(spec.getLabel(), specItem.toString());
+		assertEquals(spec.getType(), specItem.getType());
 	}
 }

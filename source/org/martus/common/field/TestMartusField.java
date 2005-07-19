@@ -27,7 +27,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.field;
 
 import org.martus.common.GridData;
-import org.martus.common.clientside.ChoiceItem;
+import org.martus.common.fieldspec.ChoiceItem;
 import org.martus.common.fieldspec.DropDownFieldSpec;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.GridFieldSpec;

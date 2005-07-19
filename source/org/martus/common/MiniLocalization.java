@@ -31,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -217,11 +218,26 @@ public class MiniLocalization
 		return getLabel(getCurrentLanguageCode(), "status", code);
 	}
 
-	public static String getDefaultDateFormatForLanguage(String languageCode)
+	private static Map getDefaultDateFormats()
 	{
-		return DateUtilities.getDefaultDateFormatCode();
+		Map defaultLanguageDateFormat = new HashMap();
+		defaultLanguageDateFormat.put(ENGLISH, DateUtilities.getDefaultDateFormatCode());
+		defaultLanguageDateFormat.put(SPANISH, DateUtilities.DMY_SLASH.getCode());
+		defaultLanguageDateFormat.put(RUSSIAN, DateUtilities.DMY_DOT.getCode());
+		defaultLanguageDateFormat.put(THAI, DateUtilities.DMY_SLASH.getCode());
+		defaultLanguageDateFormat.put(ARABIC, DateUtilities.DMY_SLASH.getCode());
+		defaultLanguageDateFormat.put(FARSI, DateUtilities.DMY_SLASH.getCode());
+		return defaultLanguageDateFormat;
 	}
 	
+	public static String getDefaultDateFormatForLanguage(String languageCode)
+	{
+		Map defaultLanguageDateFormat = getDefaultDateFormats();
+		if(!defaultLanguageDateFormat.containsKey(languageCode))
+			return DateUtilities.getDefaultDateFormatCode();
+		return (String)defaultLanguageDateFormat.get(languageCode);
+	}
+
 	public static char getDateSeparator(String date) throws NoDateSeparatorException
 	{
 		for(int i = 0; i < date.length(); ++i)

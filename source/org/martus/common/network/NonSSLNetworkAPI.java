@@ -27,9 +27,10 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.network;
 
 import java.util.Vector;
+
 import org.martus.common.MartusUtilities;
+import org.martus.common.Exceptions.ServerNotAvailableException;
 import org.martus.common.MartusUtilities.PublicInformationInvalidException;
-import org.martus.common.clientside.Exceptions.ServerNotAvailableException;
 import org.martus.common.crypto.MartusCrypto;
 
 abstract public class NonSSLNetworkAPI

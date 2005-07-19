@@ -26,7 +26,7 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.utilities;
 
-import org.martus.common.clientside.ChoiceItem;
+import org.martus.common.fieldspec.ChoiceItem;
 import org.martus.util.TestCaseEnhanced;
 
 public class TestDateUtilities extends TestCaseEnhanced

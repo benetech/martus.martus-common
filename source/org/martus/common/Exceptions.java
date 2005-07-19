@@ -23,19 +23,37 @@ Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.
 
 */
-package org.martus.common.clientside;
 
+package org.martus.common;
 
-public class PasswordHelper
+public class Exceptions
 {
-
-	public static char[] getCombinedPassPhrase(String userName, char[] userPassPhrase)
+	public static class MartusClientApplicationException extends Exception
 	{
-		char[] combined = new char[userName.length() + userPassPhrase.length + 1];
-		System.arraycopy(userPassPhrase,0,combined,0,userPassPhrase.length);
-		combined[userPassPhrase.length] = ':';
-		System.arraycopy(userName.toCharArray(),0,combined,userPassPhrase.length+1,userName.length());
-		
-		return(combined);
 	}
+
+	public static class InvalidUserNameOrPassword extends MartusClientApplicationException
+	{
+	}
+
+	public static class BlankUserNameException extends InvalidUserNameOrPassword
+	{
+	}
+
+	public static class PasswordMatchedUserNameException extends InvalidUserNameOrPassword
+	{
+	}
+
+	public static class PasswordTooShortException extends InvalidUserNameOrPassword
+	{
+	}
+	
+	public static class ServerCallFailedException extends Exception
+	{
+	}
+	
+	public static class ServerNotAvailableException extends Exception
+	{
+	}
+
 }

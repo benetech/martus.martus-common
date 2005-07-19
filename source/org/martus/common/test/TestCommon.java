@@ -29,12 +29,6 @@ package org.martus.common.test;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.martus.common.analyzerhelper.TestMartusBulletinRetriever;
-import org.martus.common.analyzerhelper.TestMartusBulletinWrapper;
-import org.martus.common.clientside.test.TestChoiceItem;
-import org.martus.common.clientside.test.TestClientSideNetworkHandler;
-import org.martus.common.clientside.test.TestClientSideNetworkHandlerForNonSSL;
-import org.martus.common.clientside.test.TestCurrentUiState;
 import org.martus.common.field.TestMartusField;
 import org.martus.common.fieldspec.TestCustomDropDownFieldSpec;
 import org.martus.common.fieldspec.TestDropDownFieldSpec;
@@ -75,10 +69,7 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestBulletinZipImporter.class));
 		suite.addTest(new TestSuite(TestBulletinZipUtilities.class));
 		suite.addTest(new TestSuite(TestChoiceItem.class));
-		suite.addTest(new TestSuite(TestClientSideNetworkHandler.class));
-		suite.addTest(new TestSuite(TestClientSideNetworkHandlerForNonSSL.class));
 		suite.addTest(new TestSuite(TestClientFileDatabase.class));
-		suite.addTest(new TestSuite(TestCurrentUiState.class));
 		suite.addTest(new TestSuite(TestCustomDropDownFieldSpec.class));
 		suite.addTest(new TestSuite(TestCustomFields.class));
 		suite.addTest(new TestSuite(TestDatabaseKey.class));
@@ -98,8 +89,6 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestMagicWordEntry.class));
 		suite.addTest(new TestSuite(TestMagicWords.class));
 		suite.addTest(new TestSuite(TestMartusKeyPair.class));
-		suite.addTest(new TestSuite(TestMartusBulletinRetriever.class));
-		suite.addTest(new TestSuite(TestMartusBulletinWrapper.class));
 		suite.addTest(new TestSuite(TestMartusFlexidate.class));
 		suite.addTest(new TestSuite(TestMartusSecurity.class));
 		suite.addTest(new TestSuite(TestMartusUtilities.class));
