@@ -159,7 +159,7 @@ public class BulletinStore
 	public void deleteAllBulletins() throws Exception
 	{
 		database.deleteAllData();
-		clearCache();
+		leafNodeCache.clear();
 	}
 
 	public void importZipFileToStoreWithSameUids(File inputFile) throws IOException, MartusCrypto.CryptoException, Packet.InvalidPacketException, Packet.SignatureVerificationException
@@ -183,10 +183,15 @@ public class BulletinStore
 			zip.close();
 		}
 	}
-	
-	public void clearCache()
+
+	public void revisionWasSaved(UniversalId uid)
 	{
-		leafNodeCache.clear();
+		leafNodeCache.revisionWasSaved(uid);
+	}
+	
+	public void revisionWasRemoved(UniversalId uid)
+	{
+		leafNodeCache.revisionWasRemoved(uid);
 	}
 	
 	public boolean hadErrorsWhileCacheing()
@@ -286,8 +291,8 @@ public class BulletinStore
 		for (int i = 0; i < keys.length; i++)
 		{
 			deleteSpecificPacket(keys[i]);
-			clearCache();
 		}
+		revisionWasRemoved(bhp.getUniversalId());
 	}
 
 	public static BulletinHeaderPacket loadBulletinHeaderPacket(ReadableDatabase db, DatabaseKey key, MartusCrypto security)
@@ -319,7 +324,7 @@ public class BulletinStore
 		{
 			UniversalId uId = (UniversalId)(packetsIdsToHide.get(i));
 			db.hide(uId);
-			clearCache();
+			revisionWasRemoved(uId);
 			String publicCode = MartusCrypto.getFormattedPublicCode(uId.getAccountId());
 			logger.logNotice("Deleting " + publicCode + ": " + uId.getLocalId());
 		
@@ -345,11 +350,11 @@ public class BulletinStore
 		RecordHiddenException, 
 		WrongAccountException
 	{
-		importBulletinPacketsFromZipFileToDatabase(getWriteableDatabase(), accountIdIfKnown, zip, getSignatureVerifier());
-		clearCache();
+		UniversalId uid = importBulletinPacketsFromZipFileToDatabase(getWriteableDatabase(), accountIdIfKnown, zip, getSignatureVerifier());
+		revisionWasSaved(uid);
 	}
 
-	private static void importBulletinPacketsFromZipFileToDatabase(Database db, String authorAccountId, ZipFile zip, MartusCrypto security)
+	private static UniversalId importBulletinPacketsFromZipFileToDatabase(Database db, String authorAccountId, ZipFile zip, MartusCrypto security)
 		throws IOException,
 		Database.RecordHiddenException,
 		Packet.InvalidPacketException,
@@ -396,6 +401,7 @@ public class BulletinStore
 			zipEntries.put(key,file);
 		}
 		db.importFiles(zipEntries);
+		return header.getUniversalId();
 	}
 
 	protected void deleteSpecificPacket(DatabaseKey burKey)
@@ -422,7 +428,7 @@ public class BulletinStore
 	protected void saveBulletin(Bulletin b, boolean mustEncryptPublicData) throws IOException, CryptoException
 	{
 		saveToClientDatabase(b, getWriteableDatabase(), mustEncryptPublicData, b.getSignatureGenerator());
-		clearCache();
+		revisionWasSaved(b.getUniversalId());
 	}
 	
 	private static void saveToClientDatabase(Bulletin b, Database db, boolean mustEncryptPublicData, MartusCrypto signer) throws
@@ -511,13 +517,24 @@ public class BulletinStore
 		public LeafNodeCache(BulletinStore storeToUse)
 		{
 			store = storeToUse;
-
 			clear();
 		}
 		
 		public synchronized void clear()
 		{
 			isValid = false;
+		}
+		
+		public synchronized void revisionWasSaved(UniversalId uid)
+		{
+			// TODO: definitely could be optimized!
+			clear();
+		}
+		
+		public synchronized void revisionWasRemoved(UniversalId uid)
+		{
+			// TODO: definitely could be optimized!
+			clear();
 		}
 		
 		public synchronized Vector getLeafKeys()
