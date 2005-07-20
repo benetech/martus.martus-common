@@ -24,11 +24,10 @@ Boston, MA 02111-1307, USA.
 
 */
 
-package org.martus.common.test;
+package org.martus.common.bulletinstore;
 
 import java.util.Vector;
 
-import org.martus.common.BulletinStore;
 import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
 import org.martus.common.bulletin.Bulletin;
@@ -95,7 +94,7 @@ public class TestBulletinStoreCache extends TestCaseEnhanced
    
     public void testIsCacheValid()
     {
-    	BulletinStore.LeafNodeCache cache = new BulletinStore.LeafNodeCache(store);
+    	LeafNodeCache cache = new LeafNodeCache(store);
     	assertFalse("cache already valid?", cache.isCacheValid());
     	
     	cache.getLeafKeys();

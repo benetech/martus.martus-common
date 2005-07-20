@@ -24,14 +24,13 @@ Boston, MA 02111-1307, USA.
 
 */
 
-package org.martus.common.test;
+package org.martus.common.bulletinstore;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Vector;
 import java.util.zip.ZipFile;
 
-import org.martus.common.BulletinStore;
 import org.martus.common.LoggerToNull;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinLoader;
@@ -52,6 +51,7 @@ import org.martus.common.packet.UniversalId;
 import org.martus.common.packet.Packet.InvalidPacketException;
 import org.martus.common.packet.Packet.SignatureVerificationException;
 import org.martus.common.packet.Packet.WrongAccountException;
+import org.martus.common.test.MockBulletinStore;
 import org.martus.util.Stopwatch;
 import org.martus.util.TestCaseEnhanced;
 

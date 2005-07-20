@@ -29,6 +29,8 @@ package org.martus.common.test;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.martus.common.bulletinstore.TestBulletinStore;
+import org.martus.common.bulletinstore.TestBulletinStoreCache;
 import org.martus.common.field.TestMartusField;
 import org.martus.common.fieldspec.TestCustomDropDownFieldSpec;
 import org.martus.common.fieldspec.TestDropDownFieldSpec;

@@ -1,7 +1,7 @@
 /*
 
 The Martus(tm) free, social justice documentation and
-monitoring software. Copyright (C) 2001-2004, Beneficent
+monitoring software. Copyright (C) 2005, Beneficent
 Technology, Inc. (Benetech).
 
 Martus is free software; you can redistribute it and/or
@@ -24,17 +24,13 @@ Boston, MA 02111-1307, USA.
 
 */
 
-package org.martus.common.test;
+package org.martus.common.bulletinstore;
 
-import org.martus.common.bulletinstore.BulletinStore;
-import org.martus.common.database.MockClientDatabase;
-import org.martus.util.TestCaseEnhanced;
+import org.martus.common.packet.UniversalId;
 
-
-public class MockBulletinStore extends BulletinStore
+public abstract class BulletinStoreCache
 {
-	public MockBulletinStore(TestCaseEnhanced tester) throws Exception
-	{
-		doAfterSigninInitialization(tester.createTempDirectory(), new MockClientDatabase());
-	}
+	abstract public void storeWasCleared();
+	abstract public void revisionWasSaved(UniversalId uid);
+	abstract public void revisionWasRemoved(UniversalId uid);
 }
