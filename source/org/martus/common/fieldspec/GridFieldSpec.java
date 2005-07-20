@@ -81,6 +81,7 @@ public class GridFieldSpec extends FieldSpec
 		typeIsValid[TYPE_NORMAL] = true;
 		typeIsValid[TYPE_DROPDOWN] = true;
 		typeIsValid[TYPE_BOOLEAN] = true;
+		typeIsValid[TYPE_DATE] = true;
 		
 		if(columnType == TYPE_MORPHIC)
 			return true;

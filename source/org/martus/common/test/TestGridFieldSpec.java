@@ -106,17 +106,24 @@ public class TestGridFieldSpec extends TestCaseEnhanced
 		assertEquals(labelBooleanColumn, spec.getColumnLabel(2));
 		assertEquals(FieldSpec.TYPE_BOOLEAN, spec.getColumnType(2));
 		assertEquals(labelBooleanColumn, spec.getFieldSpec(2).getLabel());
+		
+		String labelDateColumn = "TYPE_DATE";
+		FieldSpec dateSpec = new FieldSpec(labelDateColumn, FieldSpec.TYPE_DATE);
+		spec.addColumn(dateSpec);
+		assertEquals(labelDateColumn, spec.getColumnLabel(3));
+		assertEquals(FieldSpec.TYPE_DATE, spec.getColumnType(3));
+		assertEquals(labelDateColumn, spec.getFieldSpec(3).getLabel());
+
 	}
 	
 	public void testAddColumnWithDisallowedTypes()
 	{
-		assertFalse("date column allowed?", GridFieldSpec.isValidGridColumnType(FieldSpec.TYPE_DATE));
 		assertFalse("date range column allowed?", GridFieldSpec.isValidGridColumnType(FieldSpec.TYPE_DATERANGE));
 		assertFalse("language column allowed?", GridFieldSpec.isValidGridColumnType(FieldSpec.TYPE_LANGUAGE));
 		assertFalse("multiline column allowed?", GridFieldSpec.isValidGridColumnType(FieldSpec.TYPE_MULTILINE));
 		assertFalse("grid column allowed?", GridFieldSpec.isValidGridColumnType(FieldSpec.TYPE_GRID));
-		assertFalse("date column allowed?", GridFieldSpec.isValidGridColumnType(FieldSpec.TYPE_MESSAGE));
-		assertFalse("date column allowed?", GridFieldSpec.isValidGridColumnType(FieldSpec.TYPE_UNKNOWN));
+		assertFalse("message column allowed?", GridFieldSpec.isValidGridColumnType(FieldSpec.TYPE_MESSAGE));
+		assertFalse("unknown column allowed?", GridFieldSpec.isValidGridColumnType(FieldSpec.TYPE_UNKNOWN));
 		
 		try
 		{
