@@ -100,12 +100,12 @@ public class TestBulletinStoreCache extends TestCaseEnhanced
     	
     	cache.getLeafKeys();
     	assertTrue("get leaf didn't fill cache?", cache.isCacheValid());
-    	cache.clear();
+    	cache.storeWasCleared();
     	assertFalse("clear didn't work?", cache.isCacheValid());
     	
     	cache.getNonLeafUids();
     	assertTrue("get nonleaf didn't fill cache?", cache.isCacheValid());
-    	cache.clear();
+    	cache.storeWasCleared();
     	
     	cache.getFieldOffices("test");
     	assertTrue("get fo's didn't fill cache?", cache.isCacheValid());

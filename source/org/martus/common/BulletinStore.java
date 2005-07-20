@@ -71,7 +71,10 @@ public class BulletinStore
 {
 	public BulletinStore()
 	{
+		cacheManager = new BulletinStoreCacheManager();
+
 		leafNodeCache = new LeafNodeCache(this);
+		cacheManager.addCache(leafNodeCache);
 	}
 	
 	public void doAfterSigninInitialization(File dataRootDirectory, Database db) throws FileVerificationException, MissingAccountMapException, MissingAccountMapSignatureException
@@ -159,7 +162,7 @@ public class BulletinStore
 	public void deleteAllBulletins() throws Exception
 	{
 		database.deleteAllData();
-		leafNodeCache.clear();
+		cacheManager.storeWasCleared();
 	}
 
 	public void importZipFileToStoreWithSameUids(File inputFile) throws IOException, MartusCrypto.CryptoException, Packet.InvalidPacketException, Packet.SignatureVerificationException
@@ -186,12 +189,12 @@ public class BulletinStore
 
 	public void revisionWasSaved(UniversalId uid)
 	{
-		leafNodeCache.revisionWasSaved(uid);
+		cacheManager.revisionWasSaved(uid);
 	}
 	
 	public void revisionWasRemoved(UniversalId uid)
 	{
-		leafNodeCache.revisionWasRemoved(uid);
+		cacheManager.revisionWasRemoved(uid);
 	}
 	
 	public boolean hadErrorsWhileCacheing()
@@ -512,15 +515,64 @@ public class BulletinStore
 		}
 	}
 	
-	public static class LeafNodeCache implements Database.PacketVisitor
+	public static class BulletinStoreCacheManager
+	{
+		public BulletinStoreCacheManager()
+		{
+			caches = new Vector();
+		}
+		
+		public void addCache(BulletinStoreCache cacheToAdd)
+		{
+			caches.add(cacheToAdd);
+		}
+		
+		public synchronized void storeWasCleared()
+		{
+			for(int i = 0; i < caches.size(); ++i)
+			{
+				BulletinStoreCache cache = (BulletinStoreCache)caches.get(i);
+				cache.storeWasCleared();
+			}
+		}
+		
+		public synchronized void revisionWasSaved(UniversalId uid)
+		{
+			for(int i = 0; i < caches.size(); ++i)
+			{
+				BulletinStoreCache cache = (BulletinStoreCache)caches.get(i);
+				cache.revisionWasSaved(uid);
+			}
+		}
+		
+		public synchronized void revisionWasRemoved(UniversalId uid)
+		{
+			for(int i = 0; i < caches.size(); ++i)
+			{
+				BulletinStoreCache cache = (BulletinStoreCache)caches.get(i);
+				cache.revisionWasRemoved(uid);
+			}
+		}
+
+		Vector caches;
+	}
+	
+	public abstract static class BulletinStoreCache
+	{
+		abstract public void storeWasCleared();
+		abstract public void revisionWasSaved(UniversalId uid);
+		abstract public void revisionWasRemoved(UniversalId uid);
+	}
+	
+	public static class LeafNodeCache extends BulletinStoreCache implements Database.PacketVisitor
 	{
 		public LeafNodeCache(BulletinStore storeToUse)
 		{
 			store = storeToUse;
-			clear();
+			storeWasCleared();
 		}
 		
-		public synchronized void clear()
+		public synchronized void storeWasCleared()
 		{
 			isValid = false;
 		}
@@ -528,13 +580,13 @@ public class BulletinStore
 		public synchronized void revisionWasSaved(UniversalId uid)
 		{
 			// TODO: definitely could be optimized!
-			clear();
+			storeWasCleared();
 		}
 		
 		public synchronized void revisionWasRemoved(UniversalId uid)
 		{
 			// TODO: definitely could be optimized!
-			clear();
+			storeWasCleared();
 		}
 		
 		public synchronized Vector getLeafKeys()
@@ -667,5 +719,6 @@ public class BulletinStore
 	private File dir;
 	private Database database;
 	private LeafNodeCache leafNodeCache;
+	private BulletinStoreCacheManager cacheManager;
 }
 
