@@ -95,7 +95,7 @@ public class TestBulletinStoreCache extends TestCaseEnhanced
    
     public void testIsCacheValid()
     {
-    	BulletinStore.Cache cache = new BulletinStore.Cache(store);
+    	BulletinStore.LeafNodeCache cache = new BulletinStore.LeafNodeCache(store);
     	assertFalse("cache already valid?", cache.isCacheValid());
     	
     	cache.getLeafKeys();

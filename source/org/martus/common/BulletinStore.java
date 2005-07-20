@@ -71,7 +71,7 @@ public class BulletinStore
 {
 	public BulletinStore()
 	{
-		cache = new Cache(this);
+		leafNodeCache = new LeafNodeCache(this);
 	}
 	
 	public void doAfterSigninInitialization(File dataRootDirectory, Database db) throws FileVerificationException, MissingAccountMapException, MissingAccountMapSignatureException
@@ -186,27 +186,27 @@ public class BulletinStore
 	
 	public void clearCache()
 	{
-		cache.clear();
+		leafNodeCache.clear();
 	}
 	
 	public boolean hadErrorsWhileCacheing()
 	{
-		return cache.hadErrors();
+		return leafNodeCache.hadErrors();
 	}
 	
 	public Vector scanForLeafKeys()
 	{
-		return cache.getLeafKeys();
+		return leafNodeCache.getLeafKeys();
 	}
 	
 	public Vector getNonLeafUids()
 	{
-		return cache.getNonLeafUids();
+		return leafNodeCache.getNonLeafUids();
 	}
 	
 	public Vector getFieldOffices(String hqAccountId)
 	{
-		return cache.getFieldOffices(hqAccountId);
+		return leafNodeCache.getFieldOffices(hqAccountId);
 	}
 
 	public void visitAllBulletins(Database.PacketVisitor visitor)
@@ -506,9 +506,9 @@ public class BulletinStore
 		}
 	}
 	
-	public static class Cache implements Database.PacketVisitor
+	public static class LeafNodeCache implements Database.PacketVisitor
 	{
-		public Cache(BulletinStore storeToUse)
+		public LeafNodeCache(BulletinStore storeToUse)
 		{
 			store = storeToUse;
 
@@ -649,6 +649,6 @@ public class BulletinStore
 	private MartusCrypto security;
 	private File dir;
 	private Database database;
-	private Cache cache;
+	private LeafNodeCache leafNodeCache;
 }
 
