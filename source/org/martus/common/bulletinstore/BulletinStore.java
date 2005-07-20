@@ -76,9 +76,9 @@ public class BulletinStore
 		cacheManager = new BulletinStoreCacheManager();
 
 		leafNodeCache = new LeafNodeCache(this);
-		cacheManager.addCache(leafNodeCache);
+		addCache(leafNodeCache);
 	}
-	
+
 	public void doAfterSigninInitialization(File dataRootDirectory, Database db) throws FileVerificationException, MissingAccountMapException, MissingAccountMapSignatureException
 	{
 		dir = dataRootDirectory;
@@ -189,9 +189,19 @@ public class BulletinStore
 		}
 	}
 
+	public void addCache(BulletinStoreCache cacheToAdd)
+	{
+		cacheManager.addCache(cacheToAdd);
+	}
+	
 	public void revisionWasSaved(UniversalId uid)
 	{
 		cacheManager.revisionWasSaved(uid);
+	}
+	
+	public void revisionWasSaved(Bulletin b)
+	{
+		cacheManager.revisionWasSaved(b);
 	}
 	
 	public void revisionWasRemoved(UniversalId uid)
@@ -433,7 +443,7 @@ public class BulletinStore
 	protected void saveBulletin(Bulletin b, boolean mustEncryptPublicData) throws IOException, CryptoException
 	{
 		saveToClientDatabase(b, getWriteableDatabase(), mustEncryptPublicData, b.getSignatureGenerator());
-		revisionWasSaved(b.getUniversalId());
+		revisionWasSaved(b);
 	}
 	
 	private static void saveToClientDatabase(Bulletin b, Database db, boolean mustEncryptPublicData, MartusCrypto signer) throws

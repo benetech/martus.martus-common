@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Vector;
 
 import org.martus.common.HQKeys;
+import org.martus.common.bulletin.Bulletin;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
@@ -52,6 +53,12 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 	}
 	
 	public synchronized void revisionWasSaved(UniversalId uid)
+	{
+		// TODO: definitely could be optimized!
+		storeWasCleared();
+	}
+	
+	public synchronized void revisionWasSaved(Bulletin b)
 	{
 		// TODO: definitely could be optimized!
 		storeWasCleared();

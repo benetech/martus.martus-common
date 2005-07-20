@@ -26,11 +26,13 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.bulletinstore;
 
+import org.martus.common.bulletin.Bulletin;
 import org.martus.common.packet.UniversalId;
 
 public abstract class BulletinStoreCache
 {
 	abstract public void storeWasCleared();
 	abstract public void revisionWasSaved(UniversalId uid);
+	abstract public void revisionWasSaved(Bulletin b);
 	abstract public void revisionWasRemoved(UniversalId uid);
 }

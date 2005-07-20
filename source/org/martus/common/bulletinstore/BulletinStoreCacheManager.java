@@ -28,6 +28,7 @@ package org.martus.common.bulletinstore;
 
 import java.util.Vector;
 
+import org.martus.common.bulletin.Bulletin;
 import org.martus.common.packet.UniversalId;
 
 public class BulletinStoreCacheManager
@@ -57,6 +58,15 @@ public class BulletinStoreCacheManager
 		{
 			BulletinStoreCache cache = (BulletinStoreCache)caches.get(i);
 			cache.revisionWasSaved(uid);
+		}
+	}
+	
+	public synchronized void revisionWasSaved(Bulletin b)
+	{
+		for(int i = 0; i < caches.size(); ++i)
+		{
+			BulletinStoreCache cache = (BulletinStoreCache)caches.get(i);
+			cache.revisionWasSaved(b);
 		}
 	}
 	
