@@ -114,11 +114,16 @@ public class TestGridFieldSpec extends TestCaseEnhanced
 		assertEquals(FieldSpec.TYPE_DATE, spec.getColumnType(3));
 		assertEquals(labelDateColumn, spec.getFieldSpec(3).getLabel());
 
+		String labelDateRangeColumn = "TYPE_DATERANGE";
+		FieldSpec dateRangeSpec = new FieldSpec(labelDateRangeColumn, FieldSpec.TYPE_DATERANGE);
+		spec.addColumn(dateRangeSpec);
+		assertEquals(labelDateRangeColumn, spec.getColumnLabel(4));
+		assertEquals(FieldSpec.TYPE_DATERANGE, spec.getColumnType(4));
+		assertEquals(labelDateRangeColumn, spec.getFieldSpec(4).getLabel());
 	}
 	
 	public void testAddColumnWithDisallowedTypes()
 	{
-		assertFalse("date range column allowed?", GridFieldSpec.isValidGridColumnType(FieldSpec.TYPE_DATERANGE));
 		assertFalse("language column allowed?", GridFieldSpec.isValidGridColumnType(FieldSpec.TYPE_LANGUAGE));
 		assertFalse("multiline column allowed?", GridFieldSpec.isValidGridColumnType(FieldSpec.TYPE_MULTILINE));
 		assertFalse("grid column allowed?", GridFieldSpec.isValidGridColumnType(FieldSpec.TYPE_GRID));
