@@ -223,6 +223,13 @@ public class FieldSpec
 		map.put(new Integer(TYPE_UNKNOWN), "UNKNOWN");
 		return map;
 	}
+	
+	public static FieldSpec createFromXml(String xml) throws Exception
+	{
+		XmlFieldSpecLoader loader = new XmlFieldSpecLoader();
+		loader.parse(xml);
+		return loader.getFieldSpec();
+	}
 
 	public static class XmlFieldSpecLoader extends SimpleXmlDefaultLoader
 	{
