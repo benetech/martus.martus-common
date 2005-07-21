@@ -444,7 +444,7 @@ public class MartusSecurity extends MartusCrypto
 		return bundleBytes;
 	}
 
-	private byte[] extractFromSignedBundle(byte[] dataBundle) throws IOException, MartusSignatureException, AuthorizationFailedException
+	public byte[] extractFromSignedBundle(byte[] dataBundle) throws IOException, MartusSignatureException, AuthorizationFailedException
 	{
 		Vector authorizedKeys = new Vector();
 		authorizedKeys.add(getPublicKeyString());

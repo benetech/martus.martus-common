@@ -118,6 +118,7 @@ public abstract class MartusCrypto
 	public abstract void recoverFromKeyShareBundles(Vector shares) throws KeyShareException;
 	
 	public abstract byte[] createSignedBundle(byte[] dataBytes) throws MartusSignatureException, IOException;
+	public abstract byte[] extractFromSignedBundle(byte[] dataBundle) throws IOException, MartusSignatureException, AuthorizationFailedException;
 	public abstract byte[] extractFromSignedBundle(byte[] dataBundle, Vector authorizedKeys) throws IOException, MartusSignatureException, AuthorizationFailedException;
 	
 
