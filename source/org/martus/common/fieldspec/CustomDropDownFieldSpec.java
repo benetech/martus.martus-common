@@ -34,25 +34,6 @@ import org.xml.sax.SAXParseException;
 
 public class CustomDropDownFieldSpec extends DropDownFieldSpec
 {
-
-	public int getCount()
-	{
-		return super.getCount() + 1;
-	}
-	
-	public ChoiceItem getChoice(int index)
-	{
-		if(index > 0)
-			return super.getChoice(index - 1);
-		
-		return new ChoiceItem(EMPTY_FIRST_CHOICE, EMPTY_FIRST_CHOICE);
-	}
-	
-	public String getDefaultValue()
-	{
-		return EMPTY_FIRST_CHOICE;
-	}
-
 	public void setChoices(Vector stringChoicesToUse)
 	{
 		ChoiceItem[] choicesArray = new ChoiceItem[stringChoicesToUse.size()];
@@ -68,8 +49,7 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 	{
 		String xml = MartusXml.getTagStartWithNewline(DROPDOWN_SPEC_CHOICES_TAG);
 		
-		// skip fake/blank first entry
-		for(int i = 1 ; i < getCount(); ++i)
+		for(int i = 0 ; i < getCount(); ++i)
 		{
 			xml += MartusXml.getTagStart(DROPDOWN_SPEC_CHOICE_TAG) +
 					getValue(i) +
@@ -95,7 +75,6 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 		CustomDropDownFieldSpec spec;
 	}
 	
-	public final static String EMPTY_FIRST_CHOICE = " ";
 	public final static String DROPDOWN_SPEC_CHOICES_TAG = "Choices";
 	public final static String DROPDOWN_SPEC_CHOICE_TAG = "Choice";
 }

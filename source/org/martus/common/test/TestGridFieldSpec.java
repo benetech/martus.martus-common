@@ -25,7 +25,6 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.test;
 
-import org.martus.common.fieldspec.CustomDropDownFieldSpec;
 import org.martus.common.fieldspec.DropDownFieldSpec;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.GridFieldSpec;
@@ -94,10 +93,9 @@ public class TestGridFieldSpec extends TestCaseEnhanced
 		assertEquals(FieldSpec.TYPE_DROPDOWN, spec.getColumnType(1));
 
 		DropDownFieldSpec dropdownSpecRetrieved = (DropDownFieldSpec)spec.getFieldSpec(1);
-		assertEquals(3, dropdownSpecRetrieved.getCount());
-		assertEquals(CustomDropDownFieldSpec.EMPTY_FIRST_CHOICE, dropdownSpecRetrieved.getValue(0));
-		assertEquals(TestCustomDropDownFieldSpec.SAMPLE_DROPDOWN_CHOICE1, dropdownSpecRetrieved.getValue(1));
-		assertEquals(TestCustomDropDownFieldSpec.SAMPLE_DROPDOWN_CHOICE2, dropdownSpecRetrieved.getValue(2));
+		assertEquals(2, dropdownSpecRetrieved.getCount());
+		assertEquals(TestCustomDropDownFieldSpec.SAMPLE_DROPDOWN_CHOICE1, dropdownSpecRetrieved.getValue(0));
+		assertEquals(TestCustomDropDownFieldSpec.SAMPLE_DROPDOWN_CHOICE2, dropdownSpecRetrieved.getValue(1));
 
 
 		String labelBooleanColumn = "TYPE_BOOLEAN";

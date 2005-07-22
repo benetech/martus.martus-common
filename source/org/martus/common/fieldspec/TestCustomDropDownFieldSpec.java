@@ -44,10 +44,8 @@ public class TestCustomDropDownFieldSpec extends TestCaseEnhanced
 		values.add("two");
 		CustomDropDownFieldSpec spec = new CustomDropDownFieldSpec();
 		spec.setChoices(values);
-		assertEquals("didn't add blank entry?", values.size() + 1, spec.getCount());
-		assertEquals("blank not first?", CustomDropDownFieldSpec.EMPTY_FIRST_CHOICE, spec.getValue(0));
-		for(int i=1; i < spec.getCount(); ++i)
-			assertEquals("wrong order?", values.get(i-1), spec.getValue(i));
+		for(int i=0; i < spec.getCount(); ++i)
+			assertEquals("wrong order?", values.get(i), spec.getValue(i));
 		
 		assertEquals("two", spec.getValue(spec.findCode("two")));
 	}
@@ -57,14 +55,13 @@ public class TestCustomDropDownFieldSpec extends TestCaseEnhanced
 		FieldSpec.XmlFieldSpecLoader loader = new FieldSpec.XmlFieldSpecLoader();
 		loader.parse(SAMPLE_DROPDOWN_FIELD_XML);
 		DropDownFieldSpec spec = (DropDownFieldSpec)loader.getFieldSpec();
-		assertEquals(3, spec.getCount());
-		assertEquals(CustomDropDownFieldSpec.EMPTY_FIRST_CHOICE, spec.getValue(0));
-		assertEquals(SAMPLE_DROPDOWN_CHOICE1, spec.getValue(1));
-		assertEquals(SAMPLE_DROPDOWN_CHOICE2, spec.getValue(2));
+		assertEquals(2, spec.getCount());
+		assertEquals(SAMPLE_DROPDOWN_CHOICE1, spec.getValue(0));
+		assertEquals(SAMPLE_DROPDOWN_CHOICE2, spec.getValue(1));
 		assertEquals(SAMPLE_DROPDOWN_FIELD_XML, spec.toString());
 		try
 		{
-			spec.getValue(3);
+			spec.getValue(2);
 			fail("Should have thrown");
 		}
 		catch(ArrayIndexOutOfBoundsException expected)

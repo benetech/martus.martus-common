@@ -29,36 +29,42 @@ package org.martus.common.fieldspec;
 
 public class ChoiceItem implements Comparable
 {
-	public ChoiceItem(String codeToUse, String displayToUse)
-	{
-		this(codeToUse, displayToUse, FieldSpec.TYPE_UNKNOWN);
-	}
-	
 	public ChoiceItem(FieldSpec specToUse)
 	{
-		this(specToUse.getTag(), specToUse.getLabel(), specToUse.getType());
+		spec = specToUse;
 	}
 	
-	public ChoiceItem(String codeToUse, String displayToUse, int typeToUse)
+	public ChoiceItem(String codeToUse, String displayToUse)
 	{
-		code = codeToUse;
-		display = displayToUse;
-		type = typeToUse;
+		this(FieldSpec.createCustomField(codeToUse, displayToUse, FieldSpec.TYPE_UNKNOWN));
 	}
-
+	
 	public String toString()
 	{
-		return display;
+		return spec.getLabel();
+	}
+	
+	public FieldSpec getSpec()
+	{
+		return spec;
 	}
 
 	public String getCode()
 	{
-		return code;
+		return spec.getTag();
 	}
 	
 	public int getType()
 	{
-		return type;
+		return spec.getType();
+	}
+	
+	public boolean equals(Object other)
+	{
+		if(! (other instanceof ChoiceItem))
+			return false;
+		
+		return spec.equals( ((ChoiceItem)other).getSpec());
 	}
 
 	public int compareTo(Object other)
@@ -66,9 +72,6 @@ public class ChoiceItem implements Comparable
 		return toString().compareTo(other.toString());
 	}
 
-	private String code;
-	private String display;
-	private int type;
-
+	private FieldSpec spec;
 }
 

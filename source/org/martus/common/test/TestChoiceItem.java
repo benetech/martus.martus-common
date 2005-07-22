@@ -55,4 +55,36 @@ public class TestChoiceItem extends TestCaseEnhanced
 		assertEquals(spec.getLabel(), specItem.toString());
 		assertEquals(spec.getType(), specItem.getType());
 	}
+	
+	public void testEquals()
+	{
+		String label = "Same label";
+		ChoiceItem a = new ChoiceItem("a", label);
+		ChoiceItem a2 = new ChoiceItem("a", label);
+		assertTrue("equals failed for identical objects?", a.equals(a2));
+		
+		ChoiceItem b = new ChoiceItem("b", label);
+		assertFalse("didn't use tag in equals comparison?", a.equals(b));
+		
+		FieldSpec spec = FieldSpec.createCustomField("a", label, FieldSpec.TYPE_MULTILINE);
+		ChoiceItem c = new ChoiceItem(spec);
+		assertFalse("didn't use type in equals comparison?", a.equals(c));
+		
+		assertFalse("equal with other type of object?", a.equals(new Object()));
+	}
+
+	public void testCompareTo()
+	{
+		String label = "Same label";
+		ChoiceItem a = new ChoiceItem("a", label);
+		ChoiceItem a2 = new ChoiceItem("a", label);
+		assertEquals("compareTo failed for identical objects?", 0, a.compareTo(a2));
+		
+		ChoiceItem b = new ChoiceItem("b", label);
+		assertEquals("Used tag in compareTo comparison?", 0, a.compareTo(b));
+		
+		FieldSpec spec = FieldSpec.createCustomField("a", label, FieldSpec.TYPE_MULTILINE);
+		ChoiceItem c = new ChoiceItem(spec);
+		assertEquals("Used type in equals comparison?", 0, a.compareTo(c));
+	}
 }

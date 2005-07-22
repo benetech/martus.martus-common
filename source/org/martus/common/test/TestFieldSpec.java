@@ -120,7 +120,14 @@ public class TestFieldSpec extends TestCaseEnhanced
 	
 		CustomDropDownFieldSpec dropdownSpec = new CustomDropDownFieldSpec();
 		dropdownSpec.setChoices(new Vector());
-		assertEquals(CustomDropDownFieldSpec.EMPTY_FIRST_CHOICE, dropdownSpec.getDefaultValue());
+		try
+		{
+			dropdownSpec.getDefaultValue();
+			fail("Should have thrown because empty choice list has no default");
+		}
+		catch(RuntimeException ignoreExpected)
+		{
+		}
 
 		String message = "Message in FieldSpec";
 		MessageFieldSpec messageSpec = new MessageFieldSpec();
