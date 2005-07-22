@@ -89,8 +89,6 @@ public class EnglishCommonStrings
 		"field:BulletinStatus=Bulletin Status:",
 		"field:BulletinId=Bulletin Id:",
 		"field:attachmentSizeForPrinting=Kb",
-		"field:DateRangeFrom=Between",
-		"field:DateRangeTo=and",
 		"field:language=Language",
 		"field:author=Author",
 		"field:organization=Organization",

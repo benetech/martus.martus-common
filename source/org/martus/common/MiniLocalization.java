@@ -337,9 +337,7 @@ public class MiniLocalization
 			return "";
 		}
 			
-		String display = getFieldLabel("DateRangeFrom")+ SPACE + 
-			beginDate + SPACE + getFieldLabel("DateRangeTo")+
-			SPACE + endDate;
+		String display = beginDate + SPACE + DASH + SPACE + endDate;
 		return display;
 	}
 
@@ -387,6 +385,7 @@ public class MiniLocalization
 				"sr", "sd","si",SPANISH,"ta","tg","te",THAI,"tr","tk","uk","ur","uz","vi"};
 
 	static public final String SPACE = " ";
+	static public final String DASH = "-";
 	static public final long DATE_UNKNOWN = -1;
 
 	protected Map textResources;
