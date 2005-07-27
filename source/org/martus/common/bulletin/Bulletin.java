@@ -29,9 +29,7 @@ package org.martus.common.bulletin;
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
@@ -52,7 +50,7 @@ import org.martus.common.packet.UniversalId;
 import org.martus.common.packet.Packet.InvalidPacketException;
 import org.martus.common.packet.Packet.SignatureVerificationException;
 import org.martus.common.packet.Packet.WrongPacketTypeException;
-import org.martus.common.utilities.MartusFlexidate;
+import org.martus.common.utilities.DateUtilities;
 import org.martus.util.Base64.InvalidBase64Exception;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 
@@ -162,7 +160,7 @@ public class Bulletin implements BulletinConstants
 	
 	public String getLastSavedDate()
 	{
-		DateFormat df = getStoredDateFormat();
+		DateFormat df = FieldSpec.getStoredDateFormat();
 		return df.format(new Date(getLastSavedTime()));
 	}
 	
@@ -348,8 +346,8 @@ public class Bulletin implements BulletinConstants
 			set(specs[i].getTag(), specs[i].getDefaultValue());
 		}
 		
-		set(TAGENTRYDATE, getToday());
-		set(TAGEVENTDATE, getFirstOfThisYear());
+		set(TAGENTRYDATE, DateUtilities.getToday());
+		set(TAGEVENTDATE, DateUtilities.getFirstOfThisYear());
 		
 		setDraft();
 	}
@@ -415,13 +413,6 @@ public class Bulletin implements BulletinConstants
 		getPrivateFieldDataPacket().setAuthorizedToReadKeys(authorizedKeys);
 	}
 
-	public static DateFormat getStoredDateFormat()
-	{
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		df.setLenient(false);
-		return df;
-	}
-	
 	public DatabaseKey getDatabaseKey()
 	{
 		return getDatabaseKeyForLocalId(getLocalId());
@@ -545,29 +536,6 @@ public class Bulletin implements BulletinConstants
 		{
 			packetIn.close();
 		}
-	}
-
-	public static String getFirstOfThisYear()
-	{
-		GregorianCalendar cal = new GregorianCalendar();
-		cal.set(GregorianCalendar.MONTH, 0);
-		cal.set(GregorianCalendar.DATE, 1);
-		DateFormat df = getStoredDateFormat();
-		return df.format(cal.getTime());
-	}
-
-	public static String getLastDayOfThisYear()
-	{
-		GregorianCalendar cal = new GregorianCalendar();
-		cal.set(GregorianCalendar.MONTH, 11);
-		cal.set(GregorianCalendar.DATE, 31);
-		DateFormat df = getStoredDateFormat();
-		return df.format(cal.getTime());
-	}
-
-	public static String getToday()
-	{
-		return MartusFlexidate.toStoredDateFormat(new Date());
 	}
 
 	public BulletinHeaderPacket getBulletinHeaderPacket()

@@ -52,6 +52,7 @@ import org.martus.common.fieldspec.StandardFieldSpecs;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.BulletinHistory;
 import org.martus.common.packet.FieldDataPacket;
+import org.martus.common.utilities.DateUtilities;
 import org.martus.util.TestCaseEnhanced;
 
 
@@ -130,7 +131,7 @@ public class TestBulletin extends TestCaseEnhanced
 	{
     	Bulletin b = new Bulletin(security);
     	b.getBulletinHeaderPacket().updateLastSavedTime();
-    	assertEquals(Bulletin.getToday(), b.getLastSavedDate());
+    	assertEquals(DateUtilities.getToday(), b.getLastSavedDate());
 	}
     
     public void testContains() throws Exception
@@ -227,7 +228,7 @@ public class TestBulletin extends TestCaseEnhanced
 	public void testEmpty()
 	{
 		Bulletin b = new Bulletin(security);
-		String today = Bulletin.getToday();
+		String today = DateUtilities.getToday();
 		assertEquals(today, b.get("entrydate"));
 
 		GregorianCalendar cal = new GregorianCalendar();
@@ -440,7 +441,7 @@ public class TestBulletin extends TestCaseEnhanced
 
 	public void testStoredDateFormat()
 	{
-		DateFormat df = Bulletin.getStoredDateFormat();
+		DateFormat df = FieldSpec.getStoredDateFormat();
 		assertEquals(false, df.isLenient());
 		Date d;
 		try
@@ -461,7 +462,7 @@ public class TestBulletin extends TestCaseEnhanced
 	public void testDateRangeCompatibility() throws Exception
 	{
 		String sampleDateRange = "2003-04-07,2003-05-17";
-		DateFormat df = Bulletin.getStoredDateFormat();
+		DateFormat df = FieldSpec.getStoredDateFormat();
 		Date d = df.parse(sampleDateRange);
 		Calendar cal = new GregorianCalendar();
 		cal.setTime(d);
@@ -476,9 +477,9 @@ public class TestBulletin extends TestCaseEnhanced
 
 	public void testGetToday()
 	{
-		DateFormat df = Bulletin.getStoredDateFormat();
+		DateFormat df = FieldSpec.getStoredDateFormat();
 		String result = df.format(new Date());
-		assertEquals(result, Bulletin.getToday());
+		assertEquals(result, DateUtilities.getToday());
 	}
 
 	public void testAddAttachment() throws Exception

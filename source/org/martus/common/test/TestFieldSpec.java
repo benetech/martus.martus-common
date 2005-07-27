@@ -30,7 +30,6 @@ import java.util.Vector;
 
 import org.martus.common.LegacyCustomFields;
 import org.martus.common.MiniLocalization;
-import org.martus.common.bulletin.Bulletin;
 import org.martus.common.fieldspec.ChoiceItem;
 import org.martus.common.fieldspec.CustomDropDownFieldSpec;
 import org.martus.common.fieldspec.DropDownFieldSpec;
@@ -38,6 +37,7 @@ import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.common.fieldspec.MessageFieldSpec;
 import org.martus.common.fieldspec.StandardFieldSpecs;
+import org.martus.common.utilities.DateUtilities;
 import org.martus.util.TestCaseEnhanced;
 
 
@@ -92,10 +92,10 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertEquals(FieldSpec.FALSESTRING, spec.getDefaultValue());
 		
 		spec = new FieldSpec(FieldSpec.TYPE_DATE);
-		assertEquals(Bulletin.getToday(), spec.getDefaultValue());
+		assertEquals(DateUtilities.getFirstOfThisYear(), spec.getDefaultValue());
 
 		spec = new FieldSpec(FieldSpec.TYPE_DATERANGE);
-		assertEquals(Bulletin.getToday(), spec.getDefaultValue());
+		assertEquals(DateUtilities.getFirstOfThisYear(), spec.getDefaultValue());
 
 		spec = new GridFieldSpec();
 		assertEquals(emptyString, spec.getDefaultValue());

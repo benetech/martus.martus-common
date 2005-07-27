@@ -33,7 +33,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.hrvd.util.date.Flexidate;
-import org.martus.common.bulletin.Bulletin;
+import org.martus.common.fieldspec.FieldSpec;
 
 public class MartusFlexidate
 {
@@ -98,7 +98,7 @@ public class MartusFlexidate
  	 */
 	public static MartusFlexidate createFromMartusDateString(String dateStr)
 	{
-		DateFormat df = Bulletin.getStoredDateFormat();
+		DateFormat df = FieldSpec.getStoredDateFormat();
 		Date d = null;
 		int comma = dateStr.indexOf(DATE_RANGE_SEPARATER);
 		if (comma >= 0)
@@ -130,7 +130,7 @@ public class MartusFlexidate
 
 	public static String toStoredDateFormat(Date date)
 	{		
-		return Bulletin.getStoredDateFormat().format(date);				
+		return FieldSpec.getStoredDateFormat().format(date);				
 	}
 
 	public static String toFlexidateFormat(Date beginDate, Date endDate)

@@ -26,12 +26,14 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.fieldspec;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.martus.common.MartusXml;
 import org.martus.common.MiniLocalization;
-import org.martus.common.bulletin.Bulletin;
+import org.martus.common.utilities.DateUtilities;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlStringLoader;
 import org.martus.util.xml.XmlUtilities;
@@ -118,7 +120,7 @@ public class FieldSpec
 				return FieldSpec.FALSESTRING;
 			case TYPE_DATE:
 			case TYPE_DATERANGE:
-				return Bulletin.getFirstOfThisYear();
+				return DateUtilities.getFirstOfThisYear();
 			case TYPE_LANGUAGE:
 				return MiniLocalization.LANGUAGE_OTHER;
 			case TYPE_NORMAL:
@@ -228,6 +230,13 @@ public class FieldSpec
 		XmlFieldSpecLoader loader = new XmlFieldSpecLoader();
 		loader.parse(xml);
 		return loader.getFieldSpec();
+	}
+
+	public static DateFormat getStoredDateFormat()
+	{
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		df.setLenient(false);
+		return df;
 	}
 
 	public static class XmlFieldSpecLoader extends SimpleXmlDefaultLoader

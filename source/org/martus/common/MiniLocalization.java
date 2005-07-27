@@ -39,7 +39,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
 
-import org.martus.common.bulletin.Bulletin;
+import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.utilities.DateUtilities;
 import org.martus.common.utilities.MartusFlexidate;
 import org.martus.util.language.LanguageOptions;
@@ -277,7 +277,7 @@ public class MiniLocalization
 
 	public String convertStoredDateToDisplay(String storedDate)
 	{
-		DateFormat dfStored = Bulletin.getStoredDateFormat();
+		DateFormat dfStored = FieldSpec.getStoredDateFormat();
 		DateFormat dfDisplay = new SimpleDateFormat(getCurrentDateFormatCode());
 		String result = "";
 		try
