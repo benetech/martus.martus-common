@@ -29,7 +29,6 @@ package org.martus.common.fieldspec;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
 import org.martus.common.MartusXml;
 import org.martus.common.MiniLocalization;
 import org.martus.common.bulletin.Bulletin;
@@ -119,7 +118,7 @@ public class FieldSpec
 				return FieldSpec.FALSESTRING;
 			case TYPE_DATE:
 			case TYPE_DATERANGE:
-				return Bulletin.getToday();
+				return Bulletin.getFirstOfThisYear();
 			case TYPE_LANGUAGE:
 				return MiniLocalization.LANGUAGE_OTHER;
 			case TYPE_NORMAL:

@@ -547,7 +547,7 @@ public class Bulletin implements BulletinConstants
 		}
 	}
 
-	static String getFirstOfThisYear()
+	public static String getFirstOfThisYear()
 	{
 		GregorianCalendar cal = new GregorianCalendar();
 		cal.set(GregorianCalendar.MONTH, 0);
