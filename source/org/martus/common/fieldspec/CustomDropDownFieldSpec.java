@@ -36,15 +36,27 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 {
 	public void setChoices(Vector stringChoicesToUse)
 	{
-		ChoiceItem[] choicesArray = new ChoiceItem[stringChoicesToUse.size()];
+		boolean hasEmptyCode = false;
+		Vector choices = new Vector();
 		for(int i = 0; i < stringChoicesToUse.size(); i++)
 		{
 			String item = (String)stringChoicesToUse.get(i);
-			choicesArray[i] = new ChoiceItem(item,item);
+			choices.add(new ChoiceItem(item,item));
+			if(item.length() == 0)
+				hasEmptyCode = true;
 		}
-		setChoices(choicesArray);
+		
+		if(!hasEmptyCode)
+			choices.insertElementAt(new ChoiceItem("", ""), 0);
+		
+		setChoices((ChoiceItem[])choices.toArray(new ChoiceItem[0]));
 	}
 
+	public String getDefaultValue()
+	{
+		return "";
+	}
+	
 	public String getDetailsXml()
 	{
 		String xml = MartusXml.getTagStartWithNewline(DROPDOWN_SPEC_CHOICES_TAG);

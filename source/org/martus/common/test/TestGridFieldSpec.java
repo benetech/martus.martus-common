@@ -93,9 +93,10 @@ public class TestGridFieldSpec extends TestCaseEnhanced
 		assertEquals(FieldSpec.TYPE_DROPDOWN, spec.getColumnType(1));
 
 		DropDownFieldSpec dropdownSpecRetrieved = (DropDownFieldSpec)spec.getFieldSpec(1);
-		assertEquals(2, dropdownSpecRetrieved.getCount());
-		assertEquals(TestCustomDropDownFieldSpec.SAMPLE_DROPDOWN_CHOICE1, dropdownSpecRetrieved.getValue(0));
-		assertEquals(TestCustomDropDownFieldSpec.SAMPLE_DROPDOWN_CHOICE2, dropdownSpecRetrieved.getValue(1));
+		assertEquals(3, dropdownSpecRetrieved.getCount());
+		assertEquals("", dropdownSpecRetrieved.getValue(0));
+		assertEquals(TestCustomDropDownFieldSpec.SAMPLE_DROPDOWN_CHOICE1, dropdownSpecRetrieved.getValue(1));
+		assertEquals(TestCustomDropDownFieldSpec.SAMPLE_DROPDOWN_CHOICE2, dropdownSpecRetrieved.getValue(2));
 
 
 		String labelBooleanColumn = "TYPE_BOOLEAN";
@@ -170,6 +171,8 @@ public class TestGridFieldSpec extends TestCaseEnhanced
 	"<Tag>custom</Tag>\n" +
 	"<Label>"+SAMPLE_DROPDOWN_LABEL+"</Label>\n" +
 	"<Choices>\n" +
+	"<Choice>" +
+	"</Choice>\n" +
 	"<Choice>" +
 	SAMPLE_DROPDOWN_CHOICE1 +
 	"</Choice>\n" +

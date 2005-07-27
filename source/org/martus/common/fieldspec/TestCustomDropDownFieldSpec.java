@@ -37,17 +37,30 @@ public class TestCustomDropDownFieldSpec extends TestCaseEnhanced
 		super(name);
 	}
 
-	public void testBlankFirstEntry()
+	public void testMandatoryBlankEntry()
 	{
-		Vector values = new Vector();
-		values.add("one");
-		values.add("two");
 		CustomDropDownFieldSpec spec = new CustomDropDownFieldSpec();
-		spec.setChoices(values);
-		for(int i=0; i < spec.getCount(); ++i)
-			assertEquals("wrong order?", values.get(i), spec.getValue(i));
+
+		Vector valuesWithoutBlank = new Vector();
+		valuesWithoutBlank.add("one");
+		valuesWithoutBlank.add("two");
+		spec.setChoices(valuesWithoutBlank);
+		assertEquals("didn't add a blank entry?", valuesWithoutBlank.size() + 1, spec.getCount());
+		assertEquals("", spec.getValue(0));
+		for(int i=0; i < valuesWithoutBlank.size(); ++i)
+			assertEquals("wrong order?", valuesWithoutBlank.get(i), spec.getValue(i+1));
 		
 		assertEquals("two", spec.getValue(spec.findCode("two")));
+		
+		
+		Vector valuesWithBlank = new Vector();
+		valuesWithBlank.add("a");
+		valuesWithBlank.add("b");
+		valuesWithBlank.add("");
+		spec.setChoices(valuesWithBlank);
+		assertEquals("added a blank entry?", valuesWithBlank.size(), spec.getCount());
+		for(int i=0; i < spec.getCount(); ++i)
+			assertEquals("wrong order?", valuesWithBlank.get(i), spec.getValue(i));
 	}
 
 	public void testXml() throws Exception
@@ -55,13 +68,14 @@ public class TestCustomDropDownFieldSpec extends TestCaseEnhanced
 		FieldSpec.XmlFieldSpecLoader loader = new FieldSpec.XmlFieldSpecLoader();
 		loader.parse(SAMPLE_DROPDOWN_FIELD_XML);
 		DropDownFieldSpec spec = (DropDownFieldSpec)loader.getFieldSpec();
-		assertEquals(2, spec.getCount());
-		assertEquals(SAMPLE_DROPDOWN_CHOICE1, spec.getValue(0));
-		assertEquals(SAMPLE_DROPDOWN_CHOICE2, spec.getValue(1));
+		assertEquals(3, spec.getCount());
+		assertEquals("", spec.getValue(0));
+		assertEquals(SAMPLE_DROPDOWN_CHOICE1, spec.getValue(1));
+		assertEquals(SAMPLE_DROPDOWN_CHOICE2, spec.getValue(2));
 		assertEquals(SAMPLE_DROPDOWN_FIELD_XML, spec.toString());
 		try
 		{
-			spec.getValue(2);
+			spec.getValue(3);
 			fail("Should have thrown");
 		}
 		catch(ArrayIndexOutOfBoundsException expected)
@@ -76,6 +90,8 @@ public class TestCustomDropDownFieldSpec extends TestCaseEnhanced
 			"<Tag>custom</Tag>\n" +
 			"<Label>"+SAMPLE_DROPDOWN_LABEL+"</Label>\n" +
 			"<Choices>\n" +
+			"<Choice>" +
+			"</Choice>\n" +
 			"<Choice>" +
 			SAMPLE_DROPDOWN_CHOICE1 +
 			"</Choice>\n" +
