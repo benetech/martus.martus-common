@@ -261,18 +261,18 @@ public class BulletinHtmlGenerator
 				value += "<tr>";
 				if(!LanguageOptions.isRightToLeftLanguage())
 					value += getItemToAddForTable(Integer.toString(r+1),TABLE_DATA, justification);
-				for(int c = 0; c<columnCount; ++c)
+				for(int i = 0; i<columnCount; ++i)
 				{
-					String rawdata = gridData.getValueAt(r, c);
-					int columnType = grid.getColumnType(c);
-					if(LanguageOptions.isRightToLeftLanguage())
-					{
-						rawdata = gridData.getValueAt(r, ((columnCount-1)-c));
-						columnType = grid.getColumnType((columnCount-1)-c);
-					}
+				   int column = i;
+				   if(LanguageOptions.isRightToLeftLanguage())
+				     column = (columnCount - 1) - i;
+
+					String rawdata = gridData.getValueAt(r, column);
+					int columnType = grid.getColumnType(column);
 					String printableData = getPrintableData(rawdata, columnType);
 					value += getItemToAddForTable(printableData, TABLE_DATA, justification);
 				}
+				
 				if(LanguageOptions.isRightToLeftLanguage())
 					value += getItemToAddForTable(Integer.toString(r+1),TABLE_DATA, justification);
 				value += "</tr>";
