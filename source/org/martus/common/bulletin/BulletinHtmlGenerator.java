@@ -185,22 +185,11 @@ public class BulletinHtmlGenerator
 			String value = getHTMLEscaped(fdp.get(tag));
 			if(tag.equals(Bulletin.TAGTITLE))
 				value = "<strong>" + value + "</strong>";
-			if(spec.getType() == FieldSpec.TYPE_DATE)
-				value = localization.convertStoredDateToDisplayReverseIfNecessary(value);
-			else if(spec.getType() == FieldSpec.TYPE_LANGUAGE)
-				value = getHTMLEscaped(localization.getLanguageName(value));
-			else if(spec.getType() == FieldSpec.TYPE_MULTILINE)
-				value = insertNewlines(value);
-			else if(spec.getType() == FieldSpec.TYPE_DATERANGE)
-				value = localization.getViewableDateRange(value);
-			else if(spec.getType() == FieldSpec.TYPE_BOOLEAN)
-			{
-				value = getPrintableBooleanValue(value);
-			}
-			else if(spec.getType() == FieldSpec.TYPE_GRID)
-			{
+			int fieldType = spec.getType();
+			if(fieldType == FieldSpec.TYPE_GRID)
 				value = getGridHTML(fdp, spec, tag);
-			}
+			else
+				value = getPrintableData(value, fieldType);
 			
 			if(StandardFieldSpecs.isStandardFieldTag(tag))
 				label = getHTMLEscaped(localization.getFieldLabel(tag));
@@ -209,6 +198,21 @@ public class BulletinHtmlGenerator
 			sectionHtml += fieldHtml;
 		}
 		return sectionHtml;
+	}
+
+	private String getPrintableData(String value, int fieldType)
+	{
+		if(fieldType == FieldSpec.TYPE_DATE)
+			value = localization.convertStoredDateToDisplayReverseIfNecessary(value);
+		else if(fieldType == FieldSpec.TYPE_LANGUAGE)
+			value = getHTMLEscaped(localization.getLanguageName(value));
+		else if(fieldType == FieldSpec.TYPE_MULTILINE)
+			value = insertNewlines(value);
+		else if(fieldType == FieldSpec.TYPE_DATERANGE)
+			value = localization.getViewableDateRange(value);
+		else if(fieldType == FieldSpec.TYPE_BOOLEAN)
+			value = getPrintableBooleanValue(value);
+		return value;
 	}
 
 	private String getPrintableBooleanValue(String value)
@@ -226,9 +230,8 @@ public class BulletinHtmlGenerator
 		if(gridXMLData.length()==0)
 			return "";
 		
-		String value;
 		GridFieldSpec grid = (GridFieldSpec)spec;
-		value = "<table border='1' align='left'><tr>";
+		String value = "<table border='1' align='left'><tr>";
 		String justification = "center";
 		if(!LanguageOptions.isRightToLeftLanguage())
 			value += getItemToAddForTable(grid.getColumnZeroLabel(),TABLE_HEADER, justification);
@@ -260,12 +263,15 @@ public class BulletinHtmlGenerator
 					value += getItemToAddForTable(Integer.toString(r+1),TABLE_DATA, justification);
 				for(int c = 0; c<columnCount; ++c)
 				{
-					String data = gridData.getValueAt(r, c);
+					String rawdata = gridData.getValueAt(r, c);
+					int columnType = grid.getColumnType(c);
 					if(LanguageOptions.isRightToLeftLanguage())
-						data = gridData.getValueAt(r, ((columnCount-1)-c));
-					if(grid.getColumnType(c) == FieldSpec.TYPE_BOOLEAN)
-						data = getPrintableBooleanValue(data);
-					value += getItemToAddForTable(data, TABLE_DATA, justification);
+					{
+						rawdata = gridData.getValueAt(r, ((columnCount-1)-c));
+						columnType = grid.getColumnType((columnCount-1)-c);
+					}
+					String printableData = getPrintableData(rawdata, columnType);
+					value += getItemToAddForTable(printableData, TABLE_DATA, justification);
 				}
 				if(LanguageOptions.isRightToLeftLanguage())
 					value += getItemToAddForTable(Integer.toString(r+1),TABLE_DATA, justification);
