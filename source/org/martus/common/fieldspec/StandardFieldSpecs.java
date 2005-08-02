@@ -90,7 +90,7 @@ public class StandardFieldSpecs
 		return false;	
 	}
 	
-	private static FieldSpec findStandardFieldSpec(String tag)
+	public static FieldSpec findStandardFieldSpec(String tag)
 	{
 		FieldSpec[] publicSpecs = StandardFieldSpecs.getDefaultPublicFieldSpecs();
 		for(int i=0; i < publicSpecs.length; ++i)
