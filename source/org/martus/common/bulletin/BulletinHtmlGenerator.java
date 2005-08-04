@@ -40,7 +40,6 @@ import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.common.fieldspec.StandardFieldSpecs;
 import org.martus.common.packet.FieldDataPacket;
-import org.martus.common.packet.UniversalId;
 import org.martus.util.Base64.InvalidBase64Exception;
 import org.martus.util.language.LanguageOptions;
 import org.martus.util.xml.XmlUtilities;
@@ -60,10 +59,84 @@ public class BulletinHtmlGenerator
 
 	public String getHtmlString(Bulletin b, ReadableDatabase database, boolean includePrivateData, boolean yourBulletin)
 	{
-		bulletin = b;
+		StringBuffer result = new StringBuffer();
+		result.append("<html>");
+		result.append(getHtmlFragment(b, database, includePrivateData, yourBulletin));
+		result.append("</html>");
+		return result.toString();
+	}
+
+	public String getHtmlFragment(Bulletin b, ReadableDatabase database, boolean includePrivateData, boolean yourBulletin)
+	{
 		StringBuffer html = new StringBuffer(1000);
-		html.append("<html>");
+		appendTableStart(html);
+		appendHeadHtml(html, b);
+		if(!yourBulletin)
+		{
+			html.append("<tr></tr>\n");
+			html.append(getHtmlEscapedFieldHtmlString(localization.getFieldLabel("BulletinNotYours"),""));		
+		}
+
+		boolean showNonPrivateParts = (includePrivateData || !b.isAllPrivate());
+		if(showNonPrivateParts)
+		{
+			appendTitleOfSection(html, getPublicSectionTitle(b.isAllPrivate()));
+			
+			String allPrivateFieldLabel = localization.getFieldLabel("allprivate");
+			String allPrivateFieldValue = getAllPrivateValue(b.isAllPrivate());
+			html.append(getHtmlEscapedFieldHtmlString(allPrivateFieldLabel, allPrivateFieldValue));
+			
+			html.append(getSectionHtmlString(b.getFieldDataPacket()));
+			html.append(getAttachmentsHtmlString(b, b.getPublicAttachments(), database));
+		}
+	
+		if (includePrivateData)
+		{	
+			appendTitleOfSection(html, localization.getFieldLabel("privatesection"));
+			html.append(getSectionHtmlString(b.getPrivateFieldDataPacket()));
+			html.append(getAttachmentsHtmlString(b, b.getPrivateAttachments(), database));
+		}
+			
+		if(showNonPrivateParts)
+		{
+			appendHQs(html, b);
+		}
+
+		appendTableEnd(html, b);
+		return html.toString();
+	}
+
+	private String getAllPrivateValue(boolean isAllPrivate)
+	{
+		return localization.getButtonLabel(getAllPrivateValueTag(isAllPrivate));
+	}
+
+	private String getPublicSectionTitle(boolean isAllPrivate)
+	{
+		String tag = "publicsection";
+		if(isAllPrivate)
+			tag = "privatesection";
 		
+		return localization.getFieldLabel(tag);
+	}
+	
+	private String getAllPrivateValueTag(boolean isAllPrivate)
+	{
+		if(isAllPrivate)
+			return "yes";
+		
+		return "no";
+	}
+
+	private void appendTableEnd(StringBuffer html, Bulletin b)
+	{
+		html.append("<tr></tr>\n");
+		html.append(getHtmlEscapedFieldHtmlString(localization.getFieldLabel("BulletinId"),b.getLocalId()));
+		html.append("</table>");
+	}
+
+	private void appendTableStart(StringBuffer html)
+	{
 		html.append("<table width='");
 		html.append(Integer.toString(width));
 		html.append("'>\n");
@@ -75,43 +148,6 @@ public class BulletinHtmlGenerator
 		html.append("<td width='" + leftColumnWidthPercentage + "%'></td>");
 		html.append("<td width='" + rightColumnWidthPercentage + "%'></td>");
 		html.append("</tr>\n");
-		appendHeadHtml(html, b);
-		if(!yourBulletin)
-		{
-			html.append("<tr></tr>\n");
-			html.append(getHtmlEscapedFieldHtmlString(localization.getFieldLabel("BulletinNotYours"),""));		
-		}
-
-		String publicSectionTitle =  localization.getFieldLabel("publicsection");
-		String allPrivateValueTag = "no";
-		if(b.isAllPrivate())
-		{	
-			allPrivateValueTag = "yes";				
-			publicSectionTitle =  localization.getFieldLabel("privatesection");
-			if (!includePrivateData)
-			{
-				appendTitleOfSection(html, publicSectionTitle);	
-				appendTailHtml(html, b);
-				return html.toString();
-			}
-		}
-		
-
-		appendTitleOfSection(html, publicSectionTitle);
-		html.append(getHtmlEscapedFieldHtmlString(localization.getFieldLabel("allprivate"), localization.getButtonLabel(allPrivateValueTag)));
-
-		html.append(getSectionHtmlString(b.getFieldDataPacket()));
-		html.append(getAttachmentsHtmlString(b.getPublicAttachments(), database));
-
-		if (includePrivateData)
-		{	
-			appendTitleOfSection(html, localization.getFieldLabel("privatesection"));
-			html.append(getSectionHtmlString(b.getPrivateFieldDataPacket()));
-			html.append(getAttachmentsHtmlString(b.getPrivateAttachments(), database));
-		}
-		appendHQs(html, b);
-		appendTailHtml(html, b);
-		return html.toString();
 	}
 	
 	private void appendTitleOfSection(StringBuffer html, String title)
@@ -131,14 +167,6 @@ public class BulletinHtmlGenerator
 		html.append(getHtmlEscapedFieldHtmlString(localization.getFieldLabel("BulletinLastSaved"), localization.formatDateTime(b.getLastSavedTime())));
 		html.append(getHtmlEscapedFieldHtmlString(localization.getFieldLabel("BulletinVersionNumber"), (new Integer(b.getVersion())).toString()));
 		html.append(getHtmlEscapedFieldHtmlString(localization.getFieldLabel("BulletinStatus"), localization.getStatusLabel(b.getStatus())));
-	}
-	
-	private void appendTailHtml(StringBuffer html, Bulletin b )
-	{
-		html.append("<tr></tr>\n");
-		html.append(getHtmlEscapedFieldHtmlString(localization.getFieldLabel("BulletinId"),b.getLocalId()));
-		html.append("</table>");
-		html.append("</html>");
 	}
 	
 	private void appendHQs(StringBuffer html, Bulletin b )
@@ -299,7 +327,7 @@ public class BulletinHtmlGenerator
 		return Integer.toString(sizeInKb);
 	}
 
-	private String getAttachmentSize(ReadableDatabase db, UniversalId uid)
+	private String getAttachmentSize(ReadableDatabase db, DatabaseKey key)
 	{
 		// TODO :This is a duplicate code from AttachmentTableModel.java. 
 		// Ideally, the AttachmentProxy should self-describe of file size and file description.
@@ -307,12 +335,7 @@ public class BulletinHtmlGenerator
 		String size = "";
 		try
 		{
-			int rawSize = 0;
-			if (bulletin.getStatus().equals(Bulletin.STATUSDRAFT))
-				rawSize = db.getRecordSize(DatabaseKey.createDraftKey(uid));
-			else
-				rawSize = db.getRecordSize(DatabaseKey.createSealedKey(uid));
-
+			int rawSize = db.getRecordSize(key);
 			rawSize -= 1024;//Public code & overhead
 			rawSize = rawSize * 3 / 4;//Base64 overhead
 			size = getSizeInKb(rawSize);
@@ -330,7 +353,7 @@ public class BulletinHtmlGenerator
 		return size;
 	}
 
-	private String getAttachmentsHtmlString(AttachmentProxy[] attachments, ReadableDatabase db)
+	private String getAttachmentsHtmlString(Bulletin b, AttachmentProxy[] attachments, ReadableDatabase db)
 	{
 		String attachmentList = "";
 	
@@ -338,7 +361,8 @@ public class BulletinHtmlGenerator
 		{
 			AttachmentProxy aProxy = attachments[i];
 			String label = aProxy.getLabel();
-			String size = "( " + getAttachmentSize(db, aProxy.getUniversalId())+ " " + localization.getFieldLabel("attachmentSizeForPrinting")+ " )";
+			DatabaseKey key = b.getDatabaseKeyForLocalId(aProxy.getUniversalId().getLocalId());
+			String size = "( " + getAttachmentSize(db, key)+ " " + localization.getFieldLabel("attachmentSizeForPrinting")+ " )";
 			if(LanguageOptions.isRightToLeftLanguage())
 			{
 				String tmp = label;
@@ -412,7 +436,6 @@ public class BulletinHtmlGenerator
 
 	int width;
 	MiniLocalization localization;
-	Bulletin bulletin;
 
 	private static final int LABEL_COLUMN_WIDTH_PERCENTAGE = 15;
 	private static final String TABLE_HEADER = "th";
