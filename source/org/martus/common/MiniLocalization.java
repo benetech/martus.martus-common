@@ -317,27 +317,16 @@ public class MiniLocalization
 	
 		String rawEndDate = MartusFlexidate.toStoredDateFormat(mfd.getEndDate());
 	
-		String beginDate = convertStoredDateToDisplay(rawBeginDate);
-		String endDate = convertStoredDateToDisplay(rawEndDate);
-		try
-		{
-			//Strange quirk with Java and displaying RToL languages with dates.
-			//When there is a string with mixed RtoL and LtoR characters 
-			//if there is .'s separating numbers then the date is not reversed,
-			//but if the date is separated by /'s, then the date is reversed.
-			if(getDateSeparator(beginDate) == '.')
-			{
-				beginDate = convertStoredDateToDisplayReverseIfNecessary(rawBeginDate);
-				endDate = convertStoredDateToDisplayReverseIfNecessary(rawEndDate);
-			}
-		}
-		catch(NoDateSeparatorException e)
-		{
-			e.printStackTrace();
-			return "";
-		}
+		//Strange quirk with Java and displaying RToL languages with dates.
+		//When there is a string with mixed RtoL and LtoR characters 
+		//if there is .'s separating numbers then the date is not reversed,
+		//but if the date is separated by /'s, then the date is reversed.
+		String beginDate = convertStoredDateToDisplayReverseIfNecessary(rawBeginDate);
+		String endDate = convertStoredDateToDisplayReverseIfNecessary(rawEndDate);
 			
-		String display = beginDate + SPACE + DASH + SPACE + endDate;
+		String display = beginDate + " - " + endDate;
+		if(LanguageOptions.isRightToLeftLanguage())
+			display = endDate + " - " + beginDate;
 		return display;
 	}
 
@@ -385,7 +374,6 @@ public class MiniLocalization
 				"sr", "sd","si",SPANISH,"ta","tg","te",THAI,"tr","tk","uk","ur","uz","vi"};
 
 	static public final String SPACE = " ";
-	static public final String DASH = "-";
 	static public final long DATE_UNKNOWN = -1;
 
 	protected Map textResources;
