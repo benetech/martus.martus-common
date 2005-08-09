@@ -35,8 +35,9 @@ import org.xml.sax.SAXParseException;
 
 public class GridRow
 {
-	public GridRow(GridFieldSpec gridSpec)
+	public GridRow(GridFieldSpec gridSpecToUse)
 	{
+		gridSpec = gridSpecToUse;
 		data = new MartusField[gridSpec.getColumnCount()];
 		for(int i = 0; i < getColumnCount(); ++i)
 			data[i] = new MartusField(gridSpec.getFieldSpec(i));
@@ -50,6 +51,17 @@ public class GridRow
 	static public GridRow createEmptyRow(GridFieldSpec gridSpec)
 	{
 		return new GridRow(gridSpec);
+	}
+	
+	public boolean isEmptyRow()
+	{
+		GridRow emptyRow = GridRow.createEmptyRow(gridSpec);
+		for(int column = 0; column < getColumnCount(); ++column)
+		{
+			if(!emptyRow.getCellText(column).equals(getCellText(column)))
+				return false;
+		}
+		return true;
 	}
 
 	public void setCellText(int column, String value) throws ArrayIndexOutOfBoundsException
@@ -114,4 +126,5 @@ public class GridRow
 	MartusField[] data;
 	public static final String COLUMN_TAG = "Column";
 	public static final String ROW_TAG = "Row";
+	GridFieldSpec gridSpec;
 }

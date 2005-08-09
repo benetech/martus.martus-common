@@ -114,6 +114,21 @@ public class TestGridRow extends TestCaseEnhanced
 		}
 	}
 	
+	public void testIsRowEmpty() throws Exception
+	{
+		GridFieldSpec gridSpecWithTwoColumns = TestGridData.createSampleGridSpec();
+		GridRow row = new GridRow(gridSpecWithTwoColumns);
+		String item1 = "data1";
+		String item2 = "data2";
+
+		assertTrue("No data, should be empty", row.isEmptyRow());
+		row.setCellText(0, item1);
+		row.setCellText(1, item2);
+		assertFalse("with data, still empty?", row.isEmptyRow());
+		
+		
+	}
+	
 	public void testXmlRowLoader() throws Exception
 	{
 		GridFieldSpec gridSpec = TestGridData.createSampleGridSpec();

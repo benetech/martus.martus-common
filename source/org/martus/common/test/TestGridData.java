@@ -255,6 +255,28 @@ public class TestGridData extends TestCaseEnhanced
 		assertEquals("Should return an empty string for no data", "", grid.getXmlRepresentation());
 	}
 	
+	public void testRemoveTrailingBlankRows() throws Exception
+	{
+		GridData grid = new GridData(gridSpec2Colunns);
+		assertTrue("empty grid should be empty", grid.isEmpty());
+		assertEquals("should have 0 rows", 0, grid.getRowCount());
+		grid.addEmptyRow();
+		assertEquals("should now have 1 rows", 1, grid.getRowCount());
+		grid.removeTrailingBlankRows();
+		assertEquals("should have zero rows now after removal of trailing blank rows", 0, grid.getRowCount());
+		
+		GridData gridWithData = createSampleGridWithData();
+		assertFalse("grid should not be empty", gridWithData.isEmpty());
+		assertEquals("Should have 2 rows", 2, gridWithData.getRowCount());
+		gridWithData.removeTrailingBlankRows();
+		assertEquals("Should still have 2 row", 2, gridWithData.getRowCount());
+		gridWithData.addEmptyRow();
+		gridWithData.addEmptyRow();
+		assertEquals("Should now have 4 rows", 4, gridWithData.getRowCount());
+		gridWithData.removeTrailingBlankRows();
+		assertEquals("Should now have 2 row after blank row removal", 2, gridWithData.getRowCount());
+	}
+
 	public static GridData createSampleGridWithData() throws Exception
 	{
 		GridData grid = createSampleGrid();

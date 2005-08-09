@@ -121,15 +121,10 @@ public class GridData
 	
 	public void removeTrailingBlankRows()
 	{
-		GridRow emptyRow = GridRow.createEmptyRow(gridSpec);
 		for(int i = rows.size()-1; i>=0; i--)
 		{
-			GridRow contents = (GridRow)rows.get(i);
-			for(int column = 0; column < contents.getColumnCount(); ++column)
-			{
-				if(!emptyRow.getCellText(column).equals(contents.getCellText(column)))
-					return;
-			}
+			if(!((GridRow)rows.get(i)).isEmptyRow())
+				return;
 			rows.remove(i);
 		}		
 	}
