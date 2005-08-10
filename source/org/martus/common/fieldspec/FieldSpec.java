@@ -127,7 +127,8 @@ public class FieldSpec
 			case TYPE_MULTILINE:
 			case TYPE_MESSAGE:
 			case TYPE_UNKNOWN:
-			case TYPE_MORPHIC:
+			case TYPE_SEARCH_VALUE:
+			case TYPE_ANY_FIELD:
 				return "";
 			default:
 				throw new RuntimeException("This class or a subclass needs to define the default value for type " + getType());
@@ -320,7 +321,8 @@ public class FieldSpec
 	public static final int INSERT_NEXT_TYPE_HERE_AND_INCREASE_THIS_BY_ONE = 10;
 	
 	public static final int TYPE_UNKNOWN = 99;
-	public static final int TYPE_MORPHIC = 100;		// only used internally
+	public static final int TYPE_SEARCH_VALUE = 100;	// only used internally
+	public static final int TYPE_ANY_FIELD = 101;		// only used internally
 	
 	public static final String FIELD_SPEC_XML_TAG = "Field";
 	public static final String FIELD_SPEC_TAG_XML_TAG = "Tag";

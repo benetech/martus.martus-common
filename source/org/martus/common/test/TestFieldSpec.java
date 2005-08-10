@@ -109,7 +109,7 @@ public class TestFieldSpec extends TestCaseEnhanced
 		spec = new FieldSpec(FieldSpec.TYPE_NORMAL);
 		assertEquals(emptyString, spec.getDefaultValue());
 
-		spec = new FieldSpec(FieldSpec.TYPE_MORPHIC);
+		spec = new FieldSpec(FieldSpec.TYPE_SEARCH_VALUE);
 		assertEquals(emptyString, spec.getDefaultValue());
 		
 		spec = new DropDownFieldSpec(new ChoiceItem[] {new ChoiceItem("first", "First item"), new ChoiceItem("", "")});

@@ -84,7 +84,7 @@ public class GridFieldSpec extends FieldSpec
 		typeIsValid[TYPE_DATE] = true;
 		typeIsValid[TYPE_DATERANGE] = true;
 		
-		if(columnType == TYPE_MORPHIC)
+		if(columnType == TYPE_SEARCH_VALUE)
 			return true;
 		if(columnType == TYPE_UNKNOWN)
 			return false;
