@@ -200,8 +200,14 @@ public class MiniLocalization
 
 	public String getFieldLabel(String fieldName)
 	{
-		return getLabel(getCurrentLanguageCode(), "field", fieldName);
+		return getFieldLabel(getCurrentLanguageCode(), fieldName);
 	}
+
+	public String getFieldLabel(String languageCode, String fieldName) 
+	{
+		return getLabel(languageCode, "field", fieldName);
+	}
+
 
 	public String getLanguageName(String code)
 	{
