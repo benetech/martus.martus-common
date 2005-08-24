@@ -39,6 +39,8 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.Vector;
 
+import javax.crypto.Cipher;
+
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusJceKeyPair;
 import org.martus.common.crypto.MartusKeyPair;
@@ -92,6 +94,31 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		assertTrue("setup: KeyPair returned NULL", security.hasKeyPair());
 		assertNotNull("setup: Key returned NULL", security.getKeyPair().getPrivateKey());
 		TRACE_END();
+	}
+	
+	public void testVerifySignedKeyFileNoReference() throws Exception
+	{
+		try
+		{
+	 		security.verifySignedKeyFile(Cipher.class, "NOSUCHFILE.SF");
+	 		fail("Should have thrown because reference doesn't exist");
+		}
+		catch(MartusCrypto.InvalidJarException ignoreExpected)
+		{
+		}
+	}
+		
+	public void testVerifySignedKeyFileDoesntMatch() throws Exception
+	{
+		try
+		{
+			// try to verify bc-jce jar using bcprov sig file
+			security.verifySignedKeyFile(Cipher.class, "BCKEY.SF");
+			fail("Should have thrown because reference didn't match actual");
+		}
+		catch(MartusCrypto.InvalidJarException ignoreExpected)
+		{
+		}
 	}
 	
 	public void testCacheOfDecryptedSessionKeys() throws Exception

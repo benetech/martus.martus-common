@@ -944,7 +944,7 @@ public class MartusSecurity extends MartusCrypto
  		verifySignedKeyFile(RSAEngine.class, "BCKEY.SF");
 	}
 
-	private void verifySignedKeyFile(Class c, String keyFileName) throws MartusCrypto.InvalidJarException, IOException
+	public void verifySignedKeyFile(Class c, String keyFileName) throws MartusCrypto.InvalidJarException, IOException
 	{
 		URL jarURL = getJarURL(c);
 		JarURLConnection jarConnection = (JarURLConnection)jarURL.openConnection();
