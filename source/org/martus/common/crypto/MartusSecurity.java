@@ -36,6 +36,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
+import java.net.JarURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -51,6 +54,7 @@ import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -58,6 +62,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -72,6 +78,7 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 
+import org.bouncycastle.crypto.engines.RSAEngine;
 import org.bouncycastle.jce.X509Principal;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.x509.X509V1CertificateGenerator;
@@ -926,6 +933,64 @@ public class MartusSecurity extends MartusCrypto
 	static public String geEncryptedFileIdentifier()
 	{
 		return ENCRYPTED_FILE_VERSION_IDENTIFIER;
+	}
+	
+	public void verifyJars() throws MartusCrypto.InvalidJarException, IOException
+	{
+		// for bcprov, look for BCKEY.SF
+		// for bc-jce, look for SSMTSJAR.SF
+		
+ 		verifySignedKeyFile(Cipher.class, "SSMTSJAR.SF");
+ 		verifySignedKeyFile(RSAEngine.class, "BCKEY.SF");
+	}
+
+	private void verifySignedKeyFile(Class c, String keyFileName) throws MartusCrypto.InvalidJarException, IOException
+	{
+		URL jarURL = getJarURL(c);
+		JarURLConnection jarConnection = (JarURLConnection)jarURL.openConnection();
+		JarFile jf = jarConnection.getJarFile();
+		JarEntry entry = jf.getJarEntry("META-INF/" + keyFileName);
+		if(entry == null)
+			throw new MartusCrypto.InvalidJarException("Missing: " + keyFileName);
+		int size = (int)entry.getSize();
+		
+		InputStream actualKeyFileIn = jf.getInputStream(entry);
+		byte[] actual = new byte[size];
+		int got = 0;
+		while(true)
+		{
+			int thisByte = actualKeyFileIn.read();
+			if(thisByte < 0)
+				break;
+			actual[got++] = (byte)thisByte;
+		}
+		actualKeyFileIn.close();
+		
+		InputStream referenceKeyFileIn = getClass().getResourceAsStream(keyFileName);
+		if(referenceKeyFileIn == null)
+			throw new MartusCrypto.InvalidJarException("Couldn't open reference: " + keyFileName);
+		byte[] expected = new byte[size];
+		referenceKeyFileIn.read(expected);
+		referenceKeyFileIn.close();
+		
+		if(!Arrays.equals(expected, actual))
+			throw new MartusCrypto.InvalidJarException("Unequal contents for: " + keyFileName);
+	}
+	
+	private static URL getJarURL(Class c) throws MartusCrypto.InvalidJarException, MalformedURLException
+	{
+		String name = c.getName();
+		int lastDot = name.lastIndexOf('.');
+		String classFileName = name.substring(lastDot + 1) + ".class";
+		URL url = c.getResource(classFileName);
+		String wholePath = url.toString();
+		int bangAt = wholePath.indexOf('!');
+		if(bangAt < 0)
+			throw new MartusCrypto.InvalidJarException("Couldn't find ! in jar path");
+		
+		String jarPart = wholePath.substring(0, bangAt+2);
+		URL jarURL = new URL(jarPart);
+		return jarURL;
 	}
 
 	private static final String SESSION_ALGORITHM_NAME = "AES";

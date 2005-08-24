@@ -112,6 +112,7 @@ public abstract class MartusCrypto
 	public abstract byte[] getSessionKeyCache() throws IOException, NoKeyPairException, EncryptionException, MartusSignatureException;
 	public abstract void setSessionKeyCache(byte[] encryptedCacheBundle) throws IOException, NoKeyPairException, DecryptionException, MartusSignatureException, AuthorizationFailedException;
 	public abstract void flushSessionKeyCache();
+	public abstract void verifyJars() throws MartusCrypto.InvalidJarException, IOException;
 	
 	// Secret Share of Private Key
 	public abstract Vector buildKeyShareBundles();
@@ -288,6 +289,14 @@ public abstract class MartusCrypto
 
 	}
 	
+	public static class InvalidJarException extends Exception
+	{
+		public InvalidJarException(String message)
+		{
+			super(message);
+		}
+	}
+
 	public static String createDigestString(String inputText) throws CreateDigestException {
 		try
 		{
