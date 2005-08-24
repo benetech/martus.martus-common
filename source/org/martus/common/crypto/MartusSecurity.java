@@ -955,26 +955,30 @@ public class MartusSecurity extends MartusCrypto
 		int size = (int)entry.getSize();
 		
 		InputStream actualKeyFileIn = jf.getInputStream(entry);
-		byte[] actual = new byte[size];
-		int got = 0;
-		while(true)
-		{
-			int thisByte = actualKeyFileIn.read();
-			if(thisByte < 0)
-				break;
-			actual[got++] = (byte)thisByte;
-		}
-		actualKeyFileIn.close();
+		byte[] actual = readAll(size, actualKeyFileIn);
 		
 		InputStream referenceKeyFileIn = getClass().getResourceAsStream(keyFileName);
 		if(referenceKeyFileIn == null)
 			throw new MartusCrypto.InvalidJarException("Couldn't open " + jarDescription + " reference: " + keyFileName);
-		byte[] expected = new byte[size];
-		referenceKeyFileIn.read(expected);
-		referenceKeyFileIn.close();
+		byte[] expected = readAll(size, referenceKeyFileIn);
 		
 		if(!Arrays.equals(expected, actual))
 			throw new MartusCrypto.InvalidJarException("Unequal contents for: " + keyFileName + " in " + jarDescription);
+	}
+
+	private byte[] readAll(int size, InputStream streamToRead) throws IOException
+	{
+		byte[] gotBytes = new byte[size];
+		int got = 0;
+		while(true)
+		{
+			int thisByte = streamToRead.read();
+			if(thisByte < 0)
+				break;
+			gotBytes[got++] = (byte)thisByte;
+		}
+		streamToRead.close();
+		return gotBytes;
 	}
 	
 	private static URL getJarURL(Class c) throws MartusCrypto.InvalidJarException, MalformedURLException
