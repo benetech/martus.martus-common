@@ -96,11 +96,16 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		TRACE_END();
 	}
 	
+	public void testVerifyJars() throws Exception
+	{
+		security.verifyJars();
+	}
+	
 	public void testVerifySignedKeyFileNoReference() throws Exception
 	{
 		try
 		{
-	 		security.verifySignedKeyFile(Cipher.class, "NOSUCHFILE.SF");
+	 		security.verifySignedKeyFile("nosuch", Cipher.class, "NOSUCHFILE.SF");
 	 		fail("Should have thrown because reference doesn't exist");
 		}
 		catch(MartusCrypto.InvalidJarException ignoreExpected)
@@ -113,7 +118,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		try
 		{
 			// try to verify bc-jce jar using bcprov sig file
-			security.verifySignedKeyFile(Cipher.class, "BCKEY.SF");
+			security.verifySignedKeyFile("mismatch", Cipher.class, "BCKEY.SF");
 			fail("Should have thrown because reference didn't match actual");
 		}
 		catch(MartusCrypto.InvalidJarException ignoreExpected)

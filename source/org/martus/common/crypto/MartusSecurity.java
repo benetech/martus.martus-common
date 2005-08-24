@@ -940,18 +940,18 @@ public class MartusSecurity extends MartusCrypto
 		// for bcprov, look for BCKEY.SF
 		// for bc-jce, look for SSMTSJAR.SF
 		
- 		verifySignedKeyFile(Cipher.class, "SSMTSJAR.SF");
- 		verifySignedKeyFile(RSAEngine.class, "BCKEY.SF");
+ 		verifySignedKeyFile("bc-jce.jar", Cipher.class, "SSMTSJAR.SF");
+ 		verifySignedKeyFile("bcprov.jar", RSAEngine.class, "BCKEY.SF");
 	}
 
-	public void verifySignedKeyFile(Class c, String keyFileName) throws MartusCrypto.InvalidJarException, IOException
+	public void verifySignedKeyFile(String jarDescription, Class c, String keyFileName) throws MartusCrypto.InvalidJarException, IOException
 	{
 		URL jarURL = getJarURL(c);
 		JarURLConnection jarConnection = (JarURLConnection)jarURL.openConnection();
 		JarFile jf = jarConnection.getJarFile();
 		JarEntry entry = jf.getJarEntry("META-INF/" + keyFileName);
 		if(entry == null)
-			throw new MartusCrypto.InvalidJarException("Missing: " + keyFileName);
+			throw new MartusCrypto.InvalidJarException("Missing: " + keyFileName + " from " + jarDescription);
 		int size = (int)entry.getSize();
 		
 		InputStream actualKeyFileIn = jf.getInputStream(entry);
@@ -968,13 +968,13 @@ public class MartusSecurity extends MartusCrypto
 		
 		InputStream referenceKeyFileIn = getClass().getResourceAsStream(keyFileName);
 		if(referenceKeyFileIn == null)
-			throw new MartusCrypto.InvalidJarException("Couldn't open reference: " + keyFileName);
+			throw new MartusCrypto.InvalidJarException("Couldn't open " + jarDescription + " reference: " + keyFileName);
 		byte[] expected = new byte[size];
 		referenceKeyFileIn.read(expected);
 		referenceKeyFileIn.close();
 		
 		if(!Arrays.equals(expected, actual))
-			throw new MartusCrypto.InvalidJarException("Unequal contents for: " + keyFileName);
+			throw new MartusCrypto.InvalidJarException("Unequal contents for: " + keyFileName + " in " + jarDescription);
 	}
 	
 	private static URL getJarURL(Class c) throws MartusCrypto.InvalidJarException, MalformedURLException
@@ -986,7 +986,7 @@ public class MartusSecurity extends MartusCrypto
 		String wholePath = url.toString();
 		int bangAt = wholePath.indexOf('!');
 		if(bangAt < 0)
-			throw new MartusCrypto.InvalidJarException("Couldn't find ! in jar path");
+			throw new MartusCrypto.InvalidJarException("Couldn't find ! in jar path: " + url);
 		
 		String jarPart = wholePath.substring(0, bangAt+2);
 		URL jarURL = new URL(jarPart);
