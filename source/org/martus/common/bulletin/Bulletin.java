@@ -57,7 +57,6 @@ import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 
 public class Bulletin implements BulletinConstants
 {
-
 	public static class DamagedBulletinException extends Exception
 	{
 	}
@@ -231,14 +230,14 @@ public class Bulletin implements BulletinConstants
 	
 	public MartusField getField(String fieldTag)
 	{
-		if(fieldTag.equals("_localId"))
+		if(fieldTag.equals(PSEUDOFIELD_LOCAL_ID))
 		{
 			MartusField localIdField = new MartusField(FieldSpec.createStandardField(fieldTag, FieldSpec.TYPE_NORMAL));
 			localIdField.setData(getLocalId());
 			return localIdField;
 		}
 		
-		if(fieldTag.equals("_lastSavedDate"))
+		if(fieldTag.equals(PSEUDOFIELD_LAST_SAVED_DATE))
 		{
 			MartusField lastSavedDateField = new MartusField(FieldSpec.createStandardField(fieldTag, FieldSpec.TYPE_DATE));
 			lastSavedDateField.setData(getLastSavedDate());
@@ -601,6 +600,9 @@ public class Bulletin implements BulletinConstants
 	{
 		return new FieldDataPacket(dataUid, publicFieldSpecs);
 	}
+
+	public static final String PSEUDOFIELD_LOCAL_ID = "_localId";
+	public static final String PSEUDOFIELD_LAST_SAVED_DATE = "_lastSavedDate";
 	
 	private boolean isValidFlag;
 	private MartusCrypto security;
