@@ -27,9 +27,7 @@ package org.martus.common;
 
 import java.io.IOException;
 import java.util.Vector;
-
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlParser;
@@ -121,24 +119,31 @@ public class GridData
 	
 	public void removeTrailingBlankRows()
 	{
-		for(int i = rows.size()-1; i>=0; i--)
+		removeTrailingBlankRows(rows);
+	}
+	
+	public void removeTrailingBlankRows(Vector rowsToModify)
+	{
+		for(int i = rowsToModify.size()-1; i>=0; i--)
 		{
-			if(!((GridRow)rows.get(i)).isEmptyRow())
+			if(!((GridRow)rowsToModify.get(i)).isEmptyRow())
 				return;
-			rows.remove(i);
+			rowsToModify.remove(i);
 		}		
 	}
 	
 	public String getXmlRepresentation()
 	{
-		removeTrailingBlankRows();
+		Vector copyOfRows = new Vector(rows);
+		
+		removeTrailingBlankRows(copyOfRows);
 		if(isEmpty())
 			return "";
 		String result = new String();
 		result += MartusXml.getTagStart(GRID_DATA_TAG, GRID_ATTRIBUTE_COLUMNS, Integer.toString(getColumnCount()))+ MartusXml.newLine;
-		for(int i = 0; i< rows.size(); ++i)
+		for(int i = 0; i< copyOfRows.size(); ++i)
 		{
-			GridRow contents = (GridRow)rows.get(i);
+			GridRow contents = (GridRow)copyOfRows.get(i);
 			result += contents.getXmlRepresentation();
 		}
 		result += MartusXml.getTagEnd(GRID_DATA_TAG);
