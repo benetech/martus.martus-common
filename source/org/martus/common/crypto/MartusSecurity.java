@@ -946,12 +946,18 @@ public class MartusSecurity extends MartusCrypto
 
 	public void verifySignedKeyFile(String jarDescription, Class c, String keyFileName) throws MartusCrypto.InvalidJarException, IOException
 	{
+		String errorMessageStart = "Verifying " + jarDescription + ": ";
+		
 		URL jarURL = getJarURL(c);
 		JarURLConnection jarConnection = (JarURLConnection)jarURL.openConnection();
 		JarFile jf = jarConnection.getJarFile();
 		JarEntry entry = jf.getJarEntry("META-INF/" + keyFileName);
 		if(entry == null)
-			throw new MartusCrypto.InvalidJarException("Missing: " + keyFileName + " from " + jarDescription);
+		{
+			String basicErrorMessage = "Missing: " + keyFileName + " from " + jarURL;
+			String hintsToSolve = "\n\nXbootclasspath might be incorrect; bc-jce.jar might be missing";
+			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage + hintsToSolve);
+		}
 		int size = (int)entry.getSize();
 		
 		InputStream actualKeyFileIn = jf.getInputStream(entry);
@@ -959,11 +965,18 @@ public class MartusSecurity extends MartusCrypto
 		
 		InputStream referenceKeyFileIn = getClass().getResourceAsStream(keyFileName);
 		if(referenceKeyFileIn == null)
-			throw new MartusCrypto.InvalidJarException("Couldn't open " + jarDescription + " reference: " + keyFileName);
+		{
+			String basicErrorMessage = "Couldn't open " + keyFileName + " in Martus jar";
+			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage);
+		}
 		byte[] expected = readAll(size, referenceKeyFileIn);
 		
 		if(!Arrays.equals(expected, actual))
-			throw new MartusCrypto.InvalidJarException("Unequal contents for: " + keyFileName + " in " + jarDescription);
+		{
+			String basicErrorMessage = "Unequal contents for: " + keyFileName;
+			String hintsToSolve = "Might be wrong version of jar (" + jarURL + ")";
+			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage + hintsToSolve);
+		}
 	}
 
 	private byte[] readAll(int size, InputStream streamToRead) throws IOException
