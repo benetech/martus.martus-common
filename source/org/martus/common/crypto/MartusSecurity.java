@@ -955,7 +955,7 @@ public class MartusSecurity extends MartusCrypto
 		if(entry == null)
 		{
 			String basicErrorMessage = "Missing: " + keyFileName + " from " + jarURL;
-			String hintsToSolve = "\n\nXbootclasspath might be incorrect; bc-jce.jar might be missing";
+			String hintsToSolve = "\n\nXbootclasspath might be incorrect; bc-jce.jar might be missing from Martus/lib/ext";
 			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage + hintsToSolve);
 		}
 		int size = (int)entry.getSize();
