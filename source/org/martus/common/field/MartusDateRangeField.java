@@ -40,16 +40,8 @@ public class MartusDateRangeField extends MartusField
 
 	public boolean contains(String value)
 	{
-		MartusFlexidate searchForDate = MartusFlexidate.createFromMartusDateString(value);
-		MartusFlexidate thisDate = MartusFlexidate.createFromMartusDateString(getData());
-		
-		if(searchForDate.getBeginDate().getTime() < thisDate.getBeginDate().getTime())
-			return false;
-		
-		if(searchForDate.getEndDate().getTime() > thisDate.getEndDate().getTime())
-			return false;
-		
-		return true;
+		// date ranges don't support contains searching at all!
+		return false;
 	}
 
 	public MartusField getSubField(String tag)
