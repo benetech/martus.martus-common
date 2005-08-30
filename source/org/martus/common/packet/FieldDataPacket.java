@@ -71,7 +71,7 @@ public class FieldDataPacket extends Packet
 		fields = fieldsToUse;
 	}
 
-	void setFieldSpecs(FieldSpec[] fieldSpecsToUse)
+	public void setFieldSpecs(FieldSpec[] fieldSpecsToUse)
 	{
 		fields = new FieldCollection(fieldSpecsToUse);
 	}

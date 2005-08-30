@@ -500,7 +500,7 @@ public class Bulletin implements BulletinConstants
 
 	}
 	
-	private void pullFields(Bulletin other, FieldSpec[] fields)
+	public void pullFields(Bulletin other, FieldSpec[] fields)
 	{
 		for(int f = 0; f < fields.length; ++f)
 		{
