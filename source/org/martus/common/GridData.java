@@ -102,12 +102,16 @@ public class GridData
 		SimpleXmlParser.parse(loader, xmlData);
 	}
 	
-	
 	public boolean isEmpty()
 	{
-		for(int i = 0; i < rows.size(); ++i)
+		return isEmpty(rows);
+	}
+	
+	private boolean isEmpty(Vector rowsToCheck)
+	{
+		for(int i = 0; i < rowsToCheck.size(); ++i)
 		{
-			GridRow contents = (GridRow)rows.get(i);
+			GridRow contents = (GridRow)rowsToCheck.get(i);
 			for(int j = 0; j < getColumnCount(); ++ j)
 			{
 				if(contents.getCellText(j).length() != 0 )
@@ -137,7 +141,7 @@ public class GridData
 		Vector copyOfRows = new Vector(rows);
 		
 		removeTrailingBlankRows(copyOfRows);
-		if(isEmpty())
+		if(isEmpty(copyOfRows))
 			return "";
 		String result = new String();
 		result += MartusXml.getTagStart(GRID_DATA_TAG, GRID_ATTRIBUTE_COLUMNS, Integer.toString(getColumnCount()))+ MartusXml.newLine;
