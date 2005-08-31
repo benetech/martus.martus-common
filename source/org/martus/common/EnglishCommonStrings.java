@@ -106,8 +106,8 @@ public class EnglishCommonStrings
 		"field:HQNotConfigured=(not currently configured)",
 		"field:NoHQsConfigured=No Headquarters accounts selected for this bulletin.",
 
-		"field:DateRangeTemplatebegin=#FIELDLABEL# (beginning)",
-		"field:DateRangeTemplateend=#FIELDLABEL# (end)",
+		"field:DateRangeTemplatebegin=#FieldLabel# (beginning)",
+		"field:DateRangeTemplateend=#FieldLabel# (end)",
 
 		"button:yes=Yes",
 		"button:no=No",
