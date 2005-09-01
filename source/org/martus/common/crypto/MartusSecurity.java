@@ -961,7 +961,17 @@ public class MartusSecurity extends MartusCrypto
 		int size = (int)entry.getSize();
 		
 		InputStream actualKeyFileIn = jf.getInputStream(entry);
-		byte[] actual = readAll(size, actualKeyFileIn);
+		byte[] actual = null;
+		try
+		{
+			actual = readAll(size, actualKeyFileIn);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			String basicErrorMessage = "Error reading Actual Key in File";
+			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage);
+		}
 		
 		InputStream referenceKeyFileIn = getClass().getResourceAsStream(keyFileName);
 		if(referenceKeyFileIn == null)
@@ -969,7 +979,17 @@ public class MartusSecurity extends MartusCrypto
 			String basicErrorMessage = "Couldn't open " + keyFileName + " in Martus jar";
 			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage);
 		}
-		byte[] expected = readAll(size, referenceKeyFileIn);
+		byte[] expected = null;
+		try
+		{
+			expected = readAll(size, referenceKeyFileIn);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			String basicErrorMessage = "Error reading Reference Key in File";
+			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage);
+		}
 		
 		if(!Arrays.equals(expected, actual))
 		{
