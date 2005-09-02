@@ -141,7 +141,6 @@ public class TestBulletin extends TestCaseEnhanced
     	b.set(Bulletin.TAGAUTHOR, sampleAuthor);
     	assertTrue("didn't find author?", b.contains(sampleAuthor));
     	
-    	final String samplePrivate = "shhh! they might be listening!";
     	b.set(Bulletin.TAGPRIVATEINFO, samplePrivate);
     	assertTrue("didn't find private?", b.contains(samplePrivate));
 
@@ -340,14 +339,14 @@ public class TestBulletin extends TestCaseEnhanced
 			public int encryptWasCalled;
 		}
 
-		BulletinStore store = new BulletinStore();
+		BulletinStore testStore = new BulletinStore();
 		File tempDir = createTempDirectory();
 		MyMockDatabase db = new MyMockDatabase();
-		store.doAfterSigninInitialization(tempDir, db);
+		testStore.doAfterSigninInitialization(tempDir, db);
 		Bulletin b = new Bulletin(security);
 		b.setSealed();
 		b.setAllPrivate(false);
-		store.saveEncryptedBulletinForTesting(b);
+		testStore.saveEncryptedBulletinForTesting(b);
 		assertEquals("Didn't Encrypt or Encyrpted too many packets.", 1, db.encryptWasCalled);
 	}
 
