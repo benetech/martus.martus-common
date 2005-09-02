@@ -141,9 +141,9 @@ public class TestBulletin extends TestCaseEnhanced
     	b.set(Bulletin.TAGAUTHOR, sampleAuthor);
     	assertTrue("didn't find author?", b.contains(sampleAuthor));
     	
-    	final String samplePrivateText = "shhh! they might be listening!";
-    	b.set(Bulletin.TAGPRIVATEINFO, samplePrivateText);
-    	assertTrue("didn't find private?", b.contains(samplePrivateText));
+    	final String samplePrivate = "shhh! they might be listening!";
+    	b.set(Bulletin.TAGPRIVATEINFO, samplePrivate);
+    	assertTrue("didn't find private?", b.contains(samplePrivate));
 
 		b.addPublicAttachment(proxy1);
     	assertTrue("didn't find public attachment?", b.contains(proxy1.getLabel()));
@@ -340,6 +340,7 @@ public class TestBulletin extends TestCaseEnhanced
 			public int encryptWasCalled;
 		}
 
+		BulletinStore store = new BulletinStore();
 		File tempDir = createTempDirectory();
 		MyMockDatabase db = new MyMockDatabase();
 		store.doAfterSigninInitialization(tempDir, db);
