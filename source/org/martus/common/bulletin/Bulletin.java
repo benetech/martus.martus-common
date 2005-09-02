@@ -483,12 +483,11 @@ public class Bulletin implements BulletinConstants
 
 		setAuthorizedToReadKeys(other.getAuthorizedToReadKeys());
 		
-		MartusCrypto security = getSignatureGenerator();
 		AttachmentProxy[] attachmentPublicProxies = other.getPublicAttachments();
 		for(int aIndex = 0; aIndex < attachmentPublicProxies.length; ++aIndex)
 		{
 			AttachmentProxy ap = attachmentPublicProxies[aIndex];
-			ap = getAsFileProxy(ap, otherDatabase, Bulletin.STATUSDRAFT, security);
+			ap = getAsFileProxy(ap, otherDatabase, Bulletin.STATUSDRAFT);
 			addPublicAttachment(ap);
 		}
 
@@ -496,7 +495,7 @@ public class Bulletin implements BulletinConstants
 		for(int aIndex = 0; aIndex < attachmentPrivateProxies.length; ++aIndex)
 		{
 			AttachmentProxy ap = attachmentPrivateProxies[aIndex];
-			ap = getAsFileProxy(ap, otherDatabase, Bulletin.STATUSDRAFT, security);
+			ap = getAsFileProxy(ap, otherDatabase, Bulletin.STATUSDRAFT);
 			addPrivateAttachment(ap);
 		}
 
@@ -510,7 +509,7 @@ public class Bulletin implements BulletinConstants
 		}
 	}
 
-	public AttachmentProxy getAsFileProxy(AttachmentProxy ap, ReadableDatabase otherDatabase, String status, MartusCrypto security)
+	public AttachmentProxy getAsFileProxy(AttachmentProxy ap, ReadableDatabase otherDatabase, String status)
 		throws
 			IOException,
 			CryptoException,

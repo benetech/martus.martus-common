@@ -298,7 +298,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		}
 		
 		UniversalId uid = FieldDataPacket.createUniversalId(security);
-		FieldDataPacketWithUnknownTags fdp = new FieldDataPacketWithUnknownTags(uid, fieldTags);
+		FieldDataPacketWithUnknownTags fdpUnknownTags = new FieldDataPacketWithUnknownTags(uid, fieldTags);
 		
 		String id = "1234567";
 		String data1 = "  simple  ";
@@ -313,18 +313,18 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 			"</FieldDataPacket>\n";
 		byte[] bytes = simpleFieldDataPacket.getBytes("UTF-8");
 		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
-		fdp.loadFromXml(in, (MartusCrypto)null);
-		assertTrue("no unknown tags?", fdp.hasUnknownTags());
-		assertEquals("lost data after unknown aTag?", data1, fdp.get(aTag));
+		fdpUnknownTags.loadFromXml(in, (MartusCrypto)null);
+		assertTrue("no unknown tags?", fdpUnknownTags.hasUnknownTags());
+		assertEquals("lost data after unknown aTag?", data1, fdpUnknownTags.get(aTag));
 		
 		StringWriter out = new StringWriter();
-		fdp.writeXmlEncrypted(out, security);
+		fdpUnknownTags.writeXmlEncrypted(out, security);
 		
 		byte[] bytes2 = out.toString().getBytes("UTF-8");
 		ByteArrayInputStreamWithSeek in2 = new ByteArrayInputStreamWithSeek(bytes2);
-		fdp.loadFromXml(in2, security);
-		assertTrue("encrypted no unknown tags?", fdp.hasUnknownTags());
-		assertEquals("encrypted lost data after unknown bTag?", "data", fdp.get(bTag));
+		fdpUnknownTags.loadFromXml(in2, security);
+		assertTrue("encrypted no unknown tags?", fdpUnknownTags.hasUnknownTags());
+		assertEquals("encrypted lost data after unknown bTag?", "data", fdpUnknownTags.get(bTag));
 	}
 
 	public void testLoadFromXmlLegacyCustomAfterNewCustomFields() throws Exception

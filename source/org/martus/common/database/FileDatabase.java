@@ -267,9 +267,9 @@ abstract public class FileDatabase extends Database
 	{
 		class AccountVisitorVisitor implements AccountVisitor
 		{
-			AccountVisitorVisitor(PacketVisitor visitor)
+			AccountVisitorVisitor(PacketVisitor visitorToUse)
 			{
-				packetVisitor = visitor;
+				packetVisitor = visitorToUse;
 			}
 
 			public void visit(String accountString)

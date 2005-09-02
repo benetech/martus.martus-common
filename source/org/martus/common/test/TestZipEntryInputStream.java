@@ -110,8 +110,8 @@ public class TestZipEntryInputStream extends TestCaseEnhanced
 		File tempFile = createTempFileFromName("$$$MartusTestZipEntry");
 		ZipOutputStream out = new ZipOutputStream(new FileOutputStream(tempFile));
 
-		ZipEntry entry = new ZipEntry(sampleEntryName);
-		out.putNextEntry(entry);
+		ZipEntry entryInZipFile = new ZipEntry(sampleEntryName);
+		out.putNextEntry(entryInZipFile);
 		out.write(sampleBytes);
 		out.close();
 

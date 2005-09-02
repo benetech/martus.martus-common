@@ -259,18 +259,18 @@ public class WebServerWithClientId implements Runnable
 	 * hook method for subclasses to override when they desire
 	 * different flavor of socket (i.e. a <code>SSLServerSocket</code>).
 	 *
-	 * @param port
+	 * @param portToUse
 	 * @param backlog
 	 * @param addr If <code>null</code>, binds to
 	 * <code>INADDR_ANY</code>, meaning that all network interfaces on
 	 * a multi-homed host will be listening.
 	 * @exception Exception Error creating listener socket.
 	 */
-	protected ServerSocket createServerSocket(int port, int backlog,
+	protected ServerSocket createServerSocket(int portToUse, int backlog,
 			InetAddress addr)
 			throws Exception
 	{
-		return new ServerSocket(port, backlog, addr);
+		return new ServerSocket(portToUse, backlog, addr);
 	}
 
 	/**
@@ -400,16 +400,16 @@ public class WebServerWithClientId implements Runnable
 	 * @see #denyClient(java.lang.String)
 	 * @see #setParanoid(boolean)
 	 */
-	public void acceptClient(String address) throws IllegalArgumentException
+	public void acceptClient(String addressToUse) throws IllegalArgumentException
 	{
 		try
 		{
-			AddressMatcher m = new AddressMatcher(address);
+			AddressMatcher m = new AddressMatcher(addressToUse);
 			accept.addElement(m);
 		}
 		catch (Exception x)
 		{
-			throw new IllegalArgumentException("\"" + address
+			throw new IllegalArgumentException("\"" + addressToUse
 					+ "\" does not represent a valid IP address");
 		}
 	}
@@ -422,16 +422,16 @@ public class WebServerWithClientId implements Runnable
 	 * @see #acceptClient(java.lang.String)
 	 * @see #setParanoid(boolean)
 	 */
-	public void denyClient(String address) throws IllegalArgumentException
+	public void denyClient(String addressToUse) throws IllegalArgumentException
 	{
 		try
 		{
-			AddressMatcher m = new AddressMatcher(address);
+			AddressMatcher m = new AddressMatcher(addressToUse);
 			deny.addElement(m);
 		}
 		catch (Exception x)
 		{
-			throw new IllegalArgumentException("\"" + address
+			throw new IllegalArgumentException("\"" + addressToUse
 					+ "\" does not represent a valid IP address");
 		}
 	}
@@ -451,11 +451,11 @@ public class WebServerWithClientId implements Runnable
 		}
 
 		int l = deny.size();
-		byte address[] = s.getInetAddress().getAddress();
+		byte addresses[] = s.getInetAddress().getAddress();
 		for (int i = 0; i < l; i++)
 		{
 			AddressMatcher match = (AddressMatcher)deny.elementAt(i);
-			if (match.matches(address))
+			if (match.matches(addresses))
 			{
 				return false;
 			}
@@ -464,7 +464,7 @@ public class WebServerWithClientId implements Runnable
 		for (int i = 0; i < l; i++)
 		{
 			AddressMatcher match = (AddressMatcher)accept.elementAt(i);
-			if (match.matches(address))
+			if (match.matches(addresses))
 			{
 				return true;
 			}
@@ -974,10 +974,10 @@ public class WebServerWithClientId implements Runnable
 
 		/**
 		 *
-		 * @param address
+		 * @param addresses
 		 * @return
 		 */
-		public boolean matches (byte address[])
+		public boolean matches (byte addresses[])
 		{
 			for (int i = 0; i < 4; i++)
 			{
@@ -985,7 +985,7 @@ public class WebServerWithClientId implements Runnable
 				{
 					continue;
 				}
-				if (pattern[i] != address[i])
+				if (pattern[i] != addresses[i])
 				{
 					return false;
 				}

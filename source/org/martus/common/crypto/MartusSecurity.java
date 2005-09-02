@@ -108,7 +108,7 @@ public class MartusSecurity extends MartusCrypto
 		
 	}
 
-	synchronized void initialize(SecureRandom rand)throws CryptoInitializationException
+	synchronized void initialize(SecureRandom randToUse)throws CryptoInitializationException
 	{
 		Security.addProvider(new BouncyCastleProvider());
 
@@ -119,7 +119,7 @@ public class MartusSecurity extends MartusCrypto
 			sessionKeyGenerator = KeyGenerator.getInstance(SESSION_ALGORITHM_NAME, "BC");
 			keyFactory = SecretKeyFactory.getInstance(PBE_ALGORITHM, "BC");
 
-			keyPair = new MartusJceKeyPair(rand);
+			keyPair = new MartusJceKeyPair(randToUse);
 		}
 		catch(Exception e)
 		{
@@ -736,11 +736,11 @@ public class MartusSecurity extends MartusCrypto
 
 	// end interface
 
-	public void writeKeyPair(OutputStream outputStream, char[] passPhrase, MartusKeyPair keyPair) throws
+	public void writeKeyPair(OutputStream outputStream, char[] passPhrase, MartusKeyPair keyPairToUse) throws
 			IOException
 	{
 		byte[] randomSalt = createRandomSalt();
-		byte[] keyPairData = keyPair.getKeyPairData();
+		byte[] keyPairData = keyPairToUse.getKeyPairData();
 		byte[] cipherText = pbeEncrypt(keyPairData, passPhrase, randomSalt);
 		if(cipherText == null)
 			return;

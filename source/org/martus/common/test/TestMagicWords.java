@@ -138,17 +138,17 @@ public class TestMagicWords extends TestCaseEnhanced
 	{
 		Vector activeMagicWords = magicWords.getActiveMagicWords();
 		assertEquals("Size incorrect", 2, activeMagicWords.size());
-		Vector magicWords = new Vector();
+		Vector magicWordsActive = new Vector();
 		Vector groupNames = new Vector();
 		
 		for(int i = 0; i<activeMagicWords.size(); ++i)
 		{
 			String lineEntry = (String)activeMagicWords.get(i);
-			magicWords.add(MagicWords.getMagicWordWithActiveSignFromLineEntry(lineEntry));
+			magicWordsActive.add(MagicWords.getMagicWordWithActiveSignFromLineEntry(lineEntry));
 			groupNames.add(MagicWords.getGroupNameFromLineEntry(lineEntry));
 		}
-		assertContains(MAGICWORD1, magicWords);
-		assertContains(MAGICWORD2, magicWords);
+		assertContains(MAGICWORD1, magicWordsActive);
+		assertContains(MAGICWORD2, magicWordsActive);
 		
 		assertContains(GROUPNAME1, groupNames);
 		assertContains(UNKNOWN_FIELD, groupNames);

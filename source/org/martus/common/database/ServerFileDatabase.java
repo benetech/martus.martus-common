@@ -62,7 +62,6 @@ public class ServerFileDatabase extends FileDatabase
 	public synchronized void loadAccountMap() throws FileVerificationException, MissingAccountMapSignatureException
 	{
 		super.loadAccountMap();
-		File accountMapFile = super.getAccountMapFile();
 		if(accountMapFile.exists())
 		{
 			File sigFile;
@@ -89,7 +88,6 @@ public class ServerFileDatabase extends FileDatabase
 	
 	public void verifyAccountMap() throws MartusUtilities.FileVerificationException, MissingAccountMapSignatureException
 	{
-		File accountMapFile = super.getAccountMapFile();
 		File sigFile;
 		try 
 		{
@@ -104,7 +102,6 @@ public class ServerFileDatabase extends FileDatabase
 
 	public void signAccountMap() throws IOException, MartusCrypto.MartusSignatureException
 	{
-		File accountMapFile = super.getAccountMapFile();
 		try
 		{
 			MartusServerUtilities.createSignatureFileFromFileOnServer(accountMapFile, security);

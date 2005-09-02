@@ -374,19 +374,19 @@ public class BulletinHeaderPacket extends Packet
 	
 		for(int i=0; i < publicAttachmentIds.length; ++i)
 		{
-			UniversalId uid = UniversalId.createFromAccountAndLocalId(accountId, publicAttachmentIds[i]);
-			keys[next++] = createKeyWithHeaderStatus(uid);
+			UniversalId attachmentUid = UniversalId.createFromAccountAndLocalId(accountId, publicAttachmentIds[i]);
+			keys[next++] = createKeyWithHeaderStatus(attachmentUid);
 		}
 		keys[next++] = createKeyWithHeaderStatus(getUniversalId());
 	
 		return keys;
 	}
 
-	public DatabaseKey createKeyWithHeaderStatus(UniversalId uid)
+	public DatabaseKey createKeyWithHeaderStatus(UniversalId uidToUse)
 	{
 		if(getStatus().equals(BulletinConstants.STATUSDRAFT))
-			return DatabaseKey.createDraftKey(uid);
-		return DatabaseKey.createSealedKey(uid);
+			return DatabaseKey.createDraftKey(uidToUse);
+		return DatabaseKey.createSealedKey(uidToUse);
 	}
 
 	static ZipEntry getBulletinHeaderEntry(ZipFile zip) throws IOException
@@ -449,7 +449,6 @@ public class BulletinHeaderPacket extends Packet
 			writeElement(dest, MartusXml.PrivateAttachmentIdElementName, privateAttachmentIds[i]);
 		}
 
-		HQKeys authorizedToReadKeys = getAuthorizedToReadKeys();
 		if(!authorizedToReadKeys.isEmpty())
 		{
 			String value = authorizedToReadKeys.toString();

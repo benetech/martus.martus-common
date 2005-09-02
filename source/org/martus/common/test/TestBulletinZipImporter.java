@@ -158,7 +158,7 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 	public void testSaveToFileWithAttachment() throws Exception
 	{
 		BulletinStore store = new MockBulletinStore(this);
-		ReadableDatabase db = store.getDatabase();
+		ReadableDatabase dbWithAttachments = store.getDatabase();
 		File tempFile1 = createTempFileWithData(sampleBytes1);
 		File tempFile2 = createTempFileWithData(sampleBytes2);
 		UniversalId dummyUid = UniversalId.createDummyUniversalId();
@@ -172,19 +172,19 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 		store.saveBulletinForTesting(original);
 		UniversalId uid = original.getUniversalId();
 
-		original = BulletinLoader.loadFromDatabase(db, DatabaseKey.createSealedKey(uid), security);
+		original = BulletinLoader.loadFromDatabase(dbWithAttachments, DatabaseKey.createSealedKey(uid), security);
 		AttachmentProxy[] originalAttachments = original.getPublicAttachments();
 		assertEquals("not one attachment?", 1, originalAttachments.length);
 		DatabaseKey key2 = DatabaseKey.createSealedKey(originalAttachments[0].getUniversalId());
-		assertEquals("public attachment wasn't saved?", true,  db.doesRecordExist(key2));
+		assertEquals("public attachment wasn't saved?", true,  dbWithAttachments.doesRecordExist(key2));
 
 		AttachmentProxy[] originalPrivateAttachments = original.getPrivateAttachments();
 		assertEquals("not one attachment in private?", 1, originalPrivateAttachments.length);
 		DatabaseKey keyPrivate = DatabaseKey.createSealedKey(originalPrivateAttachments[0].getUniversalId());
-		assertEquals("private attachment wasn't saved?", true,  db.doesRecordExist(keyPrivate));
+		assertEquals("private attachment wasn't saved?", true,  dbWithAttachments.doesRecordExist(keyPrivate));
 
 		File tmpFile = createTempFileFromName("$$$MartusTestBullSaveFileAtta1");
-		BulletinForTesting.saveToFile(db, original, tmpFile, security);
+		BulletinForTesting.saveToFile(dbWithAttachments, original, tmpFile, security);
 		assertTrue("unreasonable file size?", tmpFile.length() > 20);
 
 		ZipFile zip = new ZipFile(tmpFile);

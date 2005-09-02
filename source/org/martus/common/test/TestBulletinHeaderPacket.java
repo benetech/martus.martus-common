@@ -321,24 +321,24 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 	public void testLoadXml() throws Exception
 	{
 		UniversalId uid = HeaderPacketWithUnknownTag.createUniversalId(security);
-		HeaderPacketWithUnknownTag bhp = new HeaderPacketWithUnknownTag(uid);
+		HeaderPacketWithUnknownTag bhpUnknownTag = new HeaderPacketWithUnknownTag(uid);
 		
 		String dataId = "some id";
 		String privateId = "private id";
 		String sampleStatus = "draft or whatever";
-		bhp.updateLastSavedTime();
-		bhp.setStatus(sampleStatus);
-		bhp.setFieldDataPacketId(dataId);
-		bhp.setPrivateFieldDataPacketId(privateId);
-		bhp.setFieldDataSignature(sampleSig1);
-		bhp.setPrivateFieldDataSignature(sampleSig2);
-		bhp.addPublicAttachmentLocalId(attachmentId1);
-		bhp.addPublicAttachmentLocalId(attachmentId2);
-		bhp.addPrivateAttachmentLocalId(attachmentId3);
-		bhp.addPrivateAttachmentLocalId(attachmentId4);
+		bhpUnknownTag.updateLastSavedTime();
+		bhpUnknownTag.setStatus(sampleStatus);
+		bhpUnknownTag.setFieldDataPacketId(dataId);
+		bhpUnknownTag.setPrivateFieldDataPacketId(privateId);
+		bhpUnknownTag.setFieldDataSignature(sampleSig1);
+		bhpUnknownTag.setPrivateFieldDataSignature(sampleSig2);
+		bhpUnknownTag.addPublicAttachmentLocalId(attachmentId1);
+		bhpUnknownTag.addPublicAttachmentLocalId(attachmentId2);
+		bhpUnknownTag.addPrivateAttachmentLocalId(attachmentId3);
+		bhpUnknownTag.addPrivateAttachmentLocalId(attachmentId4);
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		bhp.writeXml(out, security);
+		bhpUnknownTag.writeXml(out, security);
 		String result = new String(out.toByteArray(), "UTF-8");
 
 		BulletinHeaderPacket loaded = new BulletinHeaderPacket(security);
@@ -346,12 +346,12 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
 		loaded.loadFromXml(in, security);
 
-		assertEquals("account", bhp.getAccountId(), loaded.getAccountId());
-		assertEquals("local id", bhp.getLocalId(), loaded.getLocalId());
-		assertEquals("time", bhp.getLastSavedTime(), loaded.getLastSavedTime());
-		assertEquals("id", bhp.getLocalId(), loaded.getLocalId());
-		assertEquals("data id", bhp.getFieldDataPacketId(), loaded.getFieldDataPacketId());
-		assertEquals("private id", bhp.getPrivateFieldDataPacketId(), loaded.getPrivateFieldDataPacketId());
+		assertEquals("account", bhpUnknownTag.getAccountId(), loaded.getAccountId());
+		assertEquals("local id", bhpUnknownTag.getLocalId(), loaded.getLocalId());
+		assertEquals("time", bhpUnknownTag.getLastSavedTime(), loaded.getLastSavedTime());
+		assertEquals("id", bhpUnknownTag.getLocalId(), loaded.getLocalId());
+		assertEquals("data id", bhpUnknownTag.getFieldDataPacketId(), loaded.getFieldDataPacketId());
+		assertEquals("private id", bhpUnknownTag.getPrivateFieldDataPacketId(), loaded.getPrivateFieldDataPacketId());
 		assertEquals("status", sampleStatus, loaded.getStatus());
 		assertEquals("data sig", true, Arrays.equals(sampleSig1, loaded.getFieldDataSignature()));
 		assertEquals("private data sig", true, Arrays.equals(sampleSig2, loaded.getPrivateFieldDataSignature()));
@@ -361,14 +361,14 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		assertEquals("AuthorizedToProxyUpload", 0, loaded.getAuthorizedToUploadKeys().size());
 		assertEquals("has history?", 0, loaded.getHistory().size());
 		assertEquals("Incorrect version #?",1, loaded.getVersionNumber());
-		assertEquals("Since it has no history, should have same local id for original revision id.?", bhp.getLocalId(), loaded.getOriginalRevisionId());
+		assertEquals("Since it has no history, should have same local id for original revision id.?", bhpUnknownTag.getLocalId(), loaded.getOriginalRevisionId());
 
 		String[] list = loaded.getPublicAttachmentIds();
 		assertEquals("public count", 2, list.length);
-		assertEquals("public attachments wrong?", true, Arrays.equals(bhp.getPublicAttachmentIds(), list));
+		assertEquals("public attachments wrong?", true, Arrays.equals(bhpUnknownTag.getPublicAttachmentIds(), list));
 		String[] list2 = loaded.getPrivateAttachmentIds();
 		assertEquals("private count", 2, list2.length);
-		assertEquals("private attachments wrong?", true, Arrays.equals(bhp.getPrivateAttachmentIds(), list2));
+		assertEquals("private attachments wrong?", true, Arrays.equals(bhpUnknownTag.getPrivateAttachmentIds(), list2));
 	}
 	
 	public void testLoadXmlWithHistory() throws Exception
@@ -463,10 +463,10 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 				"</BulletinHeaderPacket>" + "\n" + 
 				"<!--sig=QqzQFmrA9rYo7ekVgqjtXBfhRBaVnrpRjnJfynao90pNtF0cjK9R2nYOdGuChrwI9BvEqtX26ylH8iWky9J29RZOYIGOzQwNo/63DfKi4KChhfDd7hVdi6yhfGXdiPoaF3hR4kzalgV5q415xCE+wAOza8NMzmScB8H1m2b4/pU407jVKlKHNYB12OrltEqT6k4OlbS1I6eLJ3bRjBumsgtQLZteUXusAHsI7h8w5UQ3VVaV1d7EDvX5fLAoxVE5cEUegFffIfUjXM2/cUcnqFnLCm5TkIsU5xpVTbPkrd999sMM/zU0+VKCIiDIvfh4rnW72h0jLog5GIwGBzVU+w==-->" + "\n"; 
 		
-		BulletinHeaderPacket bhp = new BulletinHeaderPacket();
+		BulletinHeaderPacket bhpToTest = new BulletinHeaderPacket();
 		InputStreamWithSeek in = new ByteArrayInputStreamWithSeek(fieldOfficeBulletinCreatedWithOldMartus.getBytes("UTF-8"));
-		bhp.loadFromXml(in, security);
-		HQKeys hqKeys = bhp.getAuthorizedToReadKeys();
+		bhpToTest.loadFromXml(in, security);
+		HQKeys hqKeys = bhpToTest.getAuthorizedToReadKeys();
 		assertEquals(1, hqKeys.size());
 		HQKey thisKey = hqKeys.get(0);
 		assertEquals(hqAccountId, thisKey.getPublicKey());

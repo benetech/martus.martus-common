@@ -87,10 +87,10 @@ public class BulletinHistory
 	
 	public String toString()
 	{
-		StringBuffer localIds = new StringBuffer();
+		StringBuffer localIdsString = new StringBuffer();
 		for(int i = 0; i < size(); ++i)
-			localIds.append(get(i) + " ");
-		return new String(localIds);
+			localIdsString.append(get(i) + " ");
+		return new String(localIdsString);
 	}
 
 	Vector localIds;

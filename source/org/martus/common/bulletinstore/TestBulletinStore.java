@@ -299,10 +299,10 @@ public class TestBulletinStore extends TestCaseEnhanced
 		verifyImportZip(store, key, zip);
 	}
 
-	private void verifyImportZip(BulletinStore store, DatabaseKey key, ZipFile zip) throws IOException, RecordHiddenException, InvalidPacketException, SignatureVerificationException, WrongAccountException, DecryptionException, DamagedBulletinException, NoKeyPairException
+	private void verifyImportZip(BulletinStore storeToUse, DatabaseKey key, ZipFile zip) throws IOException, RecordHiddenException, InvalidPacketException, SignatureVerificationException, WrongAccountException, DecryptionException, DamagedBulletinException, NoKeyPairException
 	{
-		store.importBulletinZipFile(zip);
-		BulletinLoader.loadFromDatabase(store.getDatabase(), key, store.getSignatureGenerator());
+		storeToUse.importBulletinZipFile(zip);
+		BulletinLoader.loadFromDatabase(storeToUse.getDatabase(), key, storeToUse.getSignatureGenerator());
 	}
 	
 	private void verifyCloneIsLeaf(Bulletin original, Bulletin clone, UniversalId otherUid) throws IOException, CryptoException

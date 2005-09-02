@@ -103,9 +103,9 @@ public class MagicWordEntry
 		return getLine(getMagicWord());
 	}	
 	
-	private String getLine(String magicWord)
+	private String getLine(String magicWordToUse)
 	{
-		String lineOfMagicWord = magicWord + MagicWords.FIELD_DELIMITER + getGroupName()+
+		String lineOfMagicWord = magicWordToUse + MagicWords.FIELD_DELIMITER + getGroupName()+
 				MagicWords.FIELD_DELIMITER + getCreationDate();
 				
 		return lineOfMagicWord.trim();
