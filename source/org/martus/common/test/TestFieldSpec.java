@@ -34,6 +34,19 @@ import org.martus.common.fieldspec.ChoiceItem;
 import org.martus.common.fieldspec.CustomDropDownFieldSpec;
 import org.martus.common.fieldspec.DropDownFieldSpec;
 import org.martus.common.fieldspec.FieldSpec;
+import org.martus.common.fieldspec.FieldType;
+import org.martus.common.fieldspec.FieldTypeAnyField;
+import org.martus.common.fieldspec.FieldTypeBoolean;
+import org.martus.common.fieldspec.FieldTypeDate;
+import org.martus.common.fieldspec.FieldTypeDateRange;
+import org.martus.common.fieldspec.FieldTypeDropdown;
+import org.martus.common.fieldspec.FieldTypeGrid;
+import org.martus.common.fieldspec.FieldTypeLanguage;
+import org.martus.common.fieldspec.FieldTypeMessage;
+import org.martus.common.fieldspec.FieldTypeMultiline;
+import org.martus.common.fieldspec.FieldTypeNormal;
+import org.martus.common.fieldspec.FieldTypeSearchValue;
+import org.martus.common.fieldspec.FieldTypeUnknown;
 import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.common.fieldspec.MessageFieldSpec;
 import org.martus.common.fieldspec.StandardFieldSpecs;
@@ -54,13 +67,13 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertFalse("has unknown?", plainField.hasUnknownStuff());
 		assertEquals("a", plainField.getTag());
 		assertEquals("b", plainField.getLabel());
-		assertEquals("not normal?", FieldSpec.TYPE_NORMAL, plainField.getType());
+		assertEquals("not normal?", new FieldTypeNormal(), plainField.getType());
 		
 		FieldSpec fieldWithExtra = LegacyCustomFields.createFromLegacy("c,d,e");
 		assertTrue("doesn't have unknown?", fieldWithExtra.hasUnknownStuff());
 		assertEquals("c", fieldWithExtra.getTag());
 		assertEquals("d", fieldWithExtra.getLabel());
-		assertEquals("not unknown?", FieldSpec.TYPE_UNKNOWN, fieldWithExtra.getType());
+		assertEquals("not unknown?", new FieldTypeUnknown(), fieldWithExtra.getType());
 		
 		FieldSpec fieldWithIllegalCharacters = LegacyCustomFields.createFromLegacy("!<a9-._@#jos"+UnicodeConstants.ACCENT_E_LOWER+"e,!<a9-._@#jos"+UnicodeConstants.ACCENT_E_LOWER+"e");
 		assertEquals("__a9-.___jos"+UnicodeConstants.ACCENT_E_LOWER+"e", fieldWithIllegalCharacters.getTag());
@@ -76,46 +89,46 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertFalse("has unknown?", plainField.hasUnknownStuff());
 		assertEquals("author", plainField.getTag());
 		assertEquals("", plainField.getLabel());
-		assertEquals("not normal?", FieldSpec.TYPE_NORMAL, plainField.getType());
+		assertEquals("not normal?", new FieldTypeNormal(), plainField.getType());
 
 		FieldSpec dateField = LegacyCustomFields.createFromLegacy("entrydate");
 		assertFalse("has unknown?", dateField.hasUnknownStuff());
 		assertEquals("entrydate", dateField.getTag());
 		assertEquals("", dateField.getLabel());
-		assertEquals("not date?", FieldSpec.TYPE_DATE, dateField.getType());
+		assertEquals("not date?", new FieldTypeDate(), dateField.getType());
 	}
 	
 	public void testDefaultValues()
 	{
 		String emptyString = "";
-		FieldSpec spec = new FieldSpec(FieldSpec.TYPE_BOOLEAN);
+		FieldSpec spec = new FieldSpec(new FieldTypeBoolean());
 		assertEquals(FieldSpec.FALSESTRING, spec.getDefaultValue());
 		
-		spec = new FieldSpec(FieldSpec.TYPE_DATE);
+		spec = new FieldSpec(new FieldTypeDate());
 		assertEquals(DateUtilities.getFirstOfThisYear(), spec.getDefaultValue());
 
-		spec = new FieldSpec(FieldSpec.TYPE_DATERANGE);
+		spec = new FieldSpec(new FieldTypeDateRange());
 		assertEquals(DateUtilities.getFirstOfThisYear(), spec.getDefaultValue());
 
 		spec = new GridFieldSpec();
 		assertEquals(emptyString, spec.getDefaultValue());
 		
-		spec = new FieldSpec(FieldSpec.TYPE_LANGUAGE);
+		spec = new FieldSpec(new FieldTypeLanguage());
 		assertEquals(MiniLocalization.LANGUAGE_OTHER, spec.getDefaultValue());
 		
-		spec = new FieldSpec(FieldSpec.TYPE_MULTILINE);
+		spec = new FieldSpec(new FieldTypeMultiline());
 		assertEquals(emptyString, spec.getDefaultValue());
 
-		spec = new FieldSpec(FieldSpec.TYPE_NORMAL);
+		spec = new FieldSpec(new FieldTypeNormal());
 		assertEquals(emptyString, spec.getDefaultValue());
 
-		spec = new FieldSpec(FieldSpec.TYPE_SEARCH_VALUE);
+		spec = new FieldSpec(new FieldTypeSearchValue());
 		assertEquals(emptyString, spec.getDefaultValue());
 		
 		spec = new DropDownFieldSpec(new ChoiceItem[] {new ChoiceItem("first", "First item"), new ChoiceItem("", "")});
 		assertEquals("first", spec.getDefaultValue());
 		
-		spec = new FieldSpec(FieldSpec.TYPE_MESSAGE);
+		spec = new FieldSpec(new FieldTypeMessage());
 		assertEquals(emptyString, spec.getDefaultValue());
 	
 		CustomDropDownFieldSpec dropdownSpec = new CustomDropDownFieldSpec();
@@ -127,8 +140,6 @@ public class TestFieldSpec extends TestCaseEnhanced
 		messageSpec.putMessage(message);
 		assertEquals(message, messageSpec.getDefaultValue());
 
-		assertEquals("Need to make sure this test covers new types", 10, FieldSpec.INSERT_NEXT_TYPE_HERE_AND_INCREASE_THIS_BY_ONE);
-		
 	}
 	
 	public void testToString()
@@ -140,42 +151,49 @@ public class TestFieldSpec extends TestCaseEnhanced
 	
 	public void testGetTypeString()
 	{
-		assertEquals("STRING", FieldSpec.getTypeString(FieldSpec.TYPE_NORMAL));
-		assertEquals("MULTILINE", FieldSpec.getTypeString(FieldSpec.TYPE_MULTILINE));
-		assertEquals("DATE", FieldSpec.getTypeString(FieldSpec.TYPE_DATE));
-		assertEquals("DATERANGE", FieldSpec.getTypeString(FieldSpec.TYPE_DATERANGE));
-		assertEquals("BOOLEAN", FieldSpec.getTypeString(FieldSpec.TYPE_BOOLEAN));
-		assertEquals("LANGUAGE", FieldSpec.getTypeString(FieldSpec.TYPE_LANGUAGE));
-		assertEquals("GRID", FieldSpec.getTypeString(FieldSpec.TYPE_GRID));
-		assertEquals("DROPDOWN", FieldSpec.getTypeString(FieldSpec.TYPE_DROPDOWN));
-		assertEquals("MESSAGE", FieldSpec.getTypeString(FieldSpec.TYPE_MESSAGE));
-		assertEquals("UNKNOWN", FieldSpec.getTypeString(-99));
+		assertEquals("STRING", FieldSpec.getTypeString(new FieldTypeNormal()));
+		assertEquals("MULTILINE", FieldSpec.getTypeString(new FieldTypeMultiline()));
+		assertEquals("DATE", FieldSpec.getTypeString(new FieldTypeDate()));
+		assertEquals("DATERANGE", FieldSpec.getTypeString(new FieldTypeDateRange()));
+		assertEquals("BOOLEAN", FieldSpec.getTypeString(new FieldTypeBoolean()));
+		assertEquals("LANGUAGE", FieldSpec.getTypeString(new FieldTypeLanguage()));
+		assertEquals("GRID", FieldSpec.getTypeString(new FieldTypeGrid()));
+		assertEquals("DROPDOWN", FieldSpec.getTypeString(new FieldTypeDropdown()));
+		assertEquals("MESSAGE", FieldSpec.getTypeString(new FieldTypeMessage()));
+		assertEquals("UNKNOWN", FieldSpec.getTypeString(new FieldTypeUnknown()));
+		assertEquals("UNKNOWN", FieldSpec.getTypeString(new FieldTypeAnyField()));
 	}
 	
 	public void testGetTypeCode()
 	{
-		assertEquals(FieldSpec.TYPE_UNKNOWN, FieldSpec.getTypeCode("anything else"));
-		assertEquals(FieldSpec.TYPE_NORMAL, FieldSpec.getTypeCode("STRING"));
-		assertEquals(FieldSpec.TYPE_MULTILINE, FieldSpec.getTypeCode("MULTILINE"));
-		assertEquals(FieldSpec.TYPE_DATE, FieldSpec.getTypeCode("DATE"));
-		assertEquals(FieldSpec.TYPE_DATERANGE, FieldSpec.getTypeCode("DATERANGE"));
-		assertEquals(FieldSpec.TYPE_BOOLEAN, FieldSpec.getTypeCode("BOOLEAN"));
-		assertEquals(FieldSpec.TYPE_LANGUAGE, FieldSpec.getTypeCode("LANGUAGE"));
-		assertEquals(FieldSpec.TYPE_GRID, FieldSpec.getTypeCode("GRID"));
-		assertEquals(FieldSpec.TYPE_DROPDOWN, FieldSpec.getTypeCode("DROPDOWN"));
-		assertEquals(FieldSpec.TYPE_MESSAGE, FieldSpec.getTypeCode("MESSAGE"));
+		verifyCreatedTypeString("STRING");
+		verifyCreatedTypeString("MULTILINE");
+		verifyCreatedTypeString("DATE");
+		verifyCreatedTypeString("DATERANGE");
+		verifyCreatedTypeString("BOOLEAN");
+		verifyCreatedTypeString("LANGUAGE");
+		verifyCreatedTypeString("GRID");
+		verifyCreatedTypeString("DROPDOWN");
+		verifyCreatedTypeString("MESSAGE");
+		assertEquals("UNKNOWN", FieldSpec.getTypeCode("anything else").getTypeName());
+	}
+	
+	private void verifyCreatedTypeString(String typeString)
+	{
+		FieldType type = FieldSpec.getTypeCode(typeString);
+		assertEquals("wrong type: " + typeString, typeString, type.getTypeName());
 	}
 	
 	public void testEquals()
 	{
-		FieldSpec a = new FieldSpec(FieldSpec.TYPE_NORMAL);
+		FieldSpec a = new FieldSpec(new FieldTypeNormal());
 		String labelA = "label a";
 		String tagA = "NewTagA";
 		String labelB = "label b";
 		String tagB = "NewTagB";
 		a.setLabel(labelA);
 		a.setTag(tagA);
-		FieldSpec b = new FieldSpec(FieldSpec.TYPE_NORMAL);
+		FieldSpec b = new FieldSpec(new FieldTypeNormal());
 		b.setLabel(labelA);
 		b.setTag(tagA);
 		assertTrue("A & B should be identical", a.equals(b));
@@ -187,7 +205,7 @@ public class TestFieldSpec extends TestCaseEnhanced
 		b.setTag(tagB);
 		assertFalse("B has different Tag", a.equals(b));
 		
-		FieldSpec c = new FieldSpec(FieldSpec.TYPE_MULTILINE);
+		FieldSpec c = new FieldSpec(new FieldTypeMultiline());
 		c.setLabel(labelA);
 		c.setTag(tagA);
 		assertFalse("C has different Type", a.equals(b));

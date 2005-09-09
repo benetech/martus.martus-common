@@ -28,6 +28,9 @@ package org.martus.common.test;
 
 import org.martus.common.fieldspec.ChoiceItem;
 import org.martus.common.fieldspec.FieldSpec;
+import org.martus.common.fieldspec.FieldTypeDropdown;
+import org.martus.common.fieldspec.FieldTypeMultiline;
+import org.martus.common.fieldspec.FieldTypeUnknown;
 import org.martus.util.TestCaseEnhanced;
 
 public class TestChoiceItem extends TestCaseEnhanced
@@ -47,9 +50,9 @@ public class TestChoiceItem extends TestCaseEnhanced
 	public void testTypes()
 	{
 		ChoiceItem basicItem = new ChoiceItem("a", "b");
-		assertEquals(FieldSpec.TYPE_UNKNOWN, basicItem.getType());
+		assertEquals(new FieldTypeUnknown(), basicItem.getType());
 		
-		FieldSpec spec = FieldSpec.createCustomField("tag", "label", FieldSpec.TYPE_DROPDOWN);
+		FieldSpec spec = FieldSpec.createCustomField("tag", "label", new FieldTypeDropdown());
 		ChoiceItem specItem = new ChoiceItem(spec);
 		assertEquals(spec.getTag(), specItem.getCode());
 		assertEquals(spec.getLabel(), specItem.toString());
@@ -66,7 +69,7 @@ public class TestChoiceItem extends TestCaseEnhanced
 		ChoiceItem b = new ChoiceItem("b", label);
 		assertFalse("didn't use tag in equals comparison?", a.equals(b));
 		
-		FieldSpec spec = FieldSpec.createCustomField("a", label, FieldSpec.TYPE_MULTILINE);
+		FieldSpec spec = FieldSpec.createCustomField("a", label, new FieldTypeMultiline());
 		ChoiceItem c = new ChoiceItem(spec);
 		assertFalse("didn't use type in equals comparison?", a.equals(c));
 		
@@ -83,7 +86,7 @@ public class TestChoiceItem extends TestCaseEnhanced
 		ChoiceItem b = new ChoiceItem("b", label);
 		assertEquals("Used tag in compareTo comparison?", 0, a.compareTo(b));
 		
-		FieldSpec spec = FieldSpec.createCustomField("a", label, FieldSpec.TYPE_MULTILINE);
+		FieldSpec spec = FieldSpec.createCustomField("a", label, new FieldTypeMultiline());
 		ChoiceItem c = new ChoiceItem(spec);
 		assertEquals("Used type in equals comparison?", 0, a.compareTo(c));
 	}

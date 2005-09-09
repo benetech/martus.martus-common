@@ -48,6 +48,12 @@ import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.MockClientDatabase;
 import org.martus.common.database.MockDatabase;
 import org.martus.common.fieldspec.FieldSpec;
+import org.martus.common.fieldspec.FieldTypeDate;
+import org.martus.common.fieldspec.FieldTypeDateRange;
+import org.martus.common.fieldspec.FieldTypeLanguage;
+import org.martus.common.fieldspec.FieldTypeMultiline;
+import org.martus.common.fieldspec.FieldTypeNormal;
+import org.martus.common.fieldspec.FieldTypeUnknown;
 import org.martus.common.fieldspec.StandardFieldSpecs;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.BulletinHistory;
@@ -121,10 +127,10 @@ public class TestBulletin extends TestCaseEnhanced
     public void testGetFieldType()
     {
     	Bulletin b = new Bulletin(security);
-    	assertEquals(FieldSpec.TYPE_UNKNOWN, b.getFieldType("Not a real field tag"));
-    	assertEquals(FieldSpec.TYPE_DATE, b.getFieldType(BulletinConstants.TAGENTRYDATE));
-    	assertEquals(FieldSpec.TYPE_DATERANGE, b.getFieldType(BulletinConstants.TAGEVENTDATE));
-    	assertEquals(FieldSpec.TYPE_MULTILINE, b.getFieldType(BulletinConstants.TAGPRIVATEINFO));
+    	assertEquals(new FieldTypeUnknown(), b.getFieldType("Not a real field tag"));
+    	assertEquals(new FieldTypeDate(), b.getFieldType(BulletinConstants.TAGENTRYDATE));
+    	assertEquals(new FieldTypeDateRange(), b.getFieldType(BulletinConstants.TAGEVENTDATE));
+    	assertEquals(new FieldTypeMultiline(), b.getFieldType(BulletinConstants.TAGPRIVATEINFO));
     }
     
     public void testGetLastSavedDate() throws Exception
@@ -303,17 +309,17 @@ public class TestBulletin extends TestCaseEnhanced
 		{
 			FieldSpec spec = standardPublicFields[i];
 			if(spec.getTag().equals("summary"))
-				assertEquals(spec.getTag(), FieldSpec.TYPE_MULTILINE, spec.getType());
+				assertEquals(spec.getTag(), new FieldTypeMultiline(), spec.getType());
 			else if(spec.getTag().equals("publicinfo"))
-				assertEquals(spec.getTag(), FieldSpec.TYPE_MULTILINE, spec.getType());
+				assertEquals(spec.getTag(), new FieldTypeMultiline(), spec.getType());
 			else if(spec.getTag().equals("eventdate"))
-				assertEquals(spec.getTag(), FieldSpec.TYPE_DATERANGE, spec.getType());
+				assertEquals(spec.getTag(), new FieldTypeDateRange(), spec.getType());
 			else if(spec.getTag().equals("entrydate"))
-				assertEquals(spec.getTag(), FieldSpec.TYPE_DATE, spec.getType());
+				assertEquals(spec.getTag(), new FieldTypeDate(), spec.getType());
 			else if(spec.getTag().equals("language"))
-				assertEquals(spec.getTag(), FieldSpec.TYPE_LANGUAGE, spec.getType());
+				assertEquals(spec.getTag(), new FieldTypeLanguage(), spec.getType());
 			else
-				assertEquals(spec.getTag(), FieldSpec.TYPE_NORMAL, spec.getType());
+				assertEquals(spec.getTag(), new FieldTypeNormal(), spec.getType());
 		}
 
 		FieldSpec[] standardPrivateFields = StandardFieldSpecs.getDefaultPrivateFieldSpecs();
@@ -321,9 +327,9 @@ public class TestBulletin extends TestCaseEnhanced
 		{
 			FieldSpec spec = standardPrivateFields[i];
 			if(spec.getTag().equals("privateinfo"))
-				assertEquals(spec.getTag(), FieldSpec.TYPE_MULTILINE, spec.getType());
+				assertEquals(spec.getTag(), new FieldTypeMultiline(), spec.getType());
 			else
-				assertEquals(spec.getTag(), FieldSpec.TYPE_NORMAL, spec.getType());
+				assertEquals(spec.getTag(), new FieldTypeNormal(), spec.getType());
 		}
 	}
 

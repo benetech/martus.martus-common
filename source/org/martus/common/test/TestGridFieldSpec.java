@@ -27,6 +27,16 @@ package org.martus.common.test;
 
 import org.martus.common.fieldspec.DropDownFieldSpec;
 import org.martus.common.fieldspec.FieldSpec;
+import org.martus.common.fieldspec.FieldTypeBoolean;
+import org.martus.common.fieldspec.FieldTypeDate;
+import org.martus.common.fieldspec.FieldTypeDateRange;
+import org.martus.common.fieldspec.FieldTypeDropdown;
+import org.martus.common.fieldspec.FieldTypeGrid;
+import org.martus.common.fieldspec.FieldTypeLanguage;
+import org.martus.common.fieldspec.FieldTypeMessage;
+import org.martus.common.fieldspec.FieldTypeMultiline;
+import org.martus.common.fieldspec.FieldTypeNormal;
+import org.martus.common.fieldspec.FieldTypeUnknown;
 import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.common.fieldspec.TestCustomDropDownFieldSpec;
 import org.martus.util.TestCaseEnhanced;
@@ -79,10 +89,10 @@ public class TestGridFieldSpec extends TestCaseEnhanced
 		GridFieldSpec spec = new GridFieldSpec();
 
 		String labelStringColumn = "TYPE_NORMAL";
-		FieldSpec stringSpec = new FieldSpec(labelStringColumn, FieldSpec.TYPE_NORMAL);
+		FieldSpec stringSpec = new FieldSpec(labelStringColumn, new FieldTypeNormal());
 		spec.addColumn(stringSpec);
 		assertEquals(labelStringColumn, spec.getColumnLabel(0));
-		assertEquals(FieldSpec.TYPE_NORMAL, spec.getColumnType(0));
+		assertEquals(new FieldTypeNormal(), spec.getColumnType(0));
 		assertEquals(labelStringColumn, spec.getFieldSpec(0).getLabel());
 
 		FieldSpec.XmlFieldSpecLoader loader = new FieldSpec.XmlFieldSpecLoader();
@@ -90,7 +100,7 @@ public class TestGridFieldSpec extends TestCaseEnhanced
 		DropDownFieldSpec dropdownSpecToAdd = (DropDownFieldSpec)loader.getFieldSpec();
 		spec.addColumn(dropdownSpecToAdd);
 		assertEquals(TestCustomDropDownFieldSpec.SAMPLE_DROPDOWN_LABEL, spec.getColumnLabel(1));
-		assertEquals(FieldSpec.TYPE_DROPDOWN, spec.getColumnType(1));
+		assertEquals(new FieldTypeDropdown(), spec.getColumnType(1));
 
 		DropDownFieldSpec dropdownSpecRetrieved = (DropDownFieldSpec)spec.getFieldSpec(1);
 		assertEquals(3, dropdownSpecRetrieved.getCount());
@@ -100,43 +110,34 @@ public class TestGridFieldSpec extends TestCaseEnhanced
 
 
 		String labelBooleanColumn = "TYPE_BOOLEAN";
-		FieldSpec booleanSpec = new FieldSpec(labelBooleanColumn, FieldSpec.TYPE_BOOLEAN);
+		FieldSpec booleanSpec = new FieldSpec(labelBooleanColumn, new FieldTypeBoolean());
 		spec.addColumn(booleanSpec);
 		assertEquals(labelBooleanColumn, spec.getColumnLabel(2));
-		assertEquals(FieldSpec.TYPE_BOOLEAN, spec.getColumnType(2));
+		assertEquals(new FieldTypeBoolean(), spec.getColumnType(2));
 		assertEquals(labelBooleanColumn, spec.getFieldSpec(2).getLabel());
 		
 		String labelDateColumn = "TYPE_DATE";
-		FieldSpec dateSpec = new FieldSpec(labelDateColumn, FieldSpec.TYPE_DATE);
+		FieldSpec dateSpec = new FieldSpec(labelDateColumn, new FieldTypeDate());
 		spec.addColumn(dateSpec);
 		assertEquals(labelDateColumn, spec.getColumnLabel(3));
-		assertEquals(FieldSpec.TYPE_DATE, spec.getColumnType(3));
+		assertEquals(new FieldTypeDate(), spec.getColumnType(3));
 		assertEquals(labelDateColumn, spec.getFieldSpec(3).getLabel());
 
 		String labelDateRangeColumn = "TYPE_DATERANGE";
-		FieldSpec dateRangeSpec = new FieldSpec(labelDateRangeColumn, FieldSpec.TYPE_DATERANGE);
+		FieldSpec dateRangeSpec = new FieldSpec(labelDateRangeColumn, new FieldTypeDateRange());
 		spec.addColumn(dateRangeSpec);
 		assertEquals(labelDateRangeColumn, spec.getColumnLabel(4));
-		assertEquals(FieldSpec.TYPE_DATERANGE, spec.getColumnType(4));
+		assertEquals(new FieldTypeDateRange(), spec.getColumnType(4));
 		assertEquals(labelDateRangeColumn, spec.getFieldSpec(4).getLabel());
 	}
 	
 	public void testAddColumnWithDisallowedTypes()
 	{
-		assertFalse("language column allowed?", GridFieldSpec.isValidGridColumnType(FieldSpec.TYPE_LANGUAGE));
-		assertFalse("multiline column allowed?", GridFieldSpec.isValidGridColumnType(FieldSpec.TYPE_MULTILINE));
-		assertFalse("grid column allowed?", GridFieldSpec.isValidGridColumnType(FieldSpec.TYPE_GRID));
-		assertFalse("message column allowed?", GridFieldSpec.isValidGridColumnType(FieldSpec.TYPE_MESSAGE));
-		assertFalse("unknown column allowed?", GridFieldSpec.isValidGridColumnType(FieldSpec.TYPE_UNKNOWN));
-		
-		try
-		{
-			GridFieldSpec.isValidGridColumnType(10);
-			fail("New column types have been added, so they need to be tested here!");
-		}
-		catch(RuntimeException ignoreExpected)
-		{
-		}
+		assertFalse("language column allowed?", GridFieldSpec.isValidGridColumnType(new FieldTypeLanguage()));
+		assertFalse("multiline column allowed?", GridFieldSpec.isValidGridColumnType(new FieldTypeMultiline()));
+		assertFalse("grid column allowed?", GridFieldSpec.isValidGridColumnType(new FieldTypeGrid()));
+		assertFalse("message column allowed?", GridFieldSpec.isValidGridColumnType(new FieldTypeMessage()));
+		assertFalse("unknown column allowed?", GridFieldSpec.isValidGridColumnType(new FieldTypeUnknown()));
 	}
 
 	public static final String SAMPLE_GRID_HEADER_LABEL_1 = "label1";

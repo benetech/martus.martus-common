@@ -32,6 +32,7 @@ import org.martus.common.field.MartusDateField;
 import org.martus.common.field.MartusDateRangeField;
 import org.martus.common.field.MartusField;
 import org.martus.common.fieldspec.FieldSpec;
+import org.martus.common.fieldspec.FieldType;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlParser;
 import org.xml.sax.SAXParseException;
@@ -53,18 +54,13 @@ public class FieldCollection
 	
 	public void add(FieldSpec newSpec)
 	{
-		switch(newSpec.getType())
-		{
-			case FieldSpec.TYPE_DATERANGE:
-				fields.add(new MartusDateRangeField(newSpec));
-				break;
-			case FieldSpec.TYPE_DATE:
-				fields.add(new MartusDateField(newSpec));
-				break;
-			default:
-				fields.add(new MartusField(newSpec));
-				break;
-		}
+		FieldType type = newSpec.getType();
+		if(type.isDateRange())
+			fields.add(new MartusDateRangeField(newSpec));
+		else if(type.isDate())
+			fields.add(new MartusDateField(newSpec));
+		else
+			fields.add(new MartusField(newSpec));
 	}
 	
 	public int count()

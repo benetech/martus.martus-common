@@ -28,12 +28,8 @@ package org.martus.common.fieldspec;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+
 import org.martus.common.MartusXml;
-import org.martus.common.MiniLocalization;
-import org.martus.common.utilities.DateUtilities;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlStringLoader;
 import org.martus.util.xml.XmlUtilities;
@@ -43,27 +39,27 @@ import org.xml.sax.SAXParseException;
 
 public class FieldSpec
 {
-	public static FieldSpec createStandardField(String tagToUse, int typeToUse)
+	public static FieldSpec createStandardField(String tagToUse, FieldType typeToUse)
 	{
 		return createCustomField(tagToUse, "", typeToUse);
 	}
 	
-	public static FieldSpec createCustomField(String tagToUse, String labelToUse, int typeToUse)
+	public static FieldSpec createCustomField(String tagToUse, String labelToUse, FieldType typeToUse)
 	{
 		return new FieldSpec(tagToUse, labelToUse, typeToUse, false);
 	}
 	
-	public FieldSpec(int typeToUse)
+	public FieldSpec(FieldType typeToUse)
 	{
 		this("", typeToUse);
 	}
 	
-	public FieldSpec(String labelToUse, int typeToUse)
+	public FieldSpec(String labelToUse, FieldType typeToUse)
 	{
 		this("",labelToUse,typeToUse,false);
 	}
 
-	public FieldSpec(String tagToUse, String labelToUse, int typeToUse, boolean hasUnknownToUse)
+	public FieldSpec(String tagToUse, String labelToUse, FieldType typeToUse, boolean hasUnknownToUse)
 	{
 		tag = tagToUse;
 		label = labelToUse;
@@ -107,32 +103,14 @@ public class FieldSpec
 		return label;
 	}
 	
-	public int getType()
+	public FieldType getType()
 	{
 		return type;
 	}
 	
 	public String getDefaultValue()
 	{
-		switch(getType())
-		{
-			case TYPE_BOOLEAN:
-				return FieldSpec.FALSESTRING;
-			case TYPE_DATE:
-			case TYPE_DATERANGE:
-				return DateUtilities.getFirstOfThisYear();
-			case TYPE_LANGUAGE:
-				return MiniLocalization.LANGUAGE_OTHER;
-			case TYPE_NORMAL:
-			case TYPE_MULTILINE:
-			case TYPE_MESSAGE:
-			case TYPE_UNKNOWN:
-			case TYPE_SEARCH_VALUE:
-			case TYPE_ANY_FIELD:
-				return "";
-			default:
-				throw new RuntimeException("This class or a subclass needs to define the default value for type " + getType());
-		}
+		return(getType().getDefaultValue());
 	}
 	
 	public boolean hasUnknownStuff()
@@ -150,7 +128,7 @@ public class FieldSpec
 		this.tag = tag;
 	}
 	
-	public void setType(int type)
+	public void setType(FieldType type)
 	{
 		this.type = type;
 	}
@@ -183,48 +161,21 @@ public class FieldSpec
 			return false;
 		if(!tag.equals(otherSpec.tag))
 			return false;
-		if(type != otherSpec.type)
+		if(!type.equals(otherSpec.type))
 			return false;
 		return true;
 	}
 
-	public static String getTypeString(int type)
+	public static String getTypeString(FieldType type)
 	{
-		Map map = getTypeCodesAndStrings();
-		if(!map.containsKey(new Integer(type)))
-			type = TYPE_UNKNOWN;
-		String value = (String)map.get(new Integer(type));
-		return value;		 
+		return type.getTypeName();
 	}
 	
-	public static int getTypeCode(String type)
+	public static FieldType getTypeCode(String type)
 	{
-		Map map = getTypeCodesAndStrings();
-		for (Iterator iter = map.entrySet().iterator(); iter.hasNext();)
-		{
-			Map.Entry entry = (Map.Entry)iter.next();
-			String value = (String)entry.getValue();
-			if(value.equals(type))
-				return ((Integer)entry.getKey()).intValue();
-		} 
-		return TYPE_UNKNOWN;
+		return FieldType.createFromTypeName(type);
 	}
 	
-	private static Map getTypeCodesAndStrings()
-	{
-		HashMap map = new HashMap();
-		map.put(new Integer(TYPE_NORMAL), "STRING");
-		map.put(new Integer(TYPE_MULTILINE), "MULTILINE");
-		map.put(new Integer(TYPE_DATE), "DATE");
-		map.put(new Integer(TYPE_DATERANGE), "DATERANGE");
-		map.put(new Integer(TYPE_BOOLEAN), "BOOLEAN");
-		map.put(new Integer(TYPE_LANGUAGE), "LANGUAGE");
-		map.put(new Integer(TYPE_GRID), "GRID");
-		map.put(new Integer(TYPE_DROPDOWN), "DROPDOWN");
-		map.put(new Integer(TYPE_MESSAGE), "MESSAGE");
-		map.put(new Integer(TYPE_UNKNOWN), "UNKNOWN");
-		return map;
-	}
 	
 	public static FieldSpec createFromXml(String xml) throws Exception
 	{
@@ -259,15 +210,8 @@ public class FieldSpec
 		
 		public void startDocument(Attributes attrs) throws SAXParseException
 		{
-			int type = getTypeCode(attrs.getValue(FieldSpec.FIELD_SPEC_TYPE_ATTR));
-			if(type == TYPE_GRID)
-				spec = new GridFieldSpec();
-			else if(type == TYPE_DROPDOWN)
-				spec = new CustomDropDownFieldSpec();
-			else if(type == TYPE_MESSAGE)
-				spec = new MessageFieldSpec();
-			else
-				spec = new FieldSpec(type);
+			FieldType type = getTypeCode(attrs.getValue(FieldSpec.FIELD_SPEC_TYPE_ATTR));
+			spec = type.createEmptyFieldSpec();
 			super.startDocument(attrs);
 		}
 	
@@ -305,25 +249,10 @@ public class FieldSpec
 	}
 
 	String tag;
-	int type;
+	FieldType type;
 	String label;
 	boolean hasUnknown;
 
-	public static final int TYPE_NORMAL = 0;
-	public static final int TYPE_MULTILINE = 1;
-	public static final int TYPE_DATE = 2;
-	public static final int TYPE_LANGUAGE = 4;
-	public static final int TYPE_DATERANGE = 5;
-	public static final int TYPE_BOOLEAN = 6;
-	public static final int TYPE_GRID = 7;
-	public static final int TYPE_DROPDOWN = 8;
-	public static final int TYPE_MESSAGE = 9;
-	public static final int INSERT_NEXT_TYPE_HERE_AND_INCREASE_THIS_BY_ONE = 10;
-	
-	public static final int TYPE_UNKNOWN = 99;
-	public static final int TYPE_SEARCH_VALUE = 100;	// only used internally
-	public static final int TYPE_ANY_FIELD = 101;		// only used internally
-	
 	public static final String FIELD_SPEC_XML_TAG = "Field";
 	public static final String FIELD_SPEC_TAG_XML_TAG = "Tag";
 	public static final String FIELD_SPEC_LABEL_XML_TAG = "Label";

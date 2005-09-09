@@ -27,6 +27,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.field;
 
 import org.martus.common.fieldspec.FieldSpec;
+import org.martus.common.fieldspec.FieldType;
 
 public class MartusField
 {
@@ -51,7 +52,7 @@ public class MartusField
 		return spec.getLabel();
 	}
 	
-	public int getType()
+	public FieldType getType()
 	{
 		return spec.getType();
 	}
@@ -62,6 +63,11 @@ public class MartusField
 			return "";
 		
 		return data;
+	}
+	
+	public String getSearchableData()
+	{
+		return getData();
 	}
 	
 	public void clearData()

@@ -27,7 +27,10 @@ Boston, MA 02111-1307, USA.
 package org.martus.common;
 
 import java.util.Vector;
+
 import org.martus.common.fieldspec.FieldSpec;
+import org.martus.common.fieldspec.FieldType;
+import org.martus.common.fieldspec.FieldTypeNormal;
 import org.martus.common.fieldspec.StandardFieldSpecs;
 
 
@@ -80,9 +83,9 @@ public class LegacyCustomFields
 			extractedHasUnknown = true;
 		}
 	
-		int extractedType = StandardFieldSpecs.getStandardType(extractedTag);
-		if(extractedType == FieldSpec.TYPE_UNKNOWN && !extractedHasUnknown)
-			extractedType = FieldSpec.TYPE_NORMAL;
+		FieldType extractedType = StandardFieldSpecs.getStandardType(extractedTag);
+		if(extractedType.isUnknown() && !extractedHasUnknown)
+			extractedType = new FieldTypeNormal();
 	
 		char[] cleansedTag = extractedTag.toCharArray();
 		for(int i=0; i < cleansedTag.length; ++i)

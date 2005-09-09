@@ -37,6 +37,7 @@ import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.ReadableDatabase;
 import org.martus.common.database.Database.RecordHiddenException;
 import org.martus.common.fieldspec.FieldSpec;
+import org.martus.common.fieldspec.FieldType;
 import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.common.fieldspec.StandardFieldSpecs;
 import org.martus.common.packet.FieldDataPacket;
@@ -213,8 +214,8 @@ public class BulletinHtmlGenerator
 			String value = getHTMLEscaped(fdp.get(tag));
 			if(tag.equals(Bulletin.TAGTITLE))
 				value = "<strong>" + value + "</strong>";
-			int fieldType = spec.getType();
-			if(fieldType == FieldSpec.TYPE_GRID)
+			FieldType fieldType = spec.getType();
+			if(fieldType.isGrid())
 				value = getGridHTML(fdp, spec, tag);
 			else
 				value = getPrintableData(value, fieldType);
@@ -228,17 +229,17 @@ public class BulletinHtmlGenerator
 		return sectionHtml;
 	}
 
-	private String getPrintableData(String value, int fieldType)
+	private String getPrintableData(String value, FieldType fieldType)
 	{
-		if(fieldType == FieldSpec.TYPE_DATE)
+		if(fieldType.isDate())
 			value = localization.convertStoredDateToDisplayReverseIfNecessary(value);
-		else if(fieldType == FieldSpec.TYPE_LANGUAGE)
+		else if(fieldType.isLanguage())
 			value = getHTMLEscaped(localization.getLanguageName(value));
-		else if(fieldType == FieldSpec.TYPE_MULTILINE)
+		else if(fieldType.isMultiline())
 			value = insertNewlines(value);
-		else if(fieldType == FieldSpec.TYPE_DATERANGE)
+		else if(fieldType.isDateRange())
 			value = localization.getViewableDateRange(value);
-		else if(fieldType == FieldSpec.TYPE_BOOLEAN)
+		else if(fieldType.isBoolean())
 			value = getPrintableBooleanValue(value);
 		return value;
 	}
@@ -296,7 +297,7 @@ public class BulletinHtmlGenerator
 				     column = (columnCount - 1) - i;
 
 					String rawdata = gridData.getValueAt(r, column);
-					int columnType = grid.getColumnType(column);
+					FieldType columnType = grid.getColumnType(column);
 					String printableData = getPrintableData(rawdata, columnType);
 					value += getItemToAddForTable(printableData, TABLE_DATA, justification);
 				}

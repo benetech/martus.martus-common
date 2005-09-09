@@ -36,6 +36,7 @@ import org.martus.common.bulletin.BulletinHtmlGenerator;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.fieldspec.CustomDropDownFieldSpec;
 import org.martus.common.fieldspec.FieldSpec;
+import org.martus.common.fieldspec.FieldTypeNormal;
 import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.common.fieldspec.StandardFieldSpecs;
 import org.martus.util.TestCaseEnhanced;
@@ -225,9 +226,9 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 		GridData grid = TestGridData.createSampleGridWithOneEmptyRow();
 		GridFieldSpec gridSpec = new GridFieldSpec();
 		String label1 = "Column 1";
-		FieldSpec column1 = new FieldSpec(label1, FieldSpec.TYPE_NORMAL);
+		FieldSpec column1 = new FieldSpec(label1, new FieldTypeNormal());
 		String label2 = "Column 2";
-		FieldSpec column2 = new FieldSpec(label2, FieldSpec.TYPE_NORMAL);
+		FieldSpec column2 = new FieldSpec(label2, new FieldTypeNormal());
 
 		gridSpec.addColumn(column1);
 		gridSpec.addColumn(column2);

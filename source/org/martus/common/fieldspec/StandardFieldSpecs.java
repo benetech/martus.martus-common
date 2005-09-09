@@ -38,16 +38,16 @@ public class StandardFieldSpecs
 		{
 			defaultPublicFieldSpecs = new FieldSpec[] 
 			{
-				FieldSpec.createStandardField(BulletinConstants.TAGLANGUAGE, FieldSpec.TYPE_LANGUAGE),
-				FieldSpec.createStandardField(BulletinConstants.TAGAUTHOR, FieldSpec.TYPE_NORMAL),
-				FieldSpec.createStandardField(BulletinConstants.TAGORGANIZATION, FieldSpec.TYPE_NORMAL),
-				FieldSpec.createStandardField(BulletinConstants.TAGTITLE, FieldSpec.TYPE_NORMAL),
-				FieldSpec.createStandardField(BulletinConstants.TAGLOCATION, FieldSpec.TYPE_NORMAL), 
-				FieldSpec.createStandardField(BulletinConstants.TAGKEYWORDS, FieldSpec.TYPE_NORMAL),
-				FieldSpec.createStandardField(BulletinConstants.TAGEVENTDATE, FieldSpec.TYPE_DATERANGE),
-				FieldSpec.createStandardField(BulletinConstants.TAGENTRYDATE, FieldSpec.TYPE_DATE),
-				FieldSpec.createStandardField(BulletinConstants.TAGSUMMARY, FieldSpec.TYPE_MULTILINE),
-				FieldSpec.createStandardField(BulletinConstants.TAGPUBLICINFO, FieldSpec.TYPE_MULTILINE),
+				FieldSpec.createStandardField(BulletinConstants.TAGLANGUAGE, new FieldTypeLanguage()),
+				FieldSpec.createStandardField(BulletinConstants.TAGAUTHOR, new FieldTypeNormal()),
+				FieldSpec.createStandardField(BulletinConstants.TAGORGANIZATION, new FieldTypeNormal()),
+				FieldSpec.createStandardField(BulletinConstants.TAGTITLE, new FieldTypeNormal()),
+				FieldSpec.createStandardField(BulletinConstants.TAGLOCATION, new FieldTypeNormal()), 
+				FieldSpec.createStandardField(BulletinConstants.TAGKEYWORDS, new FieldTypeNormal()),
+				FieldSpec.createStandardField(BulletinConstants.TAGEVENTDATE, new FieldTypeDateRange()),
+				FieldSpec.createStandardField(BulletinConstants.TAGENTRYDATE, new FieldTypeDate()),
+				FieldSpec.createStandardField(BulletinConstants.TAGSUMMARY, new FieldTypeMultiline()),
+				FieldSpec.createStandardField(BulletinConstants.TAGPUBLICINFO, new FieldTypeMultiline()),
 			};
 		}
 		
@@ -60,18 +60,18 @@ public class StandardFieldSpecs
 		{
 			defaultPrivateFieldSpecs = new FieldSpec[]
 			{
-				FieldSpec.createStandardField(BulletinConstants.TAGPRIVATEINFO, FieldSpec.TYPE_MULTILINE),
+				FieldSpec.createStandardField(BulletinConstants.TAGPRIVATEINFO, new FieldTypeMultiline()),
 			};
 		}
 		
 		return (FieldSpec[])defaultPrivateFieldSpecs.clone();
 	}
 
-	public static int getStandardType(String tag)
+	public static FieldType getStandardType(String tag)
 	{
 		FieldSpec thisSpec = findStandardFieldSpec(tag);
 		if(thisSpec == null)
-			return FieldSpec.TYPE_UNKNOWN;
+			return new FieldTypeUnknown();
 		return thisSpec.getType();
 	}
 

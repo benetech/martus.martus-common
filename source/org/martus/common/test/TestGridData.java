@@ -28,6 +28,7 @@ package org.martus.common.test;
 import org.martus.common.GridData;
 import org.martus.common.GridRow;
 import org.martus.common.fieldspec.FieldSpec;
+import org.martus.common.fieldspec.FieldTypeNormal;
 import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.common.fieldspec.GridFieldSpec.UnsupportedFieldTypeException;
 import org.martus.util.TestCaseEnhanced;
@@ -45,8 +46,8 @@ public class TestGridData extends TestCaseEnhanced
 	{
 
 		gridSpec2Colunns = new GridFieldSpec();
-		gridSpec2Colunns.addColumn(FieldSpec.createStandardField("a", FieldSpec.TYPE_NORMAL));
-		gridSpec2Colunns.addColumn(FieldSpec.createStandardField("b", FieldSpec.TYPE_NORMAL));
+		gridSpec2Colunns.addColumn(FieldSpec.createStandardField("a", new FieldTypeNormal()));
+		gridSpec2Colunns.addColumn(FieldSpec.createStandardField("b", new FieldTypeNormal()));
 	}
 	
 	public void testBasics()
@@ -100,7 +101,7 @@ public class TestGridData extends TestCaseEnhanced
 		String[] row1Data = {"column1a"};
 		
 		GridFieldSpec gridSpecWithOneColumn = new GridFieldSpec();
-		gridSpecWithOneColumn.addColumn(FieldSpec.createStandardField("a", FieldSpec.TYPE_NORMAL));
+		gridSpecWithOneColumn.addColumn(FieldSpec.createStandardField("a", new FieldTypeNormal()));
 		GridRow row1 = new GridRow(gridSpecWithOneColumn);
 		fillGridRow(row1, row1Data);
 		try
@@ -116,9 +117,9 @@ public class TestGridData extends TestCaseEnhanced
 		String[] row2Data = {"column1b", "column2b", "column3b"};
 
 		GridFieldSpec gridSpecWithThreeColumns = new GridFieldSpec();
-		gridSpecWithThreeColumns.addColumn(FieldSpec.createStandardField("a", FieldSpec.TYPE_NORMAL));
-		gridSpecWithThreeColumns.addColumn(FieldSpec.createStandardField("b", FieldSpec.TYPE_NORMAL));
-		gridSpecWithThreeColumns.addColumn(FieldSpec.createStandardField("c", FieldSpec.TYPE_NORMAL));
+		gridSpecWithThreeColumns.addColumn(FieldSpec.createStandardField("a", new FieldTypeNormal()));
+		gridSpecWithThreeColumns.addColumn(FieldSpec.createStandardField("b", new FieldTypeNormal()));
+		gridSpecWithThreeColumns.addColumn(FieldSpec.createStandardField("c", new FieldTypeNormal()));
 		GridRow row2 = new GridRow(gridSpecWithThreeColumns);
 		fillGridRow(row2, row2Data);
 			
@@ -307,8 +308,8 @@ public class TestGridData extends TestCaseEnhanced
 	public static GridFieldSpec createSampleGridSpec() throws UnsupportedFieldTypeException
 	{
 		GridFieldSpec spec = new GridFieldSpec();
-		spec.addColumn(FieldSpec.createCustomField("a", "Column 1", FieldSpec.TYPE_NORMAL));
-		spec.addColumn(FieldSpec.createCustomField("b", "Column 2", FieldSpec.TYPE_NORMAL));
+		spec.addColumn(FieldSpec.createCustomField("a", "Column 1", new FieldTypeNormal()));
+		spec.addColumn(FieldSpec.createCustomField("b", "Column 2", new FieldTypeNormal()));
 		return spec;
 	}
 

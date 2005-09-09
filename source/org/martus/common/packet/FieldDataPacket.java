@@ -46,6 +46,8 @@ import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.DecryptionException;
 import org.martus.common.field.MartusField;
 import org.martus.common.fieldspec.FieldSpec;
+import org.martus.common.fieldspec.FieldType;
+import org.martus.common.fieldspec.FieldTypeUnknown;
 import org.martus.util.Base64;
 import org.martus.util.UnicodeReader;
 import org.martus.util.Base64.InvalidBase64Exception;
@@ -147,11 +149,11 @@ public class FieldDataPacket extends Packet
 		return (getFieldSpec(fieldTag) != null);
 	}
 	
-	public int getFieldType(String fieldTag)
+	public FieldType getFieldType(String fieldTag)
 	{
 		MartusField field = getField(fieldTag);
 		if(field == null)
-			return FieldSpec.TYPE_UNKNOWN;
+			return new FieldTypeUnknown();
 		
 		return field.getType();
 	}
@@ -345,7 +347,7 @@ public class FieldDataPacket extends Packet
 			String fieldText = field.getData();
 			if(fieldText == null)
 				continue;
-			if(field.getType() == FieldSpec.TYPE_GRID)
+			if(field.getType().isGrid())
 				writeNonEncodedElement(dest, xmlTag, fieldText);
 			else
 				writeElement(dest, xmlTag, fieldText);

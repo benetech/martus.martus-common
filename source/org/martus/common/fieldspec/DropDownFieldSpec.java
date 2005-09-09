@@ -38,7 +38,7 @@ public class DropDownFieldSpec extends FieldSpec
 	
 	public DropDownFieldSpec(ChoiceItem[] choicesToUse)
 	{
-		super(TYPE_DROPDOWN);
+		super(new FieldTypeDropdown());
 		setChoices(choicesToUse);
 	}
 	

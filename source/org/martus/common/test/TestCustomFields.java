@@ -31,6 +31,13 @@ import junit.framework.TestCase;
 import org.martus.common.FieldCollection;
 import org.martus.common.LegacyCustomFields;
 import org.martus.common.fieldspec.FieldSpec;
+import org.martus.common.fieldspec.FieldTypeBoolean;
+import org.martus.common.fieldspec.FieldTypeDate;
+import org.martus.common.fieldspec.FieldTypeDateRange;
+import org.martus.common.fieldspec.FieldTypeGrid;
+import org.martus.common.fieldspec.FieldTypeLanguage;
+import org.martus.common.fieldspec.FieldTypeMultiline;
+import org.martus.common.fieldspec.FieldTypeNormal;
 import org.martus.common.fieldspec.GridFieldSpec;
 
 
@@ -70,7 +77,7 @@ public class TestCustomFields extends TestCase
 		FieldCollection.XmlCustomFieldsLoader loader = new FieldCollection.XmlCustomFieldsLoader(fields);
 		loader.parse(xml);
 		GridFieldSpec spec = (GridFieldSpec)fields.getSpecs()[0];
-		assertEquals(FieldSpec.TYPE_GRID, spec.getType());
+		assertEquals(new FieldTypeGrid(), spec.getType());
 		assertEquals(2, spec.getColumnCount());
 		assertEquals(TestGridFieldSpec.SAMPLE_GRID_HEADER_LABEL_1, spec.getColumnLabel(0));
 		assertEquals(TestGridFieldSpec.SAMPLE_GRID_HEADER_LABEL_2, spec.getColumnLabel(1));
@@ -83,12 +90,12 @@ public class TestCustomFields extends TestCase
 		gridSpec.setTag("grid");
 		
 		return new FieldSpec[] {
-			FieldSpec.createStandardField("date", FieldSpec.TYPE_DATE),
-			FieldSpec.createStandardField("text", FieldSpec.TYPE_NORMAL),
-			FieldSpec.createStandardField("multi", FieldSpec.TYPE_MULTILINE),
-			FieldSpec.createStandardField("range", FieldSpec.TYPE_DATERANGE),
-			FieldSpec.createStandardField("bool", FieldSpec.TYPE_BOOLEAN),
-			FieldSpec.createStandardField("language", FieldSpec.TYPE_LANGUAGE),
+			FieldSpec.createStandardField("date", new FieldTypeDate()),
+			FieldSpec.createStandardField("text", new FieldTypeNormal()),
+			FieldSpec.createStandardField("multi", new FieldTypeMultiline()),
+			FieldSpec.createStandardField("range", new FieldTypeDateRange()),
+			FieldSpec.createStandardField("bool", new FieldTypeBoolean()),
+			FieldSpec.createStandardField("language", new FieldTypeLanguage()),
 			gridSpec,
 			LegacyCustomFields.createFromLegacy("custom,Custom <label>"),
 		};

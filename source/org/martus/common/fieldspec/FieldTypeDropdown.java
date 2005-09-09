@@ -1,7 +1,7 @@
 /*
 
 The Martus(tm) free, social justice documentation and
-monitoring software. Copyright (C) 2001-2004, Beneficent
+monitoring software. Copyright (C) 2005, Beneficent
 Technology, Inc. (Benetech).
 
 Martus is free software; you can redistribute it and/or
@@ -26,52 +26,26 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.fieldspec;
 
-
-public class ChoiceItem implements Comparable
+public class FieldTypeDropdown extends FieldType
 {
-	public ChoiceItem(FieldSpec specToUse)
+	public String getTypeName()
 	{
-		spec = specToUse;
+		return getTypeNameString();
 	}
 	
-	public ChoiceItem(String codeToUse, String displayToUse)
+	
+	public boolean isDropdown()
 	{
-		this(FieldSpec.createCustomField(codeToUse, displayToUse, new FieldTypeUnknown()));
+		return true;
 	}
 	
-	public String toString()
+	public static String getTypeNameString()
 	{
-		return spec.getLabel();
+		return "DROPDOWN";
 	}
 	
-	public FieldSpec getSpec()
+	public FieldSpec createEmptyFieldSpec()
 	{
-		return spec;
+		return new CustomDropDownFieldSpec();
 	}
-
-	public String getCode()
-	{
-		return spec.getTag();
-	}
-	
-	public FieldType getType()
-	{
-		return spec.getType();
-	}
-	
-	public boolean equals(Object other)
-	{
-		if(! (other instanceof ChoiceItem))
-			return false;
-		
-		return spec.equals( ((ChoiceItem)other).getSpec());
-	}
-
-	public int compareTo(Object other)
-	{
-		return toString().compareTo(other.toString());
-	}
-
-	private FieldSpec spec;
 }
-

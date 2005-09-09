@@ -37,7 +37,7 @@ public class GridFieldSpec extends FieldSpec
 {
 	public GridFieldSpec()
 	{
-		super(TYPE_GRID);
+		super(new FieldTypeGrid());
 		columns = new Vector();
 		columnZeroLabel = " ";
 	}
@@ -53,7 +53,7 @@ public class GridFieldSpec extends FieldSpec
 		return columnSpec.getLabel();
 	}
 	
-	public int getColumnType(int column)
+	public FieldType getColumnType(int column)
 	{
 		FieldSpec columnSpec = (FieldSpec)columns.get(column);
 		return columnSpec.getType();
@@ -75,20 +75,22 @@ public class GridFieldSpec extends FieldSpec
 		columns.add(columnSpec);
 	}
 
-	public static boolean isValidGridColumnType(int columnType)
+	public static boolean isValidGridColumnType(FieldType columnType)
 	{
-		boolean[] typeIsValid = new boolean[INSERT_NEXT_TYPE_HERE_AND_INCREASE_THIS_BY_ONE];
-		typeIsValid[TYPE_NORMAL] = true;
-		typeIsValid[TYPE_DROPDOWN] = true;
-		typeIsValid[TYPE_BOOLEAN] = true;
-		typeIsValid[TYPE_DATE] = true;
-		typeIsValid[TYPE_DATERANGE] = true;
-		
-		if(columnType == TYPE_SEARCH_VALUE)
+		if(columnType.isString())
 			return true;
-		if(columnType == TYPE_UNKNOWN)
-			return false;
-		return typeIsValid[columnType];
+		if(columnType.isDropdown())
+			return true;
+		if(columnType.isBoolean())
+			return true;
+		if(columnType.isDate())
+			return true;
+		if(columnType.isDateRange())
+			return true;
+		
+		if(columnType.isSearchValue())
+			return true;
+		return false;
 	}
 	
 	public void setColumnZeroLabel(String columnZeroLabelToUse)
@@ -154,8 +156,8 @@ public class GridFieldSpec extends FieldSpec
 			if(thisTag.equals(GRID_COLUMN_TAG))//Legacy XML
 			{
 				specToAdd = ((FieldSpec.XmlFieldSpecLoader)ended).getFieldSpec();
-				if(specToAdd.getType() == FieldSpec.TYPE_UNKNOWN)
-					specToAdd.setType(FieldSpec.TYPE_NORMAL);
+				if(specToAdd.getType().isUnknown())
+					specToAdd.setType(new FieldTypeNormal());
 			}
 			else if (thisTag.equals(FIELD_SPEC_XML_TAG))
 			{

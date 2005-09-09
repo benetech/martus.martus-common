@@ -41,6 +41,10 @@ import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.ReadableDatabase;
 import org.martus.common.field.MartusField;
 import org.martus.common.fieldspec.FieldSpec;
+import org.martus.common.fieldspec.FieldType;
+import org.martus.common.fieldspec.FieldTypeDate;
+import org.martus.common.fieldspec.FieldTypeNormal;
+import org.martus.common.fieldspec.FieldTypeUnknown;
 import org.martus.common.fieldspec.StandardFieldSpecs;
 import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.BulletinHeaderPacket;
@@ -234,14 +238,14 @@ public class Bulletin implements BulletinConstants
 	{
 		if(fieldTag.equals(PSEUDOFIELD_LOCAL_ID))
 		{
-			MartusField localIdField = new MartusField(FieldSpec.createStandardField(fieldTag, FieldSpec.TYPE_NORMAL));
+			MartusField localIdField = new MartusField(FieldSpec.createStandardField(fieldTag, new FieldTypeNormal()));
 			localIdField.setData(getLocalId());
 			return localIdField;
 		}
 		
 		if(fieldTag.equals(PSEUDOFIELD_LAST_SAVED_DATE))
 		{
-			MartusField lastSavedDateField = new MartusField(FieldSpec.createStandardField(fieldTag, FieldSpec.TYPE_DATE));
+			MartusField lastSavedDateField = new MartusField(FieldSpec.createStandardField(fieldTag, new FieldTypeDate()));
 			lastSavedDateField.setData(getLastSavedDate());
 			return lastSavedDateField;
 		}
@@ -260,11 +264,11 @@ public class Bulletin implements BulletinConstants
 		return field.getData();
 	}
 	
-	public int getFieldType(String fieldTag)
+	public FieldType getFieldType(String fieldTag)
 	{
 		MartusField field = getField(fieldTag);
 		if(field == null)
-			return FieldSpec.TYPE_UNKNOWN;
+			return new FieldTypeUnknown();
 		
 		return field.getType();
 	}
