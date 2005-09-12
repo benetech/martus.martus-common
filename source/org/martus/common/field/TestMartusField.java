@@ -26,7 +26,11 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.field;
 
+import java.util.Date;
+import java.util.GregorianCalendar;
+
 import org.martus.common.GridData;
+import org.martus.common.MiniLocalization;
 import org.martus.common.fieldspec.ChoiceItem;
 import org.martus.common.fieldspec.DropDownFieldSpec;
 import org.martus.common.fieldspec.FieldSpec;
@@ -40,6 +44,7 @@ import org.martus.common.fieldspec.FieldTypeMessage;
 import org.martus.common.fieldspec.FieldTypeMultiline;
 import org.martus.common.fieldspec.FieldTypeNormal;
 import org.martus.common.fieldspec.GridFieldSpec;
+import org.martus.common.utilities.MartusFlexidate;
 import org.martus.util.TestCaseEnhanced;
 
 
@@ -48,6 +53,11 @@ public class TestMartusField extends TestCaseEnhanced
 	public TestMartusField(String name)
 	{
 		super(name);
+	}
+	
+	public void setUp()
+	{
+		localization = new MiniLocalization();
 	}
 
 	public void testBasics()
@@ -70,60 +80,85 @@ public class TestMartusField extends TestCaseEnhanced
 	{
 		verifyNormalDataIsAlsoPrintable(new FieldTypeNormal(), "sample string");
 		verifyNormalDataIsAlsoPrintable(new FieldTypeMultiline(), "sample string");
-		verifyNormalDataIsAlsoPrintable(new FieldTypeBoolean(), "sample string");
 		verifyNormalDataIsAlsoPrintable(new FieldTypeMessage(), "sample string");
 	}
 	
-// FIXME: Enable these tests as soon as the refactoring is done
-// If this comment is still here after 2005-09-14, yell at Kevin!
-//	public void testGetSearchableDataForDateFields()
-//	{
-//		String rawDate = "2005-10-15";
-//		MiniLocalization localization = new MiniLocalization();
-//		String localizedDate = localization.convertStoredDateToDisplay(rawDate);
-//		
-//		verifyPrintableData(FieldSpec.TYPE_DATE, rawDate, localizedDate);
-//		
-//	}
-//	
-//	public void testGetSearchableDataForDateRangeFields()
-//	{
-//	}
-//
-//	public void testGetSearchableDataForBooleanFields()
-//	{
-//		MiniLocalization localization = new MiniLocalization();
-//		verifyPrintableData(FieldSpec.TYPE_DATE, FieldSpec.TRUESTRING, localization.getButtonLabel("yes"));
-//	}
-//
-//	public void testGetSearchableDataForLanguageFields()
-//	{
-//		MiniLocalization localization = new MiniLocalization();
-//		String languageCode = MiniLocalization.ARABIC;
-//		verifyPrintableData(FieldSpec.TYPE_DATE, languageCode, localization.getLanguageName(languageCode));
-//	}
-//
-//	public void testGetSearchableDataForDropDownFields()
-//	{
-//		fail();
-//	}
-//
-//	public void testGetSearchableDataForGridFields()
-//	{
-//		fail();
-//	}
-//
+	public void testGetSearchableDataForDateFields()
+	{
+		String rawDate = "2005-10-15";
+		String localizedDate = localization.convertStoredDateToDisplay(rawDate);
+		
+		verifySearchableData(new FieldTypeDate(), rawDate, localizedDate);
+	}
+	
+	public void testGetSearchableDataForDateRangeFields()
+	{
+		Date beginDate = new GregorianCalendar(1954, 4, 21).getTime();
+		Date endDate = new GregorianCalendar(1972, 9, 30).getTime();
+
+		// FIXME: Extract out to common, with tests
+		String rawDateRange = MartusFlexidate.toStoredDateFormat(beginDate) + 
+			MartusFlexidate.DATE_RANGE_SEPARATER +
+			MartusFlexidate.toFlexidateFormat(beginDate, endDate);
+		
+		String localizedDateRange = localization.getViewableDateRange(rawDateRange);
+		verifySearchableData(new FieldTypeDateRange(), rawDateRange, localizedDateRange);
+	}
+
+	public void testGetSearchableDataForBooleanFields()
+	{
+		verifySearchableData(new FieldTypeBoolean(), FieldSpec.TRUESTRING, localization.getButtonLabel("yes"));
+	}
+
+	public void testGetSearchableDataForLanguageFields()
+	{
+		String languageCode = MiniLocalization.ARABIC;
+		verifySearchableData(new FieldTypeLanguage(), languageCode, localization.getLanguageName(languageCode));
+	}
+
+	public void testGetSearchableDataForDropDownFields()
+	{
+		DropDownFieldSpec spec = new DropDownFieldSpec(choices);
+		for(int i=0; i < choices.length; ++i)
+			verifySearchableData(spec, choices[i].getCode(), choices[i].toString());
+	}
+
+	public void testGetSearchableDataForGridFields() throws Exception
+	{
+		GridFieldSpec spec = new GridFieldSpec();
+		spec.addColumn(FieldSpec.createCustomField("customtag", "Custom Label", new FieldTypeNormal()));
+		spec.addColumn(new DropDownFieldSpec(choices));
+		
+		MartusField gridField = new MartusField(spec);
+		GridData data = new GridData(spec);
+		data.addEmptyRow();
+		data.addEmptyRow();
+		data.addEmptyRow();
+		data.setValueAt("abc", 0, 0);
+		data.setValueAt(choices[1].getCode(), 0, 1);
+		data.setValueAt("second row", 1, 0);
+		gridField.setData(data.getXmlRepresentation());
+		final String result = gridField.getSearchableData(localization);
+		assertEquals("Grid data not searchable?", "abc\t" + choices[1].toString() + "\t\nsecond row\t" + choices[0].toString() + "\t\n", result);
+	}
+
 	private void verifyNormalDataIsAlsoPrintable(final FieldType type, final String rawData)
 	{
 		final String expectedPrintableData = rawData;
-		verifyPrintableData(type, rawData, expectedPrintableData);
+		verifySearchableData(type, rawData, expectedPrintableData);
 	}
 
-	private void verifyPrintableData(final FieldType type, final String rawData, final String expectedPrintableData)
+	private void verifySearchableData(final FieldType type, final String rawData, final String expectedPrintableData)
 	{
-		MartusField string = new MartusField(createFieldSpec(type));
-		string.setData(rawData);
-		assertEquals("Wrong printableData for " + FieldSpec.getTypeString(type), expectedPrintableData, string.getSearchableData());
+		final FieldSpec spec = createFieldSpec(type);
+		verifySearchableData(spec, rawData, expectedPrintableData);
+	}
+
+	private void verifySearchableData(final FieldSpec spec, final String rawData, final String expectedPrintableData)
+	{
+		MartusField field = new MartusField(spec);
+		field.setData(rawData);
+		assertEquals("Wrong printableData for " + FieldSpec.getTypeString(spec.getType()), expectedPrintableData, field.getSearchableData(localization));
 	}
 	
 	public void testInitialValueForSimpleTypes()
@@ -184,4 +219,6 @@ public class TestMartusField extends TestCaseEnhanced
 		new ChoiceItem("firstcode", "First Value"),
 		new ChoiceItem("secondcode", "Second Value"),
 	};
+
+	MiniLocalization localization;
 }

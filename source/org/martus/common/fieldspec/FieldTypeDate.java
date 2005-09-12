@@ -26,6 +26,7 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.fieldspec;
 
+import org.martus.common.MiniLocalization;
 import org.martus.common.utilities.DateUtilities;
 
 public class FieldTypeDate extends FieldType
@@ -49,4 +50,10 @@ public class FieldTypeDate extends FieldType
 	{
 		return DateUtilities.getFirstOfThisYear();
 	}
+
+	public String convertStoredToDisplay(String storedData, MiniLocalization localization)
+	{
+		return localization.convertStoredDateToDisplay(storedData);
+	}
+	
 }

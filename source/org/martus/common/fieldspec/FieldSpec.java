@@ -30,6 +30,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import org.martus.common.MartusXml;
+import org.martus.common.MiniLocalization;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlStringLoader;
 import org.martus.util.xml.XmlUtilities;
@@ -106,6 +107,11 @@ public class FieldSpec
 	public FieldType getType()
 	{
 		return type;
+	}
+	
+	public String convertStoredToDisplay(String storedData, MiniLocalization localization)
+	{
+		return getType().convertStoredToDisplay(storedData, localization);
 	}
 	
 	public String getDefaultValue()

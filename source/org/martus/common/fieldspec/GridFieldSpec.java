@@ -28,7 +28,9 @@ package org.martus.common.fieldspec;
 import java.util.Iterator;
 import java.util.Vector;
 
+import org.martus.common.GridData;
 import org.martus.common.MartusXml;
+import org.martus.common.MiniLocalization;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.xml.sax.SAXParseException;
 
@@ -62,6 +64,34 @@ public class GridFieldSpec extends FieldSpec
 	public FieldSpec getFieldSpec(int column)
 	{
 		return (FieldSpec)columns.get(column);
+	}
+
+	public String convertStoredToDisplay(String storedData, MiniLocalization localization)
+	{
+		GridData data = new GridData(this);
+		try
+		{
+			data.setFromXml(storedData);
+		}
+		catch (Exception e)
+		{
+			// FIXME: What should we really do here???
+			e.printStackTrace();
+			return "";
+		}
+		StringBuffer result = new StringBuffer();
+		for(int row = 0; row < data.getRowCount(); ++row)
+		{
+			for(int col = 0; col < data.getColumnCount(); ++col)
+			{
+				String rawData = data.getValueAt(row, col);
+				String searchableData = getFieldSpec(col).convertStoredToDisplay(rawData, localization);
+				result.append(searchableData);
+				result.append("\t");
+			}
+			result.append("\n");
+		}
+		return new String(result);
 	}
 
 	public class UnsupportedFieldTypeException extends Exception
