@@ -38,6 +38,7 @@ import java.util.Vector;
 import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
 import org.martus.common.MartusUtilities;
+import org.martus.common.MiniLocalization;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinConstants;
@@ -142,19 +143,21 @@ public class TestBulletin extends TestCaseEnhanced
     
     public void testContains() throws Exception
     {
+    	MiniLocalization localization = new MiniLocalization();
+    	
     	Bulletin b = new Bulletin(security);
     	final String sampleAuthor = "Daphne Moon";
     	b.set(Bulletin.TAGAUTHOR, sampleAuthor);
-    	assertTrue("didn't find author?", b.contains(sampleAuthor));
+    	assertTrue("didn't find author?", b.contains(sampleAuthor, localization));
     	
     	b.set(Bulletin.TAGPRIVATEINFO, samplePrivate);
-    	assertTrue("didn't find private?", b.contains(samplePrivate));
+    	assertTrue("didn't find private?", b.contains(samplePrivate, localization));
 
 		b.addPublicAttachment(proxy1);
-    	assertTrue("didn't find public attachment?", b.contains(proxy1.getLabel()));
+    	assertTrue("didn't find public attachment?", b.contains(proxy1.getLabel(), localization));
     
 		b.addPrivateAttachment(proxy2);
-    	assertTrue("didn't find private attachment?", b.contains(proxy2.getLabel()));
+    	assertTrue("didn't find private attachment?", b.contains(proxy2.getLabel(), localization));
     }
 	
 	public void testUnknownTags()

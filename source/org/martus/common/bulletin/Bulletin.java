@@ -34,6 +34,7 @@ import java.util.Date;
 import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
 import org.martus.common.MartusUtilities;
+import org.martus.common.MiniLocalization;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.CryptoException;
@@ -369,11 +370,11 @@ public class Bulletin implements BulletinConstants
 		getPrivateFieldDataPacket().clearAttachments();
 	}
 
-	public boolean contains(String lookFor)
+	public boolean contains(String lookFor, MiniLocalization localization)
 	{
-		if(doesSectionContain(getFieldDataPacket(), lookFor))
+		if(doesSectionContain(getFieldDataPacket(), lookFor, localization))
 			return true;
-		if(doesSectionContain(getPrivateFieldDataPacket(), lookFor))
+		if(doesSectionContain(getPrivateFieldDataPacket(), lookFor, localization))
 			return true;
 		if(doesAttachmentsContain(getPublicAttachments(), lookFor))
 			return true;
@@ -394,13 +395,13 @@ public class Bulletin implements BulletinConstants
 		return false;
 	}
 
-	private boolean doesSectionContain(FieldDataPacket section, String lookFor)
+	private boolean doesSectionContain(FieldDataPacket section, String lookFor, MiniLocalization localization)
 	{
 		FieldSpec fields[] = section.getFieldSpecs();
 		for(int f = 0; f < fields.length; ++f)
 		{
 			MartusField field = getField(fields[f].getTag());
-			if(field.contains(lookFor))
+			if(field.contains(lookFor, localization))
 				return true;
 		}
 		return false;

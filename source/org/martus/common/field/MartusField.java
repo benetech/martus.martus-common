@@ -86,14 +86,14 @@ public class MartusField
 		data = newValue;
 	}
 	
-	public boolean contains(String value)
+	public boolean contains(String value, MiniLocalization localization)
 	{
-		return (getData().toLowerCase().indexOf(value.toLowerCase()) >= 0);
+		return (getSearchableData(localization).toLowerCase().indexOf(value.toLowerCase()) >= 0);
 	}
 	
-	public int compareTo(String value)
+	public int compareTo(String value, MiniLocalization localization)
 	{
-		return getData().compareTo(value);
+		return getSearchableData(localization).compareTo(value);
 	}
 	
 	public String toString()
