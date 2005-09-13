@@ -93,7 +93,7 @@ public class MartusField
 	
 	public int compareTo(String value, MiniLocalization localization)
 	{
-		return getSearchableData(localization).compareTo(value);
+		return getData().compareTo(value);
 	}
 	
 	public String toString()
