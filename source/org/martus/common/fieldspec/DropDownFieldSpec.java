@@ -73,8 +73,7 @@ public class DropDownFieldSpec extends FieldSpec
 	{
 		int at = findCode(code);
 		if(at < 0)
-			return null;
-		
+			return code;
 		return getValue(at);
 	}
 	
