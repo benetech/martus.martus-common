@@ -201,6 +201,14 @@ public class TestMartusField extends TestCaseEnhanced
 		}
 	}
 	
+	public void testCompareToTrimsSpaces()
+	{
+		MartusField f = new MartusField(createFieldSpec(new FieldTypeNormal()));
+		f.setData(" with spaces ");
+		assertEquals("didn't trim data?", 0, f.compareTo("with spaces", localization));
+		assertEquals("didn't trim search string?", 0, f.compareTo("   with spaces   ", localization));
+	}
+	
 	private void verifyInitialValue(FieldType type)
 	{
 		FieldSpec spec = createFieldSpec(type);
