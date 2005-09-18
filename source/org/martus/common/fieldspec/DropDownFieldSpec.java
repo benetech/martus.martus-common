@@ -83,6 +83,9 @@ public class DropDownFieldSpec extends FieldSpec
 			if(getChoice(i).getCode().equals(code))
 				return i;
 		
+		if(code.equals(" "))
+			return findCode("");
+		
 		return -1;
 	}
 	

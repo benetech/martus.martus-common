@@ -51,6 +51,7 @@ public class TestCustomDropDownFieldSpec extends TestCaseEnhanced
 			assertEquals("wrong order?", valuesWithoutBlank.get(i), spec.getValue(i+1));
 		
 		assertEquals("two", spec.getValue(spec.findCode("two")));
+		assertEquals("didn't map space to the blank choice?", 0, spec.findCode(" "));
 		
 		
 		Vector valuesWithBlank = new Vector();
@@ -61,6 +62,7 @@ public class TestCustomDropDownFieldSpec extends TestCaseEnhanced
 		assertEquals("added a blank entry?", valuesWithBlank.size(), spec.getCount());
 		for(int i=0; i < spec.getCount(); ++i)
 			assertEquals("wrong order?", valuesWithBlank.get(i), spec.getValue(i));
+		
 	}
 
 	public void testXml() throws Exception
