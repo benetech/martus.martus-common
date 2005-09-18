@@ -156,11 +156,11 @@ public class FieldSpec
 		return true;
 	}
 	
-	public boolean equals(Object obj)
+	public boolean equals(Object other)
 	{
-		if(!obj.getClass().equals(getClass()))
+		if(!other.getClass().equals(getClass()))
 			return false;
-		FieldSpec otherSpec = (FieldSpec)obj;
+		FieldSpec otherSpec = (FieldSpec)other;
 		if(hasUnknown != otherSpec.hasUnknown)
 			return false;
 		if(!label.equals(otherSpec.label))
@@ -169,7 +169,7 @@ public class FieldSpec
 			return false;
 		if(!type.equals(otherSpec.type))
 			return false;
-		return true;
+		return (toString().equals(other.toString()));
 	}
 
 	public static String getTypeString(FieldType type)

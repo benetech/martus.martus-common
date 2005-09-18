@@ -85,6 +85,53 @@ public class TestCustomDropDownFieldSpec extends TestCaseEnhanced
 		}
 	}
 	
+	public void testEquals() throws Exception
+	{
+		String tagA = "a";
+		String tagB = "b";
+		String labelC = "c";
+		String labelD = "d";
+		
+		CustomDropDownFieldSpec specAC = new CustomDropDownFieldSpec();
+		specAC.setTag(tagA);
+		specAC.setLabel(labelC);
+		FieldSpec specBC = new CustomDropDownFieldSpec();
+		specBC.setTag(tagB);
+		specBC.setLabel(labelC);
+		assertNotEquals("not checking tag?", specAC, specBC);
+
+		FieldSpec specAD = new CustomDropDownFieldSpec();
+		specAD.setTag(tagA);
+		specAD.setLabel(labelD);
+		assertNotEquals("not checking label?", specAC, specAD);
+		
+		FieldSpec notDropDown = new FieldSpec(new FieldTypeNormal());
+		notDropDown.setTag(tagA);
+		notDropDown.setLabel(labelC);
+		assertNotEquals("not checking type?", specAC, notDropDown);
+		
+		CustomDropDownFieldSpec withChoices = new CustomDropDownFieldSpec();
+		withChoices.setChoices(choices);
+		withChoices.setTag(tagA);
+		withChoices.setLabel(labelC);
+		assertNotEquals("not checking choices?", specAC, withChoices);
+		
+		CustomDropDownFieldSpec identical = new CustomDropDownFieldSpec();
+		identical.setChoices(choices);
+		identical.setTag(tagA);
+		identical.setLabel(labelC);
+		assertEquals("never equal?", withChoices, identical);
+		
+		ChoiceItem[] flippedChoices = {choices[1], choices[0], };
+		CustomDropDownFieldSpec flipped = new CustomDropDownFieldSpec();
+		flipped.setChoices(flippedChoices);
+		flipped.setTag(tagA);
+		flipped.setLabel(labelC);
+		assertNotEquals("not checking choice order?", specAC, flipped);
+		
+	}
+	
+	static final ChoiceItem[] choices = {new ChoiceItem("tag", "value"), new ChoiceItem("othertag", "othervalue"),};
 	public static final String SAMPLE_DROPDOWN_CHOICE1 = "choice #1";
 	public static final String SAMPLE_DROPDOWN_CHOICE2 = "choice #2";
 	public static final String SAMPLE_DROPDOWN_LABEL = "Dropdown Label";
