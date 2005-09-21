@@ -62,7 +62,7 @@ public class TestChoiceItem extends TestCaseEnhanced
 	public void testEquals()
 	{
 		String label = "Same label";
-		ChoiceItem a = new ChoiceItem("a", label);
+		final ChoiceItem a = new ChoiceItem("a", label);
 		ChoiceItem a2 = new ChoiceItem("a", label);
 		assertTrue("equals failed for identical objects?", a.equals(a2));
 		
@@ -74,6 +74,16 @@ public class TestChoiceItem extends TestCaseEnhanced
 		assertFalse("didn't use type in equals comparison?", a.equals(c));
 		
 		assertFalse("equal with other type of object?", a.equals(new Object()));
+		
+		class SimilarToChoiceA
+		{
+			public String toString()
+			{
+				return a.toString();
+			}
+		}
+		
+		assertFalse("equal to other type with same string?", a.equals(new SimilarToChoiceA()));
 	}
 
 	public void testCompareTo()
@@ -84,10 +94,12 @@ public class TestChoiceItem extends TestCaseEnhanced
 		assertEquals("compareTo failed for identical objects?", 0, a.compareTo(a2));
 		
 		ChoiceItem b = new ChoiceItem("b", label);
-		assertEquals("Used tag in compareTo comparison?", 0, a.compareTo(b));
+		assertNotEquals("Didn't use tag in compareTo comparison?", 0, a.compareTo(b));
 		
 		FieldSpec spec = FieldSpec.createCustomField("a", label, new FieldTypeMultiline());
 		ChoiceItem c = new ChoiceItem(spec);
-		assertEquals("Used type in equals comparison?", 0, a.compareTo(c));
+		assertNotEquals("Didn't used type in equals comparison?", 0, a.compareTo(c));
+		
+		assertTrue("not greater than null?", a.compareTo(null) > 0);
 	}
 }

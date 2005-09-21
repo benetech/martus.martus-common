@@ -156,20 +156,32 @@ public class FieldSpec
 		return true;
 	}
 	
+	public int compareTo(Object other)
+	{
+		if(other == null)
+			return 1;
+		
+		FieldSpec otherSpec = (FieldSpec)other;
+		int weHaveUnknown = (hasUnknownStuff() ? 1 : 0);
+		int theyHaveUnknown = (otherSpec.hasUnknownStuff() ? 1 : 0);
+		int result = weHaveUnknown - theyHaveUnknown;
+		if(result == 0)
+			result = getLabel().compareTo(otherSpec.getLabel());
+		if(result == 0)
+			result = toString().compareTo(other.toString());
+		return result;
+	}
+	
 	public boolean equals(Object other)
 	{
-		if(!other.getClass().equals(getClass()))
+		try
+		{
+			return (compareTo(other) == 0);
+		}
+		catch (ClassCastException e)
+		{
 			return false;
-		FieldSpec otherSpec = (FieldSpec)other;
-		if(hasUnknown != otherSpec.hasUnknown)
-			return false;
-		if(!label.equals(otherSpec.label))
-			return false;
-		if(!tag.equals(otherSpec.tag))
-			return false;
-		if(!type.equals(otherSpec.type))
-			return false;
-		return (toString().equals(other.toString()));
+		}
 	}
 
 	public static String getTypeString(FieldType type)

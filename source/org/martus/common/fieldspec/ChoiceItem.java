@@ -61,17 +61,25 @@ public class ChoiceItem implements Comparable
 	
 	public boolean equals(Object other)
 	{
-		if(! (other instanceof ChoiceItem))
+		try
+		{
+			return compareTo(other) == 0;
+		}
+		catch (ClassCastException e)
+		{
 			return false;
-		
-		return spec.equals( ((ChoiceItem)other).getSpec());
+		}
 	}
 
 	public int compareTo(Object other)
 	{
-		return toString().compareTo(other.toString());
+		if(other == null)
+			return 1;
+		
+		ChoiceItem otherChoiceItem = (ChoiceItem)other;
+		return getSpec().compareTo(otherChoiceItem.getSpec());
 	}
-
+	
 	private FieldSpec spec;
 }
 

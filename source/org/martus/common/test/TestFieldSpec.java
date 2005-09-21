@@ -184,7 +184,7 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertEquals("wrong type: " + typeString, typeString, type.getTypeName());
 	}
 	
-	public void testEquals()
+	public void testEqualsAndCompareTo()
 	{
 		FieldSpec a = new FieldSpec(new FieldTypeNormal());
 		String labelA = "label a";
@@ -196,25 +196,34 @@ public class TestFieldSpec extends TestCaseEnhanced
 		FieldSpec b = new FieldSpec(new FieldTypeNormal());
 		b.setLabel(labelA);
 		b.setTag(tagA);
-		assertTrue("A & B should be identical", a.equals(b));
+		assertTrue("A & B should be identical (equals)", a.equals(b));
+		assertEquals("A & B should be identical (compareTo)", 0, a.compareTo(b));
 		
 		b.setLabel(labelB);
-		assertFalse("B has different Label", a.equals(b));
+		assertFalse("B has different Label (equals)", a.equals(b));
+		assertNotEquals("B has different Label (compareTo)", 0, a.compareTo(b));
 
 		b.setLabel(labelA);
 		b.setTag(tagB);
-		assertFalse("B has different Tag", a.equals(b));
+		assertFalse("B has different Tag (equals)", a.equals(b));
+		assertNotEquals("B has different Tag (compareTo)", 0, a.compareTo(b));
+		
+		b.setTag("AAA");
+		b.setLabel("zzz");
+		assertTrue("a not less than b?", a.compareTo(b) < 0);
+		assertTrue("b not greater than a?", b.compareTo(a) > 0);
 		
 		FieldSpec c = new FieldSpec(new FieldTypeMultiline());
 		c.setLabel(labelA);
 		c.setTag(tagA);
-		assertFalse("C has different Type", a.equals(b));
+		assertFalse("C has different Type (equals)", a.equals(b));
+		assertNotEquals("C has different Type (compareTo)", 0, a.compareTo(b));
 		
 		String d = "someString";
-	
 		assertFalse("FieldSpec is not a String", a.equals(d));
+		
+		assertTrue("not greater than null?", a.compareTo(null) > 0);
 	}
-
 	
 	public void testIsAllFieldsPresnet()
 	{
