@@ -28,6 +28,7 @@ package org.martus.common;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -39,6 +40,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import org.martus.common.fieldspec.ChoiceItem;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.utilities.DateUtilities;
 import org.martus.common.utilities.MartusFlexidate;
@@ -363,6 +365,25 @@ public class MiniLocalization
 		if(isRightToLeftLanguage())
 			return time + SPACE + date;
 		return date + SPACE + time;
+	}
+
+	public ChoiceItem[] getLanguageNameChoices()
+	{
+		return getLanguageNameChoices(ALL_LANGUAGE_CODES);
+	}
+
+	public ChoiceItem[] getLanguageNameChoices(String[] languageCodes)
+	{
+		if(languageCodes == null)
+			return null;
+		ChoiceItem[] tempChoicesArray = new ChoiceItem[languageCodes.length];
+		for(int i = 0; i < languageCodes.length; i++)
+		{
+			tempChoicesArray[i] =
+				new ChoiceItem(languageCodes[i], getLanguageName(languageCodes[i]));
+		}
+		Arrays.sort(tempChoicesArray);
+		return tempChoicesArray;
 	}
 
 	public static final String ENGLISH = "en";
