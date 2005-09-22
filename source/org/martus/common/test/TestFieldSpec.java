@@ -49,7 +49,6 @@ import org.martus.common.fieldspec.FieldTypeSearchValue;
 import org.martus.common.fieldspec.FieldTypeUnknown;
 import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.common.fieldspec.MessageFieldSpec;
-import org.martus.common.fieldspec.StandardFieldSpecs;
 import org.martus.common.utilities.DateUtilities;
 import org.martus.util.TestCaseEnhanced;
 
@@ -225,24 +224,4 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertTrue("not greater than null?", a.compareTo(null) > 0);
 	}
 	
-	public void testIsAllFieldsPresnet()
-	{
-		FieldSpec[] currentSpec = StandardFieldSpecs.getDefaultPublicFieldSpecs();	
-		assertTrue("Same spec not equal?", FieldSpec.isAllFieldsPresent(currentSpec, currentSpec));
-		FieldSpec[] privateSpec = StandardFieldSpecs.getDefaultPrivateFieldSpecs();
-		assertFalse("completely different specs not different?", FieldSpec.isAllFieldsPresent(privateSpec, currentSpec));
-		int length = currentSpec.length;
-		FieldSpec[] newSpec = new FieldSpec[length-1];
-		for (int i = 0; i < length -2; i++)
-		{
-			newSpec[i] =  currentSpec[i];
-		}
-		FieldSpec lastSpec = currentSpec[length-2];
-		newSpec[length-2] = new FieldSpec(lastSpec.getType());
-		newSpec[length-2].setLabel(lastSpec.getLabel());
-		newSpec[length-2].setTag(lastSpec.getTag());
-		
-		assertTrue("NewSpec is a Subset of Current", FieldSpec.isAllFieldsPresent(newSpec, currentSpec));
-		assertFalse("CurrentSpec has one more field", FieldSpec.isAllFieldsPresent(currentSpec, newSpec));
-	}
 }

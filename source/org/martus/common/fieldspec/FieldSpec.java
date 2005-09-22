@@ -139,23 +139,6 @@ public class FieldSpec
 		this.type = type;
 	}
 	
-	public static boolean isAllFieldsPresent(FieldSpec[] previousSpec, FieldSpec[] currentSpec)
-	{
-		for (int i = 0; i < previousSpec.length; i++)
-		{
-			FieldSpec thisField = previousSpec[i];
-			boolean fieldFound = false;
-			for (int j = 0; j < currentSpec.length; j++)
-			{
-				if(currentSpec[j].equals(thisField))
-					fieldFound = true;
-			}
-			if(!fieldFound)
-				return false;
-		}
-		return true;
-	}
-	
 	public int compareTo(Object other)
 	{
 		if(other == null)
