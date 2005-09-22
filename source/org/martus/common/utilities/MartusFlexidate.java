@@ -82,7 +82,7 @@ public class MartusFlexidate
 		flexiDate = new Flexidate(new Long(dateStr).longValue(), range);
 	}	
 		
-	public String getMatusFlexidate() 
+	public String getMartusFlexidateString() 
 	{				
 		return flexiDate.getDateAsNumber()+FLEXIDATE_RANGE_DELIMITER+flexiDate.getRange();
 	}	
@@ -135,9 +135,16 @@ public class MartusFlexidate
 
 	public static String toFlexidateFormat(Date beginDate, Date endDate)
 	{		
-		return new MartusFlexidate(beginDate, endDate).getMatusFlexidate();
+		return new MartusFlexidate(beginDate, endDate).getMartusFlexidateString();
 	}		
 		
+	public static String toStoredDateFormat(Date beginDate, Date endDate)
+	{
+		return FieldSpec.getStoredDateFormat().format(beginDate) + 
+					DATE_RANGE_SEPARATER +
+					toFlexidateFormat(beginDate, endDate);
+	}
+
 	Flexidate flexiDate;
 	public static final String 	FLEXIDATE_RANGE_DELIMITER = "+";	
 	public static final String	DATE_RANGE_SEPARATER = ",";

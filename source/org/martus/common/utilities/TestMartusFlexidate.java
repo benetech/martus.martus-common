@@ -68,4 +68,23 @@ public class TestMartusFlexidate extends TestCaseEnhanced
 		assertEquals("0008-04-03", MartusFlexidate.toStoredDateFormat(ancientDate));
 
 	}
+	
+	public void testRangesAndDaylightSavings() throws Exception
+	{
+		final int MAR = 2;
+		final int APR = 3;
+		final int MAY = 4;
+		Date marDate = new GregorianCalendar(2005, MAR, 29, 12, 0, 0).getTime();
+		Date aprDate1 = new GregorianCalendar(2005, APR, 1, 12, 0, 0).getTime();
+		Date aprDate2 = new GregorianCalendar(2005, APR, 5, 12, 0, 0).getTime();
+		Date mayDate = new GregorianCalendar(2005, MAY, 3, 12, 0, 0).getTime();
+		String marToApr1String = MartusFlexidate.toStoredDateFormat(marDate, aprDate1);
+		assertEquals("2005-03-29,20050329+3", marToApr1String);
+		String marToApr2String = MartusFlexidate.toStoredDateFormat(marDate, aprDate2);
+		assertEquals("2005-03-29,20050329+7", marToApr2String);
+		String apr2ToMayString = MartusFlexidate.toStoredDateFormat(aprDate2, mayDate);
+		assertEquals("2005-04-05,20050405+28", apr2ToMayString);
+		String marToMayString = MartusFlexidate.toStoredDateFormat(marDate, mayDate);
+		assertEquals("2005-03-29,20050329+35", marToMayString);
+	}
 }
