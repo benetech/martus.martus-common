@@ -174,14 +174,15 @@ public class FieldSpec
 	
 	public boolean equals(Object other)
 	{
-		try
-		{
-			return (compareTo(other) == 0);
-		}
-		catch (ClassCastException e)
-		{
+		if(!(other instanceof FieldSpec))
 			return false;
-		}
+
+		return (compareTo(other) == 0);
+	}
+
+	public int hashCode()
+	{
+		throw new RuntimeException("hashCode not supported");
 	}
 
 	public static String getTypeString(FieldType type)

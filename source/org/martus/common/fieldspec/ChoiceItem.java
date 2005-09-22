@@ -61,14 +61,15 @@ public class ChoiceItem implements Comparable
 	
 	public boolean equals(Object other)
 	{
-		try
-		{
-			return compareTo(other) == 0;
-		}
-		catch (ClassCastException e)
-		{
+		if(!(other instanceof ChoiceItem))
 			return false;
-		}
+
+		return compareTo(other) == 0;
+	}
+
+	public int hashCode()
+	{
+		throw new RuntimeException("hashCode not supported");
 	}
 
 	public int compareTo(Object other)
