@@ -27,9 +27,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.test;
 
 import java.io.File;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Vector;
 
@@ -241,8 +239,7 @@ public class TestBulletin extends TestCaseEnhanced
 		MartusCalendar cal = new MartusCalendar();
 		cal.set(Calendar.MONTH, 0);
 		cal.set(Calendar.DATE, 1);
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		String result = df.format(cal.getTime());
+		String result = FieldSpec.calendarToYYYYMMDD(cal);
 		assertEquals(result, b.get("eventdate"));
 
 		assertEquals(Bulletin.STATUSDRAFT, b.getStatus());
