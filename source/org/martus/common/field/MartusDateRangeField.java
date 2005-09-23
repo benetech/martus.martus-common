@@ -26,7 +26,7 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.field;
 
-import java.util.Date;
+import java.util.Calendar;
 
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldTypeDate;
@@ -57,7 +57,7 @@ public class MartusDateRangeField extends MartusField
 		return null;
 	}
 
-	private MartusField createDateSubField(Date singleDateString)
+	private MartusField createDateSubField(Calendar singleDateString)
 	{
 		MartusField sub = new MartusField(new FieldSpec(new FieldTypeDate()));
 		sub.setData(MartusFlexidate.toStoredDateFormat(singleDateString));

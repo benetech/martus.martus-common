@@ -27,7 +27,11 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.fieldspec;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import org.martus.common.MartusXml;
 import org.martus.common.MiniLocalization;
@@ -191,13 +195,25 @@ public class FieldSpec
 		return loader.getFieldSpec();
 	}
 
-	public static DateFormat getStoredDateFormat()
+	public static String calendarToYYYYMMDD(Calendar cal)
 	{
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		df.setLenient(false);
-		return df;
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH) + 1;
+		int day = cal.get(Calendar.DAY_OF_MONTH);
+		DecimalFormat fourDigit = new DecimalFormat("0000");
+		DecimalFormat twoDigit = new DecimalFormat("00");
+		return fourDigit.format(year) + "-" + twoDigit.format(month) + "-" + twoDigit.format(day);
 	}
-
+	
+	public static Calendar yyyymmddWithDashesToCalendar(String storedDateString) throws ParseException
+	{
+		Calendar result = new GregorianCalendar();
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		df.setLenient(false);
+		result.setTime(df.parse(storedDateString));
+		return result;
+	}
+	
 	public static class XmlFieldSpecLoader extends SimpleXmlDefaultLoader
 	{
 		public XmlFieldSpecLoader()

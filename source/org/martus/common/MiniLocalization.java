@@ -30,7 +30,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -285,13 +284,12 @@ public class MiniLocalization
 
 	public String convertStoredDateToDisplay(String storedDate)
 	{
-		DateFormat dfStored = FieldSpec.getStoredDateFormat();
 		DateFormat dfDisplay = new SimpleDateFormat(getCurrentDateFormatCode());
 		String result = "";
 		try
 		{
-			Date d = dfStored.parse(storedDate);
-			result = dfDisplay.format(d);
+			Calendar cal = FieldSpec.yyyymmddWithDashesToCalendar(storedDate);
+			result = dfDisplay.format(cal.getTime());
 		}
 		catch(ParseException e)
 		{

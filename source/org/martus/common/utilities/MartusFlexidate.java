@@ -26,11 +26,8 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.utilities;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
 import org.hrvd.util.date.Flexidate;
 import org.martus.common.fieldspec.FieldSpec;
@@ -42,54 +39,32 @@ public class MartusFlexidate
 	 */
 	public MartusFlexidate(String dateStr)
 	{		
-		parseString(dateStr);		
-	}		
-	
-	public MartusFlexidate(Date beginDate, Date endDate)
-	{
-		setDateRange(beginDate, endDate);
-	}
-		
-	private void setDateRange(Date beginDate, Date endDate)
-	{	
-		flexiDate = new Flexidate(normalizeDate(beginDate), normalizeDate(endDate));	
-	}
-	
-	public Date normalizeDate(Date date)
-	{
-		Calendar calendar = new GregorianCalendar();
-		calendar.setTime(date);
-		int year = calendar.get(GregorianCalendar.YEAR);
-		int month = calendar.get(GregorianCalendar.MONTH);
-		int day = calendar.get(GregorianCalendar.DAY_OF_MONTH);
-		int NOON = 12;
-		calendar.set(year, month, day, NOON, 0, 0);
-		return calendar.getTime();
-	}
-	
-	private void parseString(String flexiDateStr)
-	{
-		int plus = flexiDateStr.indexOf(FLEXIDATE_RANGE_DELIMITER);
-		String dateStr = flexiDateStr;
+		int plus = dateStr.indexOf(FLEXIDATE_RANGE_DELIMITER);
+		String dateStr1 = dateStr;
 		int range =0;
 		if (plus > 0)
 		{
-			dateStr = flexiDateStr.substring(0, plus);
-			String rangeStr = flexiDateStr.substring(plus+1);
+			dateStr1 = dateStr.substring(0, plus);
+			String rangeStr = dateStr.substring(plus+1);
 			range = new Integer(rangeStr).intValue();			
 		}							
 		
-		flexiDate = new Flexidate(new Long(dateStr).longValue(), range);
-	}	
+		flexiDate = new Flexidate(new Long(dateStr1).longValue(), range);		
+	}		
+	
+	public MartusFlexidate(Calendar beginDate, Calendar endDate)
+	{
+		flexiDate = new Flexidate(beginDate, endDate);
+	}
 		
 	public String getMartusFlexidateString() 
 	{				
 		return flexiDate.getDateAsNumber()+FLEXIDATE_RANGE_DELIMITER+flexiDate.getRange();
 	}	
 	
-	public Date getBeginDate()
+	public Calendar getBeginDate()
 	{		
-		return flexiDate.getCalendarLow().getTime();
+		return flexiDate.getCalendarLow();
 	}
 	
 	/* this expects a string in one of these forms:
@@ -98,8 +73,6 @@ public class MartusFlexidate
  	 */
 	public static MartusFlexidate createFromMartusDateString(String dateStr)
 	{
-		DateFormat df = FieldSpec.getStoredDateFormat();
-		Date d = null;
 		int comma = dateStr.indexOf(DATE_RANGE_SEPARATER);
 		if (comma >= 0)
 		{
@@ -109,18 +82,18 @@ public class MartusFlexidate
 		
 		try
 		{
-			d = df.parse(dateStr);			
+			Calendar cal = FieldSpec.yyyymmddWithDashesToCalendar(dateStr);
+			return new MartusFlexidate(cal, cal);
 		}
 		catch(ParseException e)
 		{			
 			return new MartusFlexidate("19000101+0");
-		}				
-		return new MartusFlexidate(d,d);
+		}
 	}
 	
-	public Date getEndDate()
+	public Calendar getEndDate()
 	{					
-		return ((hasDateRange())? flexiDate.getCalendarHigh().getTime(): getBeginDate());
+		return ((hasDateRange()) ? flexiDate.getCalendarHigh() : getBeginDate());
 	}	
 	
 	public boolean hasDateRange()
@@ -128,19 +101,19 @@ public class MartusFlexidate
 		return (flexiDate.getRange() > 0)? true:false;
 	}
 
-	public static String toStoredDateFormat(Date date)
+	public static String toStoredDateFormat(Calendar date)
 	{		
-		return FieldSpec.getStoredDateFormat().format(date);				
+		return FieldSpec.calendarToYYYYMMDD(date);				
 	}
 
-	public static String toFlexidateFormat(Date beginDate, Date endDate)
+	public static String toFlexidateFormat(Calendar beginDate, Calendar endDate)
 	{		
 		return new MartusFlexidate(beginDate, endDate).getMartusFlexidateString();
 	}		
 		
-	public static String toStoredDateFormat(Date beginDate, Date endDate)
+	public static String toStoredDateFormat(Calendar beginDate, Calendar endDate)
 	{
-		return FieldSpec.getStoredDateFormat().format(beginDate) + 
+		return FieldSpec.calendarToYYYYMMDD(beginDate) + 
 					DATE_RANGE_SEPARATER +
 					toFlexidateFormat(beginDate, endDate);
 	}

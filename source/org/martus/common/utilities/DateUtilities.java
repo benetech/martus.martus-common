@@ -26,7 +26,6 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.utilities;
 
-import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.martus.common.fieldspec.ChoiceItem;
@@ -85,7 +84,7 @@ public class DateUtilities
 		GregorianCalendar cal = new GregorianCalendar();
 		cal.set(GregorianCalendar.MONTH, 0);
 		cal.set(GregorianCalendar.DATE, 1);
-		return MartusFlexidate.toStoredDateFormat(cal.getTime());
+		return MartusFlexidate.toStoredDateFormat(cal);
 	}
 
 
@@ -94,13 +93,13 @@ public class DateUtilities
 		GregorianCalendar cal = new GregorianCalendar();
 		cal.set(GregorianCalendar.MONTH, 11);
 		cal.set(GregorianCalendar.DATE, 31);
-		return MartusFlexidate.toStoredDateFormat(cal.getTime());
+		return MartusFlexidate.toStoredDateFormat(cal);
 	}
 
 
 	public static String getToday()
 	{
-		return MartusFlexidate.toStoredDateFormat(new Date());
+		return MartusFlexidate.toStoredDateFormat(new GregorianCalendar());
 	}
 
 
