@@ -139,6 +139,7 @@ public class FieldDataPacket extends Packet
 		return fields.getSpecs();
 	}
 	
+	
 	public MartusField getField(String fieldTag)
 	{
 		return fields.findByTag(fieldTag);
@@ -329,14 +330,14 @@ public class FieldDataPacket extends Packet
 
 		String xmlSpecs = fields.toString();
 		
-		if(isNonCustomFieldSpecs(fields))
-		{
-			writeElement(dest, MartusXml.FieldListElementName, LegacyCustomFields.buildFieldListString(fields.getSpecs()));
-		}
-		else
+		if(hasCustomFields())
 		{
 			writeElement(dest, MartusXml.FieldListElementName, MartusConstants.deprecatedCustomFieldSpecs);
 			dest.writeDirect(xmlSpecs);
+		}
+		else
+		{
+			writeElement(dest, MartusXml.FieldListElementName, LegacyCustomFields.buildFieldListString(fields.getSpecs()));
 		}
 		
 		for(int i = 0; i < fields.count(); ++i)
@@ -370,13 +371,13 @@ public class FieldDataPacket extends Packet
 		return LegacyCustomFields.buildFieldListString(getFieldSpecs());
 	}
 
-	public static boolean isNonCustomFieldSpecs(FieldCollection fields)
+	public boolean hasCustomFields()
 	{
-		return fields.toString().equals(DEFAULT_LEGACY_SPECS_AS_XML);
+		return !fields.toString().equals(DEFAULT_LEGACY_SPECS_AS_XML);
 	}
-	
+
 	private static final String DEFAULT_LEGACY_SPECS_AS_XML = 
-		"<CustomFields>\n" +
+		"<CustomFields>\n\n" +
 		"<Field type='LANGUAGE'>\n" +
 		"<Tag>language</Tag>\n" +
 		"<Label></Label>\n" +
