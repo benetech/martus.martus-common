@@ -326,6 +326,18 @@ public class Bulletin implements BulletinConstants
 	{
 		return getPrivateFieldDataPacket().getAttachments();
 	}
+	
+	public void allowOnlyTheseAuthorizedKeysToRead(HQKeys authorizedKeys)
+	{
+		HQKeys keys = getAuthorizedToReadKeys();
+		for(int i = 0; i < keys.size(); ++i)
+		{
+			HQKey oldKey = keys.get(i);
+			if(!authorizedKeys.containsKey(oldKey.getPublicKey()))
+				keys.remove(i);
+		}
+		setAuthorizedToReadKeys(keys);
+	}
 
 	public void addAuthorizedToReadKeys(HQKeys keysToAdd)
 	{

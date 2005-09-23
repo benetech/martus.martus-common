@@ -541,8 +541,31 @@ public class TestBulletin extends TestCaseEnhanced
 		assertTrue(original.getAuthorizedToReadKeys().containsKey(key2.getPublicKey()));
 		original.addAuthorizedToReadKeys(moreKeys);
 		assertEquals(2, original.getAuthorizedToReadKeys().size());
-		
 	}
+	
+	public void testAllowOnlyTheseAuthorizedKeysToRead()
+	{
+		Bulletin original = new Bulletin(security);
+		String key1String = "12345";
+		String key2String = "22343";
+		HQKeys keys = new HQKeys();
+		HQKey key1 = new HQKey(key1String);
+		HQKey key2 = new HQKey(key2String);
+		keys.add(key1);
+		keys.add(key2);
+		
+		original.setAuthorizedToReadKeys(keys);
+		assertEquals("both keys not set?", 2, original.getAuthorizedToReadKeys().size());
+
+		HQKeys only1Key = new HQKeys();
+		only1Key.add(key2);
+		original.allowOnlyTheseAuthorizedKeysToRead(only1Key);
+		assertEquals("Should now only have 1 key?", 1, original.getAuthorizedToReadKeys().size());
+		
+		assertTrue(original.getAuthorizedToReadKeys().containsKey(key2.getPublicKey()));
+	}
+	
+	
 
 	static MockDatabase getDb()
 	{
