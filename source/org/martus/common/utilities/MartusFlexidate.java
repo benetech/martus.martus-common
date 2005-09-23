@@ -31,6 +31,7 @@ import java.util.Calendar;
 
 import org.hrvd.util.date.Flexidate;
 import org.martus.common.fieldspec.FieldSpec;
+import org.martus.util.MartusCalendar;
 
 public class MartusFlexidate
 {
@@ -52,9 +53,9 @@ public class MartusFlexidate
 		flexiDate = new Flexidate(new Long(dateStr1).longValue(), range);		
 	}		
 	
-	public MartusFlexidate(Calendar beginDate, Calendar endDate)
+	public MartusFlexidate(MartusCalendar beginDate, MartusCalendar endDate)
 	{
-		flexiDate = new Flexidate(beginDate, endDate);
+		flexiDate = new Flexidate(beginDate.getCalendar(), endDate.getCalendar());
 	}
 		
 	public String getMartusFlexidateString() 
@@ -62,9 +63,14 @@ public class MartusFlexidate
 		return flexiDate.getDateAsNumber()+FLEXIDATE_RANGE_DELIMITER+flexiDate.getRange();
 	}	
 	
-	public Calendar getBeginDate()
-	{		
-		return flexiDate.getCalendarLow();
+	public MartusCalendar getBeginDate()
+	{
+		Calendar flexidateCal = flexiDate.getCalendarLow(); 
+		MartusCalendar cal = new MartusCalendar();
+		cal.set(Calendar.YEAR, flexidateCal.get(Calendar.YEAR));
+		cal.set(Calendar.MONTH, flexidateCal.get(Calendar.MONTH));
+		cal.set(Calendar.DAY_OF_MONTH, flexidateCal.get(Calendar.DAY_OF_MONTH));
+		return cal;
 	}
 	
 	/* this expects a string in one of these forms:
@@ -82,7 +88,7 @@ public class MartusFlexidate
 		
 		try
 		{
-			Calendar cal = FieldSpec.yyyymmddWithDashesToCalendar(dateStr);
+			MartusCalendar cal = FieldSpec.yyyymmddWithDashesToCalendar(dateStr);
 			return new MartusFlexidate(cal, cal);
 		}
 		catch(ParseException e)
@@ -91,9 +97,10 @@ public class MartusFlexidate
 		}
 	}
 	
-	public Calendar getEndDate()
-	{					
-		return ((hasDateRange()) ? flexiDate.getCalendarHigh() : getBeginDate());
+	public MartusCalendar getEndDate()
+	{
+		MartusCalendar endDate = new MartusCalendar(flexiDate.getCalendarHigh());
+		return ((hasDateRange()) ? endDate : getBeginDate());
 	}	
 	
 	public boolean hasDateRange()
@@ -101,17 +108,17 @@ public class MartusFlexidate
 		return (flexiDate.getRange() > 0)? true:false;
 	}
 
-	public static String toStoredDateFormat(Calendar date)
+	public static String toStoredDateFormat(MartusCalendar date)
 	{		
 		return FieldSpec.calendarToYYYYMMDD(date);				
 	}
 
-	public static String toFlexidateFormat(Calendar beginDate, Calendar endDate)
+	public static String toFlexidateFormat(MartusCalendar beginDate, MartusCalendar endDate)
 	{		
 		return new MartusFlexidate(beginDate, endDate).getMartusFlexidateString();
 	}		
 		
-	public static String toStoredDateFormat(Calendar beginDate, Calendar endDate)
+	public static String toStoredDateFormat(MartusCalendar beginDate, MartusCalendar endDate)
 	{
 		return FieldSpec.calendarToYYYYMMDD(beginDate) + 
 					DATE_RANGE_SEPARATER +

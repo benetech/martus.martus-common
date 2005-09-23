@@ -31,7 +31,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Vector;
 
 import org.martus.common.HQKey;
@@ -59,6 +58,7 @@ import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.BulletinHistory;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.utilities.DateUtilities;
+import org.martus.util.MartusCalendar;
 import org.martus.util.TestCaseEnhanced;
 
 
@@ -238,9 +238,9 @@ public class TestBulletin extends TestCaseEnhanced
 		String today = DateUtilities.getToday();
 		assertEquals(today, b.get("entrydate"));
 
-		GregorianCalendar cal = new GregorianCalendar();
-		cal.set(GregorianCalendar.MONTH, 0);
-		cal.set(GregorianCalendar.DATE, 1);
+		MartusCalendar cal = new MartusCalendar();
+		cal.set(Calendar.MONTH, 0);
+		cal.set(Calendar.DATE, 1);
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		String result = df.format(cal.getTime());
 		assertEquals(result, b.get("eventdate"));
@@ -450,7 +450,7 @@ public class TestBulletin extends TestCaseEnhanced
 	{
 		try
 		{
-			Calendar cal = FieldSpec.yyyymmddWithDashesToCalendar("2003-07-02");
+			MartusCalendar cal = FieldSpec.yyyymmddWithDashesToCalendar("2003-07-02");
 			assertEquals(2003, cal.get(Calendar.YEAR));
 			assertEquals(7-1, cal.get(Calendar.MONTH));
 			assertEquals(2, cal.get(Calendar.DATE));
@@ -464,7 +464,7 @@ public class TestBulletin extends TestCaseEnhanced
 	public void testDateRangeCompatibility() throws Exception
 	{
 		String sampleDateRange = "2003-04-07,2003-05-17";
-		Calendar cal = FieldSpec.yyyymmddWithDashesToCalendar(sampleDateRange);
+		MartusCalendar cal = FieldSpec.yyyymmddWithDashesToCalendar(sampleDateRange);
 		int year = cal.get(Calendar.YEAR);
 		int month = cal.get(Calendar.MONTH);
 		int day = cal.get(Calendar.DAY_OF_MONTH);
@@ -476,7 +476,7 @@ public class TestBulletin extends TestCaseEnhanced
 
 	public void testGetToday()
 	{
-		String result = FieldSpec.calendarToYYYYMMDD(new GregorianCalendar());
+		String result = FieldSpec.calendarToYYYYMMDD(new MartusCalendar());
 		assertEquals(result, DateUtilities.getToday());
 	}
 

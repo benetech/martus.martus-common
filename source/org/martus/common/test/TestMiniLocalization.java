@@ -26,7 +26,9 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.test;
 
+import java.util.Calendar;
 import java.util.GregorianCalendar;
+
 import org.martus.common.MiniLocalization;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.language.LanguageOptions;
@@ -44,11 +46,15 @@ public class TestMiniLocalization extends TestCaseEnhanced
     	MiniLocalization loc = new MiniLocalization();
     	
     	final int june = 5;
-    	GregorianCalendar leadingZeros = new GregorianCalendar(1996, june, 1, 7, 4);
+    	GregorianCalendar leadingZeros = new GregorianCalendar(1996, june, 1);
+    	leadingZeros.set(Calendar.HOUR_OF_DAY, 7);
+    	leadingZeros.set(Calendar.MINUTE, 4);
     	assertEquals("06/01/1996 07:04", loc.formatDateTime(leadingZeros.getTimeInMillis()));
     	
     	final int december = 11;
-    	GregorianCalendar afternoon = new GregorianCalendar(2004, december, 9, 13, 59);
+    	GregorianCalendar afternoon = new GregorianCalendar(2004, december, 9);
+    	afternoon.set(Calendar.HOUR_OF_DAY, 13);
+    	afternoon.set(Calendar.MINUTE, 59);
     	assertEquals("12/09/2004 13:59", loc.formatDateTime(afternoon.getTimeInMillis()));
 	}
     
@@ -59,11 +65,15 @@ public class TestMiniLocalization extends TestCaseEnhanced
     	loc.addRightToLeftLanguage(rightToLeftLanguageCode);
 		loc.setCurrentLanguageCode(rightToLeftLanguageCode);
     	final int june = 5;
-    	GregorianCalendar leadingZeros = new GregorianCalendar(1996, june, 1, 7, 4);
+    	GregorianCalendar leadingZeros = new GregorianCalendar(1996, june, 1);
+    	leadingZeros.set(Calendar.HOUR_OF_DAY, 7);
+    	leadingZeros.set(Calendar.MINUTE, 4);
     	assertEquals("07:04 1996/01/06", loc.formatDateTime(leadingZeros.getTimeInMillis()));
     	
     	final int december = 11;
-    	GregorianCalendar afternoon = new GregorianCalendar(2004, december, 9, 13, 59);
+    	GregorianCalendar afternoon = new GregorianCalendar(2004, december, 9);
+    	afternoon.set(Calendar.HOUR_OF_DAY, 13);
+    	afternoon.set(Calendar.MINUTE, 59);
     	assertEquals("13:59 2004/09/12", loc.formatDateTime(afternoon.getTimeInMillis()));
     	LanguageOptions.setDirectionLeftToRight();
 	}

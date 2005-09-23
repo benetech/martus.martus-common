@@ -26,9 +26,6 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.field;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
 import org.martus.common.GridData;
 import org.martus.common.MiniLocalization;
 import org.martus.common.fieldspec.ChoiceItem;
@@ -45,6 +42,7 @@ import org.martus.common.fieldspec.FieldTypeMultiline;
 import org.martus.common.fieldspec.FieldTypeNormal;
 import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.common.utilities.MartusFlexidate;
+import org.martus.util.MartusCalendar;
 import org.martus.util.TestCaseEnhanced;
 
 
@@ -93,8 +91,8 @@ public class TestMartusField extends TestCaseEnhanced
 	
 	public void testGetSearchableDataForDateRangeFields()
 	{
-		Calendar beginDate = new GregorianCalendar(1954, 4, 21);
-		Calendar endDate = new GregorianCalendar(1972, 9, 30);
+		MartusCalendar beginDate = new MartusCalendar(1954, 4, 21);
+		MartusCalendar endDate = new MartusCalendar(1972, 9, 30);
 
 		// FIXME: Extract out to common, with tests
 		String rawDateRange = MartusFlexidate.toStoredDateFormat(beginDate) + 

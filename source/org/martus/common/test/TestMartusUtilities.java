@@ -437,7 +437,10 @@ public class TestMartusUtilities extends TestCaseEnhanced
 		store.saveEncryptedBulletinForTesting(b1);
 		BulletinHeaderPacket bhp = b1.getBulletinHeaderPacket();
 		int emptySize = MartusUtilities.getBulletinSize(db, bhp);
-		assertTrue("empty size not correct?", emptySize > 1000 && emptySize < 5000);
+		// NOTE: The following limits are arbitrary, 
+		// and may need to be adjusted periodically
+		assertTrue("empty size too small?", emptySize > 4000);
+		assertTrue("empty size too big?", emptySize < 8000);
 		b1.set(Bulletin.TAGTITLE, "Title");
 		b1.set(Bulletin.TAGPUBLICINFO, "Details1");
 		b1.set(Bulletin.TAGPRIVATEINFO, "PrivateDetails1");

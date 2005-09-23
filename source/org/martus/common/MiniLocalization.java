@@ -29,7 +29,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,6 +42,7 @@ import org.martus.common.fieldspec.ChoiceItem;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.utilities.DateUtilities;
 import org.martus.common.utilities.MartusFlexidate;
+import org.martus.util.MartusCalendar;
 import org.martus.util.language.LanguageOptions;
 
 
@@ -288,7 +288,7 @@ public class MiniLocalization
 		String result = "";
 		try
 		{
-			Calendar cal = FieldSpec.yyyymmddWithDashesToCalendar(storedDate);
+			MartusCalendar cal = FieldSpec.yyyymmddWithDashesToCalendar(storedDate);
 			result = dfDisplay.format(cal.getTime());
 		}
 		catch(ParseException e)
@@ -355,7 +355,7 @@ public class MiniLocalization
 		DateFormat dateShort = new SimpleDateFormat(getCurrentDateFormatCode());
 		DateFormat time24hour = new SimpleDateFormat("HH:mm");
 		
-		Calendar cal = new GregorianCalendar();
+		GregorianCalendar cal = new GregorianCalendar();
 		cal.setTimeInMillis(dateTime);
 		
 		String date = reverseDisplayDateIfRequired(dateShort.format(cal.getTime()));

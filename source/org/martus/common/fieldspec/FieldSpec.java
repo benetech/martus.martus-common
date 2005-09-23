@@ -31,10 +31,10 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import org.martus.common.MartusXml;
 import org.martus.common.MiniLocalization;
+import org.martus.util.MartusCalendar;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlStringLoader;
 import org.martus.util.xml.XmlUtilities;
@@ -195,7 +195,7 @@ public class FieldSpec
 		return loader.getFieldSpec();
 	}
 
-	public static String calendarToYYYYMMDD(Calendar cal)
+	public static String calendarToYYYYMMDD(MartusCalendar cal)
 	{
 		int year = cal.get(Calendar.YEAR);
 		int month = cal.get(Calendar.MONTH) + 1;
@@ -205,9 +205,9 @@ public class FieldSpec
 		return fourDigit.format(year) + "-" + twoDigit.format(month) + "-" + twoDigit.format(day);
 	}
 	
-	public static Calendar yyyymmddWithDashesToCalendar(String storedDateString) throws ParseException
+	public static MartusCalendar yyyymmddWithDashesToCalendar(String storedDateString) throws ParseException
 	{
-		Calendar result = new GregorianCalendar();
+		MartusCalendar result = new MartusCalendar();
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		df.setLenient(false);
 		result.setTime(df.parse(storedDateString));
