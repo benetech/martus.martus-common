@@ -32,6 +32,7 @@ import org.martus.common.GridData;
 import org.martus.common.MartusXml;
 import org.martus.common.MiniLocalization;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
+import org.martus.util.xml.XmlUtilities;
 import org.xml.sax.SAXParseException;
 
 
@@ -68,6 +69,18 @@ public class GridFieldSpec extends FieldSpec
 
 	public String convertStoredToDisplay(String storedData, MiniLocalization localization)
 	{
+		Formatter formatter = new FormatterForSearching();
+		return getFormatted(storedData, localization, formatter);
+	}
+
+	public String convertStoredToExportable(String storedData)
+	{
+		Formatter formatter = new FormatterForExporting();
+		return getFormatted(storedData, null, formatter);
+	}
+	
+	private String getFormatted(String storedData, MiniLocalization localization, Formatter formatter)
+	{
 		GridData data = new GridData(this);
 		try
 		{
@@ -80,18 +93,114 @@ public class GridFieldSpec extends FieldSpec
 			return "";
 		}
 		StringBuffer result = new StringBuffer();
+		result.append(formatter.getVeryBeginning(this));
 		for(int row = 0; row < data.getRowCount(); ++row)
 		{
+			result.append(formatter.getRowBeginning());
 			for(int col = 0; col < data.getColumnCount(); ++col)
 			{
+				result.append(formatter.getCellBeginning());
 				String rawData = data.getValueAt(row, col);
-				String searchableData = getFieldSpec(col).convertStoredToDisplay(rawData, localization);
+				final FieldSpec cellSpec = getFieldSpec(col);
+				String searchableData = formatter.getFormattedCell(rawData, cellSpec, localization);
 				result.append(searchableData);
-				result.append("\t");
+				result.append(formatter.getCellEnd());
 			}
-			result.append("\n");
+			result.append(formatter.getRowEnd());
 		}
+		result.append(formatter.getVeryEnd());
 		return new String(result);
+	}
+	
+	abstract class Formatter
+	{
+		abstract public String getFormattedCell(String rawData, FieldSpec cellSpec, MiniLocalization localization);
+		
+		public String getVeryBeginning(GridFieldSpec gridSpec)
+		{
+			return "";
+		}
+		
+		public String getVeryEnd()
+		{
+			return "";
+		}
+		
+		public String getRowBeginning()
+		{
+			return "";
+		}
+		
+		public String getRowEnd()
+		{
+			return "";
+		}
+
+		public String getCellBeginning()
+		{
+			return "";
+		}
+		
+		public String getCellEnd()
+		{
+			return "";
+		}
+	}
+	
+	class FormatterForSearching extends Formatter
+	{
+		public String getFormattedCell(String rawData, FieldSpec cellSpec, MiniLocalization localization)
+		{
+			return cellSpec.convertStoredToDisplay(rawData, localization);
+		}
+		
+		public String getRowEnd()
+		{
+			return "\n";
+		}
+		
+		public String getCellEnd()
+		{
+			return "\t";
+		}
+	}
+	
+	class FormatterForExporting extends Formatter
+	{
+		public String getFormattedCell(String rawData, FieldSpec cellSpec, MiniLocalization localization)
+		{
+			return XmlUtilities.getXmlEncoded(cellSpec.convertStoredToExportable(rawData));
+		}
+		
+		public String getVeryBeginning(GridFieldSpec gridSpec)
+		{
+			return "<GridData columns='" + gridSpec.getColumnCount() + "'>\n";
+		}
+		
+		public String getVeryEnd()
+		{
+			return "</GridData>\n";
+		}
+		
+		public String getRowBeginning()
+		{
+			return "<Row>\n";
+		}
+		
+		public String getRowEnd()
+		{
+			return "</Row>\n";
+		}
+
+		public String getCellBeginning()
+		{
+			return "<Column>";
+		}
+		
+		public String getCellEnd()
+		{
+			return "</Column>\n";
+		}
 	}
 
 	public class UnsupportedFieldTypeException extends Exception

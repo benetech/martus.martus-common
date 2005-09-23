@@ -114,6 +114,11 @@ public class FieldSpec
 		return getType().convertStoredToDisplay(storedData, localization);
 	}
 	
+	public String convertStoredToExportable(String storedData)
+	{
+		return getType().convertStoredToExportable(storedData);
+	}
+	
 	public String getDefaultValue()
 	{
 		return(getType().getDefaultValue());

@@ -71,6 +71,11 @@ public class MartusField
 		return getFieldSpec().convertStoredToDisplay(getData(), localization);
 	}
 	
+	public String getExportableData()
+	{
+		return getFieldSpec().convertStoredToExportable(getData());
+	}
+	
 	public void clearData()
 	{
 		data = null;

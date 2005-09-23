@@ -62,6 +62,11 @@ abstract public class FieldType
 		return storedData;
 	}
 	
+	public String convertStoredToExportable(String storedData)
+	{
+		return storedData;
+	}
+	
 	public boolean equals(Object other)
 	{
 		return (this.getClass().equals(other.getClass()));
