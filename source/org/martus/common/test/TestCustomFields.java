@@ -52,7 +52,7 @@ public class TestCustomFields extends TestCase
 	{
 		FieldSpec[] specs = getSampleSpecs();
 		FieldCollection fields = new FieldCollection(specs);
-		String xml = "<CustomFields>\n";
+		String xml = "<CustomFields>\n\n";
 		for(int i=0; i < specs.length; ++i)
 			xml += specs[i].toString() + "\n";
 		xml += "</CustomFields>\n";
