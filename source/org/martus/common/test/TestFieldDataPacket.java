@@ -509,7 +509,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 	{
 		FieldSpec[] specs = StandardFieldSpecs.getDefaultPublicFieldSpecs();
 		FieldDataPacket fdpCustom = new FieldDataPacket(UniversalId.createDummyUniversalId(), specs);
-		assertFalse("Should only have the default fields", fdpCustom.hasCustomFields());
+		assertFalse("Should only have the default fields", fdpCustom.hasCustomFieldTemplate());
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		fdpCustom.writeXml(out, security);
