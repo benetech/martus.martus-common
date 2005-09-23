@@ -110,15 +110,21 @@ public class FieldCollection
 	
 	public String toString()
 	{
-		String result = "<" + MartusXml.CustomFieldSpecsElementName + ">\n";
+		StringBuffer result = new StringBuffer();
+		result.append('<');
+		result.append(MartusXml.CustomFieldSpecsElementName);
+		result.append(">\n\n");
+		
 		for (int i = 0; i < fields.size(); i++)
 		{
 			FieldSpec spec = ((MartusField)fields.get(i)).getFieldSpec();
-			result += spec.toString();
-			result += "\n";
+			result.append(spec.toString());
+			result.append('\n');
 		}
-		result += "</" + MartusXml.CustomFieldSpecsElementName + ">\n";
-		return result;
+		result.append("</");
+		result.append(MartusXml.CustomFieldSpecsElementName);
+		result.append(">\n");
+		return result.toString();
 	}
 	
 	public static class CustomFieldsParseException extends Exception 
