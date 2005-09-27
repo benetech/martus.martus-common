@@ -940,22 +940,40 @@ public class MartusSecurity extends MartusCrypto
 		// for bcprov, look for BCKEY.SF
 		// for bc-jce, look for SSMTSJAR.SF
 		
- 		verifySignedKeyFile("bc-jce.jar", Cipher.class, "SSMTSJAR.SF");
- 		verifySignedKeyFile("bcprov.jar", RSAEngine.class, "BCKEY.SF");
+ 		URL jceJarURL = getJarURL(Cipher.class);
+ 		if(jceJarURL.toString().indexOf("bc-jce") < 0)
+ 		{
+			String hintsToSolve = "\n\nXbootclasspath might be incorrect; bc-jce.jar might be missing from Martus/lib/ext";
+ 			throw new InvalidJarException("Didn't load bc-jce.jar" + hintsToSolve);
+ 		}
+		verifySignedKeyFile("bc-jce.jar", jceJarURL, "SSMTSJAR.SF");
+		
+ 		URL bcprovJarURL = getJarURL(RSAEngine.class);
+ 		String bcprovJarName = "bcprov-jdk14-128.jar";
+ 		if(bcprovJarURL.toString().indexOf(bcprovJarName) < 0)
+ 		{
+ 			String hintsToSolve = "\n\nMake sure " + bcprovJarName + " is the only bcprov file in Martus/lib/ext";
+ 			throw new InvalidJarException("Didn't load " + bcprovJarName + hintsToSolve);
+ 		}
+		verifySignedKeyFile(bcprovJarName, bcprovJarURL, "BCKEY.SF");
 	}
 
 	public void verifySignedKeyFile(String jarDescription, Class c, String keyFileName) throws MartusCrypto.InvalidJarException, IOException
 	{
-		String errorMessageStart = "Verifying " + jarDescription + ": ";
-		
 		URL jarURL = getJarURL(c);
+		verifySignedKeyFile(jarDescription, jarURL, keyFileName);
+	}
+
+	private void verifySignedKeyFile(String jarDescription, URL jarURL, String keyFileName) throws IOException, InvalidJarException
+	{
+		String errorMessageStart = "Verifying " + jarDescription + ": ";
 		JarURLConnection jarConnection = (JarURLConnection)jarURL.openConnection();
 		JarFile jf = jarConnection.getJarFile();
 		JarEntry entry = jf.getJarEntry("META-INF/" + keyFileName);
 		if(entry == null)
 		{
 			String basicErrorMessage = "Missing: " + keyFileName + " from " + jarURL;
-			String hintsToSolve = "\n\nXbootclasspath might be incorrect; bc-jce.jar might be missing from Martus/lib/ext";
+			String hintsToSolve = "\n\nA jar file may be damaged. Try re-installing Martus.";
 			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage + hintsToSolve);
 		}
 		int size = (int)entry.getSize();
