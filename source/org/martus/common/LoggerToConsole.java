@@ -42,7 +42,7 @@ public class LoggerToConsole implements LoggerInterface
 	private void log(String message)
 	{
 		Timestamp stamp = new Timestamp(System.currentTimeMillis());
-		SimpleDateFormat formatDate = new SimpleDateFormat("EE MM/dd HH:mm:ss z");
+		SimpleDateFormat formatDate = new SimpleDateFormat(LOG_DATE_FORMAT);
 		String threadId = getCurrentClientAddress();
 		if(threadId == null)
 			threadId = "";
@@ -98,4 +98,6 @@ public class LoggerToConsole implements LoggerInterface
 		}
 		return null;
 	}
+	
+	static public String LOG_DATE_FORMAT = "EE MM/dd HH:mm:ss z";
 }
