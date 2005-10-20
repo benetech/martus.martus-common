@@ -937,8 +937,8 @@ public class MartusSecurity extends MartusCrypto
 	
 	public void verifyJars() throws MartusCrypto.InvalidJarException, IOException
 	{
-		// for bcprov, look for BCKEY.SF
-		// for bc-jce, look for SSMTSJAR.SF
+		// for bcprov, look for BCKEY.SF (BCKEY.SIG)
+		// for bc-jce, look for SSMTSJAR.SF (SSMTSJAR.SIG)
 		
  		URL jceJarURL = getJarURL(Cipher.class);
  		if(jceJarURL.toString().indexOf("bc-jce") < 0)
@@ -946,7 +946,7 @@ public class MartusSecurity extends MartusCrypto
 			String hintsToSolve = "\n\nXbootclasspath might be incorrect; bc-jce.jar might be missing from Martus/lib/ext";
  			throw new InvalidJarException("Didn't load bc-jce.jar" + hintsToSolve);
  		}
-		verifySignedKeyFile("bc-jce.jar", jceJarURL, "SSMTSJAR.SF");
+		verifySignedKeyFile("bc-jce.jar", jceJarURL, "SSMTSJAR");
 		
  		URL bcprovJarURL = getJarURL(RSAEngine.class);
  		String bcprovJarName = "bcprov-jdk14-128.jar";
@@ -955,24 +955,24 @@ public class MartusSecurity extends MartusCrypto
  			String hintsToSolve = "\n\nMake sure " + bcprovJarName + " is the only bcprov file in Martus/lib/ext";
  			throw new InvalidJarException("Didn't load " + bcprovJarName + hintsToSolve);
  		}
-		verifySignedKeyFile(bcprovJarName, bcprovJarURL, "BCKEY.SF");
+		verifySignedKeyFile(bcprovJarName, bcprovJarURL, "BCKEY");
 	}
 
-	public void verifySignedKeyFile(String jarDescription, Class c, String keyFileName) throws MartusCrypto.InvalidJarException, IOException
+	public void verifySignedKeyFile(String jarDescription, Class c, String keyFileNameWithoutExtension) throws MartusCrypto.InvalidJarException, IOException
 	{
 		URL jarURL = getJarURL(c);
-		verifySignedKeyFile(jarDescription, jarURL, keyFileName);
+		verifySignedKeyFile(jarDescription, jarURL, keyFileNameWithoutExtension);
 	}
 
-	private void verifySignedKeyFile(String jarDescription, URL jarURL, String keyFileName) throws IOException, InvalidJarException
+	private void verifySignedKeyFile(String jarDescription, URL jarURL, String keyFileNameWithoutExtension) throws IOException, InvalidJarException
 	{
 		String errorMessageStart = "Verifying " + jarDescription + ": ";
 		JarURLConnection jarConnection = (JarURLConnection)jarURL.openConnection();
 		JarFile jf = jarConnection.getJarFile();
-		JarEntry entry = jf.getJarEntry("META-INF/" + keyFileName);
+		JarEntry entry = jf.getJarEntry("META-INF/" + keyFileNameWithoutExtension + ".SF");
 		if(entry == null)
 		{
-			String basicErrorMessage = "Missing: " + keyFileName + " from " + jarURL;
+			String basicErrorMessage = "Missing: " + keyFileNameWithoutExtension + ".SF" + " from " + jarURL;
 			String hintsToSolve = "\n\nA jar file may be damaged. Try re-installing Martus.";
 			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage + hintsToSolve);
 		}
@@ -991,10 +991,10 @@ public class MartusSecurity extends MartusCrypto
 			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage);
 		}
 		
-		InputStream referenceKeyFileIn = getClass().getResourceAsStream(keyFileName);
+		InputStream referenceKeyFileIn = getClass().getResourceAsStream(keyFileNameWithoutExtension + ".SIG");
 		if(referenceKeyFileIn == null)
 		{
-			String basicErrorMessage = "Couldn't open " + keyFileName + " in Martus jar";
+			String basicErrorMessage = "Couldn't open " + keyFileNameWithoutExtension + ".SIG" + " in Martus jar";
 			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage);
 		}
 		byte[] expected = null;
@@ -1011,7 +1011,7 @@ public class MartusSecurity extends MartusCrypto
 		
 		if(!Arrays.equals(expected, actual))
 		{
-			String basicErrorMessage = "Unequal contents for: " + keyFileName;
+			String basicErrorMessage = "Unequal contents for: " + keyFileNameWithoutExtension;
 			String hintsToSolve = "Might be wrong version of jar (" + jarURL + ")";
 			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage + hintsToSolve);
 		}

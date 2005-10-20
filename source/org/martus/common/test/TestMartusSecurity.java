@@ -118,7 +118,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		try
 		{
 			// try to verify bc-jce jar using bcprov sig file
-			security.verifySignedKeyFile("mismatch", Cipher.class, "BCKEY.SF");
+			security.verifySignedKeyFile("mismatch", Cipher.class, "BCKEY");
 			fail("Should have thrown because reference didn't match actual");
 		}
 		catch(MartusCrypto.InvalidJarException ignoreExpected)
