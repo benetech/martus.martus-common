@@ -966,13 +966,16 @@ public class MartusSecurity extends MartusCrypto
 
 	private void verifySignedKeyFile(String jarDescription, URL jarURL, String keyFileNameWithoutExtension) throws IOException, InvalidJarException
 	{
+		String keyFileOutsideOfMartus = keyFileNameWithoutExtension + SIGNATURE_FILE_EXTENSION;
+		String keyFileInMartusJar = keyFileNameWithoutExtension + MARTUS_SIGNATURE_FILE_EXTENSION;
+		
 		String errorMessageStart = "Verifying " + jarDescription + ": ";
 		JarURLConnection jarConnection = (JarURLConnection)jarURL.openConnection();
 		JarFile jf = jarConnection.getJarFile();
-		JarEntry entry = jf.getJarEntry("META-INF/" + keyFileNameWithoutExtension + ".SF");
+		JarEntry entry = jf.getJarEntry("META-INF/" + keyFileOutsideOfMartus);
 		if(entry == null)
 		{
-			String basicErrorMessage = "Missing: " + keyFileNameWithoutExtension + ".SF" + " from " + jarURL;
+			String basicErrorMessage = "Missing: " + keyFileOutsideOfMartus + " from " + jarURL;
 			String hintsToSolve = "\n\nA jar file may be damaged. Try re-installing Martus.";
 			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage + hintsToSolve);
 		}
@@ -991,10 +994,10 @@ public class MartusSecurity extends MartusCrypto
 			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage);
 		}
 		
-		InputStream referenceKeyFileIn = getClass().getResourceAsStream(keyFileNameWithoutExtension + ".SIG");
+		InputStream referenceKeyFileIn = getClass().getResourceAsStream(keyFileInMartusJar);
 		if(referenceKeyFileIn == null)
 		{
-			String basicErrorMessage = "Couldn't open " + keyFileNameWithoutExtension + ".SIG" + " in Martus jar";
+			String basicErrorMessage = "Couldn't open " + keyFileInMartusJar + " in Martus jar";
 			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage);
 		}
 		byte[] expected = null;
@@ -1016,7 +1019,7 @@ public class MartusSecurity extends MartusCrypto
 			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage + hintsToSolve);
 		}
 	}
-
+	
 	private byte[] readAll(int size, InputStream streamToRead) throws IOException
 	{
 		byte[] gotBytes = new byte[size];
@@ -1053,6 +1056,8 @@ public class MartusSecurity extends MartusCrypto
 	private static final String PBE_ALGORITHM = "PBEWithSHAAndTwofish-CBC";
 	private static final String DIGEST_ALGORITHM = "SHA1";
 	private static final String ENCRYPTED_FILE_VERSION_IDENTIFIER = "Martus Encrypted File Version 001";
+	private static final String MARTUS_SIGNATURE_FILE_EXTENSION = ".SIG";
+	private static final String SIGNATURE_FILE_EXTENSION = ".SF";
 
 	private static final int CACHE_VERSION = 1;
 	private static final int BUNDLE_VERSION = 1;
