@@ -28,6 +28,8 @@ package org.martus.common.test;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.SimpleTimeZone;
+import java.util.TimeZone;
 
 import org.martus.common.MiniLocalization;
 import org.martus.util.TestCaseEnhanced;
@@ -39,6 +41,32 @@ public class TestMiniLocalization extends TestCaseEnhanced
 	public TestMiniLocalization(String name)
 	{
 		super(name);
+	}
+	
+	public void testConvertStoredDateToDisplay() throws Exception
+	{
+		TimeZone defaultTimeZone = TimeZone.getDefault();
+		try
+		{
+			for(int offset = -12; offset < 12; ++offset)
+				verifyConvertForTimeZoneOffset(offset);
+		}
+		finally
+		{
+			TimeZone.setDefault(defaultTimeZone);
+		}
+    	
+	}
+	
+	void verifyConvertForTimeZoneOffset(int offset)
+	{
+		MiniLocalization loc = new MiniLocalization();
+		TimeZone thisTimeZone = new SimpleTimeZone(offset, "martus");
+		TimeZone.setDefault(thisTimeZone);
+		GregorianCalendar cal = new GregorianCalendar();
+		assertEquals("didn't set time zone?", thisTimeZone, cal.getTimeZone());
+    	assertEquals("bad conversion UTC" + Integer.toString(offset), "12/31/1987", loc.convertStoredDateToDisplay("1987-12-31"));
+
 	}
 
     public void testFormatDateTime() throws Exception

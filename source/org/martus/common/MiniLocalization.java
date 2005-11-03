@@ -26,7 +26,6 @@ Boston, MA 02111-1307, USA.
 package org.martus.common;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
@@ -291,7 +290,7 @@ public class MiniLocalization
 			MartusCalendar cal = FieldSpec.yyyymmddWithDashesToCalendar(storedDate);
 			result = dfDisplay.format(cal.getTime());
 		}
-		catch(ParseException e)
+		catch(Exception e)
 		{
 			// unparsable dates simply become blank strings,
 			// so we don't want to do anything for this exception

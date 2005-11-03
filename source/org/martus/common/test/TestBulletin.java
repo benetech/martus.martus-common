@@ -27,7 +27,6 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.test;
 
 import java.io.File;
-import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Vector;
 
@@ -452,7 +451,7 @@ public class TestBulletin extends TestCaseEnhanced
 			assertEquals(7-1, cal.get(Calendar.MONTH));
 			assertEquals(2, cal.get(Calendar.DATE));
 		}
-		catch(ParseException e)
+		catch(Exception e)
 		{
 			assertTrue(false);
 		}

@@ -26,7 +26,6 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.utilities;
 
-import java.text.ParseException;
 import java.util.Calendar;
 
 import org.hrvd.util.date.Flexidate;
@@ -91,7 +90,7 @@ public class MartusFlexidate
 			MartusCalendar cal = FieldSpec.yyyymmddWithDashesToCalendar(dateStr);
 			return new MartusFlexidate(cal, cal);
 		}
-		catch(ParseException e)
+		catch(Exception e)
 		{			
 			return new MartusFlexidate("19000101+0");
 		}
