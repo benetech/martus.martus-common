@@ -26,10 +26,8 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.fieldspec;
 
-import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import org.martus.common.MartusXml;
@@ -207,10 +205,20 @@ public class FieldSpec
 	
 	public static MartusCalendar yyyymmddWithDashesToCalendar(String storedDateString) throws ParseException
 	{
+		int yearStart = 0;
+		int yearLength = 4;
+		int yearEnd = yearStart + yearLength;
+		int monthStart = yearEnd + 1;
+		int monthLength = 2;
+		int monthEnd = monthStart + monthLength;
+		int dayStart = monthEnd + 1;
+		int dayLength = 2;
+		int dayEnd = dayStart + dayLength;
+		int year = Integer.parseInt(storedDateString.substring(yearStart, yearEnd));
+		int month = Integer.parseInt(storedDateString.substring(monthStart, monthEnd)) - 1;
+		int day = Integer.parseInt(storedDateString.substring(dayStart, dayEnd));
 		MartusCalendar result = new MartusCalendar();
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		df.setLenient(false);
-		result.setTime(df.parse(storedDateString));
+		result.set(year, month, day);
 		return result;
 	}
 	

@@ -50,6 +50,7 @@ import org.martus.common.fieldspec.FieldTypeUnknown;
 import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.common.fieldspec.MessageFieldSpec;
 import org.martus.common.utilities.DateUtilities;
+import org.martus.util.MartusCalendar;
 import org.martus.util.TestCaseEnhanced;
 
 
@@ -58,6 +59,28 @@ public class TestFieldSpec extends TestCaseEnhanced
 	public TestFieldSpec(String name)
 	{
 		super(name);
+	}
+	
+	public void testDateFormatConversions() throws Exception
+	{
+		String wayOldDate = "1853-05-21";
+		String oldDate = "1931-07-19";
+		String recentDate = "1989-09-28";
+		String nearFutureDate = "2017-06-28";
+		String farFutureDate = "2876-08-16";
+		
+		verifyRoundTripDateConversion("recent past", recentDate);
+		verifyRoundTripDateConversion("near future", nearFutureDate);
+		verifyRoundTripDateConversion("after 2020", farFutureDate);
+		verifyRoundTripDateConversion("before 1970", oldDate);
+		verifyRoundTripDateConversion("before 1900", wayOldDate);
+	}
+	
+	void verifyRoundTripDateConversion(String text, String dateString) throws Exception
+	{
+		MartusCalendar cal = FieldSpec.yyyymmddWithDashesToCalendar(dateString);
+		String result = FieldSpec.calendarToYYYYMMDD(cal);
+		assertEquals("date conversion failed: " + text, dateString, result);
 	}
 
 	public void testLegacy()
