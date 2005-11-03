@@ -66,7 +66,7 @@ public class TestMiniLocalization extends TestCaseEnhanced
 		GregorianCalendar cal = new GregorianCalendar();
 		assertEquals("didn't set time zone?", thisTimeZone, cal.getTimeZone());
     	assertEquals("bad conversion UTC" + Integer.toString(offset), "12/31/1987", loc.convertStoredDateToDisplay("1987-12-31"));
-
+    	assertEquals("bad conversion UTC befor 1970" + Integer.toString(offset), "12/31/1947", loc.convertStoredDateToDisplay("1947-12-31"));
 	}
 
     public void testFormatDateTime() throws Exception
