@@ -43,14 +43,12 @@ public class TestMiniLocalization extends TestCaseEnhanced
 		super(name);
 	}
 	
-	public void testConvertStoredDateToDisplay() throws Exception
+	public void testConvertStoredDateToDisplayNoTimeZoneOffset() throws Exception
 	{
 		TimeZone defaultTimeZone = TimeZone.getDefault();
 		try
 		{
-			verifyConvertForTimeZoneOffset(0);
-			for(int offset = -11; offset < 11; ++offset)
-				verifyConvertForTimeZoneOffset(offset);
+			verifyConvertForTimeZoneOffsetHourly(0);
 		}
 		finally
 		{
@@ -58,8 +56,37 @@ public class TestMiniLocalization extends TestCaseEnhanced
 		}
 		
 	}
+	public void testConvertStoredDateToDisplayWithAllHourlyTimeZones() throws Exception
+	{
+		TimeZone defaultTimeZone = TimeZone.getDefault();
+		try
+		{
+			verifyConvertForTimeZoneOffsetHourly(0);
+			for(int offset = -12; offset < 12; ++offset)
+				verifyConvertForTimeZoneOffsetHourly(offset);
+		}
+		finally
+		{
+			TimeZone.setDefault(defaultTimeZone);
+		}
+	}
 	
-	void verifyConvertForTimeZoneOffset(int offset)
+	public void testConvertStoredDateToDisplayWithHalfHourTimeZones() throws Exception
+	{
+		TimeZone defaultTimeZone = TimeZone.getDefault();
+		try
+		{
+			for(int offset = -24; offset < 24; ++offset)
+				verifyConvertForTimeZoneOffsetHalfHour(offset);
+		}
+		finally
+		{
+			TimeZone.setDefault(defaultTimeZone);
+		}
+		
+	}
+
+	void verifyConvertForTimeZoneOffsetHourly(int offset)
 	{
 		MiniLocalization loc = new MiniLocalization();
 		TimeZone thisTimeZone = new SimpleTimeZone(offset*1000*60*60, "martus");
@@ -69,7 +96,17 @@ public class TestMiniLocalization extends TestCaseEnhanced
     	assertEquals("bad conversion before 1970 UTC " + Integer.toString(offset), "12/31/1947", loc.convertStoredDateToDisplay("1947-12-31"));
 	}
 
-    public void testFormatDateTime() throws Exception
+	void verifyConvertForTimeZoneOffsetHalfHour(int offset)
+	{
+		MiniLocalization loc = new MiniLocalization();
+		TimeZone thisTimeZone = new SimpleTimeZone(offset*1000*60*30, "martus");
+		TimeZone.setDefault(thisTimeZone);
+		assertEquals("didn't set 1/2 hour time zone?", thisTimeZone, new GregorianCalendar().getTimeZone());
+    	assertEquals("bad conversion UTC 1/2 hour +" + Integer.toString(offset), "12/31/1987", loc.convertStoredDateToDisplay("1987-12-31"));
+    	assertEquals("bad conversion before 1970 UTC 1/2 hour +" + Integer.toString(offset), "12/31/1947", loc.convertStoredDateToDisplay("1947-12-31"));
+	}
+
+	public void testFormatDateTime() throws Exception
 	{
     	MiniLocalization loc = new MiniLocalization();
     	
