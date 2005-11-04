@@ -27,7 +27,12 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.test;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.SimpleTimeZone;
+import java.util.TimeZone;
 import java.util.Vector;
 
 import org.martus.common.HQKey;
@@ -472,8 +477,26 @@ public class TestBulletin extends TestCaseEnhanced
 
 	public void testGetToday()
 	{
-		String result = FieldSpec.calendarToYYYYMMDD(new MartusCalendar());
-		assertEquals(result, DateUtilities.getToday());
+		TimeZone realTimeZone = TimeZone.getDefault();
+		try
+		{
+			SimpleDateFormat realDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			String realToday = realDateFormat.format(new Date());
+			assertEquals("Today wrong in real time zone?", realToday, DateUtilities.getToday());
+			for(int offset = -11; offset < 11; ++offset)
+			{
+				TimeZone.setDefault(new SimpleTimeZone(offset*1000*60*60, "test"));
+				Calendar cal = new GregorianCalendar();
+				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+				String today = df.format(cal.getTime());
+
+				assertEquals("Today wrong in time zone " + offset, today, DateUtilities.getToday());
+			}
+		}
+		finally
+		{
+			TimeZone.setDefault(realTimeZone);
+		}
 	}
 
 	public void testAddAttachment() throws Exception

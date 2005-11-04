@@ -48,25 +48,25 @@ public class TestMiniLocalization extends TestCaseEnhanced
 		TimeZone defaultTimeZone = TimeZone.getDefault();
 		try
 		{
-			for(int offset = -12; offset < 12; ++offset)
+			verifyConvertForTimeZoneOffset(0);
+			for(int offset = -11; offset < 11; ++offset)
 				verifyConvertForTimeZoneOffset(offset);
 		}
 		finally
 		{
 			TimeZone.setDefault(defaultTimeZone);
 		}
-    	
+		
 	}
 	
 	void verifyConvertForTimeZoneOffset(int offset)
 	{
 		MiniLocalization loc = new MiniLocalization();
-		TimeZone thisTimeZone = new SimpleTimeZone(offset, "martus");
+		TimeZone thisTimeZone = new SimpleTimeZone(offset*1000*60*60, "martus");
 		TimeZone.setDefault(thisTimeZone);
-		GregorianCalendar cal = new GregorianCalendar();
-		assertEquals("didn't set time zone?", thisTimeZone, cal.getTimeZone());
-    	assertEquals("bad conversion UTC" + Integer.toString(offset), "12/31/1987", loc.convertStoredDateToDisplay("1987-12-31"));
-    	assertEquals("bad conversion UTC befor 1970" + Integer.toString(offset), "12/31/1947", loc.convertStoredDateToDisplay("1947-12-31"));
+		assertEquals("didn't set time zone?", thisTimeZone, new GregorianCalendar().getTimeZone());
+    	assertEquals("bad conversion UTC +" + Integer.toString(offset), "12/31/1987", loc.convertStoredDateToDisplay("1987-12-31"));
+    	assertEquals("bad conversion before 1970 UTC " + Integer.toString(offset), "12/31/1947", loc.convertStoredDateToDisplay("1947-12-31"));
 	}
 
     public void testFormatDateTime() throws Exception

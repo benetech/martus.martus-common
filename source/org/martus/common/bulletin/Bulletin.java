@@ -29,6 +29,7 @@ package org.martus.common.bulletin;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
@@ -166,9 +167,9 @@ public class Bulletin implements BulletinConstants
 	
 	public String getLastSavedDate()
 	{
-		MartusCalendar cal = new MartusCalendar();
+		GregorianCalendar cal = new GregorianCalendar();
 		cal.setTime(new Date(getLastSavedTime()));
-		return FieldSpec.calendarToYYYYMMDD(cal);
+		return FieldSpec.calendarToYYYYMMDD(new MartusCalendar(cal));
 	}
 	
 	public void setHistory(BulletinHistory newHistory)
