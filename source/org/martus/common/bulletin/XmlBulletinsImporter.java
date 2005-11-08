@@ -27,7 +27,7 @@ package org.martus.common.bulletin;
 
 import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
-import org.martus.common.FieldCollection;
+import org.martus.common.fieldspec.FieldSpec;
 import org.xml.sax.SAXException;
 
 public class XmlBulletinsImporter
@@ -38,14 +38,14 @@ public class XmlBulletinsImporter
 		bulletinsLoader.parse(xml);
 	}
 	
-	public FieldCollection getMainFieldSpecs()
+	public FieldSpec[] getMainFieldSpecs()
 	{
-		return bulletinsLoader.mainFields;
+		return bulletinsLoader.mainFields.getSpecs();
 	}
 
-	public FieldCollection getPrivateFieldSpecs()
+	public FieldSpec[] getPrivateFieldSpecs()
 	{
-		return bulletinsLoader.privateFields;
+		return bulletinsLoader.privateFields.getSpecs();
 	}
 
 	XmlBulletinsFileLoader bulletinsLoader;

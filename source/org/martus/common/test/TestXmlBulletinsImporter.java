@@ -26,9 +26,8 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.test;
 
 import java.io.InputStream;
-import org.martus.common.FieldCollection;
 import org.martus.common.bulletin.XmlBulletinsImporter;
-import org.martus.common.field.MartusField;
+import org.martus.common.fieldspec.FieldSpec;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.UnicodeReader;
 
@@ -53,15 +52,15 @@ public class TestXmlBulletinsImporter extends TestCaseEnhanced
 	{
 		String xmlIn = getXMLFromResource("SampleXmlBulletin.xml");
 		XmlBulletinsImporter importer = new XmlBulletinsImporter(xmlIn);
-		FieldCollection mainFieldSpecs = importer.getMainFieldSpecs();
+		FieldSpec[] mainFieldSpecs = importer.getMainFieldSpecs();
 		assertNotNull(mainFieldSpecs);
-		assertEquals(19, mainFieldSpecs.count());
-		MartusField field = mainFieldSpecs.getField(0);
+		assertEquals(19, mainFieldSpecs.length);
+		FieldSpec field = mainFieldSpecs[0];
 		assertTrue(field.getType().isLanguage());
-		FieldCollection privateFieldSpecs = importer.getPrivateFieldSpecs();
+		FieldSpec[] privateFieldSpecs = importer.getPrivateFieldSpecs();
 		assertNotNull(privateFieldSpecs);
-		assertEquals(1, privateFieldSpecs.count());
-		field = privateFieldSpecs.getField(0);
+		assertEquals(1, privateFieldSpecs.length);
+		field = privateFieldSpecs[0];
 		assertTrue(field.getType().isMultiline());
 
 	}
