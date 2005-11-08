@@ -27,14 +27,14 @@ package org.martus.common.test;
 
 import java.io.InputStream;
 import org.martus.common.FieldCollection;
-import org.martus.common.bulletin.BulletinXmlImporter;
+import org.martus.common.bulletin.XmlBulletinsImporter;
 import org.martus.common.field.MartusField;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.UnicodeReader;
 
-public class TestBulletinXmlImporter extends TestCaseEnhanced
+public class TestXmlBulletinsImporter extends TestCaseEnhanced
 {
-	public TestBulletinXmlImporter(String name)
+	public TestXmlBulletinsImporter(String name)
 	{
 		super(name);
 	}
@@ -52,7 +52,7 @@ public class TestBulletinXmlImporter extends TestCaseEnhanced
 	public void testImportXML() throws Exception
 	{
 		String xmlIn = getXMLFromResource("SampleXmlBulletin.xml");
-		BulletinXmlImporter importer = new BulletinXmlImporter(xmlIn);
+		XmlBulletinsImporter importer = new XmlBulletinsImporter(xmlIn);
 		FieldCollection mainFieldSpecs = importer.getMainFieldSpecs();
 		assertNotNull(mainFieldSpecs);
 		assertEquals(19, mainFieldSpecs.count());

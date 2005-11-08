@@ -27,12 +27,11 @@ package org.martus.common.bulletin;
 
 import org.martus.common.FieldCollection;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
-import org.martus.util.xml.SimpleXmlStringLoader;
 import org.xml.sax.SAXParseException;
 
-public class XmlBulletinsLoader extends SimpleXmlStringLoader
+public class XmlBulletinsFileLoader extends SimpleXmlDefaultLoader
 {
-	public XmlBulletinsLoader()
+	public XmlBulletinsFileLoader()
 	{
 		super(MartusBulletinSElementName);
 	}

@@ -30,11 +30,11 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.martus.common.FieldCollection;
 import org.xml.sax.SAXException;
 
-public class BulletinXmlImporter
+public class XmlBulletinsImporter
 {
-	public BulletinXmlImporter(String xml) throws IOException, ParserConfigurationException, SAXException
+	public XmlBulletinsImporter(String xml) throws IOException, ParserConfigurationException, SAXException
 	{
-		bulletinsLoader = new XmlBulletinsLoader();
+		bulletinsLoader = new XmlBulletinsFileLoader();
 		bulletinsLoader.parse(xml);
 	}
 	
@@ -48,5 +48,5 @@ public class BulletinXmlImporter
 		return bulletinsLoader.privateFields;
 	}
 
-	XmlBulletinsLoader bulletinsLoader;
+	XmlBulletinsFileLoader bulletinsLoader;
 }
