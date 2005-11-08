@@ -1,6 +1,6 @@
 <MartusBulletins>
 <MartusBulletin>
-<CustomFields>
+<MainFieldsSpecs>
 
 <Field type='LANGUAGE'>
 <Tag>language</Tag>
@@ -154,8 +154,13 @@
 </Column>
 </GridSpecDetails>
 </Field>
-
-</CustomFields>
+</MainFieldsSpecs>
+<PrivateFieldsSpecs>
+<Field type='MULTILINE'>
+<Tag>privateinfo</Tag>
+<Label></Label>
+</Field>
+</PrivateFieldsSpecs>
 
 <FieldValues>
 <Field tag ='language'>
@@ -275,6 +280,11 @@ don't know
 <Column>Range:1970-01-01,1992-01-01</Column>
 </Row>
 </GridData>
+</Value>
+</Field>
+
+<Field tag ='privateinfo'>
+<Value>Information we want kept private
 </Value>
 </Field>
 </FieldValues>
