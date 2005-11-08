@@ -26,7 +26,11 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.test;
 
 import java.io.InputStream;
+import org.martus.common.FieldCollection;
+import org.martus.common.bulletin.BulletinXmlImporter;
+import org.martus.common.field.MartusField;
 import org.martus.util.TestCaseEnhanced;
+import org.martus.util.UnicodeReader;
 
 public class TestBulletinXmlImporter extends TestCaseEnhanced
 {
@@ -47,10 +51,29 @@ public class TestBulletinXmlImporter extends TestCaseEnhanced
 	
 	public void testImportXML() throws Exception
 	{
-		InputStream in = getClass().getResource("SampleXmlBulletin.xml").openStream();
-		assertNotNull(in);
-		
-		
+		String xmlIn = getXMLFromResource("SampleXmlBulletin.xml");
+		BulletinXmlImporter importer = new BulletinXmlImporter(xmlIn);
+		FieldCollection mainFieldSpecs = importer.getMainFieldSpecs();
+		assertNotNull(mainFieldSpecs);
+		assertEquals(19, mainFieldSpecs.count());
+		MartusField field = mainFieldSpecs.getField(0);
+		assertTrue(field.getType().isLanguage());
+		FieldCollection privateFieldSpecs = importer.getPrivateFieldSpecs();
+		assertNotNull(privateFieldSpecs);
+		assertEquals(1, privateFieldSpecs.count());
+		field = privateFieldSpecs.getField(0);
+		assertTrue(field.getType().isMultiline());
 
 	}
+	
+	String getXMLFromResource(String resourceFile) throws Exception
+	{
+		InputStream in = getClass().getResource("SampleXmlBulletin.xml").openStream();
+		assertNotNull(in);
+		UnicodeReader reader = new UnicodeReader(in);
+		String xmlRead = reader.readAll();
+		reader.close();
+		return xmlRead;
+	}
+
 }

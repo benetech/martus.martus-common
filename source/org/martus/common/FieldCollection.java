@@ -151,10 +151,16 @@ public class FieldCollection
 	{
 		public XmlCustomFieldsLoader(FieldCollection fieldsToLoad)
 		{
-			super(MartusXml.CustomFieldSpecsElementName);
+			this(MartusXml.CustomFieldSpecsElementName, fieldsToLoad);
+		}
+
+		public XmlCustomFieldsLoader(String tag, FieldCollection fieldsToLoad)
+		{
+			super(tag);
 			fields = fieldsToLoad;
 		}
 		
+
 		public FieldCollection getFields()
 		{
 			return fields;
