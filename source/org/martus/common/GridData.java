@@ -169,11 +169,14 @@ public class GridData
 		
 		public void startDocument(Attributes attrs) throws SAXParseException
 		{
-			String cols = attrs.getValue(GridData.GRID_ATTRIBUTE_COLUMNS);
-			int gotCols = Integer.parseInt(cols);
-			int expectedCols = grid.getColumnCount();
-			if(gotCols != expectedCols)
-				System.out.println("XmlGridDataLoader.startDocument: wrong column count! expected " + expectedCols + " but was " + gotCols);
+			String columns = attrs.getValue(GridData.GRID_ATTRIBUTE_COLUMNS);
+			if(columns != null)
+			{
+				int gotCols = Integer.parseInt(columns);
+				int expectedCols = grid.getColumnCount();
+				if(gotCols != expectedCols)
+					System.out.println("XmlGridDataLoader.startDocument: wrong column count! expected " + expectedCols + " but was " + gotCols);
+			}
 			super.startDocument(attrs);
 		}
 

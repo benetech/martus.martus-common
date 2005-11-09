@@ -25,6 +25,7 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.bulletin;
 
+import java.util.HashMap;
 import org.martus.common.FieldCollection;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.xml.sax.SAXParseException;
@@ -55,6 +56,7 @@ public class XmlBulletinsFileLoader extends SimpleXmlDefaultLoader
 			//Todo here actually create a bulletin based on the currentBulletinLoader's data
 			mainFields = currentBulletinLoader.getMainFieldSpecs();
 			privateFields = currentBulletinLoader.getPrivateFieldSpecs();
+			fieldTagValuesMap = currentBulletinLoader.getFieldTagValuesMap();
 		}
 		else
 			super.endElement(tag, ended);
@@ -64,4 +66,5 @@ public class XmlBulletinsFileLoader extends SimpleXmlDefaultLoader
 	private XmlBulletinLoader currentBulletinLoader;
 	public FieldCollection mainFields;
 	public FieldCollection privateFields;
+	public HashMap fieldTagValuesMap;
 }

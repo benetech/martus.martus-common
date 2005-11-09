@@ -26,6 +26,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.bulletin;
 
 import java.io.IOException;
+import java.util.HashMap;
 import javax.xml.parsers.ParserConfigurationException;
 import org.martus.common.fieldspec.FieldSpec;
 import org.xml.sax.SAXException;
@@ -38,6 +39,7 @@ public class XmlBulletinsImporter
 		bulletinsLoader.parse(xml);
 	}
 	
+	//Todo remove these and create real bulletins which this can return
 	public FieldSpec[] getMainFieldSpecs()
 	{
 		return bulletinsLoader.mainFields.getSpecs();
@@ -46,6 +48,11 @@ public class XmlBulletinsImporter
 	public FieldSpec[] getPrivateFieldSpecs()
 	{
 		return bulletinsLoader.privateFields.getSpecs();
+	}
+	
+	public HashMap getFieldTagValuesMap()
+	{
+		return bulletinsLoader.fieldTagValuesMap;
 	}
 
 	XmlBulletinsFileLoader bulletinsLoader;

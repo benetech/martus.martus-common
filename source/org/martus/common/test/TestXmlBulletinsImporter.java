@@ -26,6 +26,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.test;
 
 import java.io.InputStream;
+import java.util.HashMap;
 import org.martus.common.bulletin.XmlBulletinsImporter;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.util.TestCaseEnhanced;
@@ -62,7 +63,9 @@ public class TestXmlBulletinsImporter extends TestCaseEnhanced
 		assertEquals(1, privateFieldSpecs.length);
 		field = privateFieldSpecs[0];
 		assertTrue(field.getType().isMultiline());
-
+		HashMap tagValues = importer.getFieldTagValuesMap();
+		assertEquals("Range:1980-02-15,1980-05-22", tagValues.get("InterviewDates"));
+		assertEquals("Information we want kept private\n", tagValues.get("privateinfo"));
 	}
 	
 	String getXMLFromResource(String resourceFile) throws Exception

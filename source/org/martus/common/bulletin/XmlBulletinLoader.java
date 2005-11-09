@@ -25,8 +25,14 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.bulletin;
 
+import java.util.HashMap;
 import org.martus.common.FieldCollection;
+import org.martus.common.GridData;
+import org.martus.common.field.MartusField;
+import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
+import org.martus.util.xml.SimpleXmlStringLoader;
+import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
 public class XmlBulletinLoader extends SimpleXmlDefaultLoader
@@ -44,6 +50,8 @@ public class XmlBulletinLoader extends SimpleXmlDefaultLoader
 			return new FieldCollection.XmlCustomFieldsLoader(tag, new FieldCollection());
 		else if(tag.equals(PrivateFieldSpecsElementName))
 			return new FieldCollection.XmlCustomFieldsLoader(tag, new FieldCollection());
+		else if(tag.equals(FieldValuesElementName))
+			return new FieldValueLoader(tag);
 		return super.startElement(tag);
 	}
 
@@ -52,16 +60,23 @@ public class XmlBulletinLoader extends SimpleXmlDefaultLoader
 	{
 		if(tag.equals(MainFieldSpecsElementName))
 		{
-			FieldCollection.XmlCustomFieldsLoader loader = (FieldCollection.XmlCustomFieldsLoader)ended;
-			mainFieldSpecs = loader.getFields();
+			mainFieldSpecs = ((FieldCollection.XmlCustomFieldsLoader)ended).getFields();
 		}
 		else if(tag.equals(PrivateFieldSpecsElementName))
 		{
-			FieldCollection.XmlCustomFieldsLoader loader = (FieldCollection.XmlCustomFieldsLoader)ended;
-			privateFieldSpecs = loader.getFields();
+			privateFieldSpecs = ((FieldCollection.XmlCustomFieldsLoader)ended).getFields();
+		}
+		else if(tag.equals(FieldValuesElementName))
+		{
+			fieldTagValuesMap = ((FieldValueLoader)ended).getFieldTagValueMap();
 		}
 		else
 			super.endElement(tag, ended);
+	}
+	
+	public HashMap getFieldTagValuesMap()
+	{
+		return fieldTagValuesMap;
 	}
 	
 	public FieldCollection getMainFieldSpecs()
@@ -73,13 +88,161 @@ public class XmlBulletinLoader extends SimpleXmlDefaultLoader
 	{
 		return privateFieldSpecs;
 	}
+	
+	class FieldValueLoader extends SimpleXmlDefaultLoader
+	{
+		public FieldValueLoader(String tag)
+		{
+			super(tag);
+			fieldTagToValueMap = new HashMap();
+		}
+		
+		public SimpleXmlDefaultLoader startElement(String tag)throws SAXParseException
+		{
+			if(tag.startsWith(FieldElementName))
+				return new FieldLoader(tag);
+			return super.startElement(tag);
+		}
+	
+		public void endElement(String tag, SimpleXmlDefaultLoader ended)throws SAXParseException
+		{
+			if(tag.equals(FieldElementName))
+			{
+				FieldLoader fieldLoader = ((FieldLoader)ended);
+				String fieldTag = fieldLoader.getFieldTag();
+				String fieldValue = fieldLoader.getValue();
+				fieldTagToValueMap.put(fieldTag, fieldValue);
+			}
+			else
+				super.endElement(tag, ended);
+		}
+
+		public HashMap getFieldTagValueMap()
+		{
+			return fieldTagToValueMap;
+		}
+		HashMap fieldTagToValueMap;
+	}
+	
+	class FieldLoader extends SimpleXmlDefaultLoader
+	{
+
+		public FieldLoader(String tag)
+		{
+			super(tag);
+		}
+		
+		public String getValue()
+		{
+			if(valueLoader != null)
+				return valueLoader.getText();
+			if(isMessageField(tagForField))
+				return getMessageValue(tagForField);
+			return null;
+		}
+		
+		public String getFieldTag()
+		{
+			return tagForField;
+		}
+		
+		public void startDocument(Attributes attrs) throws SAXParseException
+		{
+			tagForField = attrs.getValue(TagAttributeName);
+			super.startDocument(attrs);
+		}
+		
+		public SimpleXmlDefaultLoader startElement(String tag) throws SAXParseException
+		{
+			if(tag.equals(ValueElementName))
+			{
+				valueLoader = new ValueLoader(tagForField);
+				return valueLoader;
+			}
+			return super.startElement(tag);
+		}
+
+		public void endElement(String tag, SimpleXmlDefaultLoader ended) throws SAXParseException
+		{
+			super.endElement(tag, ended);
+		}
+		ValueLoader valueLoader;
+		String tagForField;
+		String value;
+	}
+	
+	class ValueLoader extends SimpleXmlStringLoader
+	{
+
+		public ValueLoader(String currentFieldTagToUse)
+		{
+			super(ValueElementName);
+			tagForField = currentFieldTagToUse;
+		}
+		
+		public String getText()
+		{
+			if(complexData != null)
+				return complexData;
+			return super.getText();
+		}
+
+		public SimpleXmlDefaultLoader startElement(String tag) throws SAXParseException
+		{
+			if(tag.equals(GridData.GRID_DATA_TAG))
+			{
+				GridData gridData = new GridData(getGridFieldSpec(tagForField));
+				return new GridData.XmlGridDataLoader(gridData);
+			}
+			return super.startElement(tag);
+		}
+
+		public void endElement(String tag, SimpleXmlDefaultLoader ended) throws SAXParseException
+		{
+			if(tag.equals(GridData.GRID_DATA_TAG))
+				complexData = ((GridData.XmlGridDataLoader)ended).getGridData().getXmlRepresentation(); 
+			super.endElement(tag, ended);
+		}
+
+		ValueLoader valueLoader;
+		String tagForField;
+		String complexData;
+	}
+	
+	boolean isMessageField(String tag)
+	{
+		return getFieldFromSpecs(tag).getType().isMessage();
+	}
+	
+	String getMessageValue(String messageTag)
+	{
+		return getFieldFromSpecs(messageTag).getData();
+	}
+	
+	GridFieldSpec getGridFieldSpec(String tagForGridSpec)
+	{
+		return (GridFieldSpec)getFieldFromSpecs(tagForGridSpec).getFieldSpec();
+	}
+	
+	MartusField getFieldFromSpecs(String tag)
+	{
+		MartusField field = mainFieldSpecs.findByTag(tag);
+		if(field != null)
+			return field;
+		return privateFieldSpecs.findByTag(tag);
+		
+	}
 
 	private FieldCollection mainFieldSpecs;
 	private FieldCollection privateFieldSpecs;
+	private HashMap fieldTagValuesMap;
 
 	public static final String MartusBulletinElementName = "MartusBulletin";
 	public static final String MainFieldSpecsElementName = "MainFieldSpecs";
 	public static final String PrivateFieldSpecsElementName = "PrivateFieldSpecs";
 	public static final String FieldValuesElementName = "FieldValues";
+	public static final String FieldElementName = "Field";
+	public static final String ValueElementName = "Value";
+	public static final String TagAttributeName = "tag";
 	
 }
