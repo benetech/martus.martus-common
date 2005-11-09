@@ -61,12 +61,9 @@ public class XmlBulletinsFileLoader extends SimpleXmlDefaultLoader
 		{
 			//Todo here actually create a bulletin based on the currentBulletinLoader's data
 			mainFields = currentBulletinLoader.getMainFieldSpecs();
-		
 			validateMainFields(mainFields);
-			{
-				privateFields = currentBulletinLoader.getPrivateFieldSpecs();
-				fieldTagValuesMap = currentBulletinLoader.getFieldTagValuesMap();
-			}
+			privateFields = currentBulletinLoader.getPrivateFieldSpecs();
+			fieldTagValuesMap = currentBulletinLoader.getFieldTagValuesMap();
 		}
 		else
 			super.endElement(tag, ended);
