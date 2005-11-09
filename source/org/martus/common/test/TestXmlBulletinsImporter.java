@@ -69,7 +69,18 @@ public class TestXmlBulletinsImporter extends TestCaseEnhanced
 		assertFalse("Failed verification of good xml bulletin fields?", importer.didFieldSpecVerificationErrorOccur());
 		assertEquals("", importer.getErrors());
 	}
-	
+
+	public void testImportInvalidMainFieldSpecs() throws Exception
+	{
+		InputStream xmlIn = getXMLStreamFromResource("SampleInvalidFieldSpecsXmlBulletin.xml");
+		XmlBulletinsImporter importer = new XmlBulletinsImporter(xmlIn);
+		FieldSpec[] mainFieldSpecs = importer.getMainFieldSpecs();
+		assertNotNull(mainFieldSpecs);
+		assertEquals(17, mainFieldSpecs.length);
+		assertTrue("Should have Failed verification of bulletin fields?", importer.didFieldSpecVerificationErrorOccur());
+		assertEquals(expectedErrorMessage, importer.getErrors());
+	}
+
 	public void testImportInvalidXML() throws Exception
 	{
 		String invalidXML = "<wrong xml field expected>jflskdf</wrong xml field expected>";
@@ -87,9 +98,14 @@ public class TestXmlBulletinsImporter extends TestCaseEnhanced
 	
 	InputStream getXMLStreamFromResource(String resourceFile) throws Exception
 	{
-		InputStream in = getClass().getResource("SampleXmlBulletin.xml").openStream();
+		InputStream in = getClass().getResource(resourceFile).openStream();
 		assertNotNull(in);
 		return in;
 	}
+
+	final String expectedErrorMessage = "100 :  : author : \n" +
+			"100 :  : title : \n" +
+			"102 : BOOLEAN : DuplicateTag : Does interviewee wish to remain anonymous?\n" +
+			"108 : DROPDOWN : BulletinSourceDuplicateEntries : Source of bulletin information\n";
 
 }
