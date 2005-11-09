@@ -38,9 +38,15 @@ public class XmlBulletinsImporter
 	public XmlBulletinsImporter(InputStream xmlIn) throws IOException, ParserConfigurationException, SAXException
 	{
 		UnicodeReader reader = new UnicodeReader(xmlIn);
-		bulletinsLoader = new XmlBulletinsFileLoader();
-		bulletinsLoader.parse(reader);
-		reader.close();
+		try
+		{
+			bulletinsLoader = new XmlBulletinsFileLoader();
+			bulletinsLoader.parse(reader);
+		}
+		finally
+		{
+			reader.close();
+		}
 	}
 	
 	//Todo remove these and create real bulletins which this can return

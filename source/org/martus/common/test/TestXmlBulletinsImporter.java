@@ -30,6 +30,7 @@ import java.util.HashMap;
 import org.martus.common.bulletin.XmlBulletinsImporter;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.util.TestCaseEnhanced;
+import org.martus.util.inputstreamwithseek.StringInputStreamWithSeek;
 
 public class TestXmlBulletinsImporter extends TestCaseEnhanced
 {
@@ -66,6 +67,21 @@ public class TestXmlBulletinsImporter extends TestCaseEnhanced
 		assertEquals("Range:1980-02-15,1980-05-22", tagValues.get("InterviewDates"));
 		assertEquals("Information we want kept private\n", tagValues.get("privateinfo"));
 	}
+	
+	public void testImportInvalidXML() throws Exception
+	{
+		String invalidXML = "<wrong xml field expected>jflskdf</wrong xml field expected>";
+		StringInputStreamWithSeek xmlInvalid = new StringInputStreamWithSeek(invalidXML);
+		try
+		{
+			new XmlBulletinsImporter(xmlInvalid);
+			fail("should have thrown");
+		}
+		catch(Exception expectedException)
+		{
+		}
+	}
+
 	
 	InputStream getXMLStreamFromResource(String resourceFile) throws Exception
 	{
