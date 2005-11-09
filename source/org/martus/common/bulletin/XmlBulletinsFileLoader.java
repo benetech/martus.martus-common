@@ -26,7 +26,10 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.bulletin;
 
 import java.util.HashMap;
+import java.util.Vector;
 import org.martus.common.FieldCollection;
+import org.martus.common.fieldspec.CustomFieldError;
+import org.martus.common.fieldspec.CustomFieldSpecValidator;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.xml.sax.SAXParseException;
 
@@ -35,6 +38,9 @@ public class XmlBulletinsFileLoader extends SimpleXmlDefaultLoader
 	public XmlBulletinsFileLoader()
 	{
 		super(MartusBulletinSElementName);
+		bulletins = new Vector();
+		validationErrorMessages = new StringBuffer();
+		fieldspecVerificationError = false;
 	}
 	
 	public SimpleXmlDefaultLoader startElement(String tag)
@@ -55,11 +61,48 @@ public class XmlBulletinsFileLoader extends SimpleXmlDefaultLoader
 		{
 			//Todo here actually create a bulletin based on the currentBulletinLoader's data
 			mainFields = currentBulletinLoader.getMainFieldSpecs();
-			privateFields = currentBulletinLoader.getPrivateFieldSpecs();
-			fieldTagValuesMap = currentBulletinLoader.getFieldTagValuesMap();
+		
+			validateMainFields(mainFields);
+			{
+				privateFields = currentBulletinLoader.getPrivateFieldSpecs();
+				fieldTagValuesMap = currentBulletinLoader.getFieldTagValuesMap();
+			}
 		}
 		else
 			super.endElement(tag, ended);
+	}
+	
+	public boolean didFieldSpecVerificationErrorOccur()
+	{
+		return fieldspecVerificationError;
+	}
+	
+	public String getErrors()
+	{
+		return validationErrorMessages.toString();
+	}
+
+	private void validateMainFields(FieldCollection fields)
+	{
+		CustomFieldSpecValidator validator = new CustomFieldSpecValidator(fields);
+		if(!validator.isValid())
+		{
+			fieldspecVerificationError = true;
+			Vector errors = validator.getAllErrors();
+			for(int i = 0; i<errors.size(); ++i)
+			{
+				CustomFieldError thisError = (CustomFieldError)errors.get(i);
+				StringBuffer thisErrorMessage = new StringBuffer(thisError.getCode());
+				thisErrorMessage.append(" : ");
+				thisErrorMessage.append(thisError.getType());
+				thisErrorMessage.append(" : ");
+				thisErrorMessage.append(thisError.getTag());
+				thisErrorMessage.append(" : ");
+				thisErrorMessage.append(thisError.getLabel());
+				validationErrorMessages.append(thisErrorMessage);
+				validationErrorMessages.append('\n');
+			}
+		}
 	}
 
 	public static String MartusBulletinSElementName = "MartusBulletins";
@@ -67,4 +110,7 @@ public class XmlBulletinsFileLoader extends SimpleXmlDefaultLoader
 	public FieldCollection mainFields;
 	public FieldCollection privateFields;
 	public HashMap fieldTagValuesMap;
+	Vector bulletins;
+	StringBuffer validationErrorMessages;
+	boolean fieldspecVerificationError;
 }

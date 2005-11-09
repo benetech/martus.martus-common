@@ -49,6 +49,16 @@ public class XmlBulletinsImporter
 		}
 	}
 	
+	public boolean didFieldSpecVerificationErrorOccur()
+	{
+		return bulletinsLoader.didFieldSpecVerificationErrorOccur();
+	}
+	
+	public String getErrors()
+	{
+		return bulletinsLoader.getErrors();
+	}
+	
 	//Todo remove these and create real bulletins which this can return
 	public FieldSpec[] getMainFieldSpecs()
 	{

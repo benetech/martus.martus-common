@@ -66,6 +66,8 @@ public class TestXmlBulletinsImporter extends TestCaseEnhanced
 		HashMap tagValues = importer.getFieldTagValuesMap();
 		assertEquals("Range:1980-02-15,1980-05-22", tagValues.get("InterviewDates"));
 		assertEquals("Information we want kept private\n", tagValues.get("privateinfo"));
+		assertFalse("Failed verification of good xml bulletin fields?", importer.didFieldSpecVerificationErrorOccur());
+		assertEquals("", importer.getErrors());
 	}
 	
 	public void testImportInvalidXML() throws Exception
