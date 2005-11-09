@@ -79,6 +79,7 @@ public class TestXmlBulletinsImporter extends TestCaseEnhanced
 		assertEquals(17, mainFieldSpecs.length);
 		assertTrue("Should have Failed verification of bulletin fields?", importer.didFieldSpecVerificationErrorOccur());
 		assertEquals(expectedErrorMessage, importer.getErrors());
+		assertEquals("Calling the getErrors twice changed the results?", expectedErrorMessage, importer.getErrors());
 	}
 
 	public void testImportInvalidXML() throws Exception
@@ -106,6 +107,7 @@ public class TestXmlBulletinsImporter extends TestCaseEnhanced
 	final String expectedErrorMessage = "100 :  : author : \n" +
 			"100 :  : title : \n" +
 			"102 : BOOLEAN : DuplicateTag : Does interviewee wish to remain anonymous?\n" +
-			"108 : DROPDOWN : BulletinSourceDuplicateEntries : Source of bulletin information\n";
+			"108 : DROPDOWN : BulletinSourceDuplicateEntries : Source of bulletin information\n" +
+			"\n\nTo see a list of the errors, please run Martus go to Options, Custom Fields and change <CustomFields> to <xCustomFields> and press OK.";
 
 }

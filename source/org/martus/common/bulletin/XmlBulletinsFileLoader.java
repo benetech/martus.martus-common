@@ -79,7 +79,12 @@ public class XmlBulletinsFileLoader extends SimpleXmlDefaultLoader
 	
 	public String getErrors()
 	{
-		return validationErrorMessages.toString();
+		if(!didFieldSpecVerificationErrorOccur())
+			return "";
+		StringBuffer message = new StringBuffer();
+		message.append(validationErrorMessages);
+		message.append("\n\nTo see a list of the errors, please run Martus go to Options, Custom Fields and change <CustomFields> to <xCustomFields> and press OK.");
+		return message.toString();
 	}
 
 	private void validateMainFields(FieldCollection fields)
