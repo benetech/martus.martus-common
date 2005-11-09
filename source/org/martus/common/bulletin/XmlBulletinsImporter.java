@@ -28,20 +28,24 @@ package org.martus.common.bulletin;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Vector;
 import javax.xml.parsers.ParserConfigurationException;
+import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.util.UnicodeReader;
 import org.xml.sax.SAXException;
 
 public class XmlBulletinsImporter
 {
-	public XmlBulletinsImporter(InputStream xmlIn) throws IOException, ParserConfigurationException, SAXException
+	public XmlBulletinsImporter(MartusCrypto security, InputStream xmlIn) throws IOException, ParserConfigurationException, SAXException, FieldSpecVerificationException
 	{
 		UnicodeReader reader = new UnicodeReader(xmlIn);
 		try
 		{
-			bulletinsLoader = new XmlBulletinsFileLoader();
+			bulletinsLoader = new XmlBulletinsFileLoader(security);
 			bulletinsLoader.parse(reader);
+			if(bulletinsLoader.didFieldSpecVerificationErrorOccur())
+				throw new FieldSpecVerificationException(bulletinsLoader.getErrors());
 		}
 		finally
 		{
@@ -49,17 +53,25 @@ public class XmlBulletinsImporter
 		}
 	}
 	
-	public boolean didFieldSpecVerificationErrorOccur()
+	public class FieldSpecVerificationException extends Exception
 	{
-		return bulletinsLoader.didFieldSpecVerificationErrorOccur();
+		public FieldSpecVerificationException(Vector errors)
+		{
+			verificationErrors = errors;
+		}
+		public Vector getErrors()
+		{
+			return verificationErrors;
+		}
+		Vector verificationErrors;
 	}
 	
-	public String getErrors()
+	public Bulletin[] getBulletins()
 	{
-		return bulletinsLoader.getErrors();
+		return bulletinsLoader.getBulletins();
 	}
-	
-	//Todo remove these and create real bulletins which this can return
+
+	//These are currently used in tests, I think its good to keep them for now
 	public FieldSpec[] getMainFieldSpecs()
 	{
 		return bulletinsLoader.mainFields.getSpecs();

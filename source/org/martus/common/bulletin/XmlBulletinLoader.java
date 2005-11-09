@@ -214,6 +214,16 @@ public class XmlBulletinLoader extends SimpleXmlDefaultLoader
 		return getFieldFromSpecs(tag).getType().isMessage();
 	}
 	
+	boolean isDateField(String tag)
+	{
+		return getFieldFromSpecs(tag).getType().isDate();
+	}
+
+	boolean isDateRangeField(String tag)
+	{
+		return getFieldFromSpecs(tag).getType().isDateRange();
+	}
+
 	String getMessageValue(String messageTag)
 	{
 		return getFieldFromSpecs(messageTag).getData();

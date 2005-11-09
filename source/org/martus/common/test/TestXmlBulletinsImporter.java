@@ -27,7 +27,13 @@ package org.martus.common.test;
 
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Vector;
+import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.XmlBulletinsImporter;
+import org.martus.common.bulletin.XmlBulletinsImporter.FieldSpecVerificationException;
+import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.crypto.MockMartusSecurity;
+import org.martus.common.fieldspec.CustomFieldError;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.inputstreamwithseek.StringInputStreamWithSeek;
@@ -42,6 +48,11 @@ public class TestXmlBulletinsImporter extends TestCaseEnhanced
 	public void setUp() throws Exception
 	{
 		super.setUp();
+		if(security == null)
+		{
+			security = MockMartusSecurity.createClient();
+		}
+
 	}
 	
 	public void tearDown() throws Exception
@@ -52,7 +63,7 @@ public class TestXmlBulletinsImporter extends TestCaseEnhanced
 	public void testImportXML() throws Exception
 	{
 		InputStream xmlIn = getXMLStreamFromResource("SampleXmlBulletin.xml");
-		XmlBulletinsImporter importer = new XmlBulletinsImporter(xmlIn);
+		XmlBulletinsImporter importer = new XmlBulletinsImporter(security, xmlIn);
 		FieldSpec[] mainFieldSpecs = importer.getMainFieldSpecs();
 		assertNotNull(mainFieldSpecs);
 		assertEquals(19, mainFieldSpecs.length);
@@ -66,20 +77,46 @@ public class TestXmlBulletinsImporter extends TestCaseEnhanced
 		HashMap tagValues = importer.getFieldTagValuesMap();
 		assertEquals("Range:1980-02-15,1980-05-22", tagValues.get("InterviewDates"));
 		assertEquals("Information we want kept private\n", tagValues.get("privateinfo"));
-		assertFalse("Failed verification of good xml bulletin fields?", importer.didFieldSpecVerificationErrorOccur());
-		assertEquals("", importer.getErrors());
+		Bulletin[] bulletinReturned = importer.getBulletins();
+		assertNotNull("No bulletin returned?", bulletinReturned);
+		assertEquals(1, bulletinReturned.length);
+		Bulletin b = bulletinReturned[0];
+		assertEquals("Charles.", b.get(Bulletin.TAGAUTHOR));
+		assertEquals("no keywords", b.get(Bulletin.TAGKEYWORDS));
+		assertEquals("1970-01-01,1970-01-02", b.get(Bulletin.TAGEVENTDATE));
+		assertEquals("1980-02-15,1980-05-22", b.get("InterviewDates"));
+		assertEquals("en", b.get(Bulletin.TAGLANGUAGE));
+		assertEquals("2005-11-01", b.get(Bulletin.TAGENTRYDATE));
 	}
 
 	public void testImportInvalidMainFieldSpecs() throws Exception
 	{
 		InputStream xmlIn = getXMLStreamFromResource("SampleInvalidFieldSpecsXmlBulletin.xml");
-		XmlBulletinsImporter importer = new XmlBulletinsImporter(xmlIn);
-		FieldSpec[] mainFieldSpecs = importer.getMainFieldSpecs();
-		assertNotNull(mainFieldSpecs);
-		assertEquals(17, mainFieldSpecs.length);
-		assertTrue("Should have Failed verification of bulletin fields?", importer.didFieldSpecVerificationErrorOccur());
-		assertEquals(expectedErrorMessage, importer.getErrors());
-		assertEquals("Calling the getErrors twice changed the results?", expectedErrorMessage, importer.getErrors());
+		try
+		{
+			 new XmlBulletinsImporter(security, xmlIn);
+			fail("Should have thrown an exception");
+		}
+		catch(FieldSpecVerificationException expectedException)
+		{
+			Vector errors = expectedException.getErrors();
+			StringBuffer validationErrorMessages = new StringBuffer();
+			for(int i = 0; i<errors.size(); ++i)
+			{
+				CustomFieldError thisError = (CustomFieldError)errors.get(i);
+				StringBuffer thisErrorMessage = new StringBuffer(thisError.getCode());
+				thisErrorMessage.append(" : ");
+				thisErrorMessage.append(thisError.getType());
+				thisErrorMessage.append(" : ");
+				thisErrorMessage.append(thisError.getTag());
+				thisErrorMessage.append(" : ");
+				thisErrorMessage.append(thisError.getLabel());
+				validationErrorMessages.append(thisErrorMessage);
+				validationErrorMessages.append('\n');
+			}		
+			assertEquals(expectedErrorMessage, validationErrorMessages.toString());
+			assertEquals("Calling the getErrors twice changed the results?", expectedErrorMessage, validationErrorMessages.toString());
+		}
 	}
 
 	public void testImportInvalidXML() throws Exception
@@ -88,7 +125,7 @@ public class TestXmlBulletinsImporter extends TestCaseEnhanced
 		StringInputStreamWithSeek xmlInvalid = new StringInputStreamWithSeek(invalidXML);
 		try
 		{
-			new XmlBulletinsImporter(xmlInvalid);
+			new XmlBulletinsImporter(security, xmlInvalid);
 			fail("should have thrown");
 		}
 		catch(Exception expectedException)
@@ -107,7 +144,7 @@ public class TestXmlBulletinsImporter extends TestCaseEnhanced
 	final String expectedErrorMessage = "100 :  : author : \n" +
 			"100 :  : title : \n" +
 			"102 : BOOLEAN : DuplicateTag : Does interviewee wish to remain anonymous?\n" +
-			"108 : DROPDOWN : BulletinSourceDuplicateEntries : Source of bulletin information\n" +
-			"\n\nTo see a list of the errors, please run Martus go to Options, Custom Fields and change <CustomFields> to <xCustomFields> and press OK.";
+			"108 : DROPDOWN : BulletinSourceDuplicateEntries : Source of bulletin information\n";
 
+	MartusCrypto security;
 }
