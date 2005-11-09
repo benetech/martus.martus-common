@@ -26,17 +26,23 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.bulletin;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import javax.xml.parsers.ParserConfigurationException;
 import org.martus.common.fieldspec.FieldSpec;
+import org.martus.util.UnicodeReader;
 import org.xml.sax.SAXException;
 
 public class XmlBulletinsImporter
 {
-	public XmlBulletinsImporter(String xml) throws IOException, ParserConfigurationException, SAXException
+	public XmlBulletinsImporter(InputStream xmlIn) throws IOException, ParserConfigurationException, SAXException
 	{
+		UnicodeReader reader = new UnicodeReader(xmlIn);
+		String xmlRead = reader.readAll();
+		reader.close();
+
 		bulletinsLoader = new XmlBulletinsFileLoader();
-		bulletinsLoader.parse(xml);
+		bulletinsLoader.parse(xmlRead);
 	}
 	
 	//Todo remove these and create real bulletins which this can return

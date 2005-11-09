@@ -30,7 +30,6 @@ import java.util.HashMap;
 import org.martus.common.bulletin.XmlBulletinsImporter;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.util.TestCaseEnhanced;
-import org.martus.util.UnicodeReader;
 
 public class TestXmlBulletinsImporter extends TestCaseEnhanced
 {
@@ -51,7 +50,7 @@ public class TestXmlBulletinsImporter extends TestCaseEnhanced
 	
 	public void testImportXML() throws Exception
 	{
-		String xmlIn = getXMLFromResource("SampleXmlBulletin.xml");
+		InputStream xmlIn = getXMLStreamFromResource("SampleXmlBulletin.xml");
 		XmlBulletinsImporter importer = new XmlBulletinsImporter(xmlIn);
 		FieldSpec[] mainFieldSpecs = importer.getMainFieldSpecs();
 		assertNotNull(mainFieldSpecs);
@@ -68,14 +67,11 @@ public class TestXmlBulletinsImporter extends TestCaseEnhanced
 		assertEquals("Information we want kept private\n", tagValues.get("privateinfo"));
 	}
 	
-	String getXMLFromResource(String resourceFile) throws Exception
+	InputStream getXMLStreamFromResource(String resourceFile) throws Exception
 	{
 		InputStream in = getClass().getResource("SampleXmlBulletin.xml").openStream();
 		assertNotNull(in);
-		UnicodeReader reader = new UnicodeReader(in);
-		String xmlRead = reader.readAll();
-		reader.close();
-		return xmlRead;
+		return in;
 	}
 
 }
