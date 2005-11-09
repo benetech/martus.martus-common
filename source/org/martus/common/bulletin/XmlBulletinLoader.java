@@ -51,7 +51,7 @@ public class XmlBulletinLoader extends SimpleXmlDefaultLoader
 		else if(tag.equals(PrivateFieldSpecsElementName))
 			return new FieldCollection.XmlCustomFieldsLoader(tag, new FieldCollection());
 		else if(tag.equals(FieldValuesElementName))
-			return new FieldValueLoader(tag);
+			return new FieldValuesSectionLoader(tag);
 		return super.startElement(tag);
 	}
 
@@ -68,7 +68,7 @@ public class XmlBulletinLoader extends SimpleXmlDefaultLoader
 		}
 		else if(tag.equals(FieldValuesElementName))
 		{
-			fieldTagValuesMap = ((FieldValueLoader)ended).getFieldTagValueMap();
+			fieldTagValuesMap = ((FieldValuesSectionLoader)ended).getFieldTagValueMap();
 		}
 		else
 			super.endElement(tag, ended);
@@ -89,9 +89,9 @@ public class XmlBulletinLoader extends SimpleXmlDefaultLoader
 		return privateFieldSpecs;
 	}
 	
-	class FieldValueLoader extends SimpleXmlDefaultLoader
+	class FieldValuesSectionLoader extends SimpleXmlDefaultLoader
 	{
-		public FieldValueLoader(String tag)
+		public FieldValuesSectionLoader(String tag)
 		{
 			super(tag);
 			fieldTagToValueMap = new HashMap();
@@ -99,7 +99,7 @@ public class XmlBulletinLoader extends SimpleXmlDefaultLoader
 		
 		public SimpleXmlDefaultLoader startElement(String tag)throws SAXParseException
 		{
-			if(tag.startsWith(FieldElementName))
+			if(tag.equals(FieldElementName))
 				return new FieldLoader(tag);
 			return super.startElement(tag);
 		}
