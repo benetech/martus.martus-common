@@ -96,6 +96,28 @@ public class MartusFlexidate
 		}
 	}
 	
+	/* this will convert a string in in one of these forms:
+	 * 1989-12-01,1989-12-15
+	 * 1989-12-15,1989-12-01
+	 * and return it as a MartusFlexidate in the form 1989-12-01,19891201+15
+ 	 */
+	public static String createMartusDateStringFromDateRange(String dateRange)
+	{
+		int comma = dateRange.indexOf(DATE_RANGE_SEPARATER);
+		if (comma == -1)
+			return null;
+		String beginDate = dateRange.substring(0,comma);
+		String endDate = dateRange.substring(comma+1);
+		MartusCalendar calBeginDate = FieldSpec.yyyymmddWithDashesToCalendar(beginDate);
+		MartusCalendar calEndDate = FieldSpec.yyyymmddWithDashesToCalendar(endDate);
+		MartusFlexidate flexidate = new MartusFlexidate(calBeginDate, calEndDate);
+		String startDate = beginDate;
+		if(calBeginDate.after(calEndDate))
+			startDate = endDate;
+		return startDate+DATE_RANGE_SEPARATER+flexidate.getMartusFlexidateString();
+	
+	}
+	
 	public MartusCalendar getEndDate()
 	{
 		MartusCalendar endDate = new MartusCalendar(flexiDate.getCalendarHigh());
