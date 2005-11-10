@@ -89,8 +89,8 @@ public class TestXmlBulletinsImporter extends TestCaseEnhanced
 		Bulletin b = bulletinReturned[0];
 		assertEquals("Charles.", b.get(Bulletin.TAGAUTHOR));
 		assertEquals("no keywords", b.get(Bulletin.TAGKEYWORDS));
-		assertEquals("1970-01-01,1970-01-02", b.get(Bulletin.TAGEVENTDATE));
-		assertEquals("1980-02-15,1980-05-22", b.get("InterviewDates"));
+		assertEquals("1970-01-01,1970-01-01+2", b.get(Bulletin.TAGEVENTDATE));
+		assertEquals("1980-02-15,1980-02-15+120", b.get("InterviewDates"));
 		assertEquals("en", b.get(Bulletin.TAGLANGUAGE));
 		assertEquals("2005-11-01", b.get(Bulletin.TAGENTRYDATE));
 		BulletinStore testStore = new BulletinStore();
