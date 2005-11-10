@@ -94,12 +94,7 @@ public class XmlBulletinsFileLoader extends SimpleXmlDefaultLoader
 	
 	public Bulletin[] getBulletins()
 	{
-		int size = bulletins.size();
-		if(size == 0)
-			return null;
-		Bulletin[] bulletinArray = new Bulletin[size];
-		bulletins.toArray(bulletinArray);
-		return bulletinArray ;
+		  return (Bulletin[])bulletins.toArray(new Bulletin[0]);
 	}
 	
 	public boolean didFieldSpecVerificationErrorOccur()
