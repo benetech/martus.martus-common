@@ -46,7 +46,7 @@ public class MartusDateRangeField extends MartusField
 
 	public MartusField getSubField(String tag)
 	{
-		MartusFlexidate date = MartusFlexidate.createFromMartusDateString(getData());
+		MartusFlexidate date = MartusFlexidate.createFromBulletinFlexidateFormat(getData());
 		if(tag.equals(SUBFIELD_BEGIN))
 			return createDateSubField(date.getBeginDate());
 		

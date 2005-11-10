@@ -67,14 +67,14 @@ public class DateUtilities
 
 	public static String getStartDateRange(String storedFlexidateString)
 	{
-		MartusFlexidate mfd = MartusFlexidate.createFromMartusDateString(storedFlexidateString);
+		MartusFlexidate mfd = MartusFlexidate.createFromBulletinFlexidateFormat(storedFlexidateString);
 		return MartusFlexidate.toStoredDateFormat(mfd.getBeginDate());
 	}
 
 
 	public static String getEndDateRange(String storedFlexidateString)
 	{
-		MartusFlexidate mfd = MartusFlexidate.createFromMartusDateString(storedFlexidateString);
+		MartusFlexidate mfd = MartusFlexidate.createFromBulletinFlexidateFormat(storedFlexidateString);
 		if (!mfd.hasDateRange())
 			return "";
 		return MartusFlexidate.toStoredDateFormat(mfd.getEndDate());

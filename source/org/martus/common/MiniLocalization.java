@@ -314,7 +314,7 @@ public class MiniLocalization
 
 	public String getViewableDateRange(String newText)
 	{
-		MartusFlexidate mfd = MartusFlexidate.createFromMartusDateString(newText);
+		MartusFlexidate mfd = MartusFlexidate.createFromBulletinFlexidateFormat(newText);
 		String rawBeginDate = MartusFlexidate.toStoredDateFormat(mfd.getBeginDate());
 	
 		if (!mfd.hasDateRange())

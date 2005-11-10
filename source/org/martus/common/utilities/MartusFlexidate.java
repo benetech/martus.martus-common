@@ -76,7 +76,7 @@ public class MartusFlexidate
 	 * 	1989-12-01
 	 *  1989-12-01,19891201+300
  	 */
-	public static MartusFlexidate createFromMartusDateString(String dateStr)
+	public static MartusFlexidate createFromBulletinFlexidateFormat(String dateStr)
 	{
 		int comma = dateStr.indexOf(DATE_RANGE_SEPARATER);
 		if (comma >= 0)
