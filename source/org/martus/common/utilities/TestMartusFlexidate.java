@@ -80,13 +80,13 @@ public class TestMartusFlexidate extends TestCaseEnhanced
 		MartusCalendar aprDate1 = new MartusCalendar(2005, APR, 1);
 		MartusCalendar aprDate2 = new MartusCalendar(2005, APR, 5);
 		MartusCalendar mayDate = new MartusCalendar(2005, MAY, 3);
-		String marToApr1String = MartusFlexidate.toStoredDateFormat(marDate, aprDate1);
+		String marToApr1String = MartusFlexidate.toBulletinFlexidateFormat(marDate, aprDate1);
 		assertEquals("2005-03-29,20050329+3", marToApr1String);
-		String marToApr2String = MartusFlexidate.toStoredDateFormat(marDate, aprDate2);
+		String marToApr2String = MartusFlexidate.toBulletinFlexidateFormat(marDate, aprDate2);
 		assertEquals("2005-03-29,20050329+7", marToApr2String);
-		String apr2ToMayString = MartusFlexidate.toStoredDateFormat(aprDate2, mayDate);
+		String apr2ToMayString = MartusFlexidate.toBulletinFlexidateFormat(aprDate2, mayDate);
 		assertEquals("2005-04-05,20050405+28", apr2ToMayString);
-		String marToMayString = MartusFlexidate.toStoredDateFormat(marDate, mayDate);
+		String marToMayString = MartusFlexidate.toBulletinFlexidateFormat(marDate, mayDate);
 		assertEquals("2005-03-29,20050329+35", marToMayString);
 	}
 }

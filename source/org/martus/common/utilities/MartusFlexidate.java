@@ -83,6 +83,13 @@ public class MartusFlexidate
 		}
 	}
 
+	public static String toBulletinFlexidateFormat(MartusCalendar beginDate, MartusCalendar endDate)
+	{
+		return FieldSpec.calendarToYYYYMMDD(beginDate) + 
+					DATE_RANGE_SEPARATER +
+					toFlexidateFormat(beginDate, endDate);
+	}
+
 	/* this will convert a string in in one of these forms:
 	 * 1989-12-01,1989-12-15
 	 * 1989-12-15,1989-12-01
@@ -141,13 +148,6 @@ public class MartusFlexidate
 		return new MartusFlexidate(beginDate, endDate).getMartusFlexidateString();
 	}		
 		
-	public static String toStoredDateFormat(MartusCalendar beginDate, MartusCalendar endDate)
-	{
-		return FieldSpec.calendarToYYYYMMDD(beginDate) + 
-					DATE_RANGE_SEPARATER +
-					toFlexidateFormat(beginDate, endDate);
-	}
-
 	Flexidate flexiDate;
 	public static final String 	FLEXIDATE_RANGE_DELIMITER = "+";	
 	public static final String	DATE_RANGE_SEPARATER = ",";
