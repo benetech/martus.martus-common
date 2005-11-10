@@ -59,21 +59,6 @@ public class MartusFlexidate
 		return new MartusFlexidate(internalFormat);
 	}
 
-	public String getMartusFlexidateString() 
-	{				
-		return flexiDate.getDateAsNumber()+FLEXIDATE_RANGE_DELIMITER+flexiDate.getRange();
-	}	
-	
-	public MartusCalendar getBeginDate()
-	{
-		Calendar flexidateCal = flexiDate.getCalendarLow(); 
-		MartusCalendar cal = new MartusCalendar();
-		cal.set(Calendar.YEAR, flexidateCal.get(Calendar.YEAR));
-		cal.set(Calendar.MONTH, flexidateCal.get(Calendar.MONTH));
-		cal.set(Calendar.DAY_OF_MONTH, flexidateCal.get(Calendar.DAY_OF_MONTH));
-		return cal;
-	}
-	
 	/* this expects a string in one of these forms:
 	 * 	1989-12-01
 	 *  1989-12-01,19891201+300
@@ -97,7 +82,7 @@ public class MartusFlexidate
 			return new MartusFlexidate("19000101+0");
 		}
 	}
-	
+
 	/* this will convert a string in in one of these forms:
 	 * 1989-12-01,1989-12-15
 	 * 1989-12-15,1989-12-01
@@ -118,6 +103,21 @@ public class MartusFlexidate
 			startDate = endDate;
 		return startDate+DATE_RANGE_SEPARATER+flexidate.getMartusFlexidateString();
 	
+	}
+	
+	public String getMartusFlexidateString() 
+	{				
+		return flexiDate.getDateAsNumber()+FLEXIDATE_RANGE_DELIMITER+flexiDate.getRange();
+	}	
+	
+	public MartusCalendar getBeginDate()
+	{
+		Calendar flexidateCal = flexiDate.getCalendarLow(); 
+		MartusCalendar cal = new MartusCalendar();
+		cal.set(Calendar.YEAR, flexidateCal.get(Calendar.YEAR));
+		cal.set(Calendar.MONTH, flexidateCal.get(Calendar.MONTH));
+		cal.set(Calendar.DAY_OF_MONTH, flexidateCal.get(Calendar.DAY_OF_MONTH));
+		return cal;
 	}
 	
 	public MartusCalendar getEndDate()
