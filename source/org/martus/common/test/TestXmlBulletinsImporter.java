@@ -25,14 +25,19 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.test;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Vector;
 import org.martus.common.bulletin.Bulletin;
+import org.martus.common.bulletin.BulletinLoader;
 import org.martus.common.bulletin.XmlBulletinsImporter;
 import org.martus.common.bulletin.XmlBulletinsImporter.FieldSpecVerificationException;
+import org.martus.common.bulletinstore.BulletinStore;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MockMartusSecurity;
+import org.martus.common.database.DatabaseKey;
+import org.martus.common.database.MockClientDatabase;
 import org.martus.common.fieldspec.CustomFieldError;
 import org.martus.common.fieldspec.CustomFieldSpecValidator;
 import org.martus.common.fieldspec.FieldSpec;
@@ -88,6 +93,21 @@ public class TestXmlBulletinsImporter extends TestCaseEnhanced
 		assertEquals("1980-02-15,1980-05-22", b.get("InterviewDates"));
 		assertEquals("en", b.get(Bulletin.TAGLANGUAGE));
 		assertEquals("2005-11-01", b.get(Bulletin.TAGENTRYDATE));
+		BulletinStore testStore = new BulletinStore();
+		MockClientDatabase db = new MockClientDatabase();
+		testStore.setDatabase(db);
+		File tempDir = createTempDirectory();
+		testStore.doAfterSigninInitialization(tempDir, db);
+		testStore.saveBulletinForTesting(b);
+		DatabaseKey headerKey1 = DatabaseKey.createLegacyKey(b.getBulletinHeaderPacket().getUniversalId());
+		assertEquals(1,testStore.getBulletinCount());
+		Bulletin bulletinFromStore = BulletinLoader.loadFromDatabase(db, headerKey1, security);
+		assertEquals(b.getAccount(), bulletinFromStore.getAccount());
+		assertEquals("1970-01-01,1970-01-02", bulletinFromStore.get(Bulletin.TAGEVENTDATE));
+		assertEquals("en", bulletinFromStore.get(Bulletin.TAGLANGUAGE));
+		assertEquals("2005-11-01", bulletinFromStore.get(Bulletin.TAGENTRYDATE));
+		db.deleteAllData();
+		testStore.deleteAllData();
 	}
 	
 	
