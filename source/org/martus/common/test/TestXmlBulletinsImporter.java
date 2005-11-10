@@ -89,6 +89,19 @@ public class TestXmlBulletinsImporter extends TestCaseEnhanced
 		assertEquals("en", b.get(Bulletin.TAGLANGUAGE));
 		assertEquals("2005-11-01", b.get(Bulletin.TAGENTRYDATE));
 	}
+	
+	
+	public void testImportXMLWithMultipleBulletins() throws Exception
+	{
+		InputStream xmlIn = getXMLStreamFromResource("SampleXmlTwoBulletins.xml");
+		XmlBulletinsImporter importer = new XmlBulletinsImporter(security, xmlIn);
+		Bulletin[] bulletinReturned = importer.getBulletins();
+		assertEquals(2, bulletinReturned.length);
+		Bulletin b1 = bulletinReturned[0];
+		assertEquals("Title Bulletin #1", b1.get(Bulletin.TAGTITLE));
+		Bulletin b2 = bulletinReturned[1];
+		assertEquals("Title Bulletin #2", b2.get(Bulletin.TAGTITLE));
+	}
 
 	public void testImportInvalidMainFieldSpecs() throws Exception
 	{
@@ -136,6 +149,28 @@ public class TestXmlBulletinsImporter extends TestCaseEnhanced
 		}
 		catch(Exception expectedException)
 		{
+		}
+	}
+
+	public void testImportInvalidFieldsSpecDontMatchData() throws Exception
+	{
+		
+		InputStream xmlIn = getXMLStreamFromResource("SampleInvalidBulletinFieldsSpecDontMatchData.xml");
+		try
+		{
+			new XmlBulletinsImporter(security, xmlIn);
+			fail("should have thrown");
+		}
+		catch(FieldSpecVerificationException expectedException)
+		{
+			Vector errors = expectedException.getErrors();
+			assertEquals(1, errors.size());
+			CustomFieldSpecValidator currentValidator = (CustomFieldSpecValidator)errors.get(0);
+			Vector validationErrors = currentValidator.getAllErrors();
+			assertEquals(1, validationErrors.size());
+			CustomFieldError thisError = (CustomFieldError)validationErrors.get(0);
+			assertEquals(CustomFieldError.CODE_MISSING_CUSTOM_FIELD_IN_SPEC, thisError.getCode());
+			assertEquals("IntervieweeName", thisError.getTag());
 		}
 	}
 

@@ -65,11 +65,11 @@ public class XmlBulletinsFileLoader extends SimpleXmlDefaultLoader
 		{
 			//Todo here actually create a bulletin based on the currentBulletinLoader's data
 			mainFields = currentBulletinLoader.getMainFieldSpecs();
+			privateFields = currentBulletinLoader.getPrivateFieldSpecs();
+			fieldTagValuesMap = currentBulletinLoader.getFieldTagValuesMap();
 			validateMainFields(mainFields);
 			if(didFieldSpecVerificationErrorOccur())
 				return;
-			privateFields = currentBulletinLoader.getPrivateFieldSpecs();
-			fieldTagValuesMap = currentBulletinLoader.getFieldTagValuesMap();
 			
 			bulletins.add(createBulletin());			
 		}
@@ -119,6 +119,13 @@ public class XmlBulletinsFileLoader extends SimpleXmlDefaultLoader
 	private void validateMainFields(FieldCollection fields)
 	{
 		CustomFieldSpecValidator validator = new CustomFieldSpecValidator(fields);
+		for (Iterator iter = fieldTagValuesMap.entrySet().iterator(); iter.hasNext();)
+		{
+			Map.Entry element = (Map.Entry) iter.next();
+			String fieldTag = (String)element.getKey();
+			if(currentBulletinLoader.getFieldFromSpecs(fieldTag) == null)
+				validator.addMissingCustomSpecError(fieldTag);
+		}		
 		if(!validator.isValid())
 		{
 			fieldspecVerificationErrorOccurred = true;

@@ -70,6 +70,11 @@ public class CustomFieldSpecValidator
 	{
 		return errors;
 	}
+	
+	public void addMissingCustomSpecError(String tag)
+	{
+		errors.add(CustomFieldError.errorMissingCustomSpec(tag));
+	}
 
 	private void checkForRequiredFields(FieldSpec[] specsToCheck)
 	{

@@ -44,6 +44,11 @@ public class CustomFieldError
 		return new CustomFieldError(CODE_MISSING_TAG, UNUSED_FIELD, label, type);
 	}
 	
+	static public CustomFieldError errorMissingCustomSpec(String tag)
+	{
+		return new CustomFieldError(CODE_MISSING_CUSTOM_FIELD_IN_SPEC, tag, UNUSED_FIELD, UNUSED_FIELD);
+	}
+
 	static public CustomFieldError errorIllegalTag(String tag, String label, String type)
 	{
 		return new CustomFieldError(CODE_ILLEGAL_TAG, tag, label, type);
@@ -139,6 +144,7 @@ public class CustomFieldError
 	static public final String CODE_UNAUTHORIZED_KEY = "201";
 	static public final String CODE_SIGNATURE_ERROR = "202";
 	static public final String CODE_IO_ERROR = "203";
+	static public final String CODE_MISSING_CUSTOM_FIELD_IN_SPEC = "204";
 	
 	static private final String UNUSED_FIELD = "";
 
