@@ -34,10 +34,12 @@ import org.martus.util.MartusCalendar;
 
 public class MartusFlexidate
 {
-	/*
-	 * this appears to take a string in the form: 19891201+300
-	 */
-	public MartusFlexidate(String dateStr)
+	public MartusFlexidate(MartusCalendar beginDate, MartusCalendar endDate)
+	{
+		flexiDate = new Flexidate(beginDate.getCalendar(), endDate.getCalendar());
+	}
+		
+	private MartusFlexidate(String dateStr)
 	{		
 		int plus = dateStr.indexOf(FLEXIDATE_RANGE_DELIMITER);
 		String dateStr1 = dateStr;
@@ -51,12 +53,12 @@ public class MartusFlexidate
 		
 		flexiDate = new Flexidate(new Long(dateStr1).longValue(), range);		
 	}		
-	
-	public MartusFlexidate(MartusCalendar beginDate, MartusCalendar endDate)
+
+	public static MartusFlexidate createFromInternalMartusFlexidateString (String internalFormat)
 	{
-		flexiDate = new Flexidate(beginDate.getCalendar(), endDate.getCalendar());
+		return new MartusFlexidate(internalFormat);
 	}
-		
+
 	public String getMartusFlexidateString() 
 	{				
 		return flexiDate.getDateAsNumber()+FLEXIDATE_RANGE_DELIMITER+flexiDate.getRange();
