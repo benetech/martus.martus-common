@@ -34,6 +34,7 @@ import org.martus.common.bulletin.XmlBulletinsImporter.FieldSpecVerificationExce
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.fieldspec.CustomFieldError;
+import org.martus.common.fieldspec.CustomFieldSpecValidator;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.inputstreamwithseek.StringInputStreamWithSeek;
@@ -103,16 +104,21 @@ public class TestXmlBulletinsImporter extends TestCaseEnhanced
 			StringBuffer validationErrorMessages = new StringBuffer();
 			for(int i = 0; i<errors.size(); ++i)
 			{
-				CustomFieldError thisError = (CustomFieldError)errors.get(i);
-				StringBuffer thisErrorMessage = new StringBuffer(thisError.getCode());
-				thisErrorMessage.append(" : ");
-				thisErrorMessage.append(thisError.getType());
-				thisErrorMessage.append(" : ");
-				thisErrorMessage.append(thisError.getTag());
-				thisErrorMessage.append(" : ");
-				thisErrorMessage.append(thisError.getLabel());
-				validationErrorMessages.append(thisErrorMessage);
-				validationErrorMessages.append('\n');
+				CustomFieldSpecValidator currentValidator = (CustomFieldSpecValidator)errors.get(i);
+				Vector validationErrors = currentValidator.getAllErrors();
+				for(int j = 0; j<validationErrors.size(); ++j)
+				{
+					CustomFieldError thisError = (CustomFieldError)validationErrors.get(j);
+					StringBuffer thisErrorMessage = new StringBuffer(thisError.getCode());
+					thisErrorMessage.append(" : ");
+					thisErrorMessage.append(thisError.getType());
+					thisErrorMessage.append(" : ");
+					thisErrorMessage.append(thisError.getTag());
+					thisErrorMessage.append(" : ");
+					thisErrorMessage.append(thisError.getLabel());
+					validationErrorMessages.append(thisErrorMessage);
+					validationErrorMessages.append('\n');
+				}
 			}		
 			assertEquals(expectedErrorMessage, validationErrorMessages.toString());
 			assertEquals("Calling the getErrors twice changed the results?", expectedErrorMessage, validationErrorMessages.toString());

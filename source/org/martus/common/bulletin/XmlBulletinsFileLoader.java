@@ -122,7 +122,7 @@ public class XmlBulletinsFileLoader extends SimpleXmlDefaultLoader
 		if(!validator.isValid())
 		{
 			fieldspecVerificationErrorOccurred = true;
-			fieldSpecValidationErrors.addAll(validator.getAllErrors());
+			fieldSpecValidationErrors.add(validator);
 		}
 	}
 
