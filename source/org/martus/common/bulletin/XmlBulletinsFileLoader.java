@@ -112,7 +112,9 @@ public class XmlBulletinsFileLoader extends SimpleXmlDefaultLoader
 		if(xmlValue.startsWith(DateSimple))
 			return xmlValue.substring(DateSimple.length());
 		if(xmlValue.startsWith(DateRange))
+		{
 			return xmlValue.substring(DateRange.length());
+		}
 		return xmlValue;
 	}
 
