@@ -174,6 +174,33 @@ public class TestXmlBulletinsImporter extends TestCaseEnhanced
 		}
 	}
 
+	public void testImportInvalidMultipleBulletins() throws Exception
+	{
+		
+		InputStream xmlIn = getXMLStreamFromResource("SampleInvalidFieldSpecsXmlThreeBulletins.xml");
+		try
+		{
+			new XmlBulletinsImporter(security, xmlIn);
+			fail("should have thrown");
+		}
+		catch(FieldSpecVerificationException expectedException)
+		{
+			Vector errors = expectedException.getErrors();
+			assertEquals(2, errors.size());
+			CustomFieldSpecValidator currentValidator = (CustomFieldSpecValidator)errors.get(0);
+			Vector validationErrors = currentValidator.getAllErrors();
+			assertEquals(4, validationErrors.size());
+			CustomFieldError thisError = (CustomFieldError)validationErrors.get(0);
+			assertEquals(CustomFieldError.CODE_REQUIRED_FIELD, thisError.getCode());
+
+			currentValidator = (CustomFieldSpecValidator)errors.get(1);
+			validationErrors = currentValidator.getAllErrors();
+			assertEquals(1, validationErrors.size());
+			thisError = (CustomFieldError)validationErrors.get(0);
+			assertEquals(CustomFieldError.CODE_UNKNOWN_TYPE, thisError.getCode());
+			assertEquals("IntervieweeName", thisError.getTag());
+		}
+	}
 	
 	InputStream getXMLStreamFromResource(String resourceFile) throws Exception
 	{
