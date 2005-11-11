@@ -89,8 +89,8 @@ public class TestXmlBulletinsImporter extends TestCaseEnhanced
 		Bulletin b = bulletinReturned[0];
 		assertEquals("Charles.", b.get(Bulletin.TAGAUTHOR));
 		assertEquals("no keywords", b.get(Bulletin.TAGKEYWORDS));
-		assertEquals("1970-01-01,1970-01-01+2", b.get(Bulletin.TAGEVENTDATE));
-		assertEquals("1980-02-15,1980-02-15+120", b.get("InterviewDates"));
+		assertEquals("1970-01-01,19700101+1", b.get(Bulletin.TAGEVENTDATE));
+		assertEquals("1980-02-15,19800215+97", b.get("InterviewDates"));
 		assertEquals("en", b.get(Bulletin.TAGLANGUAGE));
 		assertEquals("2005-11-01", b.get(Bulletin.TAGENTRYDATE));
 		BulletinStore testStore = new BulletinStore();
@@ -103,9 +103,17 @@ public class TestXmlBulletinsImporter extends TestCaseEnhanced
 		assertEquals(1,testStore.getBulletinCount());
 		Bulletin bulletinFromStore = BulletinLoader.loadFromDatabase(db, headerKey1, security);
 		assertEquals(b.getAccount(), bulletinFromStore.getAccount());
-		assertEquals("1970-01-01,1970-01-02", bulletinFromStore.get(Bulletin.TAGEVENTDATE));
+		assertEquals("1970-01-01,19700101+1", bulletinFromStore.get(Bulletin.TAGEVENTDATE));
 		assertEquals("en", bulletinFromStore.get(Bulletin.TAGLANGUAGE));
 		assertEquals("2005-11-01", bulletinFromStore.get(Bulletin.TAGENTRYDATE));
+
+		String gridData = bulletinFromStore.get("VictimInformationGrid");
+		assertEquals("Found string 'Simple' in the grid data for a date range?", -1, gridData.indexOf("Simple"));
+
+		String gridData2 = bulletinFromStore.get("ProfessionHistoryGrid");
+		assertEquals("Found ending date range '1977-04-01' in the grid data?", -1, gridData2.indexOf("1977-04-01"));
+		assertEquals("Found string 'Range' in the grid data for a date range?", -1, gridData2.indexOf("Range"));
+		
 		db.deleteAllData();
 		testStore.deleteAllData();
 	}

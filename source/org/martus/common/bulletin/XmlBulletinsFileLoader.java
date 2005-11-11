@@ -32,6 +32,7 @@ import java.util.Vector;
 import org.martus.common.FieldCollection;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.fieldspec.CustomFieldSpecValidator;
+import org.martus.common.utilities.MartusFlexidate;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.xml.sax.SAXParseException;
 
@@ -113,7 +114,8 @@ public class XmlBulletinsFileLoader extends SimpleXmlDefaultLoader
 			return xmlValue.substring(DateSimple.length());
 		if(xmlValue.startsWith(DateRange))
 		{
-			return xmlValue.substring(DateRange.length());
+			String rawDateRange = xmlValue.substring(DateRange.length());
+			return MartusFlexidate.createMartusDateStringFromDateRange(rawDateRange);
 		}
 		return xmlValue;
 	}
