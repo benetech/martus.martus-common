@@ -68,7 +68,6 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestBulletinStoreCache.class));
 		suite.addTest(new TestSuite(TestBulletinStoreSaveBulletin.class));
 		suite.addTest(new TestSuite(TestBulletinSummary.class));
-		suite.addTest(new TestSuite(TestXmlBulletinsImporter.class));
 		suite.addTest(new TestSuite(TestBulletinZipImporter.class));
 		suite.addTest(new TestSuite(TestBulletinZipUtilities.class));
 		suite.addTest(new TestSuite(TestChoiceItem.class));
