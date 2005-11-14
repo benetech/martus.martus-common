@@ -30,8 +30,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 import org.martus.common.FieldCollection;
+import org.martus.common.GridData;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.fieldspec.CustomFieldSpecValidator;
+import org.martus.common.fieldspec.FieldType;
+import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.common.utilities.MartusFlexidate;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.xml.sax.SAXParseException;
@@ -64,7 +67,6 @@ public class XmlBulletinsFileLoader extends SimpleXmlDefaultLoader
 	{
 		if(tag.equals(XmlBulletinLoader.MartusBulletinElementName))
 		{
-			//Todo here actually create a bulletin based on the currentBulletinLoader's data
 			mainFields = currentBulletinLoader.getMainFieldSpecs();
 			privateFields = currentBulletinLoader.getPrivateFieldSpecs();
 			fieldTagValuesMap = currentBulletinLoader.getFieldTagValuesMap();
@@ -86,13 +88,12 @@ public class XmlBulletinsFileLoader extends SimpleXmlDefaultLoader
 			Map.Entry element = (Map.Entry) iter.next();
 			String fieldTag = (String)element.getKey();
 			String value = (String)element.getValue();
-			if(currentBulletinLoader.isDateField(fieldTag) || currentBulletinLoader.isDateRangeField(fieldTag))
-				value = extractRealDateValue(value);
+			value = convertDateFieldsToInternalFormat(fieldTag, value);
 			bulletin.set(fieldTag, value);
 		}
 		return bulletin;
 	}
-	
+
 	public Bulletin[] getBulletins()
 	{
 		  return (Bulletin[])bulletins.toArray(new Bulletin[0]);
@@ -106,6 +107,57 @@ public class XmlBulletinsFileLoader extends SimpleXmlDefaultLoader
 	public Vector getErrors()
 	{
 		return fieldSpecValidationErrors;
+	}
+	
+	private String convertDateFieldsToInternalFormat(String fieldTag, String value)
+	{
+		if(isDateField(fieldTag))
+			value = extractRealDateValue(value);
+		else if(isGrid(fieldTag))
+		{
+			GridFieldSpec gridSpec = currentBulletinLoader.getGridFieldSpec(fieldTag);
+			GridData grid = new GridData(gridSpec);
+			try
+			{
+				grid.setFromXml(value);
+				int columnCount = grid.getColumnCount();
+				int rowCount = grid.getRowCount();
+				for(int c = 0; c < columnCount; ++c )
+				{
+					if(isDateType(gridSpec.getColumnType(c)))
+					{
+						for(int r = 0; r < rowCount; ++r )
+						{
+							String rawDate = grid.getValueAt(r, c);
+							grid.setValueAt(extractRealDateValue(rawDate), r, c);
+						}
+					}
+				}
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+				return null;
+			}
+			value = grid.getXmlRepresentation();
+		}
+		return value;
+	}
+
+	boolean isGrid(String tag)
+	{
+		return currentBulletinLoader.getFieldFromSpecs(tag).getType().isGrid();
+	}
+	
+	private boolean isDateField(String fieldTag)
+	{
+		return isDateType(currentBulletinLoader.getFieldFromSpecs(fieldTag).getType());
+	}
+
+
+	private boolean isDateType(FieldType type)
+	{
+		return type.isDate() || type.isDateRange();
 	}
 	
 	private String extractRealDateValue(String xmlValue)

@@ -214,24 +214,14 @@ public class XmlBulletinLoader extends SimpleXmlDefaultLoader
 		return getFieldFromSpecs(tag).getType().isMessage();
 	}
 	
-	boolean isDateField(String tag)
+	GridFieldSpec getGridFieldSpec(String tag)
 	{
-		return getFieldFromSpecs(tag).getType().isDate();
-	}
-
-	boolean isDateRangeField(String tag)
-	{
-		return getFieldFromSpecs(tag).getType().isDateRange();
+		return (GridFieldSpec)getFieldFromSpecs(tag).getFieldSpec();
 	}
 
 	String getMessageValue(String messageTag)
 	{
 		return getFieldFromSpecs(messageTag).getData();
-	}
-	
-	GridFieldSpec getGridFieldSpec(String tagForGridSpec)
-	{
-		return (GridFieldSpec)getFieldFromSpecs(tagForGridSpec).getFieldSpec();
 	}
 	
 	MartusField getFieldFromSpecs(String tag)

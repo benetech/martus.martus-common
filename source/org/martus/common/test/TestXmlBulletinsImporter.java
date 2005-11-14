@@ -113,6 +113,7 @@ public class TestXmlBulletinsImporter extends TestCaseEnhanced
 		String gridData2 = bulletinFromStore.get("ProfessionHistoryGrid");
 		assertEquals("Found ending date range '1977-04-01' in the grid data?", -1, gridData2.indexOf("1977-04-01"));
 		assertEquals("Found string 'Range' in the grid data for a date range?", -1, gridData2.indexOf("Range"));
+		assertNotEquals("Did not find internal date range '19700101+2647' in the grid data?", -1, gridData2.indexOf("19700101+2647"));
 		
 		db.deleteAllData();
 		testStore.deleteAllData();
