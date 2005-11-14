@@ -114,34 +114,38 @@ public class XmlBulletinsFileLoader extends SimpleXmlDefaultLoader
 		if(isDateField(fieldTag))
 			value = extractRealDateValue(value);
 		else if(isGrid(fieldTag))
+			value = convertGridDatesToInternalFormat(fieldTag, value);
+		return value;
+	}
+
+
+	private String convertGridDatesToInternalFormat(String fieldTag, String value)
+	{
+		GridFieldSpec gridSpec = currentBulletinLoader.getGridFieldSpec(fieldTag);
+		GridData grid = new GridData(gridSpec);
+		try
 		{
-			GridFieldSpec gridSpec = currentBulletinLoader.getGridFieldSpec(fieldTag);
-			GridData grid = new GridData(gridSpec);
-			try
+			grid.setFromXml(value);
+			int columnCount = grid.getColumnCount();
+			int rowCount = grid.getRowCount();
+			for(int c = 0; c < columnCount; ++c )
 			{
-				grid.setFromXml(value);
-				int columnCount = grid.getColumnCount();
-				int rowCount = grid.getRowCount();
-				for(int c = 0; c < columnCount; ++c )
+				if(isDateType(gridSpec.getColumnType(c)))
 				{
-					if(isDateType(gridSpec.getColumnType(c)))
+					for(int r = 0; r < rowCount; ++r )
 					{
-						for(int r = 0; r < rowCount; ++r )
-						{
-							String rawDate = grid.getValueAt(r, c);
-							grid.setValueAt(extractRealDateValue(rawDate), r, c);
-						}
+						String rawDate = grid.getValueAt(r, c);
+						grid.setValueAt(extractRealDateValue(rawDate), r, c);
 					}
 				}
 			}
-			catch(Exception e)
-			{
-				e.printStackTrace();
-				return null;
-			}
-			value = grid.getXmlRepresentation();
 		}
-		return value;
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+		return grid.getXmlRepresentation();
 	}
 
 	boolean isGrid(String tag)
