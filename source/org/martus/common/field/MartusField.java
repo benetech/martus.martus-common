@@ -106,10 +106,43 @@ public class MartusField
 		return data;
 	}
 	
+	public boolean doesMatch(int compareOp, String searchForValue, MiniLocalization localization)
+	{
+		switch(compareOp)
+		{
+			case CONTAINS:
+				return contains(searchForValue, localization);
+			case LESS: 
+				return (compareTo(searchForValue, localization) < 0);
+			case LESS_EQUAL: 
+				return (compareTo(searchForValue, localization) <= 0);
+			case GREATER: 
+				return (compareTo(searchForValue, localization) > 0);
+			case GREATER_EQUAL: 
+				return (compareTo(searchForValue, localization) >= 0);
+			case EQUAL: 
+				return (compareTo(searchForValue, localization) == 0);
+			case NOT_EQUAL: 
+				return (compareTo(searchForValue, localization) != 0);
+		}
+		
+		System.out.println("BulletinSearcher.doesValueMatch: Unknown op: " + compareOp);
+		return false;
+		
+	}
+	
 	private String getDefaultValue()
 	{
 		return spec.getDefaultValue();
 	}
+	
+	public final static int CONTAINS = 0;
+	public final static int GREATER = 1;
+	public final static int GREATER_EQUAL = 2;
+	public final static int LESS = 3;
+	public final static int LESS_EQUAL = 4;
+	public final static int EQUAL = 5;
+	public final static int NOT_EQUAL = 6;
 	
 
 	FieldSpec spec;

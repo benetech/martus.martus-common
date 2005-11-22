@@ -48,6 +48,11 @@ public class DropDownFieldSpec extends FieldSpec
 	{
 		choices = choicesToUse;
 	}
+	
+	public ChoiceItem[] getAllChoices()
+	{
+		return choices;
+	}
 
 	public int getCount()
 	{

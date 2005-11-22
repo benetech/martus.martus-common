@@ -31,6 +31,7 @@ import java.util.Vector;
 import org.martus.common.field.MartusDateField;
 import org.martus.common.field.MartusDateRangeField;
 import org.martus.common.field.MartusField;
+import org.martus.common.field.MartusGridField;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldType;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
@@ -59,6 +60,8 @@ public class FieldCollection
 			fields.add(new MartusDateRangeField(newSpec));
 		else if(type.isDate())
 			fields.add(new MartusDateField(newSpec));
+		else if(type.isGrid())
+			fields.add(new MartusGridField(newSpec));
 		else
 			fields.add(new MartusField(newSpec));
 	}
