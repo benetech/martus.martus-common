@@ -55,6 +55,7 @@ public class EnglishCommonStrings
 		"language:km=Khmer",
 		"language:ky=Kirghiz",
 		"language:ko=Korean",
+		"language:ku=Kurdish",
 		"language:ml=Malayalam",
 		"language:mr=Marathi",
 		"language:ne=Nepali",
