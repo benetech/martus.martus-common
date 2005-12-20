@@ -967,7 +967,7 @@ public class WebServerWithClientId implements Runnable
 				}
 				else
 				{
-					pattern[i] = (byte) Integer.parseInt(next);
+					pattern[i] = Integer.parseInt(next);
 				}
 			}
 		}
