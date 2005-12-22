@@ -39,6 +39,7 @@ public class MartusGridField extends MartusField
 
 	public MartusField getSubField(String tag)
 	{
+		String sanitizedLabel = sanitizeLabel(tag);
 		try
 		{
 			if(getData().length() == 0)
@@ -48,7 +49,8 @@ public class MartusGridField extends MartusField
 			for(int i = 0; i < gridSpec.getColumnCount(); ++i)
 			{
 				FieldSpec thisColumnSpec = gridSpec.getFieldSpec(i);
-				if(thisColumnSpec.getTag().equals(tag))
+				final String thisLabel = sanitizeLabel(thisColumnSpec.getLabel());
+				if(thisLabel.equals(sanitizedLabel))
 				{
 					MartusField field = new MartusSearchableGridColumnField(this, i);
 					return field;
@@ -61,6 +63,11 @@ public class MartusGridField extends MartusField
 		}
 		
 		return super.getSubField(tag);
+	}
+	
+	static public String sanitizeLabel(String rawLabel)
+	{
+		return rawLabel.replaceAll("\\.", " ");
 	}
 	
 	public GridFieldSpec getGridFieldSpec()
