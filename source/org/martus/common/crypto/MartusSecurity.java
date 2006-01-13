@@ -949,7 +949,7 @@ public class MartusSecurity extends MartusCrypto
 		verifySignedKeyFile("bc-jce.jar", jceJarURL, "SSMTSJAR");
 		
  		URL bcprovJarURL = getJarURL(RSAEngine.class);
- 		String bcprovJarName = "bcprov-jdk14-128.jar";
+ 		String bcprovJarName = BCPROV_JAR_FILE_NAME;
  		if(bcprovJarURL.toString().indexOf(bcprovJarName) < 0)
  		{
  			String hintsToSolve = "\n\nMake sure " + bcprovJarName + " is the only bcprov file in Martus/lib/ext";
@@ -1051,6 +1051,7 @@ public class MartusSecurity extends MartusCrypto
 		return jarURL;
 	}
 
+	private static final String BCPROV_JAR_FILE_NAME = "bcprov-jdk14-128.jar";
 	private static final String SESSION_ALGORITHM_NAME = "AES";
 	private static final String SESSION_ALGORITHM = "AES/CBC/PKCS5Padding";
 	private static final String PBE_ALGORITHM = "PBEWithSHAAndTwofish-CBC";
