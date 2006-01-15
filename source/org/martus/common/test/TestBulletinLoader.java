@@ -31,7 +31,6 @@ import java.io.File;
 import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
 import org.martus.common.MartusXml;
-import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinForTesting;
 import org.martus.common.bulletin.BulletinLoader;
@@ -44,7 +43,6 @@ import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.MockDatabase;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.FieldDataPacket;
-import org.martus.common.packet.UniversalId;
 import org.martus.util.TestCaseEnhanced;
 
 public class TestBulletinLoader extends TestCaseEnhanced
@@ -74,7 +72,7 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		store.saveEncryptedBulletinForTesting(original);
 
 		Bulletin loaded = BulletinLoader.loadFromDatabase(getDatabase(), DatabaseKey.createLegacyKey(original.getUniversalId()), security);
-		assertEquals("not valid?", true, loaded.isValid());
+		assertEquals("not valid?", true, loaded.isNonAttachmentDataValid());
 
 		FieldDataPacket fdp = loaded.getFieldDataPacket();
 		fdp.set(Bulletin.TAGPUBLICINFO, "different public!");
@@ -82,56 +80,10 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		fdp.writeXmlToClientDatabase(getDatabase(), encryptPublicData, security);
 
 		loaded = BulletinLoader.loadFromDatabase(getDatabase(), DatabaseKey.createLegacyKey(original.getUniversalId()), security);
-		assertEquals("not invalid?", false, loaded.isValid());
+		assertEquals("not invalid?", false, loaded.isNonAttachmentDataValid());
 		assertEquals("private messed up?", original.get(Bulletin.TAGPRIVATEINFO), loaded.get(Bulletin.TAGPRIVATEINFO));
 	}
 	
-	public void testMissingInvalidAttachment() throws Exception
-	{
-		Bulletin b1 = new Bulletin(security);
-
-		File tempFile1 = createTempFileWithData(sampleBytes1);
-		File tempFile2 = createTempFileWithData(sampleBytes2);
-		AttachmentProxy a1 = new AttachmentProxy(tempFile1);
-		AttachmentProxy a2 = new AttachmentProxy(tempFile2);
-		b1.addPublicAttachment(a1);
-		b1.addPrivateAttachment(a2);
-		assertEquals("Should have 1 public attachment", 1, b1.getPublicAttachments().length);
-		assertEquals("Should have 1 private attachment", 1, b1.getPrivateAttachments().length);
-		b1.setSealed();
-		store.saveEncryptedBulletinForTesting(b1);
-
-		Bulletin loaded = BulletinLoader.loadFromDatabase(getDatabase(), DatabaseKey.createLegacyKey(b1.getUniversalId()), security);
-		assertEquals("not valid?", true, loaded.isValid());
-
-		AttachmentProxy[] privateProxy = loaded.getPrivateAttachments();
-		UniversalId id = privateProxy[0].getUniversalId();
-		DatabaseKey key = DatabaseKey.createSealedKey(id);
-		
-		assertTrue("Attachment should exist",getDatabase().doesRecordExist(key));
-
-		getDatabase().discardRecord(key);
-		assertFalse("Attachment should not exist",getDatabase().doesRecordExist(key));
-		
-		loaded = BulletinLoader.loadFromDatabase(getDatabase(), DatabaseKey.createLegacyKey(b1.getUniversalId()), security);
-		assertEquals("not invalid for private attachment missing?", false, loaded.isValid());
-
-		b1.addPrivateAttachment(a2);
-		store.saveEncryptedBulletinForTesting(b1);
-		
-		loaded = BulletinLoader.loadFromDatabase(getDatabase(), DatabaseKey.createLegacyKey(b1.getUniversalId()), security);
-		assertEquals("Should now be valid both attachments are present.", true, loaded.isValid());
-
-		AttachmentProxy[] publicProxy = loaded.getPrivateAttachments();
-		id = publicProxy[0].getUniversalId();
-		key = DatabaseKey.createSealedKey(id);
-		getDatabase().writeRecordEncrypted(key,sampleBytes2.toString(), security);
-		
-		loaded = BulletinLoader.loadFromDatabase(getDatabase(), DatabaseKey.createLegacyKey(b1.getUniversalId()), security);
-		assertEquals("not invalid for modified public attachment?", false, loaded.isValid());
-	}
-	
-
 	public void testDetectPrivateFieldPacketWithWrongSig() throws Exception
 	{
 		Bulletin original = new Bulletin(security);
@@ -141,7 +93,7 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		store.saveEncryptedBulletinForTesting(original);
 
 		Bulletin loaded = BulletinLoader.loadFromDatabase(getDatabase(), DatabaseKey.createLegacyKey(original.getUniversalId()), security);
-		assertEquals("not valid?", true, loaded.isValid());
+		assertEquals("not valid?", true, loaded.isNonAttachmentDataValid());
 
 		FieldDataPacket fdp = loaded.getPrivateFieldDataPacket();
 		fdp.set(Bulletin.TAGPRIVATEINFO, "different private!");
@@ -149,7 +101,7 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		fdp.writeXmlToClientDatabase(getDatabase(), encryptPublicData, security);
 
 		loaded = BulletinLoader.loadFromDatabase(getDatabase(), DatabaseKey.createLegacyKey(original.getUniversalId()), security);
-		assertEquals("not invalid?", false, loaded.isValid());
+		assertEquals("not invalid?", false, loaded.isNonAttachmentDataValid());
 		assertEquals("public messed up?", original.get(Bulletin.TAGPUBLICINFO), loaded.get(Bulletin.TAGPUBLICINFO));
 	}
 
@@ -316,7 +268,7 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		store.saveEncryptedBulletinForTesting(b);
 		DatabaseKey headerKey = b.getDatabaseKey();
 		Bulletin stillValid = BulletinLoader.loadFromDatabase(getDatabase(), headerKey, security);
-		assertEquals(label + " not valid after save?", true, stillValid.isValid());
+		assertEquals(label + " not valid after save?", true, stillValid.isNonAttachmentDataValid());
 	}
 
 	void verifyBulletinIsInvalid(String label, Bulletin b, boolean headerIsValid,
@@ -337,7 +289,7 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		}
 
 		Bulletin invalid = BulletinLoader.loadFromDatabase(getDatabase(), headerKey, security);
-		assertEquals(label + " not invalid?", false, invalid.isValid());
+		assertEquals(label + " not invalid?", false, invalid.isNonAttachmentDataValid());
 		assertEquals(label + " wrong uid?", b.getUniversalId(), invalid.getUniversalId());
 		assertEquals(label + " wrong fdp account?", b.getAccount(), invalid.getFieldDataPacket().getAccountId());
 		assertEquals(label + " wrong private fdp account?", b.getAccount(), invalid.getPrivateFieldDataPacket().getAccountId());

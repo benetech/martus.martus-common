@@ -80,7 +80,7 @@ public class Bulletin implements BulletinConstants
 	public Bulletin(MartusCrypto securityToUse, UniversalId headerUid, UniversalId publicDataUid, UniversalId privateDataUid, FieldSpec[] publicFieldSpecs, FieldSpec[] privateFieldSpecs)
 	{
 		security = securityToUse;
-		isValidFlag = true;
+		isNonAttachmentDataValidFlag = true;
 
 		header = createHeaderPacket(headerUid);
 
@@ -120,14 +120,14 @@ public class Bulletin implements BulletinConstants
 		return getBulletinHeaderPacket().getLocalId();
 	}
 
-	public void setIsValid(boolean isValid)
+	public void setIsNonAttachmentDataValid(boolean isValid)
 	{
-		isValidFlag = isValid;
+		isNonAttachmentDataValidFlag = isValid;
 	}
 
-	public boolean isValid()
+	public boolean isNonAttachmentDataValid()
 	{
-		return isValidFlag;
+		return isNonAttachmentDataValidFlag;
 	}
 	
 	public String toFileName()
@@ -624,7 +624,7 @@ public class Bulletin implements BulletinConstants
 	public static final String PSEUDOFIELD_LOCAL_ID = "_localId";
 	public static final String PSEUDOFIELD_LAST_SAVED_DATE = "_lastSavedDate";
 	
-	private boolean isValidFlag;
+	private boolean isNonAttachmentDataValidFlag;
 	private MartusCrypto security;
 	private BulletinHeaderPacket header;
 	private FieldDataPacket fieldData;

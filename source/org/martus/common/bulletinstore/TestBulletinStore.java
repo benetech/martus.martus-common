@@ -32,6 +32,7 @@ import java.util.Vector;
 import java.util.zip.ZipFile;
 
 import org.martus.common.LoggerToNull;
+import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinLoader;
 import org.martus.common.bulletin.BulletinZipUtilities;
@@ -130,6 +131,51 @@ public class TestBulletinStore extends TestCaseEnhanced
     	assertEquals("didn't delete all?", 0, store.scanForLeafKeys().size());
 	}
     
+	public void testMissingInvalidAttachment() throws Exception
+	{
+		Bulletin b1 = new Bulletin(security);
+
+		File tempFile2 = createTempFileWithData(sampleBytes2);
+		AttachmentProxy a1 = new AttachmentProxy(tempFile1);
+		AttachmentProxy a2 = new AttachmentProxy(tempFile2);
+		b1.addPublicAttachment(a1);
+		b1.addPrivateAttachment(a2);
+		assertEquals("Should have 1 public attachment", 1, b1.getPublicAttachments().length);
+		assertEquals("Should have 1 private attachment", 1, b1.getPrivateAttachments().length);
+		b1.setSealed();
+		store.saveEncryptedBulletinForTesting(b1);
+
+		Bulletin loaded = BulletinLoader.loadFromDatabase(getDatabase(), DatabaseKey.createLegacyKey(b1.getUniversalId()), security);
+		assertEquals("not valid?", true, store.areAttachmentsValid(loaded));
+
+		AttachmentProxy[] privateProxy = loaded.getPrivateAttachments();
+		UniversalId id = privateProxy[0].getUniversalId();
+		DatabaseKey key = DatabaseKey.createSealedKey(id);
+		
+		assertTrue("Attachment should exist",getDatabase().doesRecordExist(key));
+
+		getDatabase().discardRecord(key);
+		assertFalse("Attachment should not exist",getDatabase().doesRecordExist(key));
+		
+		loaded = BulletinLoader.loadFromDatabase(getDatabase(), DatabaseKey.createLegacyKey(b1.getUniversalId()), security);
+		assertEquals("not invalid for private attachment missing?", false, store.areAttachmentsValid(loaded));
+
+		b1.addPrivateAttachment(a2);
+		store.saveEncryptedBulletinForTesting(b1);
+		
+		loaded = BulletinLoader.loadFromDatabase(getDatabase(), DatabaseKey.createLegacyKey(b1.getUniversalId()), security);
+		assertEquals("Should now be valid both attachments are present.", true, store.areAttachmentsValid(loaded));
+
+		AttachmentProxy[] publicProxy = loaded.getPublicAttachments();
+		id = publicProxy[0].getUniversalId();
+		key = DatabaseKey.createSealedKey(id);
+		getDatabase().writeRecordEncrypted(key,sampleBytes2.toString(), security);
+		
+		loaded = BulletinLoader.loadFromDatabase(getDatabase(), DatabaseKey.createLegacyKey(b1.getUniversalId()), security);
+		assertEquals("not invalid for modified public attachment?", false, store.areAttachmentsValid(loaded));
+	}
+	
+
     public void testHasNewerRevision() throws Exception
 	{
 		Bulletin original = createAndSaveBulletin();
@@ -344,6 +390,11 @@ public class TestBulletinStore extends TestCaseEnhanced
 		store.saveBulletinForTesting(clone);
 		return clone;
 	}
+	
+	private Database getDatabase()
+	{
+		return db;
+	}
 
 
 	private static BulletinStore store;
@@ -352,4 +403,5 @@ public class TestBulletinStore extends TestCaseEnhanced
 
 	private static File tempFile1;
 	private static final byte[] sampleBytes1 = {1,1,2,3,0,5,7,11};
+	private static final byte[] sampleBytes2 = {9, 17, 45, 0, 77};
 }

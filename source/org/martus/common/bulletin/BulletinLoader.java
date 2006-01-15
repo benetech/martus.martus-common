@@ -65,7 +65,7 @@ public class BulletinLoader
 		FieldSpec[] privateFieldNames = StandardFieldSpecs.getDefaultPrivateFieldSpecs();
 		Bulletin b = new Bulletin(verifier, standardFieldNames, privateFieldNames);
 		b.clearAllUserData();
-		b.setIsValid(false);
+		b.setIsNonAttachmentDataValid(false);
 
 		BulletinHeaderPacket headerPacket = b.getBulletinHeaderPacket();
 		DatabaseKey headerKey = key;
@@ -85,15 +85,11 @@ public class BulletinLoader
 			byte[] privateDataSig = headerPacket.getPrivateFieldDataSignature();
 			boolean isPrivateDataValid = BulletinLoader.loadAnotherPacket(privateDataPacket, db, privateDataKey, privateDataSig, verifier);
 
-			if(isDataValid)
-				isDataValid = isAttachmentsValid(db, verifier, b.getPublicAttachments());
-			if(isPrivateDataValid)
-				isPrivateDataValid = isAttachmentsValid(db, verifier, b.getPrivateAttachments());
 			
-			b.setIsValid(isDataValid && isPrivateDataValid);
+			b.setIsNonAttachmentDataValid(isDataValid && isPrivateDataValid);
 		}
 
-		if(b.isValid())
+		if(b.isNonAttachmentDataValid())
 		{
 			b.setAuthorizedToReadKeys(headerPacket.getAuthorizedToReadKeys());
 		}
@@ -109,49 +105,6 @@ public class BulletinLoader
 		}
 
 		return b;
-	}
-
-	private static boolean isAttachmentsValid(ReadableDatabase db, MartusCrypto verifier, AttachmentProxy[] attachmentProxies)
-	{
-		if(attachmentProxies == null)
-			return true;
-		for(int i = 0; i< attachmentProxies.length; ++i)
-		{
-			UniversalId id = attachmentProxies[i].getUniversalId();
-			DatabaseKey key = DatabaseKey.createSealedKey(id);
-			InputStreamWithSeek in = null;
-			try
-			{
-				in = db.openInputStream(key, verifier);
-			}
-			catch (Exception e)
-			{
-				return false;
-			}
-			if(in == null)
-				return false;
-
-			try
-			{
-				Packet.verifyPacketSignature(in,verifier);
-			}
-			catch (Exception e)
-			{
-				return false;
-			}
-			finally
-			{
-				try
-				{
-					in.close();
-				}
-				catch(IOException e)
-				{
-					return false;
-				}
-			}
-		}
-		return true;
 	}
 
 	private static boolean loadAnotherPacket(Packet packet, ReadableDatabase db, DatabaseKey key, byte[] expectedSig, MartusCrypto verifier) throws

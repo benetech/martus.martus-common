@@ -38,6 +38,7 @@ import java.util.zip.ZipFile;
 import org.martus.common.LoggerInterface;
 import org.martus.common.MartusUtilities;
 import org.martus.common.MartusUtilities.FileVerificationException;
+import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinZipUtilities;
 import org.martus.common.bulletin.PendingAttachmentList;
@@ -165,6 +166,24 @@ public class BulletinStore
 	{
 		database.deleteAllData();
 		cacheManager.storeWasCleared();
+	}
+
+	public boolean areAttachmentsValid(Bulletin b)
+	{
+		System.out.println("BulletinStore: Starting attachment validation");
+		if(!areAttachmentsValid(b.getPublicAttachments()))
+			return false;
+		
+		if(!areAttachmentsValid(b.getPrivateAttachments()))
+			return false;
+		
+		System.out.println("BulletinStore: attachments are valid");
+		return true;
+	}
+	
+	private boolean areAttachmentsValid(AttachmentProxy[] proxies)
+	{
+		return (isAttachmentsValid(getDatabase(), getSignatureVerifier(), proxies));
 	}
 
 	public void importZipFileToStoreWithSameUids(File inputFile) throws IOException, MartusCrypto.CryptoException, Packet.InvalidPacketException, Packet.SignatureVerificationException
@@ -446,6 +465,49 @@ public class BulletinStore
 		revisionWasSaved(b);
 	}
 	
+	private static boolean isAttachmentsValid(ReadableDatabase db, MartusCrypto verifier, AttachmentProxy[] attachmentProxies)
+	{
+		if(attachmentProxies == null)
+			return true;
+		for(int i = 0; i< attachmentProxies.length; ++i)
+		{
+			UniversalId id = attachmentProxies[i].getUniversalId();
+			DatabaseKey key = DatabaseKey.createSealedKey(id);
+			InputStreamWithSeek in = null;
+			try
+			{
+				in = db.openInputStream(key, verifier);
+			}
+			catch (Exception e)
+			{
+				return false;
+			}
+			if(in == null)
+				return false;
+
+			try
+			{
+				Packet.verifyPacketSignature(in,verifier);
+			}
+			catch (Exception e)
+			{
+				return false;
+			}
+			finally
+			{
+				try
+				{
+					in.close();
+				}
+				catch(IOException e)
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
 	private static void saveToClientDatabase(Bulletin b, Database db, boolean mustEncryptPublicData, MartusCrypto signer) throws
 			IOException,
 			MartusCrypto.CryptoException
