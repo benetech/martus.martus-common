@@ -97,6 +97,20 @@ public class MartusUtilities
 
 	}
 
+	public static class NotYourBulletinErrorException extends Exception
+	{
+		public NotYourBulletinErrorException(String message)
+		{
+			super(message);
+		}
+
+		public NotYourBulletinErrorException()
+		{
+			this("");
+		}
+
+	}
+
 	public static void deleteAllFiles(Vector filesToDelete)
 	{
 		for (int i = 0; i < filesToDelete.size(); i++)
