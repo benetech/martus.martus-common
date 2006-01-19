@@ -167,17 +167,22 @@ public class BulletinStore
 		database.deleteAllData();
 		cacheManager.storeWasCleared();
 	}
+	
+	public boolean isBulletinValid(Bulletin b)
+	{
+		boolean nonAttachmentDataValid = b.isNonAttachmentDataValid();
+		boolean attachmentsValid = areAttachmentsValid(b);
+		return nonAttachmentDataValid && attachmentsValid;
+	}
 
 	public boolean areAttachmentsValid(Bulletin b)
 	{
-		System.out.println("BulletinStore: Starting attachment validation");
 		if(!areAttachmentsValid(b.getPublicAttachments()))
 			return false;
 		
 		if(!areAttachmentsValid(b.getPrivateAttachments()))
 			return false;
 		
-		System.out.println("BulletinStore: attachments are valid");
 		return true;
 	}
 	

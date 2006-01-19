@@ -146,7 +146,8 @@ public class TestBulletinStore extends TestCaseEnhanced
 		store.saveEncryptedBulletinForTesting(b1);
 
 		Bulletin loaded = BulletinLoader.loadFromDatabase(getDatabase(), DatabaseKey.createLegacyKey(b1.getUniversalId()), security);
-		assertEquals("not valid?", true, store.areAttachmentsValid(loaded));
+		assertEquals("not valid attachments?", true, store.areAttachmentsValid(loaded));
+		assertEquals("not valid bulletin?", true, store.isBulletinValid(loaded));
 
 		AttachmentProxy[] privateProxy = loaded.getPrivateAttachments();
 		UniversalId id = privateProxy[0].getUniversalId();
@@ -156,15 +157,20 @@ public class TestBulletinStore extends TestCaseEnhanced
 
 		getDatabase().discardRecord(key);
 		assertFalse("Attachment should not exist",getDatabase().doesRecordExist(key));
-		
 		loaded = BulletinLoader.loadFromDatabase(getDatabase(), DatabaseKey.createLegacyKey(b1.getUniversalId()), security);
 		assertEquals("not invalid for private attachment missing?", false, store.areAttachmentsValid(loaded));
+		assertEquals("not invalid for private attachment missing, Bulletin valid?", false, store.isBulletinValid(loaded));
 
 		b1.addPrivateAttachment(a2);
 		store.saveEncryptedBulletinForTesting(b1);
 		
 		loaded = BulletinLoader.loadFromDatabase(getDatabase(), DatabaseKey.createLegacyKey(b1.getUniversalId()), security);
 		assertEquals("Should now be valid both attachments are present.", true, store.areAttachmentsValid(loaded));
+		assertEquals("Should now be valid both attachments are present, Bulletin Not Valid.", true, store.isBulletinValid(loaded));
+		
+		loaded.setIsNonAttachmentDataValid(false);
+		assertEquals("Attachments should still be valid.", true, store.areAttachmentsValid(loaded));
+		assertEquals("Bulletin should not be valid.", false, store.isBulletinValid(loaded));
 
 		AttachmentProxy[] publicProxy = loaded.getPublicAttachments();
 		id = publicProxy[0].getUniversalId();
@@ -173,6 +179,7 @@ public class TestBulletinStore extends TestCaseEnhanced
 		
 		loaded = BulletinLoader.loadFromDatabase(getDatabase(), DatabaseKey.createLegacyKey(b1.getUniversalId()), security);
 		assertEquals("not invalid for modified public attachment?", false, store.areAttachmentsValid(loaded));
+		assertEquals("not invalid for modified public attachment, Bulletin Valid?", false, store.isBulletinValid(loaded));
 	}
 	
 
