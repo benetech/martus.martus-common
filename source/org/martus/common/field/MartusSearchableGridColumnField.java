@@ -26,6 +26,7 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.field;
 
+import org.martus.common.FieldCollection;
 import org.martus.common.GridData;
 import org.martus.common.MiniLocalization;
 import org.martus.common.fieldspec.GridFieldSpec;
@@ -40,24 +41,57 @@ public class MartusSearchableGridColumnField extends MartusField
 		GridData gridData = new GridData(gridSpec);
 		gridData.setFromXml(gridToUse.getData());
 		
-		fields = new MartusField[gridData.getRowCount()];
-		for(int row = 0; row < fields.length; ++row)
+		fields = new FieldCollection();
+		for(int row = 0; row < gridData.getRowCount(); ++row)
 		{
-			fields[row] = new MartusField(gridSpec.getFieldSpec(column));
-			fields[row].setData(gridData.getValueAt(row, column));
+			fields.add(gridSpec.getFieldSpec(column));
+			fields.getField(row).setData(gridData.getValueAt(row, column));
 		}
+	}
+	
+	public MartusSearchableGridColumnField(MartusSearchableGridColumnField source, String tag) throws Exception
+	{
+		super(source.getFieldSpec());
+		
+		fields = new FieldCollection();
+		for(int row = 0; row < source.size(); ++row)
+		{
+			MartusField thisField = source.fields.getField(row);
+			MartusField thisSubfield = thisField.getSubField(tag);
+			fields.add(thisSubfield.getFieldSpec());
+			fields.getField(row).setData(thisSubfield.getData());
+		}
+	
 	}
 
 	public boolean doesMatch(int compareOp, String searchForValue, MiniLocalization localization)
 	{
-		for(int row = 0; row < fields.length; ++row)
+		for(int row = 0; row < fields.count(); ++row)
 		{
-			if(fields[row].doesMatch(compareOp, searchForValue, localization))
+			if(fields.getField(row).doesMatch(compareOp, searchForValue, localization))
 				return true;
 		}
 		
 		return false;
 	}
 
-	MartusField[] fields;
+	public MartusField getSubField(String tag)
+	{
+		try
+		{
+			return new MartusSearchableGridColumnField(this, tag);
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public int size()
+	{
+		return fields.count();
+	}
+
+	FieldCollection fields;
+
 }

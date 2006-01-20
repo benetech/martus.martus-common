@@ -32,6 +32,7 @@ import junit.framework.TestSuite;
 import org.martus.common.bulletinstore.TestBulletinStore;
 import org.martus.common.bulletinstore.TestBulletinStoreCache;
 import org.martus.common.field.TestMartusField;
+import org.martus.common.field.TestMartusSearchableGridColumnField;
 import org.martus.common.fieldspec.TestCustomDropDownFieldSpec;
 import org.martus.common.fieldspec.TestDropDownFieldSpec;
 import org.martus.common.utilities.TestDateUtilities;
@@ -92,6 +93,7 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestMagicWords.class));
 		suite.addTest(new TestSuite(TestMartusKeyPair.class));
 		suite.addTest(new TestSuite(TestMartusFlexidate.class));
+		suite.addTest(new TestSuite(TestMartusSearchableGridColumnField.class));
 		suite.addTest(new TestSuite(TestMartusSecurity.class));
 		suite.addTest(new TestSuite(TestMartusUtilities.class));
 		suite.addTest(new TestSuite(TestMartusXml.class));

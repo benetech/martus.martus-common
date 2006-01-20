@@ -139,6 +139,34 @@ public class TestMartusField extends TestCaseEnhanced
 		final String result = gridField.getSearchableData(localization);
 		assertEquals("Grid data not searchable?", "abc\t" + choices[1].toString() + "\t\nsecond row\t" + choices[0].toString() + "\t\n", result);
 	}
+	
+	public void testGetSearchableDataForGridFieldDateRanges() throws Exception
+	{
+		GridFieldSpec spec = new GridFieldSpec();
+		spec.addColumn(FieldSpec.createCustomField("", "Date Range", new FieldTypeDateRange()));
+		
+		GridData data = new GridData(spec);
+		data.addEmptyRow();
+		data.addEmptyRow();
+		data.addEmptyRow();
+		final int MARCH = 2;
+		final int SEPTEMBER = 8;
+		MartusCalendar begin = new MartusCalendar(2004, SEPTEMBER, 21);
+		MartusCalendar end = new MartusCalendar(2005, MARCH, 18);
+		String rangeString = MartusFlexidate.toBulletinFlexidateFormat(begin, end);
+		data.setValueAt(rangeString, 0, 0);
+
+		MartusGridField gridField = new MartusGridField(spec);
+		gridField.setData(data.getXmlRepresentation());
+		String label = spec.getFieldSpec(0).getLabel();
+		MartusField columnFields = gridField.getSubField(label);
+		MartusField beginField = columnFields.getSubField("begin");
+		assertTrue("can't find begin?", beginField.doesMatch(MartusField.EQUAL, "2004-09-21", localization));
+		assertFalse("found bad begin?", beginField.doesMatch(MartusField.EQUAL, "2005-03-18", localization));
+		MartusField endField = columnFields.getSubField("end");
+		assertTrue("can't find end?", endField.doesMatch(MartusField.EQUAL, "2005-03-18", localization));
+		assertFalse("found bad end?", endField.doesMatch(MartusField.EQUAL, "2005-09-21", localization));
+	}
 
 	private void verifyNormalDataIsAlsoPrintable(final FieldType type, final String rawData)
 	{
