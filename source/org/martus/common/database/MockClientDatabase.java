@@ -26,6 +26,8 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.database;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -79,6 +81,12 @@ public class MockClientDatabase extends MockDatabase
 		Set keys = new HashSet();
 		keys.addAll(packetMap.keySet());
 		return keys;
+	}
+
+	public File getInterimDirectory(String accountId) throws IOException
+	{
+		// NOTE: return null to force usage of system default temp directory
+		return null;
 	}
 
 	Map packetMap;

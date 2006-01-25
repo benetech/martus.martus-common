@@ -160,7 +160,7 @@ abstract public class FileDatabase extends Database
 			toFile.delete();
 			fromFile.renameTo(toFile);
 			if(!toFile.exists())
-				throw new IOException("renameTo failed");
+				throw new IOException("renameTo failed: " + toFile);
 		}
 	}
 
@@ -298,7 +298,7 @@ abstract public class FileDatabase extends Database
 		}
 	}
 
-	public File getAbsoluteInterimFolderForAccount(String accountString) throws
+	public File getInterimDirectory(String accountString) throws
 		IOException
 	{
 		File accountFolder = new File(absoluteBaseDir, getFolderForAccount(accountString));
@@ -336,7 +336,7 @@ abstract public class FileDatabase extends Database
 	private File createInterimFile(UniversalId uid, String extension) throws RecordHiddenException, IOException
 	{
 		throwIfRecordIsHidden(uid);
-		File folder = getAbsoluteInterimFolderForAccount(uid.getAccountId());
+		File folder = getInterimDirectory(uid.getAccountId());
 		return new File(folder, uid.getLocalId()+"."+extension);
 	}
 

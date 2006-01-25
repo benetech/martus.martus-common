@@ -66,6 +66,7 @@ abstract public class Database extends ReadableDatabase
 	abstract public void writeRecordEncrypted(DatabaseKey key, String record, MartusCrypto encrypter) throws IOException, RecordHiddenException, MartusCrypto.CryptoException;
 	abstract public void importFiles(HashMap entries) throws IOException, RecordHiddenException;
 	abstract public void discardRecord(DatabaseKey key);
+	abstract public File getInterimDirectory(String accountId) throws IOException;
 	abstract public File getIncomingInterimFile(UniversalId uid) throws IOException, RecordHiddenException;
 	abstract public File getOutgoingInterimFile(UniversalId uid) throws IOException, RecordHiddenException;
 	abstract public File getOutgoingInterimPublicOnlyFile(UniversalId uid) throws IOException, RecordHiddenException;
