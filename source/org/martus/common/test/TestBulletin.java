@@ -452,9 +452,9 @@ public class TestBulletin extends TestCaseEnhanced
 		try
 		{
 			MartusCalendar cal = FieldSpec.yyyymmddWithDashesToCalendar("2003-07-02");
-			assertEquals(2003, cal.get(Calendar.YEAR));
-			assertEquals(7-1, cal.get(Calendar.MONTH));
-			assertEquals(2, cal.get(Calendar.DATE));
+			assertEquals(2003, cal.getGregorianYear());
+			assertEquals(7-1, cal.getGregorianMonth());
+			assertEquals(2, cal.getGregorianDay());
 		}
 		catch(Exception e)
 		{
@@ -466,9 +466,9 @@ public class TestBulletin extends TestCaseEnhanced
 	{
 		String sampleDateRange = "2003-04-07,2003-05-17";
 		MartusCalendar cal = FieldSpec.yyyymmddWithDashesToCalendar(sampleDateRange);
-		int year = cal.get(Calendar.YEAR);
-		int month = cal.get(Calendar.MONTH);
-		int day = cal.get(Calendar.DAY_OF_MONTH);
+		int year = cal.getGregorianYear();
+		int month = cal.getGregorianMonth();
+		int day = cal.getGregorianDay();
 		assertEquals(2003, year);
 		assertEquals(3, month);
 		assertEquals(7, day);

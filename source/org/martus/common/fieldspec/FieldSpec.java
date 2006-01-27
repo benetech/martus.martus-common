@@ -27,7 +27,6 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.fieldspec;
 
 import java.text.DecimalFormat;
-import java.util.Calendar;
 
 import org.martus.common.MartusXml;
 import org.martus.common.MiniLocalization;
@@ -194,9 +193,9 @@ public class FieldSpec
 
 	public static String calendarToYYYYMMDD(MartusCalendar cal)
 	{
-		int year = cal.get(Calendar.YEAR);
-		int month = cal.get(Calendar.MONTH) + 1;
-		int day = cal.get(Calendar.DAY_OF_MONTH);
+		int year = cal.getGregorianYear();
+		int month = cal.getGregorianMonth() + 1;
+		int day = cal.getGregorianDay();
 		DecimalFormat fourDigit = new DecimalFormat("0000");
 		DecimalFormat twoDigit = new DecimalFormat("00");
 		return fourDigit.format(year) + "-" + twoDigit.format(month) + "-" + twoDigit.format(day);
