@@ -91,8 +91,8 @@ public class TestMartusField extends TestCaseEnhanced
 	
 	public void testGetSearchableDataForDateRangeFields()
 	{
-		MartusCalendar beginDate = new MartusCalendar(1954, 4, 21);
-		MartusCalendar endDate = new MartusCalendar(1972, 9, 30);
+		MartusCalendar beginDate = MartusCalendar.createMartusCalendarFromGregorian(1954, 4, 21);
+		MartusCalendar endDate = MartusCalendar.createMartusCalendarFromGregorian(1972, 9, 30);
 
 		// FIXME: Extract out to common, with tests
 		String rawDateRange = MartusFlexidate.toStoredDateFormat(beginDate) + 
@@ -151,8 +151,8 @@ public class TestMartusField extends TestCaseEnhanced
 		data.addEmptyRow();
 		final int MARCH = 2;
 		final int SEPTEMBER = 8;
-		MartusCalendar begin = new MartusCalendar(2004, SEPTEMBER, 21);
-		MartusCalendar end = new MartusCalendar(2005, MARCH, 18);
+		MartusCalendar begin = MartusCalendar.createMartusCalendarFromGregorian(2004, SEPTEMBER, 21);
+		MartusCalendar end = MartusCalendar.createMartusCalendarFromGregorian(2005, MARCH, 18);
 		String rangeString = MartusFlexidate.toBulletinFlexidateFormat(begin, end);
 		data.setValueAt(rangeString, 0, 0);
 

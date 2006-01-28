@@ -241,7 +241,7 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals(today, b.get("entrydate"));
 
 		int thisYear = new MartusCalendar().getGregorianYear();
-		MartusCalendar cal = new MartusCalendar(thisYear, Calendar.JANUARY, 1);
+		MartusCalendar cal = MartusCalendar.createMartusCalendarFromGregorian(thisYear, Calendar.JANUARY, 1);
 		String result = FieldSpec.calendarToYYYYMMDD(cal);
 		assertEquals(result, b.get("eventdate"));
 

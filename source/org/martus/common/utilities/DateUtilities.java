@@ -84,7 +84,7 @@ public class DateUtilities
 	public static String getFirstOfThisYear()
 	{
 		int thisYear = new MartusCalendar().getGregorianYear();
-		MartusCalendar cal = new MartusCalendar(thisYear, Calendar.JANUARY, 1);
+		MartusCalendar cal = MartusCalendar.createMartusCalendarFromGregorian(thisYear, Calendar.JANUARY, 1);
 		return MartusFlexidate.toStoredDateFormat(cal);
 	}
 
@@ -92,7 +92,7 @@ public class DateUtilities
 
 	public static String getToday()
 	{
-		Calendar realTodayInOurTimeZone = new GregorianCalendar();
+		GregorianCalendar realTodayInOurTimeZone = new GregorianCalendar();
 		MartusCalendar mc = new MartusCalendar(realTodayInOurTimeZone);
 		String result = MartusFlexidate.toStoredDateFormat(mc);
 		return result;

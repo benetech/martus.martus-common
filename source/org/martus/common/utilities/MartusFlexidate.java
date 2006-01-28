@@ -26,6 +26,8 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.utilities;
 
+import java.util.GregorianCalendar;
+
 import org.hrvd.util.date.Flexidate;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.util.MartusCalendar;
@@ -117,13 +119,13 @@ public class MartusFlexidate
 	
 	public MartusCalendar getBeginDate()
 	{
-		MartusCalendar cal = new MartusCalendar(flexiDate.getCalendarLow());
+		MartusCalendar cal = new MartusCalendar((GregorianCalendar)flexiDate.getCalendarLow());
 		return cal;
 	}
 	
 	public MartusCalendar getEndDate()
 	{
-		MartusCalendar endDate = new MartusCalendar(flexiDate.getCalendarHigh());
+		MartusCalendar endDate = new MartusCalendar((GregorianCalendar)flexiDate.getCalendarHigh());
 		return ((hasDateRange()) ? endDate : getBeginDate());
 	}	
 	
