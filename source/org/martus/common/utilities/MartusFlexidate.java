@@ -36,7 +36,7 @@ public class MartusFlexidate
 {
 	public MartusFlexidate(MartusCalendar beginDate, MartusCalendar endDate)
 	{
-		flexiDate = new Flexidate(beginDate.getCalendar(), endDate.getCalendar());
+		flexiDate = new Flexidate(beginDate.getGregorianCalendar(), endDate.getGregorianCalendar());
 	}
 		
 	private MartusFlexidate(String dateStr)
