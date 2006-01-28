@@ -220,7 +220,7 @@ public class FieldSpec
 		if(year < 0 || month < JANUARY || month > DECEMBER || day < 1 || day > 31)
 			throw new RuntimeException("invalid date: " + storedDateString);
 		MartusCalendar result = new MartusCalendar();
-		result.set(year, month, day);
+		result.setGregorian(year, month, day);
 		return result;
 	}
 	

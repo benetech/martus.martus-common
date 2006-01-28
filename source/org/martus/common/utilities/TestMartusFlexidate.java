@@ -45,7 +45,7 @@ public class TestMartusFlexidate extends TestCaseEnhanced
 		final int APRIL = 3;
 		MartusCalendar cal = new MartusCalendar();
 
-		cal.set(2005, APRIL, 7);
+		cal.setGregorian(2005, APRIL, 7);
 		MartusCalendar goodDate = cal;
 		assertEquals("2005-04-07", MartusFlexidate.toStoredDateFormat(goodDate));
 
@@ -57,15 +57,15 @@ public class TestMartusFlexidate extends TestCaseEnhanced
 		cal.setTime(beforeEpochDate);
 		assertEquals("1970-01-01", MartusFlexidate.toStoredDateFormat(cal));
 
-		cal.set(2548, APRIL, 3);
+		cal.setGregorian(2548, APRIL, 3);
 		MartusCalendar thaiDate = cal;
 		assertEquals("2548-04-03", MartusFlexidate.toStoredDateFormat(thaiDate));
 
-		cal.set(9998, 17, 40);
+		cal.setGregorian(9998, 17, 40);
 		MartusCalendar wayFutureDate = cal;
 		assertEquals("9999-07-10", MartusFlexidate.toStoredDateFormat(wayFutureDate));
 
-		cal.set(8, APRIL, 3);
+		cal.setGregorian(8, APRIL, 3);
 		MartusCalendar ancientDate = cal;
 		assertEquals("0008-04-03", MartusFlexidate.toStoredDateFormat(ancientDate));
 
