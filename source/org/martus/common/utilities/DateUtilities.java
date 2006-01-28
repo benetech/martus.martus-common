@@ -83,20 +83,11 @@ public class DateUtilities
 
 	public static String getFirstOfThisYear()
 	{
-		MartusCalendar cal = new MartusCalendar();
-		cal.set(Calendar.MONTH, 0);
-		cal.set(Calendar.DATE, 1);
+		int thisYear = new MartusCalendar().getGregorianYear();
+		MartusCalendar cal = new MartusCalendar(thisYear, Calendar.JANUARY, 1);
 		return MartusFlexidate.toStoredDateFormat(cal);
 	}
 
-
-	public static String getLastDayOfThisYear()
-	{
-		MartusCalendar cal = new MartusCalendar();
-		cal.set(Calendar.MONTH, 11);
-		cal.set(Calendar.DATE, 31);
-		return MartusFlexidate.toStoredDateFormat(cal);
-	}
 
 
 	public static String getToday()
