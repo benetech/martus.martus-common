@@ -42,7 +42,7 @@ import org.martus.common.fieldspec.FieldTypeMultiline;
 import org.martus.common.fieldspec.FieldTypeNormal;
 import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.common.utilities.MartusFlexidate;
-import org.martus.util.MartusCalendar;
+import org.martus.util.MultiCalendar;
 import org.martus.util.TestCaseEnhanced;
 
 
@@ -91,8 +91,8 @@ public class TestMartusField extends TestCaseEnhanced
 	
 	public void testGetSearchableDataForDateRangeFields()
 	{
-		MartusCalendar beginDate = MartusCalendar.createFromGregorianYearMonthDay(1954, 4, 21);
-		MartusCalendar endDate = MartusCalendar.createFromGregorianYearMonthDay(1972, 9, 30);
+		MultiCalendar beginDate = MultiCalendar.createFromGregorianYearMonthDay(1954, 4, 21);
+		MultiCalendar endDate = MultiCalendar.createFromGregorianYearMonthDay(1972, 9, 30);
 
 		// FIXME: Extract out to common, with tests
 		String rawDateRange = MartusFlexidate.toStoredDateFormat(beginDate) + 
@@ -151,8 +151,8 @@ public class TestMartusField extends TestCaseEnhanced
 		data.addEmptyRow();
 		final int MARCH = 3;
 		final int SEPTEMBER = 9;
-		MartusCalendar begin = MartusCalendar.createFromGregorianYearMonthDay(2004, SEPTEMBER, 21);
-		MartusCalendar end = MartusCalendar.createFromGregorianYearMonthDay(2005, MARCH, 18);
+		MultiCalendar begin = MultiCalendar.createFromGregorianYearMonthDay(2004, SEPTEMBER, 21);
+		MultiCalendar end = MultiCalendar.createFromGregorianYearMonthDay(2005, MARCH, 18);
 		String rangeString = MartusFlexidate.toBulletinFlexidateFormat(begin, end);
 		data.setValueAt(rangeString, 0, 0);
 

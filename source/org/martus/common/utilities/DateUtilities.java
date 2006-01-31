@@ -29,7 +29,7 @@ package org.martus.common.utilities;
 import java.util.GregorianCalendar;
 
 import org.martus.common.fieldspec.ChoiceItem;
-import org.martus.util.MartusCalendar;
+import org.martus.util.MultiCalendar;
 
 
 public class DateUtilities
@@ -82,8 +82,8 @@ public class DateUtilities
 
 	public static String getFirstOfThisYear()
 	{
-		int thisYear = new MartusCalendar().getGregorianYear();
-		MartusCalendar cal = MartusCalendar.createFromGregorianYearMonthDay(thisYear, 1, 1);
+		int thisYear = new MultiCalendar().getGregorianYear();
+		MultiCalendar cal = MultiCalendar.createFromGregorianYearMonthDay(thisYear, 1, 1);
 		return MartusFlexidate.toStoredDateFormat(cal);
 	}
 
@@ -92,7 +92,7 @@ public class DateUtilities
 	public static String getToday()
 	{
 		GregorianCalendar realTodayInOurTimeZone = new GregorianCalendar();
-		MartusCalendar mc = new MartusCalendar(realTodayInOurTimeZone);
+		MultiCalendar mc = new MultiCalendar(realTodayInOurTimeZone);
 		String result = MartusFlexidate.toStoredDateFormat(mc);
 		return result;
 	}

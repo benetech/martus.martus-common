@@ -29,7 +29,7 @@ package org.martus.common.field;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldTypeDate;
 import org.martus.common.utilities.MartusFlexidate;
-import org.martus.util.MartusCalendar;
+import org.martus.util.MultiCalendar;
 
 public class MartusDateRangeField extends MartusField
 {
@@ -56,7 +56,7 @@ public class MartusDateRangeField extends MartusField
 		return null;
 	}
 
-	private MartusField createDateSubField(MartusCalendar singleDateString)
+	private MartusField createDateSubField(MultiCalendar singleDateString)
 	{
 		MartusField sub = new MartusField(new FieldSpec(new FieldTypeDate()));
 		sub.setData(MartusFlexidate.toStoredDateFormat(singleDateString));

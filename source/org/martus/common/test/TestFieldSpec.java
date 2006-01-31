@@ -50,7 +50,7 @@ import org.martus.common.fieldspec.FieldTypeUnknown;
 import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.common.fieldspec.MessageFieldSpec;
 import org.martus.common.utilities.DateUtilities;
-import org.martus.util.MartusCalendar;
+import org.martus.util.MultiCalendar;
 import org.martus.util.TestCaseEnhanced;
 
 
@@ -78,7 +78,7 @@ public class TestFieldSpec extends TestCaseEnhanced
 	
 	void verifyRoundTripDateConversion(String text, String dateString) throws Exception
 	{
-		MartusCalendar cal = MartusCalendar.createFromIsoDateString(dateString);
+		MultiCalendar cal = MultiCalendar.createFromIsoDateString(dateString);
 		String result = cal.toIsoDateString();
 		assertEquals("date conversion failed: " + text, dateString, result);
 	}

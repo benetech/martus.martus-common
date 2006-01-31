@@ -32,7 +32,7 @@ import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldTypeDateRange;
 import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.common.utilities.MartusFlexidate;
-import org.martus.util.MartusCalendar;
+import org.martus.util.MultiCalendar;
 import org.martus.util.TestCaseEnhanced;
 
 public class TestMartusSearchableGridColumnField extends TestCaseEnhanced 
@@ -53,8 +53,8 @@ public class TestMartusSearchableGridColumnField extends TestCaseEnhanced
 		GridData data = new GridData(gridSpec);
 		data.addEmptyRow();
 		final int SEPTEMBER = 9;
-		MartusCalendar begin = MartusCalendar.createFromGregorianYearMonthDay(2004, SEPTEMBER, 21);
-		MartusCalendar end = MartusCalendar.createFromGregorianYearMonthDay(2005, 3, 18);
+		MultiCalendar begin = MultiCalendar.createFromGregorianYearMonthDay(2004, SEPTEMBER, 21);
+		MultiCalendar end = MultiCalendar.createFromGregorianYearMonthDay(2005, 3, 18);
 		String rangeString = MartusFlexidate.toBulletinFlexidateFormat(begin, end);
 		data.setValueAt(rangeString, 0, 0);
 

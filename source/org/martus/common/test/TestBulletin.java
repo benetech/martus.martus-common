@@ -60,7 +60,7 @@ import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.BulletinHistory;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.utilities.DateUtilities;
-import org.martus.util.MartusCalendar;
+import org.martus.util.MultiCalendar;
 import org.martus.util.TestCaseEnhanced;
 
 
@@ -240,8 +240,8 @@ public class TestBulletin extends TestCaseEnhanced
 		String today = DateUtilities.getToday();
 		assertEquals(today, b.get("entrydate"));
 
-		int thisYear = new MartusCalendar().getGregorianYear();
-		MartusCalendar cal = MartusCalendar.createFromGregorianYearMonthDay(thisYear, 1, 1);
+		int thisYear = new MultiCalendar().getGregorianYear();
+		MultiCalendar cal = MultiCalendar.createFromGregorianYearMonthDay(thisYear, 1, 1);
 		String result = cal.toIsoDateString();
 		assertEquals(result, b.get("eventdate"));
 
@@ -450,7 +450,7 @@ public class TestBulletin extends TestCaseEnhanced
 	{
 		try
 		{
-			MartusCalendar cal = MartusCalendar.createFromIsoDateString("2003-07-02");
+			MultiCalendar cal = MultiCalendar.createFromIsoDateString("2003-07-02");
 			assertEquals(2003, cal.getGregorianYear());
 			assertEquals(7, cal.getGregorianMonth());
 			assertEquals(2, cal.getGregorianDay());
@@ -464,7 +464,7 @@ public class TestBulletin extends TestCaseEnhanced
 	public void testDateRangeCompatibility() throws Exception
 	{
 		String sampleDateRange = "2003-04-07,2003-05-17";
-		MartusCalendar cal = MartusCalendar.createFromIsoDateString(sampleDateRange);
+		MultiCalendar cal = MultiCalendar.createFromIsoDateString(sampleDateRange);
 		int year = cal.getGregorianYear();
 		int month = cal.getGregorianMonth();
 		int day = cal.getGregorianDay();

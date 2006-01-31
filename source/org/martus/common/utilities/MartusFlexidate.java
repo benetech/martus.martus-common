@@ -29,11 +29,11 @@ package org.martus.common.utilities;
 import java.util.GregorianCalendar;
 
 import org.hrvd.util.date.Flexidate;
-import org.martus.util.MartusCalendar;
+import org.martus.util.MultiCalendar;
 
 public class MartusFlexidate
 {
-	public MartusFlexidate(MartusCalendar beginDate, MartusCalendar endDate)
+	public MartusFlexidate(MultiCalendar beginDate, MultiCalendar endDate)
 	{
 		flexiDate = new Flexidate(beginDate.getGregorianCalendar(), endDate.getGregorianCalendar());
 	}
@@ -73,7 +73,7 @@ public class MartusFlexidate
 		
 		try
 		{
-			MartusCalendar cal = MartusCalendar.createFromIsoDateString(dateStr);
+			MultiCalendar cal = MultiCalendar.createFromIsoDateString(dateStr);
 			return new MartusFlexidate(cal, cal);
 		}
 		catch(Exception e)
@@ -82,7 +82,7 @@ public class MartusFlexidate
 		}
 	}
 
-	public static String toBulletinFlexidateFormat(MartusCalendar beginDate, MartusCalendar endDate)
+	public static String toBulletinFlexidateFormat(MultiCalendar beginDate, MultiCalendar endDate)
 	{
 		return beginDate.toIsoDateString() + 
 					DATE_RANGE_SEPARATER +
@@ -101,8 +101,8 @@ public class MartusFlexidate
 			return null;
 		String beginDate = dateRange.substring(0,comma);
 		String endDate = dateRange.substring(comma+1);
-		MartusCalendar calBeginDate = MartusCalendar.createFromIsoDateString(beginDate);
-		MartusCalendar calEndDate = MartusCalendar.createFromIsoDateString(endDate);
+		MultiCalendar calBeginDate = MultiCalendar.createFromIsoDateString(beginDate);
+		MultiCalendar calEndDate = MultiCalendar.createFromIsoDateString(endDate);
 		MartusFlexidate flexidate = new MartusFlexidate(calBeginDate, calEndDate);
 		String startDate = beginDate;
 		if(calBeginDate.after(calEndDate))
@@ -116,15 +116,15 @@ public class MartusFlexidate
 		return flexiDate.getDateAsNumber()+FLEXIDATE_RANGE_DELIMITER+flexiDate.getRange();
 	}	
 	
-	public MartusCalendar getBeginDate()
+	public MultiCalendar getBeginDate()
 	{
-		MartusCalendar cal = new MartusCalendar((GregorianCalendar)flexiDate.getCalendarLow());
+		MultiCalendar cal = new MultiCalendar((GregorianCalendar)flexiDate.getCalendarLow());
 		return cal;
 	}
 	
-	public MartusCalendar getEndDate()
+	public MultiCalendar getEndDate()
 	{
-		MartusCalendar endDate = new MartusCalendar((GregorianCalendar)flexiDate.getCalendarHigh());
+		MultiCalendar endDate = new MultiCalendar((GregorianCalendar)flexiDate.getCalendarHigh());
 		return ((hasDateRange()) ? endDate : getBeginDate());
 	}	
 	
@@ -133,12 +133,12 @@ public class MartusFlexidate
 		return (flexiDate.getRange() > 0)? true:false;
 	}
 
-	public static String toStoredDateFormat(MartusCalendar date)
+	public static String toStoredDateFormat(MultiCalendar date)
 	{		
 		return date.toIsoDateString();				
 	}
 
-	public static String toFlexidateFormat(MartusCalendar beginDate, MartusCalendar endDate)
+	public static String toFlexidateFormat(MultiCalendar beginDate, MultiCalendar endDate)
 	{		
 		return new MartusFlexidate(beginDate, endDate).getMartusFlexidateString();
 	}		

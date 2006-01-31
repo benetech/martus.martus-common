@@ -28,7 +28,7 @@ package org.martus.common.utilities;
 
 import java.util.Date;
 
-import org.martus.util.MartusCalendar;
+import org.martus.util.MultiCalendar;
 import org.martus.util.TestCaseEnhanced;
 
 
@@ -43,10 +43,10 @@ public class TestMartusFlexidate extends TestCaseEnhanced
 	public void testToStoredDateFormat()
 	{
 		final int APRIL = 4;
-		MartusCalendar cal = new MartusCalendar();
+		MultiCalendar cal = new MultiCalendar();
 
 		cal.setGregorian(2005, APRIL, 7);
-		MartusCalendar goodDate = cal;
+		MultiCalendar goodDate = cal;
 		assertEquals("2005-04-07", MartusFlexidate.toStoredDateFormat(goodDate));
 
 		Date epoch = new Date(0);
@@ -58,15 +58,15 @@ public class TestMartusFlexidate extends TestCaseEnhanced
 		assertEquals("1970-01-01", MartusFlexidate.toStoredDateFormat(cal));
 
 		cal.setGregorian(2548, APRIL, 3);
-		MartusCalendar thaiDate = cal;
+		MultiCalendar thaiDate = cal;
 		assertEquals("2548-04-03", MartusFlexidate.toStoredDateFormat(thaiDate));
 
 		cal.setGregorian(9998, 18, 40);
-		MartusCalendar wayFutureDate = cal;
+		MultiCalendar wayFutureDate = cal;
 		assertEquals("9999-07-10", MartusFlexidate.toStoredDateFormat(wayFutureDate));
 
 		cal.setGregorian(8, APRIL, 3);
-		MartusCalendar ancientDate = cal;
+		MultiCalendar ancientDate = cal;
 		assertEquals("0008-04-03", MartusFlexidate.toStoredDateFormat(ancientDate));
 
 	}
@@ -76,10 +76,10 @@ public class TestMartusFlexidate extends TestCaseEnhanced
 		final int MAR = 3;
 		final int APR = 4;
 		final int MAY = 5;
-		MartusCalendar marDate = MartusCalendar.createFromGregorianYearMonthDay(2005, MAR, 29);
-		MartusCalendar aprDate1 = MartusCalendar.createFromGregorianYearMonthDay(2005, APR, 1);
-		MartusCalendar aprDate2 = MartusCalendar.createFromGregorianYearMonthDay(2005, APR, 5);
-		MartusCalendar mayDate = MartusCalendar.createFromGregorianYearMonthDay(2005, MAY, 3);
+		MultiCalendar marDate = MultiCalendar.createFromGregorianYearMonthDay(2005, MAR, 29);
+		MultiCalendar aprDate1 = MultiCalendar.createFromGregorianYearMonthDay(2005, APR, 1);
+		MultiCalendar aprDate2 = MultiCalendar.createFromGregorianYearMonthDay(2005, APR, 5);
+		MultiCalendar mayDate = MultiCalendar.createFromGregorianYearMonthDay(2005, MAY, 3);
 		String marToApr1String = MartusFlexidate.toBulletinFlexidateFormat(marDate, aprDate1);
 		assertEquals("2005-03-29,20050329+3", marToApr1String);
 		String marToApr2String = MartusFlexidate.toBulletinFlexidateFormat(marDate, aprDate2);
