@@ -286,7 +286,7 @@ public class MiniLocalization
 		String result = "";
 		try
 		{
-			MartusCalendar cal = MartusCalendar.yyyymmddWithDashesToCalendar(storedDate);
+			MartusCalendar cal = MartusCalendar.createFromIsoDateString(storedDate);
 			result = dfDisplay.format(cal.getTime());
 		}
 		catch(Exception e)

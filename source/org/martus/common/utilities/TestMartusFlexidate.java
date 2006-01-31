@@ -76,10 +76,10 @@ public class TestMartusFlexidate extends TestCaseEnhanced
 		final int MAR = 3;
 		final int APR = 4;
 		final int MAY = 5;
-		MartusCalendar marDate = MartusCalendar.createMartusCalendarFromGregorian(2005, MAR, 29);
-		MartusCalendar aprDate1 = MartusCalendar.createMartusCalendarFromGregorian(2005, APR, 1);
-		MartusCalendar aprDate2 = MartusCalendar.createMartusCalendarFromGregorian(2005, APR, 5);
-		MartusCalendar mayDate = MartusCalendar.createMartusCalendarFromGregorian(2005, MAY, 3);
+		MartusCalendar marDate = MartusCalendar.createFromGregorianYearMonthDay(2005, MAR, 29);
+		MartusCalendar aprDate1 = MartusCalendar.createFromGregorianYearMonthDay(2005, APR, 1);
+		MartusCalendar aprDate2 = MartusCalendar.createFromGregorianYearMonthDay(2005, APR, 5);
+		MartusCalendar mayDate = MartusCalendar.createFromGregorianYearMonthDay(2005, MAY, 3);
 		String marToApr1String = MartusFlexidate.toBulletinFlexidateFormat(marDate, aprDate1);
 		assertEquals("2005-03-29,20050329+3", marToApr1String);
 		String marToApr2String = MartusFlexidate.toBulletinFlexidateFormat(marDate, aprDate2);

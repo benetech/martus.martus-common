@@ -83,7 +83,7 @@ public class DateUtilities
 	public static String getFirstOfThisYear()
 	{
 		int thisYear = new MartusCalendar().getGregorianYear();
-		MartusCalendar cal = MartusCalendar.createMartusCalendarFromGregorian(thisYear, 1, 1);
+		MartusCalendar cal = MartusCalendar.createFromGregorianYearMonthDay(thisYear, 1, 1);
 		return MartusFlexidate.toStoredDateFormat(cal);
 	}
 

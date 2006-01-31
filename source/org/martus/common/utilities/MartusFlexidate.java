@@ -73,7 +73,7 @@ public class MartusFlexidate
 		
 		try
 		{
-			MartusCalendar cal = MartusCalendar.yyyymmddWithDashesToCalendar(dateStr);
+			MartusCalendar cal = MartusCalendar.createFromIsoDateString(dateStr);
 			return new MartusFlexidate(cal, cal);
 		}
 		catch(Exception e)
@@ -84,7 +84,7 @@ public class MartusFlexidate
 
 	public static String toBulletinFlexidateFormat(MartusCalendar beginDate, MartusCalendar endDate)
 	{
-		return beginDate.calendarToYYYYMMDD() + 
+		return beginDate.toIsoDateString() + 
 					DATE_RANGE_SEPARATER +
 					toFlexidateFormat(beginDate, endDate);
 	}
@@ -101,8 +101,8 @@ public class MartusFlexidate
 			return null;
 		String beginDate = dateRange.substring(0,comma);
 		String endDate = dateRange.substring(comma+1);
-		MartusCalendar calBeginDate = MartusCalendar.yyyymmddWithDashesToCalendar(beginDate);
-		MartusCalendar calEndDate = MartusCalendar.yyyymmddWithDashesToCalendar(endDate);
+		MartusCalendar calBeginDate = MartusCalendar.createFromIsoDateString(beginDate);
+		MartusCalendar calEndDate = MartusCalendar.createFromIsoDateString(endDate);
 		MartusFlexidate flexidate = new MartusFlexidate(calBeginDate, calEndDate);
 		String startDate = beginDate;
 		if(calBeginDate.after(calEndDate))
@@ -135,7 +135,7 @@ public class MartusFlexidate
 
 	public static String toStoredDateFormat(MartusCalendar date)
 	{		
-		return date.calendarToYYYYMMDD();				
+		return date.toIsoDateString();				
 	}
 
 	public static String toFlexidateFormat(MartusCalendar beginDate, MartusCalendar endDate)

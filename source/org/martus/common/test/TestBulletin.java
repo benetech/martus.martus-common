@@ -241,8 +241,8 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals(today, b.get("entrydate"));
 
 		int thisYear = new MartusCalendar().getGregorianYear();
-		MartusCalendar cal = MartusCalendar.createMartusCalendarFromGregorian(thisYear, 1, 1);
-		String result = cal.calendarToYYYYMMDD();
+		MartusCalendar cal = MartusCalendar.createFromGregorianYearMonthDay(thisYear, 1, 1);
+		String result = cal.toIsoDateString();
 		assertEquals(result, b.get("eventdate"));
 
 		assertEquals(Bulletin.STATUSDRAFT, b.getStatus());
@@ -450,7 +450,7 @@ public class TestBulletin extends TestCaseEnhanced
 	{
 		try
 		{
-			MartusCalendar cal = MartusCalendar.yyyymmddWithDashesToCalendar("2003-07-02");
+			MartusCalendar cal = MartusCalendar.createFromIsoDateString("2003-07-02");
 			assertEquals(2003, cal.getGregorianYear());
 			assertEquals(7, cal.getGregorianMonth());
 			assertEquals(2, cal.getGregorianDay());
@@ -464,7 +464,7 @@ public class TestBulletin extends TestCaseEnhanced
 	public void testDateRangeCompatibility() throws Exception
 	{
 		String sampleDateRange = "2003-04-07,2003-05-17";
-		MartusCalendar cal = MartusCalendar.yyyymmddWithDashesToCalendar(sampleDateRange);
+		MartusCalendar cal = MartusCalendar.createFromIsoDateString(sampleDateRange);
 		int year = cal.getGregorianYear();
 		int month = cal.getGregorianMonth();
 		int day = cal.getGregorianDay();
