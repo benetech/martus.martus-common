@@ -241,7 +241,7 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals(today, b.get("entrydate"));
 
 		int thisYear = new MartusCalendar().getGregorianYear();
-		MartusCalendar cal = MartusCalendar.createMartusCalendarFromGregorian(thisYear, Calendar.JANUARY, 1);
+		MartusCalendar cal = MartusCalendar.createMartusCalendarFromGregorian(thisYear, 1, 1);
 		String result = cal.calendarToYYYYMMDD();
 		assertEquals(result, b.get("eventdate"));
 
@@ -452,7 +452,7 @@ public class TestBulletin extends TestCaseEnhanced
 		{
 			MartusCalendar cal = MartusCalendar.yyyymmddWithDashesToCalendar("2003-07-02");
 			assertEquals(2003, cal.getGregorianYear());
-			assertEquals(7-1, cal.getGregorianMonth());
+			assertEquals(7, cal.getGregorianMonth());
 			assertEquals(2, cal.getGregorianDay());
 		}
 		catch(Exception e)
@@ -469,7 +469,7 @@ public class TestBulletin extends TestCaseEnhanced
 		int month = cal.getGregorianMonth();
 		int day = cal.getGregorianDay();
 		assertEquals(2003, year);
-		assertEquals(3, month);
+		assertEquals(4, month);
 		assertEquals(7, day);
 	}
 		

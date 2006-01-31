@@ -42,7 +42,7 @@ public class TestMartusFlexidate extends TestCaseEnhanced
 
 	public void testToStoredDateFormat()
 	{
-		final int APRIL = 3;
+		final int APRIL = 4;
 		MartusCalendar cal = new MartusCalendar();
 
 		cal.setGregorian(2005, APRIL, 7);
@@ -61,7 +61,7 @@ public class TestMartusFlexidate extends TestCaseEnhanced
 		MartusCalendar thaiDate = cal;
 		assertEquals("2548-04-03", MartusFlexidate.toStoredDateFormat(thaiDate));
 
-		cal.setGregorian(9998, 17, 40);
+		cal.setGregorian(9998, 18, 40);
 		MartusCalendar wayFutureDate = cal;
 		assertEquals("9999-07-10", MartusFlexidate.toStoredDateFormat(wayFutureDate));
 
@@ -73,9 +73,9 @@ public class TestMartusFlexidate extends TestCaseEnhanced
 	
 	public void testRangesAndDaylightSavings() throws Exception
 	{
-		final int MAR = 2;
-		final int APR = 3;
-		final int MAY = 4;
+		final int MAR = 3;
+		final int APR = 4;
+		final int MAY = 5;
 		MartusCalendar marDate = MartusCalendar.createMartusCalendarFromGregorian(2005, MAR, 29);
 		MartusCalendar aprDate1 = MartusCalendar.createMartusCalendarFromGregorian(2005, APR, 1);
 		MartusCalendar aprDate2 = MartusCalendar.createMartusCalendarFromGregorian(2005, APR, 5);

@@ -52,7 +52,7 @@ public class TestMartusSearchableGridColumnField extends TestCaseEnhanced
 
 		GridData data = new GridData(gridSpec);
 		data.addEmptyRow();
-		final int SEPTEMBER = 8;
+		final int SEPTEMBER = 9;
 		MartusCalendar begin = MartusCalendar.createMartusCalendarFromGregorian(2004, SEPTEMBER, 21);
 		MartusCalendar end = MartusCalendar.createMartusCalendarFromGregorian(2005, 3, 18);
 		String rangeString = MartusFlexidate.toBulletinFlexidateFormat(begin, end);
