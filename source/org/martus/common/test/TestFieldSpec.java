@@ -78,8 +78,8 @@ public class TestFieldSpec extends TestCaseEnhanced
 	
 	void verifyRoundTripDateConversion(String text, String dateString) throws Exception
 	{
-		MartusCalendar cal = FieldSpec.yyyymmddWithDashesToCalendar(dateString);
-		String result = FieldSpec.calendarToYYYYMMDD(cal);
+		MartusCalendar cal = MartusCalendar.yyyymmddWithDashesToCalendar(dateString);
+		String result = cal.calendarToYYYYMMDD();
 		assertEquals("date conversion failed: " + text, dateString, result);
 	}
 

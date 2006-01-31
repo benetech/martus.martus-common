@@ -169,7 +169,7 @@ public class Bulletin implements BulletinConstants
 	{
 		GregorianCalendar cal = new GregorianCalendar();
 		cal.setTime(new Date(getLastSavedTime()));
-		return FieldSpec.calendarToYYYYMMDD(new MartusCalendar(cal));
+		return new MartusCalendar(cal).calendarToYYYYMMDD();
 	}
 	
 	public void setHistory(BulletinHistory newHistory)

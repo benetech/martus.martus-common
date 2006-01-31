@@ -29,7 +29,6 @@ package org.martus.common.utilities;
 import java.util.GregorianCalendar;
 
 import org.hrvd.util.date.Flexidate;
-import org.martus.common.fieldspec.FieldSpec;
 import org.martus.util.MartusCalendar;
 
 public class MartusFlexidate
@@ -74,7 +73,7 @@ public class MartusFlexidate
 		
 		try
 		{
-			MartusCalendar cal = FieldSpec.yyyymmddWithDashesToCalendar(dateStr);
+			MartusCalendar cal = MartusCalendar.yyyymmddWithDashesToCalendar(dateStr);
 			return new MartusFlexidate(cal, cal);
 		}
 		catch(Exception e)
@@ -85,7 +84,7 @@ public class MartusFlexidate
 
 	public static String toBulletinFlexidateFormat(MartusCalendar beginDate, MartusCalendar endDate)
 	{
-		return FieldSpec.calendarToYYYYMMDD(beginDate) + 
+		return beginDate.calendarToYYYYMMDD() + 
 					DATE_RANGE_SEPARATER +
 					toFlexidateFormat(beginDate, endDate);
 	}
@@ -102,8 +101,8 @@ public class MartusFlexidate
 			return null;
 		String beginDate = dateRange.substring(0,comma);
 		String endDate = dateRange.substring(comma+1);
-		MartusCalendar calBeginDate = FieldSpec.yyyymmddWithDashesToCalendar(beginDate);
-		MartusCalendar calEndDate = FieldSpec.yyyymmddWithDashesToCalendar(endDate);
+		MartusCalendar calBeginDate = MartusCalendar.yyyymmddWithDashesToCalendar(beginDate);
+		MartusCalendar calEndDate = MartusCalendar.yyyymmddWithDashesToCalendar(endDate);
 		MartusFlexidate flexidate = new MartusFlexidate(calBeginDate, calEndDate);
 		String startDate = beginDate;
 		if(calBeginDate.after(calEndDate))
@@ -136,7 +135,7 @@ public class MartusFlexidate
 
 	public static String toStoredDateFormat(MartusCalendar date)
 	{		
-		return FieldSpec.calendarToYYYYMMDD(date);				
+		return date.calendarToYYYYMMDD();				
 	}
 
 	public static String toFlexidateFormat(MartusCalendar beginDate, MartusCalendar endDate)

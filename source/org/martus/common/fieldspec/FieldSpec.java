@@ -26,11 +26,9 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.fieldspec;
 
-import java.text.DecimalFormat;
 
 import org.martus.common.MartusXml;
 import org.martus.common.MiniLocalization;
-import org.martus.util.MartusCalendar;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlStringLoader;
 import org.martus.util.xml.XmlUtilities;
@@ -191,39 +189,6 @@ public class FieldSpec
 		return loader.getFieldSpec();
 	}
 
-	public static String calendarToYYYYMMDD(MartusCalendar cal)
-	{
-		int year = cal.getGregorianYear();
-		int month = cal.getGregorianMonth() + 1;
-		int day = cal.getGregorianDay();
-		DecimalFormat fourDigit = new DecimalFormat("0000");
-		DecimalFormat twoDigit = new DecimalFormat("00");
-		return fourDigit.format(year) + "-" + twoDigit.format(month) + "-" + twoDigit.format(day);
-	}
-	
-	public static MartusCalendar yyyymmddWithDashesToCalendar(String storedDateString)
-	{
-		int yearStart = 0;
-		int yearLength = 4;
-		int yearEnd = yearStart + yearLength;
-		int monthStart = yearEnd + 1;
-		int monthLength = 2;
-		int monthEnd = monthStart + monthLength;
-		int dayStart = monthEnd + 1;
-		int dayLength = 2;
-		int dayEnd = dayStart + dayLength;
-		int year = Integer.parseInt(storedDateString.substring(yearStart, yearEnd));
-		int month = Integer.parseInt(storedDateString.substring(monthStart, monthEnd)) - 1;
-		int day = Integer.parseInt(storedDateString.substring(dayStart, dayEnd));
-		int JANUARY = 0;
-		int DECEMBER = 11;
-		if(year < 0 || month < JANUARY || month > DECEMBER || day < 1 || day > 31)
-			throw new RuntimeException("invalid date: " + storedDateString);
-		MartusCalendar result = new MartusCalendar();
-		result.setGregorian(year, month, day);
-		return result;
-	}
-	
 	public static class XmlFieldSpecLoader extends SimpleXmlDefaultLoader
 	{
 		public XmlFieldSpecLoader()

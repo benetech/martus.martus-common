@@ -38,7 +38,6 @@ import java.util.TreeSet;
 import java.util.Vector;
 
 import org.martus.common.fieldspec.ChoiceItem;
-import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.utilities.DateUtilities;
 import org.martus.common.utilities.MartusFlexidate;
 import org.martus.util.MartusCalendar;
@@ -287,7 +286,7 @@ public class MiniLocalization
 		String result = "";
 		try
 		{
-			MartusCalendar cal = FieldSpec.yyyymmddWithDashesToCalendar(storedDate);
+			MartusCalendar cal = MartusCalendar.yyyymmddWithDashesToCalendar(storedDate);
 			result = dfDisplay.format(cal.getTime());
 		}
 		catch(Exception e)
