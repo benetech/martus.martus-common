@@ -38,6 +38,7 @@ import java.util.TreeSet;
 import java.util.Vector;
 
 import org.martus.common.fieldspec.ChoiceItem;
+import org.martus.common.utilities.DatePreference;
 import org.martus.common.utilities.DateUtilities;
 import org.martus.common.utilities.MartusFlexidate;
 import org.martus.util.MultiCalendar;
@@ -60,7 +61,7 @@ public class MiniLocalization
 	{
 		textResources = new TreeMap();
 		rightToLeftLanguages = new Vector();
-		setCurrentDateFormatCode(DateUtilities.MDY_SLASH.getCode());
+		currentDateFormat = new DatePreference();
 	}
 	
 	public void addEnglishTranslations(String[] translations)
@@ -164,12 +165,17 @@ public class MiniLocalization
 	
 	public String getCurrentDateFormatCode()
 	{
-		return currentDateFormat;
+		return currentDateFormat.getDateTemplate();
 	}
 
 	public void setCurrentDateFormatCode(String code)
 	{
-		currentDateFormat = code;
+		currentDateFormat.setDateTemplate(code);
+	}
+	
+	public String getMdyOrder()
+	{
+		return currentDateFormat.getMdyOrder();
 	}
 
 	public String getLabel(String languageCode, String key)
@@ -402,6 +408,6 @@ public class MiniLocalization
 	protected Map textResources;
 	protected Vector rightToLeftLanguages;
 	private String currentLanguageCode;
-	private String currentDateFormat;
+	private DatePreference currentDateFormat;
 	
 }

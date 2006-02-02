@@ -43,11 +43,4 @@ public class TestDateUtilities extends TestCaseEnhanced
 		assertTrue("Should have multiple date formats", items.length > 1);
 	}
 
-	public void testMdyOrder()
-	{
-		assertEquals("dmy", DateUtilities.getMdyOrder("dd/mm/yy"));
-		assertEquals("mdy", DateUtilities.getMdyOrder("MM-dd-yyyy"));
-		assertEquals("ymd", DateUtilities.getMdyOrder("y.mmmmmmm.yy.d"));
-	}
-
 }

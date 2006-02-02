@@ -34,20 +34,6 @@ import org.martus.util.MultiCalendar;
 
 public class DateUtilities
 {
-	public static String getMdyOrder(String format)
-	{
-		String result = "";
-		format = format.toLowerCase();
-		for(int i = 0; i < format.length(); ++i)
-		{
-			char c = format.charAt(i);
-			if( (c == 'm' || c == 'd' || c == 'y') && (result.indexOf(c) < 0) )
-				result += c;
-		}
-
-		return result;
-	}
-
 	public static String getDefaultDateFormatCode()
 	{
 		return DateUtilities.MDY_SLASH.getCode();

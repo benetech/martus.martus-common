@@ -149,5 +149,9 @@ public class TestMiniLocalization extends TestCaseEnhanced
     	assertEquals("Should return '' for an unknown date", "", loc.formatDateTime(MiniLocalization.DATE_UNKNOWN));
     }
     
-	
+	public void testGetMdyOrder()
+	{
+		MiniLocalization loc = new MiniLocalization();
+		assertEquals("mdy", loc.getMdyOrder());
+	}
 }
