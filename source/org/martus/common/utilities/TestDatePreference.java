@@ -43,6 +43,13 @@ public class TestDatePreference extends TestCaseEnhanced
 		assertEquals("Wrong date format?", "MM/dd/yyyy", pref.getDateTemplate());
 	}
 	
+	public void testNonDefaultConstructor() throws Exception
+	{
+		DatePreference pref = new DatePreference("ymd", '-');
+		assertEquals("didn't set mdy?", "ymd", pref.getMdyOrder());
+		assertEquals("didn't set delimiter?", '-', pref.getDelimiter());
+	}
+	
 	public void testSetDelimiter() throws Exception
 	{
 		DatePreference pref = new DatePreference();

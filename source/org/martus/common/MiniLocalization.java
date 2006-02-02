@@ -39,7 +39,6 @@ import java.util.Vector;
 
 import org.martus.common.fieldspec.ChoiceItem;
 import org.martus.common.utilities.DatePreference;
-import org.martus.common.utilities.DateUtilities;
 import org.martus.common.utilities.MartusFlexidate;
 import org.martus.util.MultiCalendar;
 import org.martus.util.language.LanguageOptions;
@@ -163,6 +162,11 @@ public class MiniLocalization
 		return paddingRequired;
 	}
 	
+	public void setDateFormatFromLanguage()
+	{
+		currentDateFormat.fillFrom(getDefaultDatePreferenceForLanguage(getCurrentLanguageCode()));
+	}
+	
 	public String getCurrentDateFormatCode()
 	{
 		return currentDateFormat.getDateTemplate();
@@ -232,21 +236,28 @@ public class MiniLocalization
 	private static Map getDefaultDateFormats()
 	{
 		Map defaultLanguageDateFormat = new HashMap();
-		defaultLanguageDateFormat.put(ENGLISH, DateUtilities.getDefaultDateFormatCode());
-		defaultLanguageDateFormat.put(SPANISH, DateUtilities.DMY_SLASH.getCode());
-		defaultLanguageDateFormat.put(RUSSIAN, DateUtilities.DMY_DOT.getCode());
-		defaultLanguageDateFormat.put(THAI, DateUtilities.DMY_SLASH.getCode());
-		defaultLanguageDateFormat.put(ARABIC, DateUtilities.DMY_SLASH.getCode());
-		defaultLanguageDateFormat.put(FARSI, DateUtilities.DMY_SLASH.getCode());
+		defaultLanguageDateFormat.put(ENGLISH, new DatePreference());
+		defaultLanguageDateFormat.put(SPANISH, new DatePreference("dmy", '/'));
+		defaultLanguageDateFormat.put(RUSSIAN, new DatePreference("dmy", '.'));
+		defaultLanguageDateFormat.put(THAI, new DatePreference("dmy", '/'));
+		defaultLanguageDateFormat.put(ARABIC, new DatePreference("dmy", '/'));
+		defaultLanguageDateFormat.put(FARSI, new DatePreference("dmy", '/'));
 		return defaultLanguageDateFormat;
 	}
 	
 	public static String getDefaultDateFormatForLanguage(String languageCode)
 	{
+		DatePreference pref = getDefaultDatePreferenceForLanguage(languageCode);
+		return pref.getDateTemplate();
+	}
+
+	private static DatePreference getDefaultDatePreferenceForLanguage(String languageCode)
+	{
 		Map defaultLanguageDateFormat = getDefaultDateFormats();
 		if(!defaultLanguageDateFormat.containsKey(languageCode))
-			return DateUtilities.getDefaultDateFormatCode();
-		return (String)defaultLanguageDateFormat.get(languageCode);
+			languageCode = ENGLISH;
+		DatePreference pref = (DatePreference)defaultLanguageDateFormat.get(languageCode);
+		return pref;
 	}
 
 	public static char getDateSeparator(String date) throws NoDateSeparatorException

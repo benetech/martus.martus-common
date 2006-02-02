@@ -154,4 +154,13 @@ public class TestMiniLocalization extends TestCaseEnhanced
 		MiniLocalization loc = new MiniLocalization();
 		assertEquals("mdy", loc.getMdyOrder());
 	}
+	
+	public void testSetDateFormatFromLanguage()
+	{
+		MiniLocalization loc = new MiniLocalization();
+		assertEquals("wrong default mdy?", "mdy", loc.getMdyOrder());
+		loc.setCurrentLanguageCode(MiniLocalization.RUSSIAN);
+		loc.setDateFormatFromLanguage();
+		assertEquals("didn't set russian mdy?", "dmy", loc.getMdyOrder());
+	}
 }

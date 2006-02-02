@@ -29,8 +29,19 @@ public class DatePreference
 {
 	public DatePreference()
 	{
-		setMdyOrder("mdy");
-		setDelimiter('/');
+		this("mdy", '/');
+	}
+	
+	public DatePreference(String mdyOrder, char delimiter)
+	{
+		setMdyOrder(mdyOrder);
+		setDelimiter(delimiter);
+	}
+	
+	public void fillFrom(DatePreference other)
+	{
+		setMdyOrder(other.getMdyOrder());
+		setDelimiter(other.getDelimiter());
 	}
 	
 	public int getCalendarType()

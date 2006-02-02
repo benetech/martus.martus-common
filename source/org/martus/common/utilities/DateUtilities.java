@@ -34,11 +34,6 @@ import org.martus.util.MultiCalendar;
 
 public class DateUtilities
 {
-	public static String getDefaultDateFormatCode()
-	{
-		return DateUtilities.MDY_SLASH.getCode();
-	}
-
 	public static ChoiceItem[] getDateFormats()
 	{
 		return new ChoiceItem[]
