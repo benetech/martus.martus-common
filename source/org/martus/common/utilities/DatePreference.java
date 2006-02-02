@@ -86,10 +86,22 @@ public class DatePreference
 		for(int i = 0; i < template.length(); ++i)
 		{
 			char c = template.charAt(i);
-			if( (c == 'm' || c == 'd' || c == 'y') && (result.indexOf(c) < 0) )
-				result += c;
+			if( (c != 'm' && c != 'd' && c != 'y'))
+				continue;
+			
+			int alreadyAt = result.lastIndexOf(c);
+			if(result.length() > 0 && alreadyAt == result.length() - 1)
+				continue;
+			
+			if(alreadyAt >= 0)
+				throw new RuntimeException("Duplicate date field in template: " + result);
+			
+			result += c;
 		}
 
+		if(result.length() != 3)
+			throw new RuntimeException("Missing date field in template: " + result);
+		
 		return result;
 	}
 

@@ -65,5 +65,22 @@ public class TestDatePreference extends TestCaseEnhanced
 		pref.setDateTemplate("dd.MM.yyyy");
 		assertEquals("wrong dmy order?", "dmy", pref.getMdyOrder());
 		assertEquals("wrong delimiter?", '.', pref.getDelimiter());
+		
+		verifySetDateTemplateThrows("missing field", "mm/dd");
+		verifySetDateTemplateThrows("dupe field", "mm/dd/yyyy/mm");
+	}
+	
+	private void verifySetDateTemplateThrows(String message, String template)
+	{
+		DatePreference pref = new DatePreference();
+		
+		try
+		{
+			pref.setDateTemplate(template);
+			fail("Should have thrown for " + message);
+		}
+		catch(RuntimeException ignoreExpected)
+		{
+		}
 	}
 }
