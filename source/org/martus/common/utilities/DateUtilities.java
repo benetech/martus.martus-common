@@ -80,7 +80,7 @@ public class DateUtilities
 	}
 
 
-	public static String getFirstOfThisYear()
+	public static String getFirstOfThisYearInStoredFormat()
 	{
 		int thisYear = new MultiCalendar().getGregorianYear();
 		MultiCalendar cal = MultiCalendar.createFromGregorianYearMonthDay(thisYear, 1, 1);
@@ -89,7 +89,7 @@ public class DateUtilities
 
 
 
-	public static String getToday()
+	public static String getTodayInStoredFormat()
 	{
 		GregorianCalendar realTodayInOurTimeZone = new GregorianCalendar();
 		MultiCalendar mc = new MultiCalendar(realTodayInOurTimeZone);

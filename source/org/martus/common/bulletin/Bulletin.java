@@ -366,8 +366,8 @@ public class Bulletin implements BulletinConstants
 			set(specs[i].getTag(), specs[i].getDefaultValue());
 		}
 		
-		set(TAGENTRYDATE, DateUtilities.getToday());
-		set(TAGEVENTDATE, DateUtilities.getFirstOfThisYear());
+		set(TAGENTRYDATE, DateUtilities.getTodayInStoredFormat());
+		set(TAGEVENTDATE, DateUtilities.getFirstOfThisYearInStoredFormat());
 		
 		setDraft();
 	}

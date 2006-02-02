@@ -127,10 +127,10 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertEquals(FieldSpec.FALSESTRING, spec.getDefaultValue());
 		
 		spec = new FieldSpec(new FieldTypeDate());
-		assertEquals(DateUtilities.getFirstOfThisYear(), spec.getDefaultValue());
+		assertEquals(DateUtilities.getFirstOfThisYearInStoredFormat(), spec.getDefaultValue());
 
 		spec = new FieldSpec(new FieldTypeDateRange());
-		assertEquals(DateUtilities.getFirstOfThisYear(), spec.getDefaultValue());
+		assertEquals(DateUtilities.getFirstOfThisYearInStoredFormat(), spec.getDefaultValue());
 
 		spec = new GridFieldSpec();
 		assertEquals(emptyString, spec.getDefaultValue());

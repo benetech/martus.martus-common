@@ -48,7 +48,7 @@ public class FieldTypeDate extends FieldType
 
 	public String getDefaultValue()
 	{
-		return DateUtilities.getFirstOfThisYear();
+		return DateUtilities.getFirstOfThisYearInStoredFormat();
 	}
 
 	public String convertStoredToDisplay(String storedData, MiniLocalization localization)

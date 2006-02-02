@@ -139,7 +139,7 @@ public class TestBulletin extends TestCaseEnhanced
 	{
     	Bulletin b = new Bulletin(security);
     	b.getBulletinHeaderPacket().updateLastSavedTime();
-    	assertEquals(DateUtilities.getToday(), b.getLastSavedDate());
+    	assertEquals(DateUtilities.getTodayInStoredFormat(), b.getLastSavedDate());
 	}
     
     public void testContains() throws Exception
@@ -237,7 +237,7 @@ public class TestBulletin extends TestCaseEnhanced
 	public void testEmpty()
 	{
 		Bulletin b = new Bulletin(security);
-		String today = DateUtilities.getToday();
+		String today = DateUtilities.getTodayInStoredFormat();
 		assertEquals(today, b.get("entrydate"));
 
 		int thisYear = new MultiCalendar().getGregorianYear();
@@ -481,7 +481,7 @@ public class TestBulletin extends TestCaseEnhanced
 		{
 			SimpleDateFormat realDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			String realToday = realDateFormat.format(new Date());
-			assertEquals("Today wrong in real time zone?", realToday, DateUtilities.getToday());
+			assertEquals("Today wrong in real time zone?", realToday, DateUtilities.getTodayInStoredFormat());
 			for(int offset = -11; offset < 11; ++offset)
 			{
 				TimeZone.setDefault(new SimpleTimeZone(offset*1000*60*60, "test"));
@@ -489,7 +489,7 @@ public class TestBulletin extends TestCaseEnhanced
 				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 				String today = df.format(cal.getTime());
 
-				assertEquals("Today wrong in time zone " + offset, today, DateUtilities.getToday());
+				assertEquals("Today wrong in time zone " + offset, today, DateUtilities.getTodayInStoredFormat());
 			}
 		}
 		finally

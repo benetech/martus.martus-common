@@ -53,7 +53,7 @@ public class FieldTypeDateRange extends FieldType
 
 	public String getDefaultValue()
 	{
-		return DateUtilities.getFirstOfThisYear();
+		return DateUtilities.getFirstOfThisYearInStoredFormat();
 	}
 
 	public String convertStoredToExportable(String storedData)
