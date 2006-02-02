@@ -232,7 +232,7 @@ public class BulletinHtmlGenerator
 	private String getPrintableData(String value, FieldType fieldType)
 	{
 		if(fieldType.isDate())
-			value = localization.convertStoredDateToDisplayReverseIfNecessary(value);
+			value = localization.convertStoredDateToDisplay(value);
 		else if(fieldType.isLanguage())
 			value = getHTMLEscaped(localization.getLanguageName(value));
 		else if(fieldType.isMultiline())

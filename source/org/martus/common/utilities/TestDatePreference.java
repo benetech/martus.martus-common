@@ -26,6 +26,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.utilities;
 
 import org.martus.util.TestCaseEnhanced;
+import org.martus.util.language.LanguageOptions;
 
 public class TestDatePreference extends TestCaseEnhanced
 {
@@ -40,7 +41,8 @@ public class TestDatePreference extends TestCaseEnhanced
 		assertEquals("Doesn't default to Gregorian?", DatePreference.GREGORIAN, pref.getCalendarType());
 		assertEquals("Doesn't default to mdy?", "mdy", pref.getMdyOrder());
 		assertEquals("Doesn't default to slash delimiter?", '/', pref.getDelimiter());
-		assertEquals("Wrong date format?", "MM/dd/yyyy", pref.getDateTemplate());
+		assertEquals("Wrong date format code?", "MM/dd/yyyy", pref.getRawDateTemplate());
+		assertEquals("Wrong date template?", "MM/dd/yyyy", pref.getDateTemplate());
 	}
 	
 	public void testNonDefaultConstructor() throws Exception
@@ -64,6 +66,23 @@ public class TestDatePreference extends TestCaseEnhanced
 		pref.setMdyOrder("dmy");
 		assertEquals("didn't set dmy?", "dmy", pref.getMdyOrder());
 		assertEquals("didn't use dmy?", "dd/MM/yyyy", pref.getDateTemplate());
+	}
+	
+	public void testRightToLeft() throws Exception
+	{
+		DatePreference pref = new DatePreference();
+		LanguageOptions.setDirectionRightToLeft();
+		try
+		{
+			assertEquals("mdy", pref.getMdyOrder());
+			assertEquals("ydm", pref.getMdyOrderForText());
+			assertEquals("MM/dd/yyyy", pref.getRawDateTemplate());
+			assertEquals("yyyy/dd/MM", pref.getDateTemplate());
+		}
+		finally
+		{
+			LanguageOptions.setDirectionLeftToRight();
+		}
 	}
 	
 	public void testSetDateTemplate() throws Exception

@@ -25,6 +25,8 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.utilities;
 
+import org.martus.util.language.LanguageOptions;
+
 public class DatePreference
 {
 	public DatePreference()
@@ -54,6 +56,18 @@ public class DatePreference
 		return mdyOrder;
 	}
 	
+	public String getMdyOrderForText()
+	{
+		char[] mdy = getMdyOrder().toCharArray();
+		if(LanguageOptions.isRightToLeftLanguage())
+		{
+			char first = mdy[0];
+			mdy[0] = mdy[2];
+			mdy[2] = first;
+		}
+		return new String(mdy);
+	}
+	
 	public void setMdyOrder(String newOrder)
 	{
 		mdyOrder = newOrder;
@@ -71,7 +85,17 @@ public class DatePreference
 	
 	public String getDateTemplate()
 	{
-		char[] mdy = getMdyOrder().toCharArray();
+		return buildTemplate(getMdyOrderForText());
+	}
+
+	public String getRawDateTemplate()
+	{
+		return buildTemplate(getMdyOrder());
+	}
+
+	private String buildTemplate(String mdyToUse)
+	{
+		char[] mdy = mdyToUse.toCharArray();
 		int at = 0;
 		StringBuffer template = new StringBuffer();
 

@@ -169,12 +169,17 @@ public class MiniLocalization
 	
 	public String getCurrentDateFormatCode()
 	{
-		return currentDateFormat.getDateTemplate();
+		return currentDateFormat.getRawDateTemplate();
 	}
 
 	public void setCurrentDateFormatCode(String code)
 	{
 		currentDateFormat.setDateTemplate(code);
+	}
+	
+	public String getCurrentDateTemplate()
+	{
+		return currentDateFormat.getDateTemplate();
 	}
 	
 	public String getMdyOrder()
@@ -270,36 +275,12 @@ public class MiniLocalization
 		throw new NoDateSeparatorException();
 	}
 
-	private String reverseDate(String dateToReverse)
-	{
-		StringBuffer reversedDate= new StringBuffer();
-		try
-		{
-			char dateSeparator = getDateSeparator(dateToReverse);
-			int beginningIndex = dateToReverse.indexOf(dateSeparator);
-			int endingIndex = dateToReverse.lastIndexOf(dateSeparator);
-			String dateField1 = dateToReverse.substring(0, beginningIndex);
-			String dateField2 = dateToReverse.substring(beginningIndex+1, endingIndex);
-			String dateField3 = dateToReverse.substring(endingIndex+1);
-			reversedDate.append(dateField3);
-			reversedDate.append(dateSeparator);
-			reversedDate.append(dateField2);
-			reversedDate.append(dateSeparator);
-			reversedDate.append(dateField1);
-			return reversedDate.toString();
-		}
-		catch(NoDateSeparatorException e)
-		{
-			return dateToReverse;
-		}
-	}
-
 	/////////////////////////////////////////////////////////////////
 	// Date-oriented stuff
 
 	public String convertStoredDateToDisplay(String storedDate)
 	{
-		DateFormat dfDisplay = new SimpleDateFormat(getCurrentDateFormatCode());
+		DateFormat dfDisplay = new SimpleDateFormat(getCurrentDateTemplate());
 		String result = "";
 		try
 		{
@@ -315,26 +296,13 @@ public class MiniLocalization
 		return result;
 	}
 	
-	public String convertStoredDateToDisplayReverseIfNecessary(String date)
-	{
-		String displayDate = convertStoredDateToDisplay(date);
-		return reverseDisplayDateIfRequired(displayDate);
-	}
-
-	private String reverseDisplayDateIfRequired(String displayDate)
-	{
-		if(LanguageOptions.isRightToLeftLanguage())
-			return reverseDate(displayDate);
-		return displayDate;
-	}
-
 	public String getViewableDateRange(String newText)
 	{
 		MartusFlexidate mfd = MartusFlexidate.createFromBulletinFlexidateFormat(newText);
 		String rawBeginDate = MartusFlexidate.toStoredDateFormat(mfd.getBeginDate());
 	
 		if (!mfd.hasDateRange())
-			return convertStoredDateToDisplayReverseIfNecessary(rawBeginDate);
+			return convertStoredDateToDisplay(rawBeginDate);
 	
 		String rawEndDate = MartusFlexidate.toStoredDateFormat(mfd.getEndDate());
 	
@@ -342,8 +310,8 @@ public class MiniLocalization
 		//When there is a string with mixed RtoL and LtoR characters 
 		//if there is .'s separating numbers then the date is not reversed,
 		//but if the date is separated by /'s, then the date is reversed.
-		String beginDate = convertStoredDateToDisplayReverseIfNecessary(rawBeginDate);
-		String endDate = convertStoredDateToDisplayReverseIfNecessary(rawEndDate);
+		String beginDate = convertStoredDateToDisplay(rawBeginDate);
+		String endDate = convertStoredDateToDisplay(rawEndDate);
 			
 		String display = beginDate + " - " + endDate;
 		if(LanguageOptions.isRightToLeftLanguage())
@@ -367,13 +335,13 @@ public class MiniLocalization
 	{
 		if(dateTime == DATE_UNKNOWN)
 			return "";
-		DateFormat dateShort = new SimpleDateFormat(getCurrentDateFormatCode());
+		DateFormat dateShort = new SimpleDateFormat(getCurrentDateTemplate());
 		DateFormat time24hour = new SimpleDateFormat("HH:mm");
 		
 		GregorianCalendar cal = new GregorianCalendar();
 		cal.setTimeInMillis(dateTime);
 		
-		String date = reverseDisplayDateIfRequired(dateShort.format(cal.getTime()));
+		String date = dateShort.format(cal.getTime());
 		String time = time24hour.format(cal.getTime());
 		if(isRightToLeftLanguage())
 			return time + SPACE + date;
