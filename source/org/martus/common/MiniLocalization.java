@@ -186,6 +186,11 @@ public class MiniLocalization
 	{
 		return currentDateFormat.getMdyOrder();
 	}
+	
+	public char getDateDelimiter()
+	{
+		return currentDateFormat.getDelimiter();
+	}
 
 	public String getLabel(String languageCode, String key)
 	{
@@ -250,12 +255,6 @@ public class MiniLocalization
 		return defaultLanguageDateFormat;
 	}
 	
-	public static String getDefaultDateFormatForLanguage(String languageCode)
-	{
-		DatePreference pref = getDefaultDatePreferenceForLanguage(languageCode);
-		return pref.getDateTemplate();
-	}
-
 	private static DatePreference getDefaultDatePreferenceForLanguage(String languageCode)
 	{
 		Map defaultLanguageDateFormat = getDefaultDateFormats();
@@ -265,15 +264,6 @@ public class MiniLocalization
 		return pref;
 	}
 
-	public static char getDateSeparator(String date) throws NoDateSeparatorException
-	{
-		for(int i = 0; i < date.length(); ++i)
-		{
-			if(!Character.isDigit(date.charAt(i)))
-				return date.charAt(i);
-		}
-		throw new NoDateSeparatorException();
-	}
 
 	/////////////////////////////////////////////////////////////////
 	// Date-oriented stuff
