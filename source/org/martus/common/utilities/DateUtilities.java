@@ -28,23 +28,11 @@ package org.martus.common.utilities;
 
 import java.util.GregorianCalendar;
 
-import org.martus.common.fieldspec.ChoiceItem;
 import org.martus.util.MultiCalendar;
 
 
 public class DateUtilities
 {
-	public static ChoiceItem[] getDateFormats()
-	{
-		return new ChoiceItem[]
-		{
-			DateUtilities.MDY_SLASH,
-			DateUtilities.DMY_SLASH,
-			DateUtilities.DMY_DOT
-		};
-	}
-
-
 	public static String getStartDateRange(String storedFlexidateString)
 	{
 		MartusFlexidate mfd = MartusFlexidate.createFromBulletinFlexidateFormat(storedFlexidateString);
@@ -77,9 +65,4 @@ public class DateUtilities
 		String result = MartusFlexidate.toStoredDateFormat(mc);
 		return result;
 	}
-
-
-	public static ChoiceItem DMY_SLASH = new ChoiceItem("dd/MM/yyyy", "dd/mm/yyyy");
-	public static ChoiceItem MDY_SLASH = new ChoiceItem("MM/dd/yyyy", "mm/dd/yyyy");
-	public static ChoiceItem DMY_DOT = new ChoiceItem("dd.MM.yyyy", "dd.mm.yyyy");	
 }

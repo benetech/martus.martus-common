@@ -167,6 +167,16 @@ public class MiniLocalization
 		currentDateFormat.fillFrom(getDefaultDatePreferenceForLanguage(getCurrentLanguageCode()));
 	}
 	
+	public void setMdyOrder(String mdyOrder)
+	{
+		currentDateFormat.setMdyOrder(mdyOrder);
+	}
+	
+	public void setDateDelimiter(char delimiter)
+	{
+		currentDateFormat.setDelimiter(delimiter);
+	}
+	
 	public String getCurrentDateFormatCode()
 	{
 		return currentDateFormat.getRawDateTemplate();

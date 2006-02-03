@@ -26,7 +26,6 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.utilities;
 
-import org.martus.common.fieldspec.ChoiceItem;
 import org.martus.util.TestCaseEnhanced;
 
 public class TestDateUtilities extends TestCaseEnhanced
@@ -37,10 +36,9 @@ public class TestDateUtilities extends TestCaseEnhanced
 		super(name);
 	}
 
-	public void testDateFormats()
+	public void testBasics()
 	{
-		ChoiceItem[] items = DateUtilities.getDateFormats();
-		assertTrue("Should have multiple date formats", items.length > 1);
+		// TODO: Add some tests
 	}
 
 }
