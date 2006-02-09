@@ -91,7 +91,10 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 	
 	public void testKeyData() throws Exception
 	{
-		MartusJceKeyPair reader = new MartusJceKeyPair(rand);
+		// This test is under development, comments and code will
+		// be cleaned up later
+		
+		//MartusJceKeyPair reader = new MartusJceKeyPair(rand);
 		for(int i = 0; i < objects.size(); ++i)
 		{
 			MartusKeyPair keyOwner = (MartusKeyPair)objects.get(i);
@@ -214,7 +217,7 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 				assertEquals(ObjectStreamConstants.SC_SERIALIZABLE | ObjectStreamConstants.SC_WRITE_METHOD, classDescFlagsForPrivateSuper);
 				int fieldCountForPrivateSuper = in.readShort();
 				assertEquals(4, fieldCountForPrivateSuper);
-				// field 1
+				// Private Key field 1
 				{
 					byte typeCode = in.readByte();
 					assertEquals('L', typeCode);
@@ -225,7 +228,7 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 					int handle = in.readInt();
 					assertEquals(bigIntHandle, handle);
 				}
-				// field 2
+				// Private Key field 2
 				{
 					byte typeCode = in.readByte();
 					assertEquals('L', typeCode);
@@ -236,9 +239,9 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 					String fieldClassName = in.readUTF();
 					assertEquals("Ljava/util/Hashtable;", fieldClassName);
 					// new handle
-					bigIntHandle = nextHandle++;
+					nextHandle++;
 				}
-				// field 3
+				// Private Key field 3
 				{
 					byte typeCode = in.readByte();
 					assertEquals('L', typeCode);
@@ -249,9 +252,9 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 					String fieldClassName = in.readUTF();
 					assertEquals("Ljava/util/Vector;", fieldClassName);
 					// new handle
-					bigIntHandle = nextHandle++;
+					nextHandle++;
 				}
-				// field 4
+				// Private Key field 4
 				{
 					byte typeCode = in.readByte();
 					assertEquals('L', typeCode);
@@ -260,7 +263,7 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 					int refFlag = in.readByte();
 					assertEquals(ObjectStreamConstants.TC_REFERENCE, refFlag);
 					int handle = in.readInt();
-					assertEquals(8257541, handle);
+					assertEquals(bigIntHandle, handle);
 				}
 				int endDataFlagForPrivateSuper = in.readByte();
 				assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, endDataFlagForPrivateSuper);
@@ -287,42 +290,42 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 				assertEquals(ObjectStreamConstants.SC_SERIALIZABLE | ObjectStreamConstants.SC_WRITE_METHOD, classDescFlags);
 				int fieldCount = in.readShort();
 				assertEquals(6, fieldCount);
-				// field 1
+				// Big Integer field 1
 				{
 					byte typeCode = in.readByte();
 					assertEquals('I', typeCode);
 					String fieldName = in.readUTF();
 					assertEquals("bitCount", fieldName);
 				}
-				// field 2
+				// Big Integer field 2
 				{
 					byte typeCode = in.readByte();
 					assertEquals('I', typeCode);
 					String fieldName = in.readUTF();
 					assertEquals("bitLength", fieldName);
 				}
-				// field 3
+				// Big Integer field 3
 				{
 					byte typeCode = in.readByte();
 					assertEquals('I', typeCode);
 					String fieldName = in.readUTF();
 					assertEquals("firstNonzeroByteNum", fieldName);
 				}
-				// field 4
+				// Big Integer field 4
 				{
 					byte typeCode = in.readByte();
 					assertEquals('I', typeCode);
 					String fieldName = in.readUTF();
 					assertEquals("lowestSetBit", fieldName);
 				}
-				// field 5
+				// Big Integer field 5
 				{
 					byte typeCode = in.readByte();
 					assertEquals('I', typeCode);
 					String fieldName = in.readUTF();
 					assertEquals("signum", fieldName);
 				}
-				// field 6
+				// Big Integer field 6
 				{
 					byte typeCode = in.readByte();
 					assertEquals('[', typeCode);
@@ -335,6 +338,7 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 					// new handle
 					bigIntHandle = nextHandle++;
 				}
+				
 				int endDataFlag = in.readByte();
 				assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, endDataFlag);
 				int superClassFlag = in.readByte();
@@ -353,14 +357,207 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 				assertEquals(ObjectStreamConstants.TC_NULL, superNoSuperFlag);
 				// new handle
 				nextHandle++;
+				
+				//BigInt Data
+				{			
+					int field1 = in.readInt();
+					assertEquals(-1, field1);
+					int field2 = in.readInt();
+					assertEquals(-1, field2);
+					int field3 = in.readInt();
+					assertEquals(-2, field3);
+					int field4 = in.readInt();
+					assertEquals(-2, field4);
+					int field5 = in.readInt();
+					assertEquals(1, field5);
+									
+					byte typeCode = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_ARRAY, typeCode);
+					int magnitudeClassDescFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_CLASSDESC, magnitudeClassDescFlag);
+					String magnitudeClassName = in.readUTF();
+					assertEquals("[B", magnitudeClassName);
+					long magnitudeUid = in.readLong();
+					assertEquals(-5984413125824719648L, magnitudeUid);
+					int magnitudeClassDescFlags = in.readByte();
+					assertEquals(ObjectStreamConstants.SC_SERIALIZABLE, magnitudeClassDescFlags);
+					//int superClassDescFlags = in.readByte();
+					int magnitudeFieldCount = in.readShort();
+					assertEquals(0, magnitudeFieldCount);
+					int magnitudeEndDataFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, magnitudeEndDataFlag);
+					int magnitudeNullFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_NULL, magnitudeNullFlag);
+					// new handle
+					nextHandle++;
+					int arrayLength = in.readInt();
+					for(int b = 0; b < arrayLength; ++b)
+					{
+						in.readByte();
+					}
+					int arrayEndDataFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
+				}
+				
+//				Hash Map
+				{
+					int objectForHashMap = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_OBJECT, objectForHashMap);
+					int hashMapClassDescFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_CLASSDESC, hashMapClassDescFlag);
+					String className = in.readUTF();
+					assertEquals("java.util.Hashtable", className);
+					long classSerialUid = in.readLong();
+					assertEquals(1421746759512286392L, classSerialUid);
+					int hashTableClassDescFlags = in.readByte();
+					assertEquals(ObjectStreamConstants.SC_SERIALIZABLE | ObjectStreamConstants.SC_WRITE_METHOD, hashTableClassDescFlags);
+					short hashTableFieldCount = in.readShort();
+					assertEquals(2, hashTableFieldCount);
+					// Hash Table field 1
+					{
+						byte typeCode = in.readByte();
+						assertEquals('F', typeCode);
+						String fieldName = in.readUTF();
+						assertEquals("loadFactor", fieldName);
+					}
+					
+					// Hash Table field 2
+					{
+						byte typeCode = in.readByte();
+						assertEquals('I', typeCode);
+						String fieldName = in.readUTF();
+						assertEquals("threshold", fieldName);
+					}
+					int hashTableEndDataFieldFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, hashTableEndDataFieldFlag);
+					int hashTableNullFieldFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_NULL, hashTableNullFieldFlag);
+					// new handle
+					nextHandle++;
+					
+					float hashMapDF1 = in.readFloat();
+					assertEquals("loadfactor wrong?", 0.75, hashMapDF1, 0.1f);
+					int hashMapDF2 = in.readInt();
+					assertEquals("threshold wrong?", 8, hashMapDF2);
+					
+					byte hashTableBlockDataFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_BLOCKDATA, hashTableBlockDataFlag);
+					byte numBytes = in.readByte();
+					for(int b = 0; b < numBytes; b++)
+					{
+						in.readByte();
+					}
+					
+					int hashTableEndDataFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, hashTableEndDataFlag);
+					// new handle
+					nextHandle++;					
+				}
+				//Vector
+				{
+					int vectorTableObjectFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_OBJECT, vectorTableObjectFlag);
+					int vectorClassDescFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_CLASSDESC, vectorClassDescFlag);
+					String className = in.readUTF();
+					assertEquals("java.util.Vector", className);
+					long classSerialUid = in.readLong();
+					assertEquals(-2767605614048989439L, classSerialUid);
+					int hashTableClassDescFlags = in.readByte();
+					assertEquals(ObjectStreamConstants.SC_SERIALIZABLE | ObjectStreamConstants.SC_WRITE_METHOD, hashTableClassDescFlags);
+					short vectorFieldCount = in.readShort();
+					assertEquals(3, vectorFieldCount);
+					
+					// Vector field 1
+					{
+						byte typeCode = in.readByte();
+						assertEquals('I', typeCode);
+						String fieldName = in.readUTF();
+						assertEquals("capacityIncrement", fieldName);
+					}
+					
+					// Vector field 2
+					{
+						byte typeCode = in.readByte();
+						assertEquals('I', typeCode);
+						String fieldName = in.readUTF();
+						assertEquals("elementCount", fieldName);
+					}
+					 
+					// Vector field 3
+					{
+						byte typeCode = in.readByte();
+						assertEquals('[', typeCode);
+						String fieldName = in.readUTF();
+						assertEquals("elementData", fieldName);
+						int vecString = in.readByte();
+						assertEquals(ObjectStreamConstants.TC_STRING, vecString);
+						String fieldClassName = in.readUTF();
+						assertEquals("[Ljava/lang/Object;", fieldClassName);
+					}
+					int vectorEndDataFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, vectorEndDataFlag);
+					int vectorNullFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_NULL, vectorNullFlag);
+					// new handle
+					nextHandle++;
+					
+					int vectorField1Data = in.readInt();
+					assertEquals(0, vectorField1Data);
+					
+					int vectorField2Data = in.readInt();
+					assertEquals(0, vectorField2Data);
+					
+					byte vectorField3TypeCode = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_ARRAY, vectorField3TypeCode);
+					int vectorField3ClassDescFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_CLASSDESC, vectorField3ClassDescFlag);
+					String vectorField3SuperClassName = in.readUTF();
+					assertEquals("[Ljava.lang.Object;", vectorField3SuperClassName);
+					long vectorField3SerialUid = in.readLong();
+					assertEquals(-8012369246846506644L, vectorField3SerialUid);
+					int vectorField3DescFlags = in.readByte();
+					assertEquals(ObjectStreamConstants.SC_SERIALIZABLE, vectorField3DescFlags);
+					short vectorField3Count = in.readShort();
+					assertEquals(0, vectorField3Count);
+					int vectorField3EndDataFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, vectorField3EndDataFlag);
+					int vectorField3NullFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_NULL, vectorField3NullFlag);
+					// new handle
+					nextHandle++;
+					
+					int arrayLength = in.readInt();
+					for(int b = 0; b < arrayLength; ++b)
+					{
+						byte nullObjectMarker = in.readByte();
+						assertEquals(ObjectStreamConstants.TC_NULL, nullObjectMarker);
+					}
+					int arrayEndDataFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
+					//left of at "pppppppppp" in the hex dump
+				}
+				
+				
+				
 			}
+//			http://www.macchiato.com/columns/Durable4.html
+//			URL For serialized data structure
 			
-			// Why the heck am I hitting a long -1 here???
+
+//			File tmpFile = createTempFile();
+//			FileOutputStream out = new FileOutputStream(tmpFile);
+//			out.write(data);
+//			out.close();
+//			System.out.println(tmpFile.getAbsolutePath());
+			//while(in.available() > 0)
+			//{
+			//	System.out.println(in.readByte());
+			//}
 			
 			
 			
-			
-			reader.setFromData(data);
+//			reader.setFromData(data);
 //			byte[] copiedData = reader.getKeyPairData();
 //			System.out.println(Base64.encode(data));
 //			System.out.println(Base64.encode(copiedData));
