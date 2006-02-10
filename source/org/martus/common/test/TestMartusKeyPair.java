@@ -109,17 +109,21 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 //			System.out.println(gotPublic.getClass().getName());
 
 			int nextHandle = 8257536;
-			int bigIntHandle = 0;
+			int bigIntStringHandle = 0;
+			int bigIntClassHandle = 0;
+			int byteArrayClassHandle = 0;
+			int modulusObjectHandle = 0;
+			int publicExponentObjectHandle = 0;
 			
 			DataInputStream in = new DataInputStream(new ByteArrayInputStream(data));
 			int magic = in.readShort();
 			assertEquals(ObjectStreamConstants.STREAM_MAGIC, magic);
 			int streamVersion = in.readShort();
 			assertEquals(ObjectStreamConstants.STREAM_VERSION, streamVersion);
-			int objectMarker = in.readByte();
-			
+						
 			// KeyPair
 			{
+				int objectMarker = in.readByte();
 				assertEquals(ObjectStreamConstants.TC_OBJECT, objectMarker);
 				int classDescMarker = in.readByte();
 				assertEquals(ObjectStreamConstants.TC_CLASSDESC, classDescMarker);
@@ -188,7 +192,7 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 					String fieldClassName = in.readUTF();
 					assertEquals("Ljava/math/BigInteger;", fieldClassName);
 					// new handle
-					bigIntHandle = nextHandle++;
+					bigIntStringHandle = nextHandle++;
 				}
 				
 				for(int field=1; field < fieldCountForPrivate; ++field)
@@ -200,7 +204,7 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 					int refFlag = in.readByte();
 					assertEquals(ObjectStreamConstants.TC_REFERENCE, refFlag);
 					int handle = in.readInt();
-					assertEquals(bigIntHandle, handle);
+					assertEquals(bigIntStringHandle, handle);
 				}
 				int endDataFlagForPrivate = in.readByte();
 				assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, endDataFlagForPrivate);
@@ -226,7 +230,7 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 					int refFlag = in.readByte();
 					assertEquals(ObjectStreamConstants.TC_REFERENCE, refFlag);
 					int handle = in.readInt();
-					assertEquals(bigIntHandle, handle);
+					assertEquals(bigIntStringHandle, handle);
 				}
 				// Private Key field 2
 				{
@@ -263,7 +267,7 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 					int refFlag = in.readByte();
 					assertEquals(ObjectStreamConstants.TC_REFERENCE, refFlag);
 					int handle = in.readInt();
-					assertEquals(bigIntHandle, handle);
+					assertEquals(bigIntStringHandle, handle);
 				}
 				int endDataFlagForPrivateSuper = in.readByte();
 				assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, endDataFlagForPrivateSuper);
@@ -284,7 +288,7 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 				long uidForBigIntClass = in.readLong();
 				assertEquals(-8287574255936472291L, uidForBigIntClass);
 				// new handle
-				nextHandle++;
+				bigIntClassHandle = nextHandle++;
 				
 				int classDescFlags = in.readByte();
 				assertEquals(ObjectStreamConstants.SC_SERIALIZABLE | ObjectStreamConstants.SC_WRITE_METHOD, classDescFlags);
@@ -336,7 +340,7 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 					String fieldClassName = in.readUTF();
 					assertEquals("[B", fieldClassName);
 					// new handle
-					bigIntHandle = nextHandle++;
+					nextHandle++;
 				}
 				
 				int endDataFlag = in.readByte();
@@ -347,6 +351,9 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 				assertEquals("java.lang.Number", superClassName);
 				long superUid = in.readLong();
 				assertEquals(-8742448824652078965L, superUid);
+				// new handle
+				nextHandle++;
+				
 				int superClassDescFlags = in.readByte();
 				assertEquals(ObjectStreamConstants.SC_SERIALIZABLE, superClassDescFlags);
 				int superFieldCount = in.readShort();
@@ -355,8 +362,8 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 				assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, superEndDataFlag);
 				int superNoSuperFlag = in.readByte();
 				assertEquals(ObjectStreamConstants.TC_NULL, superNoSuperFlag);
-				// new handle
-				nextHandle++;
+				// new handle				
+				modulusObjectHandle = nextHandle++;
 				
 				//BigInt Data
 				{			
@@ -379,6 +386,8 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 					assertEquals("[B", magnitudeClassName);
 					long magnitudeUid = in.readLong();
 					assertEquals(-5984413125824719648L, magnitudeUid);
+					byteArrayClassHandle = nextHandle++;
+					
 					int magnitudeClassDescFlags = in.readByte();
 					assertEquals(ObjectStreamConstants.SC_SERIALIZABLE, magnitudeClassDescFlags);
 					//int superClassDescFlags = in.readByte();
@@ -409,6 +418,9 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 					assertEquals("java.util.Hashtable", className);
 					long classSerialUid = in.readLong();
 					assertEquals(1421746759512286392L, classSerialUid);
+					// new handle
+					nextHandle++;
+					
 					int hashTableClassDescFlags = in.readByte();
 					assertEquals(ObjectStreamConstants.SC_SERIALIZABLE | ObjectStreamConstants.SC_WRITE_METHOD, hashTableClassDescFlags);
 					short hashTableFieldCount = in.readShort();
@@ -449,9 +461,7 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 					}
 					
 					int hashTableEndDataFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, hashTableEndDataFlag);
-					// new handle
-					nextHandle++;					
+					assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, hashTableEndDataFlag);					
 				}
 				//Vector
 				{
@@ -463,6 +473,9 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 					assertEquals("java.util.Vector", className);
 					long classSerialUid = in.readLong();
 					assertEquals(-2767605614048989439L, classSerialUid);
+					// new handle
+					nextHandle++;
+					
 					int hashTableClassDescFlags = in.readByte();
 					assertEquals(ObjectStreamConstants.SC_SERIALIZABLE | ObjectStreamConstants.SC_WRITE_METHOD, hashTableClassDescFlags);
 					short vectorFieldCount = in.readShort();
@@ -494,12 +507,16 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 						assertEquals(ObjectStreamConstants.TC_STRING, vecString);
 						String fieldClassName = in.readUTF();
 						assertEquals("[Ljava/lang/Object;", fieldClassName);
+						nextHandle++;
+						
 					}
+					
 					int vectorEndDataFlag = in.readByte();
 					assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, vectorEndDataFlag);
 					int vectorNullFlag = in.readByte();
 					assertEquals(ObjectStreamConstants.TC_NULL, vectorNullFlag);
 					// new handle
+					//vectorHandle = 
 					nextHandle++;
 					
 					int vectorField1Data = in.readInt();
@@ -516,6 +533,8 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 					assertEquals("[Ljava.lang.Object;", vectorField3SuperClassName);
 					long vectorField3SerialUid = in.readLong();
 					assertEquals(-8012369246846506644L, vectorField3SerialUid);
+					nextHandle++;
+					
 					int vectorField3DescFlags = in.readByte();
 					assertEquals(ObjectStreamConstants.SC_SERIALIZABLE, vectorField3DescFlags);
 					short vectorField3Count = in.readShort();
@@ -524,7 +543,6 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 					assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, vectorField3EndDataFlag);
 					int vectorField3NullFlag = in.readByte();
 					assertEquals(ObjectStreamConstants.TC_NULL, vectorField3NullFlag);
-					// new handle
 					nextHandle++;
 					
 					int arrayLength = in.readInt();
@@ -535,11 +553,369 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 					}
 					int arrayEndDataFlag = in.readByte();
 					assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
-					//left of at "pppppppppp" in the hex dump
+				}
+				
+//				Unknown Custom Data
+				{ 
+					int unknownCustomObjectFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_OBJECT, unknownCustomObjectFlag);
+					int refFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_REFERENCE, refFlag);
+					int refBigIntClassHandle = in.readInt();
+					assertEquals(bigIntClassHandle, refBigIntClassHandle);
+					publicExponentObjectHandle = nextHandle++;
+					
+				}
+//				BigInt Data
+				{			
+					int field1 = in.readInt();
+					assertEquals(-1, field1);
+					int field2 = in.readInt();
+					assertEquals(-1, field2);
+					int field3 = in.readInt();
+					assertEquals(-2, field3);
+					int field4 = in.readInt();
+					assertEquals(-2, field4);
+					int field5 = in.readInt();
+					assertEquals(1, field5);
+									
+					byte typeCode = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_ARRAY, typeCode);
+					byte typeCodeRefFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_REFERENCE, typeCodeRefFlag);
+					int refbyteArrayClassHandle = in.readInt();
+					assertEquals(byteArrayClassHandle, refbyteArrayClassHandle);
+					nextHandle++;
+					
+					int arrayLength = in.readInt();
+					for(int b = 0; b < arrayLength; ++b)
+					{
+						in.readByte();
+					}
+					int arrayEndDataFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
+				}
+				int EndCustomDataFlag = in.readByte();
+				assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, EndCustomDataFlag);
+				
+				{
+					//Private CRTKEY Field One Data 
+					
+					// BigInt
+					int crtCoefficientTableObjectFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_OBJECT, crtCoefficientTableObjectFlag);
+					int refFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_REFERENCE, refFlag);
+					int refBigIntClassHandle = in.readInt();
+					assertEquals(bigIntClassHandle, refBigIntClassHandle);
+					nextHandle++;
+					
+//					BigInt Data
+					{			
+						int field1 = in.readInt();
+						assertEquals(-1, field1);
+						int field2 = in.readInt();
+						assertEquals(-1, field2);
+						int field3 = in.readInt();
+						assertEquals(-2, field3);
+						int field4 = in.readInt();
+						assertEquals(-2, field4);
+						int field5 = in.readInt();
+						assertEquals(1, field5);
+										
+						byte typeCode = in.readByte();
+						assertEquals(ObjectStreamConstants.TC_ARRAY, typeCode);
+						byte typeCodeRefFlag = in.readByte();
+						assertEquals(ObjectStreamConstants.TC_REFERENCE, typeCodeRefFlag);
+						int refbyteArrayClassHandle = in.readInt();
+						assertEquals(byteArrayClassHandle, refbyteArrayClassHandle);
+						nextHandle++;
+						
+						int arrayLength = in.readInt();
+						for(int b = 0; b < arrayLength; ++b)
+						{
+							in.readByte();
+						}
+						int arrayEndDataFlag = in.readByte();
+						assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
+					}
+
+				}
+				
+				// Private CRT Key Field2 Data
+				{
+					int primeExponentPTableObjectFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_OBJECT, primeExponentPTableObjectFlag);
+					int refFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_REFERENCE, refFlag);
+					int refBigIntClassHandle = in.readInt();
+					assertEquals(bigIntClassHandle, refBigIntClassHandle);
+					nextHandle++;
+					
+//					BigInt Data
+					{			
+						int field1 = in.readInt();
+						assertEquals(-1, field1);
+						int field2 = in.readInt();
+						assertEquals(-1, field2);
+						int field3 = in.readInt();
+						assertEquals(-2, field3);
+						int field4 = in.readInt();
+						assertEquals(-2, field4);
+						int field5 = in.readInt();
+						assertEquals(1, field5);
+										
+						byte typeCode = in.readByte();
+						assertEquals(ObjectStreamConstants.TC_ARRAY, typeCode);
+						byte typeCodeRefFlag = in.readByte();
+						assertEquals(ObjectStreamConstants.TC_REFERENCE, typeCodeRefFlag);
+						int refbyteArrayClassHandle = in.readInt();
+						assertEquals(byteArrayClassHandle, refbyteArrayClassHandle);
+						nextHandle++;
+						
+						int arrayLength = in.readInt();
+						for(int b = 0; b < arrayLength; ++b)
+						{
+							in.readByte();
+						}
+						int arrayEndDataFlag = in.readByte();
+						assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
+					}
+					
+				}
+				
+				//Private CRT Field3 Data
+				{ 
+					int primeExponentQTableObjectFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_OBJECT, primeExponentQTableObjectFlag);
+					int refFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_REFERENCE, refFlag);
+					int refBigIntClassHandle = in.readInt();
+					assertEquals(bigIntClassHandle, refBigIntClassHandle);
+					nextHandle++;
+					
+//					BigInt Data
+					{			
+						int field1 = in.readInt();
+						assertEquals(-1, field1);
+						int field2 = in.readInt();
+						assertEquals(-1, field2);
+						int field3 = in.readInt();
+						assertEquals(-2, field3);
+						int field4 = in.readInt();
+						assertEquals(-2, field4);
+						int field5 = in.readInt();
+						assertEquals(1, field5);
+										
+						byte typeCode = in.readByte();
+						assertEquals(ObjectStreamConstants.TC_ARRAY, typeCode);
+						byte typeCodeRefFlag = in.readByte();
+						assertEquals(ObjectStreamConstants.TC_REFERENCE, typeCodeRefFlag);
+						int refbyteArrayClassHandle = in.readInt();
+						assertEquals(byteArrayClassHandle, refbyteArrayClassHandle);
+						nextHandle++;
+						
+						int arrayLength = in.readInt();
+						for(int b = 0; b < arrayLength; ++b)
+						{
+							in.readByte();
+						}
+						int arrayEndDataFlag = in.readByte();
+						assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
+					}
+				}
+				
+//				Private CRT Field4 Data
+				{ 
+					int primePTableObjectFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_OBJECT, primePTableObjectFlag);
+					int refFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_REFERENCE, refFlag);
+					int refBigIntClassHandle = in.readInt();
+					assertEquals(bigIntClassHandle, refBigIntClassHandle);
+					nextHandle++;
+					
+//					BigInt Data
+					{			
+						int field1 = in.readInt();
+						assertEquals(-1, field1);
+						int field2 = in.readInt();
+						assertEquals(-1, field2);
+						int field3 = in.readInt();
+						assertEquals(-2, field3);
+						int field4 = in.readInt();
+						assertEquals(-2, field4);
+						int field5 = in.readInt();
+						assertEquals(1, field5);
+										
+						byte typeCode = in.readByte();
+						assertEquals(ObjectStreamConstants.TC_ARRAY, typeCode);
+						byte typeCodeRefFlag = in.readByte();
+						assertEquals(ObjectStreamConstants.TC_REFERENCE, typeCodeRefFlag);
+						int refbyteArrayClassHandle = in.readInt();
+						assertEquals(byteArrayClassHandle, refbyteArrayClassHandle);
+						nextHandle++;
+						
+						int arrayLength = in.readInt();
+						for(int b = 0; b < arrayLength; ++b)
+						{
+							in.readByte();
+						}
+						int arrayEndDataFlag = in.readByte();
+						assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
+					}
+				}
+				
+//				Private CRT Field5 Data
+				{ 
+					int primeQTableObjectFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_OBJECT, primeQTableObjectFlag);
+					int refFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_REFERENCE, refFlag);
+					int refBigIntClassHandle = in.readInt();
+					assertEquals(bigIntClassHandle, refBigIntClassHandle);
+					nextHandle++;
+					
+//					BigInt Data
+					{			
+						int field1 = in.readInt();
+						assertEquals(-1, field1);
+						int field2 = in.readInt();
+						assertEquals(-1, field2);
+						int field3 = in.readInt();
+						assertEquals(-2, field3);
+						int field4 = in.readInt();
+						assertEquals(-2, field4);
+						int field5 = in.readInt();
+						assertEquals(1, field5);
+										
+						byte typeCode = in.readByte();
+						assertEquals(ObjectStreamConstants.TC_ARRAY, typeCode);
+						byte typeCodeRefFlag = in.readByte();
+						assertEquals(ObjectStreamConstants.TC_REFERENCE, typeCodeRefFlag);
+						int refbyteArrayClassHandle = in.readInt();
+						assertEquals(byteArrayClassHandle, refbyteArrayClassHandle);
+						nextHandle++;
+						
+						int arrayLength = in.readInt();
+						for(int b = 0; b < arrayLength; ++b)
+						{
+							in.readByte();
+						}
+						int arrayEndDataFlag = in.readByte();
+						assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
+					}
+				}
+				
+//				Private CRT Field6 Data
+				{ 
+					int publicExponentObjectFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_OBJECT, publicExponentObjectFlag);
+					int refFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_REFERENCE, refFlag);
+					int refBigIntClassHandle = in.readInt();
+					assertEquals(bigIntClassHandle, refBigIntClassHandle);
+					publicExponentObjectHandle = nextHandle++;
+					
+//					BigInt Data
+					{			
+						int field1 = in.readInt();
+						assertEquals(-1, field1);
+						int field2 = in.readInt();
+						assertEquals(-1, field2);
+						int field3 = in.readInt();
+						assertEquals(-2, field3);
+						int field4 = in.readInt();
+						assertEquals(-2, field4);
+						int field5 = in.readInt();
+						assertEquals(1, field5);
+										
+						byte typeCode = in.readByte();
+						assertEquals(ObjectStreamConstants.TC_ARRAY, typeCode);
+						byte typeCodeRefFlag = in.readByte();
+						assertEquals(ObjectStreamConstants.TC_REFERENCE, typeCodeRefFlag);
+						int refbyteArrayClassHandle = in.readInt();
+						assertEquals(byteArrayClassHandle, refbyteArrayClassHandle);
+						nextHandle++;
+						
+						int arrayLength = in.readInt();
+						for(int b = 0; b < arrayLength; ++b)
+						{
+							in.readByte();
+						}
+						int arrayEndDataFlag = in.readByte();
+						assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
+					}
+				}
+				
+
+
+				// Public Key Description
+				{
+					int objectForPublic = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_OBJECT, objectForPublic);
+					int classFlagForPublic = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_CLASSDESC, classFlagForPublic);
+					String classNameForPublic = in.readUTF();
+					assertEquals("org.bouncycastle.jce.provider.JCERSAPublicKey", classNameForPublic);
+					long uidForPublicKeyClass = in.readLong();
+					assertEquals(2675817738516720772L, uidForPublicKeyClass);
+					// new handle
+					nextHandle++;
+					
+					int classDescFlagsForPublic = in.readByte();
+					assertEquals(ObjectStreamConstants.SC_SERIALIZABLE, classDescFlagsForPublic);
+					int fieldCountForPublic = in.readShort();
+					assertEquals(2, fieldCountForPublic);
+					String[] expectedFieldsForPublic = {"modulus", "publicExponent"};
+					
+					{
+						byte typeCode = in.readByte();
+						assertEquals('L', typeCode);
+						String fieldName = in.readUTF();
+						assertEquals(expectedFieldsForPublic[0], fieldName);
+						int refFlag = in.readByte();
+						assertEquals(ObjectStreamConstants.TC_REFERENCE, refFlag);
+						int refBigIntStringHandle = in.readInt();
+						assertEquals(bigIntStringHandle, refBigIntStringHandle);
+						
+					}
+					{
+						byte typeCode = in.readByte();
+						assertEquals('L', typeCode);
+						String fieldName = in.readUTF();
+						assertEquals(expectedFieldsForPublic[1], fieldName);
+						int refFlag = in.readByte();
+						assertEquals(ObjectStreamConstants.TC_REFERENCE, refFlag);
+						int refBigIntStringHandle = in.readInt();
+						assertEquals(bigIntStringHandle, refBigIntStringHandle);
+					}
+					int publicKeyEndDataFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, publicKeyEndDataFlag);
+					int publicKeyNullFlag = in.readByte();
+					assertEquals(ObjectStreamConstants.TC_NULL, publicKeyNullFlag);
+				}
+				
+				//Public Key Data
+				{
+					// Field 1 
+					{
+						int modulusRefFlag = in.readByte();
+						assertEquals(ObjectStreamConstants.TC_REFERENCE, modulusRefFlag);
+						int refModulusObjectHandle = in.readInt();
+						assertEquals(modulusObjectHandle, refModulusObjectHandle);
+					}
+					
+					{
+						int publicExponentRefFlag = in.readByte();
+						assertEquals(ObjectStreamConstants.TC_REFERENCE, publicExponentRefFlag);
+						int refPublicExponentObjectHandle = in.readInt();
+						assertEquals(publicExponentObjectHandle, refPublicExponentObjectHandle);
+					}
 				}
 				
 				
-				
+
 			}
 //			http://www.macchiato.com/columns/Durable4.html
 //			URL For serialized data structure
@@ -550,10 +926,10 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 //			out.write(data);
 //			out.close();
 //			System.out.println(tmpFile.getAbsolutePath());
-			//while(in.available() > 0)
-			//{
-			//	System.out.println(in.readByte());
-			//}
+//			while(in.available() > 0)
+//			{
+//				System.out.println(in.readByte());
+//			}
 			
 			
 			
