@@ -56,6 +56,11 @@ import org.martus.util.Base64;
 
 public class MartusJceKeyPair extends MartusKeyPair
 {
+	public MartusJceKeyPair(KeyPair keyPair)
+	{
+		setJceKeyPair(keyPair);		
+	}
+	
 	public MartusJceKeyPair(SecureRandom randomGenerator) throws Exception
 	{
 		if(Security.getProvider("BC") == null)

@@ -29,10 +29,17 @@ package org.martus.common.test;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.ObjectStreamConstants;
+import java.math.BigInteger;
+import java.security.KeyFactory;
+import java.security.KeyPair;
 import java.security.SecureRandom;
+import java.security.spec.RSAPrivateCrtKeySpec;
+import java.security.spec.RSAPublicKeySpec;
 import java.util.Arrays;
 import java.util.Vector;
 
+import org.bouncycastle.jce.provider.JCERSAPrivateCrtKey;
+import org.bouncycastle.jce.provider.JCERSAPublicKey;
 import org.martus.common.crypto.MartusJceKeyPair;
 import org.martus.common.crypto.MartusKeyPair;
 import org.martus.util.Base64;
@@ -67,6 +74,8 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 			String publicKeyString = p.getPublicKeyString();
 			Base64.decode(publicKeyString);
 		}
+		//objects.add(MockMartusSecurity.createClient().getKeyPair());
+		//objects.add(MockMartusSecurity.createOtherClient().getKeyPair());
 //		System.out.println("JCE:");
 //		System.out.println(((RSAPublicKey)jceKeyPair.getPublicKey()).getModulus());
 //		System.out.println(((RSAPublicKey)jceKeyPair.getPublicKey()).getPublicExponent());
@@ -112,6 +121,15 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 			int byteArrayClassHandle = 0;
 			int modulusObjectHandle = 0;
 			int publicExponentObjectHandle = 0;
+			BigInteger modulus;
+			BigInteger publicExponent;
+			BigInteger crtCoefficient;
+			BigInteger primeExponentP;
+			BigInteger primeExponentQ;
+			BigInteger primeP;
+			BigInteger primeQ;
+			BigInteger privateExponent;
+			MartusKeyPair gotKeyPair;
 			
 			DataInputStream in = new DataInputStream(new ByteArrayInputStream(data));
 			int magic = in.readShort();
@@ -406,7 +424,7 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 					int arrayEndDataFlag = in.readByte();
 					assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
 					
-					//BigInteger modulus = new BigInteger(signum, magnitude);
+					modulus = new BigInteger(signum, magnitude);
 					
 				}
 				
@@ -604,7 +622,7 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 						int arrayEndDataFlag = in.readByte();
 						assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
 						
-						//BigInteger privateExponent = new BigInteger(signum, magnitude);
+						privateExponent = new BigInteger(signum, magnitude);
 					}
 				}
 				int EndPrivateKeyFlag = in.readByte();
@@ -651,7 +669,7 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 						int arrayEndDataFlag = in.readByte();
 						assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
 						
-						//BigInteger crtCoefficient = new BigInteger(signum, magnitude);
+						crtCoefficient = new BigInteger(signum, magnitude);
 					}
 
 				}
@@ -695,7 +713,7 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 						int arrayEndDataFlag = in.readByte();
 						assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
 						
-						//BigInteger primeExponentP = new BigInteger(signum, magnitude);
+						primeExponentP = new BigInteger(signum, magnitude);
 					}
 				}
 				
@@ -741,7 +759,7 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 						int arrayEndDataFlag = in.readByte();
 						assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
 						
-						//BigInteger primeExponentQ = new BigInteger(signum, magnitude);
+						primeExponentQ = new BigInteger(signum, magnitude);
 					}
 				}
 				
@@ -787,7 +805,7 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 						int arrayEndDataFlag = in.readByte();
 						assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
 					
-						//BigInteger primeP = new BigInteger(signum, magnitude);
+						primeP = new BigInteger(signum, magnitude);
 					}
 				}
 				
@@ -833,7 +851,7 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 						int arrayEndDataFlag = in.readByte();
 						assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
 					
-						//BigInteger primeQ = new BigInteger(signum, magnitude);
+						primeQ = new BigInteger(signum, magnitude);
 					}
 				}
 				
@@ -879,8 +897,22 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 						int arrayEndDataFlag = in.readByte();
 						assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
 					
-						//BigInteger publicExponent = new BigInteger(signum, magnitude);
+						publicExponent = new BigInteger(signum, magnitude);
 					}
+					
+					// Reconstitute Keypair
+					RSAPublicKeySpec publicSpec = new RSAPublicKeySpec(modulus, publicExponent);
+					RSAPrivateCrtKeySpec privateSpec = new RSAPrivateCrtKeySpec(modulus, publicExponent, privateExponent, primeP, primeQ, primeExponentP, primeExponentQ, crtCoefficient);
+					KeyFactory factory = KeyFactory.getInstance("RSA", "BC");
+					JCERSAPublicKey publicKey = (JCERSAPublicKey)factory.generatePublic(publicSpec);
+					JCERSAPrivateCrtKey privateCRTKey = (JCERSAPrivateCrtKey)factory.generatePrivate(privateSpec);
+					
+					KeyPair keyPair = new KeyPair(publicKey, privateCRTKey);
+					assertTrue("keypair not valid?", MartusJceKeyPair.isKeyPairValid(keyPair));
+					
+
+					gotKeyPair = new MartusJceKeyPair(keyPair);
+
 				}
 				
 				// Public Key Description
@@ -947,10 +979,11 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 						assertEquals(publicExponentObjectHandle, refPublicExponentObjectHandle);
 					}
 				}
-				
-				
-
+			
+				verifyEncryptDecrypt(keyOwner, gotKeyPair);
+				verifyEncryptDecrypt(gotKeyPair, keyOwner);
 			}
+			
 //			http://www.macchiato.com/columns/Durable4.html
 //			URL For serialized data structure
 			
