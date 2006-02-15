@@ -29,14 +29,14 @@ public class MartusKeyPairLoader
 					
 		// KeyPair
 		{
-			readClassHeader(in, "java.security.KeyPair", -7565189502268009837L);
+			readObjectClassHeader(in, "java.security.KeyPair", -7565189502268009837L);
 			
 			int classDescFlags = in.readByte();
 			throwIfNotEqual(ObjectStreamConstants.SC_SERIALIZABLE, classDescFlags);
 			int fieldCount = in.readShort();
-			throwIfNotEqual(2, fieldCount);
 			String[] expectedFields = {"privateKey", "publicKey"};
 			String[] expectedClassNames = {"Ljava/security/PrivateKey;", "Ljava/security/PublicKey;"};
+			throwIfNotEqual(expectedFields.length, fieldCount);
 			for(int field=0; field < fieldCount; ++field)
 			{
 				readObjectFieldDescription(in, expectedClassNames[field], expectedFields[field]);
@@ -45,8 +45,9 @@ public class MartusKeyPairLoader
 			readClassFooter(in);
 		}
 		
+		// JCERSAPrivateCrtKey
 		{
-			readClassHeader(in, "org.bouncycastle.jce.provider.JCERSAPrivateCrtKey", 7834723820638524718L);
+			readObjectClassHeader(in, "org.bouncycastle.jce.provider.JCERSAPrivateCrtKey", 7834723820638524718L);
 			
 			int classDescFlagsForPrivate = in.readByte();
 			throwIfNotEqual(ObjectStreamConstants.SC_SERIALIZABLE, classDescFlagsForPrivate);
@@ -64,6 +65,8 @@ public class MartusKeyPairLoader
 			
 			int endDataFlagForPrivate = in.readByte();
 			throwIfNotEqual(ObjectStreamConstants.TC_ENDBLOCKDATA, endDataFlagForPrivate);
+			
+			// Super Class
 			int superClassFlagForPrivate = in.readByte();
 			throwIfNotEqual(ObjectStreamConstants.TC_CLASSDESC, superClassFlagForPrivate);
 			String classNameForPrivateSuper = in.readUTF();
@@ -95,7 +98,7 @@ public class MartusKeyPairLoader
 
 		// BigInteger
 		{
-			bigIntClassHandle = readClassHeader(in, "java.math.BigInteger", -8287574255936472291L);
+			bigIntClassHandle = readObjectClassHeader(in, "java.math.BigInteger", -8287574255936472291L);
 						
 			int classDescFlags = in.readByte();
 			throwIfNotEqual(ObjectStreamConstants.SC_SERIALIZABLE | ObjectStreamConstants.SC_WRITE_METHOD, classDescFlags);
@@ -138,8 +141,7 @@ public class MartusKeyPairLoader
 			modulusObjectHandle = readClassFooter(in);
 			
 			//BigInt Modulus Data
-			{			
-				
+			{				
 				int bitCount = in.readInt();
 				throwIfNotEqual(-1, bitCount);
 				int bitLength = in.readInt();
@@ -151,15 +153,7 @@ public class MartusKeyPairLoader
 				int signum = in.readInt();
 				throwIfNotEqual(1, signum);
 								
-				byte typeCode = in.readByte();
-				throwIfNotEqual(ObjectStreamConstants.TC_ARRAY, typeCode);
-				int magnitudeClassDescFlag = in.readByte();
-				throwIfNotEqual(ObjectStreamConstants.TC_CLASSDESC, magnitudeClassDescFlag);
-				String magnitudeClassName = in.readUTF();
-				throwIfNotEqual("[B", magnitudeClassName);
-				long magnitudeUid = in.readLong();
-				throwIfNotEqual(-5984413125824719648L, magnitudeUid);
-				byteArrayClassHandle = nextHandle++;
+				byteArrayClassHandle = readArrayClassHeader(in, "[B", -5984413125824719648L);
 				
 				int magnitudeClassDescFlags = in.readByte();
 				throwIfNotEqual(ObjectStreamConstants.SC_SERIALIZABLE, magnitudeClassDescFlags);
@@ -181,9 +175,9 @@ public class MartusKeyPairLoader
 				
 			}
 			
-//				Hashtable
+			// Hashtable
 			{
-				readClassHeader(in, "java.util.Hashtable", 1421746759512286392L);
+				readObjectClassHeader(in, "java.util.Hashtable", 1421746759512286392L);
 				
 				int hashTableClassDescFlags = in.readByte();
 				throwIfNotEqual(ObjectStreamConstants.SC_SERIALIZABLE | ObjectStreamConstants.SC_WRITE_METHOD, hashTableClassDescFlags);
@@ -200,9 +194,10 @@ public class MartusKeyPairLoader
 				
 				readEmptyHashTableData(in);
 			}
+			
 			//Vector
 			{
-				readClassHeader(in, "java.util.Vector", -2767605614048989439L);
+				readObjectClassHeader(in, "java.util.Vector", -2767605614048989439L);
 				
 				int hashTableClassDescFlags = in.readByte();
 				throwIfNotEqual(ObjectStreamConstants.SC_SERIALIZABLE | ObjectStreamConstants.SC_WRITE_METHOD, hashTableClassDescFlags);
@@ -226,15 +221,7 @@ public class MartusKeyPairLoader
 				int vectorField2Data = in.readInt();
 				throwIfNotEqual(0, vectorField2Data);
 				
-				byte vectorField3TypeCode = in.readByte();
-				throwIfNotEqual(ObjectStreamConstants.TC_ARRAY, vectorField3TypeCode);
-				int vectorField3ClassDescFlag = in.readByte();
-				throwIfNotEqual(ObjectStreamConstants.TC_CLASSDESC, vectorField3ClassDescFlag);
-				String vectorField3SuperClassName = in.readUTF();
-				throwIfNotEqual("[Ljava.lang.Object;", vectorField3SuperClassName);
-				long vectorField3SerialUid = in.readLong();
-				throwIfNotEqual(-8012369246846506644L, vectorField3SerialUid);
-				nextHandle++;
+				readArrayClassHeader(in, "[Ljava.lang.Object;", -8012369246846506644L);
 				
 				int vectorField3DescFlags = in.readByte();
 				throwIfNotEqual(ObjectStreamConstants.SC_SERIALIZABLE, vectorField3DescFlags);
@@ -286,7 +273,7 @@ public class MartusKeyPairLoader
 			
 			// Public Key Description
 			{
-				readClassHeader(in, "org.bouncycastle.jce.provider.JCERSAPublicKey", 2675817738516720772L);
+				readObjectClassHeader(in, "org.bouncycastle.jce.provider.JCERSAPublicKey", 2675817738516720772L);
 				
 				int classDescFlagsForPublic = in.readByte();
 				throwIfNotEqual(ObjectStreamConstants.SC_SERIALIZABLE, classDescFlagsForPublic);
@@ -338,9 +325,17 @@ public class MartusKeyPairLoader
 		return nextHandle++;
 	}
 
-	private int readClassHeader(DataInputStream in, String className, long serialUid) throws IOException {
+	private int readObjectClassHeader(DataInputStream in, String className, long serialUid) throws IOException {
+		return readClassHeader(in, ObjectStreamConstants.TC_OBJECT, className, serialUid);
+	}
+	
+	private int readArrayClassHeader(DataInputStream in, String className, long serialUid) throws IOException {
+		return readClassHeader(in, ObjectStreamConstants.TC_ARRAY, className, serialUid);
+	}
+
+	private int readClassHeader(DataInputStream in, byte classType, String className, long serialUid) throws IOException {
 		int objectForPublic = in.readByte();
-		throwIfNotEqual(ObjectStreamConstants.TC_OBJECT, objectForPublic);
+		throwIfNotEqual(classType, objectForPublic);
 		int classFlagForPublic = in.readByte();
 		throwIfNotEqual(ObjectStreamConstants.TC_CLASSDESC, classFlagForPublic);
 		String classNameForPublic = in.readUTF();
@@ -348,8 +343,7 @@ public class MartusKeyPairLoader
 		long uidForPublicKeyClass = in.readLong();
 		throwIfNotEqual(serialUid, uidForPublicKeyClass);
 		// new handle
-		int x = nextHandle++;
-		return x;
+		return nextHandle++;
 	}
 
 	private int readObjectFieldDescription(DataInputStream in, String expectedClassName, String expectedFieldName) throws IOException {
@@ -447,7 +441,7 @@ public class MartusKeyPairLoader
 		throwIfNotEqual(-2, lowestSetBit);
 		int signum = in.readInt();
 		throwIfNotEqual(1, signum);
-						
+
 		byte typeCode = in.readByte();
 		throwIfNotEqual(ObjectStreamConstants.TC_ARRAY, typeCode);
 		byte typeCodeRefFlag = in.readByte();
