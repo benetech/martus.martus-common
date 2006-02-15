@@ -37,27 +37,12 @@ public class MartusKeyPairLoader
 			throwIfNotEqual(2, fieldCount);
 			String[] expectedFields = {"privateKey", "publicKey"};
 			String[] expectedClassNames = {"Ljava/security/PrivateKey;", "Ljava/security/PublicKey;"};
-			int[] pairHandles = {0,0};
 			for(int field=0; field < fieldCount; ++field)
 			{
-				byte typeCode = in.readByte();
-				throwIfNotEqual('L', typeCode);
-				String fieldName = in.readUTF();
-				throwIfNotEqual(expectedFields[field], fieldName);
-				int stringFlag = in.readByte();
-				throwIfNotEqual(ObjectStreamConstants.TC_STRING, stringFlag);
-				// new handle
-				pairHandles[field] = nextHandle++;
-				
-				String fieldClassName = in.readUTF();
-				throwIfNotEqual(expectedClassNames[field], fieldClassName);
+				readObjectFieldDescription(in, expectedClassNames[field], expectedFields[field]);
 			}
-			int endDataFlag = in.readByte();
-			throwIfNotEqual(ObjectStreamConstants.TC_ENDBLOCKDATA, endDataFlag);
-			int noSuperClassFlag = in.readByte();
-			throwIfNotEqual(ObjectStreamConstants.TC_NULL, noSuperClassFlag);
-			// new handle
-			nextHandle++;
+			
+			readClassFooter(in);
 		}
 		
 		{
@@ -70,25 +55,13 @@ public class MartusKeyPairLoader
 					"crtCoefficient", "primeExponentP", "primeExponentQ",
 					"primeP", "primeQ", "publicExponent"};
 			throwIfNotEqual(expectedFieldsForPrivate.length, fieldCountForPrivate);
-			
-			
-			{
-				byte typeCode = in.readByte();
-				throwIfNotEqual('L', typeCode);
-				String fieldName = in.readUTF();
-				throwIfNotEqual(expectedFieldsForPrivate[0], fieldName);
-				int refFlag = in.readByte();
-				throwIfNotEqual(ObjectStreamConstants.TC_STRING, refFlag);
-				String fieldClassName = in.readUTF();
-				throwIfNotEqual("Ljava/math/BigInteger;", fieldClassName);
-				// new handle
-				bigIntStringHandle = nextHandle++;
-			}
-			
+
+			bigIntStringHandle = readObjectFieldDescription(in, "Ljava/math/BigInteger;", expectedFieldsForPrivate[0]);
 			for(int field=1; field < fieldCountForPrivate; ++field)
 			{
 				throwIfNotEqual(expectedFieldsForPrivate[field], readBigIntegerFieldReference(in));
 			}
+			
 			int endDataFlagForPrivate = in.readByte();
 			throwIfNotEqual(ObjectStreamConstants.TC_ENDBLOCKDATA, endDataFlagForPrivate);
 			int superClassFlagForPrivate = in.readByte();
@@ -109,20 +82,15 @@ public class MartusKeyPairLoader
 			throwIfNotEqual("modulus", readBigIntegerFieldReference(in));
 						
 			// Private Key field 2
-			throwIfNotEqual("pkcs12Attributes", readObjectFieldDescription(in, "Ljava/util/Hashtable;"));
+			readObjectFieldDescription(in, "Ljava/util/Hashtable;", "pkcs12Attributes");
 			
 			// Private Key field 3
-			throwIfNotEqual("pkcs12Ordering", readObjectFieldDescription(in, "Ljava/util/Vector;"));
+			readObjectFieldDescription(in, "Ljava/util/Vector;", "pkcs12Ordering");
 			
 			// Private Key field 4
 			throwIfNotEqual("privateExponent", readBigIntegerFieldReference(in));
 			
-			int endDataFlagForPrivateSuper = in.readByte();
-			throwIfNotEqual(ObjectStreamConstants.TC_ENDBLOCKDATA, endDataFlagForPrivateSuper);
-			int superClassFlagForPrivateSuper = in.readByte();
-			throwIfNotEqual(ObjectStreamConstants.TC_NULL, superClassFlagForPrivateSuper);
-			// new handle
-			nextHandle++;
+			readClassFooter(in);
 		}			
 
 		// BigInteger
@@ -166,12 +134,8 @@ public class MartusKeyPairLoader
 			throwIfNotEqual(ObjectStreamConstants.SC_SERIALIZABLE, superClassDescFlags);
 			int superFieldCount = in.readShort();
 			throwIfNotEqual(0, superFieldCount);
-			int superEndDataFlag = in.readByte();
-			throwIfNotEqual(ObjectStreamConstants.TC_ENDBLOCKDATA, superEndDataFlag);
-			int superNoSuperFlag = in.readByte();
-			throwIfNotEqual(ObjectStreamConstants.TC_NULL, superNoSuperFlag);
-			// new handle				
-			modulusObjectHandle = nextHandle++;
+			
+			modulusObjectHandle = readClassFooter(in);
 			
 			//BigInt Modulus Data
 			{			
@@ -202,12 +166,9 @@ public class MartusKeyPairLoader
 				//int superClassDescFlags = in.readByte();
 				int magnitudeFieldCount = in.readShort();
 				throwIfNotEqual(0, magnitudeFieldCount);
-				int magnitudeEndDataFlag = in.readByte();
-				throwIfNotEqual(ObjectStreamConstants.TC_ENDBLOCKDATA, magnitudeEndDataFlag);
-				int magnitudeNullFlag = in.readByte();
-				throwIfNotEqual(ObjectStreamConstants.TC_NULL, magnitudeNullFlag);
-				// new handle
-				nextHandle++;
+				
+				readClassFooter(in);
+				
 				int arrayLength = in.readInt();
 
 				byte[] magnitude = new byte[arrayLength];
@@ -235,12 +196,7 @@ public class MartusKeyPairLoader
 				// Hash Table field 2
 				throwIfNotEqual("threshold", readIntFieldDescription(in));
 
-				int hashTableEndDataFieldFlag = in.readByte();
-				throwIfNotEqual(ObjectStreamConstants.TC_ENDBLOCKDATA, hashTableEndDataFieldFlag);
-				int hashTableNullFieldFlag = in.readByte();
-				throwIfNotEqual(ObjectStreamConstants.TC_NULL, hashTableNullFieldFlag);
-				// new handle
-				nextHandle++;
+				readClassFooter(in);
 				
 				readEmptyHashTableData(in);
 			}
@@ -262,13 +218,7 @@ public class MartusKeyPairLoader
 				// Vector field 3
 				throwIfNotEqual("elementData", readArrayFieldDecription(in));
 				
-				int vectorEndDataFlag = in.readByte();
-				throwIfNotEqual(ObjectStreamConstants.TC_ENDBLOCKDATA, vectorEndDataFlag);
-				int vectorNullFlag = in.readByte();
-				throwIfNotEqual(ObjectStreamConstants.TC_NULL, vectorNullFlag);
-				// new handle
-				//vectorHandle = 
-				nextHandle++;
+				readClassFooter(in);
 				
 				int vectorField1Data = in.readInt();
 				throwIfNotEqual(0, vectorField1Data);
@@ -290,11 +240,8 @@ public class MartusKeyPairLoader
 				throwIfNotEqual(ObjectStreamConstants.SC_SERIALIZABLE, vectorField3DescFlags);
 				short vectorField3Count = in.readShort();
 				throwIfNotEqual(0, vectorField3Count);
-				int vectorField3EndDataFlag = in.readByte();
-				throwIfNotEqual(ObjectStreamConstants.TC_ENDBLOCKDATA, vectorField3EndDataFlag);
-				int vectorField3NullFlag = in.readByte();
-				throwIfNotEqual(ObjectStreamConstants.TC_NULL, vectorField3NullFlag);
-				nextHandle++;
+				
+				readClassFooter(in);
 				
 				int arrayLength = in.readInt();
 				for(int b = 0; b < arrayLength; ++b)
@@ -353,10 +300,8 @@ public class MartusKeyPairLoader
 					throwIfNotEqual(expectedFieldsForPublic[i], fieldName);
 				}
 				
-				int publicKeyEndDataFlag = in.readByte();
-				throwIfNotEqual(ObjectStreamConstants.TC_ENDBLOCKDATA, publicKeyEndDataFlag);
-				int publicKeyNullFlag = in.readByte();
-				throwIfNotEqual(ObjectStreamConstants.TC_NULL, publicKeyNullFlag);
+				readClassFooter(in);
+				
 			}
 			
 			//Public Key Data
@@ -384,6 +329,15 @@ public class MartusKeyPairLoader
 		return gotKeyPair;
 	}
 
+	private int readClassFooter(DataInputStream in) throws IOException {
+		int superEndDataFlag = in.readByte();
+		throwIfNotEqual(ObjectStreamConstants.TC_ENDBLOCKDATA, superEndDataFlag);
+		int superNoSuperFlag = in.readByte();
+		throwIfNotEqual(ObjectStreamConstants.TC_NULL, superNoSuperFlag);
+		// new handle		
+		return nextHandle++;
+	}
+
 	private int readClassHeader(DataInputStream in, String className, long serialUid) throws IOException {
 		int objectForPublic = in.readByte();
 		throwIfNotEqual(ObjectStreamConstants.TC_OBJECT, objectForPublic);
@@ -398,17 +352,17 @@ public class MartusKeyPairLoader
 		return x;
 	}
 
-	private String readObjectFieldDescription(DataInputStream in, String className) throws IOException {
+	private int readObjectFieldDescription(DataInputStream in, String expectedClassName, String expectedFieldName) throws IOException {
 		byte typeCode = in.readByte();
 		throwIfNotEqual('L', typeCode);
 		String fieldName = in.readUTF();
+		throwIfNotEqual(expectedFieldName, fieldName);
 		int refFlag = in.readByte();
 		throwIfNotEqual(ObjectStreamConstants.TC_STRING, refFlag);
 		String fieldClassName = in.readUTF();
-		throwIfNotEqual(className, fieldClassName);
+		throwIfNotEqual(expectedClassName, fieldClassName);
 		// new handle
-		nextHandle++;
-		return fieldName;
+		return nextHandle++;
 	}
 
 	private String readByteArrayFieldDescription(DataInputStream in) throws IOException {
