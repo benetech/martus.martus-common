@@ -103,14 +103,7 @@ public class MartusKeyPairLoader
 			
 			for(int field=1; field < fieldCountForPrivate; ++field)
 			{
-				byte typeCode = in.readByte();
-				assertEquals('L', typeCode);
-				String fieldName = in.readUTF();
-				assertEquals(expectedFieldsForPrivate[field], fieldName);
-				int refFlag = in.readByte();
-				assertEquals(ObjectStreamConstants.TC_REFERENCE, refFlag);
-				int handle = in.readInt();
-				assertEquals(bigIntStringHandle, handle);
+				assertEquals(expectedFieldsForPrivate[field], readBigIntegerFieldReference(in));
 			}
 			int endDataFlagForPrivate = in.readByte();
 			assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, endDataFlagForPrivate);
@@ -129,14 +122,7 @@ public class MartusKeyPairLoader
 			assertEquals(4, fieldCountForPrivateSuper);
 			// Private Key field 1
 			{
-				byte typeCode = in.readByte();
-				assertEquals('L', typeCode);
-				String fieldName = in.readUTF();
-				assertEquals("modulus", fieldName);
-				int refFlag = in.readByte();
-				assertEquals(ObjectStreamConstants.TC_REFERENCE, refFlag);
-				int handle = in.readInt();
-				assertEquals(bigIntStringHandle, handle);
+				assertEquals("modulus", readBigIntegerFieldReference(in));
 			}
 			// Private Key field 2
 			{
@@ -166,14 +152,7 @@ public class MartusKeyPairLoader
 			}
 			// Private Key field 4
 			{
-				byte typeCode = in.readByte();
-				assertEquals('L', typeCode);
-				String fieldName = in.readUTF();
-				assertEquals("privateExponent", fieldName);
-				int refFlag = in.readByte();
-				assertEquals(ObjectStreamConstants.TC_REFERENCE, refFlag);
-				int handle = in.readInt();
-				assertEquals(bigIntStringHandle, handle);
+				assertEquals("privateExponent", readBigIntegerFieldReference(in));
 			}
 			int endDataFlagForPrivateSuper = in.readByte();
 			assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, endDataFlagForPrivateSuper);
@@ -469,337 +448,61 @@ public class MartusKeyPairLoader
 				assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
 			}
 			
-//				BigInt privateExponent (Private Key Field4)  
+//			BigInt privateExponent (Private Key Field4)  
 			{ 
-				
-				{
-					int unknownCustomObjectFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_OBJECT, unknownCustomObjectFlag);
-					int refFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_REFERENCE, refFlag);
-					int refBigIntClassHandle = in.readInt();
-					assertEquals(bigIntClassHandle, refBigIntClassHandle);
-					publicExponentObjectHandle = nextHandle++;
-				}
-		
-//					Private Key privateExponent Data
-				{			
-					int bitCount = in.readInt();
-					assertEquals(-1, bitCount);
-					int bitLength = in.readInt();
-					assertEquals(-1, bitLength);
-					int firstNonZeroByteNum = in.readInt();
-					assertEquals(-2, firstNonZeroByteNum);
-					int lowestSetBit = in.readInt();
-					assertEquals(-2, lowestSetBit);
-					int signum = in.readInt();
-					assertEquals(1, signum);
-									
-					byte typeCode = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_ARRAY, typeCode);
-					byte typeCodeRefFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_REFERENCE, typeCodeRefFlag);
-					int refbyteArrayClassHandle = in.readInt();
-					assertEquals(byteArrayClassHandle, refbyteArrayClassHandle);
-					nextHandle++;
-					
-					int arrayLength = in.readInt();
-
-					byte[] magnitude = new byte[arrayLength];
-					in.read(magnitude);
-					
-					int arrayEndDataFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
-					
-					privateExponent = new BigInteger(signum, magnitude);
-				}
+				publicExponentObjectHandle = readBigIntegerObjectHeader(in);
+				privateExponent = readBigIntegerData(in);
 			}
+			
 			int EndPrivateKeyFlag = in.readByte();
 			assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, EndPrivateKeyFlag);
 			
-//				BigInt crtCoefficient (PrivateCRTKey Field 1)
+//			BigInt crtCoefficient (PrivateCRTKey Field 1)
 			{
-				{
-					int crtCoefficientTableObjectFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_OBJECT, crtCoefficientTableObjectFlag);
-					int refFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_REFERENCE, refFlag);
-					int refBigIntClassHandle = in.readInt();
-					assertEquals(bigIntClassHandle, refBigIntClassHandle);
-					nextHandle++;
-				} 
-
-//					PrivateCRTKey crtCoefficient Data					
-				{			
-					int bitCount = in.readInt();
-					assertEquals(-1, bitCount);
-					int bitLength = in.readInt();
-					assertEquals(-1, bitLength);
-					int firstNonZeroByteNum = in.readInt();
-					assertEquals(-2, firstNonZeroByteNum);
-					int lowestSetBit = in.readInt();
-					assertEquals(-2, lowestSetBit);
-					int signum = in.readInt();
-					assertEquals(1, signum);
-									
-					byte typeCode = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_ARRAY, typeCode);
-					byte typeCodeRefFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_REFERENCE, typeCodeRefFlag);
-					int refbyteArrayClassHandle = in.readInt();
-					assertEquals(byteArrayClassHandle, refbyteArrayClassHandle);
-					nextHandle++;
-					
-					int arrayLength = in.readInt();
-					
-					byte[] magnitude = new byte[arrayLength];
-					in.read(magnitude);
-					
-					int arrayEndDataFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
-					
-					crtCoefficient = new BigInteger(signum, magnitude);
-				}
-
+				readBigIntegerObjectHeader(in);
+				crtCoefficient = readBigIntegerData(in);
 			}
 			
-//				BigInt primeExponentP (PrivateCRTKey Field 2)
+//			BigInt primeExponentP (PrivateCRTKey Field 2)
 			{
-				int primeExponentPTableObjectFlag = in.readByte();
-				assertEquals(ObjectStreamConstants.TC_OBJECT, primeExponentPTableObjectFlag);
-				int refFlag = in.readByte();
-				assertEquals(ObjectStreamConstants.TC_REFERENCE, refFlag);
-				int refBigIntClassHandle = in.readInt();
-				assertEquals(bigIntClassHandle, refBigIntClassHandle);
-				nextHandle++;
-				
-//					PrivateCRTKey primeExponentP Data
-				{			
-					int bitCount = in.readInt();
-					assertEquals(-1, bitCount);
-					int bitLength = in.readInt();
-					assertEquals(-1, bitLength);
-					int firstNonZeroByteNum = in.readInt();
-					assertEquals(-2, firstNonZeroByteNum);
-					int lowestSetBit = in.readInt();
-					assertEquals(-2, lowestSetBit);
-					int signum = in.readInt();
-					assertEquals(1, signum);
-									
-					byte typeCode = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_ARRAY, typeCode);
-					byte typeCodeRefFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_REFERENCE, typeCodeRefFlag);
-					int refbyteArrayClassHandle = in.readInt();
-					assertEquals(byteArrayClassHandle, refbyteArrayClassHandle);
-					nextHandle++;
-					
-					int arrayLength = in.readInt();
+				readBigIntegerObjectHeader(in);			
+				primeExponentP = readBigIntegerData(in);
+			}
+			
+//			BigInt primeExponentQ (PrivateCRTKey Field 3)
+			{ 
+				readBigIntegerObjectHeader(in);			
+				primeExponentQ = readBigIntegerData(in);
+			}
+			
+//			BigInt primeP (PrivateCRTKey Field4)
+			{ 
+				readBigIntegerObjectHeader(in);		
+				primeP = readBigIntegerData(in);
+			}
+			
+//			BigInt primeQ (PrivateCRTKey Field5)
+			{ 	
+				readBigIntegerObjectHeader(in);		
+				primeQ = readBigIntegerData(in);
+			}
+			
+//			BigInt publicExponent (PrivateCRTKey Field6)
+			{ 				
+				publicExponentObjectHandle = readBigIntegerObjectHeader(in);
+				publicExponent = readBigIntegerData(in);
+			}				
+		
+			// Reconstitute Keypair
+			RSAPublicKeySpec publicSpec = new RSAPublicKeySpec(modulus, publicExponent);
+			RSAPrivateCrtKeySpec privateSpec = new RSAPrivateCrtKeySpec(modulus, publicExponent, privateExponent, primeP, primeQ, primeExponentP, primeExponentQ, crtCoefficient);
+			KeyFactory factory = KeyFactory.getInstance("RSA", "BC");
+			JCERSAPublicKey publicKey = (JCERSAPublicKey)factory.generatePublic(publicSpec);
+			JCERSAPrivateCrtKey privateCRTKey = (JCERSAPrivateCrtKey)factory.generatePrivate(privateSpec);
+			
+			KeyPair keyPair = new KeyPair(publicKey, privateCRTKey);
+			gotKeyPair = new MartusJceKeyPair(keyPair);
 
-					byte[] magnitude = new byte[arrayLength];
-					in.read(magnitude);
-					
-					int arrayEndDataFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
-					
-					primeExponentP = new BigInteger(signum, magnitude);
-				}
-			}
-			
-//				BigInt primeExponentQ (PrivateCRTKey Field 3)
-			{ 
-			
-				{
-					int primeExponentQTableObjectFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_OBJECT, primeExponentQTableObjectFlag);
-					int refFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_REFERENCE, refFlag);
-					int refBigIntClassHandle = in.readInt();
-					assertEquals(bigIntClassHandle, refBigIntClassHandle);
-					nextHandle++;
-				}
-				
-//					PrivateCRTKey primeExponentQ Data
-				{			
-					int bitCount = in.readInt();
-					assertEquals(-1, bitCount);
-					int bitLength = in.readInt();
-					assertEquals(-1, bitLength);
-					int firstNonZeroByteNum = in.readInt();
-					assertEquals(-2, firstNonZeroByteNum);
-					int lowestSetBit = in.readInt();
-					assertEquals(-2, lowestSetBit);
-					int signum = in.readInt();
-					assertEquals(1, signum);
-									
-					byte typeCode = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_ARRAY, typeCode);
-					byte typeCodeRefFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_REFERENCE, typeCodeRefFlag);
-					int refbyteArrayClassHandle = in.readInt();
-					assertEquals(byteArrayClassHandle, refbyteArrayClassHandle);
-					nextHandle++;
-					
-					int arrayLength = in.readInt();
-					
-					byte[] magnitude = new byte[arrayLength];
-					in.read(magnitude);
-					
-					int arrayEndDataFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
-					
-					primeExponentQ = new BigInteger(signum, magnitude);
-				}
-			}
-			
-//				BigInt primeP (PrivateCRTKey Field4)
-			{ 
-				
-				{
-					int primePTableObjectFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_OBJECT, primePTableObjectFlag);
-					int refFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_REFERENCE, refFlag);
-					int refBigIntClassHandle = in.readInt();
-					assertEquals(bigIntClassHandle, refBigIntClassHandle);
-					nextHandle++;
-				}
-				
-//					PrivateCRTKey primeP Data
-				{			
-					int bitCount = in.readInt();
-					assertEquals(-1, bitCount);
-					int bitLength = in.readInt();
-					assertEquals(-1, bitLength);
-					int firstNonZeroByteNum = in.readInt();
-					assertEquals(-2, firstNonZeroByteNum);
-					int lowestSetBit = in.readInt();
-					assertEquals(-2, lowestSetBit);
-					int signum = in.readInt();
-					assertEquals(1, signum);
-									
-					byte typeCode = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_ARRAY, typeCode);
-					byte typeCodeRefFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_REFERENCE, typeCodeRefFlag);
-					int refbyteArrayClassHandle = in.readInt();
-					assertEquals(byteArrayClassHandle, refbyteArrayClassHandle);
-					nextHandle++;
-					
-					int arrayLength = in.readInt();
-					
-					byte[] magnitude = new byte[arrayLength];
-					in.read(magnitude);
-					
-					int arrayEndDataFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
-				
-					primeP = new BigInteger(signum, magnitude);
-				}
-			}
-			
-//				BigInt primeQ (PrivateCRTKey Field5)
-			{ 
-				
-				{
-					int primeQTableObjectFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_OBJECT, primeQTableObjectFlag);
-					int refFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_REFERENCE, refFlag);
-					int refBigIntClassHandle = in.readInt();
-					assertEquals(bigIntClassHandle, refBigIntClassHandle);
-					nextHandle++;
-				}
-				
-//					PrivateCRTKey primeQ Data
-				{			
-					int bitCount = in.readInt();
-					assertEquals(-1, bitCount);
-					int bitLength = in.readInt();
-					assertEquals(-1, bitLength);
-					int firstNonZeroByteNum = in.readInt();
-					assertEquals(-2, firstNonZeroByteNum);
-					int lowestSetBit = in.readInt();
-					assertEquals(-2, lowestSetBit);
-					int signum = in.readInt();
-					assertEquals(1, signum);
-									
-					byte typeCode = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_ARRAY, typeCode);
-					byte typeCodeRefFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_REFERENCE, typeCodeRefFlag);
-					int refbyteArrayClassHandle = in.readInt();
-					assertEquals(byteArrayClassHandle, refbyteArrayClassHandle);
-					nextHandle++;
-					
-					int arrayLength = in.readInt();
-					
-					byte[] magnitude = new byte[arrayLength];
-					in.read(magnitude);
-					
-					int arrayEndDataFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
-				
-					primeQ = new BigInteger(signum, magnitude);
-				}
-			}
-			
-//				BigInt publicExponent (PrivateCRTKey Field6)
-			{ 
-				
-				{
-					int publicExponentObjectFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_OBJECT, publicExponentObjectFlag);
-					int refFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_REFERENCE, refFlag);
-					int refBigIntClassHandle = in.readInt();
-					assertEquals(bigIntClassHandle, refBigIntClassHandle);
-					publicExponentObjectHandle = nextHandle++;
-				}
-				
-//					PrivateCRTKey publicExponent Data
-				{			
-					int bitCount = in.readInt();
-					assertEquals(-1, bitCount);
-					int bitLength = in.readInt();
-					assertEquals(-1, bitLength);
-					int firstNonZeroByteNum = in.readInt();
-					assertEquals(-2, firstNonZeroByteNum);
-					int lowestSetBit = in.readInt();
-					assertEquals(-2, lowestSetBit);
-					int signum = in.readInt();
-					assertEquals(1, signum);
-									
-					byte typeCode = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_ARRAY, typeCode);
-					byte typeCodeRefFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_REFERENCE, typeCodeRefFlag);
-					int refbyteArrayClassHandle = in.readInt();
-					assertEquals(byteArrayClassHandle, refbyteArrayClassHandle);
-					nextHandle++;
-					
-					int arrayLength = in.readInt();
-					
-					byte[] magnitude = new byte[arrayLength];
-					in.read(magnitude);
-					
-					int arrayEndDataFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
-				
-					publicExponent = new BigInteger(signum, magnitude);
-				}
-				
-				// Reconstitute Keypair
-				RSAPublicKeySpec publicSpec = new RSAPublicKeySpec(modulus, publicExponent);
-				RSAPrivateCrtKeySpec privateSpec = new RSAPrivateCrtKeySpec(modulus, publicExponent, privateExponent, primeP, primeQ, primeExponentP, primeExponentQ, crtCoefficient);
-				KeyFactory factory = KeyFactory.getInstance("RSA", "BC");
-				JCERSAPublicKey publicKey = (JCERSAPublicKey)factory.generatePublic(publicSpec);
-				JCERSAPrivateCrtKey privateCRTKey = (JCERSAPrivateCrtKey)factory.generatePrivate(privateSpec);
-				
-				KeyPair keyPair = new KeyPair(publicKey, privateCRTKey);
-				gotKeyPair = new MartusJceKeyPair(keyPair);
-
-			}
 			
 			// Public Key Description
 			{
@@ -822,14 +525,8 @@ public class MartusKeyPairLoader
 				
 				for(int i = 0; i < expectedFieldsForPublic.length; ++i)
 				{
-					byte typeCode = in.readByte();
-					assertEquals('L', typeCode);
-					String fieldName = in.readUTF();
+					String fieldName = readBigIntegerFieldReference(in);
 					assertEquals(expectedFieldsForPublic[i], fieldName);
-					int refFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_REFERENCE, refFlag);
-					int refBigIntStringHandle = in.readInt();
-					assertEquals(bigIntStringHandle, refBigIntStringHandle);
 				}
 				
 				int publicKeyEndDataFlag = in.readByte();
@@ -850,6 +547,60 @@ public class MartusKeyPairLoader
 			}
 		}
 		return gotKeyPair;
+	}
+
+	private int readBigIntegerObjectHeader(DataInputStream in) throws IOException {
+		int publicExponentObjectFlag = in.readByte();
+		assertEquals(ObjectStreamConstants.TC_OBJECT, publicExponentObjectFlag);
+		int refFlag = in.readByte();
+		assertEquals(ObjectStreamConstants.TC_REFERENCE, refFlag);
+		int refBigIntClassHandle = in.readInt();
+		assertEquals(bigIntClassHandle, refBigIntClassHandle);
+		int thisHandle = nextHandle++;
+		return thisHandle;
+	}
+
+	private BigInteger readBigIntegerData(DataInputStream in) throws IOException {
+		int bitCount = in.readInt();
+		assertEquals(-1, bitCount);
+		int bitLength = in.readInt();
+		assertEquals(-1, bitLength);
+		int firstNonZeroByteNum = in.readInt();
+		assertEquals(-2, firstNonZeroByteNum);
+		int lowestSetBit = in.readInt();
+		assertEquals(-2, lowestSetBit);
+		int signum = in.readInt();
+		assertEquals(1, signum);
+						
+		byte typeCode = in.readByte();
+		assertEquals(ObjectStreamConstants.TC_ARRAY, typeCode);
+		byte typeCodeRefFlag = in.readByte();
+		assertEquals(ObjectStreamConstants.TC_REFERENCE, typeCodeRefFlag);
+		int refbyteArrayClassHandle = in.readInt();
+		assertEquals(byteArrayClassHandle, refbyteArrayClassHandle);
+		nextHandle++;
+		
+		int arrayLength = in.readInt();
+		
+		byte[] magnitude = new byte[arrayLength];
+		in.read(magnitude);
+		
+		int arrayEndDataFlag = in.readByte();
+		assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
+
+		BigInteger gotBigInteger = new BigInteger(signum, magnitude);
+		return gotBigInteger;
+	}
+
+	private String readBigIntegerFieldReference(DataInputStream in) throws IOException {
+		byte typeCode = in.readByte();
+		String fieldName = in.readUTF();
+		int refFlag = in.readByte();
+		int refBigIntStringHandle = in.readInt();
+		assertEquals('L', typeCode);
+		assertEquals(ObjectStreamConstants.TC_REFERENCE, refFlag);
+		assertEquals(bigIntStringHandle, refBigIntStringHandle);
+		return fieldName;
 	}
 
 	private int readObjectReference(DataInputStream in) throws IOException {
