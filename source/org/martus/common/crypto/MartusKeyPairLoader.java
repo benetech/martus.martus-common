@@ -181,33 +181,27 @@ public class MartusKeyPairLoader
 			throwIfNotEqual(6, fieldCount);
 			// Big Integer field 1
 			{
-				String fieldName = readIntFieldDescription(in);
-				throwIfNotEqual("bitCount", fieldName);
+				throwIfNotEqual("bitCount", readIntFieldDescription(in));
 			}
 			// Big Integer field 2
 			{
-				String fieldName = readIntFieldDescription(in);
-				throwIfNotEqual("bitLength", fieldName);
+				throwIfNotEqual("bitLength", readIntFieldDescription(in));
 			}
 			// Big Integer field 3
 			{
-				String fieldName = readIntFieldDescription(in);
-				throwIfNotEqual("firstNonzeroByteNum", fieldName);
+				throwIfNotEqual("firstNonzeroByteNum", readIntFieldDescription(in));
 			}
 			// Big Integer field 4
 			{
-				String fieldName = readIntFieldDescription(in);
-				throwIfNotEqual("lowestSetBit", fieldName);
+				throwIfNotEqual("lowestSetBit", readIntFieldDescription(in));
 			}
 			// Big Integer field 5
 			{
-				String fieldName = readIntFieldDescription(in);
-				throwIfNotEqual("signum", fieldName);
+				throwIfNotEqual("signum", readIntFieldDescription(in));
 			}
 			// Big Integer field 6
 			{
-				String fieldName = readByteArrayFieldDescription(in);
-				throwIfNotEqual("magnitude", fieldName);
+				throwIfNotEqual("magnitude", readByteArrayFieldDescription(in));
 			}
 			
 			int endDataFlag = in.readByte();
@@ -298,12 +292,10 @@ public class MartusKeyPairLoader
 				throwIfNotEqual(2, hashTableFieldCount);
 				
 				// Hash Table field 1
-				String field1Name = readFloatFieldDescription(in);
-				throwIfNotEqual("loadFactor", field1Name);
+				throwIfNotEqual("loadFactor", readFloatFieldDescription(in));
 				
 				// Hash Table field 2
-				String field2Name = readIntFieldDescription(in);
-				throwIfNotEqual("threshold", field2Name);
+				throwIfNotEqual("threshold", readIntFieldDescription(in));
 
 				int hashTableEndDataFieldFlag = in.readByte();
 				throwIfNotEqual(ObjectStreamConstants.TC_ENDBLOCKDATA, hashTableEndDataFieldFlag);
@@ -333,16 +325,13 @@ public class MartusKeyPairLoader
 				throwIfNotEqual(3, vectorFieldCount);
 				
 				// Vector field 1
-				String field1Name = readIntFieldDescription(in);
-				throwIfNotEqual("capacityIncrement", field1Name);
+				throwIfNotEqual("capacityIncrement", readIntFieldDescription(in));
 				
 				// Vector field 2
-				String field2Name = readIntFieldDescription(in);
-				throwIfNotEqual("elementCount", field2Name);
+				throwIfNotEqual("elementCount", readIntFieldDescription(in));
 				 
 				// Vector field 3
-				String field3Name = readArrayFieldDecription(in);
-				throwIfNotEqual("elementData", field3Name);
+				throwIfNotEqual("elementData", readArrayFieldDecription(in));
 				
 				int vectorEndDataFlag = in.readByte();
 				throwIfNotEqual(ObjectStreamConstants.TC_ENDBLOCKDATA, vectorEndDataFlag);
