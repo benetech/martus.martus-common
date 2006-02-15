@@ -181,51 +181,33 @@ public class MartusKeyPairLoader
 			assertEquals(6, fieldCount);
 			// Big Integer field 1
 			{
-				byte typeCode = in.readByte();
-				assertEquals('I', typeCode);
-				String fieldName = in.readUTF();
+				String fieldName = readIntFieldDescription(in);
 				assertEquals("bitCount", fieldName);
 			}
 			// Big Integer field 2
 			{
-				byte typeCode = in.readByte();
-				assertEquals('I', typeCode);
-				String fieldName = in.readUTF();
+				String fieldName = readIntFieldDescription(in);
 				assertEquals("bitLength", fieldName);
 			}
 			// Big Integer field 3
 			{
-				byte typeCode = in.readByte();
-				assertEquals('I', typeCode);
-				String fieldName = in.readUTF();
+				String fieldName = readIntFieldDescription(in);
 				assertEquals("firstNonzeroByteNum", fieldName);
 			}
 			// Big Integer field 4
 			{
-				byte typeCode = in.readByte();
-				assertEquals('I', typeCode);
-				String fieldName = in.readUTF();
+				String fieldName = readIntFieldDescription(in);
 				assertEquals("lowestSetBit", fieldName);
 			}
 			// Big Integer field 5
 			{
-				byte typeCode = in.readByte();
-				assertEquals('I', typeCode);
-				String fieldName = in.readUTF();
+				String fieldName = readIntFieldDescription(in);
 				assertEquals("signum", fieldName);
 			}
 			// Big Integer field 6
 			{
-				byte typeCode = in.readByte();
-				assertEquals('[', typeCode);
-				String fieldName = in.readUTF();
+				String fieldName = readByteArrayFieldDescription(in);
 				assertEquals("magnitude", fieldName);
-				int refFlag = in.readByte();
-				assertEquals(ObjectStreamConstants.TC_STRING, refFlag);
-				String fieldClassName = in.readUTF();
-				assertEquals("[B", fieldClassName);
-				// new handle
-				nextHandle++;
 			}
 			
 			int endDataFlag = in.readByte();
@@ -297,10 +279,10 @@ public class MartusKeyPairLoader
 				
 			}
 			
-//				Hash Map
+//				Hashtable
 			{
-				int objectForHashMap = in.readByte();
-				assertEquals(ObjectStreamConstants.TC_OBJECT, objectForHashMap);
+				int objectForHashtable = in.readByte();
+				assertEquals(ObjectStreamConstants.TC_OBJECT, objectForHashtable);
 				int hashMapClassDescFlag = in.readByte();
 				assertEquals(ObjectStreamConstants.TC_CLASSDESC, hashMapClassDescFlag);
 				String className = in.readUTF();
@@ -316,20 +298,13 @@ public class MartusKeyPairLoader
 				assertEquals(2, hashTableFieldCount);
 				
 				// Hash Table field 1
-				{
-					byte typeCode = in.readByte();
-					assertEquals('F', typeCode);
-					String fieldName = in.readUTF();
-					assertEquals("loadFactor", fieldName);
-				}
+				String field1Name = readFloatFieldDescription(in);
+				assertEquals("loadFactor", field1Name);
 				
 				// Hash Table field 2
-				{
-					byte typeCode = in.readByte();
-					assertEquals('I', typeCode);
-					String fieldName = in.readUTF();
-					assertEquals("threshold", fieldName);
-				}
+				String field2Name = readIntFieldDescription(in);
+				assertEquals("threshold", field2Name);
+
 				int hashTableEndDataFieldFlag = in.readByte();
 				assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, hashTableEndDataFieldFlag);
 				int hashTableNullFieldFlag = in.readByte();
@@ -337,24 +312,7 @@ public class MartusKeyPairLoader
 				// new handle
 				nextHandle++;
 				
-				float loadFactor = in.readFloat();
-				assertEquals("loadfactor wrong?", 0.75, loadFactor, 0.1f);
-				
-				int threshold = in.readInt();
-				assertEquals("threshold wrong?", 8, threshold);
-				
-				byte hashTableBlockDataFlag = in.readByte();
-				assertEquals(ObjectStreamConstants.TC_BLOCKDATA, hashTableBlockDataFlag);
-				
-				byte blockDataByteCount = in.readByte();
-				assertEquals("wrong block data byte count?", 8, blockDataByteCount);
-				// originalLength
-				in.readInt(); 
-				int elements = in.readInt();
-				assertEquals("Hashtable not empty?", 0, elements);
-				
-				int hashTableEndDataFlag = in.readByte();
-				assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, hashTableEndDataFlag);
+				readEmptyHashTableData(in);
 			}
 			//Vector
 			{
@@ -375,34 +333,16 @@ public class MartusKeyPairLoader
 				assertEquals(3, vectorFieldCount);
 				
 				// Vector field 1
-				{
-					byte typeCode = in.readByte();
-					assertEquals('I', typeCode);
-					String fieldName = in.readUTF();
-					assertEquals("capacityIncrement", fieldName);
-				}
+				String field1Name = readIntFieldDescription(in);
+				assertEquals("capacityIncrement", field1Name);
 				
 				// Vector field 2
-				{
-					byte typeCode = in.readByte();
-					assertEquals('I', typeCode);
-					String fieldName = in.readUTF();
-					assertEquals("elementCount", fieldName);
-				}
+				String field2Name = readIntFieldDescription(in);
+				assertEquals("elementCount", field2Name);
 				 
 				// Vector field 3
-				{
-					byte typeCode = in.readByte();
-					assertEquals('[', typeCode);
-					String fieldName = in.readUTF();
-					assertEquals("elementData", fieldName);
-					int vecString = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_STRING, vecString);
-					String fieldClassName = in.readUTF();
-					assertEquals("[Ljava/lang/Object;", fieldClassName);
-					nextHandle++;
-					
-				}
+				String field3Name = readArrayFieldDecription(in);
+				assertEquals("elementData", field3Name);
 				
 				int vectorEndDataFlag = in.readByte();
 				assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, vectorEndDataFlag);
@@ -448,61 +388,36 @@ public class MartusKeyPairLoader
 				assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
 			}
 			
-//			BigInt privateExponent (Private Key Field4)  
-			{ 
-				publicExponentObjectHandle = readBigIntegerObjectHeader(in);
-				privateExponent = readBigIntegerData(in);
-			}
+			//BigInt privateExponent (Private Key Field4)  
+			publicExponentObjectHandle = readBigIntegerObjectHeader(in);
+			privateExponent = readBigIntegerData(in);
 			
 			int EndPrivateKeyFlag = in.readByte();
 			assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, EndPrivateKeyFlag);
 			
-//			BigInt crtCoefficient (PrivateCRTKey Field 1)
-			{
-				readBigIntegerObjectHeader(in);
-				crtCoefficient = readBigIntegerData(in);
-			}
-			
-//			BigInt primeExponentP (PrivateCRTKey Field 2)
-			{
-				readBigIntegerObjectHeader(in);			
-				primeExponentP = readBigIntegerData(in);
-			}
-			
-//			BigInt primeExponentQ (PrivateCRTKey Field 3)
-			{ 
-				readBigIntegerObjectHeader(in);			
-				primeExponentQ = readBigIntegerData(in);
-			}
-			
-//			BigInt primeP (PrivateCRTKey Field4)
-			{ 
-				readBigIntegerObjectHeader(in);		
-				primeP = readBigIntegerData(in);
-			}
-			
-//			BigInt primeQ (PrivateCRTKey Field5)
-			{ 	
-				readBigIntegerObjectHeader(in);		
-				primeQ = readBigIntegerData(in);
-			}
-			
-//			BigInt publicExponent (PrivateCRTKey Field6)
-			{ 				
-				publicExponentObjectHandle = readBigIntegerObjectHeader(in);
-				publicExponent = readBigIntegerData(in);
-			}				
-		
-			// Reconstitute Keypair
-			RSAPublicKeySpec publicSpec = new RSAPublicKeySpec(modulus, publicExponent);
-			RSAPrivateCrtKeySpec privateSpec = new RSAPrivateCrtKeySpec(modulus, publicExponent, privateExponent, primeP, primeQ, primeExponentP, primeExponentQ, crtCoefficient);
-			KeyFactory factory = KeyFactory.getInstance("RSA", "BC");
-			JCERSAPublicKey publicKey = (JCERSAPublicKey)factory.generatePublic(publicSpec);
-			JCERSAPrivateCrtKey privateCRTKey = (JCERSAPrivateCrtKey)factory.generatePrivate(privateSpec);
-			
-			KeyPair keyPair = new KeyPair(publicKey, privateCRTKey);
-			gotKeyPair = new MartusJceKeyPair(keyPair);
+			// BigInt crtCoefficient (PrivateCRTKey Field 1)
+			readBigIntegerObjectHeader(in);
+			crtCoefficient = readBigIntegerData(in);
 
+			// BigInt primeExponentP (PrivateCRTKey Field 2)
+			readBigIntegerObjectHeader(in);			
+			primeExponentP = readBigIntegerData(in);
+			
+			// BigInt primeExponentQ (PrivateCRTKey Field 3)
+			readBigIntegerObjectHeader(in);			
+			primeExponentQ = readBigIntegerData(in);
+					
+			// BigInt primeP (PrivateCRTKey Field4) 
+			readBigIntegerObjectHeader(in);		
+			primeP = readBigIntegerData(in);
+			
+			// BigInt primeQ (PrivateCRTKey Field5)
+			readBigIntegerObjectHeader(in);		
+			primeQ = readBigIntegerData(in);
+			
+			// BigInt publicExponent (PrivateCRTKey Field6)
+			publicExponentObjectHandle = readBigIntegerObjectHeader(in);
+			publicExponent = readBigIntegerData(in);				
 			
 			// Public Key Description
 			{
@@ -546,7 +461,78 @@ public class MartusKeyPairLoader
 				assertEquals(publicExponentObjectHandle, refPublicExponentObjectHandle);
 			}
 		}
+		
+		// Reconstitute Keypair
+		RSAPublicKeySpec publicSpec = new RSAPublicKeySpec(modulus, publicExponent);
+		RSAPrivateCrtKeySpec privateSpec = new RSAPrivateCrtKeySpec(modulus, publicExponent, privateExponent, primeP, primeQ, primeExponentP, primeExponentQ, crtCoefficient);
+		KeyFactory factory = KeyFactory.getInstance("RSA", "BC");
+		JCERSAPublicKey publicKey = (JCERSAPublicKey)factory.generatePublic(publicSpec);
+		JCERSAPrivateCrtKey privateCRTKey = (JCERSAPrivateCrtKey)factory.generatePrivate(privateSpec);
+		
+		KeyPair keyPair = new KeyPair(publicKey, privateCRTKey);
+		gotKeyPair = new MartusJceKeyPair(keyPair);
+
 		return gotKeyPair;
+	}
+
+	private String readByteArrayFieldDescription(DataInputStream in) throws IOException {
+		byte typeCode = in.readByte();
+		assertEquals('[', typeCode);
+		String fieldName = in.readUTF();
+		int refFlag = in.readByte();
+		assertEquals(ObjectStreamConstants.TC_STRING, refFlag);
+		String fieldClassName = in.readUTF();
+		assertEquals("[B", fieldClassName);
+		// new handle
+		nextHandle++;
+		return fieldName;
+	}
+
+	private String readFloatFieldDescription(DataInputStream in) throws IOException {
+		byte typeCode = in.readByte();
+		assertEquals('F', typeCode);
+		String fieldName = in.readUTF();
+		return fieldName;
+	}
+
+	private void readEmptyHashTableData(DataInputStream in) throws IOException {
+		float loadFactor = in.readFloat();
+		assertEquals("loadfactor wrong?", 0.75, loadFactor, 0.1f);
+		
+		int threshold = in.readInt();
+		assertEquals("threshold wrong?", 8, threshold);
+		
+		byte hashTableBlockDataFlag = in.readByte();
+		assertEquals(ObjectStreamConstants.TC_BLOCKDATA, hashTableBlockDataFlag);
+		
+		byte blockDataByteCount = in.readByte();
+		assertEquals("wrong block data byte count?", 8, blockDataByteCount);
+		// originalLength
+		in.readInt(); 
+		int elements = in.readInt();
+		assertEquals("Hashtable not empty?", 0, elements);
+		
+		int hashTableEndDataFlag = in.readByte();
+		assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, hashTableEndDataFlag);
+	}
+
+	private String readArrayFieldDecription(DataInputStream in) throws IOException {
+		byte typeCode = in.readByte();
+		assertEquals('[', typeCode);
+		String fieldName = in.readUTF();
+		int vecString = in.readByte();
+		assertEquals(ObjectStreamConstants.TC_STRING, vecString);
+		String fieldClassName = in.readUTF();
+		assertEquals("[Ljava/lang/Object;", fieldClassName);
+		nextHandle++;
+		return fieldName;
+	}
+
+	private String readIntFieldDescription(DataInputStream in) throws IOException {
+		byte typeCode = in.readByte();
+		assertEquals('I', typeCode);
+		String fieldName = in.readUTF();
+		return fieldName;
 	}
 
 	private int readBigIntegerObjectHeader(DataInputStream in) throws IOException {
