@@ -42,6 +42,7 @@ import org.bouncycastle.jce.provider.JCERSAPrivateCrtKey;
 import org.bouncycastle.jce.provider.JCERSAPublicKey;
 import org.martus.common.crypto.MartusJceKeyPair;
 import org.martus.common.crypto.MartusKeyPair;
+import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.util.Base64;
 import org.martus.util.TestCaseEnhanced;
 
@@ -74,8 +75,8 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 			String publicKeyString = p.getPublicKeyString();
 			Base64.decode(publicKeyString);
 		}
-		//objects.add(MockMartusSecurity.createClient().getKeyPair());
-		//objects.add(MockMartusSecurity.createOtherClient().getKeyPair());
+		objects.add(MockMartusSecurity.createClient().getKeyPair());
+		objects.add(MockMartusSecurity.createOtherClient().getKeyPair());
 //		System.out.println("JCE:");
 //		System.out.println(((RSAPublicKey)jceKeyPair.getPublicKey()).getModulus());
 //		System.out.println(((RSAPublicKey)jceKeyPair.getPublicKey()).getPublicExponent());
@@ -479,9 +480,8 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 					
 					byte blockDataByteCount = in.readByte();
 					assertEquals("wrong block data byte count?", 8, blockDataByteCount);
-										
-					int originalLength = in.readInt();
-					assertEquals("original length wrong?", 11, originalLength);
+					// originalLength
+					in.readInt(); 
 					int elements = in.readInt();
 					assertEquals("Hashtable not empty?", 0, elements);
 					
