@@ -20,22 +20,7 @@ public class MartusKeyPairLoader
 
 	public MartusKeyPair readMartusKeyPair(DataInputStream in) throws IOException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException 
 	{
-		int nextHandle = 8257536;
-		int bigIntStringHandle = 0;
-		int bigIntClassHandle = 0;
-		int byteArrayClassHandle = 0;
-		int modulusObjectHandle = 0;
-		int publicExponentObjectHandle = 0;
-		BigInteger modulus;
-		BigInteger publicExponent;
-		BigInteger crtCoefficient;
-		BigInteger primeExponentP;
-		BigInteger primeExponentQ;
-		BigInteger primeP;
-		BigInteger primeQ;
-		BigInteger privateExponent;
-		MartusKeyPair gotKeyPair;
-		
+		nextHandle = INITIAL_HANDLE;
 		
 		int magic = in.readShort();
 		assertEquals(ObjectStreamConstants.STREAM_MAGIC, magic);
@@ -835,27 +820,18 @@ public class MartusKeyPairLoader
 				assertEquals(2, fieldCountForPublic);
 				String[] expectedFieldsForPublic = {"modulus", "publicExponent"};
 				
+				for(int i = 0; i < expectedFieldsForPublic.length; ++i)
 				{
 					byte typeCode = in.readByte();
 					assertEquals('L', typeCode);
 					String fieldName = in.readUTF();
-					assertEquals(expectedFieldsForPublic[0], fieldName);
-					int refFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_REFERENCE, refFlag);
-					int refBigIntStringHandle = in.readInt();
-					assertEquals(bigIntStringHandle, refBigIntStringHandle);
-					
-				}
-				{
-					byte typeCode = in.readByte();
-					assertEquals('L', typeCode);
-					String fieldName = in.readUTF();
-					assertEquals(expectedFieldsForPublic[1], fieldName);
+					assertEquals(expectedFieldsForPublic[i], fieldName);
 					int refFlag = in.readByte();
 					assertEquals(ObjectStreamConstants.TC_REFERENCE, refFlag);
 					int refBigIntStringHandle = in.readInt();
 					assertEquals(bigIntStringHandle, refBigIntStringHandle);
 				}
+				
 				int publicKeyEndDataFlag = in.readByte();
 				assertEquals(ObjectStreamConstants.TC_ENDBLOCKDATA, publicKeyEndDataFlag);
 				int publicKeyNullFlag = in.readByte();
@@ -865,23 +841,22 @@ public class MartusKeyPairLoader
 			//Public Key Data
 			{
 				// BigInt modulus (Field 1) 
-				{
-					int modulusRefFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_REFERENCE, modulusRefFlag);
-					int refModulusObjectHandle = in.readInt();
-					assertEquals(modulusObjectHandle, refModulusObjectHandle);
-				}
-				
+				int refModulusObjectHandle = readObjectReference(in);
+				assertEquals(modulusObjectHandle, refModulusObjectHandle);
+
 				//BigInt publicExponent Reference (Field 2)
-				{
-					int publicExponentRefFlag = in.readByte();
-					assertEquals(ObjectStreamConstants.TC_REFERENCE, publicExponentRefFlag);
-					int refPublicExponentObjectHandle = in.readInt();
-					assertEquals(publicExponentObjectHandle, refPublicExponentObjectHandle);
-				}
+				int refPublicExponentObjectHandle = readObjectReference(in);
+				assertEquals(publicExponentObjectHandle, refPublicExponentObjectHandle);
 			}
 		}
 		return gotKeyPair;
+	}
+
+	private int readObjectReference(DataInputStream in) throws IOException {
+		int modulusRefFlag = in.readByte();
+		assertEquals(ObjectStreamConstants.TC_REFERENCE, modulusRefFlag);
+		int refModulusObjectHandle = in.readInt();
+		return refModulusObjectHandle;
 	}
 	
 	void assertEquals(String text, Object expected, Object actual)
@@ -913,4 +888,24 @@ public class MartusKeyPairLoader
 		if(expected < actual - tolerance || expected > actual + tolerance)
 			throw new RuntimeException(text + "expected " + expected + " but was " + actual);
 	}
+	
+	private static final int INITIAL_HANDLE = 8257536;	
+	
+	int nextHandle;	
+	int bigIntStringHandle;
+	int bigIntClassHandle;
+	int byteArrayClassHandle;
+	int modulusObjectHandle;
+	int publicExponentObjectHandle;
+	
+	BigInteger modulus;
+	BigInteger publicExponent;
+	BigInteger crtCoefficient;
+	BigInteger primeExponentP;
+	BigInteger primeExponentQ;
+	BigInteger primeP;
+	BigInteger primeQ;
+	BigInteger privateExponent;
+
+	MartusKeyPair gotKeyPair;
 }
