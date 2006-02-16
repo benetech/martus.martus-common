@@ -6,9 +6,6 @@ import java.io.ObjectStreamConstants;
 import java.math.BigInteger;
 import java.security.KeyFactory;
 import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPrivateCrtKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 
@@ -18,15 +15,18 @@ import org.bouncycastle.jce.provider.JCERSAPublicKey;
 public class MartusKeyPairLoader
 {
 
-	public MartusKeyPair readMartusKeyPair(DataInputStream in) throws IOException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException 
+	public static KeyPair load(DataInputStream in) throws Exception
 	{
-		KeyPair keyPair = readKeyPair(in);
-		gotKeyPair = new MartusJceKeyPair(keyPair);
-
-		return gotKeyPair;
+		MartusKeyPairLoader loader = new MartusKeyPairLoader();
+		return loader.readKeyPair(in);
 	}
 
-	KeyPair readKeyPair(DataInputStream in) throws IOException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
+	private MartusKeyPairLoader()
+	{	
+	}
+
+	KeyPair readKeyPair(DataInputStream in) throws Exception
+	{
 		nextHandle = INITIAL_HANDLE;
 		boolean privateSuperHasWriteObject = false;
 		

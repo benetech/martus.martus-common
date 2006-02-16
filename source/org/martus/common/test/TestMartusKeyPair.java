@@ -112,8 +112,7 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 //			System.out.println(gotPrivate.getClass().getName());
 //			System.out.println(gotPublic.getClass().getName());
 
-			MartusKeyPairLoader loader = new MartusKeyPairLoader();
-			MartusKeyPair gotKeyPair = loader.readMartusKeyPair(in);
+			MartusKeyPair gotKeyPair = new MartusJceKeyPair(MartusKeyPairLoader.load(in));
 			verifyEncryptDecrypt(keyOwner, gotKeyPair);
 			verifyEncryptDecrypt(gotKeyPair, keyOwner);
 	

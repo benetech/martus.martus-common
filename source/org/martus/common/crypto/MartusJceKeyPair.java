@@ -122,10 +122,9 @@ public class MartusJceKeyPair extends MartusKeyPair
 	{
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
 		DataInputStream dataInputStream = new DataInputStream(inputStream);
-		MartusKeyPairLoader loader = new MartusKeyPairLoader();
 		try
 		{
-			KeyPair candidatePair = (loader.readKeyPair(dataInputStream));
+			KeyPair candidatePair = MartusKeyPairLoader.load(dataInputStream);
 			if(!isKeyPairValid(candidatePair))
 				throw (new AuthorizationFailedException());
 			setJceKeyPair(candidatePair);
