@@ -28,6 +28,8 @@ package org.martus.common.test;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
+import java.io.ObjectInputStream;
+import java.security.KeyPair;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Vector;
@@ -114,6 +116,10 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 			MartusKeyPair gotKeyPair = loader.readMartusKeyPair(in);
 			verifyEncryptDecrypt(keyOwner, gotKeyPair);
 			verifyEncryptDecrypt(gotKeyPair, keyOwner);
+	
+			MartusKeyPair legacyLoaded = loadLegacyKeyPair(data);
+			verifyEncryptDecrypt(keyOwner, legacyLoaded);
+			verifyEncryptDecrypt(legacyLoaded, keyOwner);
 			
 //			http://www.macchiato.com/columns/Durable4.html
 //			URL For serialized data structure
@@ -139,6 +145,8 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 		}
 	}
 
+	
+	
 	public void testEncryption() throws Exception
 	{
 		for(int i = 0; i < objects.size(); ++i)
@@ -164,7 +172,14 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 		assertTrue("bad decrypt? " + label, Arrays.equals(sampleBytes, decrypted));
 		
 	}
-	
+
+	public MartusKeyPair loadLegacyKeyPair(byte[] data) throws Exception
+	{
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
+		ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+		KeyPair candidatePair = (KeyPair)objectInputStream.readObject();
+		return new MartusJceKeyPair(candidatePair);
+	}
 	Vector objects;
 	SecureRandom rand;
 }
