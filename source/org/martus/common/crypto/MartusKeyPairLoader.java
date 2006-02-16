@@ -20,7 +20,15 @@ public class MartusKeyPairLoader
 
 	public MartusKeyPair readMartusKeyPair(DataInputStream in) throws IOException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException 
 	{
+		KeyPair keyPair = readKeyPair(in);
+		gotKeyPair = new MartusJceKeyPair(keyPair);
+
+		return gotKeyPair;
+	}
+
+	KeyPair readKeyPair(DataInputStream in) throws IOException, NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
 		nextHandle = INITIAL_HANDLE;
+		boolean privateSuperHasWriteObject = false;
 		
 		int magic = in.readShort();
 		throwIfNotEqual(ObjectStreamConstants.STREAM_MAGIC, magic);
@@ -77,7 +85,9 @@ public class MartusKeyPairLoader
 			nextHandle++;
 			
 			int classDescFlagsForPrivateSuper = in.readByte();
-			throwIfNotEqual(ObjectStreamConstants.SC_SERIALIZABLE | ObjectStreamConstants.SC_WRITE_METHOD, classDescFlagsForPrivateSuper);
+			throwIfNotEqual(ObjectStreamConstants.SC_SERIALIZABLE, classDescFlagsForPrivateSuper & ObjectStreamConstants.SC_SERIALIZABLE);
+			if(hasFlag(classDescFlagsForPrivateSuper, ObjectStreamConstants.SC_WRITE_METHOD))
+				privateSuperHasWriteObject = true;
 			int fieldCountForPrivateSuper = in.readShort();
 			throwIfNotEqual(4, fieldCountForPrivateSuper);
 			
@@ -199,8 +209,9 @@ public class MartusKeyPairLoader
 			{
 				readObjectClassHeader(in, "java.util.Vector", -2767605614048989439L);
 				
-				int hashTableClassDescFlags = in.readByte();
-				throwIfNotEqual(ObjectStreamConstants.SC_SERIALIZABLE | ObjectStreamConstants.SC_WRITE_METHOD, hashTableClassDescFlags);
+				int vectorClassDescFlags = in.readByte();
+				throwIfNotEqual(ObjectStreamConstants.SC_SERIALIZABLE, vectorClassDescFlags & ObjectStreamConstants.SC_SERIALIZABLE);
+				boolean vectorHasWriteObject = hasFlag(vectorClassDescFlags, ObjectStreamConstants.SC_WRITE_METHOD);
 				short vectorFieldCount = in.readShort();
 				throwIfNotEqual(3, vectorFieldCount);
 				
@@ -236,16 +247,24 @@ public class MartusKeyPairLoader
 					byte nullObjectMarker = in.readByte();
 					throwIfNotEqual(ObjectStreamConstants.TC_NULL, nullObjectMarker);
 				}
-				int arrayEndDataFlag = in.readByte();
-				throwIfNotEqual(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
+				
+				if(vectorHasWriteObject)
+				{
+					int arrayEndDataFlag = in.readByte();
+					throwIfNotEqual(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
+				}
+				
 			}
 			
 			//BigInt privateExponent (Private Key Field4)  
 			publicExponentObjectHandle = readBigIntegerObjectHeader(in);
 			privateExponent = readBigIntegerData(in);
 			
-			int EndPrivateKeyFlag = in.readByte();
-			throwIfNotEqual(ObjectStreamConstants.TC_ENDBLOCKDATA, EndPrivateKeyFlag);
+			if(privateSuperHasWriteObject)
+			{
+				int endOfWriteObjectData = in.readByte();
+				throwIfNotEqual(ObjectStreamConstants.TC_ENDBLOCKDATA, endOfWriteObjectData);
+			}
 			
 			// BigInt crtCoefficient (PrivateCRTKey Field 1)
 			readBigIntegerObjectHeader(in);
@@ -311,12 +330,15 @@ public class MartusKeyPairLoader
 		JCERSAPrivateCrtKey privateCRTKey = (JCERSAPrivateCrtKey)factory.generatePrivate(privateSpec);
 		
 		KeyPair keyPair = new KeyPair(publicKey, privateCRTKey);
-		gotKeyPair = new MartusJceKeyPair(keyPair);
-
-		return gotKeyPair;
+		return keyPair;
 	}
 
-	private int readClassFooter(DataInputStream in) throws IOException {
+	private boolean hasFlag(int variable, int flag)
+	{
+		return (variable & flag) == flag;
+	}
+	private int readClassFooter(DataInputStream in) throws IOException
+	{
 		int superEndDataFlag = in.readByte();
 		throwIfNotEqual(ObjectStreamConstants.TC_ENDBLOCKDATA, superEndDataFlag);
 		int superNoSuperFlag = in.readByte();
@@ -325,15 +347,18 @@ public class MartusKeyPairLoader
 		return nextHandle++;
 	}
 
-	private int readObjectClassHeader(DataInputStream in, String className, long serialUid) throws IOException {
+	private int readObjectClassHeader(DataInputStream in, String className, long serialUid) throws IOException
+	{
 		return readClassHeader(in, ObjectStreamConstants.TC_OBJECT, className, serialUid);
 	}
 	
-	private int readArrayClassHeader(DataInputStream in, String className, long serialUid) throws IOException {
+	private int readArrayClassHeader(DataInputStream in, String className, long serialUid) throws IOException
+	{
 		return readClassHeader(in, ObjectStreamConstants.TC_ARRAY, className, serialUid);
 	}
 
-	private int readClassHeader(DataInputStream in, byte classType, String className, long serialUid) throws IOException {
+	private int readClassHeader(DataInputStream in, byte classType, String className, long serialUid) throws IOException
+	{
 		int objectForPublic = in.readByte();
 		throwIfNotEqual(classType, objectForPublic);
 		int classFlagForPublic = in.readByte();
@@ -346,7 +371,8 @@ public class MartusKeyPairLoader
 		return nextHandle++;
 	}
 
-	private int readObjectFieldDescription(DataInputStream in, String expectedClassName, String expectedFieldName) throws IOException {
+	private int readObjectFieldDescription(DataInputStream in, String expectedClassName, String expectedFieldName) throws IOException
+	{
 		byte typeCode = in.readByte();
 		throwIfNotEqual('L', typeCode);
 		String fieldName = in.readUTF();
@@ -359,7 +385,8 @@ public class MartusKeyPairLoader
 		return nextHandle++;
 	}
 
-	private String readByteArrayFieldDescription(DataInputStream in) throws IOException {
+	private String readByteArrayFieldDescription(DataInputStream in) throws IOException
+	{
 		byte typeCode = in.readByte();
 		throwIfNotEqual('[', typeCode);
 		String fieldName = in.readUTF();
@@ -372,14 +399,16 @@ public class MartusKeyPairLoader
 		return fieldName;
 	}
 
-	private String readFloatFieldDescription(DataInputStream in) throws IOException {
+	private String readFloatFieldDescription(DataInputStream in) throws IOException
+	{
 		byte typeCode = in.readByte();
 		throwIfNotEqual('F', typeCode);
 		String fieldName = in.readUTF();
 		return fieldName;
 	}
 
-	private void readEmptyHashTableData(DataInputStream in) throws IOException {
+	private void readEmptyHashTableData(DataInputStream in) throws IOException
+	{
 		float loadFactor = in.readFloat();
 		throwIfNotEqual("loadfactor wrong?", 0.75, loadFactor, 0.1f);
 		
@@ -400,7 +429,8 @@ public class MartusKeyPairLoader
 		throwIfNotEqual(ObjectStreamConstants.TC_ENDBLOCKDATA, hashTableEndDataFlag);
 	}
 
-	private String readArrayFieldDecription(DataInputStream in) throws IOException {
+	private String readArrayFieldDecription(DataInputStream in) throws IOException
+	{
 		byte typeCode = in.readByte();
 		throwIfNotEqual('[', typeCode);
 		String fieldName = in.readUTF();
@@ -412,14 +442,16 @@ public class MartusKeyPairLoader
 		return fieldName;
 	}
 
-	private String readIntFieldDescription(DataInputStream in) throws IOException {
+	private String readIntFieldDescription(DataInputStream in) throws IOException
+	{
 		byte typeCode = in.readByte();
 		throwIfNotEqual('I', typeCode);
 		String fieldName = in.readUTF();
 		return fieldName;
 	}
 
-	private int readBigIntegerObjectHeader(DataInputStream in) throws IOException {
+	private int readBigIntegerObjectHeader(DataInputStream in) throws IOException
+	{
 		int publicExponentObjectFlag = in.readByte();
 		throwIfNotEqual(ObjectStreamConstants.TC_OBJECT, publicExponentObjectFlag);
 		int refFlag = in.readByte();
@@ -430,7 +462,8 @@ public class MartusKeyPairLoader
 		return thisHandle;
 	}
 
-	private BigInteger readBigIntegerData(DataInputStream in) throws IOException {
+	private BigInteger readBigIntegerData(DataInputStream in) throws IOException
+	{
 		int bitCount = in.readInt();
 		throwIfNotEqual(-1, bitCount);
 		int bitLength = in.readInt();
@@ -462,7 +495,8 @@ public class MartusKeyPairLoader
 		return gotBigInteger;
 	}
 
-	private String readBigIntegerFieldReference(DataInputStream in) throws IOException {
+	private String readBigIntegerFieldReference(DataInputStream in) throws IOException
+	{
 		byte typeCode = in.readByte();
 		String fieldName = in.readUTF();
 		int refFlag = in.readByte();
@@ -473,7 +507,8 @@ public class MartusKeyPairLoader
 		return fieldName;
 	}
 
-	private int readObjectReference(DataInputStream in) throws IOException {
+	private int readObjectReference(DataInputStream in) throws IOException
+	{
 		int modulusRefFlag = in.readByte();
 		throwIfNotEqual(ObjectStreamConstants.TC_REFERENCE, modulusRefFlag);
 		int refModulusObjectHandle = in.readInt();
@@ -518,6 +553,7 @@ public class MartusKeyPairLoader
 	int byteArrayClassHandle;
 	int modulusObjectHandle;
 	int publicExponentObjectHandle;
+
 	
 	BigInteger modulus;
 	BigInteger publicExponent;

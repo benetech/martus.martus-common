@@ -761,6 +761,7 @@ public class MartusSecurity extends MartusCrypto
 		}
 		catch(Exception e)
 		{
+			//e.printStackTrace();
 			//System.out.println("setKeyPairFromData: " + e);
 			throw (new AuthorizationFailedException());
 		}

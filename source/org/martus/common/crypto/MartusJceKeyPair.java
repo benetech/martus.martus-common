@@ -27,8 +27,8 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.crypto;
 
 import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyFactory;
@@ -121,11 +121,19 @@ public class MartusJceKeyPair extends MartusKeyPair
 	public void setFromData(byte[] data) throws Exception
 	{
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
-		ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-		KeyPair candidatePair = (KeyPair)objectInputStream.readObject();
-		if(!isKeyPairValid(candidatePair))
-			throw (new AuthorizationFailedException());
-		setJceKeyPair(candidatePair);
+		DataInputStream dataInputStream = new DataInputStream(inputStream);
+		MartusKeyPairLoader loader = new MartusKeyPairLoader();
+		try
+		{
+			KeyPair candidatePair = (loader.readKeyPair(dataInputStream));
+			if(!isKeyPairValid(candidatePair))
+				throw (new AuthorizationFailedException());
+			setJceKeyPair(candidatePair);
+		}
+		catch(RuntimeException e)
+		{
+			throw new AuthorizationFailedException();
+		}
 	}
 	
 	public byte[] encryptBytes(byte[] bytesToEncrypt, String recipientPublicKeyX509) throws Exception
