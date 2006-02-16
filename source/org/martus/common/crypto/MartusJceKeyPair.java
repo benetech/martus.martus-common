@@ -27,8 +27,10 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.crypto;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyFactory;
@@ -115,7 +117,7 @@ public class MartusJceKeyPair extends MartusKeyPair
 	public byte[] getKeyPairData() throws IOException
 	{
 		KeyPair jceKeyPairToWrite = getJceKeyPair();
-		return getKeyPairData(jceKeyPairToWrite);
+		return MartusJceKeyPair.getKeyPairData(jceKeyPairToWrite);
 	}
 
 	public void setFromData(byte[] data) throws Exception
@@ -217,6 +219,14 @@ public class MartusJceKeyPair extends MartusKeyPair
 	private void setJceKeyPair(KeyPair jceKeyPair)
 	{
 		this.jceKeyPair = jceKeyPair;
+	}
+
+	public static byte[] getKeyPairData(KeyPair jceKeyPairToWrite) throws IOException
+	{
+		ByteArrayOutputStream data = new ByteArrayOutputStream();
+		ObjectOutputStream objectOutputStream = new ObjectOutputStream(data);
+		objectOutputStream.writeObject(jceKeyPairToWrite);
+		return data.toByteArray();
 	}
 
 	private static Cipher createRSAEncryptor(PublicKey key) throws NoSuchAlgorithmException, NoSuchProviderException, NoSuchPaddingException, InvalidKeyException

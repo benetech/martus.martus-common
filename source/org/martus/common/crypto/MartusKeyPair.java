@@ -26,10 +26,7 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.crypto;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
@@ -60,13 +57,5 @@ public abstract class MartusKeyPair
 	public abstract byte[] decryptBytes(byte[] bytesToDecrypt) throws Exception;
 
 	public abstract byte[] getDigestOfPartOfPrivateKey() throws Exception;
-
-	public static byte[] getKeyPairData(KeyPair jceKeyPairToWrite) throws IOException
-	{
-		ByteArrayOutputStream data = new ByteArrayOutputStream();
-		ObjectOutputStream objectOutputStream = new ObjectOutputStream(data);
-		objectOutputStream.writeObject(jceKeyPairToWrite);
-		return data.toByteArray();
-	}
 
 }

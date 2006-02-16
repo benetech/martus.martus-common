@@ -56,7 +56,7 @@ public class MartusKeyPairDataConstants
 	public static final long BIG_INTEGER_CLASS_UID = -8287574255936472291L;
 	public static final long KEY_PAIR_CLASS_UID = -7565189502268009837L;
 	public static final long LANG_NUMBER_CLASS_UID = -8742448824652078965L;
-	public static final long PRIVAT_KEY_SUPER_CLASS_UID = -5605421053708761770L;
+	public static final long PRIVATE_KEY_SUPER_CLASS_UID = -5605421053708761770L;
 	
 	public static final String ELEMENT_DATA_FIELD_NAME = "elementData";
 	public static final String ELEMENT_COUNT_FIELD_NAME = "elementCount";

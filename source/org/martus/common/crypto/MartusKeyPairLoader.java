@@ -103,7 +103,7 @@ public class MartusKeyPairLoader
 			String classNameForPrivateSuper = in.readUTF();
 			throwIfNotEqual(MartusKeyPairDataConstants.BCE_JCE_PROVIDER_JCERSAPRIVATE_KEY_CLASS_NAME, classNameForPrivateSuper);
 			long uidForPrivateKeyClassSuper = in.readLong();
-			throwIfNotEqual(MartusKeyPairDataConstants.PRIVAT_KEY_SUPER_CLASS_UID, uidForPrivateKeyClassSuper);
+			throwIfNotEqual(MartusKeyPairDataConstants.PRIVATE_KEY_SUPER_CLASS_UID, uidForPrivateKeyClassSuper);
 			// new handle
 			nextHandle++;
 			
