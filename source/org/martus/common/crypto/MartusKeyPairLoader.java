@@ -67,12 +67,12 @@ public class MartusKeyPairLoader
 			int classDescFlags = in.readByte();
 			throwIfNotEqual(ObjectStreamConstants.SC_SERIALIZABLE, classDescFlags);
 			int fieldCount = in.readShort();
-			String[] expectedFields = {MartusKeyPairDataConstants.PRIVATE_KEY_FIELD_NAME, MartusKeyPairDataConstants.PUBLIC_KEY_FIELD_NAME};
-			String[] expectedClassNames = {MartusKeyPairDataConstants.LJAVA_SECURITY_PRIVATE_KEY_CLASS_NAME, MartusKeyPairDataConstants.LJAVA_SECURITY_PUBLIC_KEY_CLASS_NAME};
-			throwIfNotEqual(expectedFields.length, fieldCount);
+			
+			
+			throwIfNotEqual(MartusKeyPairDataConstants.KEY_PAIR_FIELD_NAMES.length, fieldCount);
 			for(int field=0; field < fieldCount; ++field)
 			{
-				readObjectFieldDescription(in, expectedClassNames[field], expectedFields[field]);
+				readObjectFieldDescription(in, MartusKeyPairDataConstants.KEY_PAIR_FIELD_CLASS_NAMES[field], MartusKeyPairDataConstants.KEY_PAIR_FIELD_NAMES[field]);
 			}
 			
 			readClassFooter(in);
@@ -585,6 +585,5 @@ public class MartusKeyPairLoader
 	BigInteger primeP;
 	BigInteger primeQ;
 	BigInteger privateExponent;
-
 	MartusKeyPair gotKeyPair;
 }
