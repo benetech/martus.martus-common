@@ -32,7 +32,6 @@ import java.io.ObjectInputStream;
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.PublicKey;
-import java.security.SecureRandom;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
@@ -394,25 +393,6 @@ public class TestMartusSecurity extends TestCaseEnhanced
 			}
 			assertFalse("bad passphrase", tempSecurity.hasKeyPair());
 		}
-		TRACE_END();
-	}
-
-	public void testVerifyDuringReadKeyPair() throws Exception
-	{
-		TRACE_BEGIN("testVerifyDuringReadKeyPair");
-		KeyPair mismatched = invalidKeyPair;
-		byte[] mismatchedKeyPairData = MartusJceKeyPair.getKeyPairData(mismatched);
-		
-		MartusKeyPair willFail = new MartusJceKeyPair(new SecureRandom());
-		try
-		{
-			willFail.setFromData(mismatchedKeyPairData);
-		}
-		catch(MartusCrypto.AuthorizationFailedException ignoreExpected)
-		{
-		}
-		
-		assertFalse("Shouldn't accept invalid pair", willFail.hasKeyPair());
 		TRACE_END();
 	}
 

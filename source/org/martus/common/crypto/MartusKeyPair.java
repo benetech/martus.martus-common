@@ -26,7 +26,6 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.crypto;
 
-import java.io.IOException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
@@ -47,7 +46,7 @@ public abstract class MartusKeyPair
 	public abstract void createRSA(int publicKeyBits)
 			throws Exception;
 
-	public abstract byte[] getKeyPairData() throws IOException;
+	public abstract byte[] getKeyPairData() throws Exception;
 
 	public abstract void setFromData(byte[] data) throws Exception;
 

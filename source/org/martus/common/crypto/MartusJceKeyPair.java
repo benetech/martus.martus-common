@@ -29,8 +29,7 @@ package org.martus.common.crypto;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.DataOutputStream;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyFactory;
@@ -114,7 +113,7 @@ public class MartusJceKeyPair extends MartusKeyPair
 		setJceKeyPair(keyPairGenerator.genKeyPair());
 	}
 	
-	public byte[] getKeyPairData() throws IOException
+	public byte[] getKeyPairData() throws Exception
 	{
 		KeyPair jceKeyPairToWrite = getJceKeyPair();
 		return MartusJceKeyPair.getKeyPairData(jceKeyPairToWrite);
@@ -221,11 +220,11 @@ public class MartusJceKeyPair extends MartusKeyPair
 		this.jceKeyPair = jceKeyPair;
 	}
 
-	public static byte[] getKeyPairData(KeyPair jceKeyPairToWrite) throws IOException
+	public static byte[] getKeyPairData(KeyPair jceKeyPairToWrite) throws Exception
 	{
 		ByteArrayOutputStream data = new ByteArrayOutputStream();
-		ObjectOutputStream objectOutputStream = new ObjectOutputStream(data);
-		objectOutputStream.writeObject(jceKeyPairToWrite);
+		DataOutputStream out = new DataOutputStream(data);
+		MartusKeyPairSaver.save(out, jceKeyPairToWrite);
 		return data.toByteArray();
 	}
 

@@ -149,7 +149,7 @@ public class MartusSecurity extends MartusCrypto
 	}
 
 	public void writeKeyPair(OutputStream outputStream, char[] passPhrase) throws
-			IOException
+			Exception
 	{
 		writeKeyPair(outputStream, passPhrase, keyPair);
 	}
@@ -737,7 +737,7 @@ public class MartusSecurity extends MartusCrypto
 	// end interface
 
 	public void writeKeyPair(OutputStream outputStream, char[] passPhrase, MartusKeyPair keyPairToUse) throws
-			IOException
+			Exception
 	{
 		byte[] randomSalt = createRandomSalt();
 		byte[] keyPairData = keyPairToUse.getKeyPairData();

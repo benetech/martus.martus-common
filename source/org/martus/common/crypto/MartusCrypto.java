@@ -51,7 +51,7 @@ public abstract class MartusCrypto
 	public abstract void clearKeyPair();
 	public abstract void createKeyPair();
 	public abstract void writeKeyPair(OutputStream outputStream, char[] passPhrase) throws
-		IOException;
+		Exception;
 	public abstract void readKeyPair(InputStream inputStream, char[] passPhrase) throws
 		IOException, InvalidKeyPairFileVersionException, AuthorizationFailedException;
 	public abstract String getPublicKeyString();
