@@ -29,12 +29,13 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectStreamConstants;
 import java.math.BigInteger;
+import java.security.KeyPair;
 
 import org.bouncycastle.jce.provider.JCERSAPrivateCrtKey;
 
 public class MartusKeyPairSaver
 {
-	public static void save(DataOutputStream out, MartusJceKeyPair keyPairToSave) throws Exception
+	public static void save(DataOutputStream out, KeyPair keyPairToSave) throws Exception
 	{		
 		MartusKeyPairSaver saver = new MartusKeyPairSaver();		
 		saver.writeKeyPair(out, keyPairToSave);
@@ -44,9 +45,9 @@ public class MartusKeyPairSaver
 	{	
 	}
 	
-	void writeKeyPair(DataOutputStream out, MartusJceKeyPair keyPair) throws Exception
+	void writeKeyPair(DataOutputStream out, KeyPair keyPair) throws Exception
 	{
-		JCERSAPrivateCrtKey privateKey = (JCERSAPrivateCrtKey)keyPair.getPrivateKey();
+		JCERSAPrivateCrtKey privateKey = (JCERSAPrivateCrtKey)keyPair.getPrivate();
 		nextHandle = MartusKeyPairDataConstants.INITIAL_HANDLE;
 		
 		out.writeShort(ObjectStreamConstants.STREAM_MAGIC);
@@ -57,7 +58,7 @@ public class MartusKeyPairSaver
 			writeObjectClassHeader(out, MartusKeyPairDataConstants.JAVA_SECURITY_KEY_PAIR_CLASS_NAME, MartusKeyPairDataConstants.KEY_PAIR_CLASS_UID);
 			
 			out.writeByte(ObjectStreamConstants.SC_SERIALIZABLE);
-			out.writeInt(MartusKeyPairDataConstants.KEY_PAIR_FIELD_NAMES.length);
+			out.writeShort(MartusKeyPairDataConstants.KEY_PAIR_FIELD_NAMES.length);
 
 			for(int field=0; field < MartusKeyPairDataConstants.KEY_PAIR_FIELD_CLASS_NAMES.length; ++field)
 			{
@@ -71,8 +72,8 @@ public class MartusKeyPairSaver
 		{
 			writeObjectClassHeader(out, MartusKeyPairDataConstants.BCE_JCE_PROVIDER_JCERSAPRIVATE_CRT_KEY_CLASS_NAME, MartusKeyPairDataConstants.BCE_JCE_RSA_PRIVATE_KEY_CLASS_UID);
 
-			out.writeInt(ObjectStreamConstants.SC_SERIALIZABLE);
-			out.writeInt(MartusKeyPairDataConstants.PRIVATE_CRT_KEY_FIELD_NAMES.length);
+			out.writeByte(ObjectStreamConstants.SC_SERIALIZABLE);
+			out.writeShort(MartusKeyPairDataConstants.PRIVATE_CRT_KEY_FIELD_NAMES.length);
 
 			bigIntStringHandle = writeObjectFieldDescription(out, MartusKeyPairDataConstants.LJAVA_MATH_BIG_INTEGER_CLASS_NAME, MartusKeyPairDataConstants.PRIVATE_CRT_KEY_FIELD_NAMES[0]);
 			for(int field=1; field < MartusKeyPairDataConstants.PRIVATE_CRT_KEY_FIELD_NAMES.length; ++field)
@@ -80,7 +81,7 @@ public class MartusKeyPairSaver
 				writeBigIntegerFieldReference(out, MartusKeyPairDataConstants.PRIVATE_CRT_KEY_FIELD_NAMES[field]);
 			}
 			
-			out.writeInt(ObjectStreamConstants.TC_ENDBLOCKDATA);
+			out.writeByte(ObjectStreamConstants.TC_ENDBLOCKDATA);
 			
 			// Super Class
 			out.writeByte(ObjectStreamConstants.TC_CLASSDESC);
@@ -90,7 +91,7 @@ public class MartusKeyPairSaver
 			nextHandle++;
 			
 			out.writeByte(ObjectStreamConstants.SC_SERIALIZABLE);
-			out.writeInt(MartusKeyPairDataConstants.PRIVATE_KEY_FIELD_COUNT);
+			out.writeShort(MartusKeyPairDataConstants.PRIVATE_KEY_FIELD_COUNT);
 
 			// Private Key field 1
 			writeBigIntegerFieldReference(out, MartusKeyPairDataConstants.MODULUS_FIELD_NAME);
@@ -111,7 +112,7 @@ public class MartusKeyPairSaver
 			bigIntClassHandle = writeObjectClassHeader(out, MartusKeyPairDataConstants.JAVA_MATH_BIG_INTEGER_CLASS_NAME, MartusKeyPairDataConstants.BIG_INTEGER_CLASS_UID);
 						
 			out.writeByte(ObjectStreamConstants.SC_SERIALIZABLE | ObjectStreamConstants.SC_WRITE_METHOD);
-			out.writeInt(MartusKeyPairDataConstants.BIGINTEGER_FIELD_COUNT);
+			out.writeShort(MartusKeyPairDataConstants.BIGINTEGER_FIELD_COUNT);
 
 			// Big Integer field 1
 			writeIntFieldDescription(out, MartusKeyPairDataConstants.BIT_COUNT_FIELD_NAME);
@@ -153,7 +154,7 @@ public class MartusKeyPairSaver
 				
 				byteArrayClassHandle = writeArrayClassHeader(out, MartusKeyPairDataConstants.BYTE_ARRAY_CLASS_NAME, MartusKeyPairDataConstants.ARRAY_CLASS_UID);
 				out.writeByte(ObjectStreamConstants.SC_SERIALIZABLE);
-				out.writeByte(MartusKeyPairDataConstants.MAGNITUDE_FIELD_COUNT);		
+				out.writeShort(MartusKeyPairDataConstants.MAGNITUDE_FIELD_COUNT);		
 				
 				writeClassFooter(out);
 				
@@ -168,7 +169,7 @@ public class MartusKeyPairSaver
 			{
 				writeObjectClassHeader(out, MartusKeyPairDataConstants.JAVA_UTIL_HASHTABLE_CLASS_NAME, MartusKeyPairDataConstants.HASHTABLE_CLASS_UID);
 				
-				out.writeByte(ObjectStreamConstants.SC_SERIALIZABLE);
+				out.writeByte(ObjectStreamConstants.SC_SERIALIZABLE | ObjectStreamConstants.SC_WRITE_METHOD);
 				out.writeShort(MartusKeyPairDataConstants.HASHTABLE_FIELD_COUNT);
 				
 				// Hash Table field 1
@@ -185,7 +186,7 @@ public class MartusKeyPairSaver
 			{
 				writeObjectClassHeader(out, MartusKeyPairDataConstants.JAVA_UTIL_VECTOR_CLASS_NAME, MartusKeyPairDataConstants.VECTOR_CLASS_UID);
 				
-				out.writeInt(ObjectStreamConstants.SC_SERIALIZABLE);
+				out.writeByte(ObjectStreamConstants.SC_SERIALIZABLE);
 				out.writeShort(MartusKeyPairDataConstants.VECTOR_FIELD_COUNT);
 				
 				// Vector field 1
@@ -279,8 +280,8 @@ public class MartusKeyPairSaver
 
 		private int writeClassFooter(DataOutputStream out) throws IOException
 		{
-			out.write(ObjectStreamConstants.TC_ENDBLOCKDATA);
-			out.writeInt(ObjectStreamConstants.TC_NULL);
+			out.writeByte(ObjectStreamConstants.TC_ENDBLOCKDATA);
+			out.writeByte(ObjectStreamConstants.TC_NULL);
 			// new handle		
 			return nextHandle++;
 		}
@@ -338,16 +339,19 @@ public class MartusKeyPairSaver
 			out.writeInt(MartusKeyPairDataConstants.HASHTABLE_THRESHOLD);
 			out.writeByte(ObjectStreamConstants.TC_BLOCKDATA);
 			out.writeByte(MartusKeyPairDataConstants.HASHTABLE_BYTE_COUNT);
+			
 			// originalLength
+			out.writeInt(0);
+			
 			out.writeInt(MartusKeyPairDataConstants.HASHTABLE_NUMBER_OF_ELEMENTS);
-			out.writeInt(ObjectStreamConstants.TC_ENDBLOCKDATA);
+			out.writeByte(ObjectStreamConstants.TC_ENDBLOCKDATA);
 		}
 
 		private void writeArrayFieldDecription(DataOutputStream out, String fieldName) throws IOException
 		{
 			out.writeByte(MartusKeyPairDataConstants.FIELD_TYPE_CODE_ARRAY);
 			out.writeUTF(fieldName);
-			out.writeInt(ObjectStreamConstants.TC_STRING);
+			out.writeByte(ObjectStreamConstants.TC_STRING);
 			out.writeUTF(MartusKeyPairDataConstants.LJAVA_LANG_OBJECT_CLASS_NAME);
 			nextHandle++;
 		}
@@ -392,7 +396,7 @@ public class MartusKeyPairSaver
 		{
 			out.writeByte(MartusKeyPairDataConstants.FIELD_TYPE_CODE_OBJECT);
 			out.writeUTF(fieldName);
-			out.writeInt(ObjectStreamConstants.TC_REFERENCE);
+			out.writeByte(ObjectStreamConstants.TC_REFERENCE);
 			out.writeInt(bigIntStringHandle);
 		}
 

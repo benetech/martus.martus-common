@@ -211,7 +211,7 @@ public class MartusJceKeyPair extends MartusKeyPair
 		
 	}
 	
-	private KeyPair getJceKeyPair()
+	public KeyPair getJceKeyPair()
 	{
 		return jceKeyPair;
 	}

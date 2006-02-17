@@ -27,7 +27,9 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.test;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.ObjectInputStream;
 import java.security.KeyPair;
 import java.security.SecureRandom;
@@ -37,6 +39,7 @@ import java.util.Vector;
 import org.martus.common.crypto.MartusJceKeyPair;
 import org.martus.common.crypto.MartusKeyPair;
 import org.martus.common.crypto.MartusKeyPairLoader;
+import org.martus.common.crypto.MartusKeyPairSaver;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.util.Base64;
 import org.martus.util.TestCaseEnhanced;
@@ -144,7 +147,21 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 		}
 	}
 
-	
+	public void testMartusKeyPairSaver() throws Exception
+	{
+		MartusJceKeyPair keyPair = (MartusJceKeyPair)MockMartusSecurity.createClient().getKeyPair();
+		ByteArrayOutputStream rawOut = new ByteArrayOutputStream();
+		DataOutputStream out = new DataOutputStream(rawOut);
+		MartusKeyPairSaver.save(out, keyPair.getJceKeyPair());
+		
+		byte[] dataResults = rawOut.toByteArray();
+		ByteArrayInputStream rawIn = new ByteArrayInputStream(dataResults);
+		DataInputStream in = new DataInputStream(rawIn);
+		MartusJceKeyPair loaded = new MartusJceKeyPair(MartusKeyPairLoader.load(in));
+		
+		verifyEncryptDecrypt(loaded, keyPair);
+		verifyEncryptDecrypt(keyPair, loaded);
+	}
 	
 	public void testEncryption() throws Exception
 	{
