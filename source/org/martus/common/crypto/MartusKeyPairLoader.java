@@ -169,7 +169,7 @@ public class MartusKeyPairLoader
 			int superClassDescFlags = in.readByte();
 			throwIfNotEqual(ObjectStreamConstants.SC_SERIALIZABLE, superClassDescFlags);
 			int superFieldCount = in.readShort();
-			throwIfNotEqual(0, superFieldCount);
+			throwIfNotEqual(MartusKeyPairDataConstants.BIGINTEGER_SUPER_CLASS_FIELD_COUNT, superFieldCount);
 			
 			modulusObjectHandle = readClassFooter(in);
 			
@@ -262,7 +262,7 @@ public class MartusKeyPairLoader
 				int vectorField3DescFlags = in.readByte();
 				throwIfNotEqual(ObjectStreamConstants.SC_SERIALIZABLE, vectorField3DescFlags);
 				short vectorField3Count = in.readShort();
-				throwIfNotEqual(0, vectorField3Count);
+				throwIfNotEqual(MartusKeyPairDataConstants.VECTOR_FIELD_3_COUNT, vectorField3Count);
 				
 				readClassFooter(in);
 				
@@ -282,7 +282,7 @@ public class MartusKeyPairLoader
 			}
 			
 			//BigInt privateExponent (Private Key Field4)  
-			publicExponentObjectHandle = readBigIntegerObjectHeader(in);
+			readBigIntegerObjectHeader(in);
 			privateExponent = readBigIntegerData(in);
 			
 			if(privateSuperHasWriteObject)
@@ -322,7 +322,7 @@ public class MartusKeyPairLoader
 				int classDescFlagsForPublic = in.readByte();
 				throwIfNotEqual(ObjectStreamConstants.SC_SERIALIZABLE, classDescFlagsForPublic);
 				int fieldCountForPublic = in.readShort();
-				throwIfNotEqual(2, fieldCountForPublic);
+				throwIfNotEqual(MartusKeyPairDataConstants.PUBLIC_KEY_FIELD_COUNT, fieldCountForPublic);
 				
 				for(int i = 0; i < MartusKeyPairDataConstants.PUBLIC_KEY_FIELD_NAMES.length; ++i)
 				{

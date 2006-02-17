@@ -97,16 +97,20 @@ public class MartusKeyPairDataConstants
 	public static final int HASHTABLE_NUMBER_OF_ELEMENTS = 0;
 	public static final int HASHTABLE_BYTE_COUNT = 8;
 	public static final int HASHTABLE_THRESHOLD = 8;
-	public static final double HASHTABLE_LOADFACTOR = 0.75;
+	public static final float HASHTABLE_LOADFACTOR = 0.75f;
 	
 	public static final int VECTOR_ELEMENT_COUNT = 0;
 	public static final int VECTOR_CAPACITY_INCREMENT = 0;
-	
+	public static final int VECTOR_ARRAY_LENGTH=10;
+
 	public static final int VECTOR_FIELD_COUNT = 3;
+	public static final int VECTOR_FIELD_3_COUNT = 0;
 	public static final int HASHTABLE_FIELD_COUNT = 2;
 	public static final int MAGNITUDE_FIELD_COUNT = 0;
 	public static final int BIGINTEGER_FIELD_COUNT = 6;
+	public static final int BIGINTEGER_SUPER_CLASS_FIELD_COUNT = 0;
 	public static final int PRIVATE_KEY_FIELD_COUNT = 4;
+	public static final int PUBLIC_KEY_FIELD_COUNT = 2;
 
 	public final static String[] PRIVATE_CRT_KEY_FIELD_NAMES = {
 	CRT_COEFFICIENT_FIELD_NAME, PRIME_EXPONENT_P_FIELD_NAME, PRIME_EXPONENT_Q_FIELD_NAME,
@@ -115,4 +119,6 @@ public class MartusKeyPairDataConstants
 	public static final String[] PUBLIC_KEY_FIELD_NAMES = {MODULUS_FIELD_NAME, PUBLIC_EXPONENT_FIELD_NAME};
 	public static final String[] KEY_PAIR_FIELD_NAMES = {PRIVATE_KEY_FIELD_NAME, PUBLIC_KEY_FIELD_NAME};
 	public final static String[] KEY_PAIR_FIELD_CLASS_NAMES = {LJAVA_SECURITY_PRIVATE_KEY_CLASS_NAME, LJAVA_SECURITY_PUBLIC_KEY_CLASS_NAME};
+
+
 }

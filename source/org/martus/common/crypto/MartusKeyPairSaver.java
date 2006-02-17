@@ -28,6 +28,7 @@ package org.martus.common.crypto;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectStreamConstants;
+import java.math.BigInteger;
 
 import org.bouncycastle.jce.provider.JCERSAPrivateCrtKey;
 
@@ -45,6 +46,7 @@ public class MartusKeyPairSaver
 	
 	void writeKeyPair(DataOutputStream out, MartusJceKeyPair keyPair) throws Exception
 	{
+		JCERSAPrivateCrtKey privateKey = (JCERSAPrivateCrtKey)keyPair.getPrivateKey();
 		nextHandle = MartusKeyPairDataConstants.INITIAL_HANDLE;
 		
 		out.writeShort(ObjectStreamConstants.STREAM_MAGIC);
@@ -137,11 +139,8 @@ public class MartusKeyPairSaver
 			nextHandle++;
 			
 			out.writeByte(ObjectStreamConstants.SC_SERIALIZABLE);
-			//:TODO make constant
-			out.writeShort(0);
-//			int superFieldCount = in.readShort();
-//			throwIfNotEqual(0, superFieldCount);
-//			
+			out.writeShort(MartusKeyPairDataConstants.BIGINTEGER_SUPER_CLASS_FIELD_COUNT);
+			
 			modulusObjectHandle = writeClassFooter(out);
 			
 			//BigInt Modulus Data
@@ -158,169 +157,126 @@ public class MartusKeyPairSaver
 				
 				writeClassFooter(out);
 				
-				JCERSAPrivateCrtKey privateKey = (JCERSAPrivateCrtKey)keyPair.getPrivateKey();
-				
 				byte[] magnitude = privateKey.getModulus().toByteArray();
 				
 				out.writeInt(magnitude.length);
 				out.write(magnitude);
 				out.writeByte(ObjectStreamConstants.TC_ENDBLOCKDATA);				
 			}
-//			
-//			// Hashtable
-//			{
-//				readObjectClassHeader(in, MartusKeyPairDataConstants.JAVA_UTIL_HASHTABLE_CLASS_NAME, MartusKeyPairDataConstants.HASHTABLE_CLASS_UID);
-//				
-//				int hashTableClassDescFlags = in.readByte();
-//				throwIfNotEqual(ObjectStreamConstants.SC_SERIALIZABLE | ObjectStreamConstants.SC_WRITE_METHOD, hashTableClassDescFlags);
-//				short hashTableFieldCount = in.readShort();
-//				throwIfNotEqual(MartusKeyPairDataConstants.HASHTABLE_FIELD_COUNT, hashTableFieldCount);
-//				
-//				// Hash Table field 1
-//				throwIfNotEqual(MartusKeyPairDataConstants.LOAD_FACTOR_FIELD_NAME, readFloatFieldDescription(in));
-//				
-//				// Hash Table field 2
-//				throwIfNotEqual(MartusKeyPairDataConstants.THRESHOLD_FIELD_NAME, readIntFieldDescription(in));
-//
-//				readClassFooter(in);
-//				
-//				readEmptyHashTableData(in);
-//			}
-//			
-//			//Vector
-//			{
-//				readObjectClassHeader(in, MartusKeyPairDataConstants.JAVA_UTIL_VECTOR_CLASS_NAME, MartusKeyPairDataConstants.VECTOR_CLASS_UID);
-//				
-//				int vectorClassDescFlags = in.readByte();
-//				throwIfNotEqual(ObjectStreamConstants.SC_SERIALIZABLE, vectorClassDescFlags & ObjectStreamConstants.SC_SERIALIZABLE);
-//				boolean vectorHasWriteObject = hasFlag(vectorClassDescFlags, ObjectStreamConstants.SC_WRITE_METHOD);
-//				short vectorFieldCount = in.readShort();
-//				throwIfNotEqual(MartusKeyPairDataConstants.VECTOR_FIELD_COUNT, vectorFieldCount);
-//				
-//				// Vector field 1
-//				throwIfNotEqual(MartusKeyPairDataConstants.CAPACITY_INCREMENT_FIELD_NAME, readIntFieldDescription(in));
-//				
-//				// Vector field 2
-//				throwIfNotEqual(MartusKeyPairDataConstants.ELEMENT_COUNT_FIELD_NAME, readIntFieldDescription(in));
-//				 
-//				// Vector field 3
-//				throwIfNotEqual(MartusKeyPairDataConstants.ELEMENT_DATA_FIELD_NAME, readArrayFieldDecription(in));
-//				
-//				readClassFooter(in);
-//				
-//				// Vector Field1 Data
-//				int capacityIncrement = in.readInt();
-//				throwIfNotEqual(MartusKeyPairDataConstants.VECTOR_CAPACITY_INCREMENT, capacityIncrement);
-//				
-//				//Vector Field2 Data
-//				int elementCount = in.readInt();
-//				throwIfNotEqual(MartusKeyPairDataConstants.VECTOR_ELEMENT_COUNT, elementCount);
-//				
-//				readArrayClassHeader(in, MartusKeyPairDataConstants.JAVA_LANG_OBJECT_CLASS_NAME, MartusKeyPairDataConstants.OBJECT_CLASS_UID);
-//				
-//				int vectorField3DescFlags = in.readByte();
-//				throwIfNotEqual(ObjectStreamConstants.SC_SERIALIZABLE, vectorField3DescFlags);
-//				short vectorField3Count = in.readShort();
-//				throwIfNotEqual(0, vectorField3Count);
-//				
-//				readClassFooter(in);
-//				
-//				int arrayLength = in.readInt();
-//				for(int b = 0; b < arrayLength; ++b)
-//				{
-//					byte nullObjectMarker = in.readByte();
-//					throwIfNotEqual(ObjectStreamConstants.TC_NULL, nullObjectMarker);
-//				}
-//				
-//				if(vectorHasWriteObject)
-//				{
-//					int arrayEndDataFlag = in.readByte();
-//					throwIfNotEqual(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
-//				}
-//				
-//			}
-//			
-//			//BigInt privateExponent (Private Key Field4)  
-//			publicExponentObjectHandle = readBigIntegerObjectHeader(in);
-//			privateExponent = readBigIntegerData(in);
-//			
-//			if(privateSuperHasWriteObject)
-//			{
-//				int endOfWriteObjectData = in.readByte();
-//				throwIfNotEqual(ObjectStreamConstants.TC_ENDBLOCKDATA, endOfWriteObjectData);
-//			}
-//			
-//			// BigInt crtCoefficient (PrivateCRTKey Field 1)
-//			readBigIntegerObjectHeader(in);
-//			crtCoefficient = readBigIntegerData(in);
-//
-//			// BigInt primeExponentP (PrivateCRTKey Field 2)
-//			readBigIntegerObjectHeader(in);			
-//			primeExponentP = readBigIntegerData(in);
-//			
-//			// BigInt primeExponentQ (PrivateCRTKey Field 3)
-//			readBigIntegerObjectHeader(in);			
-//			primeExponentQ = readBigIntegerData(in);
-//					
-//			// BigInt primeP (PrivateCRTKey Field4) 
-//			readBigIntegerObjectHeader(in);		
-//			primeP = readBigIntegerData(in);
-//			
-//			// BigInt primeQ (PrivateCRTKey Field5)
-//			readBigIntegerObjectHeader(in);		
-//			primeQ = readBigIntegerData(in);
-//			
-//			// BigInt publicExponent (PrivateCRTKey Field6)
-//			publicExponentObjectHandle = readBigIntegerObjectHeader(in);
-//			publicExponent = readBigIntegerData(in);				
-//			
-//			// Public Key Description
-//			{
-//				readObjectClassHeader(in, MartusKeyPairDataConstants.BCE_JCE_PROVIDER_JCERSAPUBLIC_KEY_CLASS_NAME, MartusKeyPairDataConstants.BCE_JCE_RSA_PUBLIC_KEY_CLASS_UID);
-//				
-//				int classDescFlagsForPublic = in.readByte();
-//				throwIfNotEqual(ObjectStreamConstants.SC_SERIALIZABLE, classDescFlagsForPublic);
-//				int fieldCountForPublic = in.readShort();
-//				throwIfNotEqual(2, fieldCountForPublic);
-//				
-//				for(int i = 0; i < MartusKeyPairDataConstants.PUBLIC_KEY_FIELD_NAMES.length; ++i)
-//				{
-//					String fieldName = readBigIntegerFieldReference(in);
-//					throwIfNotEqual(MartusKeyPairDataConstants.PUBLIC_KEY_FIELD_NAMES[i], fieldName);
-//				}
-//				
-//				readClassFooter(in);
-//				
-//			}
-//			
-//			//Public Key Data
-//			{
-//				// BigInt modulus (Field 1) 
-//				int refModulusObjectHandle = readObjectReference(in);
-//				throwIfNotEqual(modulusObjectHandle, refModulusObjectHandle);
-//
-//				//BigInt publicExponent Reference (Field 2)
-//				int refPublicExponentObjectHandle = readObjectReference(in);
-//				throwIfNotEqual(publicExponentObjectHandle, refPublicExponentObjectHandle);
-//			}
+			
+			// Hashtable
+			{
+				writeObjectClassHeader(out, MartusKeyPairDataConstants.JAVA_UTIL_HASHTABLE_CLASS_NAME, MartusKeyPairDataConstants.HASHTABLE_CLASS_UID);
+				
+				out.writeByte(ObjectStreamConstants.SC_SERIALIZABLE);
+				out.writeShort(MartusKeyPairDataConstants.HASHTABLE_FIELD_COUNT);
+				
+				// Hash Table field 1
+				writeFloatFieldDescription(out, MartusKeyPairDataConstants.LOAD_FACTOR_FIELD_NAME);
+				
+				// Hash Table field 2
+				writeIntFieldDescription(out, MartusKeyPairDataConstants.THRESHOLD_FIELD_NAME);
+				writeClassFooter(out);
+				
+				writeEmptyHashTableData(out);
+			}
+			
+			//Vector
+			{
+				writeObjectClassHeader(out, MartusKeyPairDataConstants.JAVA_UTIL_VECTOR_CLASS_NAME, MartusKeyPairDataConstants.VECTOR_CLASS_UID);
+				
+				out.writeInt(ObjectStreamConstants.SC_SERIALIZABLE);
+				out.writeShort(MartusKeyPairDataConstants.VECTOR_FIELD_COUNT);
+				
+				// Vector field 1
+				writeIntFieldDescription(out, MartusKeyPairDataConstants.CAPACITY_INCREMENT_FIELD_NAME);
+				
+				// Vector field 2
+				writeIntFieldDescription(out, MartusKeyPairDataConstants.ELEMENT_COUNT_FIELD_NAME);
+				
+				// Vector field 3
+				writeArrayFieldDecription(out, MartusKeyPairDataConstants.ELEMENT_DATA_FIELD_NAME);
+				
+				writeClassFooter(out);
+				
+				// Vector Field1 Data
+				out.writeInt(MartusKeyPairDataConstants.VECTOR_CAPACITY_INCREMENT);
+				
+				//Vector Field2 Data
+				out.writeInt(MartusKeyPairDataConstants.VECTOR_ELEMENT_COUNT);
+				
+				writeArrayClassHeader(out, MartusKeyPairDataConstants.JAVA_LANG_OBJECT_CLASS_NAME, MartusKeyPairDataConstants.OBJECT_CLASS_UID);
+				
+				out.writeByte(ObjectStreamConstants.SC_SERIALIZABLE);
+				out.writeShort(MartusKeyPairDataConstants.VECTOR_FIELD_3_COUNT);
+				
+				writeClassFooter(out);
+				
+				out.writeInt(MartusKeyPairDataConstants.VECTOR_ARRAY_LENGTH);
+				for(int b = 0; b < MartusKeyPairDataConstants.VECTOR_ARRAY_LENGTH; ++b)
+				{
+					out.writeByte(ObjectStreamConstants.TC_NULL);
+				}
+				
+			}
+			
+			//BigInt privateExponent (Private Key Field4)
+			writeBigIntegerObjectHeader(out);
+			
+			writeBigIntegerData(out, privateKey.getPrivateExponent());
+			
+			// BigInt crtCoefficient (PrivateCRTKey Field 1)
+			writeBigIntegerObjectHeader(out);
+			writeBigIntegerData(out, privateKey.getCrtCoefficient());
+			
+			// BigInt primeExponentP (PrivateCRTKey Field 2)
+			writeBigIntegerObjectHeader(out);		
+			writeBigIntegerData(out, privateKey.getPrimeExponentP());
+			
+			// BigInt primeExponentQ (PrivateCRTKey Field 3)
+			writeBigIntegerObjectHeader(out);		
+			writeBigIntegerData(out, privateKey.getPrimeExponentQ());
+
+			// BigInt primeP (PrivateCRTKey Field4) 
+			writeBigIntegerObjectHeader(out);		
+			writeBigIntegerData(out, privateKey.getPrimeP());
+			
+			// BigInt primeQ (PrivateCRTKey Field5)
+			writeBigIntegerObjectHeader(out);		
+			writeBigIntegerData(out, privateKey.getPrimeQ());
+			
+			// BigInt publicExponent (PrivateCRTKey Field6)
+			publicExponentObjectHandle = writeBigIntegerObjectHeader(out);		
+			writeBigIntegerData(out, privateKey.getPublicExponent());	
+			
+			// Public Key Description
+			{
+				writeObjectClassHeader(out, MartusKeyPairDataConstants.BCE_JCE_PROVIDER_JCERSAPUBLIC_KEY_CLASS_NAME, MartusKeyPairDataConstants.BCE_JCE_RSA_PUBLIC_KEY_CLASS_UID);
+				
+				out.writeByte(ObjectStreamConstants.SC_SERIALIZABLE);
+				out.writeShort(MartusKeyPairDataConstants.PUBLIC_KEY_FIELD_COUNT);
+
+				for(int i = 0; i < MartusKeyPairDataConstants.PUBLIC_KEY_FIELD_NAMES.length; ++i)
+				{
+					writeBigIntegerFieldReference(out, MartusKeyPairDataConstants.PUBLIC_KEY_FIELD_NAMES[i]);
+				}
+				
+				writeClassFooter(out);
+				
+			}
+			
+			//Public Key Data
+			{
+				// BigInt modulus (Field 1) 
+				writeObjectReference(out, modulusObjectHandle);
+				
+				//BigInt publicExponent Reference (Field 2)
+				writeObjectReference(out, publicExponentObjectHandle);
+			}
 		}
-//		
-//		// Reconstitute Keypair
-//		RSAPublicKeySpec publicSpec = new RSAPublicKeySpec(modulus, publicExponent);
-//		RSAPrivateCrtKeySpec privateSpec = new RSAPrivateCrtKeySpec(modulus, publicExponent, privateExponent, primeP, primeQ, primeExponentP, primeExponentQ, crtCoefficient);
-//		KeyFactory factory = KeyFactory.getInstance("RSA", "BC");
-//		JCERSAPublicKey publicKey = (JCERSAPublicKey)factory.generatePublic(publicSpec);
-//		JCERSAPrivateCrtKey privateCRTKey = (JCERSAPrivateCrtKey)factory.generatePrivate(privateSpec);
-//		
-//		KeyPair keyPair = new KeyPair(publicKey, privateCRTKey);
-//		return keyPair;
+		
 	}
 
-//		private boolean hasFlag(int variable, int flag)
-//		{
-//			return (variable & flag) == flag;
-//		}
-	
 		private int writeClassFooter(DataOutputStream out) throws IOException
 		{
 			out.write(ObjectStreamConstants.TC_ENDBLOCKDATA);
@@ -369,101 +325,69 @@ public class MartusKeyPairSaver
 			// new handle
 			nextHandle++;
 		}
-//
-//		private String readFloatFieldDescription(DataInputStream in) throws IOException
-//		{
-//			byte typeCode = in.readByte();
-//			throwIfNotEqual(MartusKeyPairDataConstants.FIELD_TYPE_CODE_FLOAT, typeCode);
-//			String fieldName = in.readUTF();
-//			return fieldName;
-//		}
-//
-//		private void readEmptyHashTableData(DataInputStream in) throws IOException
-//		{
-//			float loadFactor = in.readFloat();
-//			throwIfNotEqual("loadfactor wrong?", MartusKeyPairDataConstants.HASHTABLE_LOADFACTOR, loadFactor, MartusKeyPairDataConstants.HASHTABLE_LOADFACTOR/100);
-//			
-//			int threshold = in.readInt();
-//			throwIfNotEqual("threshold wrong?", MartusKeyPairDataConstants.HASHTABLE_THRESHOLD, threshold);
-//			
-//			byte hashTableBlockDataFlag = in.readByte();
-//			throwIfNotEqual(ObjectStreamConstants.TC_BLOCKDATA, hashTableBlockDataFlag);
-//			
-//			byte blockDataByteCount = in.readByte();
-//			throwIfNotEqual("wrong block data byte count?", MartusKeyPairDataConstants.HASHTABLE_BYTE_COUNT, blockDataByteCount);
-//			// originalLength
-//			in.readInt(); 
-//			int elements = in.readInt();
-//			throwIfNotEqual("Hashtable not empty?", MartusKeyPairDataConstants.HASHTABLE_NUMBER_OF_ELEMENTS, elements);
-//			
-//			int hashTableEndDataFlag = in.readByte();
-//			throwIfNotEqual(ObjectStreamConstants.TC_ENDBLOCKDATA, hashTableEndDataFlag);
-//		}
-//
-//		private String readArrayFieldDecription(DataInputStream in) throws IOException
-//		{
-//			byte typeCode = in.readByte();
-//			throwIfNotEqual(MartusKeyPairDataConstants.FIELD_TYPE_CODE_ARRAY, typeCode);
-//			String fieldName = in.readUTF();
-//			int vecString = in.readByte();
-//			throwIfNotEqual(ObjectStreamConstants.TC_STRING, vecString);
-//			String fieldClassName = in.readUTF();
-//			throwIfNotEqual(MartusKeyPairDataConstants.LJAVA_LANG_OBJECT_CLASS_NAME, fieldClassName);
-//			nextHandle++;
-//			return fieldName;
-//		}
-//
+
+		private void writeFloatFieldDescription(DataOutputStream out, String fieldName) throws IOException
+		{
+			out.writeByte(MartusKeyPairDataConstants.FIELD_TYPE_CODE_FLOAT);
+			out.writeUTF(fieldName);
+		}
+
+		private void writeEmptyHashTableData(DataOutputStream out) throws IOException
+		{
+			out.writeFloat(MartusKeyPairDataConstants.HASHTABLE_LOADFACTOR);
+			out.writeInt(MartusKeyPairDataConstants.HASHTABLE_THRESHOLD);
+			out.writeByte(ObjectStreamConstants.TC_BLOCKDATA);
+			out.writeByte(MartusKeyPairDataConstants.HASHTABLE_BYTE_COUNT);
+			// originalLength
+			out.writeInt(MartusKeyPairDataConstants.HASHTABLE_NUMBER_OF_ELEMENTS);
+			out.writeInt(ObjectStreamConstants.TC_ENDBLOCKDATA);
+		}
+
+		private void writeArrayFieldDecription(DataOutputStream out, String fieldName) throws IOException
+		{
+			out.writeByte(MartusKeyPairDataConstants.FIELD_TYPE_CODE_ARRAY);
+			out.writeUTF(fieldName);
+			out.writeInt(ObjectStreamConstants.TC_STRING);
+			out.writeUTF(MartusKeyPairDataConstants.LJAVA_LANG_OBJECT_CLASS_NAME);
+			nextHandle++;
+		}
+
 		private void writeIntFieldDescription(DataOutputStream out, String fieldName) throws IOException
 		{
 			out.writeByte(MartusKeyPairDataConstants.FIELD_TYPE_CODE_INTEGER);
 			out.writeUTF(fieldName);
 		}
 
-//		private int readBigIntegerObjectHeader(DataInputStream in) throws IOException
-//		{
-//			int publicExponentObjectFlag = in.readByte();
-//			throwIfNotEqual(ObjectStreamConstants.TC_OBJECT, publicExponentObjectFlag);
-//			int refFlag = in.readByte();
-//			throwIfNotEqual(ObjectStreamConstants.TC_REFERENCE, refFlag);
-//			int refBigIntClassHandle = in.readInt();
-//			throwIfNotEqual(bigIntClassHandle, refBigIntClassHandle);
-//			int thisHandle = nextHandle++;
-//			return thisHandle;
-//		}
-//
-//		private BigInteger readBigIntegerData(DataInputStream in) throws IOException
-//		{
-//			int bitCount = in.readInt();
-//			throwIfNotEqual(MartusKeyPairDataConstants.BIGINTEGER_BIT_COUNT, bitCount);
-//			int bitLength = in.readInt();
-//			throwIfNotEqual(MartusKeyPairDataConstants.BIGINTEGER_BIT_LENGTH, bitLength);
-//			int firstNonZeroByteNum = in.readInt();
-//			throwIfNotEqual(MartusKeyPairDataConstants.BIGINTEGER_FIRST_NONZERO_BYTE_NUMBER, firstNonZeroByteNum);
-//			int lowestSetBit = in.readInt();
-//			throwIfNotEqual(MartusKeyPairDataConstants.BIGINTEGER_LOWEST_SET_BIT, lowestSetBit);
-//			int signum = in.readInt();
-//			throwIfNotEqual(MartusKeyPairDataConstants.BIGINTEGER_SIGNUM, signum);
-//
-//			byte typeCode = in.readByte();
-//			throwIfNotEqual(ObjectStreamConstants.TC_ARRAY, typeCode);
-//			byte typeCodeRefFlag = in.readByte();
-//			throwIfNotEqual(ObjectStreamConstants.TC_REFERENCE, typeCodeRefFlag);
-//			int refbyteArrayClassHandle = in.readInt();
-//			throwIfNotEqual(byteArrayClassHandle, refbyteArrayClassHandle);
-//			nextHandle++;
-//			
-//			int arrayLength = in.readInt();
-//			
-//			byte[] magnitude = new byte[arrayLength];
-//			in.read(magnitude);
-//			
-//			int arrayEndDataFlag = in.readByte();
-//			throwIfNotEqual(ObjectStreamConstants.TC_ENDBLOCKDATA, arrayEndDataFlag);
-//
-//			BigInteger gotBigInteger = new BigInteger(signum, magnitude);
-//			return gotBigInteger;
-//		}
-//
+		private int writeBigIntegerObjectHeader(DataOutputStream out) throws IOException
+		{
+			out.writeByte(ObjectStreamConstants.TC_OBJECT);
+			out.writeByte(ObjectStreamConstants.TC_REFERENCE);
+			out.writeInt(bigIntClassHandle);
+			int thisHandle = nextHandle++;
+			return thisHandle;
+		}
+
+		private void writeBigIntegerData(DataOutputStream out, BigInteger bigint) throws IOException
+		{
+			out.writeInt(MartusKeyPairDataConstants.BIGINTEGER_BIT_COUNT);
+			out.writeInt(MartusKeyPairDataConstants.BIGINTEGER_BIT_LENGTH);
+			out.writeInt(MartusKeyPairDataConstants.BIGINTEGER_FIRST_NONZERO_BYTE_NUMBER);
+			out.writeInt(MartusKeyPairDataConstants.BIGINTEGER_LOWEST_SET_BIT);
+			out.writeInt(MartusKeyPairDataConstants.BIGINTEGER_SIGNUM);
+			
+			out.writeByte(ObjectStreamConstants.TC_ARRAY);
+			out.writeByte(ObjectStreamConstants.TC_REFERENCE);
+			out.writeInt(byteArrayClassHandle);
+			nextHandle++;
+		
+			byte[] magnitude = bigint.toByteArray();
+			
+			out.writeInt(magnitude.length);
+			out.write(magnitude);
+			out.writeByte(ObjectStreamConstants.TC_ENDBLOCKDATA);	
+			
+		}
+
 		private void writeBigIntegerFieldReference(DataOutputStream out, String fieldName) throws IOException
 		{
 			out.writeByte(MartusKeyPairDataConstants.FIELD_TYPE_CODE_OBJECT);
@@ -471,60 +395,17 @@ public class MartusKeyPairSaver
 			out.writeInt(ObjectStreamConstants.TC_REFERENCE);
 			out.writeInt(bigIntStringHandle);
 		}
-//
-//		private int readObjectReference(DataInputStream in) throws IOException
-//		{
-//			int modulusRefFlag = in.readByte();
-//			throwIfNotEqual(ObjectStreamConstants.TC_REFERENCE, modulusRefFlag);
-//			int refModulusObjectHandle = in.readInt();
-//			return refModulusObjectHandle;
-//		}
-//		
-//		void throwIfNotEqual(String text, Object expected, Object actual)
-//		{
-//			if(!expected.equals(actual))
-//				throw new RuntimeException(text + "expected " + expected + " but was " + actual);
-//		}
-//		
-//		void throwIfNotEqual(Object expected, Object actual)
-//		{
-//			if(!expected.equals(actual))
-//				throw new RuntimeException("expected " + expected + " but was " + actual);
-//		}
-//		
-//		void throwIfNotEqual(String text, int expected, int actual)
-//		{
-//			if(expected != actual)
-//				throw new RuntimeException(text + "expected " + expected + " but was " + actual);
-//		}
-//		
-//		void throwIfNotEqual(long expected, long actual)
-//		{
-//			if(expected != actual)
-//				throw new RuntimeException("expected " + expected + " but was " + actual);
-//		}
-//		
-//		void throwIfNotEqual(String text, double expected, double actual, double tolerance)
-//		{
-//			if(expected < actual - tolerance || expected > actual + tolerance)
-//				throw new RuntimeException(text + "expected " + expected + " but was " + actual);
-//		}
-//		
+
+		private void writeObjectReference(DataOutputStream out, int objectRefHandle) throws IOException
+		{
+			out.writeByte(ObjectStreamConstants.TC_REFERENCE);
+			out.writeInt(objectRefHandle);
+		}
+		
 		int nextHandle;	
 		int bigIntStringHandle;
 		int bigIntClassHandle;
 		int modulusObjectHandle;
 		int byteArrayClassHandle;
-//		int publicExponentObjectHandle;
-//
-//		
-//		BigInteger modulus;
-//		BigInteger publicExponent;
-//		BigInteger crtCoefficient;
-//		BigInteger primeExponentP;
-//		BigInteger primeExponentQ;
-//		BigInteger primeP;
-//		BigInteger primeQ;
-//		BigInteger privateExponent;
-	//MartusKeyPair gotKeyPair;
+		int publicExponentObjectHandle;
 }
