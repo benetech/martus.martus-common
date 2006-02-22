@@ -32,6 +32,7 @@ import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
 import org.martus.common.MiniLocalization;
+import org.martus.util.MultiCalendar;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.language.LanguageOptions;
 
@@ -41,6 +42,25 @@ public class TestMiniLocalization extends TestCaseEnhanced
 	public TestMiniLocalization(String name)
 	{
 		super(name);
+	}
+	
+	public void testGetLocalizedYearMonthDay() throws Exception
+	{
+		MiniLocalization localization = new MiniLocalization();
+		MultiCalendar cal = MultiCalendar.createFromGregorianYearMonthDay(2005, 10, 20);
+		assertEquals(2005, localization.getLocalizedYear(cal));
+		assertEquals(10, localization.getLocalizedMonth(cal));
+		assertEquals(20, localization.getLocalizedDay(cal));
+		
+	}
+	
+	public void testCreateCalendarFromLocalizedYearMonthDay() throws Exception
+	{
+		MiniLocalization localization = new MiniLocalization();
+		MultiCalendar cal = localization.createCalendarFromLocalizedYearMonthDay(2005, 10, 20);
+		assertEquals(2005, cal.getGregorianYear());
+		assertEquals(10, cal.getGregorianMonth());
+		assertEquals(20, cal.getGregorianDay());
 	}
 	
 	public void testConvertStoredDateToDisplayNoTimeZoneOffset() throws Exception

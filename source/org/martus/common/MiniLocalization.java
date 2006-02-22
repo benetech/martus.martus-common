@@ -277,6 +277,29 @@ public class MiniLocalization
 
 	/////////////////////////////////////////////////////////////////
 	// Date-oriented stuff
+	
+	public int getLocalizedYear(MultiCalendar cal)
+	{
+		return cal.getGregorianYear();
+	}
+
+	public int getLocalizedMonth(MultiCalendar cal)
+	{
+		return cal.getGregorianMonth();
+	}
+
+	public int getLocalizedDay(MultiCalendar cal)
+	{
+		return cal.getGregorianDay();
+	}
+	
+	public MultiCalendar createCalendarFromLocalizedYearMonthDay(int year, int month, int day)
+	{
+		MultiCalendar cal = new MultiCalendar();
+		cal.setGregorian(year, month, day);
+		return cal;
+		
+	}
 
 	public String convertStoredDateToDisplay(String storedDate)
 	{
