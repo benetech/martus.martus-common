@@ -36,7 +36,6 @@ import org.martus.common.field.TestMartusField;
 import org.martus.common.field.TestMartusSearchableGridColumnField;
 import org.martus.common.fieldspec.TestCustomDropDownFieldSpec;
 import org.martus.common.fieldspec.TestDropDownFieldSpec;
-import org.martus.common.utilities.TestDatePreference;
 import org.martus.common.utilities.TestDateUtilities;
 import org.martus.common.utilities.TestMartusFlexidate;
 
@@ -78,7 +77,6 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestCustomDropDownFieldSpec.class));
 		suite.addTest(new TestSuite(TestCustomFields.class));
 		suite.addTest(new TestSuite(TestDatabaseKey.class));
-		suite.addTest(new TestSuite(TestDatePreference.class));
 		suite.addTest(new TestSuite(TestDateUtilities.class));
 		suite.addTest(new TestSuite(TestDropDownFieldSpec.class));
 		suite.addTest(new TestSuite(TestMartusField.class));

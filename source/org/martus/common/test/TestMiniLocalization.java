@@ -44,24 +44,84 @@ public class TestMiniLocalization extends TestCaseEnhanced
 		super(name);
 	}
 	
-	public void testGetLocalizedYearMonthDay() throws Exception
+	public void testCurrentCalendarSystem() throws Exception
 	{
 		MiniLocalization localization = new MiniLocalization();
-		MultiCalendar cal = MultiCalendar.createFromGregorianYearMonthDay(2005, 10, 20);
-		assertEquals(2005, localization.getLocalizedYear(cal));
-		assertEquals(10, localization.getLocalizedMonth(cal));
-		assertEquals(20, localization.getLocalizedDay(cal));
+		assertEquals("Didn't default to gregorian?", "Gregorian", localization.getCurrentCalendarSystem());
 		
+		localization.setCurrentCalendarSystem("Thai");
+		assertEquals("Didn't set to Thai?", "Thai", localization.getCurrentCalendarSystem());
+		
+		try
+		{
+			localization.setCurrentCalendarSystem("oiwefjoiwef");
+			fail("Should throw for unrecognized calendar system");
+		} 
+		catch (RuntimeException ignoreExpected)
+		{
+		}
 	}
 	
-	public void testCreateCalendarFromLocalizedYearMonthDay() throws Exception
+	public void testGetLocalizedDateFields() throws Exception
+	{
+		int year = 2005;
+		int month = 10;
+		int day = 20;
+		MultiCalendar cal = MultiCalendar.createFromGregorianYearMonthDay(year, month, day);
+		
+		verifyGetLocalizedFields(MiniLocalization.GREGORIAN_SYSTEM, cal, year, month, day);
+		verifyGetLocalizedFields(MiniLocalization.THAI_SYSTEM, cal, year + 243, month, day);
+		
+		
+	}
+
+	private void verifyGetLocalizedFields(String system, MultiCalendar cal, int expectedYear, int expectedMonth, int expectedDay)
 	{
 		MiniLocalization localization = new MiniLocalization();
-		MultiCalendar cal = localization.createCalendarFromLocalizedYearMonthDay(2005, 10, 20);
-		assertEquals(2005, cal.getGregorianYear());
-		assertEquals(10, cal.getGregorianMonth());
-		assertEquals(20, cal.getGregorianDay());
+		localization.setCurrentCalendarSystem(system);
+		assertEquals(system + " year wrong?", expectedYear, localization.getLocalizedYear(cal));
+		assertEquals(system + " month wrong?", expectedMonth, localization.getLocalizedMonth(cal));
+		assertEquals(system + "day wrong", expectedDay, localization.getLocalizedDay(cal));
 	}
+
+	public void testCreateCalendarFromLocalizedYearMonthDay() throws Exception
+	{
+		int year = 2005;
+		int month = 10;
+		int day = 20;
+		MultiCalendar reference = MultiCalendar.createFromGregorianYearMonthDay(year, month, day);
+		
+		verifyCreateLocalizedCalendar(reference, MiniLocalization.GREGORIAN_SYSTEM, year, month, day);
+		verifyCreateLocalizedCalendar(reference, MiniLocalization.THAI_SYSTEM, year + 243, month, day);
+	}
+
+	private void verifyCreateLocalizedCalendar(MultiCalendar reference, String system, int year, int month, int day)
+	{
+		MiniLocalization localization = new MiniLocalization();
+		localization.setCurrentCalendarSystem(system);
+		MultiCalendar cal = localization.createCalendarFromLocalizedYearMonthDay(year, month, day);
+		assertEquals(system + " Not the same date?", reference, cal);
+	}
+	
+	public void testConvertStoredDateToDisplay()
+	{
+		verifyConvertStoredToDisplayDate(MiniLocalization.GREGORIAN_SYSTEM, "10/20/2005", "2005-10-20");
+		verifyConvertStoredToDisplayDate(MiniLocalization.THAI_SYSTEM, "10/20/2248", "2005-10-20");
+		
+		
+		LanguageOptions.setDirectionRightToLeft();
+		verifyConvertStoredToDisplayDate(MiniLocalization.GREGORIAN_SYSTEM, "2005/20/10", "2005-10-20");
+		LanguageOptions.setDirectionLeftToRight();
+	}
+
+	private void verifyConvertStoredToDisplayDate(String system, String expectedDate, String isoDate)
+	{
+		MiniLocalization localization = new MiniLocalization();
+		localization.setCurrentCalendarSystem(system);
+		assertEquals(expectedDate, localization.convertStoredDateToDisplay(isoDate));
+	}
+
+
 	
 	public void testConvertStoredDateToDisplayNoTimeZoneOffset() throws Exception
 	{
@@ -125,7 +185,7 @@ public class TestMiniLocalization extends TestCaseEnhanced
     	assertEquals("bad conversion UTC 1/2 hour +" + Integer.toString(offset), "12/31/1987", loc.convertStoredDateToDisplay("1987-12-31"));
     	assertEquals("bad conversion before 1970 UTC 1/2 hour +" + Integer.toString(offset), "12/31/1947", loc.convertStoredDateToDisplay("1947-12-31"));
 	}
-
+	
 	public void testFormatDateTime() throws Exception
 	{
     	MiniLocalization loc = new MiniLocalization();

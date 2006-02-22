@@ -38,9 +38,10 @@ import java.util.TreeSet;
 import java.util.Vector;
 
 import org.martus.common.fieldspec.ChoiceItem;
-import org.martus.common.utilities.DatePreference;
 import org.martus.common.utilities.MartusFlexidate;
+import org.martus.util.DatePreference;
 import org.martus.util.MultiCalendar;
+import org.martus.util.MultiDateFormat;
 import org.martus.util.language.LanguageOptions;
 
 
@@ -61,6 +62,7 @@ public class MiniLocalization
 		textResources = new TreeMap();
 		rightToLeftLanguages = new Vector();
 		currentDateFormat = new DatePreference();
+		currentCalendarSystem = GREGORIAN_SYSTEM;
 	}
 	
 	public void addEnglishTranslations(String[] translations)
@@ -278,9 +280,32 @@ public class MiniLocalization
 	/////////////////////////////////////////////////////////////////
 	// Date-oriented stuff
 	
+	public String getCurrentCalendarSystem()
+	{
+		return currentCalendarSystem;
+	}
+	
+	public void setCurrentCalendarSystem(String newSystem)
+	{
+		for(int i = 0; i < ALL_CALENDAR_SYSTEMS.length; ++i)
+		{
+			if(ALL_CALENDAR_SYSTEMS[i].equals(newSystem))
+			{
+				currentCalendarSystem = newSystem;
+				return;
+			}
+		}
+		
+		throw new RuntimeException("Unknown calendar system: " + newSystem);
+	}
+	
 	public int getLocalizedYear(MultiCalendar cal)
 	{
-		return cal.getGregorianYear();
+		int gregorianYear = cal.getGregorianYear();
+		if(getCurrentCalendarSystem().equals(THAI_SYSTEM))
+			return gregorianYear + THAI_YEAR_OFFSET;
+		
+		return gregorianYear;
 	}
 
 	public int getLocalizedMonth(MultiCalendar cal)
@@ -295,28 +320,35 @@ public class MiniLocalization
 	
 	public MultiCalendar createCalendarFromLocalizedYearMonthDay(int year, int month, int day)
 	{
-		MultiCalendar cal = new MultiCalendar();
-		cal.setGregorian(year, month, day);
-		return cal;
+		if(getCurrentCalendarSystem().equals(THAI_SYSTEM))
+			return MultiCalendar.createFromGregorianYearMonthDay(year - THAI_YEAR_OFFSET, month, day);
 		
+		return MultiCalendar.createFromGregorianYearMonthDay(year, month, day);	
 	}
 
 	public String convertStoredDateToDisplay(String storedDate)
 	{
-		DateFormat dfDisplay = new SimpleDateFormat(getCurrentDateTemplate());
-		String result = "";
 		try
 		{
 			MultiCalendar cal = MultiCalendar.createFromIsoDateString(storedDate);
-			result = dfDisplay.format(cal.getTime());
-		}
-		catch(Exception e)
+			return toDisplayDateString(cal);
+		} 
+		catch (Exception e)
 		{
 			// unparsable dates simply become blank strings,
 			// so we don't want to do anything for this exception
-			//System.out.println(e);
+			//e.printStackTrace();
+			return "";
 		}
-		return result;
+	}
+
+	private String toDisplayDateString(MultiCalendar cal)
+	{
+		MultiDateFormat dfDisplay = new MultiDateFormat(currentDateFormat);
+		int year = getLocalizedYear(cal);
+		int month = getLocalizedMonth(cal);
+		int day = getLocalizedDay(cal);
+		return dfDisplay.format(year, month, day);
 	}
 	
 	public String getViewableDateRange(String newText)
@@ -342,6 +374,27 @@ public class MiniLocalization
 		return display;
 	}
 
+	public String formatDateTime(long dateTime)
+	{
+		if(dateTime == DATE_UNKNOWN)
+			return "";
+		DateFormat time24hour = new SimpleDateFormat("HH:mm");
+		
+		GregorianCalendar cal = new GregorianCalendar();
+		cal.setTimeInMillis(dateTime);
+		
+		MultiCalendar datePart = new MultiCalendar(cal);
+		String date = toDisplayDateString(datePart);
+		
+		String time = time24hour.format(cal.getTime());
+		if(isRightToLeftLanguage())
+			return time + SPACE + date;
+		return date + SPACE + time;
+	}
+
+	
+	
+	
 	private boolean isRightToLeftLanguage()
 	{
 		return rightToLeftLanguages.contains(getCurrentLanguageCode());
@@ -352,23 +405,6 @@ public class MiniLocalization
 		if(rightToLeftLanguages.contains(languageCode))
 			return;
 		rightToLeftLanguages.add(languageCode);
-	}
-
-	public String formatDateTime(long dateTime)
-	{
-		if(dateTime == DATE_UNKNOWN)
-			return "";
-		DateFormat dateShort = new SimpleDateFormat(getCurrentDateTemplate());
-		DateFormat time24hour = new SimpleDateFormat("HH:mm");
-		
-		GregorianCalendar cal = new GregorianCalendar();
-		cal.setTimeInMillis(dateTime);
-		
-		String date = dateShort.format(cal.getTime());
-		String time = time24hour.format(cal.getTime());
-		if(isRightToLeftLanguage())
-			return time + SPACE + date;
-		return date + SPACE + time;
 	}
 
 	public ChoiceItem[] getLanguageNameChoices()
@@ -406,10 +442,16 @@ public class MiniLocalization
 
 	static public final String SPACE = " ";
 	static public final long DATE_UNKNOWN = -1;
+	
+	public static final String GREGORIAN_SYSTEM = "Gregorian";
+	public static final String THAI_SYSTEM = "Thai";
+	public static final int THAI_YEAR_OFFSET = 243;
+	public static final String[] ALL_CALENDAR_SYSTEMS = {GREGORIAN_SYSTEM, THAI_SYSTEM, };
 
 	protected Map textResources;
 	protected Vector rightToLeftLanguages;
 	private String currentLanguageCode;
 	private DatePreference currentDateFormat;
+	private String currentCalendarSystem;
 	
 }
