@@ -27,6 +27,8 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.bulletinstore;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Vector;
 
 import org.martus.common.HQKeys;
@@ -44,6 +46,7 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 	public LeafNodeCache(BulletinStore storeToUse)
 	{
 		store = storeToUse;
+		clear();
 		storeWasCleared();
 	}
 	
@@ -73,13 +76,24 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 	public synchronized Vector getLeafKeys()
 	{
 		fill();
-		return leafKeys;
+		Vector result = toVector(leafKeys);
+		
+		return result;
+	}
+
+	private Vector toVector(HashSet set)
+	{
+		Vector result = new Vector();
+		Iterator iter = set.iterator();
+		while(iter.hasNext())
+			result.add(iter.next());
+		return result;
 	}
 	
 	public synchronized Vector getNonLeafUids()
 	{
 		fill();
-		return nonLeafUids;
+		return toVector(nonLeafUids);
 	}
 	
 	public synchronized Vector getFieldOffices(String hqAccountId)
@@ -110,12 +124,17 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 		if(isValid)
 			return;
 
-		hitErrorsDuringScan = false;
-		leafKeys = new Vector();
-		nonLeafUids = new Vector();
-		fieldOfficesPerHq = new HashMap();
+		clear();
 		store.visitAllBulletinRevisions(this);
 		isValid = true;
+	}
+
+	private void clear()
+	{
+		hitErrorsDuringScan = false;
+		leafKeys = new HashSet();
+		nonLeafUids = new HashSet();
+		fieldOfficesPerHq = new HashMap();
 	}
 
 	private Vector internalGetFieldOffices(String hqAccountId)
@@ -172,7 +191,7 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 		}
 	}
 
-	private void addToCachedLeafInformation(DatabaseKey key, BulletinHistory history)
+	void addToCachedLeafInformation(DatabaseKey key, BulletinHistory history)
 	{
 		UniversalId maybeLeaf = key.getUniversalId();
 		if(!nonLeafUids.contains(maybeLeaf))
@@ -191,8 +210,8 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 	private BulletinStore store;
 	private boolean isValid;
 	private boolean hitErrorsDuringScan;
-	private Vector leafKeys;
-	private Vector nonLeafUids;
+	private HashSet leafKeys;
+	private HashSet nonLeafUids;
 	private HashMap fieldOfficesPerHq;
 }
 
