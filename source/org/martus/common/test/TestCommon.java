@@ -31,6 +31,7 @@ import junit.framework.TestSuite;
 
 import org.martus.common.bulletinstore.TestBulletinStore;
 import org.martus.common.bulletinstore.TestBulletinStoreCache;
+import org.martus.common.bulletinstore.TestLeafNodeCache;
 import org.martus.common.field.TestMartusField;
 import org.martus.common.field.TestMartusSearchableGridColumnField;
 import org.martus.common.fieldspec.TestCustomDropDownFieldSpec;
@@ -90,6 +91,7 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestGridFieldSpec.class));
 		suite.addTest(new TestSuite(TestGridRow.class));
 		suite.addTest(new TestSuite(testHQKeys.class));
+		suite.addTest(new TestSuite(TestLeafNodeCache.class));
 		suite.addTest(new TestSuite(TestKeyShareSaveRestore.class));
 		suite.addTest(new TestSuite(TestMagicWordEntry.class));
 		suite.addTest(new TestSuite(TestMagicWords.class));
