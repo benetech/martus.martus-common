@@ -46,6 +46,68 @@ public class TestLeafNodeCache extends TestCaseEnhanced
 	{
 		super(name);
 	}
+	
+	/*
+	 * This test method is the beginning of exercising a speed optimization that would
+	 * update the cache when new bulletins are saved, rather than flushing it.
+	 * 
+	 * It needs to be fleshed out with more asserts after each call to revisionWasSaved, 
+	 * and it need to verify that the HQ cache is updated as well. 2006-02-23 kbs.
+	 */
+//	public void testSaveUpdatesCache() throws Exception
+//	{
+//		File tempDirectory = createTempDirectory();
+//		BulletinStore store = new BulletinStore();
+//		store.doAfterSigninInitialization(tempDirectory, new MockServerDatabase());
+//		
+//		MockMartusSecurity client = MockMartusSecurity.createClient();
+//		String accountId = client.getPublicKeyString();
+//
+//		UniversalId originalUid = UniversalId.createFromAccountAndLocalId(accountId, "original1");
+//		UniversalId middleUid = UniversalId.createFromAccountAndLocalId(accountId, "middle1");
+//		UniversalId latestUid = UniversalId.createFromAccountAndLocalId(accountId, "latest1");
+//		
+//		DatabaseKey originalKey = DatabaseKey.createDraftKey(originalUid);
+//		DatabaseKey middleKey = DatabaseKey.createDraftKey(middleUid);
+//		DatabaseKey latestKey = DatabaseKey.createDraftKey(latestUid);
+//
+//		BulletinHistory originalHistory = new BulletinHistory();
+//		BulletinHistory middleHistory = new BulletinHistory();
+//		middleHistory.add(originalUid.getLocalId());
+//		BulletinHistory latestHistory = new BulletinHistory();
+//		middleHistory.add(originalUid.getLocalId());
+//		middleHistory.add(middleUid.getLocalId());
+//		
+//		LeafNodeCache cache = new LeafNodeCache(store);
+//		cache.fill();
+//		
+//		cache.revisionWasSaved(originalKey, originalHistory);
+//		assertTrue("cache cleared 1?", cache.isCacheValid());
+//		assertEquals(1, cache.getRawLeafKeys().size());
+//		assertEquals(0, cache.getRawNonLeafUids().size());
+//		
+//		cache.revisionWasSaved(middleKey, middleHistory);
+//		assertTrue("cache cleared 2?", cache.isCacheValid());
+//		assertEquals(1, cache.getRawLeafKeys().size());
+//		assertContains("middle not a leaf?", middleKey, cache.getRawLeafKeys());
+//		assertEquals(1, cache.getRawNonLeafUids().size());
+//		assertContains("original not a non-leaf?", originalUid, cache.getNonLeafUids());
+//
+//		
+//		cache.revisionWasSaved(latestKey, latestHistory);
+//		assertTrue("cache cleared 3?", cache.isCacheValid());
+//		
+//		cache.storeWasCleared();
+//		cache.fill();
+//
+//		cache.revisionWasSaved(latestKey, latestHistory);
+//		assertTrue("cache cleared 4?", cache.isCacheValid());
+//		cache.revisionWasSaved(middleKey, middleHistory);
+//		assertTrue("cache cleared 5?", cache.isCacheValid());
+//		cache.revisionWasSaved(originalKey, originalHistory);
+//		assertTrue("cache cleared 6?", cache.isCacheValid());
+//		
+//	}
 
 	public void testLeafNodeCacheSpeed()
 	{
