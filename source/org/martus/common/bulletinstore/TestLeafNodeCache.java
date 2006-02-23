@@ -49,6 +49,9 @@ public class TestLeafNodeCache extends TestCaseEnhanced
 
 	public void testLeafNodeCacheSpeed()
 	{
+		if(!DO_SPEED_TESTS)
+			return;
+		
 		BulletinStore store = new BulletinStore();
 		LeafNodeCache cache = new LeafNodeCache(store);
 		BulletinHistory history = new BulletinHistory();
@@ -76,6 +79,9 @@ public class TestLeafNodeCache extends TestCaseEnhanced
 	
 	public void testLeafNodeCacheDiskSpeed() throws Exception
 	{
+		if(!DO_SPEED_TESTS)
+			return;
+		
 		BulletinStore store = new BulletinStore();
 		File tempDirectory = createTempDirectory();
 		MartusSecurity security = MockMartusSecurity.createServer();
@@ -132,4 +138,6 @@ public class TestLeafNodeCache extends TestCaseEnhanced
 //		System.out.println("Time to read header packets: " + readHeadersTime);
 		assertTrue("Read packets too slow? (was " + readHeadersTime + ")", readHeadersTime < 10000);
 	}
+	
+	static final boolean DO_SPEED_TESTS = false;
 }
