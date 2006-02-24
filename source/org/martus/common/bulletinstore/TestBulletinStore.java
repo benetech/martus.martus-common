@@ -291,8 +291,10 @@ public class TestBulletinStore extends TestCaseEnhanced
 		Bulletin two = new Bulletin(security);
 		two.setSealed();
 		
-		verifyCloneIsLeaf(one, two, other.getUniversalId());
-		verifyCloneIsLeaf(two, one, other.getUniversalId());
+		verifyCloneIsLeaf("Test1", one, two, other.getUniversalId());
+		store.deleteAllBulletins();
+		other = createAndSaveBulletin();
+		verifyCloneIsLeaf("Test2", two, one, other.getUniversalId());
 	}
 	
 	public void testVisitAllBulletins() throws Exception
@@ -358,7 +360,7 @@ public class TestBulletinStore extends TestCaseEnhanced
 		BulletinLoader.loadFromDatabase(storeToUse.getDatabase(), key, storeToUse.getSignatureGenerator());
 	}
 	
-	private void verifyCloneIsLeaf(Bulletin original, Bulletin clone, UniversalId otherUid) throws IOException, CryptoException
+	private void verifyCloneIsLeaf(String msg, Bulletin original, Bulletin clone, UniversalId otherUid) throws IOException, CryptoException
 	{
 		original.setHistory(new BulletinHistory());
 		store.saveBulletinForTesting(original);
@@ -369,12 +371,12 @@ public class TestBulletinStore extends TestCaseEnhanced
 		store.saveBulletinForTesting(clone);
 
 		Vector leafKeys = store.scanForLeafKeys();
-		assertEquals("wrong leaf count?", 2, leafKeys.size());
+		assertContains(msg+ ": missing clone?", DatabaseKey.createSealedKey(clone.getUniversalId()), leafKeys);
+		assertContains(msg+ ": missing other?", DatabaseKey.createSealedKey(otherUid), leafKeys);
+		assertEquals(msg+ ": wrong leaf count?", 2, leafKeys.size());
 		Vector nonLeafKeys = store.getNonLeafUids();
-		assertEquals("wrong nonleaf count?", 1, nonLeafKeys.size());
-		assertContains("missing clone?", DatabaseKey.createSealedKey(clone.getUniversalId()), leafKeys);
-		assertContains("missing other?", DatabaseKey.createSealedKey(otherUid), leafKeys);
-		assertContains("Original uid not in nonleaf?", original.getUniversalId(), nonLeafKeys);
+		assertEquals(msg+ ": wrong nonleaf count?", 1, nonLeafKeys.size());
+		assertContains(msg+ ": Original uid not in nonleaf?", original.getUniversalId(), nonLeafKeys);
 	}
 
 	private Bulletin createAndSaveBulletin() throws IOException, CryptoException
