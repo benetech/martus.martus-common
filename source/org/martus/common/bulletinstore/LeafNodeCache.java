@@ -57,14 +57,18 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 	
 	public synchronized void revisionWasSaved(UniversalId uid)
 	{
-		// TODO: definitely could be optimized!
-		storeWasCleared();
+		DatabaseKey key = findKey(store.getDatabase(), uid);
+		if(key == null)
+		{
+			System.out.println("LeafNodeCache.revisionWasSaved null key for " + uid.getLocalId());
+			return;
+		}
+		visit(key);
 	}
 	
 	public synchronized void revisionWasSaved(Bulletin b)
 	{
-		// TODO: definitely could be optimized!
-		storeWasCleared();
+		revisionWasSaved(b.getUniversalId());
 	}
 	
 	public synchronized void revisionWasRemoved(UniversalId uid)
@@ -205,6 +209,16 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 			leafKeys.remove(DatabaseKey.createDraftKey(uidOfNonLeaf));
 			nonLeafUids.add(uidOfNonLeaf);
 		}
+	}
+	
+	protected HashSet getRawLeafKeys()
+	{
+		return leafKeys;
+	}
+	
+	protected HashSet getRawNonLeafUids()
+	{
+		return nonLeafUids;
 	}
 
 	private BulletinStore store;

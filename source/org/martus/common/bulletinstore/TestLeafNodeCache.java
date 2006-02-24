@@ -26,12 +26,16 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.bulletinstore;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
 
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.database.DatabaseKey;
+import org.martus.common.database.MockServerDatabase;
 import org.martus.common.database.ServerFileDatabase;
+import org.martus.common.database.Database.RecordHiddenException;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.BulletinHistory;
 import org.martus.common.packet.UniversalId;
@@ -54,60 +58,95 @@ public class TestLeafNodeCache extends TestCaseEnhanced
 	 * It needs to be fleshed out with more asserts after each call to revisionWasSaved, 
 	 * and it need to verify that the HQ cache is updated as well. 2006-02-23 kbs.
 	 */
-//	public void testSaveUpdatesCache() throws Exception
-//	{
-//		File tempDirectory = createTempDirectory();
-//		BulletinStore store = new BulletinStore();
-//		store.doAfterSigninInitialization(tempDirectory, new MockServerDatabase());
-//		
-//		MockMartusSecurity client = MockMartusSecurity.createClient();
-//		String accountId = client.getPublicKeyString();
-//
-//		UniversalId originalUid = UniversalId.createFromAccountAndLocalId(accountId, "original1");
-//		UniversalId middleUid = UniversalId.createFromAccountAndLocalId(accountId, "middle1");
-//		UniversalId latestUid = UniversalId.createFromAccountAndLocalId(accountId, "latest1");
-//		
-//		DatabaseKey originalKey = DatabaseKey.createDraftKey(originalUid);
-//		DatabaseKey middleKey = DatabaseKey.createDraftKey(middleUid);
-//		DatabaseKey latestKey = DatabaseKey.createDraftKey(latestUid);
-//
-//		BulletinHistory originalHistory = new BulletinHistory();
-//		BulletinHistory middleHistory = new BulletinHistory();
-//		middleHistory.add(originalUid.getLocalId());
-//		BulletinHistory latestHistory = new BulletinHistory();
-//		middleHistory.add(originalUid.getLocalId());
-//		middleHistory.add(middleUid.getLocalId());
-//		
-//		LeafNodeCache cache = new LeafNodeCache(store);
-//		cache.fill();
-//		
-//		cache.revisionWasSaved(originalKey, originalHistory);
-//		assertTrue("cache cleared 1?", cache.isCacheValid());
-//		assertEquals(1, cache.getRawLeafKeys().size());
-//		assertEquals(0, cache.getRawNonLeafUids().size());
-//		
-//		cache.revisionWasSaved(middleKey, middleHistory);
-//		assertTrue("cache cleared 2?", cache.isCacheValid());
-//		assertEquals(1, cache.getRawLeafKeys().size());
-//		assertContains("middle not a leaf?", middleKey, cache.getRawLeafKeys());
-//		assertEquals(1, cache.getRawNonLeafUids().size());
-//		assertContains("original not a non-leaf?", originalUid, cache.getNonLeafUids());
-//
-//		
-//		cache.revisionWasSaved(latestKey, latestHistory);
-//		assertTrue("cache cleared 3?", cache.isCacheValid());
-//		
-//		cache.storeWasCleared();
-//		cache.fill();
-//
-//		cache.revisionWasSaved(latestKey, latestHistory);
-//		assertTrue("cache cleared 4?", cache.isCacheValid());
-//		cache.revisionWasSaved(middleKey, middleHistory);
-//		assertTrue("cache cleared 5?", cache.isCacheValid());
-//		cache.revisionWasSaved(originalKey, originalHistory);
-//		assertTrue("cache cleared 6?", cache.isCacheValid());
-//		
-//	}
+	public void testSaveUpdatesCache() throws Exception
+	{
+		File tempDirectory = createTempDirectory();
+		BulletinStore store = new BulletinStore();
+		store.doAfterSigninInitialization(tempDirectory, new MockServerDatabase());
+		
+		MockMartusSecurity client = MockMartusSecurity.createClient();
+		
+		BulletinHeaderPacket bhp1 = new BulletinHeaderPacket(client);
+		BulletinHeaderPacket bhp2 = new BulletinHeaderPacket(client);
+		bhp2.getHistory().add(bhp1.getLocalId());
+		BulletinHeaderPacket bhp3 = new BulletinHeaderPacket(client);
+		bhp3.getHistory().add(bhp1.getLocalId());
+		bhp3.getHistory().add(bhp2.getLocalId());
+
+		LeafNodeCache cache = new LeafNodeCache(store);
+		store.addCache(cache);
+		assertEquals("cache not valid and empty?", 0, cache.getLeafKeys().size());
+		
+		// write original, then next revision, then final revision
+		saveHeaderPacket(store, bhp1, client);
+		cache.revisionWasSaved(bhp1.getUniversalId());
+		assertTrue("cache cleared 1?", cache.isCacheValid());
+		assertEquals(1, cache.getRawLeafKeys().size());
+		assertContains("bhp1 not a leaf?", getKey(bhp1), cache.getRawLeafKeys());
+		assertEquals(0, cache.getRawNonLeafUids().size());
+		
+		saveHeaderPacket(store, bhp2, client);
+		cache.revisionWasSaved(bhp2.getUniversalId());
+		assertTrue("cache cleared 2?", cache.isCacheValid());
+		assertEquals(1, cache.getRawLeafKeys().size());
+		assertContains("bhp2 not a leaf?", getKey(bhp2), cache.getRawLeafKeys());
+		assertEquals(1, cache.getRawNonLeafUids().size());
+		assertContains("bhp1 not a non-leaf?", bhp1.getUniversalId(), cache.getNonLeafUids());
+		
+		saveHeaderPacket(store, bhp3, client);
+		cache.revisionWasSaved(bhp3.getUniversalId());
+		assertTrue("cache cleared 3?", cache.isCacheValid());
+		assertEquals(1, cache.getRawLeafKeys().size());
+		assertContains("bhp3 not a leaf?", getKey(bhp3), cache.getRawLeafKeys());
+		assertEquals(2, cache.getRawNonLeafUids().size());
+		assertContains("bhp1 not a non-leaf?", bhp1.getUniversalId(), cache.getNonLeafUids());
+		assertContains("bhp2 not a non-leaf?", bhp2.getUniversalId(), cache.getNonLeafUids());
+
+		store.deleteAllBulletins();
+		assertEquals("cache not valid and empty?", 0, cache.getLeafKeys().size());
+		assertEquals("cache not valid and empty?", 0, cache.getNonLeafUids().size());
+
+		// write final revision, then earlier, then original
+		saveHeaderPacket(store, bhp3, client);
+		cache.revisionWasSaved(bhp3.getUniversalId());
+		assertTrue("cache cleared 4?", cache.isCacheValid());
+		assertEquals(1, cache.getRawLeafKeys().size());
+		assertContains("bhp3 not a leaf?", getKey(bhp3), cache.getRawLeafKeys());
+		assertEquals(2, cache.getRawNonLeafUids().size());
+		assertContains("bhp1 not a non-leaf?", bhp1.getUniversalId(), cache.getNonLeafUids());
+		assertContains("bhp2 not a non-leaf?", bhp2.getUniversalId(), cache.getNonLeafUids());
+		
+		saveHeaderPacket(store, bhp2, client);
+		cache.revisionWasSaved(bhp2.getUniversalId());
+		assertTrue("cache cleared 5?", cache.isCacheValid());
+		assertEquals(1, cache.getRawLeafKeys().size());
+		assertContains("bhp3 not a leaf?", getKey(bhp3), cache.getRawLeafKeys());
+		assertEquals(2, cache.getRawNonLeafUids().size());
+		assertContains("bhp1 not a non-leaf?", bhp1.getUniversalId(), cache.getNonLeafUids());
+		assertContains("bhp2 not a non-leaf?", bhp2.getUniversalId(), cache.getNonLeafUids());
+		
+		saveHeaderPacket(store, bhp1, client);
+		cache.revisionWasSaved(bhp1.getUniversalId());
+		assertTrue("cache cleared 6?", cache.isCacheValid());
+		assertEquals(1, cache.getRawLeafKeys().size());
+		assertContains("bhp3 not a leaf?", getKey(bhp3), cache.getRawLeafKeys());
+		assertEquals(2, cache.getRawNonLeafUids().size());
+		assertContains("bhp1 not a non-leaf?", bhp1.getUniversalId(), cache.getNonLeafUids());
+		assertContains("bhp2 not a non-leaf?", bhp2.getUniversalId(), cache.getNonLeafUids());
+	}
+
+	private void saveHeaderPacket(BulletinStore store, BulletinHeaderPacket bhp, MockMartusSecurity client) throws IOException, RecordHiddenException
+	{
+		StringWriter writer = new StringWriter();
+		bhp.writeXml(writer, client);
+		String xml = writer.toString();
+		store.getWriteableDatabase().writeRecord(getKey(bhp), xml);
+	}
+
+	private DatabaseKey getKey(BulletinHeaderPacket bhp)
+	{
+		return bhp.createKeyWithHeaderStatus(bhp.getUniversalId());
+	}
 
 	public void testLeafNodeCacheSpeed()
 	{
