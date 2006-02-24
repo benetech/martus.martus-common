@@ -27,6 +27,8 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.bulletinstore;
 
 import org.martus.common.bulletin.Bulletin;
+import org.martus.common.database.DatabaseKey;
+import org.martus.common.database.ReadableDatabase;
 import org.martus.common.packet.UniversalId;
 
 public abstract class BulletinStoreCache
@@ -35,4 +37,22 @@ public abstract class BulletinStoreCache
 	abstract public void revisionWasSaved(UniversalId uid);
 	abstract public void revisionWasSaved(Bulletin b);
 	abstract public void revisionWasRemoved(UniversalId uid);
+	
+	public DatabaseKey findKey(ReadableDatabase db, UniversalId uid)
+	{
+		DatabaseKey[] possibleKeys = 
+		{
+			DatabaseKey.createDraftKey(uid),
+			DatabaseKey.createSealedKey(uid),
+			DatabaseKey.createLegacyKey(uid),
+		};
+	
+		for(int i=0; i < possibleKeys.length; ++i)
+		{
+			if(db.doesRecordExist(possibleKeys[i]))
+				return possibleKeys[i];
+		}
+		
+		return null;
+	}
 }
