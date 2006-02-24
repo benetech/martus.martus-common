@@ -42,9 +42,10 @@ public abstract class BulletinStoreCache
 	{
 		DatabaseKey[] possibleKeys = 
 		{
+			// always check legacy before draft or sealed
+			DatabaseKey.createLegacyKey(uid),
 			DatabaseKey.createDraftKey(uid),
 			DatabaseKey.createSealedKey(uid),
-			DatabaseKey.createLegacyKey(uid),
 		};
 	
 		for(int i=0; i < possibleKeys.length; ++i)
