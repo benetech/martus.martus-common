@@ -484,7 +484,7 @@ public class MiniLocalization
 	
 	public static final String GREGORIAN_SYSTEM = "Gregorian";
 	public static final String THAI_SYSTEM = "Thai";
-	public static final int THAI_YEAR_OFFSET = 243;
+	public static final int THAI_YEAR_OFFSET = 543;
 	public static final String PERSIAN_SYSTEM = "Persian";
 	public static final String[] ALL_CALENDAR_SYSTEMS = {GREGORIAN_SYSTEM, THAI_SYSTEM, PERSIAN_SYSTEM, };
 

@@ -73,7 +73,7 @@ public class TestMiniLocalization extends TestCaseEnhanced
 		MultiCalendar cal = MultiCalendar.createFromGregorianYearMonthDay(year, month, day);
 		
 		verifyGetLocalizedFields(MiniLocalization.GREGORIAN_SYSTEM, cal, year, month, day);
-		verifyGetLocalizedFields(MiniLocalization.THAI_SYSTEM, cal, year + 243, month, day);
+		verifyGetLocalizedFields(MiniLocalization.THAI_SYSTEM, cal, year + 543, month, day);
 		verifyGetLocalizedFields(MiniLocalization.PERSIAN_SYSTEM, cal, 1384, 7, 28);
 		
 	}
@@ -95,7 +95,7 @@ public class TestMiniLocalization extends TestCaseEnhanced
 		MultiCalendar reference = MultiCalendar.createFromGregorianYearMonthDay(year, month, day);
 		
 		verifyCreateLocalizedCalendar(reference, MiniLocalization.GREGORIAN_SYSTEM, year, month, day);
-		verifyCreateLocalizedCalendar(reference, MiniLocalization.THAI_SYSTEM, year + 243, month, day);
+		verifyCreateLocalizedCalendar(reference, MiniLocalization.THAI_SYSTEM, year + 543, month, day);
 		verifyCreateLocalizedCalendar(reference, MiniLocalization.PERSIAN_SYSTEM, 1384, 7, 28);
 	}
 
@@ -110,7 +110,7 @@ public class TestMiniLocalization extends TestCaseEnhanced
 	public void testConvertStoredDateToDisplay()
 	{
 		verifyConvertStoredToDisplayDate(MiniLocalization.GREGORIAN_SYSTEM, "10/20/2005", "2005-10-20");
-		verifyConvertStoredToDisplayDate(MiniLocalization.THAI_SYSTEM, "10/20/2248", "2005-10-20");
+		verifyConvertStoredToDisplayDate(MiniLocalization.THAI_SYSTEM, "10/20/2548", "2005-10-20");
 		verifyConvertStoredToDisplayDate(MiniLocalization.PERSIAN_SYSTEM, "07/28/1384", "2005-10-20");
 		
 		LanguageOptions.setDirectionRightToLeft();
