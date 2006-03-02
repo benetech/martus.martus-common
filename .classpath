@@ -11,7 +11,7 @@
 	<classpathentry kind="src" path="/martus-jar-verifier"/>
 	<classpathentry kind="var" path="JUNIT_HOME/junit.jar"/>
 	<classpathentry kind="lib" path="/martus-thirdparty/libext/BouncyCastle/bin/bcprov-jdk14-128.jar"/>
-	<classpathentry kind="lib" path="/home/mike/projects/benetech/martus/martus-thirdparty/common/PersianCalendar/bin/icu4j_3_2_calendar.jar"/>
-	<classpathentry kind="lib" path="/home/mike/projects/benetech/martus/martus-thirdparty/common/PersianCalendar/bin/persiancalendar.jar"/>
+	<classpathentry kind="lib" path="/martus-thirdparty/common/PersianCalendar/bin/icu4j_3_2_calendar.jar"/>
+	<classpathentry kind="lib" path="/martus-thirdparty/common/PersianCalendar/bin/persiancalendar.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
