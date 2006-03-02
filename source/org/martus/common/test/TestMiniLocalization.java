@@ -52,6 +52,9 @@ public class TestMiniLocalization extends TestCaseEnhanced
 		localization.setCurrentCalendarSystem("Thai");
 		assertEquals("Didn't set to Thai?", "Thai", localization.getCurrentCalendarSystem());
 		
+		localization.setCurrentCalendarSystem("Persian");
+		assertEquals("Didn't set to Persian?", "Persian", localization.getCurrentCalendarSystem());
+		
 		try
 		{
 			localization.setCurrentCalendarSystem("oiwefjoiwef");
@@ -71,7 +74,7 @@ public class TestMiniLocalization extends TestCaseEnhanced
 		
 		verifyGetLocalizedFields(MiniLocalization.GREGORIAN_SYSTEM, cal, year, month, day);
 		verifyGetLocalizedFields(MiniLocalization.THAI_SYSTEM, cal, year + 243, month, day);
-		
+		verifyGetLocalizedFields(MiniLocalization.PERSIAN_SYSTEM, cal, 1384, 7, 28);
 		
 	}
 
@@ -93,6 +96,7 @@ public class TestMiniLocalization extends TestCaseEnhanced
 		
 		verifyCreateLocalizedCalendar(reference, MiniLocalization.GREGORIAN_SYSTEM, year, month, day);
 		verifyCreateLocalizedCalendar(reference, MiniLocalization.THAI_SYSTEM, year + 243, month, day);
+		verifyCreateLocalizedCalendar(reference, MiniLocalization.PERSIAN_SYSTEM, 1384, 7, 28);
 	}
 
 	private void verifyCreateLocalizedCalendar(MultiCalendar reference, String system, int year, int month, int day)
@@ -107,7 +111,7 @@ public class TestMiniLocalization extends TestCaseEnhanced
 	{
 		verifyConvertStoredToDisplayDate(MiniLocalization.GREGORIAN_SYSTEM, "10/20/2005", "2005-10-20");
 		verifyConvertStoredToDisplayDate(MiniLocalization.THAI_SYSTEM, "10/20/2248", "2005-10-20");
-		
+		verifyConvertStoredToDisplayDate(MiniLocalization.PERSIAN_SYSTEM, "07/28/1384", "2005-10-20");
 		
 		LanguageOptions.setDirectionRightToLeft();
 		verifyConvertStoredToDisplayDate(MiniLocalization.GREGORIAN_SYSTEM, "2005/20/10", "2005-10-20");

@@ -44,6 +44,9 @@ import org.martus.util.MultiCalendar;
 import org.martus.util.MultiDateFormat;
 import org.martus.util.language.LanguageOptions;
 
+import com.ghasemkiani.util.icu.PersianCalendar;
+import com.ibm.icu.util.SimpleTimeZone;
+
 
 public class MiniLocalization
 {
@@ -304,26 +307,62 @@ public class MiniLocalization
 		int gregorianYear = cal.getGregorianYear();
 		if(getCurrentCalendarSystem().equals(THAI_SYSTEM))
 			return gregorianYear + THAI_YEAR_OFFSET;
+		if(getCurrentCalendarSystem().equals(PERSIAN_SYSTEM))
+			return getPersianYear(cal);
 		
 		return gregorianYear;
+	}
+	
+	public int getPersianYear(MultiCalendar cal)
+	{
+		return getPersianCalendar(cal).get(PersianCalendar.YEAR);
+	}
+
+	private PersianCalendar getPersianCalendar(MultiCalendar cal)
+	{
+		PersianCalendar pc = new PersianCalendar(new SimpleTimeZone(0, "UTC"));
+		pc.setTime(cal.getTime());
+		return pc;
 	}
 
 	public int getLocalizedMonth(MultiCalendar cal)
 	{
+		if(getCurrentCalendarSystem().equals(PERSIAN_SYSTEM))
+			return getPersianMonth(cal);
+		
 		return cal.getGregorianMonth();
+	}
+	
+	public int getPersianMonth(MultiCalendar cal)
+	{
+		return getPersianCalendar(cal).get(PersianCalendar.MONTH) + 1;
 	}
 
 	public int getLocalizedDay(MultiCalendar cal)
 	{
+		if(getCurrentCalendarSystem().equals(PERSIAN_SYSTEM))
+			return getPersianDay(cal);
 		return cal.getGregorianDay();
 	}
-	
+
+	public int getPersianDay(MultiCalendar cal)
+	{
+		return getPersianCalendar(cal).get(PersianCalendar.DAY_OF_MONTH);
+	}
+
 	public MultiCalendar createCalendarFromLocalizedYearMonthDay(int year, int month, int day)
 	{
 		if(getCurrentCalendarSystem().equals(THAI_SYSTEM))
 			return MultiCalendar.createFromGregorianYearMonthDay(year - THAI_YEAR_OFFSET, month, day);
-		
+		if(getCurrentCalendarSystem().equals(PERSIAN_SYSTEM))
+			return createCalendarFromPersianYearMonthDay(year, month, day);
 		return MultiCalendar.createFromGregorianYearMonthDay(year, month, day);	
+	}
+	
+	public MultiCalendar createCalendarFromPersianYearMonthDay(int year, int month, int day)
+	{
+		PersianCalendar pc = new PersianCalendar(year, month - 1, day, 12, 0, 0);
+		return new MultiCalendar(pc.getTime());
 	}
 
 	public String convertStoredDateToDisplay(String storedDate)
@@ -446,7 +485,8 @@ public class MiniLocalization
 	public static final String GREGORIAN_SYSTEM = "Gregorian";
 	public static final String THAI_SYSTEM = "Thai";
 	public static final int THAI_YEAR_OFFSET = 243;
-	public static final String[] ALL_CALENDAR_SYSTEMS = {GREGORIAN_SYSTEM, THAI_SYSTEM, };
+	public static final String PERSIAN_SYSTEM = "Persian";
+	public static final String[] ALL_CALENDAR_SYSTEMS = {GREGORIAN_SYSTEM, THAI_SYSTEM, PERSIAN_SYSTEM, };
 
 	protected Map textResources;
 	protected Vector rightToLeftLanguages;
