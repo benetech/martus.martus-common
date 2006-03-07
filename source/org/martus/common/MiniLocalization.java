@@ -359,11 +359,16 @@ public class MiniLocalization
 		return MultiCalendar.createFromGregorianYearMonthDay(year, month, day);	
 	}
 	
+	public MultiCalendar createCalendarFromIsoDateString(String iso)
+	{
+		return MultiCalendar.createFromIsoDateString(iso);
+	}
+	
 	public String convertStoredDateToDisplay(String storedDate)
 	{
 		try
 		{
-			MultiCalendar cal = MultiCalendar.createFromIsoDateString(storedDate);
+			MultiCalendar cal = createCalendarFromIsoDateString(storedDate);
 			return toDisplayDateString(cal);
 		} 
 		catch (Exception e)

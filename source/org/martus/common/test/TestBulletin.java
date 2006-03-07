@@ -446,34 +446,6 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals("x in abc?", false, MartusUtilities.isStringInArray(abc, "xyz"));
 	}
 
-	public void testStoredDateFormat()
-	{
-		try
-		{
-			MultiCalendar cal = MultiCalendar.createFromIsoDateString("2003-07-02");
-			assertEquals(2003, cal.getGregorianYear());
-			assertEquals(7, cal.getGregorianMonth());
-			assertEquals(2, cal.getGregorianDay());
-		}
-		catch(Exception e)
-		{
-			assertTrue(false);
-		}
-	}
-
-	public void testDateRangeCompatibility() throws Exception
-	{
-		String sampleDateRange = "2003-04-07,2003-05-17";
-		MultiCalendar cal = MultiCalendar.createFromIsoDateString(sampleDateRange);
-		int year = cal.getGregorianYear();
-		int month = cal.getGregorianMonth();
-		int day = cal.getGregorianDay();
-		assertEquals(2003, year);
-		assertEquals(4, month);
-		assertEquals(7, day);
-	}
-		
-
 	public void testGetToday()
 	{
 		TimeZone realTimeZone = TimeZone.getDefault();
