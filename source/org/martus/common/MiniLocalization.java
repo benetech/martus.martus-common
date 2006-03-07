@@ -306,7 +306,7 @@ public class MiniLocalization
 	{
 		int gregorianYear = cal.getGregorianYear();
 		if(getCurrentCalendarSystem().equals(THAI_SYSTEM))
-			return gregorianYear + THAI_YEAR_OFFSET;
+			return gregorianYear + MultiCalendar.THAI_YEAR_OFFSET;
 		if(getCurrentCalendarSystem().equals(PERSIAN_SYSTEM))
 			return getPersianYear(cal);
 		
@@ -353,18 +353,12 @@ public class MiniLocalization
 	public MultiCalendar createCalendarFromLocalizedYearMonthDay(int year, int month, int day)
 	{
 		if(getCurrentCalendarSystem().equals(THAI_SYSTEM))
-			return MultiCalendar.createFromGregorianYearMonthDay(year - THAI_YEAR_OFFSET, month, day);
+			return MultiCalendar.createFromGregorianYearMonthDay(year - MultiCalendar.THAI_YEAR_OFFSET, month, day);
 		if(getCurrentCalendarSystem().equals(PERSIAN_SYSTEM))
-			return createCalendarFromPersianYearMonthDay(year, month, day);
+			return MultiCalendar.createCalendarFromPersianYearMonthDay(year, month, day);
 		return MultiCalendar.createFromGregorianYearMonthDay(year, month, day);	
 	}
 	
-	public MultiCalendar createCalendarFromPersianYearMonthDay(int year, int month, int day)
-	{
-		PersianCalendar pc = new PersianCalendar(year, month - 1, day, 12, 0, 0);
-		return new MultiCalendar(pc.getTime());
-	}
-
 	public String convertStoredDateToDisplay(String storedDate)
 	{
 		try
@@ -431,6 +425,25 @@ public class MiniLocalization
 		return date + SPACE + time;
 	}
 
+	public boolean getAdjustThaiLegacyDates()
+	{
+		return MultiCalendar.adjustThaiLegacyDates;
+	}
+	
+	public void setAdjustThaiLegacyDates(boolean newAdjustThai)
+	{
+		MultiCalendar.adjustThaiLegacyDates = newAdjustThai;
+	}
+	
+	public boolean getAdjustPersianLegacyDates()
+	{
+		return MultiCalendar.adjustPersianLegacyDates;
+	}
+	
+	public void setAdjustPersianLegacyDates(boolean newAdjustPersian)
+	{
+		MultiCalendar.adjustPersianLegacyDates = newAdjustPersian;
+	}
 	
 	
 	
@@ -484,7 +497,6 @@ public class MiniLocalization
 	
 	public static final String GREGORIAN_SYSTEM = "Gregorian";
 	public static final String THAI_SYSTEM = "Thai";
-	public static final int THAI_YEAR_OFFSET = 543;
 	public static final String PERSIAN_SYSTEM = "Persian";
 	public static final String[] ALL_CALENDAR_SYSTEMS = {GREGORIAN_SYSTEM, THAI_SYSTEM, PERSIAN_SYSTEM, };
 
