@@ -38,6 +38,10 @@ public class MartusFlexidate
 		flexiDate = new Flexidate(beginDate.getTime(), endDate.getTime());
 	}
 		
+	/*
+	 * NOTE: Only call this method if you already know that isoBeginDate is valid.
+	 * Normally, you should use MiniLocalization to convert ISO to Flexidate
+	 */
 	public MartusFlexidate(String isoBeginDate, int range)
 	{
 		MultiCalendar cal = MultiCalendar.createFromIsoDateString(isoBeginDate);
