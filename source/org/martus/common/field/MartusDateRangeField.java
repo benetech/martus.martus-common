@@ -26,6 +26,7 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.field;
 
+import org.martus.common.MiniLocalization;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldTypeDate;
 import org.martus.common.utilities.MartusFlexidate;
@@ -44,9 +45,9 @@ public class MartusDateRangeField extends MartusField
 		return false;
 	}
 
-	public MartusField getSubField(String tag)
+	public MartusField getSubField(String tag, MiniLocalization localization)
 	{
-		MartusFlexidate date = MartusFlexidate.createFromBulletinFlexidateFormat(getData());
+		MartusFlexidate date = localization.createFlexidateFromStoredData(getData());
 		if(tag.equals(SUBFIELD_BEGIN))
 			return createDateSubField(date.getBeginDate());
 		

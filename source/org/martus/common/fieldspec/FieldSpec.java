@@ -112,9 +112,9 @@ public class FieldSpec
 		return getType().convertStoredToDisplay(storedData, localization);
 	}
 	
-	public String convertStoredToExportable(String storedData)
+	public String convertStoredToExportable(String storedData, MiniLocalization localization)
 	{
-		return getType().convertStoredToExportable(storedData);
+		return getType().convertStoredToExportable(storedData, localization);
 	}
 	
 	public String getDefaultValue()

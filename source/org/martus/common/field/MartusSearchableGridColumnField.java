@@ -49,7 +49,7 @@ public class MartusSearchableGridColumnField extends MartusField
 		}
 	}
 	
-	public MartusSearchableGridColumnField(MartusSearchableGridColumnField source, String tag) throws Exception
+	public MartusSearchableGridColumnField(MartusSearchableGridColumnField source, String tag, MiniLocalization localization) throws Exception
 	{
 		super(source.getFieldSpec());
 		
@@ -57,7 +57,7 @@ public class MartusSearchableGridColumnField extends MartusField
 		for(int row = 0; row < source.size(); ++row)
 		{
 			MartusField thisField = source.fields.getField(row);
-			MartusField thisSubfield = thisField.getSubField(tag);
+			MartusField thisSubfield = thisField.getSubField(tag, localization);
 			fields.add(thisSubfield.getFieldSpec());
 			fields.getField(row).setData(thisSubfield.getData());
 		}
@@ -75,12 +75,13 @@ public class MartusSearchableGridColumnField extends MartusField
 		return false;
 	}
 
-	public MartusField getSubField(String tag)
+	public MartusField getSubField(String tag, MiniLocalization localization)
 	{
 		try
 		{
-			return new MartusSearchableGridColumnField(this, tag);
-		} catch (Exception e)
+			return new MartusSearchableGridColumnField(this, tag, localization);
+		} 
+		catch (Exception e)
 		{
 			e.printStackTrace();
 			return null;

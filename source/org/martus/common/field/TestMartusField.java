@@ -159,11 +159,11 @@ public class TestMartusField extends TestCaseEnhanced
 		MartusGridField gridField = new MartusGridField(spec);
 		gridField.setData(data.getXmlRepresentation());
 		String label = spec.getFieldSpec(0).getLabel();
-		MartusField columnFields = gridField.getSubField(label);
-		MartusField beginField = columnFields.getSubField("begin");
+		MartusField columnFields = gridField.getSubField(label, localization);
+		MartusField beginField = columnFields.getSubField("begin", localization);
 		assertTrue("can't find begin?", beginField.doesMatch(MartusField.EQUAL, "2004-09-21", localization));
 		assertFalse("found bad begin?", beginField.doesMatch(MartusField.EQUAL, "2005-03-18", localization));
-		MartusField endField = columnFields.getSubField("end");
+		MartusField endField = columnFields.getSubField("end", localization);
 		assertTrue("can't find end?", endField.doesMatch(MartusField.EQUAL, "2005-03-18", localization));
 		assertFalse("found bad end?", endField.doesMatch(MartusField.EQUAL, "2005-09-21", localization));
 	}

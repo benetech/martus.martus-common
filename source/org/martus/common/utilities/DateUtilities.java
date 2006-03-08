@@ -28,21 +28,22 @@ package org.martus.common.utilities;
 
 import java.util.GregorianCalendar;
 
+import org.martus.common.MiniLocalization;
 import org.martus.util.MultiCalendar;
 
 
 public class DateUtilities
 {
-	public static String getStartDateRange(String storedFlexidateString)
+	public static String getStartDateRange(String storedFlexidateString, MiniLocalization localization)
 	{
-		MartusFlexidate mfd = MartusFlexidate.createFromBulletinFlexidateFormat(storedFlexidateString);
+		MartusFlexidate mfd = localization.createFlexidateFromStoredData(storedFlexidateString);
 		return MartusFlexidate.toStoredDateFormat(mfd.getBeginDate());
 	}
 
 
-	public static String getEndDateRange(String storedFlexidateString)
+	public static String getEndDateRange(String storedFlexidateString, MiniLocalization localization)
 	{
-		MartusFlexidate mfd = MartusFlexidate.createFromBulletinFlexidateFormat(storedFlexidateString);
+		MartusFlexidate mfd = localization.createFlexidateFromStoredData(storedFlexidateString);
 		if (!mfd.hasDateRange())
 			return "";
 		return MartusFlexidate.toStoredDateFormat(mfd.getEndDate());

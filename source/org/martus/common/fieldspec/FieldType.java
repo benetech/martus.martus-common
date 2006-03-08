@@ -62,7 +62,7 @@ abstract public class FieldType
 		return storedData;
 	}
 	
-	public String convertStoredToExportable(String storedData)
+	public String convertStoredToExportable(String storedData, MiniLocalization localization)
 	{
 		return storedData;
 	}

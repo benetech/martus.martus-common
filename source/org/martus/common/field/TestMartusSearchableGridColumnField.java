@@ -62,7 +62,7 @@ public class TestMartusSearchableGridColumnField extends TestCaseEnhanced
 		gridField.setData(data.getXmlRepresentation());
 
 		MartusSearchableGridColumnField columnField = new MartusSearchableGridColumnField(gridField, 0);
-		MartusField rawBeginField = columnField.getSubField("begin");
+		MartusField rawBeginField = columnField.getSubField("begin", localization);
 		MartusSearchableGridColumnField beginField = (MartusSearchableGridColumnField)rawBeginField;
 		assertTrue("didn't find begin?", beginField.doesMatch(MartusField.EQUAL, "2004-09-21", localization));
 	}

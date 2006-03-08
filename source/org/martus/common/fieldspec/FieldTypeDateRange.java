@@ -56,10 +56,10 @@ public class FieldTypeDateRange extends FieldType
 		return DateUtilities.getFirstOfThisYearInStoredFormat();
 	}
 
-	public String convertStoredToExportable(String storedData)
+	public String convertStoredToExportable(String storedData, MiniLocalization localization)
 	{
-		String startDate = DateUtilities.getStartDateRange(storedData);
-		String endDate = DateUtilities.getEndDateRange(storedData);
+		String startDate = DateUtilities.getStartDateRange(storedData, localization);
+		String endDate = DateUtilities.getEndDateRange(storedData, localization);
 		return startDate + "," + endDate;
 	}
 

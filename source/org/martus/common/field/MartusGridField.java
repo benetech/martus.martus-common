@@ -27,6 +27,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.field;
 
 import org.martus.common.GridData;
+import org.martus.common.MiniLocalization;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.GridFieldSpec;
 
@@ -37,7 +38,7 @@ public class MartusGridField extends MartusField
 		super(specToUse);
 	}
 
-	public MartusField getSubField(String tag)
+	public MartusField getSubField(String tag, MiniLocalization localization)
 	{
 		String sanitizedLabel = sanitizeLabel(tag);
 		try
@@ -62,7 +63,7 @@ public class MartusGridField extends MartusField
 			e.printStackTrace();
 		}
 		
-		return super.getSubField(tag);
+		return super.getSubField(tag, localization);
 	}
 	
 	static public String sanitizeLabel(String rawLabel)

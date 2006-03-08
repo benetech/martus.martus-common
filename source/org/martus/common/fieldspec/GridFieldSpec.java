@@ -73,10 +73,10 @@ public class GridFieldSpec extends FieldSpec
 		return getFormatted(storedData, localization, formatter);
 	}
 
-	public String convertStoredToExportable(String storedData)
+	public String convertStoredToExportable(String storedData, MiniLocalization localization)
 	{
 		Formatter formatter = new FormatterForExporting();
-		return getFormatted(storedData, null, formatter);
+		return getFormatted(storedData, localization, formatter);
 	}
 	
 	private String getFormatted(String storedData, MiniLocalization localization, Formatter formatter)
@@ -169,7 +169,7 @@ public class GridFieldSpec extends FieldSpec
 	{
 		public String getFormattedCell(String rawData, FieldSpec cellSpec, MiniLocalization localization)
 		{
-			return XmlUtilities.getXmlEncoded(cellSpec.convertStoredToExportable(rawData));
+			return XmlUtilities.getXmlEncoded(cellSpec.convertStoredToExportable(rawData, localization));
 		}
 		
 		public String getVeryBeginning(GridFieldSpec gridSpec)

@@ -58,7 +58,11 @@ public class MartusFlexidate
 		return new MartusFlexidate(internalFormat);
 	}
 
-	/* this expects a string in one of these forms:
+	/* 
+	 * NOTE: This method will be removed shortly. You should use 
+	 * localization.createFlexidateFromStoredData instead!
+	 * 
+	 * this expects a string in one of these forms:
 	 * 	1989-12-01
 	 *  1989-12-01,19891201+300
  	 */

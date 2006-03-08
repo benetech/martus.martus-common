@@ -364,6 +364,16 @@ public class MiniLocalization
 		return MultiCalendar.createFromIsoDateString(iso);
 	}
 	
+	/* 
+	 * this expects a string in one of these forms:
+	 * 	1989-12-01
+	 *  1989-12-01,19891201+300
+ 	 */
+	public MartusFlexidate createFlexidateFromStoredData(String storedDate)
+	{
+		return MartusFlexidate.createFromBulletinFlexidateFormat(storedDate);
+	}
+	
 	public String convertStoredDateToDisplay(String storedDate)
 	{
 		try
@@ -391,7 +401,7 @@ public class MiniLocalization
 	
 	public String getViewableDateRange(String newText)
 	{
-		MartusFlexidate mfd = MartusFlexidate.createFromBulletinFlexidateFormat(newText);
+		MartusFlexidate mfd = createFlexidateFromStoredData(newText);
 		String rawBeginDate = MartusFlexidate.toStoredDateFormat(mfd.getBeginDate());
 	
 		if (!mfd.hasDateRange())

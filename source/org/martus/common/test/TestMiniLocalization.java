@@ -32,6 +32,7 @@ import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
 import org.martus.common.MiniLocalization;
+import org.martus.common.utilities.MartusFlexidate;
 import org.martus.util.MultiCalendar;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.language.LanguageOptions;
@@ -44,9 +45,19 @@ public class TestMiniLocalization extends TestCaseEnhanced
 		super(name);
 	}
 	
+	public void setUp() throws Exception
+	{
+		super.setUp();
+		localization = new MiniLocalization();
+	}
+	
+	public void tearDown() throws Exception
+	{
+		super.tearDown();
+	}
+	
 	public void testCurrentCalendarSystem() throws Exception
 	{
-		MiniLocalization localization = new MiniLocalization();
 		assertEquals("Didn't default to gregorian?", "Gregorian", localization.getCurrentCalendarSystem());
 		
 		localization.setCurrentCalendarSystem("Thai");
@@ -80,7 +91,6 @@ public class TestMiniLocalization extends TestCaseEnhanced
 
 	private void verifyGetLocalizedFields(String system, MultiCalendar cal, int expectedYear, int expectedMonth, int expectedDay)
 	{
-		MiniLocalization localization = new MiniLocalization();
 		localization.setCurrentCalendarSystem(system);
 		assertEquals(system + " year wrong?", expectedYear, localization.getLocalizedYear(cal));
 		assertEquals(system + " month wrong?", expectedMonth, localization.getLocalizedMonth(cal));
@@ -101,7 +111,6 @@ public class TestMiniLocalization extends TestCaseEnhanced
 
 	private void verifyCreateLocalizedCalendar(MultiCalendar reference, String system, int year, int month, int day)
 	{
-		MiniLocalization localization = new MiniLocalization();
 		localization.setCurrentCalendarSystem(system);
 		MultiCalendar cal = localization.createCalendarFromLocalizedYearMonthDay(year, month, day);
 		assertEquals(system + " Not the same date?", reference, cal);
@@ -120,7 +129,6 @@ public class TestMiniLocalization extends TestCaseEnhanced
 
 	private void verifyConvertStoredToDisplayDate(String system, String expectedDate, String isoDate)
 	{
-		MiniLocalization localization = new MiniLocalization();
 		localization.setCurrentCalendarSystem(system);
 		assertEquals(expectedDate, localization.convertStoredDateToDisplay(isoDate));
 	}
@@ -304,6 +312,26 @@ public class TestMiniLocalization extends TestCaseEnhanced
 		assertEquals("date conversion failed: " + text, dateString, result);
 	}
 
+	public void testCreateFlexidateFromMartusString()
+	{
+		MartusFlexidate mfd = localization.createFlexidateFromStoredData("2000-01-10");
+		assertEquals("2000-01-10", mfd.getBeginDate().toIsoDateString());	
+		
+		mfd = localization.createFlexidateFromStoredData("2000-01-10,20000101+0");
+		assertEquals("single begin", "2000-01-01", mfd.getBeginDate().toIsoDateString());
+		assertEquals("single end", "2000-01-01", mfd.getEndDate().toIsoDateString());
+		
+		mfd = localization.createFlexidateFromStoredData("2000-01-10,20001203+5");
+		assertEquals("range begin","2000-12-03", mfd.getBeginDate().toIsoDateString());
+		assertEquals("range end","2000-12-08", mfd.getEndDate().toIsoDateString());						
+	}
+	
+	public void testCreateInvalidDateFromMartusString()
+	{
+		MartusFlexidate mfd = localization.createFlexidateFromStoredData("185[01-10");
+		assertEquals("1900-01-01", mfd.getBeginDate().toIsoDateString());					
+	}
+	
 
-
+	MiniLocalization localization;
 }

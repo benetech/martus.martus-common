@@ -38,7 +38,7 @@ public class MartusField
 		setData(getDefaultValue());
 	}
 	
-	public MartusField getSubField(String tag)
+	public MartusField getSubField(String tag, MiniLocalization localization)
 	{
 		return null;
 	}
@@ -71,9 +71,9 @@ public class MartusField
 		return getFieldSpec().convertStoredToDisplay(getData(), localization);
 	}
 	
-	public String getExportableData()
+	public String getExportableData(MiniLocalization localization)
 	{
-		return getFieldSpec().convertStoredToExportable(getData());
+		return getFieldSpec().convertStoredToExportable(getData(), localization);
 	}
 	
 	public void clearData()
