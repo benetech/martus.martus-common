@@ -38,67 +38,18 @@ public class MartusFlexidate
 		flexiDate = new Flexidate(beginDate.getTime(), endDate.getTime());
 	}
 		
-	private MartusFlexidate(String dateStr)
-	{		
-		int plus = dateStr.indexOf(FLEXIDATE_RANGE_DELIMITER);
-		String dateStr1 = dateStr;
-		int range =0;
-		if (plus > 0)
-		{
-			dateStr1 = dateStr.substring(0, plus);
-			String rangeStr = dateStr.substring(plus+1);
-			range = new Integer(rangeStr).intValue();			
-		}							
-		
-		flexiDate = new Flexidate(new Long(dateStr1).longValue(), range);		
-	}		
-
-	public static MartusFlexidate createFromInternalMartusFlexidateString (String internalFormat)
+	public MartusFlexidate(String isoBeginDate, int range)
 	{
-		return new MartusFlexidate(internalFormat);
+		MultiCalendar cal = MultiCalendar.createFromIsoDateString(isoBeginDate);
+		flexiDate = new Flexidate(cal.getGregorianYear(), cal.getGregorianMonth(), cal.getGregorianDay(), range);		
 	}
-
-	/* 
-	 * NOTE: This method will be removed shortly. You should use 
-	 * localization.createFlexidateFromStoredData instead!
-	 * 
-	 * this expects a string in one of these forms:
-	 * 	1989-12-01
-	 *  1989-12-01,19891201+300
- 	 */
-	public static MartusFlexidate createFromBulletinFlexidateFormat(String dateStr)
-	{
-		int comma = dateStr.indexOf(DATE_RANGE_SEPARATER);
-		if (comma >= 0)
-		{
-			String beginDate = dateStr.substring(comma+1);
-			return new MartusFlexidate(beginDate);
-		}
-		
-		try
-		{
-			MultiCalendar cal = MultiCalendar.createFromIsoDateString(dateStr);
-			return new MartusFlexidate(cal, cal);
-		}
-		catch(Exception e)
-		{			
-			return new MartusFlexidate("19000101+0");
-		}
-	}
-
-	public static String toBulletinFlexidateFormat(MultiCalendar beginDate, MultiCalendar endDate)
-	{
-		return beginDate.toIsoDateString() + 
-					DATE_RANGE_SEPARATER +
-					toFlexidateFormat(beginDate, endDate);
-	}
-
+	
 	/* this will convert a string in in one of these forms:
 	 * 1989-12-01,1989-12-15
 	 * 1989-12-15,1989-12-01
 	 * and return it as a MartusFlexidate in the form 1989-12-01,19891201+15
  	 */
-	public static String createMartusDateStringFromDateRange(String dateRange)
+	public static String createMartusDateStringFromBeginAndEndDateString(String dateRange)
 	{
 		int comma = dateRange.indexOf(DATE_RANGE_SEPARATER);
 		if (comma == -1)
@@ -115,6 +66,40 @@ public class MartusFlexidate
 	
 	}
 	
+	
+	
+	public static String extractIsoDateFromStoredDate(String storedDate)
+	{
+		String internalFlexidateString = MartusFlexidate.extractInternalFlexidateFromStoredDate(storedDate);
+		String year = internalFlexidateString.substring(0, 4);
+		String month = internalFlexidateString.substring(4, 6);
+		String day = internalFlexidateString.substring(6, 8);
+		return year + "-" + month + "-" + day;
+	}
+
+	public static boolean isFlexidateString(String dateStr)
+	{
+		return dateStr.indexOf(DATE_RANGE_SEPARATER) >= 0;
+	}
+
+	public static int extractRangeFromStoredDate(String storedDate)
+	{
+		String internalFlexidateString = MartusFlexidate.extractInternalFlexidateFromStoredDate(storedDate);
+		int plusAt = internalFlexidateString.indexOf(FLEXIDATE_RANGE_DELIMITER);
+		if (plusAt < 0)
+			return 0;
+		
+		String rangeStr = internalFlexidateString.substring(plusAt+1);
+		return Integer.parseInt(rangeStr);			
+	}
+
+	public static String toBulletinFlexidateFormat(MultiCalendar beginDate, MultiCalendar endDate)
+	{
+		return beginDate.toIsoDateString() + 
+					DATE_RANGE_SEPARATER +
+					toFlexidateFormat(beginDate, endDate);
+	}
+
 	public String getMartusFlexidateString() 
 	{				
 		return flexiDate.getDateAsNumber()+FLEXIDATE_RANGE_DELIMITER+flexiDate.getRange();
@@ -147,6 +132,11 @@ public class MartusFlexidate
 		return new MartusFlexidate(beginDate, endDate).getMartusFlexidateString();
 	}		
 		
+	private static String extractInternalFlexidateFromStoredDate(String dateStr)
+	{
+		return dateStr.substring(dateStr.indexOf(DATE_RANGE_SEPARATER)+1);
+	}
+
 	Flexidate flexiDate;
 	public static final String 	FLEXIDATE_RANGE_DELIMITER = "+";	
 	public static final String	DATE_RANGE_SEPARATER = ",";

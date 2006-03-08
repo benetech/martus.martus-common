@@ -371,7 +371,19 @@ public class MiniLocalization
  	 */
 	public MartusFlexidate createFlexidateFromStoredData(String storedDate)
 	{
-		return MartusFlexidate.createFromBulletinFlexidateFormat(storedDate);
+		try
+		{
+			if(!MartusFlexidate.isFlexidateString(storedDate))
+				return new MartusFlexidate(storedDate, 0);
+			
+			String isoDate = MartusFlexidate.extractIsoDateFromStoredDate(storedDate);							
+			int range = MartusFlexidate.extractRangeFromStoredDate(storedDate);
+			return new MartusFlexidate(isoDate, range);
+		} 
+		catch (Exception e)
+		{
+			return new MartusFlexidate("1900-01-01", 0);
+		}
 	}
 	
 	public String convertStoredDateToDisplay(String storedDate)
