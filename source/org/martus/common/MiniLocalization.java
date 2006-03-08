@@ -359,9 +359,19 @@ public class MiniLocalization
 		return MultiCalendar.createFromGregorianYearMonthDay(year, month, day);	
 	}
 	
-	public MultiCalendar createCalendarFromIsoDateString(String iso)
+	public MultiCalendar createCalendarFromIsoDateString(String isoDate)
 	{
-		return MultiCalendar.createFromIsoDateString(iso);
+		int year = MultiCalendar.getYearFromIso(isoDate);
+		int month = MultiCalendar.getMonthFromIso(isoDate);
+		int day = MultiCalendar.getDayFromIso(isoDate);
+		
+		if(getAdjustPersianLegacyDates() && year > 1000 && year < 1900)
+			return MultiCalendar.createCalendarFromPersianYearMonthDay(year, month, day);
+		
+		if(getAdjustThaiLegacyDates() && year > 2400)
+			year -= MultiCalendar.THAI_YEAR_OFFSET;
+
+		return MultiCalendar.createFromGregorianYearMonthDay(year, month, day);
 	}
 	
 	/* 
@@ -373,19 +383,23 @@ public class MiniLocalization
 	{
 		try
 		{
-			if(!MartusFlexidate.isFlexidateString(storedDate))
-				return new MartusFlexidate(storedDate, 0);
+			String isoDate = storedDate;
+			int range = 0;
 			
-			String isoDate = MartusFlexidate.extractIsoDateFromStoredDate(storedDate);							
-			int range = MartusFlexidate.extractRangeFromStoredDate(storedDate);
-			return new MartusFlexidate(isoDate, range);
+			if(MartusFlexidate.isFlexidateString(storedDate))
+			{
+				isoDate = MartusFlexidate.extractIsoDateFromStoredDate(storedDate);							
+				range = MartusFlexidate.extractRangeFromStoredDate(storedDate);
+			}
+			
+			return new MartusFlexidate(createCalendarFromIsoDateString(isoDate), range);
 		} 
 		catch (Exception e)
 		{
 			return new MartusFlexidate("1900-01-01", 0);
 		}
 	}
-	
+
 	public String convertStoredDateToDisplay(String storedDate)
 	{
 		try
@@ -454,22 +468,22 @@ public class MiniLocalization
 
 	public boolean getAdjustThaiLegacyDates()
 	{
-		return MultiCalendar.adjustThaiLegacyDates;
+		return adjustThaiLegacyDates;
 	}
 	
 	public void setAdjustThaiLegacyDates(boolean newAdjustThai)
 	{
-		MultiCalendar.adjustThaiLegacyDates = newAdjustThai;
+		adjustThaiLegacyDates = newAdjustThai;
 	}
 	
 	public boolean getAdjustPersianLegacyDates()
 	{
-		return MultiCalendar.adjustPersianLegacyDates;
+		return adjustPersianLegacyDates;
 	}
 	
 	public void setAdjustPersianLegacyDates(boolean newAdjustPersian)
 	{
-		MultiCalendar.adjustPersianLegacyDates = newAdjustPersian;
+		adjustPersianLegacyDates = newAdjustPersian;
 	}
 	
 	
@@ -532,5 +546,7 @@ public class MiniLocalization
 	private String currentLanguageCode;
 	private DatePreference currentDateFormat;
 	private String currentCalendarSystem;
+	private boolean adjustThaiLegacyDates;
+	private boolean adjustPersianLegacyDates;
 	
 }

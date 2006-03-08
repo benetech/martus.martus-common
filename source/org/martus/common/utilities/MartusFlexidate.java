@@ -44,8 +44,12 @@ public class MartusFlexidate
 	 */
 	public MartusFlexidate(String isoBeginDate, int range)
 	{
-		MultiCalendar cal = MultiCalendar.createFromIsoDateString(isoBeginDate);
-		flexiDate = new Flexidate(cal.getGregorianYear(), cal.getGregorianMonth(), cal.getGregorianDay(), range);		
+		this(MultiCalendar.createFromIsoDateString(isoBeginDate), range);
+	}
+	
+	public MartusFlexidate(MultiCalendar beginDate, int range)
+	{
+		flexiDate = new Flexidate(beginDate.getGregorianYear(), beginDate.getGregorianMonth(), beginDate.getGregorianDay(), range);		
 	}
 	
 	/* this will convert a string in in one of these forms:

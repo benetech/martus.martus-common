@@ -332,6 +332,48 @@ public class TestMiniLocalization extends TestCaseEnhanced
 		assertEquals("1900-01-01", mfd.getBeginDate().toIsoDateString());					
 	}
 	
+	public void testLegacyThaiDates()
+	{
+		assertFalse("Defaulting to adjusting legacy Thai dates?", localization.getAdjustThaiLegacyDates());
+		
+		String legacyIso = "2548-10-20";
+		MultiCalendar notLegacy = localization.createCalendarFromIsoDateString(legacyIso);
+		assertEquals("adjusted the year?", 2548, notLegacy.getGregorianYear());
+		
+		localization.setAdjustThaiLegacyDates(true);
+		try
+		{
+			MultiCalendar legacy = localization.createCalendarFromIsoDateString(legacyIso);
+			assertEquals("didn't adjust year?", 2005, legacy.getGregorianYear());
+		}
+		finally
+		{
+			localization.setAdjustThaiLegacyDates(false);
+		}
+	}
+
+	public void testLegacyPersianDates()
+	{
+		assertFalse("Defaulting to adjusting legacy persian dates?", localization.getAdjustPersianLegacyDates());
+		
+		String legacyIso = "1384-07-28";
+		MultiCalendar notLegacy = localization.createCalendarFromIsoDateString(legacyIso);
+		assertEquals("adjusted the year?", 1384, notLegacy.getGregorianYear());
+		
+		localization.setAdjustPersianLegacyDates(true);
+		try
+		{
+			MultiCalendar legacy = localization.createCalendarFromIsoDateString(legacyIso);
+			assertEquals("didn't adjust year?", 2005, legacy.getGregorianYear());
+			assertEquals("didn't adjust month?", 10, legacy.getGregorianMonth());
+			assertEquals("didn't adjust day?", 20, legacy.getGregorianDay());
+		}
+		finally
+		{
+			localization.setAdjustPersianLegacyDates(false);
+		}
+	}
+
 
 	MiniLocalization localization;
 }
