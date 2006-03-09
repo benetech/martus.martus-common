@@ -69,7 +69,7 @@ public class ChoiceItem implements Comparable
 
 	public int hashCode()
 	{
-		throw new RuntimeException("hashCode not supported");
+		return spec.hashCode();
 	}
 
 	public int compareTo(Object other)

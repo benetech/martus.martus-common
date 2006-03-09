@@ -168,7 +168,7 @@ public class FieldSpec
 
 	public int hashCode()
 	{
-		throw new RuntimeException("hashCode not supported");
+		return toString().hashCode();
 	}
 
 	public static String getTypeString(FieldType type)
