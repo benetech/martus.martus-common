@@ -207,21 +207,6 @@ public class MiniLocalization
 		return currentDateFormat.getDelimiter();
 	}
 	
-	public boolean hasTranslation(String key)
-	{
-		return hasTranslation(getCurrentLanguageCode(), key);
-	}
-	
-	public boolean hasTranslation(String languageCode, String key)
-	{
-		Map availableTranslations = getAvailableTranslations(key);
-		if(availableTranslations == null)
-			return false;
-	
-		String translatedText = (String)availableTranslations.get(languageCode);
-		return (translatedText != null);
-	}
-
 	public String getLabel(String languageCode, String key)
 	{
 		Map availableTranslations = getAvailableTranslations(key);
