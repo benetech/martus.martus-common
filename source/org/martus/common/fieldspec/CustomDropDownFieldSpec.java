@@ -28,7 +28,6 @@ package org.martus.common.fieldspec;
 
 import java.util.Vector;
 
-import org.martus.common.MartusXml;
 import org.martus.util.xml.SimpleXmlVectorLoader;
 import org.xml.sax.SAXParseException;
 
@@ -57,20 +56,6 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 		return "";
 	}
 	
-	public String getDetailsXml()
-	{
-		String xml = MartusXml.getTagStartWithNewline(DROPDOWN_SPEC_CHOICES_TAG);
-		
-		for(int i = 0 ; i < getCount(); ++i)
-		{
-			xml += MartusXml.getTagStart(DROPDOWN_SPEC_CHOICE_TAG) +
-					getValue(i) +
-					MartusXml.getTagEnd(DROPDOWN_SPEC_CHOICE_TAG);
-		}
-		xml += MartusXml.getTagEnd(DROPDOWN_SPEC_CHOICES_TAG);
-		return xml;
-	}
-
 	static class DropDownSpecLoader extends SimpleXmlVectorLoader
 	{
 		public DropDownSpecLoader(CustomDropDownFieldSpec spec)
@@ -86,7 +71,4 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 		}
 		CustomDropDownFieldSpec spec;
 	}
-	
-	public final static String DROPDOWN_SPEC_CHOICES_TAG = "Choices";
-	public final static String DROPDOWN_SPEC_CHOICE_TAG = "Choice";
 }

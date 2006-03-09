@@ -26,6 +26,7 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.fieldspec;
 
+import org.martus.common.MartusXml;
 import org.martus.common.MiniLocalization;
 
 
@@ -82,6 +83,20 @@ public class DropDownFieldSpec extends FieldSpec
 		return getValue(at);
 	}
 	
+	public String getDetailsXml()
+	{
+		String xml = MartusXml.getTagStartWithNewline(DROPDOWN_SPEC_CHOICES_TAG);
+		
+		for(int i = 0 ; i < getCount(); ++i)
+		{
+			xml += MartusXml.getTagStart(DROPDOWN_SPEC_CHOICE_TAG) +
+					getValue(i) +
+					MartusXml.getTagEnd(DROPDOWN_SPEC_CHOICE_TAG);
+		}
+		xml += MartusXml.getTagEnd(DROPDOWN_SPEC_CHOICES_TAG);
+		return xml;
+	}
+
 	public int findCode(String code)
 	{
 		for(int i=0; i < getCount(); ++i)
@@ -99,6 +114,9 @@ public class DropDownFieldSpec extends FieldSpec
 		return getChoice(0).getCode();
 	}
 	
+	public static final String DROPDOWN_SPEC_CHOICES_TAG = "Choices";
+	public static final String DROPDOWN_SPEC_CHOICE_TAG = "Choice";
+
 	
 	private ChoiceItem[] choices;
 }

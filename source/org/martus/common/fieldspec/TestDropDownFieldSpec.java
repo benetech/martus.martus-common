@@ -74,6 +74,14 @@ public class TestDropDownFieldSpec extends TestCaseEnhanced
 		spec.setChoices(choices);
 		assertEquals("didn't add all choices?", choices.length, spec.getCount());
 	}
+	
+	public void testEquals()
+	{
+		ChoiceItem[] choices2 = {new ChoiceItem("tag", "value2"), new ChoiceItem("othertag", "othervalue2"),};
+		DropDownFieldSpec spec = new DropDownFieldSpec(choices);
+		DropDownFieldSpec similar = new DropDownFieldSpec(choices2);
+		assertNotEquals("didn't use choices in comparison?", spec, similar);
+	}
 
 	static final ChoiceItem[] choices = {new ChoiceItem("tag", "value"), new ChoiceItem("othertag", "othervalue"),};
 }
