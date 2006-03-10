@@ -50,6 +50,11 @@ public class GridData
 		addRow(row);
 	}
 	
+	public void deleteRow(int rowToDelete) throws ArrayIndexOutOfBoundsException
+	{
+		rows.remove(rowToDelete);
+	}
+	
 	public int getRowCount()
 	{
 		return rows.size();

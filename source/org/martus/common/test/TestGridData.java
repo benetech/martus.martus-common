@@ -63,7 +63,8 @@ public class TestGridData extends TestCaseEnhanced
 		fillGridRow(row1, row1Data);
 		
 		GridRow row2 = new GridRow(gridSpec2Colunns);
-		String[] row2Data = {"column1b", "column2b"};
+		String row2DataColumn1 = "column1b"; 
+		String[] row2Data = {row2DataColumn1, "column2b"};
 		fillGridRow(row2, row2Data);
 		
 		assertEquals("row count should start at 0", 0, grid.getRowCount());
@@ -92,6 +93,12 @@ public class TestGridData extends TestCaseEnhanced
 		grid.addEmptyRow();
 		assertEquals("Show now have an empty row", 3, grid.getRowCount());
 		assertEquals("should be empty", "", grid.getValueAt(2,1));
+		
+		assertEquals("Row 2's data should be in row 2", row2DataColumn1, grid.getValueAt(1,0));
+		grid.deleteRow(0);
+		assertEquals("Should only have 2 rows after a delete", 2, grid.getRowCount());
+		assertEquals("Row 2's data should now be in row 1", row2DataColumn1, grid.getValueAt(0,0));
+		
 	}
 	
 	public void testArrayBoundries() throws Exception
@@ -225,6 +232,24 @@ public class TestGridData extends TestCaseEnhanced
 		assertEquals(data2, grid.getValueAt(0,1));
 		grid.setValueAt(modifiedData,0,1);
 		assertEquals(modifiedData, grid.getValueAt(0,1));
+		
+		try
+		{
+			grid.deleteRow(50);
+			fail("Should have thrown invalid row");
+		}
+		catch (ArrayIndexOutOfBoundsException expected)
+		{
+		}
+		
+		try
+		{
+			grid.deleteRow(-1);
+			fail("Should have thrown invalid negative row");
+		}
+		catch (ArrayIndexOutOfBoundsException expected)
+		{
+		}
 	}
 
 	private void fillGridRow(GridRow row2, String[] row2Data)
