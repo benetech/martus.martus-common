@@ -50,6 +50,13 @@ public class GridData
 		addRow(row);
 	}
 	
+	public void addEmptyRowAt(int insertAt) throws ArrayIndexOutOfBoundsException
+	{
+		GridRow row = GridRow.createEmptyRow(gridSpec);
+		insertRow(row, insertAt);
+	}
+
+	
 	public void deleteRow(int rowToDelete) throws ArrayIndexOutOfBoundsException
 	{
 		rows.remove(rowToDelete);
@@ -90,9 +97,20 @@ public class GridData
 	
 	public void addRow(GridRow rowToAdd) throws ArrayIndexOutOfBoundsException
 	{
+		checkColumnCount(rowToAdd);
+		rows.add(rowToAdd);
+	}
+	
+	public void insertRow(GridRow rowToAdd, int insertAt) throws ArrayIndexOutOfBoundsException
+	{
+		checkColumnCount(rowToAdd);
+		rows.insertElementAt(rowToAdd, insertAt);
+	}
+
+	private void checkColumnCount(GridRow rowToAdd) 
+	{
 		if(rowToAdd.getColumnCount() != getColumnCount())
 			throw new ArrayIndexOutOfBoundsException("Column out of bounds");
-		rows.add(rowToAdd);
 	}
 	
 	public void setFromXml(String xmlData) throws IOException, ParserConfigurationException, SAXException

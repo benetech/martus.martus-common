@@ -69,7 +69,7 @@ public class TestGridData extends TestCaseEnhanced
 		
 		assertEquals("row count should start at 0", 0, grid.getRowCount());
 		grid.addRow(row1);
-		assertEquals("row count should still be at 1", 1, grid.getRowCount());
+		assertEquals("row count should be at 1", 1, grid.getRowCount());
 		grid.addRow(row2);
 		assertEquals("row count should now be 2", 2, grid.getRowCount());
 		String xmlEncodedString = XmlUtilities.getXmlEncoded(mustEncodeXMLData);
@@ -98,6 +98,21 @@ public class TestGridData extends TestCaseEnhanced
 		grid.deleteRow(0);
 		assertEquals("Should only have 2 rows after a delete", 2, grid.getRowCount());
 		assertEquals("Row 2's data should now be in row 1", row2DataColumn1, grid.getValueAt(0,0));
+
+		GridRow newInsertedRow = new GridRow(gridSpec2Colunns);
+		String newRowdata = "new row inserted";
+		String[] newInsertedRowData = {newRowdata, mustEncodeXMLData};
+		fillGridRow(newInsertedRow, newInsertedRowData);
+		grid.insertRow(newInsertedRow,0);
+		assertEquals("row count should be 3 with inserted row", 3, grid.getRowCount());
+		assertEquals("Row 3's data should be in row 1", newRowdata, grid.getValueAt(0,0));
+		assertEquals("Row 2's data should now be in row 2", row2DataColumn1, grid.getValueAt(1,0));
+	
+		grid.addEmptyRowAt(0);
+		assertEquals("row count should be 4 with inserted empty row", 4, grid.getRowCount());
+		assertEquals("Row 1 should be empty", "", grid.getValueAt(0,0));
+		assertEquals("Row 3's data should be in row 2", newRowdata, grid.getValueAt(1,0));
+		assertEquals("Row 2's data should now be in row 3", row2DataColumn1, grid.getValueAt(2,0));
 		
 	}
 	
@@ -246,6 +261,24 @@ public class TestGridData extends TestCaseEnhanced
 		{
 			grid.deleteRow(-1);
 			fail("Should have thrown invalid negative row");
+		}
+		catch (ArrayIndexOutOfBoundsException expected)
+		{
+		}
+
+		try
+		{
+			grid.insertRow(rowValida, 50);
+			fail("Should have thrown invalid row insertion point");
+		}
+		catch (ArrayIndexOutOfBoundsException expected)
+		{
+		}
+		
+		try
+		{
+			grid.insertRow(rowValida, -1);
+			fail("Should have thrown invalid negative row insertion point");
 		}
 		catch (ArrayIndexOutOfBoundsException expected)
 		{
