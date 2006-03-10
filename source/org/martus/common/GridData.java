@@ -97,17 +97,17 @@ public class GridData
 	
 	public void addRow(GridRow rowToAdd) throws ArrayIndexOutOfBoundsException
 	{
-		checkColumnCount(rowToAdd);
+		ensureValidColumnCount(rowToAdd);
 		rows.add(rowToAdd);
 	}
 	
 	public void insertRow(GridRow rowToAdd, int insertAt) throws ArrayIndexOutOfBoundsException
 	{
-		checkColumnCount(rowToAdd);
+		ensureValidColumnCount(rowToAdd);
 		rows.insertElementAt(rowToAdd, insertAt);
 	}
 
-	private void checkColumnCount(GridRow rowToAdd) 
+	private void ensureValidColumnCount(GridRow rowToAdd) 
 	{
 		if(rowToAdd.getColumnCount() != getColumnCount())
 			throw new ArrayIndexOutOfBoundsException("Column out of bounds");
