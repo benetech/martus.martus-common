@@ -26,29 +26,29 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.packet;
 
-import java.util.Vector;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class AccountId
 {
-	public static AccountId create(String accountId)
+	public static AccountId create(String accountIdString)
 	{
-		AccountId newId = new AccountId(accountId);
-		int at = ids.indexOf(newId);
-		if(at >= 0)
-			return (AccountId)ids.get(at);
-		ids.add(newId);
-		return newId;
+		if(accountIds.containsKey(accountIdString))
+			return (AccountId)accountIds.get(accountIdString);
+		AccountId newAccountId = new AccountId(accountIdString);
+		accountIds.put(accountIdString, newAccountId);
+		return newAccountId;
 	}
 	
 	public int objectId()
 	{
-		return super.hashCode();
+		return hashCode();
 	}
 	
 	public String toString()
 	{
-		return id;
+		return idString;
 	}
 	
 	public boolean equals(Object obj)
@@ -58,15 +58,15 @@ public class AccountId
 
 	public int hashCode()
 	{
-		return id.hashCode();
+		return idString.hashCode();
 	}
 
 	private AccountId(String accountId)
 	{
-		id = accountId;
+		idString = accountId;
 	}
 	
-	private String id;
+	private String idString;
 	
-	private static Vector ids = new Vector();
+	private static Map accountIds = new HashMap();
 }

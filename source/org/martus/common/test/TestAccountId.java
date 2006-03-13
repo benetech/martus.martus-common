@@ -27,6 +27,8 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.test;
 
 import org.martus.common.packet.AccountId;
+import org.martus.common.packet.UniversalId;
+import org.martus.util.Stopwatch;
 import org.martus.util.TestCaseEnhanced;
 
 
@@ -47,5 +49,29 @@ public class TestAccountId extends TestCaseEnhanced
 		assertEquals("not same id?", accountId1.objectId(), accountId2.objectId());
 		assertEquals("not equals?", accountId1, accountId2);
 		assertEquals("not same hash?", accountId1.hashCode(), accountId2.hashCode());
+	}
+	
+	public void testAccountIdSpeed() throws Exception
+	{
+		for(int i = 0; i < 10000; ++i)
+		{
+			String fakeAccountId = UniversalId.createDummyUniversalId().getLocalId();
+			AccountId.create(fakeAccountId);
+		}
+		
+		String accountId = "ow38wefownef8938r2hiosenfosiefh";
+		Stopwatch sw = new Stopwatch();
+
+		sw.start();
+		for(int i = 0; i < 100; ++i)
+			AccountId.create(accountId);
+		//System.out.println(sw.elapsed());
+
+		sw.start();
+		for(int i = 0; i < 10000; ++i)
+			AccountId.create(accountId);
+		//.out.println(sw.elapsed());
+		
+			
 	}
 }
