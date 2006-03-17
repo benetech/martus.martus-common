@@ -37,6 +37,7 @@ import org.martus.common.GridData;
 import org.martus.common.MartusXml;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.crypto.SessionKey;
+import org.martus.common.field.MartusField;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.util.Base64;
@@ -152,7 +153,11 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 		XmlFieldLoader(String tag, FieldDataPacket fdp)
 		{
 			super(tag);
-			spec = fdp.getField(getFieldNameTag()).getFieldSpec();
+			String fieldNameTag = getFieldNameTag();
+			MartusField field = fdp.getField(fieldNameTag);
+			if(field == null)
+				System.out.println("ERROR: Unknown field: " + fieldNameTag + " in " + fdp.getLocalId());
+			spec = field.getFieldSpec();
 		}
 		
 		String getFieldNameTag()
