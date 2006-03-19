@@ -110,6 +110,15 @@ public class MartusUtilities
 		}
 
 	}
+	
+	public static class BulletinNotFoundException extends Exception
+	{
+		public BulletinNotFoundException()
+		{
+			
+		}
+		
+	}
 
 	public static void deleteAllFiles(Vector filesToDelete)
 	{

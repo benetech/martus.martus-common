@@ -43,6 +43,7 @@ import java.util.zip.ZipOutputStream;
 import org.martus.common.MartusConstants;
 import org.martus.common.MartusUtilities;
 import org.martus.common.ProgressMeterInterface;
+import org.martus.common.MartusUtilities.BulletinNotFoundException;
 import org.martus.common.MartusUtilities.NotYourBulletinErrorException;
 import org.martus.common.bulletinstore.BulletinStore;
 import org.martus.common.crypto.MartusCrypto;
@@ -337,7 +338,9 @@ public class BulletinZipUtilities
 			MartusCrypto.MartusSignatureException,
 			MartusUtilities.ServerErrorException,
 			IOException,
-			Base64.InvalidBase64Exception, NotYourBulletinErrorException
+			Base64.InvalidBase64Exception, 
+			NotYourBulletinErrorException,
+			BulletinNotFoundException
 	{
 		int masterTotalSize = 0;
 		int totalSize = 0;
@@ -353,6 +356,8 @@ public class BulletinZipUtilities
 			lastResponse = response.getResultCode();
 			if(lastResponse.equals(NetworkInterfaceConstants.NOTYOURBULLETIN))
 					throw new MartusUtilities.NotYourBulletinErrorException();
+			if(lastResponse.equals(NetworkInterfaceConstants.NOT_FOUND))
+				throw new MartusUtilities.BulletinNotFoundException();
 			if(!lastResponse.equals(NetworkInterfaceConstants.OK) &&
 				!lastResponse.equals(NetworkInterfaceConstants.CHUNK_OK))
 			{
