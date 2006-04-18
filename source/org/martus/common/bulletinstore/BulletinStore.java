@@ -31,6 +31,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -132,9 +134,9 @@ public class BulletinStore
 		return scanForLeafKeys().size();
 	}
 
-	public Vector getAllBulletinLeafUids()
+	public Set getAllBulletinLeafUids()
 	{
-		Vector uids = new Vector();
+		Set uids = new HashSet();
 		Vector keys = scanForLeafKeys();
 		for(int i=0; i < keys.size(); ++i)
 			uids.add( ((DatabaseKey)keys.get(i)).getUniversalId());
@@ -143,7 +145,7 @@ public class BulletinStore
 	
 	public boolean isLeaf(UniversalId uId)
 	{
-		Vector bulletinLeafUidsInSystem  = getAllBulletinLeafUids();
+		Set bulletinLeafUidsInSystem  = getAllBulletinLeafUids();
 		return bulletinLeafUidsInSystem.contains(uId);
 	}
 

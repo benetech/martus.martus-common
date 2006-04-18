@@ -28,6 +28,7 @@ package org.martus.common.bulletinstore;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
 import java.util.Vector;
 import java.util.zip.ZipFile;
 
@@ -229,18 +230,17 @@ public class TestBulletinStore extends TestCaseEnhanced
 	public void testGetAllBulletinUids() throws Exception
 	{
 		TRACE("testGetAllBulletinUids");
-		Vector empty = store.getAllBulletinLeafUids();
+		Set empty = store.getAllBulletinLeafUids();
 		assertEquals("not empty?", 0, empty.size());
 
 		Bulletin b = createAndSaveBulletin();
-		Vector one = store.getAllBulletinLeafUids();
+		Set one = store.getAllBulletinLeafUids();
 		assertEquals("not one?", 1, one.size());
-		UniversalId gotUid = (UniversalId)one.get(0);
 		UniversalId bUid = b.getUniversalId();
-		assertEquals("wrong uid 1?", bUid, gotUid);
+		assertTrue("wrong uid 1?", one.contains(bUid));
 
 		Bulletin b2 = createAndSaveBulletin();
-		Vector two = store.getAllBulletinLeafUids();
+		Set two = store.getAllBulletinLeafUids();
 		assertEquals("not two?", 2, two.size());
 		assertTrue("missing 1?", two.contains(b.getUniversalId()));
 		assertTrue("missing 2?", two.contains(b2.getUniversalId()));
