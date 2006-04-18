@@ -29,6 +29,7 @@ package org.martus.common.bulletinstore;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.Vector;
 
 import org.martus.common.HQKeys;
@@ -85,7 +86,7 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 		return result;
 	}
 
-	private Vector toVector(HashSet set)
+	private Vector toVector(Set set)
 	{
 		Vector result = new Vector();
 		Iterator iter = set.iterator();
@@ -103,7 +104,7 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 	public synchronized Vector getFieldOffices(String hqAccountId)
 	{
 		fill();
-		return internalGetFieldOffices(hqAccountId);
+		return toVector(internalGetFieldOffices(hqAccountId));
 	}
 	
 	// TODO: NOTE! There is a corner case where this could return an incorrect value:
@@ -141,11 +142,11 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 		fieldOfficesPerHq = new HashMap();
 	}
 
-	private Vector internalGetFieldOffices(String hqAccountId)
+	private Set internalGetFieldOffices(String hqAccountId)
 	{
-		Vector results = (Vector)fieldOfficesPerHq.get(hqAccountId);
+		Set results = (Set)fieldOfficesPerHq.get(hqAccountId);
 		if(results == null)
-			results = new Vector();
+			results = new HashSet();
 		
 		return results;
 	}
@@ -186,7 +187,7 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 		for(int i=0; i < hqs.size(); ++i)
 		{
 			String thisHqKey = hqs.get(i).getPublicKey();
-			Vector fieldOffices = internalGetFieldOffices(thisHqKey);
+			Set fieldOffices = internalGetFieldOffices(thisHqKey);
 			if(!fieldOffices.contains(key.getAccountId()))
 			{
 				fieldOffices.add(key.getAccountId());
