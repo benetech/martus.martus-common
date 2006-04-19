@@ -28,10 +28,8 @@ package org.martus.common.bulletinstore;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
-
 import org.martus.common.HQKeys;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.crypto.MartusCrypto;
@@ -41,6 +39,7 @@ import org.martus.common.database.ReadableDatabase;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.BulletinHistory;
 import org.martus.common.packet.UniversalId;
+import org.martus.util.VectorConversion;
 
 public class LeafNodeCache extends BulletinStoreCache implements Database.PacketVisitor
 {
@@ -81,30 +80,22 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 	public synchronized Vector getLeafKeys()
 	{
 		fill();
-		Vector result = toVector(leafKeys);
+		Vector result = VectorConversion.toVector(leafKeys);
 		
 		return result;
 	}
 
-	private Vector toVector(Set set)
-	{
-		Vector result = new Vector();
-		Iterator iter = set.iterator();
-		while(iter.hasNext())
-			result.add(iter.next());
-		return result;
-	}
 	
 	public synchronized Vector getNonLeafUids()
 	{
 		fill();
-		return toVector(nonLeafUids);
+		return VectorConversion.toVector(nonLeafUids);
 	}
 	
 	public synchronized Vector getFieldOffices(String hqAccountId)
 	{
 		fill();
-		return toVector(internalGetFieldOffices(hqAccountId));
+		return VectorConversion.toVector(internalGetFieldOffices(hqAccountId));
 	}
 	
 	// TODO: NOTE! There is a corner case where this could return an incorrect value:
