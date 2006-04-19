@@ -39,7 +39,6 @@ import org.martus.common.database.ReadableDatabase;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.BulletinHistory;
 import org.martus.common.packet.UniversalId;
-import org.martus.util.VectorConversion;
 
 public class LeafNodeCache extends BulletinStoreCache implements Database.PacketVisitor
 {
@@ -80,7 +79,7 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 	public synchronized Vector getLeafKeys()
 	{
 		fill();
-		Vector result = VectorConversion.toVector(leafKeys);
+		Vector result = new Vector(leafKeys);
 		
 		return result;
 	}
@@ -89,13 +88,13 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 	public synchronized Vector getNonLeafUids()
 	{
 		fill();
-		return VectorConversion.toVector(nonLeafUids);
+		return new Vector(nonLeafUids);
 	}
 	
 	public synchronized Vector getFieldOffices(String hqAccountId)
 	{
 		fill();
-		return VectorConversion.toVector(internalGetFieldOffices(hqAccountId));
+		return new Vector(internalGetFieldOffices(hqAccountId));
 	}
 	
 	// TODO: NOTE! There is a corner case where this could return an incorrect value:
