@@ -163,12 +163,11 @@ public class FieldCollection
 			fields = fieldsToLoad;
 		}
 		
-
-		public FieldCollection getFields()
+		public FieldSpec[] getFieldSpecs()
 		{
-			return fields;
+			return fields.getSpecs();
 		}
-		
+
 		public SimpleXmlDefaultLoader startElement(String tag)
 			throws SAXParseException
 		{
@@ -190,7 +189,7 @@ public class FieldCollection
 			fields.add(spec);
 		}
 
-		FieldCollection fields;
+		private FieldCollection fields;
 	}
 	
 	Vector fields;

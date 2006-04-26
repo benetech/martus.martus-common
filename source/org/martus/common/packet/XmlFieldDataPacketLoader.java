@@ -93,7 +93,7 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 			else if(tag.equals(MartusXml.CustomFieldSpecsElementName))
 			{
 				FieldCollection.XmlCustomFieldsLoader loader = (FieldCollection.XmlCustomFieldsLoader)ended;
-				fdp.setCustomFields(loader.getFields());
+				fdp.setCustomFields(new FieldCollection(loader.getFieldSpecs()));
 				foundModernFieldSpecs = true;
 			}
 			else if(getTagsContainingStrings().contains(tag))
