@@ -36,6 +36,7 @@ import org.martus.common.field.TestMartusField;
 import org.martus.common.field.TestMartusSearchableGridColumnField;
 import org.martus.common.fieldspec.TestCustomDropDownFieldSpec;
 import org.martus.common.fieldspec.TestDropDownFieldSpec;
+import org.martus.common.fieldspec.TestFieldSpec;
 import org.martus.common.utilities.TestDateUtilities;
 import org.martus.common.utilities.TestMartusFlexidate;
 

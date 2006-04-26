@@ -24,31 +24,13 @@ Boston, MA 02111-1307, USA.
 
 */
 
-package org.martus.common.test;
+package org.martus.common.fieldspec;
 
 import java.util.Vector;
 
 import org.martus.common.LegacyCustomFields;
 import org.martus.common.MiniLocalization;
-import org.martus.common.fieldspec.ChoiceItem;
-import org.martus.common.fieldspec.CustomDropDownFieldSpec;
-import org.martus.common.fieldspec.DropDownFieldSpec;
-import org.martus.common.fieldspec.FieldSpec;
-import org.martus.common.fieldspec.FieldType;
-import org.martus.common.fieldspec.FieldTypeAnyField;
-import org.martus.common.fieldspec.FieldTypeBoolean;
-import org.martus.common.fieldspec.FieldTypeDate;
-import org.martus.common.fieldspec.FieldTypeDateRange;
-import org.martus.common.fieldspec.FieldTypeDropdown;
-import org.martus.common.fieldspec.FieldTypeGrid;
-import org.martus.common.fieldspec.FieldTypeLanguage;
-import org.martus.common.fieldspec.FieldTypeMessage;
-import org.martus.common.fieldspec.FieldTypeMultiline;
-import org.martus.common.fieldspec.FieldTypeNormal;
-import org.martus.common.fieldspec.FieldTypeSearchValue;
-import org.martus.common.fieldspec.FieldTypeUnknown;
-import org.martus.common.fieldspec.GridFieldSpec;
-import org.martus.common.fieldspec.MessageFieldSpec;
+import org.martus.common.test.UnicodeConstants;
 import org.martus.common.utilities.DateUtilities;
 import org.martus.util.TestCaseEnhanced;
 
