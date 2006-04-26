@@ -100,9 +100,9 @@ public class CustomFieldError
 		return new CustomFieldError(CODE_SIGNATURE_ERROR, UNUSED_FIELD, UNUSED_FIELD, UNUSED_FIELD);
 	}
 
-	static public CustomFieldError errorIO()
+	static public CustomFieldError errorIO(String errorMessage)
 	{
-		return new CustomFieldError(CODE_IO_ERROR, UNUSED_FIELD, UNUSED_FIELD, UNUSED_FIELD);
+		return new CustomFieldError(CODE_IO_ERROR, UNUSED_FIELD, UNUSED_FIELD, errorMessage);
 	}
 
 	private CustomFieldError(String code, String tag, String label, String type)
