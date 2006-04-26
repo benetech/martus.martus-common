@@ -29,6 +29,7 @@ package org.martus.common.field;
 import org.martus.common.FieldCollection;
 import org.martus.common.GridData;
 import org.martus.common.MiniLocalization;
+import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.GridFieldSpec;
 
 
@@ -40,25 +41,44 @@ public class MartusSearchableGridColumnField extends MartusField
 		GridFieldSpec gridSpec = gridToUse.getGridFieldSpec();
 		GridData gridData = new GridData(gridSpec);
 		gridData.setFromXml(gridToUse.getData());
+	
+		FieldSpec[] columnSpecs = getFieldSpecsFromGrid(gridSpec);
 		
-		fields = new FieldCollection();
+		fields = new FieldCollection(columnSpecs);
 		for(int row = 0; row < gridData.getRowCount(); ++row)
 		{
-			fields.add(gridSpec.getFieldSpec(column));
 			fields.getField(row).setData(gridData.getValueAt(row, column));
 		}
+	}
+
+	static FieldSpec[] getFieldSpecsFromGrid(GridFieldSpec gridSpec)
+	{
+		FieldSpec[] columnSpecs = new FieldSpec[gridSpec.getColumnCount()];
+		for(int c = 0; c < columnSpecs.length; ++c)
+			columnSpecs[c] = gridSpec.getFieldSpec(c);
+		return columnSpecs;
 	}
 	
 	public MartusSearchableGridColumnField(MartusSearchableGridColumnField source, String tag, MiniLocalization localization) throws Exception
 	{
 		super(source.getFieldSpec());
+
+		// TODO: There is clearly duplication here, but I'm in too much of a hurry
+		// to try to figure out how to eliminate it. ARGH! kbs 2006-04-26
 		
-		fields = new FieldCollection();
+		FieldSpec[] columnSpecs = new FieldSpec[source.size()];
+		for(int c = 0; c < columnSpecs.length; ++c)
+		{
+			MartusField thisField = source.fields.getField(c);
+			MartusField thisSubfield = thisField.getSubField(tag, localization);
+			columnSpecs[c] = thisSubfield.getFieldSpec();
+		}
+
+		fields = new FieldCollection(columnSpecs);
 		for(int row = 0; row < source.size(); ++row)
 		{
 			MartusField thisField = source.fields.getField(row);
 			MartusField thisSubfield = thisField.getSubField(tag, localization);
-			fields.add(thisSubfield.getFieldSpec());
 			fields.getField(row).setData(thisSubfield.getData());
 		}
 	
