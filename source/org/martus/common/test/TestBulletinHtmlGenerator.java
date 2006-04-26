@@ -226,9 +226,9 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 		GridData grid = TestGridData.createSampleGridWithOneEmptyRow();
 		GridFieldSpec gridSpec = new GridFieldSpec();
 		String label1 = "Column 1";
-		FieldSpec column1 = new FieldSpec(label1, new FieldTypeNormal());
+		FieldSpec column1 = FieldSpec.createFieldSpec(label1, new FieldTypeNormal());
 		String label2 = "Column 2";
-		FieldSpec column2 = new FieldSpec(label2, new FieldTypeNormal());
+		FieldSpec column2 = FieldSpec.createFieldSpec(label2, new FieldTypeNormal());
 
 		gridSpec.addColumn(column1);
 		gridSpec.addColumn(column2);

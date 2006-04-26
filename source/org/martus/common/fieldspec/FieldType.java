@@ -145,7 +145,7 @@ abstract public class FieldType
 	
 	public FieldSpec createEmptyFieldSpec()
 	{
-		return new FieldSpec(this);
+		return FieldSpec.createFieldSpec(this);
 	}
 	
 	public static String UNKNOWN_TYPE_STRING = "UNKNOWN";

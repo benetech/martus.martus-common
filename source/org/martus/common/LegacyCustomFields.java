@@ -101,7 +101,7 @@ public class LegacyCustomFields
 				cleansedTag[i] = '_';				
 		}
 		String tag = new String(cleansedTag);
-		return new FieldSpec(tag, extractedLabel, extractedType, extractedHasUnknown);
+		return FieldSpec.createCustomField(tag, extractedLabel, extractedType, extractedHasUnknown);
 	}
 	
 	static private String extractFieldSpecElement(String fieldDescription, int elementNumber)

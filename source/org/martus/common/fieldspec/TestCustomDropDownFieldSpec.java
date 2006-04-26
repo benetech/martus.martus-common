@@ -105,7 +105,7 @@ public class TestCustomDropDownFieldSpec extends TestCaseEnhanced
 		specAD.setLabel(labelD);
 		assertNotEquals("not checking label?", specAC, specAD);
 		
-		FieldSpec notDropDown = new FieldSpec(new FieldTypeNormal());
+		FieldSpec notDropDown = FieldSpec.createFieldSpec(new FieldTypeNormal());
 		notDropDown.setTag(tagA);
 		notDropDown.setLabel(labelC);
 		assertNotEquals("not checking type?", specAC, notDropDown);

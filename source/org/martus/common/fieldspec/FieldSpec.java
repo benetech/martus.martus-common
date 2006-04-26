@@ -45,20 +45,30 @@ public class FieldSpec
 	
 	public static FieldSpec createCustomField(String tagToUse, String labelToUse, FieldType typeToUse)
 	{
-		return new FieldSpec(tagToUse, labelToUse, typeToUse, false);
+		return createCustomField(tagToUse, labelToUse, typeToUse, false);
 	}
 	
-	public FieldSpec(FieldType typeToUse)
+	public static FieldSpec createCustomField(String tagToUse, String labelToUse, FieldType typeToUse, boolean hasUnknownToUse)
 	{
-		this("", typeToUse);
+		return new FieldSpec(tagToUse, labelToUse, typeToUse, hasUnknownToUse);
 	}
 	
-	public FieldSpec(String labelToUse, FieldType typeToUse)
+	public static FieldSpec createFieldSpec(FieldType typeToUse)
 	{
-		this("",labelToUse,typeToUse,false);
+		return new FieldSpec(typeToUse);
 	}
 
-	public FieldSpec(String tagToUse, String labelToUse, FieldType typeToUse, boolean hasUnknownToUse)
+	public static FieldSpec createFieldSpec(String labelToUse, FieldType typeToUse)
+	{
+		return createCustomField("", labelToUse, typeToUse);
+	}
+
+	protected FieldSpec(FieldType typeToUse)
+	{
+		this("", "", typeToUse, false);
+	}
+	
+	private FieldSpec(String tagToUse, String labelToUse, FieldType typeToUse, boolean hasUnknownToUse)
 	{
 		tag = tagToUse;
 		label = labelToUse;

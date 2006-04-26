@@ -89,7 +89,7 @@ public class TestGridFieldSpec extends TestCaseEnhanced
 		GridFieldSpec spec = new GridFieldSpec();
 
 		String labelStringColumn = "TYPE_NORMAL";
-		FieldSpec stringSpec = new FieldSpec(labelStringColumn, new FieldTypeNormal());
+		FieldSpec stringSpec = FieldSpec.createFieldSpec(labelStringColumn, new FieldTypeNormal());
 		spec.addColumn(stringSpec);
 		assertEquals(labelStringColumn, spec.getColumnLabel(0));
 		assertEquals(new FieldTypeNormal(), spec.getColumnType(0));
@@ -110,21 +110,21 @@ public class TestGridFieldSpec extends TestCaseEnhanced
 
 
 		String labelBooleanColumn = "TYPE_BOOLEAN";
-		FieldSpec booleanSpec = new FieldSpec(labelBooleanColumn, new FieldTypeBoolean());
+		FieldSpec booleanSpec = FieldSpec.createFieldSpec(labelBooleanColumn, new FieldTypeBoolean());
 		spec.addColumn(booleanSpec);
 		assertEquals(labelBooleanColumn, spec.getColumnLabel(2));
 		assertEquals(new FieldTypeBoolean(), spec.getColumnType(2));
 		assertEquals(labelBooleanColumn, spec.getFieldSpec(2).getLabel());
 		
 		String labelDateColumn = "TYPE_DATE";
-		FieldSpec dateSpec = new FieldSpec(labelDateColumn, new FieldTypeDate());
+		FieldSpec dateSpec = FieldSpec.createFieldSpec(labelDateColumn, new FieldTypeDate());
 		spec.addColumn(dateSpec);
 		assertEquals(labelDateColumn, spec.getColumnLabel(3));
 		assertEquals(new FieldTypeDate(), spec.getColumnType(3));
 		assertEquals(labelDateColumn, spec.getFieldSpec(3).getLabel());
 
 		String labelDateRangeColumn = "TYPE_DATERANGE";
-		FieldSpec dateRangeSpec = new FieldSpec(labelDateRangeColumn, new FieldTypeDateRange());
+		FieldSpec dateRangeSpec = FieldSpec.createFieldSpec(labelDateRangeColumn, new FieldTypeDateRange());
 		spec.addColumn(dateRangeSpec);
 		assertEquals(labelDateRangeColumn, spec.getColumnLabel(4));
 		assertEquals(new FieldTypeDateRange(), spec.getColumnType(4));

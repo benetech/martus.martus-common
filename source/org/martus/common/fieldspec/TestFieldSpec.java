@@ -82,34 +82,34 @@ public class TestFieldSpec extends TestCaseEnhanced
 	public void testDefaultValues()
 	{
 		String emptyString = "";
-		FieldSpec spec = new FieldSpec(new FieldTypeBoolean());
+		FieldSpec spec = FieldSpec.createFieldSpec(new FieldTypeBoolean());
 		assertEquals(FieldSpec.FALSESTRING, spec.getDefaultValue());
 		
-		spec = new FieldSpec(new FieldTypeDate());
+		spec = FieldSpec.createFieldSpec(new FieldTypeDate());
 		assertEquals(DateUtilities.getFirstOfThisYearInStoredFormat(), spec.getDefaultValue());
 
-		spec = new FieldSpec(new FieldTypeDateRange());
+		spec = FieldSpec.createFieldSpec(new FieldTypeDateRange());
 		assertEquals(DateUtilities.getFirstOfThisYearInStoredFormat(), spec.getDefaultValue());
 
 		spec = new GridFieldSpec();
 		assertEquals(emptyString, spec.getDefaultValue());
 		
-		spec = new FieldSpec(new FieldTypeLanguage());
+		spec = FieldSpec.createFieldSpec(new FieldTypeLanguage());
 		assertEquals(MiniLocalization.LANGUAGE_OTHER, spec.getDefaultValue());
 		
-		spec = new FieldSpec(new FieldTypeMultiline());
+		spec = FieldSpec.createFieldSpec(new FieldTypeMultiline());
 		assertEquals(emptyString, spec.getDefaultValue());
 
-		spec = new FieldSpec(new FieldTypeNormal());
+		spec = FieldSpec.createFieldSpec(new FieldTypeNormal());
 		assertEquals(emptyString, spec.getDefaultValue());
 
-		spec = new FieldSpec(new FieldTypeSearchValue());
+		spec = FieldSpec.createFieldSpec(new FieldTypeSearchValue());
 		assertEquals(emptyString, spec.getDefaultValue());
 		
 		spec = new DropDownFieldSpec(new ChoiceItem[] {new ChoiceItem("first", "First item"), new ChoiceItem("", "")});
 		assertEquals("first", spec.getDefaultValue());
 		
-		spec = new FieldSpec(new FieldTypeMessage());
+		spec = FieldSpec.createFieldSpec(new FieldTypeMessage());
 		assertEquals(emptyString, spec.getDefaultValue());
 	
 		CustomDropDownFieldSpec dropdownSpec = new CustomDropDownFieldSpec();
@@ -167,14 +167,14 @@ public class TestFieldSpec extends TestCaseEnhanced
 	
 	public void testEqualsAndCompareTo()
 	{
-		FieldSpec a = new FieldSpec(new FieldTypeNormal());
+		FieldSpec a = FieldSpec.createFieldSpec(new FieldTypeNormal());
 		String labelA = "label a";
 		String tagA = "NewTagA";
 		String labelB = "label b";
 		String tagB = "NewTagB";
 		a.setLabel(labelA);
 		a.setTag(tagA);
-		FieldSpec b = new FieldSpec(new FieldTypeNormal());
+		FieldSpec b = FieldSpec.createFieldSpec(new FieldTypeNormal());
 		b.setLabel(labelA);
 		b.setTag(tagA);
 		assertTrue("A & B should be identical (equals)", a.equals(b));
@@ -194,7 +194,7 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertTrue("a not less than b?", a.compareTo(b) < 0);
 		assertTrue("b not greater than a?", b.compareTo(a) > 0);
 		
-		FieldSpec c = new FieldSpec(new FieldTypeMultiline());
+		FieldSpec c = FieldSpec.createFieldSpec(new FieldTypeMultiline());
 		c.setLabel(labelA);
 		c.setTag(tagA);
 		assertFalse("C has different Type (equals)", a.equals(b));

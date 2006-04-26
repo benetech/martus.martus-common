@@ -59,7 +59,7 @@ public class MartusDateRangeField extends MartusField
 
 	private MartusField createDateSubField(MultiCalendar singleDateString)
 	{
-		MartusField sub = new MartusField(new FieldSpec(new FieldTypeDate()));
+		MartusField sub = new MartusField(FieldSpec.createFieldSpec(new FieldTypeDate()));
 		sub.setData(MartusFlexidate.toStoredDateFormat(singleDateString));
 		return sub;
 	}
