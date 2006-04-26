@@ -41,11 +41,6 @@ import org.xml.sax.SAXParseException;
 
 public class FieldCollection
 {
-	public FieldCollection()
-	{
-		this(new FieldSpec[0]);
-	}
-	
 	public FieldCollection(FieldSpec[] specsToUse)
 	{
 		fields = new Vector();
@@ -53,7 +48,7 @@ public class FieldCollection
 			add(specsToUse[i]);
 	}
 	
-	void add(FieldSpec newSpec)
+	private void add(FieldSpec newSpec)
 	{
 		FieldType type = newSpec.getType();
 		if(type.isDateRange())
@@ -136,12 +131,11 @@ public class FieldCollection
 	
 	public static FieldSpec[] parseXml(String xml) throws CustomFieldsParseException
 	{
-		FieldCollection fields = new FieldCollection();
-		XmlCustomFieldsLoader loader = new XmlCustomFieldsLoader(fields);
+		XmlCustomFieldsLoader loader = new XmlCustomFieldsLoader();
 		try
 		{
 			SimpleXmlParser.parse(loader, xml);
-			return fields.getSpecs();
+			return loader.getFieldSpecs();
 		}
 		catch(Exception e)
 		{
@@ -152,20 +146,20 @@ public class FieldCollection
 	
 	public static class XmlCustomFieldsLoader extends SimpleXmlDefaultLoader
 	{
-		public XmlCustomFieldsLoader(FieldCollection fieldsToLoad)
+		public XmlCustomFieldsLoader()
 		{
-			this(MartusXml.CustomFieldSpecsElementName, fieldsToLoad);
+			this(MartusXml.CustomFieldSpecsElementName);
 		}
 
-		public XmlCustomFieldsLoader(String tag, FieldCollection fieldsToLoad)
+		public XmlCustomFieldsLoader(String tag)
 		{
 			super(tag);
-			fields = fieldsToLoad;
+			fields = new Vector();
 		}
 		
 		public FieldSpec[] getFieldSpecs()
 		{
-			return fields.getSpecs();
+			return (FieldSpec[])fields.toArray(new FieldSpec[0]);
 		}
 
 		public SimpleXmlDefaultLoader startElement(String tag)
@@ -189,7 +183,7 @@ public class FieldCollection
 			fields.add(spec);
 		}
 
-		private FieldCollection fields;
+		private Vector fields;
 	}
 	
 	Vector fields;

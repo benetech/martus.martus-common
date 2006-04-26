@@ -66,7 +66,7 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 		else if(tag.equals(MartusXml.AttachmentElementName))
 			return new XmlAttachmentLoader(tag);
 		else if(tag.equals(MartusXml.CustomFieldSpecsElementName))
-			return new FieldCollection.XmlCustomFieldsLoader(new FieldCollection());
+			return new FieldCollection.XmlCustomFieldsLoader();
 		else if(getTagsContainingStrings().contains(tag))
 			return new SimpleXmlStringLoader(tag);
 		else if(tag.equals(AuthorizedSessionKeys.AUTHORIZED_SESSION_KEYS_TAG))

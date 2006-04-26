@@ -73,10 +73,9 @@ public class TestCustomFields extends TestCase
 	{
 		String xml = "<CustomFields>" + TestGridFieldSpec.SAMPLE_GRID_FIELD_XML_LEGACY +
 				"</CustomFields>";
-		FieldCollection fields = new FieldCollection();
-		FieldCollection.XmlCustomFieldsLoader loader = new FieldCollection.XmlCustomFieldsLoader(fields);
+		FieldCollection.XmlCustomFieldsLoader loader = new FieldCollection.XmlCustomFieldsLoader();
 		loader.parse(xml);
-		GridFieldSpec spec = (GridFieldSpec)fields.getSpecs()[0];
+		GridFieldSpec spec = (GridFieldSpec)loader.getFieldSpecs()[0];
 		assertEquals(new FieldTypeGrid(), spec.getType());
 		assertEquals(2, spec.getColumnCount());
 		assertEquals(TestGridFieldSpec.SAMPLE_GRID_HEADER_LABEL_1, spec.getColumnLabel(0));

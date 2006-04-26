@@ -43,4 +43,9 @@ public class FieldCollectionForTesting extends FieldCollection
 		System.arraycopy(extraFieldSpecs, 0, allFields, defaultFields.length, extraFieldSpecs.length);
 		return new FieldCollection(allFields);
 	}
+
+	private FieldCollectionForTesting()
+	{
+		super(new FieldSpec[0]);
+	}
 }
