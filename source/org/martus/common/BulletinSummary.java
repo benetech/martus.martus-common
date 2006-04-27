@@ -70,6 +70,11 @@ public class BulletinSummary
 			history = new BulletinHistory();
 	}
 	
+	public boolean hasFieldDataPacket()
+	{
+		return (fdp != null);
+	}
+	
 	public void setFieldDataPacket(FieldDataPacket fdpToUse)
 	{
 		fdp = fdpToUse;
