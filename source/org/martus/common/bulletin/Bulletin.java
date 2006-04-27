@@ -623,6 +623,8 @@ public class Bulletin implements BulletinConstants
 
 	public static final String PSEUDOFIELD_LOCAL_ID = "_localId";
 	public static final String PSEUDOFIELD_LAST_SAVED_DATE = "_lastSavedDate";
+	public static final String TOP_SECTION = "TOP SECTION";
+	public static final String BOTTOM_SECTION = "BOTTOM SECTION";
 	
 	private boolean isNonAttachmentDataValidFlag;
 	private MartusCrypto security;
