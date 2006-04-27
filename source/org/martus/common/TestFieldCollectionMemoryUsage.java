@@ -38,12 +38,28 @@ public class TestFieldCollectionMemoryUsage extends TestCaseEnhanced
 		super(name);
 	}
 
+	public void testObjectReuse()
+	{
+		FieldSpec[] template1 = {createLongMessageFieldSpec(10000),};
+		FieldSpec[] template2 = {createLongMessageFieldSpec(10000),};
+		assertFalse("templates are identical object?", template1 == template2);
+		assertTrue("templates not equal contents?", Arrays.equals(template1, template2));
+		FieldCollection c1 = new FieldCollection(template1);
+		FieldCollection c2 = new FieldCollection(template2);
+		assertFalse("collections are identical object?", c1 == c2);
+		assertFalse("returned FieldSpec[] are identical?", c1.getSpecs() == c2.getSpecs());
+		assertTrue("underlying FieldSpecs not shared?", c1.getSpecs()[0] == c2.getSpecs()[0]);
+	}
+	
 	public void testMemoryUsage()
 	{
+		if(!RUN_REALLY_SLOW_TEST)
+			return;
+		
 		byte[] bigArray = new byte[30000000];
 		bigArray[0] = 0;
 		
-		int bulletinCount = 1000;
+		int bulletinCount = 250;
 		int fieldCount = 10;
 		int fieldSize = 10000;
 		
@@ -68,4 +84,6 @@ public class TestFieldCollectionMemoryUsage extends TestCaseEnhanced
 		FieldSpec longMessage = FieldSpec.createFieldSpec(longLabel, new FieldTypeMessage());
 		return longMessage;
 	}
+	
+	boolean RUN_REALLY_SLOW_TEST = false;
 }
