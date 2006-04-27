@@ -41,11 +41,31 @@ import org.xml.sax.SAXParseException;
 
 public class FieldCollection
 {
+	public FieldCollection(FieldSpecCollection specsToUse)
+	{
+		specsToUse = reuseExistingSpecCollectionIfPossible(specsToUse);
+		fields = new Vector();
+		for(int i=0; i < specsToUse.size(); ++i)
+			add(specsToUse.get(i));
+	}
+
+	private FieldSpecCollection reuseExistingSpecCollectionIfPossible(FieldSpecCollection specsToUse)
+	{
+		if(existingFieldSpecTemplates.contains(specsToUse))
+		{
+			int at = existingFieldSpecTemplates.indexOf(specsToUse);
+			specsToUse = (FieldSpecCollection)existingFieldSpecTemplates.get(at);
+		}
+		else
+		{
+			existingFieldSpecTemplates.add(specsToUse);
+		}
+		return specsToUse;
+	}
+	
 	public FieldCollection(FieldSpec[] specsToUse)
 	{
-		fields = new Vector();
-		for(int i=0; i < specsToUse.length; ++i)
-			add(specsToUse[i]);
+		this(new FieldSpecCollection(specsToUse));
 	}
 	
 	private void add(FieldSpec newSpec)
@@ -185,6 +205,8 @@ public class FieldCollection
 
 		private Vector fields;
 	}
+	
+	static Vector existingFieldSpecTemplates = new Vector();
 	
 	Vector fields;
 }
