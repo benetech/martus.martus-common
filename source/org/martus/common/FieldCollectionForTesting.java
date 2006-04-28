@@ -37,7 +37,7 @@ public class FieldCollectionForTesting extends FieldCollection
 
 	public static FieldCollection extendDefaultPublicFields(FieldSpec[] extraFieldSpecs)
 	{
-		FieldSpec[] defaultFields = StandardFieldSpecs.getDefaultPublicFieldSpecs();
+		FieldSpec[] defaultFields = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
 		FieldSpec[] allFields = new FieldSpec[defaultFields.length + extraFieldSpecs.length];
 		System.arraycopy(defaultFields, 0, allFields, 0, defaultFields.length);
 		System.arraycopy(extraFieldSpecs, 0, allFields, defaultFields.length, extraFieldSpecs.length);

@@ -211,7 +211,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 			"</FieldDataPacket>\n";
 		//System.out.println("{" + simpleFieldDataPacket + "}");
 
-		FieldSpec[] tagsThatWillBeIgnored = StandardFieldSpecs.getDefaultPublicFieldSpecs();
+		FieldSpec[] tagsThatWillBeIgnored = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
 		FieldDataPacket loaded = new FieldDataPacket(UniversalId.createDummyUniversalId(), tagsThatWillBeIgnored);
 
 		byte[] bytes = simpleFieldDataPacket.getBytes("UTF-8");
@@ -254,7 +254,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 			"</FieldDataPacket>\n";
 		//System.out.println("{" + simpleFieldDataPacket + "}");
 
-		FieldSpec[] specsThatWillBeIgnored = StandardFieldSpecs.getDefaultPublicFieldSpecs();
+		FieldSpec[] specsThatWillBeIgnored = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
 		FieldDataPacket loaded = new FieldDataPacket(UniversalId.createDummyUniversalId(), specsThatWillBeIgnored);
 
 		byte[] bytes = simpleFieldDataPacket.getBytes("UTF-8");
@@ -351,7 +351,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 				MartusXml.getTagEnd(MartusXml.FieldElementPrefix + "custom1") + 
 			"</FieldDataPacket>\n";
 
-		FieldSpec[] specsThatWillBeIgnored = StandardFieldSpecs.getDefaultPublicFieldSpecs();
+		FieldSpec[] specsThatWillBeIgnored = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
 		FieldDataPacket loaded = new FieldDataPacket(UniversalId.createDummyUniversalId(), specsThatWillBeIgnored);
 
 		byte[] bytes = simpleFieldDataPacket.getBytes("UTF-8");
@@ -507,7 +507,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 
 	public void testWriteXmlNoCustomFields() throws Exception
 	{
-		FieldSpec[] specs = StandardFieldSpecs.getDefaultPublicFieldSpecs();
+		FieldSpec[] specs = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
 		FieldDataPacket fdpCustom = new FieldDataPacket(UniversalId.createDummyUniversalId(), specs);
 		assertFalse("Should only have the default fields", fdpCustom.hasCustomFieldTemplate());
 		

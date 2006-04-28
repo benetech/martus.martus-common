@@ -32,7 +32,7 @@ import org.martus.common.bulletin.BulletinConstants;
 public class StandardFieldSpecs
 {
 
-	public static FieldSpec[] getDefaultPublicFieldSpecs()
+	public static FieldSpec[] getDefaultTopSectionFieldSpecs()
 	{
 		if(defaultPublicFieldSpecs == null)
 		{
@@ -54,7 +54,7 @@ public class StandardFieldSpecs
 		return (FieldSpec[])defaultPublicFieldSpecs.clone();
 	}
 
-	public static FieldSpec[] getDefaultPrivateFieldSpecs()
+	public static FieldSpec[] getDefaultBottomSectionFieldSpecs()
 	{
 		if(defaultPrivateFieldSpecs == null)
 		{
@@ -92,14 +92,14 @@ public class StandardFieldSpecs
 	
 	public static FieldSpec findStandardFieldSpec(String tag)
 	{
-		FieldSpec[] publicSpecs = StandardFieldSpecs.getDefaultPublicFieldSpecs();
+		FieldSpec[] publicSpecs = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
 		for(int i=0; i < publicSpecs.length; ++i)
 			if(publicSpecs[i].getTag().equals(tag))
 			{
 				return publicSpecs[i];
 			}
 				
-		FieldSpec[] privateSpecs = StandardFieldSpecs.getDefaultPrivateFieldSpecs();
+		FieldSpec[] privateSpecs = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
 		for(int i=0; i < privateSpecs.length; ++i)
 			if(privateSpecs[i].getTag().equals(tag))
 			{

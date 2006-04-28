@@ -69,7 +69,7 @@ public class Bulletin implements BulletinConstants
 
 	public Bulletin(MartusCrypto securityToUse)
 	{
-		this(securityToUse, StandardFieldSpecs.getDefaultPublicFieldSpecs(), StandardFieldSpecs.getDefaultPrivateFieldSpecs());
+		this(securityToUse, StandardFieldSpecs.getDefaultTopSectionFieldSpecs(), StandardFieldSpecs.getDefaultBottomSectionFieldSpecs());
 	}
 	
 	public Bulletin(MartusCrypto securityToUse, FieldSpec[] publicFieldSpecs, FieldSpec[] privateFieldSpecs)
