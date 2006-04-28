@@ -34,9 +34,9 @@ public class StandardFieldSpecs
 
 	public static FieldSpec[] getDefaultTopSectionFieldSpecs()
 	{
-		if(defaultPublicFieldSpecs == null)
+		if(defaultTopSectionFieldSpecs == null)
 		{
-			defaultPublicFieldSpecs = new FieldSpec[] 
+			defaultTopSectionFieldSpecs = new FieldSpec[] 
 			{
 				FieldSpec.createStandardField(BulletinConstants.TAGLANGUAGE, new FieldTypeLanguage()),
 				FieldSpec.createStandardField(BulletinConstants.TAGAUTHOR, new FieldTypeNormal()),
@@ -51,20 +51,20 @@ public class StandardFieldSpecs
 			};
 		}
 		
-		return (FieldSpec[])defaultPublicFieldSpecs.clone();
+		return (FieldSpec[])defaultTopSectionFieldSpecs.clone();
 	}
 
 	public static FieldSpec[] getDefaultBottomSectionFieldSpecs()
 	{
-		if(defaultPrivateFieldSpecs == null)
+		if(defaultBottomSectionFieldSpecs == null)
 		{
-			defaultPrivateFieldSpecs = new FieldSpec[]
+			defaultBottomSectionFieldSpecs = new FieldSpec[]
 			{
 				FieldSpec.createStandardField(BulletinConstants.TAGPRIVATEINFO, new FieldTypeMultiline()),
 			};
 		}
 		
-		return (FieldSpec[])defaultPrivateFieldSpecs.clone();
+		return (FieldSpec[])defaultBottomSectionFieldSpecs.clone();
 	}
 
 	public static FieldType getStandardType(String tag)
@@ -110,6 +110,6 @@ public class StandardFieldSpecs
 	}
 	
 	
-	private static FieldSpec[] defaultPublicFieldSpecs;
-	private static FieldSpec[] defaultPrivateFieldSpecs;
+	private static FieldSpec[] defaultTopSectionFieldSpecs;
+	private static FieldSpec[] defaultBottomSectionFieldSpecs;
 }

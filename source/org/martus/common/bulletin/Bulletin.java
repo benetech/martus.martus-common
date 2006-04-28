@@ -217,12 +217,12 @@ public class Bulletin implements BulletinConstants
 		return getBulletinHeaderPacket().getStatus();
 	}
 	
-	public FieldSpec[] getPublicFieldSpecs()
+	public FieldSpec[] getTopSectionFieldSpecs()
 	{
 		return fieldData.getFieldSpecs();
 	}
 	
-	public FieldSpec[] getPrivateFieldSpecs()
+	public FieldSpec[] getBottomSectionFieldSpecs()
 	{
 		return getPrivateFieldDataPacket().getFieldSpecs();
 	}

@@ -30,12 +30,12 @@ import org.martus.common.fieldspec.StandardFieldSpecs;
 
 public class FieldCollectionForTesting extends FieldCollection
 {
-	public static FieldCollection extendDefaultPublicFields(FieldSpec extraFieldSpec)
+	public static FieldCollection extendDefaultTopSectionFields(FieldSpec extraFieldSpec)
 	{
-		return extendDefaultPublicFields(new FieldSpec[] {extraFieldSpec});
+		return extendDefaultTopSectionFields(new FieldSpec[] {extraFieldSpec});
 	}
 
-	public static FieldCollection extendDefaultPublicFields(FieldSpec[] extraFieldSpecs)
+	public static FieldCollection extendDefaultTopSectionFields(FieldSpec[] extraFieldSpecs)
 	{
 		FieldSpec[] defaultFields = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
 		FieldSpec[] allFields = new FieldSpec[defaultFields.length + extraFieldSpecs.length];
