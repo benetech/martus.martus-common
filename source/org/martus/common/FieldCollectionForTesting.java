@@ -26,18 +26,16 @@ Boston, MA 02111-1307, USA.
 package org.martus.common;
 
 import org.martus.common.fieldspec.FieldSpec;
-import org.martus.common.fieldspec.StandardFieldSpecs;
 
 public class FieldCollectionForTesting extends FieldCollection
 {
-	public static FieldCollection extendDefaultTopSectionFields(FieldSpec extraFieldSpec)
+	public static FieldCollection extendFields(FieldSpec[] defaultFields, FieldSpec extraFieldSpec)
 	{
-		return extendDefaultTopSectionFields(new FieldSpec[] {extraFieldSpec});
+		return extendFields(defaultFields, new FieldSpec[] {extraFieldSpec});
 	}
 
-	public static FieldCollection extendDefaultTopSectionFields(FieldSpec[] extraFieldSpecs)
+	public static FieldCollection extendFields(FieldSpec[] defaultFields, FieldSpec[] extraFieldSpecs)
 	{
-		FieldSpec[] defaultFields = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
 		FieldSpec[] allFields = new FieldSpec[defaultFields.length + extraFieldSpecs.length];
 		System.arraycopy(defaultFields, 0, allFields, 0, defaultFields.length);
 		System.arraycopy(extraFieldSpecs, 0, allFields, defaultFields.length, extraFieldSpecs.length);

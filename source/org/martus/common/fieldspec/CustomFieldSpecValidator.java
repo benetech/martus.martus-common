@@ -34,29 +34,38 @@ import org.martus.common.bulletin.BulletinConstants;
 
 public class CustomFieldSpecValidator
 {
-	public CustomFieldSpecValidator(FieldCollection specsToCheck)
+	public CustomFieldSpecValidator(FieldCollection specsToCheckTopSection, FieldCollection specsToCheckBottomSection)
 	{
-		this(specsToCheck.getSpecs());
+		this(specsToCheckTopSection.getSpecs(), specsToCheckBottomSection.getSpecs());
 	}
 	
-	public CustomFieldSpecValidator(FieldSpec[] specsToCheck)
+	public CustomFieldSpecValidator(FieldSpec[] specsToCheckTopSection, FieldSpec[] specsToCheckBottomSection)
 	{
 		errors = new Vector();
-		if(specsToCheck == null)
+		if(specsToCheckTopSection == null || specsToCheckBottomSection == null)
 		{
 			errors.add(CustomFieldError.errorNoSpecs());
 			return;
 		}
 		
-		checkForRequiredFields(specsToCheck);
-		checkForIllegalTagCharacters(specsToCheck);
-		checkForBlankTags(specsToCheck);
-		checkForDuplicateFields(specsToCheck);
-		checkForMissingCustomLabels(specsToCheck);
-		checkForUnknownTypes(specsToCheck);
-		checkForLabelsOnStandardFields(specsToCheck);
-		checkForDropdownsWithDuplicatedOrZeroEntries(specsToCheck);
-		checkForDropdownsWithDuplicatedOrZeroEntriesInsideGrids(specsToCheck);
+		checkForRequiredTopSectionFields(specsToCheckTopSection);
+		checkForIllegalTagCharacters(specsToCheckTopSection);
+		checkForBlankTags(specsToCheckTopSection);
+		checkForDuplicateFields(specsToCheckTopSection);
+		checkForMissingCustomLabels(specsToCheckTopSection);
+		checkForUnknownTypes(specsToCheckTopSection);
+		checkForLabelsOnStandardFields(specsToCheckTopSection);
+		checkForDropdownsWithDuplicatedOrZeroEntries(specsToCheckTopSection);
+		checkForDropdownsWithDuplicatedOrZeroEntriesInsideGrids(specsToCheckTopSection);
+
+		checkForIllegalTagCharacters(specsToCheckBottomSection);
+		checkForBlankTags(specsToCheckBottomSection);
+		checkForDuplicateFields(specsToCheckBottomSection);
+		checkForMissingCustomLabels(specsToCheckBottomSection);
+		checkForUnknownTypes(specsToCheckBottomSection);
+		checkForLabelsOnStandardFields(specsToCheckBottomSection);
+		checkForDropdownsWithDuplicatedOrZeroEntries(specsToCheckBottomSection);
+		checkForDropdownsWithDuplicatedOrZeroEntriesInsideGrids(specsToCheckBottomSection);
 	}
 		
 	public boolean isValid()
@@ -76,7 +85,7 @@ public class CustomFieldSpecValidator
 		errors.add(CustomFieldError.errorMissingCustomSpec(tag));
 	}
 
-	private void checkForRequiredFields(FieldSpec[] specsToCheck)
+	private void checkForRequiredTopSectionFields(FieldSpec[] specsToCheck)
 	{
 		Vector missingTags = new Vector();
 		missingTags.add(BulletinConstants.TAGAUTHOR);
