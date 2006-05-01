@@ -48,6 +48,7 @@ public class CustomFieldSpecValidator
 			return;
 		}
 		
+		checkForReservedTags(specsToCheckTopSection);
 		checkForRequiredTopSectionFields(specsToCheckTopSection);
 		checkForIllegalTagCharacters(specsToCheckTopSection);
 		checkForBlankTags(specsToCheckTopSection);
@@ -58,6 +59,8 @@ public class CustomFieldSpecValidator
 		checkForDropdownsWithDuplicatedOrZeroEntries(specsToCheckTopSection);
 		checkForDropdownsWithDuplicatedOrZeroEntriesInsideGrids(specsToCheckTopSection);
 
+		checkForReservedTags(specsToCheckBottomSection);
+		checkForMartusFieldsBottomSectionFields(specsToCheckBottomSection);
 		checkForIllegalTagCharacters(specsToCheckBottomSection);
 		checkForBlankTags(specsToCheckBottomSection);
 		checkForDuplicateFields(specsToCheckBottomSection);
@@ -101,6 +104,42 @@ public class CustomFieldSpecValidator
 		
 		for (int j = 0; j < missingTags.size(); j++)
 			errors.add(CustomFieldError.errorRequiredField((String)missingTags.get(j)));
+	}
+	
+	
+	private void checkForMartusFieldsBottomSectionFields(FieldSpec[] specsToCheck)
+	{
+		Vector topSectionOnlyTags = new Vector();
+		topSectionOnlyTags.add(BulletinConstants.TAGLANGUAGE);
+		topSectionOnlyTags.add(BulletinConstants.TAGAUTHOR);
+		topSectionOnlyTags.add(BulletinConstants.TAGORGANIZATION);
+		topSectionOnlyTags.add(BulletinConstants.TAGTITLE);
+		topSectionOnlyTags.add(BulletinConstants.TAGLOCATION);
+		topSectionOnlyTags.add(BulletinConstants.TAGEVENTDATE);
+		topSectionOnlyTags.add(BulletinConstants.TAGENTRYDATE);
+		topSectionOnlyTags.add(BulletinConstants.TAGKEYWORDS);
+		topSectionOnlyTags.add(BulletinConstants.TAGSUMMARY);
+		topSectionOnlyTags.add(BulletinConstants.TAGPUBLICINFO);
+		for (int i = 0; i < specsToCheck.length; i++)
+		{
+			String tag = specsToCheck[i].getTag();
+			if(topSectionOnlyTags.contains(tag))
+				errors.add(CustomFieldError.errorTopSectionFieldInBottomSection(tag));
+		}		
+	}
+	
+	private void checkForReservedTags(FieldSpec[] specsToCheck)
+	{
+		Vector reservedTags = new Vector();
+		reservedTags.add(BulletinConstants.TAGSTATUS);
+		reservedTags.add(BulletinConstants.TAGWASSENT);
+		reservedTags.add(BulletinConstants.TAGLASTSAVED);
+		for (int i = 0; i < specsToCheck.length; i++)
+		{
+			String tag = specsToCheck[i].getTag();
+			if(reservedTags.contains(tag))
+				errors.add(CustomFieldError.errorReservedTag(tag, specsToCheck[i].getLabel()));
+		}		
 	}
 	
 	private void checkForBlankTags(FieldSpec[] specsToCheck)

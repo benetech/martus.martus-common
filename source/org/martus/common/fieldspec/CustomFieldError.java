@@ -85,6 +85,16 @@ public class CustomFieldError
 		return new CustomFieldError(CODE_NO_DROPDOWN_ENTRIES, tag, label, FieldSpec.getTypeString(new FieldTypeDropdown()));
 	}
 
+	static public CustomFieldError errorReservedTag(String reservedTag, String labelUsed)
+	{
+		return new CustomFieldError(CODE_RESERVED_TAG, reservedTag, labelUsed, UNUSED_FIELD);
+	}
+
+	static public CustomFieldError errorTopSectionFieldInBottomSection(String martusTag)
+	{
+		return new CustomFieldError(CODE_MARTUS_FIELD_IN_BOTTOM_SECTION, martusTag, UNUSED_FIELD, UNUSED_FIELD);
+	}
+
 	static public CustomFieldError errorParseXml()
 	{
 		return new CustomFieldError(CODE_PARSE_XML, UNUSED_FIELD, UNUSED_FIELD, UNUSED_FIELD);
@@ -140,6 +150,8 @@ public class CustomFieldError
 	static public final String CODE_ILLEGAL_TAG = "107";
 	static public final String CODE_DUPLICATE_DROPDOWN_ENTRY = "108";
 	static public final String CODE_NO_DROPDOWN_ENTRIES = "109";
+	static public final String CODE_MARTUS_FIELD_IN_BOTTOM_SECTION = "110";
+	static public final String CODE_RESERVED_TAG = "111";
 	static public final String CODE_NULL_SPECS = "200";
 	static public final String CODE_UNAUTHORIZED_KEY = "201";
 	static public final String CODE_SIGNATURE_ERROR = "202";
