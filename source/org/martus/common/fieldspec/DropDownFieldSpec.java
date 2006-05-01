@@ -111,7 +111,9 @@ public class DropDownFieldSpec extends FieldSpec
 	
 	public String getDefaultValue()
 	{
-		return getChoice(0).getCode();
+		if(choices.length > 0)
+			return getChoice(0).getCode();
+		return "";
 	}
 	
 	public static final String DROPDOWN_SPEC_CHOICES_TAG = "Choices";

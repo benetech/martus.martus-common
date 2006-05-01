@@ -52,23 +52,23 @@ public class CustomFieldSpecValidator
 		checkForRequiredTopSectionFields(specsToCheckTopSection);
 		checkForIllegalTagCharacters(specsToCheckTopSection);
 		checkForBlankTags(specsToCheckTopSection);
-		checkForDuplicateFields(specsToCheckTopSection);
+		checkForDuplicateFields(specsToCheckTopSection, specsToCheckBottomSection);
 		checkForMissingCustomLabels(specsToCheckTopSection);
 		checkForUnknownTypes(specsToCheckTopSection);
 		checkForLabelsOnStandardFields(specsToCheckTopSection);
 		checkForDropdownsWithDuplicatedOrZeroEntries(specsToCheckTopSection);
 		checkForDropdownsWithDuplicatedOrZeroEntriesInsideGrids(specsToCheckTopSection);
-
+		
 		checkForReservedTags(specsToCheckBottomSection);
 		checkForMartusFieldsBottomSectionFields(specsToCheckBottomSection);
 		checkForIllegalTagCharacters(specsToCheckBottomSection);
 		checkForBlankTags(specsToCheckBottomSection);
-		checkForDuplicateFields(specsToCheckBottomSection);
 		checkForMissingCustomLabels(specsToCheckBottomSection);
 		checkForUnknownTypes(specsToCheckBottomSection);
 		checkForLabelsOnStandardFields(specsToCheckBottomSection);
 		checkForDropdownsWithDuplicatedOrZeroEntries(specsToCheckBottomSection);
 		checkForDropdownsWithDuplicatedOrZeroEntriesInsideGrids(specsToCheckBottomSection);
+
 	}
 		
 	public boolean isValid()
@@ -202,12 +202,25 @@ public class CustomFieldSpecValidator
 		{
 			FieldSpec thisSpec = specsToCheck[i];
 			String tag = thisSpec.getTag();
-			if(foundTags.contains(tag))
-				errors.add(CustomFieldError.errorDuplicateFields(thisSpec.getTag(), thisSpec.getLabel(), getType(thisSpec)));				
-			foundTags.add(tag);
+			if(tag.length() > 0)
+			{
+				if(foundTags.contains(tag))
+					errors.add(CustomFieldError.errorDuplicateFields(thisSpec.getTag(), thisSpec.getLabel(), getType(thisSpec)));				
+				foundTags.add(tag);
+			}
 		}
 	}
 	
+	private void checkForDuplicateFields(FieldSpec[] specsToCheckTopSection, FieldSpec[] specsToCheckBottomSection)
+	{
+		FieldCollection allSpecs = new FieldCollection(specsToCheckTopSection);
+		for(int i = 0; i < specsToCheckBottomSection.length; ++i)
+		{
+			allSpecs.add(specsToCheckBottomSection[i]);
+		}
+		checkForDuplicateFields(allSpecs.getSpecs());
+	}
+
 	private void checkForDropdownsWithDuplicatedOrZeroEntries(FieldSpec[] specsToCheck)
 	{
 		for (int i = 0; i < specsToCheck.length; i++)

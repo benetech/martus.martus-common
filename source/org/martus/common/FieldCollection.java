@@ -68,7 +68,7 @@ public class FieldCollection
 		this(new FieldSpecCollection(specsToUse));
 	}
 	
-	private void add(FieldSpec newSpec)
+	public void add(FieldSpec newSpec)
 	{
 		FieldType type = newSpec.getType();
 		if(type.isDateRange())
