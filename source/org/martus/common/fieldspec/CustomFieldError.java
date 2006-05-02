@@ -94,6 +94,11 @@ public class CustomFieldError
 	{
 		return new CustomFieldError(CODE_MARTUS_FIELD_IN_BOTTOM_SECTION, martusTag, UNUSED_FIELD, UNUSED_FIELD);
 	}
+	
+	static  public CustomFieldError errorBottomSectionFieldInTopSection(String martusTag)
+	{
+		return new CustomFieldError(CODE_PRIVATE_FIELD_IN_TOP_SECTION, martusTag, UNUSED_FIELD, UNUSED_FIELD);
+	}
 
 	static public CustomFieldError errorParseXml()
 	{
@@ -150,8 +155,9 @@ public class CustomFieldError
 	static public final String CODE_ILLEGAL_TAG = "107";
 	static public final String CODE_DUPLICATE_DROPDOWN_ENTRY = "108";
 	static public final String CODE_NO_DROPDOWN_ENTRIES = "109";
-	static public final String CODE_MARTUS_FIELD_IN_BOTTOM_SECTION = "110";
-	static public final String CODE_RESERVED_TAG = "111";
+	static public final String CODE_RESERVED_TAG = "110";
+	static public final String CODE_MARTUS_FIELD_IN_BOTTOM_SECTION = "111";
+	static public final String CODE_PRIVATE_FIELD_IN_TOP_SECTION = "112";
 	static public final String CODE_NULL_SPECS = "200";
 	static public final String CODE_UNAUTHORIZED_KEY = "201";
 	static public final String CODE_SIGNATURE_ERROR = "202";

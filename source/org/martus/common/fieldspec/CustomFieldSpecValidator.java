@@ -58,6 +58,7 @@ public class CustomFieldSpecValidator
 		checkForLabelsOnStandardFields(specsToCheckTopSection);
 		checkForDropdownsWithDuplicatedOrZeroEntries(specsToCheckTopSection);
 		checkForDropdownsWithDuplicatedOrZeroEntriesInsideGrids(specsToCheckTopSection);
+		checkForPrivateField(specsToCheckTopSection);
 		
 		checkForReservedTags(specsToCheckBottomSection);
 		checkForMartusFieldsBottomSectionFields(specsToCheckBottomSection);
@@ -104,6 +105,16 @@ public class CustomFieldSpecValidator
 		
 		for (int j = 0; j < missingTags.size(); j++)
 			errors.add(CustomFieldError.errorRequiredField((String)missingTags.get(j)));
+	}
+	
+	private void checkForPrivateField(FieldSpec[] specsToCheck)
+	{
+		for (int i = 0; i < specsToCheck.length; i++)
+		{
+			String tag = specsToCheck[i].getTag();
+			if(tag.equals(BulletinConstants.TAGPRIVATEINFO))
+				errors.add(CustomFieldError.errorBottomSectionFieldInTopSection(tag));
+		}		
 	}
 	
 	
