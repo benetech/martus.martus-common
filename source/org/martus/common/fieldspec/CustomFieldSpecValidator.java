@@ -48,28 +48,27 @@ public class CustomFieldSpecValidator
 			return;
 		}
 		
-		checkForReservedTags(specsToCheckTopSection);
 		checkForRequiredTopSectionFields(specsToCheckTopSection);
-		checkForIllegalTagCharacters(specsToCheckTopSection);
-		checkForBlankTags(specsToCheckTopSection);
-		checkForDuplicateFields(specsToCheckTopSection, specsToCheckBottomSection);
-		checkForMissingCustomLabels(specsToCheckTopSection);
-		checkForUnknownTypes(specsToCheckTopSection);
-		checkForLabelsOnStandardFields(specsToCheckTopSection);
-		checkForDropdownsWithDuplicatedOrZeroEntries(specsToCheckTopSection);
-		checkForDropdownsWithDuplicatedOrZeroEntriesInsideGrids(specsToCheckTopSection);
 		checkForPrivateField(specsToCheckTopSection);
-		
-		checkForReservedTags(specsToCheckBottomSection);
-		checkForMartusFieldsBottomSectionFields(specsToCheckBottomSection);
-		checkForIllegalTagCharacters(specsToCheckBottomSection);
-		checkForBlankTags(specsToCheckBottomSection);
-		checkForMissingCustomLabels(specsToCheckBottomSection);
-		checkForUnknownTypes(specsToCheckBottomSection);
-		checkForLabelsOnStandardFields(specsToCheckBottomSection);
-		checkForDropdownsWithDuplicatedOrZeroEntries(specsToCheckBottomSection);
-		checkForDropdownsWithDuplicatedOrZeroEntriesInsideGrids(specsToCheckBottomSection);
+		checkCommonErrors(specsToCheckTopSection);
 
+		checkForDuplicateFields(specsToCheckTopSection, specsToCheckBottomSection);
+		
+		checkForMartusFieldsBottomSectionFields(specsToCheckBottomSection);
+		checkCommonErrors(specsToCheckBottomSection);
+
+	}
+
+	private void checkCommonErrors(FieldSpec[] specsToCheck) 
+	{
+		checkForReservedTags(specsToCheck);
+		checkForIllegalTagCharacters(specsToCheck);
+		checkForBlankTags(specsToCheck);
+		checkForMissingCustomLabels(specsToCheck);
+		checkForUnknownTypes(specsToCheck);
+		checkForLabelsOnStandardFields(specsToCheck);
+		checkForDropdownsWithDuplicatedOrZeroEntries(specsToCheck);
+		checkForDropdownsWithDuplicatedOrZeroEntriesInsideGrids(specsToCheck);
 	}
 		
 	public boolean isValid()
