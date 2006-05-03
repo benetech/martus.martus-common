@@ -223,12 +223,12 @@ public class CustomFieldSpecValidator
 	
 	private void checkForDuplicateFields(FieldSpec[] specsToCheckTopSection, FieldSpec[] specsToCheckBottomSection)
 	{
-		FieldCollection allSpecs = new FieldCollection(specsToCheckTopSection);
-		for(int i = 0; i < specsToCheckBottomSection.length; ++i)
-		{
-			allSpecs.add(specsToCheckBottomSection[i]);
-		}
-		checkForDuplicateFields(allSpecs.getSpecs());
+		int topLength = specsToCheckTopSection.length;
+		int bottomLength = specsToCheckBottomSection.length;
+		FieldSpec[] allSpecs = new FieldSpec[topLength + bottomLength];
+		System.arraycopy(specsToCheckTopSection, 0, allSpecs, 0, topLength);
+		System.arraycopy(specsToCheckBottomSection, 0, allSpecs, topLength, bottomLength);
+		checkForDuplicateFields(allSpecs);
 	}
 
 	private void checkForDropdownsWithDuplicatedOrZeroEntries(FieldSpec[] specsToCheck)
