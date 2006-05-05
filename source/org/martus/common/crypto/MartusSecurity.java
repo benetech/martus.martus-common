@@ -110,7 +110,7 @@ public class MartusSecurity extends MartusCrypto
 
 	synchronized void initialize(SecureRandom randToUse)throws CryptoInitializationException
 	{
-		Security.insertProviderAt(new BouncyCastleProvider(), 1);
+		insertHighestPriorityProvider();
 
 		try
 		{
@@ -128,6 +128,11 @@ public class MartusSecurity extends MartusCrypto
 		}
 
 		decryptedSessionKeys = new HashMap();
+	}
+
+	private void insertHighestPriorityProvider()
+	{
+		Security.insertProviderAt(new BouncyCastleProvider(), 1);
 	}
 
 	// begin MartusCrypto interface
