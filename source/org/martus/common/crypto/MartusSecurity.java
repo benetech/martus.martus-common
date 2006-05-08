@@ -96,7 +96,7 @@ public class MartusSecurity extends MartusCrypto
 		if(rand == null)
 		{
 			Provider monkeys = new InfiniteMonkeyProvider();
-			java.security.Security.insertProviderAt(monkeys, 1);
+			insertHighestPriorityProvider(monkeys);
 			if(monkeys.getInfo().indexOf("SecureRandom") < 0)
 			{
 				System.out.println("ERROR: Not using fast random seeding!");
@@ -108,9 +108,14 @@ public class MartusSecurity extends MartusCrypto
 		
 	}
 
+	private void insertHighestPriorityProvider(Provider provider)
+	{
+		Security.insertProviderAt(provider, 1);
+	}
+
 	synchronized void initialize(SecureRandom randToUse)throws CryptoInitializationException
 	{
-		insertHighestPriorityProvider();
+		insertHighestPriorityProvider(new BouncyCastleProvider());
 
 		try
 		{
@@ -128,11 +133,6 @@ public class MartusSecurity extends MartusCrypto
 		}
 
 		decryptedSessionKeys = new HashMap();
-	}
-
-	private void insertHighestPriorityProvider()
-	{
-		Security.insertProviderAt(new BouncyCastleProvider(), 1);
 	}
 
 	// begin MartusCrypto interface
