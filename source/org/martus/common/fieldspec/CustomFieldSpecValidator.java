@@ -68,7 +68,8 @@ public class CustomFieldSpecValidator
 		checkForUnknownTypes(specsToCheck);
 		checkForLabelsOnStandardFields(specsToCheck);
 		checkForDropdownsWithDuplicatedOrZeroEntries(specsToCheck);
-		checkForDropdownsWithDuplicatedOrZeroEntriesInsideGrids(specsToCheck);
+		
+		checkForCommonErrorsInsideGrids(specsToCheck);
 	}
 		
 	public boolean isValid()
@@ -247,7 +248,7 @@ public class CustomFieldSpecValidator
 		}
 	}
 	
-	private void checkForDropdownsWithDuplicatedOrZeroEntriesInsideGrids(FieldSpec[] specsToCheck)
+	private void checkForCommonErrorsInsideGrids(FieldSpec[] specsToCheck)
 	{
 		for (int i = 0; i < specsToCheck.length; i++)
 		{
@@ -258,6 +259,7 @@ public class CustomFieldSpecValidator
 				for(int columns = 0; columns < gridSpec.getColumnCount(); ++columns)
 				{
 					FieldSpec columnSpec = gridSpec.getFieldSpec(columns);
+					checkForMissingCustomLabel(columnSpec, gridSpec.getTag());				
 					if(columnSpec.getType().isDropdown())
 					{
 						checkForDuplicateEntriesInDropDownSpec((DropDownFieldSpec)columnSpec, gridSpec.getTag(), gridSpec.getLabel());
@@ -291,10 +293,14 @@ public class CustomFieldSpecValidator
 		for (int i = 0; i < specsToCheck.length; i++)
 		{
 			FieldSpec thisSpec = specsToCheck[i]; 
-			String tag = thisSpec.getTag();
-			if(StandardFieldSpecs.isCustomFieldTag(tag) && thisSpec.getLabel().equals(""))
-				errors.add(CustomFieldError.errorMissingLabel(thisSpec.getTag(), getType(thisSpec)));				
+			checkForMissingCustomLabel(thisSpec, thisSpec.getTag());
 		}
+	}
+
+	private void checkForMissingCustomLabel(FieldSpec thisSpec, String tag)
+	{
+		if(StandardFieldSpecs.isCustomFieldTag(tag) && thisSpec.getLabel().trim().equals(""))
+			errors.add(CustomFieldError.errorMissingLabel(tag, getType(thisSpec)));
 	}
 
 	private void checkForUnknownTypes(FieldSpec[] specsToCheck)
