@@ -209,9 +209,14 @@ public class GridFieldSpec extends FieldSpec
 
 	public void addColumn(FieldSpec columnSpec) throws UnsupportedFieldTypeException
 	{
-		if(!isValidGridColumnType(columnSpec.getType()))
+		if(!isValidColumnType(columnSpec.getType()))
 			throw new UnsupportedFieldTypeException();
 		columns.add(columnSpec);
+	}
+	
+	public boolean isValidColumnType(FieldType columnType)
+	{
+		return isValidGridColumnType(columnType);
 	}
 
 	public static boolean isValidGridColumnType(FieldType columnType)
