@@ -28,13 +28,14 @@ package org.martus.common.test;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import org.martus.common.bulletinstore.TestBulletinStore;
 import org.martus.common.bulletinstore.TestBulletinStoreCache;
 import org.martus.common.bulletinstore.TestLeafNodeCache;
 import org.martus.common.field.TestMartusField;
 import org.martus.common.field.TestMartusSearchableGridColumnField;
 import org.martus.common.fieldspec.TestCustomDropDownFieldSpec;
+import org.martus.common.fieldspec.TestCustomFieldSpecValidator;
+import org.martus.common.fieldspec.TestCustomFieldTemplate;
 import org.martus.common.fieldspec.TestDropDownFieldSpec;
 import org.martus.common.fieldspec.TestFieldSpec;
 import org.martus.common.utilities.TestDateUtilities;
@@ -77,10 +78,11 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestClientFileDatabase.class));
 		suite.addTest(new TestSuite(TestCustomDropDownFieldSpec.class));
 		suite.addTest(new TestSuite(TestCustomFields.class));
+		suite.addTest(new TestSuite(TestCustomFieldSpecValidator.class));
+		suite.addTest(new TestSuite(TestCustomFieldTemplate.class));
 		suite.addTest(new TestSuite(TestDatabaseKey.class));
 		suite.addTest(new TestSuite(TestDateUtilities.class));
 		suite.addTest(new TestSuite(TestDropDownFieldSpec.class));
-		suite.addTest(new TestSuite(TestMartusField.class));
 		suite.addTest(new TestSuite(TestFieldDataPacket.class));
 		suite.addTest(new TestSuite(TestFieldSpec.class));
 		suite.addTest(new TestSuite(TestFileDatabase.class));
@@ -94,8 +96,9 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestKeyShareSaveRestore.class));
 		suite.addTest(new TestSuite(TestMagicWordEntry.class));
 		suite.addTest(new TestSuite(TestMagicWords.class));
-		suite.addTest(new TestSuite(TestMartusKeyPair.class));
+		suite.addTest(new TestSuite(TestMartusField.class));
 		suite.addTest(new TestSuite(TestMartusFlexidate.class));
+		suite.addTest(new TestSuite(TestMartusKeyPair.class));
 		suite.addTest(new TestSuite(TestMartusSearchableGridColumnField.class));
 		suite.addTest(new TestSuite(TestMartusSecurity.class));
 		suite.addTest(new TestSuite(TestMartusUtilities.class));
