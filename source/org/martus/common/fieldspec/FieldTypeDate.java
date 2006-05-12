@@ -27,6 +27,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.fieldspec;
 
 import org.martus.common.MiniLocalization;
+import org.martus.common.bulletin.BulletinXmlConstants;
 import org.martus.common.utilities.DateUtilities;
 
 public class FieldTypeDate extends FieldType
@@ -58,7 +59,7 @@ public class FieldTypeDate extends FieldType
 
 	public String convertStoredToExportable(String storedData, MiniLocalization localization)
 	{
-		return "Simple:" + storedData;
+		return BulletinXmlConstants.DATE_SIMPLE + storedData;
 	}
 
 	
