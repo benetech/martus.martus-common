@@ -63,6 +63,14 @@ public class MartusDateRangeField extends MartusField
 		sub.setData(MartusFlexidate.toStoredDateFormat(singleDateString));
 		return sub;
 	}
+	
+	public String getExportableData(MiniLocalization localization)
+	{
+		String rawDate = super.getExportableData(localization); 
+		return "Range:"+rawDate;
+		//	BulletinXmlConstants.DATE_RANGE
+
+	}
 
 	public static final String SUBFIELD_END = "end";
 	public static final String SUBFIELD_BEGIN = "begin";
