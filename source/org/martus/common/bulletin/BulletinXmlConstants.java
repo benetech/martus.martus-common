@@ -41,6 +41,7 @@ public class BulletinXmlConstants
 	public final static String ACCOUNT_ID = "AuthorAccountId";
 	public final static String BULLETIN_VERSION = "BulletinVersion";
 	public final static String BULLETIN_LAST_SAVED_DATE_TIME = "BulletinLastSavedDateTime";
+	public final static String BULLETIN_STATUS = "BulletinStatus";
 	public final static String HISTORY = "History";
 	public final static String ANCESTOR = "Ancestor";
 	public final static String ATTACHMENT = "Attachment";
