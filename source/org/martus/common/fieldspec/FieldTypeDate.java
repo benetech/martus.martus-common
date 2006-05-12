@@ -55,5 +55,11 @@ public class FieldTypeDate extends FieldType
 	{
 		return localization.convertStoredDateToDisplay(storedData);
 	}
+
+	public String convertStoredToExportable(String storedData, MiniLocalization localization)
+	{
+		return "Simple:" + storedData;
+	}
+
 	
 }

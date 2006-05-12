@@ -60,7 +60,7 @@ public class FieldTypeDateRange extends FieldType
 	{
 		String startDate = DateUtilities.getStartDateRange(storedData, localization);
 		String endDate = DateUtilities.getEndDateRange(storedData, localization);
-		return startDate + "," + endDate;
+		return "Range:" + startDate + "," + endDate;
 	}
 
 }
