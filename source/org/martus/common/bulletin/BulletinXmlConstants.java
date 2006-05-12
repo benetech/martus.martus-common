@@ -39,6 +39,7 @@ public class BulletinXmlConstants
 	public final static String LOCAL_ID = "BulletinLocalId";
 	public final static String ALL_PRIVATE = "AllPrivate";
 	public final static String ACCOUNT_ID = "AuthorAccountId";
+	public final static String BULLETIN_VERSION = "BulletinVersion";
 	public final static String HISTORY = "History";
 	public final static String ANCESTOR = "Ancestor";
 	public final static String ATTACHMENT = "Attachment";
