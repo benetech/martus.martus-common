@@ -25,7 +25,7 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.bulletin;
 
-public class BulletinXmlConstants 
+public class BulletinXmlExportImportConstants 
 {
 	public final static String NEW_LINE = "\n";
 
