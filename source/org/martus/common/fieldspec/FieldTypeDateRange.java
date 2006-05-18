@@ -29,6 +29,7 @@ package org.martus.common.fieldspec;
 import org.martus.common.MiniLocalization;
 import org.martus.common.bulletin.BulletinXmlExportImportConstants;
 import org.martus.common.utilities.DateUtilities;
+import org.martus.common.utilities.MartusFlexidate;
 
 public class FieldTypeDateRange extends FieldType
 {
@@ -60,7 +61,7 @@ public class FieldTypeDateRange extends FieldType
 	public String convertStoredToExportable(String storedData, MiniLocalization localization)
 	{
 		String startDate = DateUtilities.getStartDateRange(storedData, localization);
-		String endDate = DateUtilities.getEndDateRange(storedData, localization);
+		String endDate = MartusFlexidate.toStoredDateFormat(localization.createFlexidateFromStoredData(storedData).getEndDate());
 		return BulletinXmlExportImportConstants.DATE_RANGE + startDate + "," + endDate;
 	}
 
