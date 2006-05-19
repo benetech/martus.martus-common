@@ -131,13 +131,15 @@ public class AttachmentPacket extends Packet
 		org.martus.common.packet.Packet.WrongPacketTypeException,
 		Base64.InvalidBase64Exception
 	{
-		if(security != null)
-			verifyPacketSignature(xmlIn, null, security);
-		
-		File encryptedTempFile = File.createTempFile("$$$MartusEncryptedAtt", null);
-		encryptedTempFile.deleteOnExit();
+		File encryptedTempFile = null;
 		try
 		{
+			if(security != null)
+				verifyPacketSignature(xmlIn, null, security);
+			
+			encryptedTempFile = File.createTempFile("$$$MartusEncryptedAtt", null);
+			encryptedTempFile.deleteOnExit();
+
 			FileOutputStream outEncrypted = new FileOutputStream(encryptedTempFile);
 		
 			exportEncryptedFileContents(xmlIn, outEncrypted, security);
@@ -145,7 +147,8 @@ public class AttachmentPacket extends Packet
 		}
 		finally
 		{
-			encryptedTempFile.delete();
+			if(encryptedTempFile != null)
+				encryptedTempFile.delete();
 			out.close();
 		}
 	}

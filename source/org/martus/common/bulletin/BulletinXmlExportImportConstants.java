@@ -47,6 +47,7 @@ public class BulletinXmlExportImportConstants
 	public final static String ANCESTOR = "Ancestor";
 	public final static String ATTACHMENT = "Attachment";
 	public final static String FILENAME = "Filename";
+	public final static String EXPORT_ERROR_ATTACHMENT_FILENAME = "Error Exporting Attachment";
 	public final static String TYPE = "Type";
 	public final static String TAG = "Tag";
 	public final static String VALUE = "Value";
