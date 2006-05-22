@@ -90,7 +90,9 @@ public class BulletinZipUtilities
 			e.printStackTrace();
 		}
 	
-		// TODO: REMOVE THIS! IT IS ONLY FOR DEBUGGING! SLOW SLOW SLOW!
+		if (!debugValidateIntegrityOfZipFilePublicPackets)
+			return;
+		
 		try
 		{
 			ZipFile zip = new ZipFile(destZipFile);
@@ -396,4 +398,7 @@ public class BulletinZipUtilities
 			progressMeter.updateProgressMeter(chunkOffset, masterTotalSize);
 		return masterTotalSize;
 	}
+	
+	//For Debugging: we think this isn't needed and is slow, but might be helpful if we are having problems with invalid zips
+	static boolean debugValidateIntegrityOfZipFilePublicPackets = false;
 }
