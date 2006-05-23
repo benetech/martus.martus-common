@@ -134,8 +134,11 @@ public class BulletinZipUtilities
 	
 		FileOutputStream outputStream = new FileOutputStream(destZipFile);
 		BulletinZipUtilities.extractPacketsToZipStream(headerKey.getAccountId(), db, packetKeys, outputStream, security);
-		// REMOVE THIS! IT IS ONLY FOR DEBUGGING! SLOW SLOW SLOW!
-/*		try
+
+		if (!debugValidateIntegrityOfZipFilePublicPackets)
+			return;
+
+		try
 		{
 			ZipFile zip = new ZipFile(destZipFile);
 			BulletinZipUtilities.validateIntegrityOfZipFilePackets(headerKey.getAccountId(), zip, security);
@@ -153,7 +156,7 @@ public class BulletinZipUtilities
 			System.out.println("MartusUtilities.exportBulletinPacketsFromDatabaseToZipFile: validation failed!");
 			throw new IOException("Zip validation exception: " + e.getMessage());
 		}
-*/	}
+	}
 
 	public static DatabaseKey[] getAllPacketKeys(BulletinHeaderPacket bhp)
 	{
