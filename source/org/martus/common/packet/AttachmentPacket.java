@@ -147,9 +147,9 @@ public class AttachmentPacket extends Packet
 		}
 		finally
 		{
+			out.close();
 			if(encryptedTempFile != null)
 				encryptedTempFile.delete();
-			out.close();
 		}
 	}
 
