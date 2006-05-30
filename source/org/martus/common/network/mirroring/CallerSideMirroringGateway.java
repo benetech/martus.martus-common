@@ -49,41 +49,45 @@ public class CallerSideMirroringGateway implements CallerSideMirroringGatewayInt
 
 	public NetworkResponse listAccountsForMirroring(MartusCrypto signer) throws MartusSignatureException
 	{
-		Vector parameters = new Vector();
-		parameters.add(MirroringInterface.CMD_MIRRORING_LIST_ACCOUNTS);
-		String signature = signer.createSignatureOfVectorOfStrings(parameters);
-		return new NetworkResponse(handler.request(signer.getPublicKeyString(), parameters, signature));
+		return getNetworkResponse(signer, MirroringInterface.CMD_MIRRORING_LIST_ACCOUNTS, null, null);
 	}
 	
 	public NetworkResponse listBulletinsForMirroring(MartusCrypto signer, String authorAccountId) throws MartusSignatureException
 	{
-		Vector parameters = new Vector();
-		parameters.add(MirroringInterface.CMD_MIRRORING_LIST_SEALED_BULLETINS);
-		parameters.add(authorAccountId);
-		String signature = signer.createSignatureOfVectorOfStrings(parameters);
-		return new NetworkResponse(handler.request(signer.getPublicKeyString(), parameters, signature));
+		return getNetworkResponse(signer, MirroringInterface.CMD_MIRRORING_LIST_SEALED_BULLETINS, authorAccountId, null);
 	}
 	
+	public NetworkResponse listAvailableIdsForMirroring(MartusCrypto signer, String authorAccountId) throws MartusSignatureException
+	{
+		return getNetworkResponse(signer, MirroringInterface.CMD_MIRRORING_LIST_AVAILABLE_IDS, authorAccountId, null);
+	}
+
 	public NetworkResponse getBulletinUploadRecord(MartusCrypto signer, UniversalId uid) throws MartusSignatureException
 	{
-		Vector parameters = new Vector();
-		parameters.add(MirroringInterface.CMD_MIRRORING_GET_BULLETIN_UPLOAD_RECORD);
-		parameters.add(uid.getAccountId());
-		parameters.add(uid.getLocalId());
-		String signature = signer.createSignatureOfVectorOfStrings(parameters);
-		return new NetworkResponse(handler.request(signer.getPublicKeyString(), parameters, signature));
+		return getNetworkResponse(signer, MirroringInterface.CMD_MIRRORING_GET_BULLETIN_UPLOAD_RECORD, uid.getAccountId(), new Object[] {uid.getLocalId()});
 	}
 
 	public NetworkResponse getBulletinChunk(MartusCrypto signer, String authorAccountId, String bulletinLocalId, 
 					int chunkOffset, int maxChunkSize) throws 
 			MartusCrypto.MartusSignatureException
 	{
+		Object[] extraParameters = new Object[] {bulletinLocalId, new Integer(chunkOffset), new Integer(maxChunkSize)};
+		return getNetworkResponse(signer, MirroringInterface.CMD_MIRRORING_GET_BULLETIN_CHUNK, authorAccountId, extraParameters);
+	}
+
+	private NetworkResponse getNetworkResponse(MartusCrypto signer, String command, String authorAccountId, Object[] extraParameters) throws MartusSignatureException
+	{
 		Vector parameters = new Vector();
-		parameters.add(MirroringInterface.CMD_MIRRORING_GET_BULLETIN_CHUNK);
-		parameters.add(authorAccountId);
-		parameters.add(bulletinLocalId);
-		parameters.add(new Integer(chunkOffset));
-		parameters.add(new Integer(maxChunkSize));
+		parameters.add(command);
+		if(authorAccountId != null)
+			parameters.add(authorAccountId);
+		if(extraParameters != null)
+		{
+			for(int i = 0; i < extraParameters.length; i++)
+			{
+				parameters.add(extraParameters[i]);
+			}
+		}
 		String signature = signer.createSignatureOfVectorOfStrings(parameters);
 		return new NetworkResponse(handler.request(signer.getPublicKeyString(), parameters, signature));
 	}

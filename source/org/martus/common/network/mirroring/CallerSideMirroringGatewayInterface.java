@@ -38,4 +38,5 @@ public interface CallerSideMirroringGatewayInterface extends BulletinRetrieverGa
 	public NetworkResponse listBulletinsForMirroring(MartusCrypto signer, String authorAccountId) throws MartusSignatureException;
 	public NetworkResponse listAccountsForMirroring(MartusCrypto signer) throws MartusSignatureException;
 	public NetworkResponse getBulletinUploadRecord(MartusCrypto signer, UniversalId uid) throws MartusSignatureException;
+	public NetworkResponse listAvailableIdsForMirroring(MartusCrypto signer, String authorAccountId) throws MartusSignatureException;
 }
