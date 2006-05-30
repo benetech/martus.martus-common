@@ -123,11 +123,6 @@ abstract public class FieldType
 		return false;
 	}
 	
-	public boolean isSearchValue()
-	{
-		return false;
-	}
-	
 	public boolean isGrid()
 	{
 		return false;

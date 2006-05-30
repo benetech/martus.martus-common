@@ -103,9 +103,6 @@ public class TestFieldSpec extends TestCaseEnhanced
 		spec = FieldSpec.createFieldSpec(new FieldTypeNormal());
 		assertEquals(emptyString, spec.getDefaultValue());
 
-		spec = FieldSpec.createFieldSpec(new FieldTypeSearchValue());
-		assertEquals(emptyString, spec.getDefaultValue());
-		
 		spec = new DropDownFieldSpec(new ChoiceItem[] {new ChoiceItem("first", "First item"), new ChoiceItem("", "")});
 		assertEquals("first", spec.getDefaultValue());
 		

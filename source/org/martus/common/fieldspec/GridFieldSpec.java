@@ -232,8 +232,6 @@ public class GridFieldSpec extends FieldSpec
 		if(columnType.isDateRange())
 			return true;
 		
-		if(columnType.isSearchValue())
-			return true;
 		return false;
 	}
 	
