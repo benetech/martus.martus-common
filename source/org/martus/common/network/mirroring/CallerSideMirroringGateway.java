@@ -72,7 +72,7 @@ public class CallerSideMirroringGateway implements CallerSideMirroringGatewayInt
 			MartusCrypto.MartusSignatureException
 	{
 		Object[] extraParameters = new Object[] {bulletinLocalId, new Integer(chunkOffset), new Integer(maxChunkSize)};
-		return getNetworkResponse(signer, MirroringInterface.CMD_MIRRORING_GET_BULLETIN_CHUNK, authorAccountId, extraParameters);
+		return getNetworkResponse(signer, MirroringInterface.CMD_MIRRORING_GET_BULLETIN_CHUNK_TYPO, authorAccountId, extraParameters);
 	}
 
 	private NetworkResponse getNetworkResponse(MartusCrypto signer, String command, String authorAccountId, Object[] extraParameters) throws MartusSignatureException
