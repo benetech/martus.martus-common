@@ -73,6 +73,7 @@ abstract public class MockDatabase extends Database
 		draftQuarantine = new TreeMap();
 		incomingInterimMap = new TreeMap();
 		outgoingInterimMap = new TreeMap();
+		mTimeMap = new TreeMap();
 	}
 
 	public void writeRecord(DatabaseKey key, String record) 
@@ -83,7 +84,15 @@ abstract public class MockDatabase extends Database
 
 		throwIfRecordIsHidden(key);
 
-		addKeyToMap(key, record.getBytes("UTF-8"));
+		addKeyToMaps(key, record.getBytes("UTF-8"));
+		
+	}
+
+	private void addKeyToMaps(DatabaseKey key, byte[] data) throws UnsupportedEncodingException
+	{
+		addKeyToMap(key, data);
+		long mTime = System.currentTimeMillis();
+		mTimeMap.put(key, new Long(mTime));
 	}
 
 	public void importFiles(HashMap fileMapping) throws 
@@ -117,6 +126,20 @@ abstract public class MockDatabase extends Database
 		}
 	}
 
+	public long getmTime(DatabaseKey key) throws IOException, RecordHiddenException
+	{
+		throwIfRecordIsHidden(key);
+		try
+		{
+			return ((Long)mTimeMap.get(key)).longValue();
+		}
+		catch (Exception e)
+		{
+			return -1;
+		}
+	}
+	
+
 	public void writeRecordEncrypted(DatabaseKey key, String record, MartusCrypto encrypter) throws
 			IOException, RecordHiddenException
 	{
@@ -136,7 +159,7 @@ abstract public class MockDatabase extends Database
 			out.write(theByte);
 
 		byte[] bytes = out.toByteArray();
-		addKeyToMap(key, bytes);
+		addKeyToMaps(key, bytes);
 	}
 	
 	public String readRecord(DatabaseKey key, MartusCrypto decrypter)
@@ -401,6 +424,7 @@ abstract public class MockDatabase extends Database
 	Map draftQuarantine;
 	Map incomingInterimMap;
 	Map outgoingInterimMap;
+	Map mTimeMap;
 
 	HashMap streamsThatAreOpen = new HashMap();
 }

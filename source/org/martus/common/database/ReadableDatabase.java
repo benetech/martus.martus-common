@@ -41,6 +41,7 @@ public abstract class ReadableDatabase
 {
 	abstract public boolean doesRecordExist(DatabaseKey key);
 	abstract public int getRecordSize(DatabaseKey key) throws IOException, RecordHiddenException;
+	abstract public long getmTime(DatabaseKey key) throws IOException, RecordHiddenException;
 	abstract public InputStreamWithSeek openInputStream(DatabaseKey key, MartusCrypto decrypter) throws IOException, MartusCrypto.CryptoException;
 	abstract public String readRecord(DatabaseKey key, MartusCrypto decrypter) throws IOException, MartusCrypto.CryptoException;
 

@@ -146,6 +146,28 @@ abstract public class FileDatabase extends Database
 		return 0;
 	}
 
+
+	public long getmTime(DatabaseKey key) 
+	throws IOException, RecordHiddenException
+{
+	UniversalId uid = key.getUniversalId();
+	throwIfRecordIsHidden(uid);
+
+	try
+	{
+		return getExistingFileForRecord(uid).lastModified();
+	}
+	catch (FileNotFoundException e)
+	{
+		return -1;
+	}
+	catch (TooManyAccountsException e)
+	{
+		System.out.println("FileDatabase:getmTime" + e);
+	}
+	return -1;
+}
+	
 	public void importFiles(HashMap fileMapping) 
 			throws IOException, RecordHiddenException
 	{
