@@ -92,7 +92,7 @@ abstract public class MockDatabase extends Database
 	{
 		addKeyToMap(key, data);
 		long mTime = System.currentTimeMillis();
-		mTimeMap.put(key, new Long(mTime));
+		mTimeMap.put(key.uid, new Long(mTime));
 	}
 
 	public void importFiles(HashMap fileMapping) throws 
@@ -131,7 +131,7 @@ abstract public class MockDatabase extends Database
 		throwIfRecordIsHidden(key);
 		try
 		{
-			return ((Long)mTimeMap.get(key)).longValue();
+			return ((Long)mTimeMap.get(key.uid)).longValue();
 		}
 		catch (Exception e)
 		{

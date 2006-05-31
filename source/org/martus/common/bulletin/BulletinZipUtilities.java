@@ -49,6 +49,7 @@ import org.martus.common.bulletinstore.BulletinStore;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.ReadableDatabase;
+import org.martus.common.database.Database.RecordHiddenException;
 import org.martus.common.network.BulletinRetrieverGatewayInterface;
 import org.martus.common.network.NetworkInterfaceConstants;
 import org.martus.common.network.NetworkResponse;
@@ -122,7 +123,7 @@ public class BulletinZipUtilities
 			Packet.SignatureVerificationException,
 			MartusCrypto.DecryptionException,
 			MartusCrypto.NoKeyPairException,
-			FileNotFoundException
+			FileNotFoundException, RecordHiddenException
 	{
 		BulletinHeaderPacket bhp = BulletinStore.loadBulletinHeaderPacket(db, headerKey, security); 
 
@@ -134,6 +135,8 @@ public class BulletinZipUtilities
 	
 		FileOutputStream outputStream = new FileOutputStream(destZipFile);
 		BulletinZipUtilities.extractPacketsToZipStream(headerKey.getAccountId(), db, packetKeys, outputStream, security);
+		
+		destZipFile.setLastModified(db.getmTime(headerKey));
 
 		if (!debugValidateIntegrityOfZipFilePublicPackets)
 			return;
