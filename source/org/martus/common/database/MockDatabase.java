@@ -91,8 +91,7 @@ abstract public class MockDatabase extends Database
 	private void addKeyToMaps(DatabaseKey key, byte[] data) throws UnsupportedEncodingException
 	{
 		addKeyToMap(key, data);
-		long mTime = System.currentTimeMillis();
-		mTimeMap.put(key.uid, new Long(mTime));
+		mTimeMap.put(key.uid, new Long(System.currentTimeMillis()));
 	}
 
 	public void importFiles(HashMap fileMapping) throws 
@@ -108,6 +107,7 @@ abstract public class MockDatabase extends Database
 
 			InputStream in = new FileInputStream(file.getAbsolutePath());
 			writeRecord(key,in);
+			mTimeMap.put(key.uid, new Long(file.lastModified()));
 			in.close();
 			file.delete();
 		}

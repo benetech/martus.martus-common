@@ -380,10 +380,10 @@ public class BulletinStore
 		RecordHiddenException, 
 		WrongAccountException
 	{
-		importBulletinZipFile(zip, null);
+		importBulletinZipFile(zip, null, System.currentTimeMillis());
 	}
 
-	public void importBulletinZipFile(ZipFile zip, String accountIdIfKnown) 
+	public void importBulletinZipFile(ZipFile zip, String accountIdIfKnown, long mTime) 
 		throws InvalidPacketException, 
 		SignatureVerificationException, 
 		DecryptionException, 
@@ -391,11 +391,11 @@ public class BulletinStore
 		RecordHiddenException, 
 		WrongAccountException
 	{
-		UniversalId uid = importBulletinPacketsFromZipFileToDatabase(getWriteableDatabase(), accountIdIfKnown, zip, getSignatureVerifier());
+		UniversalId uid = importBulletinPacketsFromZipFileToDatabase(getWriteableDatabase(), accountIdIfKnown, zip, getSignatureVerifier(), mTime);
 		revisionWasSaved(uid);
 	}
 
-	private static UniversalId importBulletinPacketsFromZipFileToDatabase(Database db, String authorAccountId, ZipFile zip, MartusCrypto security)
+	private static UniversalId importBulletinPacketsFromZipFileToDatabase(Database db, String authorAccountId, ZipFile zip, MartusCrypto security, long mTime)
 		throws IOException,
 		Database.RecordHiddenException,
 		Packet.InvalidPacketException,
@@ -436,7 +436,7 @@ public class BulletinStore
 	
 			rawOut.close();
 			in.close();
-	
+			file.setLastModified(mTime);
 			UniversalId uid = UniversalId.createFromAccountAndLocalId(authorAccountId, keys[i].getLocalId());
 			DatabaseKey key = header.createKeyWithHeaderStatus(uid);
 	
