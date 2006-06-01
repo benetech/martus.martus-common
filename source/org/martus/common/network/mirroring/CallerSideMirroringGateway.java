@@ -62,9 +62,9 @@ public class CallerSideMirroringGateway implements CallerSideMirroringGatewayInt
 		return getNetworkResponse(signer, MirroringInterface.CMD_MIRRORING_LIST_AVAILABLE_IDS, authorAccountId, null);
 	}
 
-	public NetworkResponse getBulletinUploadRecord(MartusCrypto signer, UniversalId uid, String status) throws MartusSignatureException
+	public NetworkResponse getBulletinUploadRecord(MartusCrypto signer, UniversalId uid) throws MartusSignatureException
 	{
-		return getNetworkResponse(signer, MirroringInterface.CMD_MIRRORING_GET_BULLETIN_UPLOAD_RECORD, uid.getAccountId(), new Object[] {uid.getLocalId(), status});
+		return getNetworkResponse(signer, MirroringInterface.CMD_MIRRORING_GET_BULLETIN_UPLOAD_RECORD, uid.getAccountId(), new Object[] {uid.getLocalId()});
 	}
 
 	public NetworkResponse getBulletinChunk(MartusCrypto signer, String authorAccountId, String bulletinLocalId, 
