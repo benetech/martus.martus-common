@@ -456,7 +456,7 @@ abstract public class FileDatabase extends Database
 						UniversalId uid = UniversalId.createFromAccountAndLocalId(accountString, files[i]);
 						if(isHidden(uid))
 							continue;
-						if(uid.getLocalId().startsWith("BUR-"))
+						if(uid.getLocalId().startsWith(BUR_PREFIX))
 							continue;
 							
 						try
@@ -775,6 +775,7 @@ abstract public class FileDatabase extends Database
 	protected static final String INTERIM_FOLDER_NAME = "interim";
 	protected static final String CONTACTINFO_FOLDER_NAME = "contactInfo";
 	protected static final String ACCOUNTMAP_FILENAME = "acctmap.txt";
+	public static final String BUR_PREFIX = "BUR-";
 
 	public MartusCrypto security;
 
