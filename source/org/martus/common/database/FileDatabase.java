@@ -776,6 +776,7 @@ abstract public class FileDatabase extends Database
 	protected static final String CONTACTINFO_FOLDER_NAME = "contactInfo";
 	protected static final String ACCOUNTMAP_FILENAME = "acctmap.txt";
 	public static final String BUR_PREFIX = "BUR-";
+	public static final String DEL_PREFIX = "DEL-";
 
 	public MartusCrypto security;
 
