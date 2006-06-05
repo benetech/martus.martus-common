@@ -154,6 +154,11 @@ public class BulletinStore
 		return getDatabase().doesRecordExist(key);
 	}
 	
+	public boolean doesBulletinDelRecordExist(DatabaseKey key)
+	{
+		return getDatabase().doesRecordExist(key);
+	}
+	
 	public boolean hasNewerRevision(UniversalId uid)
 	{
 		return getNonLeafUids().contains(uid);
