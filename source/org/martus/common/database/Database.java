@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import org.martus.common.MartusUtilities.FileVerificationException;
@@ -144,4 +145,6 @@ abstract public class Database extends ReadableDatabase
 	}
 
 	Set hiddenPacketUids;
+	Map mTimeMap;
+	
 }

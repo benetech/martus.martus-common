@@ -424,7 +424,6 @@ abstract public class MockDatabase extends Database
 	Map draftQuarantine;
 	Map incomingInterimMap;
 	Map outgoingInterimMap;
-	Map mTimeMap;
 
 	HashMap streamsThatAreOpen = new HashMap();
 }

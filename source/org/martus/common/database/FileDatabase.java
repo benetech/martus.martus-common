@@ -81,6 +81,7 @@ abstract public class FileDatabase extends Database
 	public void deleteAllData() throws Exception
 	{
 		DirectoryUtils.deleteEntireDirectoryTree(absoluteBaseDir);
+		mTimeMap.clear();
 		loadAccountMap();
 	}
 	
@@ -96,6 +97,7 @@ abstract public class FileDatabase extends Database
 	public void initialize() throws FileVerificationException, MissingAccountMapException, MissingAccountMapSignatureException
 	{
 		accountMap = new TreeMap();
+		mTimeMap = new HashMap();
 		loadAccountMap();
 		if(isAccountMapExpected(absoluteBaseDir) && !accountMapFile.exists())
 		{
@@ -150,12 +152,16 @@ abstract public class FileDatabase extends Database
 	public long getmTime(DatabaseKey key) 
 	throws IOException, RecordHiddenException
 {
+    if(mTimeMap.containsKey(key))
+    	return ((Long)mTimeMap.get(key)).longValue();
 	UniversalId uid = key.getUniversalId();
 	throwIfRecordIsHidden(uid);
 
 	try
 	{
-		return getExistingFileForRecord(uid).lastModified();
+		long lastModified = getExistingFileForRecord(uid).lastModified();
+		mTimeMap.put(key, new Long(lastModified));
+		return lastModified;
 	}
 	catch (FileNotFoundException e)
 	{
@@ -256,6 +262,7 @@ abstract public class FileDatabase extends Database
 		try
 		{
 			File file = getFileForRecord(key);
+			mTimeMap.remove(key);
 			file.delete();
 			if(file.exists())
 				throw new IOException("delete failed: " + file);
@@ -726,6 +733,7 @@ abstract public class FileDatabase extends Database
 			File file = getFileForRecord(key);
 			OutputStream rawOut = createOutputStream(file);
 			MartusUtilities.copyStreamWithFilter(in, rawOut, copier);
+			mTimeMap.remove(key);
 		}
 		catch(TooManyAccountsException e)
 		{
