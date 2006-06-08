@@ -26,18 +26,16 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.fieldspec;
 
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 
 public class PopUpTreeFieldSpec extends FieldSpec
 {
 	public PopUpTreeFieldSpec()
 	{
-		this(new DefaultTreeModel(new DefaultMutableTreeNode()));
+		this(new SearchFieldTreeModel(new DefaultMutableTreeNode()));
 	}
 
-	public PopUpTreeFieldSpec(TreeModel modelToUse)
+	public PopUpTreeFieldSpec(SearchFieldTreeModel modelToUse)
 	{
 		super(new FieldTypePopUpTree());
 		model = modelToUse;
@@ -69,10 +67,10 @@ public class PopUpTreeFieldSpec extends FieldSpec
 		return null;
 	}
 	
-	public TreeModel getModel()
+	public SearchFieldTreeModel getModel()
 	{
 		return model;
 	}
 	
-	TreeModel model;
+	SearchFieldTreeModel model;
 }
