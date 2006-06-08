@@ -106,6 +106,7 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestMessageFieldSpec.class));
 		suite.addTest(new TestSuite(TestMiniLocalization.class));
 		suite.addTest(new TestSuite(TestPacket.class));
+		suite.addTest(new TestSuite(TestServerFileDatabase.class));
 		suite.addTest(new TestSuite(TestUnicodeFileReader.class));
 		suite.addTest(new TestSuite(TestUnicodeFileWriter.class));
 		suite.addTest(new TestSuite(TestUniversalId.class));

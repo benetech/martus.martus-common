@@ -79,6 +79,11 @@ abstract public class Database extends ReadableDatabase
 	abstract public void signAccountMap() throws IOException, MartusCrypto.MartusSignatureException;
 	abstract public void scrubRecord(DatabaseKey key) throws IOException, RecordHiddenException;
 
+	public void setmTime(DatabaseKey key, Long mTime)
+	{
+		mTimeMap.put(key, mTime);
+	}
+
 	public boolean isHidden(UniversalId uid)
 	{
 		return hiddenPacketUids.contains(uid);
@@ -145,6 +150,6 @@ abstract public class Database extends ReadableDatabase
 	}
 
 	Set hiddenPacketUids;
-	Map mTimeMap;
+	protected Map mTimeMap;
 	
 }

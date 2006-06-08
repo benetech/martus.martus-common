@@ -148,30 +148,23 @@ abstract public class FileDatabase extends Database
 		return 0;
 	}
 
-
 	public long getmTime(DatabaseKey key) 
 	throws IOException, RecordHiddenException
 {
     if(mTimeMap.containsKey(key))
     	return ((Long)mTimeMap.get(key)).longValue();
-	UniversalId uid = key.getUniversalId();
-	throwIfRecordIsHidden(uid);
+	throwIfRecordIsHidden(key);
 
 	try
 	{
-		long lastModified = getExistingFileForRecord(uid).lastModified();
-		mTimeMap.put(key, new Long(lastModified));
+		long lastModified = getExistingFileForRecord(key.getUniversalId()).lastModified();
+		setmTime(key, new Long(lastModified));
 		return lastModified;
 	}
-	catch (FileNotFoundException e)
+	catch (Exception e)
 	{
-		return -1;
+		throw new IOException(e.getMessage());
 	}
-	catch (TooManyAccountsException e)
-	{
-		System.out.println("FileDatabase:getmTime" + e);
-	}
-	return -1;
 }
 	
 	public void importFiles(HashMap fileMapping) 
@@ -183,6 +176,7 @@ abstract public class FileDatabase extends Database
 		while(keys.hasNext())
 		{
 			DatabaseKey key = (DatabaseKey) keys.next();
+			mTimeMap.remove(key);
 			File fromFile = (File) fileMapping.get(key);
 			File toFile = getFileForRecord(key);
 			toFile.delete();

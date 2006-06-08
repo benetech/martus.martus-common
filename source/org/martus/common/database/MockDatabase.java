@@ -135,7 +135,7 @@ abstract public class MockDatabase extends Database
 		}
 		catch (Exception e)
 		{
-			return -1;
+			throw new IOException("not found");
 		}
 	}
 	

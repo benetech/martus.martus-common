@@ -30,7 +30,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.ParseException;
-
 import org.martus.common.MartusUtilities;
 import org.martus.common.MartusUtilities.FileVerificationException;
 import org.martus.common.crypto.MartusCrypto;
@@ -118,6 +117,40 @@ public class ServerFileDatabase extends FileDatabase
 		MartusServerUtilities.deleteSignaturesForFile(origFile);
 	}
 	
+	public long getmTime(DatabaseKey key) 
+	throws IOException, RecordHiddenException
+	{
+	    if(mTimeMap.containsKey(key))
+	    	return ((Long)mTimeMap.get(key)).longValue();
+		throwIfRecordIsHidden(key);
+	
+		try
+		{
+			long lastModified = -1;
+			DatabaseKey burKey = BulletinUploadRecord.getBurKey(key);
+			DatabaseKey delKey = DeleteRequestRecord.getDelKey(key.getUniversalId());
+			if(doesRecordExist(burKey))
+			{
+				lastModified = BulletinUploadRecord.getTimeStamp(this, key, security);
+			}
+			else if(doesRecordExist(delKey))
+			{
+				lastModified = new DeleteRequestRecord(this,key.getUniversalId(), security).getmTime();
+			}
+			else
+			{
+				throw new Exception("ServerFileDatabase.getmTime: No Bur or Del Packet");
+			}
+			
+			mTimeMap.put(key, new Long(lastModified));
+			return lastModified;
+		}
+		catch (Exception e)
+		{
+			throw new IOException(e.getMessage());
+		}
+	}
+
 	public String getTimeStamp(DatabaseKey key) throws IOException, TooManyAccountsException
 	{
 		File file = getFileForRecord(key);
