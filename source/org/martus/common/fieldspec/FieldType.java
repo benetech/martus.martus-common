@@ -123,6 +123,11 @@ abstract public class FieldType
 		return false;
 	}
 	
+	public boolean isPopUpTree()
+	{
+		return false;
+	}
+	
 	public boolean isGrid()
 	{
 		return false;

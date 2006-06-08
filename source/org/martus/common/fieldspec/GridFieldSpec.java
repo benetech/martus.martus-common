@@ -205,12 +205,16 @@ public class GridFieldSpec extends FieldSpec
 
 	public class UnsupportedFieldTypeException extends Exception
 	{
+		public UnsupportedFieldTypeException(FieldType gotType)
+		{
+			super(gotType.toString());
+		}
 	}
 
 	public void addColumn(FieldSpec columnSpec) throws UnsupportedFieldTypeException
 	{
 		if(!isValidColumnType(columnSpec.getType()))
-			throw new UnsupportedFieldTypeException();
+			throw new UnsupportedFieldTypeException(columnSpec.getType());
 		columns.add(columnSpec);
 	}
 	
@@ -230,6 +234,8 @@ public class GridFieldSpec extends FieldSpec
 		if(columnType.isDate())
 			return true;
 		if(columnType.isDateRange())
+			return true;
+		if(columnType.isPopUpTree())
 			return true;
 		
 		return false;
