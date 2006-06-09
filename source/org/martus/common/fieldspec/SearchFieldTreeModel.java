@@ -40,17 +40,22 @@ public class SearchFieldTreeModel extends DefaultTreeModel
 	public TreePath findObject(TreePath pathToStartSearch, String code)
 	{
 		DefaultMutableTreeNode nodeToSearch = (DefaultMutableTreeNode)pathToStartSearch.getLastPathComponent();
-		SearchableFieldChoiceItem item = (SearchableFieldChoiceItem)nodeToSearch.getUserObject();
-		if(item != null && item.getCode().equals(code))
-			return pathToStartSearch;
-		
-		for(int i = 0; i < nodeToSearch.getChildCount(); ++i)
+		if(nodeToSearch.getChildCount() == 0)
 		{
-			TreeNode thisChild = nodeToSearch.getChildAt(i);
-			TreePath childPath = pathToStartSearch.pathByAddingChild(thisChild);
-			TreePath found = findObject(childPath, code);
-			if(found != null)
-				return found;
+			SearchableFieldChoiceItem item = (SearchableFieldChoiceItem)nodeToSearch.getUserObject();
+			if(item != null && item.getCode().equals(code))
+				return pathToStartSearch;
+		}
+		else
+		{
+			for(int i = 0; i < nodeToSearch.getChildCount(); ++i)
+			{
+				TreeNode thisChild = nodeToSearch.getChildAt(i);
+				TreePath childPath = pathToStartSearch.pathByAddingChild(thisChild);
+				TreePath found = findObject(childPath, code);
+				if(found != null)
+					return found;
+			}
 		}
 		
 		return null;
