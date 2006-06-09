@@ -57,6 +57,11 @@ public class PopUpTreeFieldSpec extends FieldSpec
 	public SearchableFieldChoiceItem findCode(String codeToFind)
 	{
 		TreeNode root = (TreeNode)model.getRoot();
+		return findCode(root, codeToFind);
+	}
+
+	private SearchableFieldChoiceItem findCode(TreeNode root, String codeToFind)
+	{
 		for(int i = 0; i < root.getChildCount(); ++i)
 		{
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode)root.getChildAt(i);
@@ -65,6 +70,12 @@ public class PopUpTreeFieldSpec extends FieldSpec
 				SearchableFieldChoiceItem item = (SearchableFieldChoiceItem)node.getUserObject();
 				if(item.getCode().equals(codeToFind))
 					return item;
+			}
+			else
+			{
+				SearchableFieldChoiceItem found = findCode(node, codeToFind);
+				if(found != null)
+					return found;
 			}
 		}
 		return null;
