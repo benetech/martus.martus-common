@@ -150,22 +150,38 @@ abstract public class FileDatabase extends Database
 
 	public long getmTime(DatabaseKey key) 
 	throws IOException, RecordHiddenException
-{
-    if(mTimeMap.containsKey(key))
-    	return ((Long)mTimeMap.get(key)).longValue();
-	throwIfRecordIsHidden(key);
+	{
+	    if(mTimeMap.containsKey(key))
+	    	return ((Long)mTimeMap.get(key)).longValue();
+		throwIfRecordIsHidden(key);
+	
+		try
+		{
+			long lastModified = -1;
+			DatabaseKey burKey = BulletinUploadRecord.getBurKey(key);
+			DatabaseKey delKey = DeleteRequestRecord.getDelKey(key.getUniversalId());
+			if(doesRecordExist(burKey))
+			{
+				lastModified = BulletinUploadRecord.getTimeStamp(this, key, security);
+			}
+			else if(doesRecordExist(delKey))
+			{
+				lastModified = new DeleteRequestRecord(this,key.getUniversalId(), security).getmTime();
+			}
+			else
+			{
+				throw new Exception("ServerFileDatabase.getmTime: No Bur or Del Packet");
+			}
+			
+			mTimeMap.put(key, new Long(lastModified));
+			return lastModified;
+		}
+		catch (Exception e)
+		{
+			throw new IOException(e.getMessage());
+		}
+	}
 
-	try
-	{
-		long lastModified = getExistingFileForRecord(key.getUniversalId()).lastModified();
-		setmTime(key, new Long(lastModified));
-		return lastModified;
-	}
-	catch (Exception e)
-	{
-		throw new IOException(e.getMessage());
-	}
-}
 	
 	public void importFiles(HashMap fileMapping) 
 			throws IOException, RecordHiddenException

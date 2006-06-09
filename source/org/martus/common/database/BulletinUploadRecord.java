@@ -73,6 +73,11 @@ public class BulletinUploadRecord
 	public static long getTimeStamp(ReadableDatabase db, DatabaseKey key, MartusCrypto security) throws IOException, CryptoException, ParseException
 	{
 		String retrievedRecordString = db.readRecord(getBurKey(key), security);
+		return getTimeStamp(retrievedRecordString);
+	}
+
+	public static long getTimeStamp(String retrievedRecordString) throws IOException, ParseException
+	{
 		UnicodeStringReader reader = new UnicodeStringReader(retrievedRecordString);
 		reader.readLine(); //header
 		reader.readLine(); //localId

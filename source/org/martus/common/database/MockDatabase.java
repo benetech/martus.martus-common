@@ -131,6 +131,9 @@ abstract public class MockDatabase extends Database
 		throwIfRecordIsHidden(key);
 		try
 		{
+			DatabaseKey burKey = BulletinUploadRecord.getBurKey(key);
+			if(mTimeMap.containsKey(burKey.uid))
+				return ((Long)mTimeMap.get(burKey.uid)).longValue();
 			return ((Long)mTimeMap.get(key.uid)).longValue();
 		}
 		catch (Exception e)
