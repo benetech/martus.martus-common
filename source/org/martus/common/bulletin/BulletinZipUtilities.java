@@ -84,7 +84,7 @@ public class BulletinZipUtilities
 			DatabaseKey[] packetKeys = bhp.getPublicPacketKeys();
 	
 			FileOutputStream outputStream = new FileOutputStream(destZipFile);
-			BulletinZipUtilities.extractPacketsToZipStream(headerKey.getAccountId(), db, packetKeys, outputStream, security, db.getmTime(headerKey));
+			BulletinZipUtilities.extractPacketsToZipStream(headerKey.getAccountId(), db, packetKeys, outputStream, security);
 		}
 		catch(Exception e)
 		{
@@ -134,8 +134,7 @@ public class BulletinZipUtilities
 		DatabaseKey[] packetKeys = BulletinZipUtilities.getAllPacketKeys(bhp);
 	
 		FileOutputStream outputStream = new FileOutputStream(destZipFile);
-		long mTime = db.getmTime(headerKey);
-		BulletinZipUtilities.extractPacketsToZipStream(headerKey.getAccountId(), db, packetKeys, outputStream, security, mTime);
+		BulletinZipUtilities.extractPacketsToZipStream(headerKey.getAccountId(), db, packetKeys, outputStream, security);
 		
 		if (!debugValidateIntegrityOfZipFilePublicPackets)
 			return;
@@ -193,7 +192,7 @@ public class BulletinZipUtilities
 		return keys;
 	}
 
-	public static void extractPacketsToZipStream(String clientId, ReadableDatabase db, DatabaseKey[] packetKeys, OutputStream outputStream, MartusCrypto security, long mTime) throws
+	public static void extractPacketsToZipStream(String clientId, ReadableDatabase db, DatabaseKey[] packetKeys, OutputStream outputStream, MartusCrypto security) throws
 		IOException,
 		UnsupportedEncodingException
 	{
@@ -209,7 +208,6 @@ public class BulletinZipUtilities
 			{
 				DatabaseKey key = packetKeys[i];
 				ZipEntry entry = new ZipEntry(key.getLocalId());
-				entry.setTime(mTime);
 				zipOut.putNextEntry(entry);
 
 				InputStream in = db.openInputStream(key, security);
