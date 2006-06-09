@@ -32,6 +32,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -42,6 +43,7 @@ import org.martus.common.MartusUtilities;
 import org.martus.common.MartusUtilities.FileVerificationException;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.StreamEncryptor;
+import org.martus.common.crypto.MartusCrypto.CryptoException;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
 import org.martus.common.packet.UniversalId;
 import org.martus.util.DirectoryUtils;
@@ -157,29 +159,26 @@ abstract public class FileDatabase extends Database
 	
 		try
 		{
-			long lastModified = -1;
-			DatabaseKey burKey = BulletinUploadRecord.getBurKey(key);
-			DatabaseKey delKey = DeleteRequestRecord.getDelKey(key.getUniversalId());
-			if(doesRecordExist(burKey))
-			{
-				lastModified = BulletinUploadRecord.getTimeStamp(this, key, security);
-			}
-			else if(doesRecordExist(delKey))
-			{
-				lastModified = new DeleteRequestRecord(this,key.getUniversalId(), security).getmTime();
-			}
-			else
-			{
-				throw new Exception("ServerFileDatabase.getmTime: No Bur or Del Packet");
-			}
-			
-			mTimeMap.put(key, new Long(lastModified));
-			return lastModified;
+			long mTime =  getUploadTime(key);
+			mTimeMap.put(key, new Long(mTime));
+			return mTime;
 		}
 		catch (Exception e)
 		{
 			throw new IOException(e.getMessage());
 		}
+	}
+
+	private long getUploadTime(DatabaseKey key) throws IOException, CryptoException, ParseException, Exception
+	{
+		DatabaseKey burKey = BulletinUploadRecord.getBurKey(key);
+		DatabaseKey delKey = DeleteRequestRecord.getDelKey(key.getUniversalId());
+		if(doesRecordExist(burKey))
+			return BulletinUploadRecord.getTimeStamp(this, key, security);
+		else if(doesRecordExist(delKey))
+			return (new DeleteRequestRecord(this,key.getUniversalId(), security).getmTime());
+		else
+			throw new Exception("ServerFileDatabase.getmTime: No Bur or Del Packet");
 	}
 
 	
