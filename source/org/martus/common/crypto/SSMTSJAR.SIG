@@ -1,6 +1,6 @@
 Signature-Version: 1.0
-Created-By: 1.4.2_11 (Sun Microsystems Inc.)
-SHA1-Digest-Manifest: xgyzYwxB4qKsnfMtSDEFrgGOm3Y=
+Created-By: 1.4.2_12 (Sun Microsystems Inc.)
+SHA1-Digest-Manifest: q5RlhfQfFfjjE/E+AM38k6nFAeI=
 
 Name: javax/crypto/KeyGeneratorSpi.class
 SHA1-Digest: 3rkphLoVpB/EDjzKO2UswKDcU2I=
