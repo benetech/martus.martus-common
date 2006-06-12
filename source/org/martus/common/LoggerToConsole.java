@@ -64,8 +64,8 @@ public class LoggerToConsole implements LoggerInterface
 	
 	public void logError(String message, Exception e)
 	{
-		logError(message);
-		logError(e);
+		String errorMessage = message +" : " + LoggerUtil.getStackTrace(e);
+		logError(errorMessage);
 	}
 
 	public void logNotice(String message)
