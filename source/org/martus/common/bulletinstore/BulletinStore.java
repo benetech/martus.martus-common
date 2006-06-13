@@ -413,7 +413,7 @@ public class BulletinStore
 			authorAccountId = header.getAccountId();
 	
 		BulletinZipUtilities.validateIntegrityOfZipFilePackets(authorAccountId, zip, security);
-		MartusUtilities.deleteDraftBulletinPackets(db, header.getUniversalId(), security);
+		deleteDraftBulletinPackets(db, header.getUniversalId(), security);
 	
 		HashMap zipEntries = new HashMap();
 		StreamCopier copier = new StreamCopier();
@@ -451,6 +451,48 @@ public class BulletinStore
 		return header.getUniversalId();
 	}
 
+	private static void deleteDraftBulletinPackets(Database db, UniversalId bulletinUid, MartusCrypto security) throws
+	IOException
+	{
+		DatabaseKey headerKey = DatabaseKey.createDraftKey(bulletinUid);
+		if(!db.doesRecordExist(headerKey))
+			return;
+		try
+		{
+			BulletinHeaderPacket bhp = BulletinStore.loadBulletinHeaderPacket(db, headerKey, security);
+	
+			String accountId = bhp.getAccountId();
+			deleteDraftPacket(db, accountId, bhp.getLocalId());
+			deleteDraftPacket(db, accountId, bhp.getFieldDataPacketId());
+			deleteDraftPacket(db, accountId, bhp.getPrivateFieldDataPacketId());
+	
+			String[] publicAttachmentIds = bhp.getPublicAttachmentIds();
+			for(int i = 0; i < publicAttachmentIds.length; ++i)
+			{
+				deleteDraftPacket(db, accountId, publicAttachmentIds[i]);
+			}
+	
+			String[] privateAttachmentIds = bhp.getPrivateAttachmentIds();
+			for(int i = 0; i < privateAttachmentIds.length; ++i)
+			{
+				deleteDraftPacket(db, accountId, privateAttachmentIds[i]);
+			}
+		}
+		catch (Exception e)
+		{
+			throw new IOException(e.toString());
+		}
+	}
+	
+	private static void deleteDraftPacket(Database db, String accountId, String localId)
+	{
+		UniversalId uid = UniversalId.createFromAccountAndLocalId(accountId, localId);
+		DatabaseKey key = DatabaseKey.createDraftKey(uid);
+		db.discardRecord(key);
+	}
+	
+	
+	
 	protected void deleteSpecificPacket(DatabaseKey burKey)
 	{
 		getWriteableDatabase().discardRecord(burKey);

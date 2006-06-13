@@ -40,24 +40,19 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 import java.util.zip.ZipFile;
-
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
-
 import org.martus.common.bulletin.BulletinZipUtilities;
-import org.martus.common.bulletinstore.BulletinStore;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusCrypto.DecryptionException;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
-import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.ReadableDatabase;
 import org.martus.common.database.Database.RecordHiddenException;
 import org.martus.common.network.SimpleX509TrustManager;
 import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.BulletinHeaderPacket;
-import org.martus.common.packet.UniversalId;
 import org.martus.common.packet.Packet.InvalidPacketException;
 import org.martus.common.packet.Packet.SignatureVerificationException;
 import org.martus.common.packet.Packet.WrongAccountException;
@@ -345,46 +340,6 @@ public class MartusUtilities
 			}
 		}
 		return size;
-	}
-
-	public static void deleteDraftBulletinPackets(Database db, UniversalId bulletinUid, MartusCrypto security) throws
-		IOException
-	{
-		DatabaseKey headerKey = DatabaseKey.createDraftKey(bulletinUid);
-		if(!db.doesRecordExist(headerKey))
-			return;
-		try
-		{
-			BulletinHeaderPacket bhp = BulletinStore.loadBulletinHeaderPacket(db, headerKey, security);
-
-			String accountId = bhp.getAccountId();
-			deleteDraftPacket(db, accountId, bhp.getLocalId());
-			deleteDraftPacket(db, accountId, bhp.getFieldDataPacketId());
-			deleteDraftPacket(db, accountId, bhp.getPrivateFieldDataPacketId());
-	
-			String[] publicAttachmentIds = bhp.getPublicAttachmentIds();
-			for(int i = 0; i < publicAttachmentIds.length; ++i)
-			{
-				deleteDraftPacket(db, accountId, publicAttachmentIds[i]);
-			}
-	
-			String[] privateAttachmentIds = bhp.getPrivateAttachmentIds();
-			for(int i = 0; i < privateAttachmentIds.length; ++i)
-			{
-				deleteDraftPacket(db, accountId, privateAttachmentIds[i]);
-			}
-		}
-		catch (Exception e)
-		{
-			throw new IOException(e.toString());
-		}
-	}
-
-	private static void deleteDraftPacket(Database db, String accountId, String localId)
-	{
-		UniversalId uid = UniversalId.createFromAccountAndLocalId(accountId, localId);
-		DatabaseKey key = DatabaseKey.createDraftKey(uid);
-		db.discardRecord(key);
 	}
 
 	public static void copyStreamWithFilter(InputStream in, OutputStream rawOut,
