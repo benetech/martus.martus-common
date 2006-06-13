@@ -396,11 +396,11 @@ public class BulletinStore
 		RecordHiddenException, 
 		WrongAccountException
 	{
-		UniversalId uid = importBulletinPacketsFromZipFileToDatabase(getWriteableDatabase(), accountIdIfKnown, zip, getSignatureVerifier(), mTime);
+		UniversalId uid = importBulletinPacketsFromZipFileToDatabase(accountIdIfKnown, zip, mTime);
 		revisionWasSaved(uid);
 	}
 
-	private static UniversalId importBulletinPacketsFromZipFileToDatabase(Database db, String authorAccountId, ZipFile zip, MartusCrypto security, long mTime)
+	private UniversalId importBulletinPacketsFromZipFileToDatabase(String authorAccountId, ZipFile zip, long mTime)
 		throws IOException,
 		Database.RecordHiddenException,
 		Packet.InvalidPacketException,
@@ -413,7 +413,9 @@ public class BulletinStore
 			authorAccountId = header.getAccountId();
 	
 		BulletinZipUtilities.validateIntegrityOfZipFilePackets(authorAccountId, zip, security);
+		Database db = getWriteableDatabase();
 		deleteDraftBulletinPackets(db, header.getUniversalId(), security);
+		revisionWasRemoved(header.getUniversalId());
 	
 		HashMap zipEntries = new HashMap();
 		StreamCopier copier = new StreamCopier();
