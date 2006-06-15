@@ -42,12 +42,13 @@ import org.martus.common.MartusUtilities;
 import org.martus.common.MartusUtilities.FileVerificationException;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MockMartusSecurity;
+import org.martus.common.database.BulletinUploadRecord;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
+import org.martus.common.database.DeleteRequestRecord;
 import org.martus.common.database.FileDatabase;
 import org.martus.common.packet.UniversalId;
 import org.martus.util.*;
-import org.martus.util.UnicodeWriter;
 
 
 public class TestFileDatabase extends TestCaseEnhanced
@@ -493,13 +494,13 @@ public class TestFileDatabase extends TestCaseEnhanced
 
 		db.writeRecord(shortKey, sampleString1);
 		db.writeRecord(otherKey, sampleString2);
+		
 
 		AccountCollector ac = new AccountCollector();
 		db.visitAllAccounts(ac);
 		assertEquals("count?", 2, ac.list.size());
 		assertContains("missing 1?", shortKey.getAccountId(), ac.list);
 		assertContains("missing 2?", otherKey.getAccountId(), ac.list);
-
 	}
 
 	public void testVisitAllPacketsForAccount() throws Exception
@@ -518,12 +519,20 @@ public class TestFileDatabase extends TestCaseEnhanced
 		DatabaseKey shortKey3 = DatabaseKey.createSealedKey(UniversalIdForTesting.createFromAccountAndPrefix(accountString1 , "x"));
 		db.writeRecord(shortKey3, sampleString2);
 		db.hide(shortKey3.getUniversalId());
+
+		DatabaseKey burKey = BulletinUploadRecord.getBurKey(DatabaseKey.createSealedKey(UniversalIdForTesting.createFromAccountAndPrefix(accountString1 , "dx2")));
+		DatabaseKey delKey = DeleteRequestRecord.getDelKey(UniversalIdForTesting.createFromAccountAndPrefix(accountString1 , "dx3"));
+		db.writeRecord(burKey, sampleString2);
+		db.writeRecord(delKey, sampleString2);
+		
 		
 		PacketCollector ac = new PacketCollector();
 		db.visitAllRecordsForAccount(ac, accountString1);
 		assertEquals("count?", 2, ac.list.size());
 		assertContains("missing 1?", shortKey, ac.list);
 		assertContains("missing 2?", shortKey2, ac.list);
+		assertNotContains("Contains BUR Keys?", burKey.getAccountId(), ac.list);
+		assertNotContains("Contains DEL Keys?", delKey.getAccountId(), ac.list);
 
 	}
 	

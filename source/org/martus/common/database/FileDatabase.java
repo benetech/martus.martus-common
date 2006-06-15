@@ -472,7 +472,10 @@ abstract public class FileDatabase extends Database
 						UniversalId uid = UniversalId.createFromAccountAndLocalId(accountString, files[i]);
 						if(isHidden(uid))
 							continue;
-						if(uid.getLocalId().startsWith(BUR_PREFIX))
+						String localId = uid.getLocalId();
+						if(localId.startsWith(BUR_PREFIX))
+							continue;
+						if(localId.startsWith(DEL_PREFIX))
 							continue;
 							
 						try
