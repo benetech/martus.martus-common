@@ -640,7 +640,7 @@ public class WebServerWithClientId implements Runnable
 		{
 			if (runners.activeCount () > 255)
 			{
-				throw new RuntimeException("System overload");
+				throw new RuntimeException("System overload (WebServerWithClientId)");
 			}
 			return new Runner();
 		}
