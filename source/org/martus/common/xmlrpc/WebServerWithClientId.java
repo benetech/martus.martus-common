@@ -236,6 +236,11 @@ public class WebServerWithClientId implements Runnable
 		threadpool = new Stack();
 		runners = new ThreadGroup("XML-RPC Runner");
 	}
+	
+	public int getActiveRunnerCount()
+	{
+		return runners.activeCount();
+	}
 
 	/**
 	 * Returns the US-ASCII encoded byte representation of text for
