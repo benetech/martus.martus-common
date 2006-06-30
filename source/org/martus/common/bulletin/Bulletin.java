@@ -253,6 +253,14 @@ public class Bulletin implements BulletinConstants
 			return lastSavedDateField;
 		}
 		
+		// FIXME: Rename TAGSTATUS to PSEUDOFIELD_STATUS (globally)
+		if(fieldTag.equals(TAGSTATUS))
+		{
+			MartusField statusField = new MartusField(FieldSpec.createStandardField(fieldTag, new FieldTypeNormal()));
+			statusField.setData(getStatus());
+			return statusField;
+		}
+		
 		if(isFieldInPublicSection(fieldTag))
 			return fieldData.getField(fieldTag);
 		return getPrivateFieldDataPacket().getField(fieldTag);
