@@ -52,6 +52,8 @@ public class PopUpTreeFieldSpec extends FieldSpec
 		for(int i = 0; i < root.getChildCount(); ++i)
 		{
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode)root.getChildAt(i);
+			if(node.getChildCount() > 0)
+				continue;
 			SearchableFieldChoiceItem item = (SearchableFieldChoiceItem)node.getUserObject();
 			if(item.getSearchTag().equals(tagToFind))
 				return item;
