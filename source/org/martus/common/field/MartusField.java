@@ -38,6 +38,12 @@ public class MartusField
 		setData(getDefaultValue());
 	}
 	
+	public MartusField(MartusField copyFrom)
+	{
+		spec = copyFrom.spec;
+		setData(copyFrom.getData());
+	}
+	
 	public MartusField getSubField(String tag, MiniLocalization localization)
 	{
 		return null;
