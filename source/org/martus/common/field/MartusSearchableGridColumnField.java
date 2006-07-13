@@ -35,9 +35,12 @@ import org.martus.common.fieldspec.GridFieldSpec;
 
 public class MartusSearchableGridColumnField extends MartusField
 {
-	public MartusSearchableGridColumnField(MartusGridField gridToUse, int column) throws Exception
+	public MartusSearchableGridColumnField(MartusGridField gridToUse, int columnToUse) throws Exception
 	{
 		super(gridToUse.getFieldSpec());
+		grid = gridToUse;
+		column = columnToUse;
+		
 		GridFieldSpec gridSpec = gridToUse.getGridFieldSpec();
 		GridData gridData = new GridData(gridSpec);
 		gridData.setFromXml(gridToUse.getData());
@@ -50,6 +53,15 @@ public class MartusSearchableGridColumnField extends MartusField
 			fields.getField(row).setData(gridData.getValueAt(row, column));
 		}
 	}
+	
+	public MartusField createClone() throws Exception
+	{
+		MartusField clone = new MartusSearchableGridColumnField(grid, column);
+		clone.setData(getData());
+		return clone;
+	}
+	
+
 
 	static FieldSpec[] getFieldSpecsFromGrid(GridFieldSpec gridSpec)
 	{
@@ -113,6 +125,7 @@ public class MartusSearchableGridColumnField extends MartusField
 		return fields.count();
 	}
 
+	MartusGridField grid;
+	int column;
 	FieldCollection fields;
-
 }

@@ -34,4 +34,13 @@ public class MartusDateField extends MartusField
 	{
 		super(specToUse);
 	}
+	
+	public MartusField createClone()
+	{
+		MartusField clone = new MartusDateField(getFieldSpec());
+		clone.setData(getData());
+		return clone;
+	}
+	
+
 }

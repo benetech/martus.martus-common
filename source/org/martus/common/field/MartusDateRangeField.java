@@ -38,7 +38,14 @@ public class MartusDateRangeField extends MartusField
 	{
 		super(specToUse);
 	}
-
+	
+	public MartusField createClone()
+	{
+		MartusField clone = new MartusDateRangeField(getFieldSpec());
+		clone.setData(getData());
+		return clone;
+	}
+	
 	public boolean contains(String value)
 	{
 		// date ranges don't support contains searching at all!

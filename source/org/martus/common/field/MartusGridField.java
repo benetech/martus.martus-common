@@ -37,6 +37,15 @@ public class MartusGridField extends MartusField
 	{
 		super(specToUse);
 	}
+	
+	public MartusField createClone()
+	{
+		MartusField clone = new MartusGridField(getFieldSpec());
+		clone.setData(getData());
+		return clone;
+	}
+	
+
 
 	public MartusField getSubField(String tag, MiniLocalization localization)
 	{

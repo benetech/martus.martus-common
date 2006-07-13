@@ -38,10 +38,11 @@ public class MartusField
 		setData(getDefaultValue());
 	}
 	
-	public MartusField(MartusField copyFrom)
+	public MartusField createClone() throws Exception
 	{
-		spec = copyFrom.spec;
-		setData(copyFrom.getData());
+		MartusField clone = new MartusField(getFieldSpec());
+		clone.setData(getData());
+		return clone;
 	}
 	
 	public MartusField getSubField(String tag, MiniLocalization localization)
