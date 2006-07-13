@@ -43,6 +43,7 @@ import org.martus.common.database.ReadableDatabase;
 import org.martus.common.field.MartusField;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldType;
+import org.martus.common.fieldspec.FieldTypeBoolean;
 import org.martus.common.fieldspec.FieldTypeDate;
 import org.martus.common.fieldspec.FieldTypeNormal;
 import org.martus.common.fieldspec.FieldTypeUnknown;
@@ -259,6 +260,16 @@ public class Bulletin implements BulletinConstants
 			MartusField statusField = new MartusField(FieldSpec.createStandardField(fieldTag, new FieldTypeNormal()));
 			statusField.setData(getStatus());
 			return statusField;
+		}
+		
+		if(fieldTag.equals(PSEUDOFIELD_ALL_PRIVATE))
+		{
+			MartusField allPrivateField = new MartusField(FieldSpec.createStandardField(fieldTag, new FieldTypeBoolean()));
+			if(isAllPrivate())
+				allPrivateField.setData(FieldSpec.TRUESTRING);
+			else
+				allPrivateField.setData(FieldSpec.FALSESTRING);
+			return allPrivateField;
 		}
 		
 		if(isFieldInPublicSection(fieldTag))
@@ -631,6 +642,7 @@ public class Bulletin implements BulletinConstants
 
 	public static final String PSEUDOFIELD_LOCAL_ID = "_localId";
 	public static final String PSEUDOFIELD_LAST_SAVED_DATE = "_lastSavedDate";
+	public static final String PSEUDOFIELD_ALL_PRIVATE = "_allPrivate";
 	public static final String TOP_SECTION = "TOP SECTION";
 	public static final String BOTTOM_SECTION = "BOTTOM SECTION";
 	
