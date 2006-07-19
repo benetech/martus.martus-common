@@ -51,7 +51,7 @@ public class FieldTypeBoolean extends FieldType
 		return FieldSpec.FALSESTRING;
 	}
 
-	public String convertStoredToDisplay(String storedData, MiniLocalization localization)
+	public String convertStoredToSearchable(String storedData, MiniLocalization localization)
 	{
 		String tag = "no";
 		if(storedData.equals(FieldSpec.TRUESTRING))

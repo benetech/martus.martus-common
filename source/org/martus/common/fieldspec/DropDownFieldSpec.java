@@ -70,7 +70,7 @@ public class DropDownFieldSpec extends FieldSpec
 		return getChoice(index).toString();
 	}
 	
-	public String convertStoredToDisplay(String storedData, MiniLocalization localization)
+	public String convertStoredToSearchable(String storedData, MiniLocalization localization)
 	{
 		return getDisplayString(storedData);
 	}

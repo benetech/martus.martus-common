@@ -75,7 +75,12 @@ public class MartusField
 	
 	public String getSearchableData(MiniLocalization localization)
 	{
-		return getFieldSpec().convertStoredToDisplay(getData(), localization);
+		return getFieldSpec().convertStoredToSearchable(getData(), localization);
+	}
+	
+	public String getHtmlData(MiniLocalization localization)
+	{
+		return getFieldSpec().convertStoredToHtml(getData(), localization);
 	}
 	
 	public String getExportableData(MiniLocalization localization)

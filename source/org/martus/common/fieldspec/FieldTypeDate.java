@@ -52,7 +52,7 @@ public class FieldTypeDate extends FieldType
 		return DateUtilities.getFirstOfThisYearInStoredFormat();
 	}
 
-	public String convertStoredToDisplay(String storedData, MiniLocalization localization)
+	public String convertStoredToSearchable(String storedData, MiniLocalization localization)
 	{
 		return localization.convertStoredDateToDisplay(storedData);
 	}

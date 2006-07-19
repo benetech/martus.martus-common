@@ -50,7 +50,7 @@ public class FieldTypeLanguage extends FieldType
 		return MiniLocalization.LANGUAGE_OTHER;
 	}
 
-	public String convertStoredToDisplay(String storedData, MiniLocalization localization)
+	public String convertStoredToSearchable(String storedData, MiniLocalization localization)
 	{
 		return localization.getLanguageName(storedData);
 	}

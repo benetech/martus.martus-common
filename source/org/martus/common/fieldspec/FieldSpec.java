@@ -117,9 +117,14 @@ public class FieldSpec
 		return type;
 	}
 	
-	public String convertStoredToDisplay(String storedData, MiniLocalization localization)
+	public String convertStoredToSearchable(String storedData, MiniLocalization localization)
 	{
-		return getType().convertStoredToDisplay(storedData, localization);
+		return getType().convertStoredToSearchable(storedData, localization);
+	}
+	
+	public String convertStoredToHtml(String storedData, MiniLocalization localization)
+	{
+		return getType().convertStoredToHtml(storedData, localization);
 	}
 	
 	public String convertStoredToExportable(String storedData, MiniLocalization localization)

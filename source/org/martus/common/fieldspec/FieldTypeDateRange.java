@@ -48,7 +48,7 @@ public class FieldTypeDateRange extends FieldType
 		return "DATERANGE";
 	}
 	
-	public String convertStoredToDisplay(String storedData, MiniLocalization localization)
+	public String convertStoredToSearchable(String storedData, MiniLocalization localization)
 	{
 		return localization.getViewableDateRange(storedData);
 	}

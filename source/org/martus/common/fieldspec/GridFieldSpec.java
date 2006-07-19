@@ -67,7 +67,7 @@ public class GridFieldSpec extends FieldSpec
 		return (FieldSpec)columns.get(column);
 	}
 
-	public String convertStoredToDisplay(String storedData, MiniLocalization localization)
+	public String convertStoredToSearchable(String storedData, MiniLocalization localization)
 	{
 		Formatter formatter = new FormatterForSearching();
 		return getFormatted(storedData, localization, formatter);
@@ -151,7 +151,7 @@ public class GridFieldSpec extends FieldSpec
 	{
 		public String getFormattedCell(String rawData, FieldSpec cellSpec, MiniLocalization localization)
 		{
-			return cellSpec.convertStoredToDisplay(rawData, localization);
+			return cellSpec.convertStoredToSearchable(rawData, localization);
 		}
 		
 		public String getRowEnd()
