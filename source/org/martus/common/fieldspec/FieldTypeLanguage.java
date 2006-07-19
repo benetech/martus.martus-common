@@ -27,6 +27,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.fieldspec;
 
 import org.martus.common.MiniLocalization;
+import org.martus.util.xml.XmlUtilities;
 
 public class FieldTypeLanguage extends FieldType
 {
@@ -53,5 +54,10 @@ public class FieldTypeLanguage extends FieldType
 	public String convertStoredToSearchable(String storedData, MiniLocalization localization)
 	{
 		return localization.getLanguageName(storedData);
+	}
+	
+	public String convertStoredToHtml(String storedData, MiniLocalization localization)
+	{
+		return XmlUtilities.getXmlEncoded(localization.getLanguageName(storedData));
 	}
 }

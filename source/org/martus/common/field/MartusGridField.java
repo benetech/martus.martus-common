@@ -105,7 +105,10 @@ public class MartusGridField extends MartusField
 			for(int col = 0; col < gridData.getColumnCount(); ++col)
 			{
 				buffer.append("<td>");
-				buffer.append(XmlUtilities.getXmlEncoded(gridData.getValueAt(row, col)));
+				String rawCellData = gridData.getValueAt(row, col);
+				FieldSpec columnSpec = getGridFieldSpec().getFieldSpec(col);
+				String cellData = columnSpec.convertStoredToSearchable(rawCellData, localization);
+				buffer.append(XmlUtilities.getXmlEncoded(cellData));
 				buffer.append("</td>");
 				
 			}

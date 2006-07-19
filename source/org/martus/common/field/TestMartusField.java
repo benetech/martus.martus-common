@@ -79,16 +79,54 @@ public class TestMartusField extends TestCaseEnhanced
 		GridFieldSpec spec = new GridFieldSpec();
 		spec.addColumn(FieldSpec.createCustomField("a", "A", new FieldTypeNormal()));
 		spec.addColumn(FieldSpec.createCustomField("b", "B", new FieldTypeBoolean()));
+		DropDownFieldSpec dropdownSpec = new DropDownFieldSpec(choices);
+		dropdownSpec.setTag("c");
+		dropdownSpec.setLabel("C");
+		spec.addColumn(dropdownSpec);
+		spec.addColumn(FieldSpec.createCustomField("d", "D", new FieldTypeDate()));
+		spec.addColumn(FieldSpec.createCustomField("e", "E", new FieldTypeDateRange()));
 		MartusField field = new MartusGridField(spec);
 		GridData data = new GridData(spec);
 		data.addEmptyRow();
 		data.addEmptyRow();
 		for(int row = 0; row < 2; ++row)
-			for(int col = 0; col < 2; ++col)
-				data.setValueAt("&" + row + "," + col, row, col);
+		{
+			data.setValueAt("&" + row + "," + 0, row, 0);
+			data.setValueAt(FieldSpec.TRUESTRING, row, 1);
+			data.setValueAt("ampersand", row, 2);
+			data.setValueAt("2004-12-30", row, 3);
+			data.setValueAt("2002-07-21,20020721+5", row, 4);
+		}
 		field.setData(data.getXmlRepresentation());
-		String expected = "<table><tr><td>&amp;0,0</td><td>&amp;0,1</td></tr><tr><td>&amp;1,0</td><td>&amp;1,1</td></tr></table>";
+		String expected = "<table>" +
+				"<tr><td>&amp;0,0</td><td>&lt;button:yes&gt;</td><td>This &amp; That</td>" +
+				"<td>12/30/2004</td><td>07/21/2002 - 07/26/2002</td></tr>" +
+				"<tr><td>&amp;1,0</td><td>&lt;button:yes&gt;</td><td>This &amp; That</td>" +
+				"<td>12/30/2004</td><td>07/21/2002 - 07/26/2002</td></tr>" +
+				"</table>";
 		assertEquals("Didn't htmlize grid?", expected, field.getHtmlData(localization));
+	}
+	
+	public void testNonGridHtml() throws Exception
+	{
+		MartusField languageField = new MartusField(createFieldSpec(new FieldTypeLanguage()));
+		languageField.setData(MiniLocalization.ENGLISH);
+		assertEquals("Didn't localize language name?", "&lt;language:en&gt;", languageField.getHtmlData(localization));
+		
+		MartusField dateField = new MartusField(createFieldSpec(new FieldTypeDate()));
+		dateField.setData("1968-02-21");
+		assertEquals("Didn't localize date?", "02/21/1968", dateField.getHtmlData(localization));
+
+		MartusField dateRangeField = new MartusField(createFieldSpec(new FieldTypeDateRange()));
+		dateRangeField.setData("1967-03-21,19670321+9");
+		assertEquals("Didn't localize date range?", "03/21/1967 - 03/30/1967", dateRangeField.getHtmlData(localization));
+
+		DropDownFieldSpec dropdownSpec = new DropDownFieldSpec(choices);
+		dropdownSpec.setTag("c");
+		dropdownSpec.setLabel("C");
+		MartusField dropdownField = new MartusField(dropdownSpec);
+		dropdownField.setData("ampersand");
+		assertEquals("Didn't decode dropdown?", "This &amp; That", dropdownField.getHtmlData(localization));
 	}
 	
 	public void testGetSearchableDataForStringFields()
@@ -269,6 +307,7 @@ public class TestMartusField extends TestCaseEnhanced
 	{
 		new ChoiceItem("firstcode", "First Value"),
 		new ChoiceItem("secondcode", "Second Value"),
+		new ChoiceItem("ampersand", "This & That"),
 	};
 
 	MiniLocalization localization;

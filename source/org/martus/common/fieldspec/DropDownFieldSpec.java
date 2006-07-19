@@ -28,6 +28,7 @@ package org.martus.common.fieldspec;
 
 import org.martus.common.MartusXml;
 import org.martus.common.MiniLocalization;
+import org.martus.util.xml.XmlUtilities;
 
 
 
@@ -73,6 +74,11 @@ public class DropDownFieldSpec extends FieldSpec
 	public String convertStoredToSearchable(String storedData, MiniLocalization localization)
 	{
 		return getDisplayString(storedData);
+	}
+
+	public String convertStoredToHtml(String storedData, MiniLocalization localization)
+	{
+		return XmlUtilities.getXmlEncoded(getDisplayString(storedData));
 	}
 
 	public String getDisplayString(String code)

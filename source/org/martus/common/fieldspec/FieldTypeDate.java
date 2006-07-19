@@ -57,6 +57,11 @@ public class FieldTypeDate extends FieldType
 		return localization.convertStoredDateToDisplay(storedData);
 	}
 
+	public String convertStoredToHtml(String storedData, MiniLocalization localization)
+	{
+		return localization.convertStoredDateToDisplay(storedData);
+	}
+
 	public String convertStoredToExportable(String storedData, MiniLocalization localization)
 	{
 		return BulletinXmlExportImportConstants.DATE_SIMPLE + storedData;

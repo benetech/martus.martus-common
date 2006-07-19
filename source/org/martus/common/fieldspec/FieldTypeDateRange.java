@@ -53,6 +53,11 @@ public class FieldTypeDateRange extends FieldType
 		return localization.getViewableDateRange(storedData);
 	}
 
+	public String convertStoredToHtml(String storedData, MiniLocalization localization)
+	{
+		return localization.getViewableDateRange(storedData);
+	}
+
 	public String getDefaultValue()
 	{
 		return DateUtilities.getFirstOfThisYearInStoredFormat();
