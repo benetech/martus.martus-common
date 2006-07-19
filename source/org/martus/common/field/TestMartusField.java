@@ -74,6 +74,23 @@ public class TestMartusField extends TestCaseEnhanced
 		assertEquals("didn't set data?", sampleData, f.getData());
 	}
 	
+	public void testGridHtml() throws Exception
+	{
+		GridFieldSpec spec = new GridFieldSpec();
+		spec.addColumn(FieldSpec.createCustomField("a", "A", new FieldTypeNormal()));
+		spec.addColumn(FieldSpec.createCustomField("b", "B", new FieldTypeBoolean()));
+		MartusField field = new MartusGridField(spec);
+		GridData data = new GridData(spec);
+		data.addEmptyRow();
+		data.addEmptyRow();
+		for(int row = 0; row < 2; ++row)
+			for(int col = 0; col < 2; ++col)
+				data.setValueAt("&" + row + "," + col, row, col);
+		field.setData(data.getXmlRepresentation());
+		String expected = "<table><tr><td>&amp;0,0</td><td>&amp;0,1</td></tr><tr><td>&amp;1,0</td><td>&amp;1,1</td></tr></table>";
+		assertEquals("Didn't htmlize grid?", expected, field.getHtmlData(localization));
+	}
+	
 	public void testGetSearchableDataForStringFields()
 	{
 		verifyNormalDataIsAlsoPrintable(new FieldTypeNormal(), "sample string");

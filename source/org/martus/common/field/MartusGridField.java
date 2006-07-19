@@ -30,6 +30,7 @@ import org.martus.common.GridData;
 import org.martus.common.MiniLocalization;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.GridFieldSpec;
+import org.martus.util.xml.XmlUtilities;
 
 public class MartusGridField extends MartusField
 {
@@ -91,4 +92,28 @@ public class MartusGridField extends MartusField
 		gridData.setFromXml(getData());
 		return gridData;
 	}
+	
+	public String getHtmlData(MiniLocalization localization) throws Exception
+	{
+		GridData gridData = getGridData();
+		
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("<table>");
+		for(int row = 0; row < gridData.getRowCount(); ++row)
+		{
+			buffer.append("<tr>");
+			for(int col = 0; col < gridData.getColumnCount(); ++col)
+			{
+				buffer.append("<td>");
+				buffer.append(XmlUtilities.getXmlEncoded(gridData.getValueAt(row, col)));
+				buffer.append("</td>");
+				
+			}
+			buffer.append("</tr>");
+		}
+		buffer.append("</table>");
+		return buffer.toString();
+	}
+
+
 }
