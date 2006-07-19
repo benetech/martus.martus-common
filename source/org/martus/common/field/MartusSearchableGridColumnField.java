@@ -26,18 +26,19 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.field;
 
-import org.martus.common.FieldCollection;
 import org.martus.common.GridData;
 import org.martus.common.MiniLocalization;
 import org.martus.common.fieldspec.FieldSpec;
+import org.martus.common.fieldspec.FieldType;
 import org.martus.common.fieldspec.GridFieldSpec;
+import org.martus.util.xml.XmlUtilities;
 
 
 public class MartusSearchableGridColumnField extends MartusField
 {
 	public MartusSearchableGridColumnField(MartusGridField gridToUse, int columnToUse) throws Exception
 	{
-		super(gridToUse.getFieldSpec());
+		super(createMartusField(gridToUse.getGridFieldSpec().getFieldSpec(columnToUse)).getFieldSpec());
 		grid = gridToUse;
 		column = columnToUse;
 		
@@ -45,13 +46,24 @@ public class MartusSearchableGridColumnField extends MartusField
 		GridData gridData = new GridData(gridSpec);
 		gridData.setFromXml(gridToUse.getData());
 	
-		FieldSpec[] columnSpecs = getFieldSpecsFromGrid(gridSpec);
-		
-		fields = new FieldCollection(columnSpecs);
+		dataInEachRow = new MartusField[gridData.getRowCount()];
 		for(int row = 0; row < gridData.getRowCount(); ++row)
 		{
-			fields.getField(row).setData(gridData.getValueAt(row, column));
+			dataInEachRow[row] = createMartusField(getFieldSpec());
+			String cellData = gridData.getValueAt(row, column);
+			dataInEachRow[row].setData(cellData);
 		}
+		
+	}
+	
+	public int getRowCount()
+	{
+		return dataInEachRow.length;
+	}
+	
+	public String getData(int row)
+	{
+		return dataInEachRow[row].getData();
 	}
 	
 	public MartusField createClone() throws Exception
@@ -71,36 +83,17 @@ public class MartusSearchableGridColumnField extends MartusField
 		return columnSpecs;
 	}
 	
-	public MartusSearchableGridColumnField(MartusSearchableGridColumnField source, String tag, MiniLocalization localization) throws Exception
+	public MartusSearchableGridColumnField(FieldSpec specToUse, MartusField[] rowData, MiniLocalization localization) throws Exception
 	{
-		super(source.getFieldSpec());
-
-		// TODO: There is clearly duplication here, but I'm in too much of a hurry
-		// to try to figure out how to eliminate it. ARGH! kbs 2006-04-26
-		
-		FieldSpec[] columnSpecs = new FieldSpec[source.size()];
-		for(int c = 0; c < columnSpecs.length; ++c)
-		{
-			MartusField thisField = source.fields.getField(c);
-			MartusField thisSubfield = thisField.getSubField(tag, localization);
-			columnSpecs[c] = thisSubfield.getFieldSpec();
-		}
-
-		fields = new FieldCollection(columnSpecs);
-		for(int row = 0; row < source.size(); ++row)
-		{
-			MartusField thisField = source.fields.getField(row);
-			MartusField thisSubfield = thisField.getSubField(tag, localization);
-			fields.getField(row).setData(thisSubfield.getData());
-		}
-	
+		super(specToUse);
+		dataInEachRow = rowData;
 	}
 
 	public boolean doesMatch(int compareOp, String searchForValue, MiniLocalization localization)
 	{
-		for(int row = 0; row < fields.count(); ++row)
+		for(int row = 0; row < dataInEachRow.length; ++row)
 		{
-			if(fields.getField(row).doesMatch(compareOp, searchForValue, localization))
+			if(dataInEachRow[row].doesMatch(compareOp, searchForValue, localization))
 				return true;
 		}
 		
@@ -111,7 +104,18 @@ public class MartusSearchableGridColumnField extends MartusField
 	{
 		try
 		{
-			return new MartusSearchableGridColumnField(this, tag, localization);
+			MartusField thisField = createMartusField(getFieldSpec());
+			MartusField field = thisField.getSubField(tag, localization);
+			if(field == null)
+				return null;
+			
+			MartusField[] subFieldDataInEachRow = new MartusField[dataInEachRow.length];
+			for(int row = 0; row < dataInEachRow.length; ++row)
+			{
+				subFieldDataInEachRow[row] = dataInEachRow[row].getSubField(tag, localization);
+			}
+
+			return new MartusSearchableGridColumnField(getFieldSpec(), subFieldDataInEachRow, localization);
 		} 
 		catch (Exception e)
 		{
@@ -120,12 +124,41 @@ public class MartusSearchableGridColumnField extends MartusField
 		}
 	}
 	
+	private static MartusField createMartusField(FieldSpec newSpec)
+	{
+		FieldType type = newSpec.getType();
+		if(type.isDateRange())
+			return new MartusDateRangeField(newSpec);
+		else if(type.isDate())
+			return new MartusDateField(newSpec);
+		else if(type.isGrid())
+			return new MartusGridField(newSpec);
+		else
+			return new MartusField(newSpec);
+	}
+
+	public String getHtmlData(MiniLocalization localization) throws Exception
+	{
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("<table border='1'>");
+		for(int row = 0; row < dataInEachRow.length; ++row)
+		{
+			buffer.append("<tr><td>");
+			buffer.append(XmlUtilities.getXmlEncoded(dataInEachRow[row].getHtmlData(localization)));
+			buffer.append("</td></tr>");
+		}
+		buffer.append("</table>");
+		
+		return buffer.toString();
+	}
+
 	public int size()
 	{
-		return fields.count();
+		return dataInEachRow.length;
 	}
+	
 
 	MartusGridField grid;
 	int column;
-	FieldCollection fields;
+	MartusField[] dataInEachRow;
 }

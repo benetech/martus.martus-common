@@ -34,6 +34,21 @@ public class MiniFieldSpec implements Comparable
 		label = basedOn.getLabel();
 		type = basedOn.getType();
 	}
+	
+	public String getTag()
+	{
+		return tag;
+	}
+	
+	public String getLabel()
+	{
+		return label;
+	}
+	
+	public FieldType getType()
+	{
+		return type;
+	}
 
 	public boolean equals(Object rawOther)
 	{
@@ -74,6 +89,11 @@ public class MiniFieldSpec implements Comparable
 			return typeResult;
 		
 		return 0;
+	}
+	
+	public String toString()
+	{
+		return label + "(" + FieldSpec.getTypeString(type) + ", " + tag + ")";
 	}
 
 	String tag;
