@@ -62,6 +62,11 @@ public class FieldSpec
 	{
 		return createCustomField("", labelToUse, typeToUse);
 	}
+	
+	public static FieldSpec createSubField(FieldSpec parentToUse, String tagToUse, String labelToUse, FieldType typeToUse)
+	{
+		return new FieldSpec(parentToUse, tagToUse, labelToUse, typeToUse, false);
+	}
 
 	protected FieldSpec(FieldType typeToUse)
 	{
@@ -70,6 +75,12 @@ public class FieldSpec
 	
 	private FieldSpec(String tagToUse, String labelToUse, FieldType typeToUse, boolean hasUnknownToUse)
 	{
+		this(null, tagToUse, labelToUse, typeToUse, hasUnknownToUse);
+	}
+	
+	private FieldSpec(FieldSpec parentToUse, String tagToUse, String labelToUse, FieldType typeToUse, boolean hasUnknownToUse)
+	{
+		parent = parentToUse;
 		tag = tagToUse;
 		label = labelToUse;
 		type = typeToUse;
@@ -104,7 +115,9 @@ public class FieldSpec
 
 	public String getTag()
 	{
-		return tag;
+		if(getParent() == null)
+			return getSubFieldTag();
+		return getParent().getTag() + "." + getSubFieldTag();
 	}
 	
 	public String getLabel()
@@ -115,6 +128,21 @@ public class FieldSpec
 	public FieldType getType()
 	{
 		return type;
+	}
+	
+	public FieldSpec getParent()
+	{
+		return parent;
+	}
+	
+	public void setParent(FieldSpec newParent)
+	{
+		parent = newParent;
+	}
+	
+	public String getSubFieldTag()
+	{
+		return tag;
 	}
 	
 	public String convertStoredToSearchable(String storedData, MiniLocalization localization)
@@ -265,6 +293,7 @@ public class FieldSpec
 	FieldType type;
 	String label;
 	boolean hasUnknown;
+	FieldSpec parent;
 
 	public static final String FIELD_SPEC_XML_TAG = "Field";
 	public static final String FIELD_SPEC_TAG_XML_TAG = "Tag";
