@@ -54,7 +54,7 @@ public class MartusGridField extends MartusField
 		try
 		{
 			if(getData().length() == 0)
-				return null;
+				return new EmptyMartusFieldWithInfiniteSubFields(tag);
 
 			GridFieldSpec gridSpec = (GridFieldSpec)spec;
 			for(int i = 0; i < gridSpec.getColumnCount(); ++i)
@@ -73,7 +73,7 @@ public class MartusGridField extends MartusField
 			e.printStackTrace();
 		}
 		
-		return super.getSubField(tag, localization);
+		return new EmptyMartusFieldWithInfiniteSubFields(tag);
 	}
 	
 	static public String sanitizeLabel(String rawLabel)
@@ -93,7 +93,7 @@ public class MartusGridField extends MartusField
 		return gridData;
 	}
 	
-	public String getHtmlData(MiniLocalization localization) throws Exception
+	public String html(MiniLocalization localization) throws Exception
 	{
 		GridData gridData = getGridData();
 		

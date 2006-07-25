@@ -41,6 +41,7 @@ import org.martus.common.fieldspec.FieldTypeMessage;
 import org.martus.common.fieldspec.FieldTypeMultiline;
 import org.martus.common.fieldspec.FieldTypeNormal;
 import org.martus.common.fieldspec.GridFieldSpec;
+import org.martus.common.fieldspec.GridFieldSpec.UnsupportedFieldTypeException;
 import org.martus.common.utilities.MartusFlexidate;
 import org.martus.util.MultiCalendar;
 import org.martus.util.TestCaseEnhanced;
@@ -76,9 +77,7 @@ public class TestMartusField extends TestCaseEnhanced
 	
 	public void testGridHtml() throws Exception
 	{
-		GridFieldSpec spec = new GridFieldSpec();
-		spec.addColumn(FieldSpec.createCustomField("a", "A", new FieldTypeNormal()));
-		spec.addColumn(FieldSpec.createCustomField("b", "B", new FieldTypeBoolean()));
+		GridFieldSpec spec = createSampleGridSpec();
 		DropDownFieldSpec dropdownSpec = new DropDownFieldSpec(choices);
 		dropdownSpec.setTag("c");
 		dropdownSpec.setLabel("C");
@@ -104,29 +103,45 @@ public class TestMartusField extends TestCaseEnhanced
 				"<tr><td>&amp;1,0</td><td>&lt;button:yes&gt;</td><td>This &amp; That</td>" +
 				"<td>12/30/2004</td><td>07/21/2002 - 07/26/2002</td></tr>" +
 				"</table>";
-		assertEquals("Didn't htmlize grid?", expected, field.getHtmlData(localization));
+		assertEquals("Didn't htmlize grid?", expected, field.html(localization));
+	}
+
+	private GridFieldSpec createSampleGridSpec() throws UnsupportedFieldTypeException
+	{
+		GridFieldSpec spec = new GridFieldSpec();
+		spec.addColumn(FieldSpec.createCustomField("a", "A", new FieldTypeNormal()));
+		spec.addColumn(FieldSpec.createCustomField("b", "B", new FieldTypeBoolean()));
+		return spec;
+	}
+	
+	public void testGridMissingSubField() throws Exception
+	{
+		GridFieldSpec gridSpec = createSampleGridSpec();
+		MartusGridField gridField = new MartusGridField(gridSpec);
+		MartusField noSuchColumn = gridField.getSubField("not a real column name", localization);
+		assertNotNull("returned null for missing column?", noSuchColumn);
 	}
 	
 	public void testNonGridHtml() throws Exception
 	{
 		MartusField languageField = new MartusField(createFieldSpec(new FieldTypeLanguage()));
 		languageField.setData(MiniLocalization.ENGLISH);
-		assertEquals("Didn't localize language name?", "&lt;language:en&gt;", languageField.getHtmlData(localization));
+		assertEquals("Didn't localize language name?", "&lt;language:en&gt;", languageField.html(localization));
 		
 		MartusField dateField = new MartusField(createFieldSpec(new FieldTypeDate()));
 		dateField.setData("1968-02-21");
-		assertEquals("Didn't localize date?", "02/21/1968", dateField.getHtmlData(localization));
+		assertEquals("Didn't localize date?", "02/21/1968", dateField.html(localization));
 
 		MartusField dateRangeField = new MartusField(createFieldSpec(new FieldTypeDateRange()));
 		dateRangeField.setData("1967-03-21,19670321+9");
-		assertEquals("Didn't localize date range?", "03/21/1967 - 03/30/1967", dateRangeField.getHtmlData(localization));
+		assertEquals("Didn't localize date range?", "03/21/1967 - 03/30/1967", dateRangeField.html(localization));
 
 		DropDownFieldSpec dropdownSpec = new DropDownFieldSpec(choices);
 		dropdownSpec.setTag("c");
 		dropdownSpec.setLabel("C");
 		MartusField dropdownField = new MartusField(dropdownSpec);
 		dropdownField.setData("ampersand");
-		assertEquals("Didn't decode dropdown?", "This &amp; That", dropdownField.getHtmlData(localization));
+		assertEquals("Didn't decode dropdown?", "This &amp; That", dropdownField.html(localization));
 	}
 	
 	public void testGetSearchableDataForStringFields()

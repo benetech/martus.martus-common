@@ -66,6 +66,17 @@ public class MartusSearchableGridColumnField extends MartusField
 		return dataInEachRow[row].getData();
 	}
 	
+	public String getData()
+	{
+		StringBuffer result = new StringBuffer();
+		for(int row = 0; row < getRowCount(); ++row)
+		{
+			result.append(getData(row));
+			result.append("\n");
+		}
+		return result.toString();
+	}
+	
 	public MartusField createClone() throws Exception
 	{
 		MartusField clone = new MartusSearchableGridColumnField(grid, column);
@@ -137,14 +148,14 @@ public class MartusSearchableGridColumnField extends MartusField
 			return new MartusField(newSpec);
 	}
 
-	public String getHtmlData(MiniLocalization localization) throws Exception
+	public String html(MiniLocalization localization) throws Exception
 	{
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("<table border='1'>");
+		buffer.append("<table>");
 		for(int row = 0; row < dataInEachRow.length; ++row)
 		{
 			buffer.append("<tr><td>");
-			buffer.append(XmlUtilities.getXmlEncoded(dataInEachRow[row].getHtmlData(localization)));
+			buffer.append(XmlUtilities.getXmlEncoded(dataInEachRow[row].html(localization)));
 			buffer.append("</td></tr>");
 		}
 		buffer.append("</table>");
