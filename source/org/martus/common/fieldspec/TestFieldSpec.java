@@ -31,7 +31,7 @@ import java.util.Vector;
 import org.martus.common.LegacyCustomFields;
 import org.martus.common.MiniLocalization;
 import org.martus.common.test.UnicodeConstants;
-import org.martus.common.utilities.DateUtilities;
+import org.martus.util.MultiCalendar;
 import org.martus.util.TestCaseEnhanced;
 
 
@@ -86,10 +86,10 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertEquals(FieldSpec.FALSESTRING, spec.getDefaultValue());
 		
 		spec = FieldSpec.createFieldSpec(new FieldTypeDate());
-		assertEquals(DateUtilities.getFirstOfThisYearInStoredFormat(), spec.getDefaultValue());
+		assertEquals(MultiCalendar.UNKNOWN.toIsoDateString(), spec.getDefaultValue());
 
 		spec = FieldSpec.createFieldSpec(new FieldTypeDateRange());
-		assertEquals(DateUtilities.getFirstOfThisYearInStoredFormat(), spec.getDefaultValue());
+		assertEquals(MultiCalendar.UNKNOWN.toIsoDateString(), spec.getDefaultValue());
 
 		spec = new GridFieldSpec();
 		assertEquals(emptyString, spec.getDefaultValue());

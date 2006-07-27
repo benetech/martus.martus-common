@@ -28,7 +28,7 @@ package org.martus.common.fieldspec;
 
 import org.martus.common.MiniLocalization;
 import org.martus.common.bulletin.BulletinXmlExportImportConstants;
-import org.martus.common.utilities.DateUtilities;
+import org.martus.util.MultiCalendar;
 
 public class FieldTypeDate extends FieldType
 {
@@ -49,7 +49,7 @@ public class FieldTypeDate extends FieldType
 
 	public String getDefaultValue()
 	{
-		return DateUtilities.getFirstOfThisYearInStoredFormat();
+		return MultiCalendar.UNKNOWN.toIsoDateString();
 	}
 
 	public String convertStoredToSearchable(String storedData, MiniLocalization localization)

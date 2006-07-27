@@ -30,6 +30,7 @@ import org.martus.common.MiniLocalization;
 import org.martus.common.bulletin.BulletinXmlExportImportConstants;
 import org.martus.common.utilities.DateUtilities;
 import org.martus.common.utilities.MartusFlexidate;
+import org.martus.util.MultiCalendar;
 
 public class FieldTypeDateRange extends FieldType
 {
@@ -60,7 +61,7 @@ public class FieldTypeDateRange extends FieldType
 
 	public String getDefaultValue()
 	{
-		return DateUtilities.getFirstOfThisYearInStoredFormat();
+		return MultiCalendar.UNKNOWN.toIsoDateString();
 	}
 
 	public String convertStoredToExportable(String storedData, MiniLocalization localization)
