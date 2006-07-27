@@ -418,6 +418,9 @@ public class MiniLocalization
 
 	private String toDisplayDateString(MultiCalendar cal)
 	{
+		if(cal.getGregorianYear() == MultiCalendar.YEAR_NOT_SPECIFIED)
+			return getFieldLabel("DateNotSpecified");
+
 		MultiDateFormat dfDisplay = new MultiDateFormat(currentDateFormat);
 		int year = getLocalizedYear(cal);
 		int month = getLocalizedMonth(cal);
@@ -428,10 +431,10 @@ public class MiniLocalization
 	public String getViewableDateRange(String newText)
 	{
 		MartusFlexidate mfd = createFlexidateFromStoredData(newText);
-		String rawBeginDate = MartusFlexidate.toStoredDateFormat(mfd.getBeginDate());
+		MultiCalendar begin = mfd.getBeginDate();
 	
 		if (!mfd.hasDateRange())
-			return convertStoredDateToDisplay(rawBeginDate);
+			return toDisplayDateString(begin);
 	
 		String rawEndDate = MartusFlexidate.toStoredDateFormat(mfd.getEndDate());
 	
@@ -439,6 +442,7 @@ public class MiniLocalization
 		//When there is a string with mixed RtoL and LtoR characters 
 		//if there is .'s separating numbers then the date is not reversed,
 		//but if the date is separated by /'s, then the date is reversed.
+		String rawBeginDate = MartusFlexidate.toStoredDateFormat(mfd.getBeginDate());
 		String beginDate = convertStoredDateToDisplay(rawBeginDate);
 		String endDate = convertStoredDateToDisplay(rawEndDate);
 			
