@@ -254,6 +254,13 @@ public class Bulletin implements BulletinConstants
 			return lastSavedDateField;
 		}
 		
+		if (fieldTag.equals(Bulletin.TAGLASTSAVED) || fieldTag.equals(Bulletin.PSEUDOFIELD_LAST_SAVED_TIMESTAMP))
+		{
+			MartusField lastSavedTimestampField = new MartusField(FieldSpec.createStandardField(fieldTag, new FieldTypeNormal()));
+			lastSavedTimestampField.setData(Long.toString(getLastSavedTime()));
+			return lastSavedTimestampField;
+		}
+		
 		// FIXME: Rename TAGSTATUS to PSEUDOFIELD_STATUS (globally)
 		if(fieldTag.equals(TAGSTATUS))
 		{
@@ -271,6 +278,9 @@ public class Bulletin implements BulletinConstants
 				allPrivateField.setData(FieldSpec.FALSESTRING);
 			return allPrivateField;
 		}
+		
+		if(fieldTag.equals(BulletinConstants.TAGWASSENT) || fieldTag.equals(Bulletin.PSEUDOFIELD_WAS_SENT))
+			throw new RuntimeException("Bulletin doesn't know if it was sent or not");
 		
 		if(isFieldInPublicSection(fieldTag))
 			return fieldData.getField(fieldTag);
@@ -642,7 +652,9 @@ public class Bulletin implements BulletinConstants
 
 	public static final String PSEUDOFIELD_LOCAL_ID = "_localId";
 	public static final String PSEUDOFIELD_LAST_SAVED_DATE = "_lastSavedDate";
+	public static final String PSEUDOFIELD_LAST_SAVED_TIMESTAMP = "_lastSavedTimestamp";
 	public static final String PSEUDOFIELD_ALL_PRIVATE = "_allPrivate";
+	public static final String PSEUDOFIELD_WAS_SENT = "_wasSent";
 	public static final String TOP_SECTION = "TOP SECTION";
 	public static final String BOTTOM_SECTION = "BOTTOM SECTION";
 	

@@ -25,6 +25,8 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common;
 
+import org.martus.common.bulletin.Bulletin;
+
 
 public class EnglishCommonStrings
 {
@@ -86,6 +88,8 @@ public class EnglishCommonStrings
 		"field:privatesection=Private Information",
 		"field:allprivate=Keep ALL Information Private",
 		"field:BulletinLastSaved=Last Saved",
+		"field:" + Bulletin.PSEUDOFIELD_LAST_SAVED_DATE + "=Last Saved",
+		"field:" + Bulletin.PSEUDOFIELD_LAST_SAVED_TIMESTAMP + "=Last Saved",
 		"field:BulletinVersionNumber=Version",
 		"field:BulletinStatus=Bulletin Status:",
 		"field:BulletinId=Bulletin Id:",
