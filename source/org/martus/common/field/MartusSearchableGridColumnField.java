@@ -148,7 +148,7 @@ public class MartusSearchableGridColumnField extends MartusField
 			return new MartusField(newSpec);
 	}
 
-	public String html(MiniLocalization localization) throws Exception
+	public String internalGetHtml(MiniLocalization localization) throws Exception
 	{
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("<table>");

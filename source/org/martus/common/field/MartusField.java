@@ -78,7 +78,17 @@ public class MartusField
 		return getFieldSpec().convertStoredToSearchable(getData(), localization);
 	}
 	
-	public String html(MiniLocalization localization) throws Exception
+	public final String html(MiniLocalization localization) throws Exception
+	{
+		String fieldData = internalGetHtml(localization);
+		
+		if(fieldData.trim().length() == 0)
+			return "&nbsp;";
+		
+		return fieldData;
+	}
+
+	String internalGetHtml(MiniLocalization localization) throws Exception
 	{
 		return getFieldSpec().convertStoredToHtml(getData(), localization);
 	}

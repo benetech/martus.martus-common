@@ -142,6 +142,16 @@ public class TestMartusField extends TestCaseEnhanced
 		MartusField dropdownField = new MartusField(dropdownSpec);
 		dropdownField.setData("ampersand");
 		assertEquals("Didn't decode dropdown?", "This &amp; That", dropdownField.html(localization));
+		
+		MartusField blankField = new MartusField(createFieldSpec(new FieldTypeNormal()));
+		blankField.setData("");
+		assertEquals("Empty not converted to nbsp?", "&nbsp;", blankField.html(localization));
+		
+		blankField.setData("  ");
+		assertEquals("Spaces not converted to nbsp?", "&nbsp;", blankField.html(localization));
+		
+		
+		
 	}
 	
 	public void testGetSearchableDataForStringFields()
