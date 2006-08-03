@@ -47,6 +47,7 @@ import org.martus.common.fieldspec.FieldTypeBoolean;
 import org.martus.common.fieldspec.FieldTypeDate;
 import org.martus.common.fieldspec.FieldTypeNormal;
 import org.martus.common.fieldspec.FieldTypeUnknown;
+import org.martus.common.fieldspec.MiniFieldSpec;
 import org.martus.common.fieldspec.StandardFieldSpecs;
 import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.BulletinHeaderPacket;
@@ -236,6 +237,11 @@ public class Bulletin implements BulletinConstants
 		
 		field.setData(value);
 				
+	}
+	
+	public MartusField getField(MiniFieldSpec miniSpec)
+	{
+		return getField(miniSpec.getTag());
 	}
 	
 	public MartusField getField(String fieldTag)
