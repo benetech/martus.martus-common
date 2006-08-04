@@ -29,6 +29,7 @@ package org.martus.common.field;
 import org.martus.common.MiniLocalization;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldType;
+import org.martus.common.fieldspec.StandardFieldSpecs;
 
 public class MartusField
 {
@@ -58,6 +59,14 @@ public class MartusField
 	public String getLabel()
 	{
 		return spec.getLabel();
+	}
+	
+	public String getLocalizedLabel(MiniLocalization localization)
+	{
+		if(StandardFieldSpecs.isStandardFieldTag(getTag()))
+			return localization.getFieldLabel(getTag());
+		
+		return getLabel();
 	}
 	
 	public FieldType getType()
