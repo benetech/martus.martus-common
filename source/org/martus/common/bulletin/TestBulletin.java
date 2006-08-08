@@ -24,7 +24,7 @@ Boston, MA 02111-1307, USA.
 
 */
 
-package org.martus.common.test;
+package org.martus.common.bulletin;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -39,9 +39,6 @@ import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
 import org.martus.common.MartusUtilities;
 import org.martus.common.MiniLocalization;
-import org.martus.common.bulletin.AttachmentProxy;
-import org.martus.common.bulletin.Bulletin;
-import org.martus.common.bulletin.BulletinConstants;
 import org.martus.common.bulletinstore.BulletinStore;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MockMartusSecurity;
@@ -59,6 +56,8 @@ import org.martus.common.fieldspec.StandardFieldSpecs;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.BulletinHistory;
 import org.martus.common.packet.FieldDataPacket;
+import org.martus.common.test.BulletinForTesting;
+import org.martus.common.test.MockBulletinStore;
 import org.martus.common.utilities.DateUtilities;
 import org.martus.common.utilities.MartusFlexidate;
 import org.martus.util.MultiCalendar;

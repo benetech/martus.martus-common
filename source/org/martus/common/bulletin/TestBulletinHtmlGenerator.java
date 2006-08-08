@@ -23,22 +23,21 @@ Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.
 
 */
-package org.martus.common.test;
+package org.martus.common.bulletin;
 
 import java.util.Vector;
 
 import org.martus.common.EnglishCommonStrings;
 import org.martus.common.GridData;
 import org.martus.common.MiniLocalization;
-import org.martus.common.bulletin.Bulletin;
-import org.martus.common.bulletin.BulletinConstants;
-import org.martus.common.bulletin.BulletinHtmlGenerator;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.fieldspec.CustomDropDownFieldSpec;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldTypeNormal;
 import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.common.fieldspec.StandardFieldSpecs;
+import org.martus.common.test.MockBulletinStore;
+import org.martus.common.test.TestGridData;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.language.LanguageOptions;
 

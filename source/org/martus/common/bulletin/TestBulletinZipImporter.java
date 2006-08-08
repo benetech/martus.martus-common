@@ -24,7 +24,7 @@ Boston, MA 02111-1307, USA.
 
 */
 
-package org.martus.common.test;
+package org.martus.common.bulletin;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -37,11 +37,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
-import org.martus.common.bulletin.AttachmentProxy;
-import org.martus.common.bulletin.Bulletin;
-import org.martus.common.bulletin.BulletinForTesting;
-import org.martus.common.bulletin.BulletinLoader;
-import org.martus.common.bulletin.BulletinZipImporter;
 import org.martus.common.bulletinstore.BulletinStore;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MockMartusSecurity;
@@ -54,6 +49,7 @@ import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.UniversalId;
+import org.martus.common.test.MockBulletinStore;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 import org.martus.util.inputstreamwithseek.ZipEntryInputStreamWithSeek;

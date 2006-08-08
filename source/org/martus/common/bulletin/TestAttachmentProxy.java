@@ -24,19 +24,17 @@ Boston, MA 02111-1307, USA.
 
 */
 
-package org.martus.common.test;
+package org.martus.common.bulletin;
 
 import java.io.File;
 import java.util.Arrays;
 
-import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.crypto.SessionKey;
 import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.UniversalId;
 import org.martus.util.*;
-import org.martus.util.UnicodeWriter;
 
 public class TestAttachmentProxy extends TestCaseEnhanced
 {

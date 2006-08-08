@@ -28,6 +28,13 @@ package org.martus.common.test;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import org.martus.common.bulletin.TestAttachmentProxy;
+import org.martus.common.bulletin.TestBulletin;
+import org.martus.common.bulletin.TestBulletinHtmlGenerator;
+import org.martus.common.bulletin.TestBulletinLoader;
+import org.martus.common.bulletin.TestBulletinZipImporter;
+import org.martus.common.bulletin.TestBulletinZipUtilities;
 import org.martus.common.bulletinstore.TestBulletinStore;
 import org.martus.common.bulletinstore.TestBulletinStoreCache;
 import org.martus.common.bulletinstore.TestLeafNodeCache;
