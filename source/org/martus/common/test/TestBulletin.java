@@ -60,6 +60,7 @@ import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.BulletinHistory;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.utilities.DateUtilities;
+import org.martus.common.utilities.MartusFlexidate;
 import org.martus.util.MultiCalendar;
 import org.martus.util.TestCaseEnhanced;
 
@@ -240,10 +241,7 @@ public class TestBulletin extends TestCaseEnhanced
 		String today = DateUtilities.getTodayInStoredFormat();
 		assertEquals(today, b.get("entrydate"));
 
-		int thisYear = new MultiCalendar().getGregorianYear();
-		MultiCalendar cal = MultiCalendar.createFromGregorianYearMonthDay(thisYear, 1, 1);
-		String result = cal.toIsoDateString();
-		assertEquals(result, b.get("eventdate"));
+		assertEquals(MartusFlexidate.toStoredDateFormat(MultiCalendar.UNKNOWN), b.get("eventdate"));
 
 		assertEquals(Bulletin.STATUSDRAFT, b.getStatus());
 	}
@@ -302,6 +300,7 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals("authorized to read not cleared?",0, b.getAuthorizedToReadKeys().size());
 		assertEquals("authorized to upload not cleared?",0, bhp.getAuthorizedToUploadKeys().size());
 		assertEquals("Version should still be 2", 2, b.getVersion());
+		assertEquals("EventDate not unknown?", MartusFlexidate.toStoredDateFormat(MultiCalendar.UNKNOWN), b.get(Bulletin.TAGEVENTDATE));
 	}
 
 	public void testGetStandardFieldTypes()

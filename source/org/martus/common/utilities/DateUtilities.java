@@ -49,16 +49,6 @@ public class DateUtilities
 		return MartusFlexidate.toStoredDateFormat(mfd.getEndDate());
 	}
 
-
-	public static String getFirstOfThisYearInStoredFormat()
-	{
-		int thisYear = new MultiCalendar().getGregorianYear();
-		MultiCalendar cal = MultiCalendar.createFromGregorianYearMonthDay(thisYear, 1, 1);
-		return MartusFlexidate.toStoredDateFormat(cal);
-	}
-
-
-
 	public static String getTodayInStoredFormat()
 	{
 		GregorianCalendar realTodayInOurTimeZone = new GregorianCalendar();
