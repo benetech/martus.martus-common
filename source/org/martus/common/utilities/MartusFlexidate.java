@@ -26,16 +26,21 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.utilities;
 
-import java.util.GregorianCalendar;
-
-import org.hrvd.util.date.Flexidate;
 import org.martus.util.MultiCalendar;
+import org.martus.util.MultiDateFormat;
 
 public class MartusFlexidate
 {
 	public MartusFlexidate(MultiCalendar beginDate, MultiCalendar endDate)
 	{
-		flexiDate = new Flexidate(beginDate.getTime(), endDate.getTime());
+		if(beginDate.isDefinitelyAfter(endDate))
+		{
+			MultiCalendar temp = beginDate;
+			beginDate = endDate;
+			endDate = temp;
+		}
+		begin = new MultiCalendar(beginDate);
+		end = new MultiCalendar(endDate);
 	}
 		
 	/*
@@ -49,7 +54,16 @@ public class MartusFlexidate
 	
 	public MartusFlexidate(MultiCalendar beginDate, int range)
 	{
-		flexiDate = new Flexidate(beginDate.getGregorianYear(), beginDate.getGregorianMonth(), beginDate.getGregorianDay(), range);		
+		begin = new MultiCalendar(beginDate);
+		if(range == UNKNOWN_END_RANGE)
+		{
+			end = MultiCalendar.UNKNOWN;
+		}
+		else
+		{
+			end = new MultiCalendar(begin);
+			end.addDays(range);
+		}
 	}
 	
 	/* this will convert a string in in one of these forms:
@@ -109,25 +123,34 @@ public class MartusFlexidate
 	}
 
 	public String getMartusFlexidateString() 
-	{				
-		return flexiDate.getDateAsNumber()+FLEXIDATE_RANGE_DELIMITER+flexiDate.getRange();
-	}	
+	{
+		int year = begin.getGregorianYear();
+		int month = begin.getGregorianMonth();
+		int day = begin.getGregorianDay();
+		String basePart = MultiDateFormat.format("ymd", "", year, month, day);
+		return basePart + FLEXIDATE_RANGE_DELIMITER + Integer.toString(getRange());
+	}
 	
 	public MultiCalendar getBeginDate()
 	{
-		MultiCalendar cal = new MultiCalendar((GregorianCalendar)flexiDate.getCalendarLow());
-		return cal;
+		return begin;
 	}
 	
 	public MultiCalendar getEndDate()
 	{
-		MultiCalendar endDate = new MultiCalendar((GregorianCalendar)flexiDate.getCalendarHigh());
-		return ((hasDateRange()) ? endDate : getBeginDate());
-	}	
+		return end;
+	}
+	
+	public int getRange()
+	{
+		if(end.isUnknown())
+			return UNKNOWN_END_RANGE;
+		return MultiCalendar.daysBetween(begin, end);
+	}
 	
 	public boolean hasDateRange()
 	{
-		return (flexiDate.getRange() > 0)? true:false;
+		return !(begin.equals(end));
 	}
 
 	public static String toStoredDateFormat(MultiCalendar date)
@@ -144,8 +167,11 @@ public class MartusFlexidate
 	{
 		return dateStr.substring(dateStr.indexOf(DATE_RANGE_SEPARATER)+1);
 	}
+	
+	private static final int UNKNOWN_END_RANGE = 999999;
 
-	Flexidate flexiDate;
+	MultiCalendar begin;
+	MultiCalendar end;
 	public static final String 	FLEXIDATE_RANGE_DELIMITER = "+";	
 	public static final String	DATE_RANGE_SEPARATER = ",";
 }

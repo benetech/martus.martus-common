@@ -89,4 +89,159 @@ public class TestMartusFlexidate extends TestCaseEnhanced
 		String marToMayString = MartusFlexidate.toBulletinFlexidateFormat(marDate, mayDate);
 		assertEquals("2005-03-29,20050329+35", marToMayString);
 	}
+	
+	public void testDateWithRangeConstructor()
+	{
+		final int RANGE = 3;
+		MultiCalendar cal = MultiCalendar.createFromGregorianYearMonthDay(2000, 7, 25);
+		MartusFlexidate mfd = new MartusFlexidate(cal, RANGE);
+		MultiCalendar expectedEnd = new MultiCalendar(cal);
+		expectedEnd.addDays(RANGE);
+		assertEquals("wrong begin date?", cal, mfd.getBeginDate());
+		assertEquals("wrong range?", RANGE, mfd.getRange());
+		assertEquals("wrong end date?", expectedEnd, mfd.getEndDate());
+		assertTrue("hasDateRange failed?", mfd.hasDateRange());
+	}
+	
+	public void testUnknownBeginDate()
+	{
+		MultiCalendar unknown = MultiCalendar.UNKNOWN;
+		MultiCalendar normal = MultiCalendar.createFromGregorianYearMonthDay(2000, 7, 25);
+		MartusFlexidate mfd = new MartusFlexidate(unknown, normal);
+		assertEquals("wrong begin?", unknown, mfd.getBeginDate());
+		assertEquals("wrong range?", MultiCalendar.daysBetween(unknown, normal), mfd.getRange());
+		assertEquals("wrong end?", normal, mfd.getEndDate());
+		assertTrue("hasDateRange failed?", mfd.hasDateRange());
+	}
+	
+	public void testUnknownEndDate()
+	{
+		MultiCalendar unknown = MultiCalendar.UNKNOWN;
+		MultiCalendar normal = MultiCalendar.createFromGregorianYearMonthDay(2000, 7, 25);
+		MartusFlexidate mfd = new MartusFlexidate(normal, unknown);
+		assertEquals("from date/date wrong begin?", normal, mfd.getBeginDate());
+		assertEquals("from date/date wrong range?", 999999, mfd.getRange());
+		assertEquals("from date/date wrong end?", unknown, mfd.getEndDate());
+		assertTrue("from date/date hasDateRange failed?", mfd.hasDateRange());
+		
+		MartusFlexidate mfd2 = new MartusFlexidate(mfd.getBeginDate(), mfd.getRange());
+		assertEquals("from date/range wrong begin?", normal, mfd2.getBeginDate());
+		assertEquals("from date/range wrong range?", 999999, mfd2.getRange());
+		assertEquals("from date/range wrong end?", unknown, mfd2.getEndDate());
+		assertTrue("from date/range hasDateRange failed?", mfd2.hasDateRange());
+	}
+	
+	public void testNonRange()
+	{
+		MultiCalendar normal = MultiCalendar.createFromGregorianYearMonthDay(2000, 7, 25);
+		MartusFlexidate mfd = new MartusFlexidate(normal, normal);
+		assertEquals("wrong begin?", normal, mfd.getBeginDate());
+		assertEquals("wrong range?", 0, mfd.getRange());
+		assertEquals("wrong end?", normal, mfd.getEndDate());
+		assertFalse("hasDateRange failed?", mfd.hasDateRange());
+	}
+	
+	public void testFlexiDate()
+	{
+		MartusFlexidate mf = new MartusFlexidate("2003-01-05", 2);	
+		assertEquals("20030105+2", mf.getMartusFlexidateString());
+		
+		assertEquals("2003-01-05", mf.getBeginDate().toIsoDateString());
+		assertEquals("2003-01-07", mf.getEndDate().toIsoDateString());																
+	}
+		
+	public void testFlexiDateOverMonths()
+	{
+		MartusFlexidate mf = new MartusFlexidate("2003-01-05", 120);		
+		assertEquals("20030105+120", mf.getMartusFlexidateString());
+
+		assertEquals("2003-01-05", mf.getBeginDate().toIsoDateString());
+		assertEquals("2003-05-05", mf.getEndDate().toIsoDateString());
+	
+	}
+	
+	public void testFlexiDateOverYear()
+	{
+		MartusFlexidate mf = new MartusFlexidate("2002-01-05", 366);		
+		assertEquals("20020105+366", mf.getMartusFlexidateString());
+
+		assertEquals("2002-01-05", mf.getBeginDate().toIsoDateString());
+		assertEquals("2003-01-06", mf.getEndDate().toIsoDateString());		
+	}
+	
+	
+	public void testExactDate()
+	{
+		MartusFlexidate mf = new MartusFlexidate("2003-01-05", 0);
+		
+		assertEquals("20030105+0", mf.getMartusFlexidateString());
+		
+		assertEquals("2003-01-05", mf.getBeginDate().toIsoDateString());
+		assertEquals("2003-01-05", mf.getEndDate().toIsoDateString());			
+	}	
+	
+	public void testDateRange()
+	{
+		MultiCalendar beginDate = getDate(2000,1,10);
+		MultiCalendar endDate = getDate(2000,1, 15);
+						
+		MartusFlexidate mf = new MartusFlexidate(beginDate, endDate);
+		
+		assertEquals("20000110+5", mf.getMartusFlexidateString());	
+		
+		assertEquals("2000-01-10", mf.getBeginDate().toIsoDateString());
+		assertEquals("2000-01-15", mf.getEndDate().toIsoDateString());			
+	}
+	
+	public void testSameDateRange()
+	{
+		MultiCalendar beginDate = getDate(2000,1,10);
+		MultiCalendar endDate = getDate(2000,1, 10);
+		
+		MartusFlexidate mf = new MartusFlexidate(beginDate, endDate);
+
+		assertEquals("20000110+0", mf.getMartusFlexidateString());	
+
+		assertEquals("2000-01-10", mf.getBeginDate().toIsoDateString());
+		assertEquals("2000-01-10", mf.getEndDate().toIsoDateString());
+		
+		mf = new MartusFlexidate("2003-01-05", 0);		
+		assertEquals("20030105+0", mf.getMartusFlexidateString());
+
+		assertEquals("2003-01-05", mf.getBeginDate().toIsoDateString());
+		assertEquals("2003-01-05", mf.getEndDate().toIsoDateString());			
+	}
+	
+	public void testDateRangeSwap()
+	{
+		MultiCalendar beginDate = getDate(2000, 1, 10);
+		MultiCalendar endDate = new MultiCalendar();
+		endDate.setTime(new Date(beginDate.getTime().getTime() - (360L*24*60*60*1000)));
+					
+		MartusFlexidate mf = new MartusFlexidate(beginDate, endDate);
+	
+		assertEquals("Initial date incorrect", "19990115+360", mf.getMartusFlexidateString());	
+	
+		assertEquals("1999-01-15", mf.getBeginDate().toIsoDateString());
+		assertEquals("2000-01-10", mf.getEndDate().toIsoDateString());
+	}
+	
+	public void testCreateMartusDateStringFromDateRange()
+	{
+		assertNull(MartusFlexidate.createMartusDateStringFromBeginAndEndDateString("invalidDate"));
+		String standardDateRange = "1988-02-01,1988-02-05";
+		assertEquals("1988-02-01,19880201+4", MartusFlexidate.createMartusDateStringFromBeginAndEndDateString(standardDateRange));
+
+		String reversedDateRange = "1988-02-05,1988-02-01";
+		assertEquals("1988-02-01,19880201+4", MartusFlexidate.createMartusDateStringFromBeginAndEndDateString(reversedDateRange));
+
+		String noDateRange = "1988-02-05,1988-02-05";
+		assertEquals("1988-02-05,19880205+0", MartusFlexidate.createMartusDateStringFromBeginAndEndDateString(noDateRange));
+	}
+
+	private MultiCalendar getDate(int year, int month, int day)
+	{			
+		MultiCalendar cal = MultiCalendar.createFromGregorianYearMonthDay(year, month, day);
+		return cal;
+	} 
 }
