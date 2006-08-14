@@ -70,8 +70,8 @@ public class BulletinHtmlGenerator
 	public String getHtmlFragment(Bulletin b, ReadableDatabase database, boolean includePrivateData, boolean yourBulletin)
 	{
 		StringBuffer html = new StringBuffer(1000);
-		appendTableStart(html);
-		appendHeadHtml(html, b);
+		appendTableStart(html, width);
+		appendHeadHtml(html, b, localization);
 		if(!yourBulletin)
 		{
 			html.append("<tr></tr>\n");
@@ -136,10 +136,16 @@ public class BulletinHtmlGenerator
 		html.append("</table>");
 	}
 
-	private void appendTableStart(StringBuffer html)
+	public static void appendTableStart(StringBuffer html, int width)
+	{
+		String widthString = Integer.toString(width);
+		appendTableStart(html, widthString);
+	}
+
+	public static void appendTableStart(StringBuffer html, String widthString)
 	{
 		html.append("<table width='");
-		html.append(Integer.toString(width));
+		html.append(widthString);
 		html.append("'>\n");
 		int leftColumnWidthPercentage = LABEL_COLUMN_WIDTH_PERCENTAGE;
 		if(LanguageOptions.isRightToLeftLanguage())
@@ -151,7 +157,7 @@ public class BulletinHtmlGenerator
 		html.append("</tr>\n");
 	}
 	
-	private void appendTitleOfSection(StringBuffer html, String title)
+	public static void appendTitleOfSection(StringBuffer html, String title)
 	{
 		html.append("<tr></tr>\n");
 		String align = "left";
@@ -163,7 +169,7 @@ public class BulletinHtmlGenerator
 		html.append("\n");
 	}	
 	
-	private void appendHeadHtml(StringBuffer html, Bulletin b )
+	public static void appendHeadHtml(StringBuffer html, Bulletin b, MiniLocalization localization)
 	{
 		html.append(getHtmlEscapedFieldHtmlString(localization.getFieldLabel("BulletinLastSaved"), localization.formatDateTime(b.getLastSavedTime())));
 		html.append(getHtmlEscapedFieldHtmlString(localization.getFieldLabel("BulletinVersionNumber"), (new Integer(b.getVersion())).toString()));
@@ -376,12 +382,12 @@ public class BulletinHtmlGenerator
 		return getFieldHtmlString(localization.getFieldLabel("attachments"), attachmentList);
 	}
 
-	private String getHtmlEscapedFieldHtmlString(String label, String value)
+	private static String getHtmlEscapedFieldHtmlString(String label, String value)
 	{
 		return getFieldHtmlString(getHTMLEscaped(label), getHTMLEscaped(value));
 	}
 
-	private String getFieldHtmlString(String label, String value)
+	public static String getFieldHtmlString(String label, String value)
 	{
 		String leftData = label;
 		String rightData = value;
@@ -430,7 +436,7 @@ public class BulletinHtmlGenerator
 		return new String(html);
 	}
 	
-	private String getHTMLEscaped(String text)
+	private static String getHTMLEscaped(String text)
 	{
 		return XmlUtilities.getXmlEncoded(text);
 	}
