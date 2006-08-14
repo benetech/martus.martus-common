@@ -25,6 +25,8 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.fieldspec;
 
+import org.json.JSONObject;
+
 
 public class MiniFieldSpec implements Comparable
 {
@@ -33,6 +35,13 @@ public class MiniFieldSpec implements Comparable
 		tag = basedOn.getTag();
 		label = basedOn.getLabel();
 		type = basedOn.getType();
+	}
+	
+	public MiniFieldSpec(JSONObject json)
+	{
+		tag = json.getString(TAG_TAG);
+		label = json.getString(TAG_LABEL);
+		type = FieldType.createFromTypeName(json.getString(TAG_TYPE));
 	}
 	
 	public String getTag()
@@ -95,6 +104,19 @@ public class MiniFieldSpec implements Comparable
 	{
 		return label + "(" + FieldSpec.getTypeString(type) + ", " + tag + ")";
 	}
+	
+	public JSONObject toJson()
+	{
+		JSONObject json = new JSONObject();
+		json.put(TAG_TAG, tag);
+		json.put(TAG_LABEL, label);
+		json.put(TAG_TYPE, type.getTypeName());
+		return json;
+	}
+	
+	private static final String TAG_TAG = "Tag";
+	private static final String TAG_LABEL = "Label";
+	private static final String TAG_TYPE = "Type";
 
 	String tag;
 	String label;

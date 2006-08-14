@@ -29,6 +29,7 @@ package org.martus.common.field;
 import org.martus.common.MiniLocalization;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldType;
+import org.martus.common.fieldspec.MiniFieldSpec;
 import org.martus.common.fieldspec.StandardFieldSpecs;
 
 public class MartusField
@@ -72,6 +73,11 @@ public class MartusField
 	public FieldType getType()
 	{
 		return spec.getType();
+	}
+	
+	public MiniFieldSpec getMiniSpec()
+	{
+		return new MiniFieldSpec(spec);
 	}
 	
 	public String getData()
