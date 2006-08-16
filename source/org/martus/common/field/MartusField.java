@@ -64,12 +64,9 @@ public class MartusField
 	
 	public String getLocalizedLabel(MiniLocalization localization)
 	{
-		if(StandardFieldSpecs.isStandardFieldTag(getTag()))
-			return localization.getFieldLabel(getTag());
-		
-		return getLabel();
+		return StandardFieldSpecs.getLocalizedLabel(getTag(), getLabel(), localization);
 	}
-	
+
 	public FieldType getType()
 	{
 		return spec.getType();

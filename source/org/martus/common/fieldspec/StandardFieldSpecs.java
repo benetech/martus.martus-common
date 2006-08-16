@@ -26,6 +26,7 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.fieldspec;
 
+import org.martus.common.MiniLocalization;
 import org.martus.common.bulletin.BulletinConstants;
 
 
@@ -109,6 +110,13 @@ public class StandardFieldSpecs
 		return null;
 	}
 	
+	public static String getLocalizedLabel(String tag, String proposedLabel, MiniLocalization localization)
+	{
+		if(isStandardFieldTag(tag))
+			return localization.getFieldLabel(tag);
+		
+		return proposedLabel;
+	}
 	
 	private static FieldSpec[] defaultTopSectionFieldSpecs;
 	private static FieldSpec[] defaultBottomSectionFieldSpecs;
