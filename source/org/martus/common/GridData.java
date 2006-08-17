@@ -41,6 +41,11 @@ public class GridData
 	public GridData(GridFieldSpec spec)
 	{
 		gridSpec = spec;
+		clear();
+	}
+
+	public void clear()
+	{
 		rows = new Vector();
 	}
 

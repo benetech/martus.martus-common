@@ -75,7 +75,8 @@ public class PopUpTreeFieldSpec extends FieldSpec
 			if(node.getChildCount() == 0)
 			{
 				SearchableFieldChoiceItem item = (SearchableFieldChoiceItem)node.getUserObject();
-				if(item.getCode().equals(codeToFind))
+				String code = item.getCode();
+				if(code.equals(codeToFind))
 					return item;
 			}
 			else

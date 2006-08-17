@@ -32,6 +32,14 @@ public class MiniFieldSpec implements Comparable
 {
 	public MiniFieldSpec(FieldSpec basedOn)
 	{
+		FieldSpec topLevel = basedOn;
+		while(topLevel.getParent() != null)
+			topLevel = topLevel.getParent();
+		topLevel = standardize(topLevel);
+		topLevelLabel = topLevel.getLabel();
+		topLevelType = topLevel.getType();
+
+		basedOn = standardize(basedOn);
 		tag = basedOn.getTag();
 		label = basedOn.getLabel();
 		type = basedOn.getType();
@@ -42,6 +50,8 @@ public class MiniFieldSpec implements Comparable
 		tag = json.getString(TAG_TAG);
 		label = json.getString(TAG_LABEL);
 		type = FieldType.createFromTypeName(json.getString(TAG_TYPE));
+		topLevelLabel = json.getString(TAG_TOP_LEVEL_LABEL);
+		topLevelType = FieldType.createFromTypeName(json.getString(TAG_TOP_LEVEL_TYPE));
 	}
 	
 	public String getTag()
@@ -57,6 +67,28 @@ public class MiniFieldSpec implements Comparable
 	public FieldType getType()
 	{
 		return type;
+	}
+	
+	public String getTopLevelLabel()
+	{
+		return topLevelLabel;
+	}
+	
+	public FieldType getTopLevelType()
+	{
+		return topLevelType;
+	}
+	
+	private FieldSpec standardize(FieldSpec spec)
+	{
+		if(spec.getParent() != null)
+			return spec;
+		
+		String candidateTag = spec.getTag();
+		if(StandardFieldSpecs.isCustomFieldTag(candidateTag))
+			return spec;
+		
+		return StandardFieldSpecs.findStandardFieldSpec(candidateTag);
 	}
 
 	public boolean equals(Object rawOther)
@@ -97,6 +129,14 @@ public class MiniFieldSpec implements Comparable
 		if(typeResult != 0)
 			return typeResult;
 		
+		int topLevelLabelResult = topLevelLabel.compareTo(other.topLevelLabel);
+		if(topLevelLabelResult != 0)
+			return topLevelLabelResult;
+		
+		int topLevelTypeResult = topLevelType.getTypeName().compareTo(other.topLevelType.getTypeName());
+		if(topLevelTypeResult != 0)
+			return topLevelTypeResult;
+		
 		return 0;
 	}
 	
@@ -108,17 +148,23 @@ public class MiniFieldSpec implements Comparable
 	public JSONObject toJson()
 	{
 		JSONObject json = new JSONObject();
-		json.put(TAG_TAG, tag);
-		json.put(TAG_LABEL, label);
+		json.put(TAG_TAG, getTag());
+		json.put(TAG_LABEL, getLabel());
 		json.put(TAG_TYPE, type.getTypeName());
+		json.put(TAG_TOP_LEVEL_LABEL, getTopLevelLabel());
+		json.put(TAG_TOP_LEVEL_TYPE, getTopLevelType().getTypeName());
 		return json;
 	}
 	
 	private static final String TAG_TAG = "Tag";
 	private static final String TAG_LABEL = "Label";
 	private static final String TAG_TYPE = "Type";
+	private static final String TAG_TOP_LEVEL_LABEL = "TopLevelLabel";
+	private static final String TAG_TOP_LEVEL_TYPE = "TopLevelType";
 
 	String tag;
 	String label;
 	FieldType type;
+	String topLevelLabel;
+	FieldType topLevelType;
 }

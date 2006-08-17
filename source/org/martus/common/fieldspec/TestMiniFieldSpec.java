@@ -25,6 +25,7 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.fieldspec;
 
+import org.martus.common.bulletin.Bulletin;
 import org.martus.util.TestCaseEnhanced;
 
 public class TestMiniFieldSpec extends TestCaseEnhanced
@@ -69,6 +70,41 @@ public class TestMiniFieldSpec extends TestCaseEnhanced
 		MiniFieldSpec lower = create("tag", "a", new FieldTypeNormal());
 		MiniFieldSpec higher = create("tag", "b", new FieldTypeNormal());
 		verifyOrder(lower, higher);
+	}
+	
+	public void testSubfield()
+	{
+		FieldSpec topLevel = FieldSpec.createCustomField("top", "Top: ", new FieldTypeDateRange());
+		FieldSpec subField = FieldSpec.createSubField(topLevel, "beginning", "Beginning: ", new FieldTypeDate());
+		MiniFieldSpec miniSpec = new MiniFieldSpec(subField);
+		assertEquals("didn't save tag chain?", "top.beginning", miniSpec.getTag());
+		assertEquals("didn't save inner label?", "Beginning: ", miniSpec.getLabel());
+		assertEquals("didn't save inner type?", new FieldTypeDate(), miniSpec.getType());
+		assertEquals("didn't save top-level label?", "Top: ", miniSpec.getTopLevelLabel());
+		assertEquals("didn't save top-level type?", new FieldTypeDateRange(), miniSpec.getTopLevelType());
+		
+		FieldSpec otherTop = FieldSpec.createCustomField("top", "Other", new FieldTypeDateRange());
+		FieldSpec otherSub = FieldSpec.createSubField(otherTop, "beginning", "Beginning: ", new FieldTypeDate());
+		MiniFieldSpec otherMini = new MiniFieldSpec(otherSub);
+		assertNotEquals("equals doesn't count top-level stuff?", miniSpec, otherMini);
+
+		MiniFieldSpec got = new MiniFieldSpec(miniSpec.toJson());
+		assertEquals("didn't jsonize everything?", miniSpec, got);
+	}
+	
+	public void testStandardFieldFixes()
+	{
+		FieldSpec author = FieldSpec.createCustomField(Bulletin.TAGAUTHOR, "Bad label", new FieldTypeDate());
+		MiniFieldSpec mini = new MiniFieldSpec(author);
+		assertEquals("Didn't fix label?", "", mini.getLabel());
+		assertEquals("Didn't fix type?", new FieldTypeNormal(), mini.getType());
+		
+		FieldSpec event = FieldSpec.createCustomField(Bulletin.TAGEVENTDATE, "Bad label", new FieldTypeNormal());
+		FieldSpec begin = FieldSpec.createSubField(event, "beginning", "Whatever", new FieldTypeDate());
+		MiniFieldSpec miniSub = new MiniFieldSpec(begin);
+		assertEquals("Didn't fix top label?", "", miniSub.getTopLevelLabel());
+		assertEquals("Didn't fix top type?", new FieldTypeDateRange(), miniSub.getTopLevelType());
+	
 	}
 	
 	private void verifyOrder(MiniFieldSpec lower, MiniFieldSpec higher)
