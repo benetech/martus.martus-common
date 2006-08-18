@@ -29,6 +29,8 @@ package org.martus.common.crypto;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -137,6 +139,28 @@ public abstract class MartusCrypto
 			inputStream.close();
 		}
 	}
+	
+	public void saveEncryptedStringToFile(File file, String stringToSave) throws UnsupportedEncodingException, MartusSignatureException, IOException, FileNotFoundException
+	{
+		byte[] bytes = stringToSave.getBytes("UTF-8");
+		byte[] encryptedBytes = createSignedBundle(bytes);
+		
+		FileOutputStream out = new FileOutputStream(file);
+		out.write(encryptedBytes);
+		out.close();
+	}
+	
+	public byte[] loadEncryptedStringFromFile(File file) throws FileNotFoundException, IOException, MartusSignatureException, AuthorizationFailedException
+	{
+		byte[] encryptedBytes = new byte[(int)file.length()];
+		FileInputStream in = new FileInputStream(file);
+		in.read(encryptedBytes);
+		in.close();
+	
+		byte[] bytes = extractFromSignedBundle(encryptedBytes);
+		return bytes;
+	}
+	
 	
 	// public codes
 	public static String computePublicCode(String publicKeyString) throws
