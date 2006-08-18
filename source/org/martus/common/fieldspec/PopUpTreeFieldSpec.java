@@ -46,6 +46,14 @@ public class PopUpTreeFieldSpec extends FieldSpec
 		return model;
 	}
 	
+	public SearchableFieldChoiceItem getFirstChoice()
+	{
+		TreeNode root = (TreeNode)model.getRoot();
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode)root.getChildAt(0);
+		SearchableFieldChoiceItem item = (SearchableFieldChoiceItem)node.getUserObject();
+		return item;
+	}
+	
 	public SearchableFieldChoiceItem findSearchTag(String tagToFind)
 	{
 		TreeNode root = (TreeNode)model.getRoot();
