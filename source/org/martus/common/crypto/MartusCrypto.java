@@ -150,7 +150,7 @@ public abstract class MartusCrypto
 		out.close();
 	}
 	
-	public byte[] loadEncryptedStringFromFile(File file) throws FileNotFoundException, IOException, MartusSignatureException, AuthorizationFailedException
+	public String loadEncryptedStringFromFile(File file) throws FileNotFoundException, IOException, MartusSignatureException, AuthorizationFailedException
 	{
 		byte[] encryptedBytes = new byte[(int)file.length()];
 		FileInputStream in = new FileInputStream(file);
@@ -158,7 +158,7 @@ public abstract class MartusCrypto
 		in.close();
 	
 		byte[] bytes = extractFromSignedBundle(encryptedBytes);
-		return bytes;
+		return new String(bytes, "UTF-8");
 	}
 	
 	
