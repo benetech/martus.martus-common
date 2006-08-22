@@ -53,6 +53,16 @@ public class FieldTypeBoolean extends FieldType
 
 	public String convertStoredToSearchable(String storedData, MiniLocalization localization)
 	{
+		return getViewableData(storedData, localization);
+	}
+	
+	public String convertStoredToHtml(String storedData, MiniLocalization localization)
+	{
+		return getViewableData(storedData, localization);
+	}
+
+	private String getViewableData(String storedData, MiniLocalization localization)
+	{
 		String tag = "no";
 		if(storedData.equals(FieldSpec.TRUESTRING))
 			tag = "yes";

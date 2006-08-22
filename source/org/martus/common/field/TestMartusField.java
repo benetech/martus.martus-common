@@ -143,6 +143,10 @@ public class TestMartusField extends TestCaseEnhanced
 		dropdownField.setData("ampersand");
 		assertEquals("Didn't decode dropdown?", "This &amp; That", dropdownField.html(localization));
 		
+		MartusField booleanField = new MartusField(createFieldSpec(new FieldTypeBoolean()));
+		booleanField.setData(FieldSpec.TRUESTRING);
+		assertEquals("Didn't htmlize?", localization.getButtonLabel("yes"), booleanField.html(localization));
+		
 		MartusField blankField = new MartusField(createFieldSpec(new FieldTypeNormal()));
 		blankField.setData("");
 		assertEquals("Empty not converted to nbsp?", "&nbsp;", blankField.html(localization));
