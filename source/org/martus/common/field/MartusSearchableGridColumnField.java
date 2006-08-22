@@ -31,7 +31,6 @@ import org.martus.common.MiniLocalization;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldType;
 import org.martus.common.fieldspec.GridFieldSpec;
-import org.martus.util.xml.XmlUtilities;
 
 
 public class MartusSearchableGridColumnField extends MartusField
@@ -155,7 +154,7 @@ public class MartusSearchableGridColumnField extends MartusField
 		for(int row = 0; row < dataInEachRow.length; ++row)
 		{
 			buffer.append("<tr><td>");
-			buffer.append(XmlUtilities.getXmlEncoded(dataInEachRow[row].html(localization)));
+			buffer.append(dataInEachRow[row].html(localization));
 			buffer.append("</td></tr>");
 		}
 		buffer.append("</table>");
