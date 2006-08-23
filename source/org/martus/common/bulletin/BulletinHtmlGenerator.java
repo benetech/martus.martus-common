@@ -239,7 +239,7 @@ public class BulletinHtmlGenerator
 	{
 		if(fieldType.isDate())
 			value = localization.convertStoredDateToDisplay(value);
-		else if(fieldType.isLanguage())
+		else if(fieldType.isLanguageDropdown())
 			value = getHTMLEscaped(localization.getLanguageName(value));
 		else if(fieldType.isMultiline())
 			value = insertNewlines(value);

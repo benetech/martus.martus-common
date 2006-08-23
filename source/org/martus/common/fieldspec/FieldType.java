@@ -119,7 +119,7 @@ abstract public class FieldType
 		return false;
 	}
 	
-	public boolean isLanguage()
+	public boolean isLanguageDropdown()
 	{
 		return false;
 	}

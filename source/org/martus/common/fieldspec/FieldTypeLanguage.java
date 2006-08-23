@@ -36,7 +36,7 @@ public class FieldTypeLanguage extends FieldType
 		return getTypeNameString();
 	}
 	
-	public boolean isLanguage()
+	public boolean isLanguageDropdown()
 	{
 		return true;
 	}
