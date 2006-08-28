@@ -28,6 +28,7 @@ package org.martus.common.fieldspec;
 
 import org.martus.common.MiniLocalization;
 import org.martus.common.bulletin.BulletinConstants;
+import org.martus.util.xml.XmlUtilities;
 
 
 public class StandardFieldSpecs
@@ -118,6 +119,14 @@ public class StandardFieldSpecs
 		return proposedLabel;
 	}
 	
+	public static String getLocalizedLabelHtml(String tag, String proposedLabel, MiniLocalization localization)
+	{
+		if(isStandardFieldTag(tag))
+			return XmlUtilities.getXmlEncoded(localization.getFieldLabel(tag));
+		
+		return XmlUtilities.getXmlEncoded(proposedLabel);
+	}
+
 	private static FieldSpec[] defaultTopSectionFieldSpecs;
 	private static FieldSpec[] defaultBottomSectionFieldSpecs;
 }

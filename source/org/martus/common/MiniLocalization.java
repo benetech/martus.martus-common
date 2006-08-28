@@ -43,6 +43,7 @@ import org.martus.util.DatePreference;
 import org.martus.util.MultiCalendar;
 import org.martus.util.MultiDateFormat;
 import org.martus.util.language.LanguageOptions;
+import org.martus.util.xml.XmlUtilities;
 
 import com.ghasemkiani.util.icu.PersianCalendar;
 import com.ibm.icu.util.SimpleTimeZone;
@@ -230,6 +231,12 @@ public class MiniLocalization
 	public String getLabel(String languageCode, String category, String tag)
 	{
 		return getLabel(languageCode, category + ":" + tag);
+	}
+
+	public String getFieldLabelHtml(String fieldName)
+	{
+		String fieldLabel = getFieldLabel(getCurrentLanguageCode(), fieldName);
+		return XmlUtilities.getXmlEncoded(fieldLabel);
 	}
 
 	public String getFieldLabel(String fieldName)

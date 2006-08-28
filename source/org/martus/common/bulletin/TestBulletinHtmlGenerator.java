@@ -40,6 +40,7 @@ import org.martus.common.test.MockBulletinStore;
 import org.martus.common.test.TestGridData;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.language.LanguageOptions;
+import org.martus.util.xml.XmlUtilities;
 
 
 public class TestBulletinHtmlGenerator extends TestCaseEnhanced
@@ -80,8 +81,8 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 		"<tr><td align='right' valign='top'>Title</td><td valign='top'><strong>My Title</strong></td></tr>\n" +
 		"<tr><td align='right' valign='top'>Location</td><td valign='top'></td></tr>\n" +
 		"<tr><td align='right' valign='top'>Keywords</td><td valign='top'></td></tr>\n" +
-		"<tr><td align='right' valign='top'>Date of Event</td><td valign='top'>"+loc.convertStoredDateToDisplay(b.get(Bulletin.TAGEVENTDATE))+"</td></tr>\n" +
-		"<tr><td align='right' valign='top'>Date Created</td><td valign='top'>"+loc.convertStoredDateToDisplay(b.get(Bulletin.TAGENTRYDATE))+"</td></tr>\n" +
+		"<tr><td align='right' valign='top'>Date of Event</td><td valign='top'>"+XmlUtilities.getXmlEncoded(loc.convertStoredDateToDisplay(b.get(Bulletin.TAGEVENTDATE)))+"</td></tr>\n" +
+		"<tr><td align='right' valign='top'>Date Created</td><td valign='top'>"+XmlUtilities.getXmlEncoded(loc.convertStoredDateToDisplay(b.get(Bulletin.TAGENTRYDATE)))+"</td></tr>\n" +
 		"<tr><td align='right' valign='top'>Summary</td><td valign='top'><p></p></td></tr>\n" +
 		"<tr><td align='right' valign='top'>Details</td><td valign='top'><p></p></td></tr>\n";
 		assertEquals("Public Section HTML not correct?", expectedHtml, generator.getSectionHtmlString(b.getFieldDataPacket()));
@@ -116,8 +117,8 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 			"<tr><td align='right' valign='top'>Title</td><td valign='top'><strong>"+title+"</strong></td></tr>\n"+
 			"<tr><td align='right' valign='top'>Location</td><td valign='top'></td></tr>\n"+
 			"<tr><td align='right' valign='top'>Keywords</td><td valign='top'></td></tr>\n"+
-			"<tr><td align='right' valign='top'>Date of Event</td><td valign='top'>"+loc.convertStoredDateToDisplay(b.get(Bulletin.TAGEVENTDATE))+"</td></tr>\n"+
-			"<tr><td align='right' valign='top'>Date Created</td><td valign='top'>"+loc.convertStoredDateToDisplay(b.get(Bulletin.TAGENTRYDATE))+"</td></tr>\n"+
+			"<tr><td align='right' valign='top'>Date of Event</td><td valign='top'>"+XmlUtilities.getXmlEncoded(loc.convertStoredDateToDisplay(b.get(Bulletin.TAGEVENTDATE)))+"</td></tr>\n"+
+			"<tr><td align='right' valign='top'>Date Created</td><td valign='top'>"+XmlUtilities.getXmlEncoded(loc.convertStoredDateToDisplay(b.get(Bulletin.TAGENTRYDATE)))+"</td></tr>\n"+
 			"<tr><td align='right' valign='top'>Summary</td><td valign='top'><p></p></td></tr>\n"+
 			"<tr><td align='right' valign='top'>Details</td><td valign='top'><p></p></td></tr>\n"+
 			"<tr><td align='right' valign='top'>Attachments</td><td valign='top'></td></tr>\n"+
@@ -162,8 +163,8 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 			"<tr><td align='right' valign='top'>Title</td><td valign='top'><strong>"+title+"</strong></td></tr>\n"+
 			"<tr><td align='right' valign='top'>Location</td><td valign='top'></td></tr>\n"+
 			"<tr><td align='right' valign='top'>Keywords</td><td valign='top'></td></tr>\n"+
-			"<tr><td align='right' valign='top'>Date of Event</td><td valign='top'>"+loc.convertStoredDateToDisplay(b.get(Bulletin.TAGEVENTDATE))+"</td></tr>\n"+
-			"<tr><td align='right' valign='top'>Date Created</td><td valign='top'>"+loc.convertStoredDateToDisplay(b.get(Bulletin.TAGENTRYDATE))+"</td></tr>\n"+
+			"<tr><td align='right' valign='top'>Date of Event</td><td valign='top'>"+XmlUtilities.getXmlEncoded(loc.convertStoredDateToDisplay(b.get(Bulletin.TAGEVENTDATE)))+"</td></tr>\n"+
+			"<tr><td align='right' valign='top'>Date Created</td><td valign='top'>"+XmlUtilities.getXmlEncoded(loc.convertStoredDateToDisplay(b.get(Bulletin.TAGENTRYDATE)))+"</td></tr>\n"+
 			"<tr><td align='right' valign='top'>Summary</td><td valign='top'><p></p></td></tr>\n"+
 			"<tr><td align='right' valign='top'>Details</td><td valign='top'><p></p></td></tr>\n"+
 			"<tr><td align='right' valign='top'>Attachments</td><td valign='top'></td></tr>\n"+

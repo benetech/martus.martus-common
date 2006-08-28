@@ -238,13 +238,13 @@ public class BulletinHtmlGenerator
 	private String getPrintableData(String value, FieldType fieldType)
 	{
 		if(fieldType.isDate())
-			value = localization.convertStoredDateToDisplay(value);
+			value = getHTMLEscaped(localization.convertStoredDateToDisplay(value));
 		else if(fieldType.isLanguageDropdown())
 			value = getHTMLEscaped(localization.getLanguageName(value));
 		else if(fieldType.isMultiline())
 			value = insertNewlines(value);
 		else if(fieldType.isDateRange())
-			value = localization.getViewableDateRange(value);
+			value = getHTMLEscaped(localization.getViewableDateRange(value));
 		else if(fieldType.isBoolean())
 			value = getPrintableBooleanValue(value);
 		return value;

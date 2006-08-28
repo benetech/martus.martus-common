@@ -29,6 +29,7 @@ package org.martus.common.fieldspec;
 import org.martus.common.MiniLocalization;
 import org.martus.common.bulletin.BulletinXmlExportImportConstants;
 import org.martus.util.MultiCalendar;
+import org.martus.util.xml.XmlUtilities;
 
 public class FieldTypeDate extends FieldType
 {
@@ -59,7 +60,7 @@ public class FieldTypeDate extends FieldType
 
 	public String convertStoredToHtml(String storedData, MiniLocalization localization)
 	{
-		return localization.convertStoredDateToDisplay(storedData);
+		return XmlUtilities.getXmlEncoded(localization.convertStoredDateToDisplay(storedData));
 	}
 
 	public String convertStoredToExportable(String storedData, MiniLocalization localization)
