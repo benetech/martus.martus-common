@@ -34,13 +34,19 @@ import org.martus.common.bulletin.BulletinConstants;
 
 public class CustomFieldSpecValidator
 {
-	public CustomFieldSpecValidator(FieldCollection specsToCheckTopSection, FieldCollection specsToCheckBottomSection)
+	public CustomFieldSpecValidator(FieldCollection specsToCheckTopSection, FieldCollection specsToCheckBottomSection, boolean allowSpaceOnlyCustomLabels)
 	{
-		this(specsToCheckTopSection.getSpecs(), specsToCheckBottomSection.getSpecs());
+		this(specsToCheckTopSection.getSpecs(), specsToCheckBottomSection.getSpecs(), allowSpaceOnlyCustomLabels);
 	}
 	
 	public CustomFieldSpecValidator(FieldSpec[] specsToCheckTopSection, FieldSpec[] specsToCheckBottomSection)
 	{
+		this(specsToCheckTopSection, specsToCheckBottomSection, false);
+	}
+	
+	public CustomFieldSpecValidator(FieldSpec[] specsToCheckTopSection, FieldSpec[] specsToCheckBottomSection, boolean allowSpaceOnlyCustomLabels)
+	{
+		allowSpaceOnlyCustomFieldLabels = allowSpaceOnlyCustomLabels;
 		errors = new Vector();
 		if(specsToCheckTopSection == null || specsToCheckBottomSection == null)
 		{
@@ -301,7 +307,10 @@ public class CustomFieldSpecValidator
 
 	private void checkForMissingCustomLabel(FieldSpec thisSpec, String tag)
 	{
-		if(StandardFieldSpecs.isCustomFieldTag(tag) && thisSpec.getLabel().trim().equals(""))
+		String label = thisSpec.getLabel();
+		if(!allowSpaceOnlyCustomFieldLabels)
+			label = label.trim();
+		if(StandardFieldSpecs.isCustomFieldTag(tag) && label.equals(""))
 			errors.add(CustomFieldError.errorMissingLabel(tag, getType(thisSpec)));
 	}
 
@@ -335,5 +344,6 @@ public class CustomFieldSpecValidator
 		return FieldSpec.getTypeString( thisSpec.getType());
 	}
 
+	private boolean allowSpaceOnlyCustomFieldLabels;
 	private Vector errors;
 }
