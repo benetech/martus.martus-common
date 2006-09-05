@@ -64,6 +64,8 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.logging.Logger;
+
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
@@ -94,9 +96,9 @@ public class MartusSecurity extends MartusCrypto
 		{
 			Stopwatch watch = new Stopwatch();
 			rand = new SecureRandom();
-			initialize(rand);
-			System.out.println("Martus Security constructor took = "+ watch.elapsed());
+			Logger.global.info("MartusSecurity constructor took = "+ watch.elapsed() + " ms");
 		}
+		initialize(rand);
 	}
 
 	private void insertHighestPriorityProvider(Provider provider)
