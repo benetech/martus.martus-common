@@ -64,7 +64,6 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.logging.Logger;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -78,13 +77,13 @@ import javax.crypto.spec.PBEParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
+
 import org.bouncycastle.crypto.engines.RSAEngine;
 import org.bouncycastle.jce.X509Principal;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.x509.X509V1CertificateGenerator;
 import org.martus.common.MartusConstants;
 import org.martus.util.Base64;
-import org.martus.util.Stopwatch;
 import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 
@@ -93,11 +92,8 @@ public class MartusSecurity extends MartusCrypto
 	public MartusSecurity() throws CryptoInitializationException
 	{
 		if(rand == null)
-		{
-			Stopwatch watch = new Stopwatch();
 			rand = new SecureRandom();
-			Logger.global.info("MartusSecurity constructor took = "+ watch.elapsed() + " ms");
-		}
+
 		initialize(rand);
 	}
 
