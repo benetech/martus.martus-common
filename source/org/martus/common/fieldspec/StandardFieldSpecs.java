@@ -53,7 +53,7 @@ public class StandardFieldSpecs
 			};
 		}
 		
-		return (FieldSpec[])defaultTopSectionFieldSpecs.clone();
+		return defaultTopSectionFieldSpecs.clone();
 	}
 
 	public static FieldSpec[] getDefaultBottomSectionFieldSpecs()
@@ -66,7 +66,7 @@ public class StandardFieldSpecs
 			};
 		}
 		
-		return (FieldSpec[])defaultBottomSectionFieldSpecs.clone();
+		return defaultBottomSectionFieldSpecs.clone();
 	}
 
 	public static FieldType getStandardType(String tag)
