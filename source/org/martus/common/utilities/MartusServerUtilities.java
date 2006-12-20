@@ -214,7 +214,8 @@ public class MartusServerUtilities
 		byte[] signature = MartusUtilities.createSignatureFromFile(fileToSign, signer);
 		String sigString = Base64.encode(signature);
 
-		UnicodeWriter writer = new UnicodeWriter(signatureFile);
+		signatureFile.delete();
+		UnicodeWriter writer = new UnicodeWriter(signatureFile, UnicodeWriter.APPEND);
 		try
 		{
 			writer.writeln(MARTUS_SIGNATURE_FILE_IDENTIFIER);
