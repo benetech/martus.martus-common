@@ -173,7 +173,7 @@ public class MartusUtilities
 		byte[] signature = createSignatureFromFile(fileToSign, signer);
 		String sigString = Base64.encode(signature);
 
-		UnicodeWriter writer = new UnicodeWriter(newSigFile);
+		UnicodeWriter writer = new UnicodeWriter(newSigFile, UnicodeWriter.APPEND);
 		writer.writeln(signer.getPublicKeyString());
 		writer.writeln(sigString);
 		writer.flush();
