@@ -130,6 +130,16 @@ public class MartusField
 		data = newValue;
 	}
 	
+	public void setLabel(String newLabel)
+	{
+		spec.setLabel(newLabel);
+	}
+	
+	public void setTag(String newTag)
+	{
+		spec.setTag(newTag);
+	}
+	
 	public boolean contains(String value, MiniLocalization localization)
 	{
 		return (getSearchableData(localization).toLowerCase().indexOf(value.toLowerCase()) >= 0);

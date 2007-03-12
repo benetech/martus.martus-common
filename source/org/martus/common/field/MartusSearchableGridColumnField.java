@@ -37,7 +37,7 @@ public class MartusSearchableGridColumnField extends MartusField
 {
 	public MartusSearchableGridColumnField(MartusGridField gridToUse, int columnToUse) throws Exception
 	{
-		super(createMartusField(gridToUse.getGridFieldSpec().getFieldSpec(columnToUse)).getFieldSpec());
+		super(createMartusField(gridToUse.getGridFieldSpec(), columnToUse).getFieldSpec());
 		grid = gridToUse;
 		column = columnToUse;
 		
@@ -132,6 +132,15 @@ public class MartusSearchableGridColumnField extends MartusField
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	private static MartusField createMartusField(GridFieldSpec gridSpec, int column)
+	{
+		String columnTag = MartusGridField.sanitizeLabel(gridSpec.getColumnLabel(column));
+		FieldSpec rawColumnSpec = gridSpec.getFieldSpec(column);
+		FieldSpec goodColumnSpec = FieldSpec.createCustomField(columnTag, rawColumnSpec.getLabel(), rawColumnSpec.getType());
+		goodColumnSpec.setParent(gridSpec);
+		return createMartusField(goodColumnSpec);
 	}
 	
 	private static MartusField createMartusField(FieldSpec newSpec)

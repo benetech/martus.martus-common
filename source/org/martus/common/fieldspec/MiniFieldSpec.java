@@ -117,9 +117,12 @@ public class MiniFieldSpec implements Comparable
 	
 	public int compareTo(MiniFieldSpec other)
 	{
-		int labelResult = label.compareTo(other.label);
-		if(labelResult != 0)
-			return labelResult;
+		if(label.length() > 0 && other.label.length() > 0)
+		{
+			int labelResult = label.compareTo(other.label);
+			if(labelResult != 0)
+				return labelResult;
+		}
 		
 		int tagResult = tag.compareTo(other.tag);
 		if(tagResult != 0)

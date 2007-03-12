@@ -56,17 +56,19 @@ public class MartusDateRangeField extends MartusField
 	{
 		MartusFlexidate date = localization.createFlexidateFromStoredData(getData());
 		if(tag.equals(SUBFIELD_BEGIN))
-			return createDateSubField(date.getBeginDate());
+			return createDateSubField(tag, date.getBeginDate());
 		
 		if(tag.equals(SUBFIELD_END))
-			return createDateSubField(date.getEndDate());
+			return createDateSubField(tag, date.getEndDate());
 		
 		return null;
 	}
 
-	private MartusField createDateSubField(MultiCalendar singleDateString)
+	private MartusField createDateSubField(String tag, MultiCalendar singleDateString)
 	{
-		MartusField sub = new MartusField(FieldSpec.createFieldSpec(new FieldTypeDate()));
+		FieldSpec subSpec = FieldSpec.createSubField(spec, tag, "", new FieldTypeDate());
+		subSpec.setParent(spec);
+		MartusField sub = new MartusField(subSpec);
 		sub.setData(MartusFlexidate.toStoredDateFormat(singleDateString));
 		return sub;
 	}
