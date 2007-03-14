@@ -28,7 +28,6 @@ package org.martus.common.test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.PublicKey;
@@ -282,25 +281,6 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		{
 			// expected
 		}
-		TRACE_END();
-	}
-
-	public void testWriteKeyPairFormat() throws Exception
-	{
-		TRACE_BEGIN("testWriteKeyPairFormat");
-		char[] passPhrase = "whatever".toCharArray();
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		security.writeKeyPair(outputStream, passPhrase);
-		byte[] encryptedData = outputStream.toByteArray();
-
-		ByteArrayInputStream inputStream = new ByteArrayInputStream(encryptedData);
-		byte versionPlaceHolder = (byte)inputStream.read();
-		assertEquals("Expected 0", 0, versionPlaceHolder);
-
-		byte[] plain = security.decryptKeyPair(inputStream, passPhrase);
-		ByteArrayInputStream inputStream2 = new ByteArrayInputStream(plain);
-		ObjectInputStream objectInputStream = new ObjectInputStream(inputStream2);
-		objectInputStream.readObject();
 		TRACE_END();
 	}
 
