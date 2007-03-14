@@ -51,6 +51,7 @@ import java.security.SecureRandom;
 import java.security.Security;
 import java.security.SignatureException;
 import java.security.cert.Certificate;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.interfaces.RSAPublicKey;
@@ -847,7 +848,7 @@ public class MartusSecurity extends MartusCrypto
 	}
 
 	public X509Certificate createCertificate(RSAPublicKey publicKey, RSAPrivateCrtKey privateKey)
-			throws SecurityException, SignatureException, InvalidKeyException
+			throws SecurityException, SignatureException, InvalidKeyException, CertificateEncodingException, IllegalStateException, NoSuchAlgorithmException
 	{
 		Hashtable attrs = new Hashtable();
 
@@ -890,7 +891,7 @@ public class MartusSecurity extends MartusCrypto
 		certGen1.setSignatureAlgorithm("MD5WithRSAEncryption");
 
 		// self-sign it
-		X509Certificate cert = certGen1.generateX509Certificate( privateKey );
+		X509Certificate cert = certGen1.generate( privateKey );
 		return cert;
 	}
 
@@ -1046,7 +1047,7 @@ public class MartusSecurity extends MartusCrypto
 		return jarURL;
 	}
 
-	private static final String BCPROV_JAR_FILE_NAME = "bcprov-jdk14-128.jar";
+	private static final String BCPROV_JAR_FILE_NAME = "bcprov-jdk14-135.jar";
 	private static final String SESSION_ALGORITHM_NAME = "AES";
 	private static final String SESSION_ALGORITHM = "AES/CBC/PKCS5Padding";
 	private static final String PBE_ALGORITHM = "PBEWithSHAAndTwofish-CBC";
