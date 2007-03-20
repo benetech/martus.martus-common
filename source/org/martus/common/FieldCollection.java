@@ -206,7 +206,7 @@ public class FieldCollection
 		private Vector fields;
 	}
 	
-	static Vector existingFieldSpecTemplates = new Vector();
+	public static Vector existingFieldSpecTemplates = new Vector();
 	
 	Vector fields;
 }
