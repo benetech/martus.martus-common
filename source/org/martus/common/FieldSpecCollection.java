@@ -26,10 +26,12 @@ Boston, MA 02111-1307, USA.
 package org.martus.common;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.martus.common.fieldspec.FieldSpec;
 
-public class FieldSpecCollection
+public class FieldSpecCollection implements Comparable
 {
 	public FieldSpecCollection(FieldSpec[] specsToUse)
 	{
@@ -56,6 +58,11 @@ public class FieldSpecCollection
 		return specs[index];
 	}
 	
+	public Set asSet() 
+	{
+		return new HashSet(Arrays.asList(specs));
+	}
+	
 	public boolean equals(Object rawOther)
 	{
 		if(!(rawOther instanceof FieldSpecCollection))
@@ -69,5 +76,26 @@ public class FieldSpecCollection
 		return specs.hashCode();
 	}
 	
+	public int compareTo(Object rawOther) 
+	{
+		if(!(rawOther instanceof FieldSpecCollection))
+			return 0;
+		FieldSpecCollection other = (FieldSpecCollection)rawOther;
+		if(size() < other.size())
+			return -1;
+		else if(size() > other.size())
+			return 1;
+		
+		for(int i = 0; i < size(); ++i)
+		{
+			int result = get(i).compareTo(other.get(i));
+			if(result != 0)
+				return result;
+		}
+		
+		return 0;
+	}
+
 	FieldSpec[] specs;
+
 }
