@@ -62,6 +62,10 @@ public class Packet
 			super(message);
 		}
 
+		public InvalidPacketException(Exception e)
+		{
+			super(e);
+		}
 	}
 
 	public static class WrongPacketTypeException extends SAXException

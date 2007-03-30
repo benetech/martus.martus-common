@@ -260,7 +260,7 @@ public class FieldDataPacket extends Packet
 		{
 			// TODO: Be more specific with exceptions!
 			//e.printStackTrace();
-			throw new InvalidPacketException(e.getMessage());
+			throw new InvalidPacketException(e);
 		}
 	}
 
