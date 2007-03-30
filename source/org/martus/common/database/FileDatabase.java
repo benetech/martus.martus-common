@@ -195,9 +195,10 @@ abstract public class FileDatabase extends Database
 			File fromFile = (File) fileMapping.get(key);
 			File toFile = getFileForRecord(key);
 			toFile.delete();
-			fromFile.renameTo(toFile);
+			if(!fromFile.renameTo(toFile))
+				throw new IOException("renameTo failed: " + fromFile + " -> " + toFile);
 			if(!toFile.exists())
-				throw new IOException("renameTo failed: " + toFile);
+				throw new IOException("renameTo didn't work: " + toFile);
 		}
 	}
 
