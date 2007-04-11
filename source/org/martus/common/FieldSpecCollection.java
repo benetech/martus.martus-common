@@ -63,19 +63,40 @@ public class FieldSpecCollection implements Comparable
 		return new HashSet(Arrays.asList(specs));
 	}
 	
-	public boolean equals(Object rawOther)
+	public int hashCode() 
 	{
-		if(!(rawOther instanceof FieldSpecCollection))
+		final int PRIME = 31;
+		int result = 1;
+		result = PRIME * result + FieldSpecCollection.hashCode(specs);
+		return result;
+	}
+
+	private static int hashCode(Object[] array) 
+	{
+		final int PRIME = 31;
+		if (array == null)
+			return 0;
+		int result = 1;
+		for (int index = 0; index < array.length; index++) {
+			result = PRIME * result + (array[index] == null ? 0 : array[index].hashCode());
+		}
+		return result;
+	}
+
+	public boolean equals(Object obj) 
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
-		FieldSpecCollection other = (FieldSpecCollection)rawOther;
-		return Arrays.equals(specs, other.specs);
+		if (getClass() != obj.getClass())
+			return false;
+		final FieldSpecCollection other = (FieldSpecCollection) obj;
+		if (!Arrays.equals(specs, other.specs))
+			return false;
+		return true;
 	}
-	
-	public int hashCode()
-	{
-		return specs.hashCode();
-	}
-	
+
 	public int compareTo(Object rawOther) 
 	{
 		if(!(rawOther instanceof FieldSpecCollection))
