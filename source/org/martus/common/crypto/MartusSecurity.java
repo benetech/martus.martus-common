@@ -372,7 +372,7 @@ public class MartusSecurity extends MartusCrypto
 		}
 	}
 
-	public byte[] getSessionKeyCache() throws IOException, NoKeyPairException, EncryptionException, MartusSignatureException
+	public synchronized byte[] getSessionKeyCache() throws IOException, NoKeyPairException, EncryptionException, MartusSignatureException
 	{
 		ByteArrayOutputStream rawOut = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream(rawOut);
@@ -400,7 +400,7 @@ public class MartusSecurity extends MartusCrypto
 		return bundleBytes;
 	}
 	
-	public void setSessionKeyCache(byte[] encryptedCacheBundle) throws IOException, NoKeyPairException, DecryptionException, MartusSignatureException, AuthorizationFailedException
+	public synchronized void setSessionKeyCache(byte[] encryptedCacheBundle) throws IOException, NoKeyPairException, DecryptionException, MartusSignatureException, AuthorizationFailedException
 	{
 		flushSessionKeyCache();
 
@@ -493,12 +493,12 @@ public class MartusSecurity extends MartusCrypto
 		decryptedSessionKeys.clear();
 	}
 
-	private void addSessionKeyToCache(SessionKey encryptedSessionKey, SessionKey decryptedSessionKey)
+	private synchronized void addSessionKeyToCache(SessionKey encryptedSessionKey, SessionKey decryptedSessionKey)
 	{
 		decryptedSessionKeys.put(encryptedSessionKey, decryptedSessionKey.copy());
 	}
 
-	private SessionKey getCachedDecryptedSessionKey(SessionKey encryptedSessionKey)
+	private synchronized SessionKey getCachedDecryptedSessionKey(SessionKey encryptedSessionKey)
 	{
 		return (SessionKey)decryptedSessionKeys.get(encryptedSessionKey);
 	}
