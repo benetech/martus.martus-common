@@ -26,6 +26,7 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common;
 
+import java.util.Collections;
 import java.util.Vector;
 
 import org.martus.common.field.MartusDateField;
@@ -51,14 +52,15 @@ public class FieldCollection
 
 	private FieldSpecCollection reuseExistingSpecCollectionIfPossible(FieldSpecCollection specsToUse)
 	{
-		if(existingFieldSpecTemplates.contains(specsToUse))
+		int foundAt = Collections.binarySearch(existingFieldSpecTemplates, specsToUse);
+		if(foundAt >= 0)
 		{
-			int at = existingFieldSpecTemplates.indexOf(specsToUse);
-			specsToUse = (FieldSpecCollection)existingFieldSpecTemplates.get(at);
+			specsToUse = (FieldSpecCollection)existingFieldSpecTemplates.get(foundAt);
 		}
 		else
 		{
 			existingFieldSpecTemplates.add(specsToUse);
+			Collections.sort(existingFieldSpecTemplates);
 		}
 		return specsToUse;
 	}
