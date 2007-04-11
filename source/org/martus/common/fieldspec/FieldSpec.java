@@ -197,7 +197,11 @@ public class FieldSpec
 		if(result == 0)
 			result = getLabel().compareTo(otherSpec.getLabel());
 		if(result == 0)
-			result = toString().compareTo(other.toString());
+			result = getTag().compareTo(otherSpec.getTag());
+		if(result == 0)
+			result = getTypeString(getType()).compareTo(getTypeString(otherSpec.getType()));
+		if(result == 0)
+			result = getDetailsXml().compareTo(otherSpec.getDetailsXml());
 		return result;
 	}
 	
