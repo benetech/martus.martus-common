@@ -27,6 +27,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.fieldspec;
 
 import java.util.Vector;
+
 import org.martus.common.FieldCollection;
 import org.martus.common.LegacyCustomFields;
 import org.martus.common.bulletin.BulletinConstants;
@@ -74,7 +75,16 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		FieldSpec[] specsTopSection = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
 		FieldSpec[] specsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
 		String label = "anything";
-		String[] variousIllegalTags = {"a tag", "a&amp;b", "a=b", "a'b", ".a"};
+		int[] nepaliByteValuesWithNonBreakingSpace = new int[] {
+				0xe0, 0xa5, 0x8b, 0xc2, 
+				0xa0, 
+				0xe0, 0xa4, 0xb6, 
+				};
+		byte[] nepaliBytesWithNonBreakingSpace = new byte[nepaliByteValuesWithNonBreakingSpace.length];
+		for(int i = 0; i < nepaliBytesWithNonBreakingSpace.length; ++i)
+			nepaliBytesWithNonBreakingSpace[i] = (byte)nepaliByteValuesWithNonBreakingSpace[i];
+		String nepaliWithNonBreakingSpace = new String(nepaliBytesWithNonBreakingSpace, "UTF-8");
+		String[] variousIllegalTags = {"a tag", "a&amp;b", "a=b", "a'b", ".a", nepaliWithNonBreakingSpace};
 		for(int i=0; i < variousIllegalTags.length; ++i)
 		{
 			String thisTag = variousIllegalTags[i];

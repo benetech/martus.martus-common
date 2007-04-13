@@ -31,6 +31,8 @@ import java.util.Vector;
 
 import org.martus.common.FieldCollection;
 import org.martus.common.bulletin.BulletinConstants;
+import org.martus.util.xml.SimpleXmlDefaultLoader;
+import org.martus.util.xml.SimpleXmlParser;
 
 public class CustomFieldSpecValidator
 {
@@ -187,6 +189,20 @@ public class CustomFieldSpecValidator
 				if(!isValidTagCharacter(tagChars[j]))
 					allValid = false;
 			}
+
+			String xmlTag = "Field-" + thisTag;
+			SimpleXmlDefaultLoader loader = new SimpleXmlDefaultLoader(xmlTag);
+			String xml = "<" + xmlTag + "/>";
+			try 
+			{
+				SimpleXmlParser.parse(loader, xml);
+			} 
+			catch (Exception e) 
+			{
+				allValid = false;
+			}
+			
+			
 			if(!allValid)
 				errors.add(CustomFieldError.errorIllegalTag(thisTag, thisSpec.getLabel(), getType(thisSpec)));
 		}
