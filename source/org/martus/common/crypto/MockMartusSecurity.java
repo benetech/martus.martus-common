@@ -85,6 +85,11 @@ public class MockMartusSecurity extends MartusSecurity
 		//System.out.println("MockMartusSecurity.speedWarning: " + message);
 	}
 
+	public void verifyJars() throws InvalidJarException, IOException 
+	{
+		// No need to verify jars during testing (VERY SLOW!)
+	}
+
 	public void readKeyPair(InputStream inputStream, char[] passPhrase) throws
 		IOException,
 		InvalidKeyPairFileVersionException,
