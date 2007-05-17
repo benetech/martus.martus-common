@@ -122,7 +122,7 @@ public class TestUnicodeFileWriter extends TestCaseEnhanced
 
 	public void testWritingUnicodeCharacters() throws Exception
 	{
-		String text2 = "í";
+		String text2 = new String(new char[] {UnicodeConstants.ACCENT_I_LOWER});
 		int len2 = 0;
 		try
 		{
