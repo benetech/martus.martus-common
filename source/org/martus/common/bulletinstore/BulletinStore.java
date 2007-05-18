@@ -526,6 +526,9 @@ public class BulletinStore
 			return true;
 		for(int i = 0; i< attachmentProxies.length; ++i)
 		{
+			if(attachmentProxies[i].getPendingPacket() != null)
+				continue;
+			
 			UniversalId id = attachmentProxies[i].getUniversalId();
 			DatabaseKey key = DatabaseKey.createSealedKey(id);
 			InputStreamWithSeek in = null;

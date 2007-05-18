@@ -183,6 +183,20 @@ public class TestBulletinStore extends TestCaseEnhanced
 		assertEquals("not invalid for modified public attachment, Bulletin Valid?", false, store.isBulletinValid(loaded));
 	}
 	
+	public void testPendingAttachment() throws Exception
+	{
+		Bulletin b1 = new Bulletin(security);
+
+		File tempFile2 = createTempFileWithData(sampleBytes2);
+		AttachmentProxy a1 = new AttachmentProxy(tempFile1);
+		AttachmentProxy a2 = new AttachmentProxy(tempFile2);
+		b1.addPublicAttachment(a1);
+		b1.addPrivateAttachment(a2);
+		b1.setSealed();
+		assertTrue("Pending attachments not valid?", store.areAttachmentsValid(b1));
+		store.saveEncryptedBulletinForTesting(b1);
+	}
+	
 
     public void testHasNewerRevision() throws Exception
 	{
