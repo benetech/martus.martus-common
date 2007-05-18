@@ -99,6 +99,11 @@ abstract public class Database extends ReadableDatabase
 		hiddenPacketUids.add(uid);
 	}
 	
+	public File createTempFile(MartusCrypto account) throws IOException
+	{
+		return File.createTempFile("$$$Martus", null, getInterimDirectory(account.getPublicKeyString()));
+	}
+	
 	boolean isEncryptedRecordStream(InputStreamWithSeek in) throws
 			IOException
 	{

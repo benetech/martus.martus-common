@@ -429,9 +429,7 @@ public class BulletinStore
 	
 			InputStreamWithSeek in = new ZipEntryInputStreamWithSeek(zip, entry);
 	
-			File tempDirectory = db.getInterimDirectory(authorAccountId);
-			final String tempFileName = "$$$importZip";
-			File file = File.createTempFile(tempFileName, null, tempDirectory);
+			File file = db.createTempFile(getSignatureGenerator());
 			file.deleteOnExit();
 			FileOutputStream rawOut = new FileOutputStream(file);
 	

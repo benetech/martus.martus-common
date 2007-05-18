@@ -94,7 +94,7 @@ public class AttachmentPacket extends Packet
 			IOException,
 			MartusCrypto.CryptoException
 	{
-		File temp = File.createTempFile("$$$MartusAttachment", null);
+		File temp = db.createTempFile(signer);
 		temp.deleteOnExit();
 		
 		byte[] sig = writeAttachmentXmlFile(signer, temp);
