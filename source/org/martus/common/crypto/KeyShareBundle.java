@@ -33,7 +33,7 @@ import java.util.Date;
 
 import org.martus.common.MartusConstants;
 import org.martus.common.crypto.MartusCrypto.KeyShareException;
-import org.martus.util.Base64;
+import org.martus.util.StreamableBase64;
 import org.martus.util.UnicodeReader;
 import org.martus.util.UnicodeStringWriter;
 import org.martus.util.inputstreamwithseek.StringInputStreamWithSeek;
@@ -47,7 +47,7 @@ class KeyShareBundle
 		id = MartusConstants.martusSecretShareFileID;
 		timeStamp = (new Timestamp(new Date().getTime())).toString();		
 		publicKey = publicKeyToUse;
-		payload = Base64.encode(payloadToUse);
+		payload = StreamableBase64.encode(payloadToUse);
 	}
 			
 	public KeyShareBundle(String bundleString) throws IOException, KeyShareException

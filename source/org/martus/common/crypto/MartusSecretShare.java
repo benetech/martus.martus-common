@@ -35,7 +35,7 @@ import org.logi.crypto.secretshare.PolySecretShare;
 import org.logi.crypto.secretshare.SecretSharingException;
 import org.martus.common.MartusConstants;
 import org.martus.common.crypto.MartusCrypto.KeyShareException;
-import org.martus.util.Base64;
+import org.martus.util.StreamableBase64;
 
 public class MartusSecretShare
 {
@@ -91,7 +91,7 @@ public class MartusSecretShare
 		try 
 		{
 			KeyShareBundle bundle = new KeyShareBundle((String) bundles.get(0));
-			return Base64.decode(bundle.payload);
+			return StreamableBase64.decode(bundle.payload);
 		}
 		catch (Exception e)
 		{

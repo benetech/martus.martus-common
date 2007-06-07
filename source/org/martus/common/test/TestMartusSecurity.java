@@ -50,7 +50,7 @@ import org.martus.common.crypto.MartusCrypto.DecryptionException;
 import org.martus.common.crypto.MartusCrypto.EncryptionException;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
 import org.martus.common.crypto.MartusCrypto.NoKeyPairException;
-import org.martus.util.Base64;
+import org.martus.util.StreamableBase64;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
 
@@ -228,7 +228,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 	public void testGetDigestOfPartOfPrivateKey() throws Exception
 	{
 		MartusCrypto knownKey = MockMartusSecurity.createClient();
-		String digest = Base64.encode(knownKey.getDigestOfPartOfPrivateKey());
+		String digest = StreamableBase64.encode(knownKey.getDigestOfPartOfPrivateKey());
 		assertEquals("PY7HmxJgqLy76WNx3mKfaNnxFc8=", digest);
 	}
 
@@ -264,7 +264,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 
 		String	account = security.getPublicKeyString();
 		byte[] publicKeyBytes = publicKey.getEncoded();
-		String publicKeyString = Base64.encode(publicKeyBytes);
+		String publicKeyString = StreamableBase64.encode(publicKeyBytes);
 		assertEquals("Public Key doesn't Match", publicKeyString, account);
 		TRACE_END();
 	}
@@ -410,7 +410,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 	public void testExtractPublicKey() throws Exception
 	{
 		assertNull("not base64", MartusJceKeyPair.extractPublicKey("not Base64"));
-		assertNull("not valid key", MartusJceKeyPair.extractPublicKey(Base64.encode(new byte[] {1,2,3})));
+		assertNull("not valid key", MartusJceKeyPair.extractPublicKey(StreamableBase64.encode(new byte[] {1,2,3})));
 	}
 
 	public void testCreateSignature() throws MartusSecurity.MartusSignatureException
@@ -692,7 +692,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 			 keyBytes[i] = (byte)0xFF;
 			 byte[] thisResult = encryptBytes(sampleBytes, key);
 			 assertFalse("Not encypted?", Arrays.equals(thisResult, sampleBytes));
-			 assertNotEquals(Base64.encode(baseResult), Base64.encode(thisResult));
+			 assertNotEquals(StreamableBase64.encode(baseResult), StreamableBase64.encode(thisResult));
 			 keyBytes[i] = 0;
 		}
 	}

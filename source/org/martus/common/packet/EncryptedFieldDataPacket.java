@@ -39,8 +39,8 @@ import org.martus.common.XmlWriterFilter;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.EncryptionException;
-import org.martus.util.Base64;
-import org.martus.util.Base64.InvalidBase64Exception;
+import org.martus.util.StreamableBase64;
+import org.martus.util.StreamableBase64.InvalidBase64Exception;
 
 class EncryptedFieldDataPacket extends Packet
 {
@@ -57,7 +57,7 @@ class EncryptedFieldDataPacket extends Packet
 			ByteArrayOutputStream outEncrypted = new ByteArrayOutputStream();
 			security.encrypt(inPlain, outEncrypted, sessionKey);
 			byte[] encryptedBytes = outEncrypted.toByteArray();
-			encryptedData = Base64.encode(encryptedBytes);
+			encryptedData = StreamableBase64.encode(encryptedBytes);
 		}
 		catch(UnsupportedEncodingException e)
 		{
@@ -128,7 +128,7 @@ class EncryptedFieldDataPacket extends Packet
 	private String getSessionKeyString(String publicCode) throws EncryptionException
 	{
 		SessionKey encryptedSessionKey = security.encryptSessionKey(sessionKey, publicCode);
-		String sessionKeyString = Base64.encode(encryptedSessionKey.getBytes());
+		String sessionKeyString = StreamableBase64.encode(encryptedSessionKey.getBytes());
 		return sessionKeyString;
 	}
 

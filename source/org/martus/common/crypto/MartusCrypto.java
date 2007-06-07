@@ -40,8 +40,8 @@ import java.util.Vector;
 import javax.net.ssl.KeyManager;
 
 import org.martus.common.MartusUtilities;
-import org.martus.util.Base64;
-import org.martus.util.Base64.InvalidBase64Exception;
+import org.martus.util.StreamableBase64;
+import org.martus.util.StreamableBase64.InvalidBase64Exception;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 
 
@@ -58,12 +58,12 @@ public abstract class MartusCrypto
 		IOException, InvalidKeyPairFileVersionException, AuthorizationFailedException;
 	public abstract String getPublicKeyString();
 	public abstract byte[] getDigestOfPartOfPrivateKey() throws CreateDigestException;
-	public String getSignatureOfPublicKey() throws Base64.InvalidBase64Exception, MartusCrypto.MartusSignatureException {
+	public String getSignatureOfPublicKey() throws StreamableBase64.InvalidBase64Exception, MartusCrypto.MartusSignatureException {
 		String publicKeyString = getPublicKeyString();
-		byte[] publicKeyBytes = Base64.decode(publicKeyString);
+		byte[] publicKeyBytes = StreamableBase64.decode(publicKeyString);
 		ByteArrayInputStream in = new ByteArrayInputStream(publicKeyBytes);
 		byte[] sigBytes = createSignatureOfStream(in);
-		String sigString = Base64.encode(sigBytes);
+		String sigString = StreamableBase64.encode(sigBytes);
 		return sigString;
 	}
 
@@ -164,7 +164,7 @@ public abstract class MartusCrypto
 	
 	// public codes
 	public static String computePublicCode(String publicKeyString) throws
-		Base64.InvalidBase64Exception
+		StreamableBase64.InvalidBase64Exception
 	{
 		String digest = null;
 		try
@@ -182,7 +182,7 @@ public abstract class MartusCrypto
 		int dest = 0;
 		for(int i = 0; i < codeSizeChars/2; ++i)
 		{
-			int value = Base64.getValue(digest.charAt(i));
+			int value = StreamableBase64.getValue(digest.charAt(i));
 			int high = value >> 3;
 			int low = value & 0x07;
 	
@@ -193,7 +193,7 @@ public abstract class MartusCrypto
 	}
 
 	public static String computeFormattedPublicCode(String publicKeyString) throws
-		Base64.InvalidBase64Exception
+		StreamableBase64.InvalidBase64Exception
 	{
 		String rawCode = computePublicCode(publicKeyString);
 		return MartusCrypto.formatPublicCode(rawCode);
@@ -240,7 +240,7 @@ public abstract class MartusCrypto
 	}
 
 	public static String getFormattedPublicCode(String accountId)
-		throws Base64.InvalidBase64Exception
+		throws StreamableBase64.InvalidBase64Exception
 	{
 		return formatPublicCode(MartusCrypto.computePublicCode(accountId));
 	}
@@ -325,7 +325,7 @@ public abstract class MartusCrypto
 		try
 		{
 			byte[] result = createDigestBytes(inputText);
-			return Base64.encode(result);
+			return StreamableBase64.encode(result);
 		}
 		catch (Exception e)
 		{

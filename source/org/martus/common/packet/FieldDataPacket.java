@@ -48,9 +48,9 @@ import org.martus.common.field.MartusField;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldType;
 import org.martus.common.fieldspec.FieldTypeUnknown;
-import org.martus.util.Base64;
+import org.martus.util.StreamableBase64;
 import org.martus.util.UnicodeReader;
-import org.martus.util.Base64.InvalidBase64Exception;
+import org.martus.util.StreamableBase64.InvalidBase64Exception;
 import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 import org.martus.util.xml.SimpleXmlParser;
@@ -284,7 +284,7 @@ public class FieldDataPacket extends Packet
 			sessionKey = security.decryptSessionKey(encryptedHQSessionKey);
 		}
 		
-		byte[] encryptedBytes = Base64.decode(encryptedData);
+		byte[] encryptedBytes = StreamableBase64.decode(encryptedData);
 		ByteArrayInputStreamWithSeek inEncrypted = new ByteArrayInputStreamWithSeek(encryptedBytes);
 		ByteArrayOutputStream outPlain = new ByteArrayOutputStream();
 		security.decrypt(inEncrypted, outPlain, sessionKey);
@@ -359,7 +359,7 @@ public class FieldDataPacket extends Packet
 			AttachmentProxy a = (AttachmentProxy)attachments.get(i);
 			dest.writeStartTag(MartusXml.AttachmentElementName);
 			writeElement(dest, MartusXml.AttachmentLocalIdElementName, a.getUniversalId().getLocalId());
-			String sessionKeyString = Base64.encode(a.getSessionKey().getBytes());
+			String sessionKeyString = StreamableBase64.encode(a.getSessionKey().getBytes());
 			writeElement(dest, MartusXml.AttachmentKeyElementName, sessionKeyString);
 			writeElement(dest, MartusXml.AttachmentLabelElementName, a.getLabel());
 			dest.writeEndTag(MartusXml.AttachmentElementName);

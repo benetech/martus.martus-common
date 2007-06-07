@@ -37,8 +37,8 @@ import java.util.Vector;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
 import org.martus.common.network.NetworkInterfaceConstants;
-import org.martus.util.Base64;
-import org.martus.util.Base64.InvalidBase64Exception;
+import org.martus.util.StreamableBase64;
+import org.martus.util.StreamableBase64.InvalidBase64Exception;
 
 
 public class ContactInfo extends Vector
@@ -91,7 +91,7 @@ public class ContactInfo extends Vector
 		int i = start;
 		int stringsToEncode = ((Integer)(unencodedContactInfo.get(1))).intValue();
 		for(; i < start + stringsToEncode ; ++i)
-			encoded.add(Base64.encode((String)unencodedContactInfo.get(i)));
+			encoded.add(StreamableBase64.encode((String)unencodedContactInfo.get(i)));
 		encoded.add(unencodedContactInfo.get(i));
 		return encoded;
 	}
@@ -101,7 +101,7 @@ public class ContactInfo extends Vector
 		return possiblyEncodedContactInfo.get(0).equals(NetworkInterfaceConstants.BASE_64_ENCODED);
 	}
 	
-	static public Vector decodeContactInfoVectorIfNecessary(Vector possiblyEncodedContactInfo) throws UnsupportedEncodingException, Base64.InvalidBase64Exception
+	static public Vector decodeContactInfoVectorIfNecessary(Vector possiblyEncodedContactInfo) throws UnsupportedEncodingException, StreamableBase64.InvalidBase64Exception
 	{
 		if (!isEncoded(possiblyEncodedContactInfo))
 			return possiblyEncodedContactInfo;
@@ -121,7 +121,7 @@ public class ContactInfo extends Vector
 		for(; i < start + stringsToDecode ; ++i)
 		{	
 			String encodedData = (String)possiblyEncodedContactInfo.get(i);
-			decodedContactInfo.add(new String(Base64.decode(encodedData),"UTF-8"));
+			decodedContactInfo.add(new String(StreamableBase64.decode(encodedData),"UTF-8"));
 		}
 		decodedContactInfo.add(possiblyEncodedContactInfo.get(i));
 		return decodedContactInfo;

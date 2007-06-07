@@ -38,7 +38,7 @@ import org.martus.common.XmlWriterFilter;
 import org.martus.common.bulletin.BulletinConstants;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.database.DatabaseKey;
-import org.martus.util.Base64;
+import org.martus.util.StreamableBase64;
 import org.martus.util.UnicodeReader;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 import org.martus.util.inputstreamwithseek.ZipEntryInputStreamWithSeek;
@@ -427,14 +427,14 @@ public class BulletinHeaderPacket extends Packet
 		if(dataId != null)
 		{
 			writeElement(dest, MartusXml.DataPacketIdElementName, dataId);
-			writeElement(dest, MartusXml.DataPacketSigElementName, Base64.encode(fieldDataPacketSig));
+			writeElement(dest, MartusXml.DataPacketSigElementName, StreamableBase64.encode(fieldDataPacketSig));
 		}
 
 		String privateId = getPrivateFieldDataPacketId();
 		if(privateId != null)
 		{
 			writeElement(dest, MartusXml.PrivateDataPacketIdElementName, privateId);
-			writeElement(dest, MartusXml.PrivateDataPacketSigElementName, Base64.encode(privateFieldDataPacketSig));
+			writeElement(dest, MartusXml.PrivateDataPacketSigElementName, StreamableBase64.encode(privateFieldDataPacketSig));
 		}
 
 		String[] publicAttachmentIds = getPublicAttachmentIds();

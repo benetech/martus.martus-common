@@ -47,8 +47,8 @@ import org.martus.common.packet.UniversalId;
 import org.martus.common.packet.Packet.InvalidPacketException;
 import org.martus.common.packet.Packet.SignatureVerificationException;
 import org.martus.common.packet.Packet.WrongPacketTypeException;
-import org.martus.util.Base64;
-import org.martus.util.Base64.InvalidBase64Exception;
+import org.martus.util.StreamableBase64;
+import org.martus.util.StreamableBase64.InvalidBase64Exception;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 
 
@@ -141,7 +141,7 @@ public class BulletinLoader
 
 	public static void extractAttachmentToFile(ReadableDatabase db, AttachmentProxy a, MartusCrypto verifier, File destFile) throws
 		IOException,
-		Base64.InvalidBase64Exception,
+		StreamableBase64.InvalidBase64Exception,
 		Packet.InvalidPacketException,
 		Packet.SignatureVerificationException,
 		Packet.WrongPacketTypeException,

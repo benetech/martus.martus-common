@@ -53,7 +53,7 @@ import javax.crypto.NoSuchPaddingException;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
-import org.martus.util.Base64;
+import org.martus.util.StreamableBase64;
 
 public class MartusJceKeyPair extends MartusKeyPair
 {
@@ -154,7 +154,7 @@ public class MartusJceKeyPair extends MartusKeyPair
 		//System.out.println("key=" + base64PublicKey);
 		try
 		{
-			EncodedKeySpec keySpec = new X509EncodedKeySpec(Base64.decode(publicKeyX509));
+			EncodedKeySpec keySpec = new X509EncodedKeySpec(StreamableBase64.decode(publicKeyX509));
 			KeyFactory factory = KeyFactory.getInstance(RSA_ALGORITHM_NAME);
 			PublicKey publicKey = factory.generatePublic(keySpec);
 			return publicKey;
@@ -167,7 +167,7 @@ public class MartusJceKeyPair extends MartusKeyPair
 		{
 			//System.out.println("MartusSecurity.extractPublicKey: " + e);
 		}
-		catch(Base64.InvalidBase64Exception e)
+		catch(StreamableBase64.InvalidBase64Exception e)
 		{
 			//System.out.println("MartusSecurity.extractPublicKey: " + e);
 		}
@@ -261,7 +261,7 @@ public class MartusJceKeyPair extends MartusKeyPair
 	{
 		if(key == null)
 			return null;
-		return Base64.encode(key.getEncoded());
+		return StreamableBase64.encode(key.getEncoded());
 	}
 
 	private static SecureRandom rand;

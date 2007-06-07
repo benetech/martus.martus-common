@@ -32,7 +32,7 @@ import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
 import org.martus.common.MartusXml;
 import org.martus.common.HQKeys.XmlHQsLoader;
-import org.martus.util.Base64;
+import org.martus.util.StreamableBase64;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlStringLoader;
 import org.martus.util.xml.SimpleXmlVectorLoader;
@@ -97,11 +97,11 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 			else if(tag.equals(MartusXml.DataPacketIdElementName))
 				bhp.setFieldDataPacketId(value);
 			else if(tag.equals(MartusXml.DataPacketSigElementName))
-				bhp.setFieldDataSignature(Base64.decode(value));
+				bhp.setFieldDataSignature(StreamableBase64.decode(value));
 			else if(tag.equals(MartusXml.PrivateDataPacketIdElementName))
 				bhp.setPrivateFieldDataPacketId(value);
 			else if(tag.equals(MartusXml.PrivateDataPacketSigElementName))
-				bhp.setPrivateFieldDataSignature(Base64.decode(value));
+				bhp.setPrivateFieldDataSignature(StreamableBase64.decode(value));
 			else if(tag.equals(MartusXml.PublicAttachmentIdElementName))
 				bhp.addPublicAttachmentLocalId(value);
 			else if(tag.equals(MartusXml.PrivateAttachmentIdElementName))

@@ -28,7 +28,7 @@ package org.martus.common.crypto;
 
 import java.util.Arrays;
 
-import org.martus.util.Base64;
+import org.martus.util.StreamableBase64;
 
 
 public class SessionKey
@@ -72,7 +72,7 @@ public class SessionKey
 
 	public String toString()
 	{
-		return Base64.encode(getBytes());
+		return StreamableBase64.encode(getBytes());
 	}
 	
 	byte[] keyBytes;

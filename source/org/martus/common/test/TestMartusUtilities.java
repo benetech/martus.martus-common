@@ -63,7 +63,7 @@ import org.martus.common.packet.UniversalId;
 import org.martus.common.packet.Packet.InvalidPacketException;
 import org.martus.common.packet.Packet.SignatureVerificationException;
 import org.martus.common.packet.Packet.WrongAccountException;
-import org.martus.util.Base64;
+import org.martus.util.StreamableBase64;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.UnicodeReader;
 import org.martus.util.UnicodeWriter;
@@ -152,10 +152,10 @@ public class TestMartusUtilities extends TestCaseEnhanced
 	public void testImportServerPublicKeyFromFile() throws Exception
 	{
 		String key = security.getPublicKeyString();
-		byte[] publicKeyBytes = Base64.decode(key);
+		byte[] publicKeyBytes = StreamableBase64.decode(key);
 		InputStream in = new ByteArrayInputStream(publicKeyBytes);
 		byte[] sigBytes = security.createSignatureOfStream(in);
-		String sig = Base64.encode(sigBytes);
+		String sig = StreamableBase64.encode(sigBytes);
 
 		File keyFile = createTempFile();
 		UnicodeWriter writer = new UnicodeWriter(keyFile);
@@ -210,10 +210,10 @@ public class TestMartusUtilities extends TestCaseEnhanced
 	{
 		MockMartusSecurity other = MockMartusSecurity.createOtherServer();
 		String key = other.getPublicKeyString();
-		byte[] publicKeyBytes = Base64.decode(key);
+		byte[] publicKeyBytes = StreamableBase64.decode(key);
 		InputStream in = new ByteArrayInputStream(publicKeyBytes);
 		byte[] sigBytes = security.createSignatureOfStream(in);
-		String sig = Base64.encode(sigBytes);
+		String sig = StreamableBase64.encode(sigBytes);
 
 		File keyFile = createTempFile();
 		UnicodeWriter writer = new UnicodeWriter(keyFile);
@@ -263,10 +263,10 @@ public class TestMartusUtilities extends TestCaseEnhanced
 	public void testImportClientPublicKeyFromFile() throws Exception
 	{
 		String key = security.getPublicKeyString();
-		byte[] publicKeyBytes = Base64.decode(key);
+		byte[] publicKeyBytes = StreamableBase64.decode(key);
 		InputStream in = new ByteArrayInputStream(publicKeyBytes);
 		byte[] sigBytes = security.createSignatureOfStream(in);
-		String sig = Base64.encode(sigBytes);
+		String sig = StreamableBase64.encode(sigBytes);
 
 		File keyFile = createTempFile();
 		UnicodeWriter writer = new UnicodeWriter(keyFile);

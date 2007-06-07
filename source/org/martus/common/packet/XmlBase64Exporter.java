@@ -30,8 +30,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
 
-import org.martus.util.Base64;
-import org.martus.util.Base64.InvalidBase64Exception;
+import org.martus.util.StreamableBase64;
+import org.martus.util.StreamableBase64.InvalidBase64Exception;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.xml.sax.SAXParseException;
 
@@ -73,7 +73,7 @@ public class XmlBase64Exporter extends SimpleXmlDefaultLoader
 		cache.delete(0, length);
 		try
 		{
-			Base64.decode(new StringReader(base64Text), out);
+			StreamableBase64.decode(new StringReader(base64Text), out);
 		}
 		catch(IOException e)
 		{

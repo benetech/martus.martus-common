@@ -35,7 +35,7 @@ import org.martus.common.crypto.SessionKey;
 import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.Packet;
 import org.martus.common.packet.UniversalId;
-import org.martus.util.Base64;
+import org.martus.util.StreamableBase64;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 
 
@@ -64,7 +64,7 @@ public class AttachmentProxy
 			Packet.InvalidPacketException,
 			Packet.SignatureVerificationException,
 			Packet.WrongPacketTypeException,
-			Base64.InvalidBase64Exception
+			StreamableBase64.InvalidBase64Exception
 	{
 		SessionKey sessionKey = oldProxy.getSessionKey();
 		File tempFile = File.createTempFile("$$$MartusImportAttachment", null);

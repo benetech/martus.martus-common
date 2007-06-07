@@ -36,7 +36,7 @@ import javax.net.ssl.X509TrustManager;
 
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusJceKeyPair;
-import org.martus.util.Base64;
+import org.martus.util.StreamableBase64;
 
 
 public class SimpleX509TrustManager implements X509TrustManager
@@ -157,7 +157,7 @@ public class SimpleX509TrustManager implements X509TrustManager
 	{
 		if(key == null)
 			return null;
-		return Base64.encode(key.getEncoded());
+		return StreamableBase64.encode(key.getEncoded());
 	}
 
 	private PublicKey expectedPublicKey;

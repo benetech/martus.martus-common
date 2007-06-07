@@ -37,7 +37,7 @@ import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.BulletinHistory;
 import org.martus.common.packet.UniversalId;
-import org.martus.util.Base64;
+import org.martus.util.StreamableBase64;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
@@ -231,7 +231,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		assertContains(MartusXml.getTagEnd(MartusXml.DataPacketIdElementName), result);
 
 		assertContains(MartusXml.getTagStart(MartusXml.DataPacketSigElementName), result);
-		assertContains("missing data sig?", Base64.encode(sampleSig1), result);
+		assertContains("missing data sig?", StreamableBase64.encode(sampleSig1), result);
 		assertContains(MartusXml.getTagEnd(MartusXml.DataPacketSigElementName), result);
 
 		assertContains(MartusXml.getTagStart(MartusXml.PrivateDataPacketIdElementName), result);
@@ -239,7 +239,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		assertContains(MartusXml.getTagEnd(MartusXml.PrivateDataPacketIdElementName), result);
 
 		assertContains(MartusXml.getTagStart(MartusXml.PrivateDataPacketSigElementName), result);
-		assertContains("missing private data sig?", Base64.encode(sampleSig2), result);
+		assertContains("missing private data sig?", StreamableBase64.encode(sampleSig2), result);
 		assertContains(MartusXml.getTagEnd(MartusXml.PrivateDataPacketSigElementName), result);
 
 		assertContains(MartusXml.getTagStart(MartusXml.PublicAttachmentIdElementName), result);

@@ -29,14 +29,14 @@ package org.martus.common;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.martus.util.Base64;
+import org.martus.util.StreamableBase64;
 
 public class Base64XmlOutputStream extends OutputStream
 {
 	public Base64XmlOutputStream(XmlWriterFilter destination)
 	{
 		dest = destination;
-		buffer = new byte[Base64.BYTESPERLINE];
+		buffer = new byte[StreamableBase64.BYTESPERLINE];
 		offset = 0;
 	}
 
@@ -59,7 +59,7 @@ public class Base64XmlOutputStream extends OutputStream
 
 	private void flushBuffer() throws IOException
 	{
-		String thisLine = Base64.encode(buffer, 0, offset);
+		String thisLine = StreamableBase64.encode(buffer, 0, offset);
 		writeLine(thisLine);
 		offset = 0;
 	}

@@ -39,7 +39,7 @@ import org.martus.common.crypto.MartusSecretShare;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.KeyShareException;
-import org.martus.util.Base64;
+import org.martus.util.StreamableBase64;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.UnicodeReader;
 import org.martus.util.UnicodeStringWriter;
@@ -165,7 +165,7 @@ public class TestKeyShareSaveRestore extends TestCaseEnhanced
 		twoShares.add(share2SessionKey);
 		SessionKey recoveredSessionKey = new SessionKey(MartusSecretShare.recoverShares(twoShares));
 		String item5EncodedAndEncryptedKeyPair = reader.readLine();
-		byte[] encryptedKeyPair = Base64.decode(item5EncodedAndEncryptedKeyPair);
+		byte[] encryptedKeyPair = StreamableBase64.decode(item5EncodedAndEncryptedKeyPair);
 		in.close();
 		reader.close();
 		
@@ -228,7 +228,7 @@ public class TestKeyShareSaveRestore extends TestCaseEnhanced
 				writer.writeln("corrupted Public code");
 				writer.writeln("date/time stamp");
 				writer.writeln("corrupted Share");
-				writer.writeln(Base64.encode("Corrupted KeyPair"));
+				writer.writeln(StreamableBase64.encode("Corrupted KeyPair"));
 				writer.close();
 				fakeBundle.add(writer.toString());
 			}			

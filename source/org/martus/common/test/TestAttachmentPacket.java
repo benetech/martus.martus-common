@@ -42,7 +42,7 @@ import org.martus.common.crypto.SessionKey;
 import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.UniversalId;
 import org.martus.common.packet.XmlBase64Exporter;
-import org.martus.util.Base64;
+import org.martus.util.StreamableBase64;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
 import org.martus.util.inputstreamwithseek.FileInputStreamWithSeek;
@@ -86,8 +86,8 @@ public class TestAttachmentPacket extends TestCaseEnhanced
 	{
 		String baseTag = MartusXml.AttachmentBytesElementName;
 		String xml = MartusXml.getTagStart(baseTag) +
-					Base64.encode(sampleBytes) + "\n" + 
-					Base64.encode(sampleBytes) + "\n" + 
+					StreamableBase64.encode(sampleBytes) + "\n" + 
+					StreamableBase64.encode(sampleBytes) + "\n" + 
 					MartusXml.getTagEnd(baseTag);
 					
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -110,7 +110,7 @@ public class TestAttachmentPacket extends TestCaseEnhanced
 		byte[] resultBytes = dest.toByteArray();
 		String result = new String(resultBytes);
 		assertContains("tag start", MartusXml.getTagStart(MartusXml.AttachmentBytesElementName), result);
-		assertNotContains("data", Base64.encode(sampleBytes), result);
+		assertNotContains("data", StreamableBase64.encode(sampleBytes), result);
 		assertContains("tag end", MartusXml.getTagEnd(MartusXml.AttachmentBytesElementName), result);
 	}
 
@@ -154,7 +154,7 @@ public class TestAttachmentPacket extends TestCaseEnhanced
 		ap.writeXml(encryptedDest, security);
 		byte[] encryptedBytes = encryptedDest.toByteArray();
 		String encryptedResult = new String(encryptedBytes);
-		assertNotContains("Encrypted data", Base64.encode(sampleBytes), encryptedResult);
+		assertNotContains("Encrypted data", StreamableBase64.encode(sampleBytes), encryptedResult);
 
 		security.clearKeyPair();
 

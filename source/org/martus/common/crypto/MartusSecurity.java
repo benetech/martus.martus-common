@@ -84,7 +84,7 @@ import org.bouncycastle.jce.X509Principal;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.x509.X509V1CertificateGenerator;
 import org.martus.common.MartusConstants;
-import org.martus.util.Base64;
+import org.martus.util.StreamableBase64;
 import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 
@@ -662,7 +662,7 @@ public class MartusSecurity extends MartusCrypto
 				signer.digest(bytesToSign);
 				signer.digest((byte)0);
 			}
-			return Base64.encode(signer.getSignature());
+			return StreamableBase64.encode(signer.getSignature());
 		}
 		catch(Exception e)
 		{
@@ -684,7 +684,7 @@ public class MartusSecurity extends MartusCrypto
 				verifier.digest(bytesToSign);
 				verifier.digest((byte)0);
 			}
-			byte[] sigBytes = Base64.decode(sig);
+			byte[] sigBytes = StreamableBase64.decode(sig);
 			return verifier.isValidSignature(sigBytes);
 		}
 		catch(Exception e)
@@ -699,7 +699,7 @@ public class MartusSecurity extends MartusCrypto
 		byte[] token = new byte[TOKEN_BYTE_COUNT];
 		rand.nextBytes(token);
 
-		return Base64.encode(token);
+		return StreamableBase64.encode(token);
 	}
 
 	public KeyManager [] createKeyManagers() throws Exception

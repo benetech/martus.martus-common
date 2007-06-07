@@ -39,7 +39,7 @@ import org.martus.common.crypto.MartusKeyPair;
 import org.martus.common.crypto.MartusKeyPairLoader;
 import org.martus.common.crypto.MartusKeyPairSaver;
 import org.martus.common.crypto.MockMartusSecurity;
-import org.martus.util.Base64;
+import org.martus.util.StreamableBase64;
 import org.martus.util.TestCaseEnhanced;
 
 public class TestMartusKeyPair extends TestCaseEnhanced
@@ -69,7 +69,7 @@ public class TestMartusKeyPair extends TestCaseEnhanced
 			p.createRSA(512);
 			assertTrue("has key failed? " + p.getClass().getName(), p.hasKeyPair());
 			String publicKeyString = p.getPublicKeyString();
-			Base64.decode(publicKeyString);
+			StreamableBase64.decode(publicKeyString);
 		}
 		objects.add(MockMartusSecurity.createClient().getKeyPair());
 		objects.add(MockMartusSecurity.createOtherClient().getKeyPair());

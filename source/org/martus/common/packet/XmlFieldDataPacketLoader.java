@@ -40,8 +40,8 @@ import org.martus.common.crypto.SessionKey;
 import org.martus.common.field.MartusField;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.GridFieldSpec;
-import org.martus.util.Base64;
-import org.martus.util.Base64.InvalidBase64Exception;
+import org.martus.util.StreamableBase64;
+import org.martus.util.StreamableBase64.InvalidBase64Exception;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlMapLoader;
 import org.martus.util.xml.SimpleXmlStringLoader;
@@ -106,7 +106,7 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 				else if(tag.equals(MartusXml.EncryptedDataElementName))
 					encryptedData = value;
 				else if(tag.equals(MartusXml.HQSessionKeyElementName))
-					encryptedHQSessionKey = new SessionKey(Base64.decode(value));
+					encryptedHQSessionKey = new SessionKey(StreamableBase64.decode(value));
 			}
 			else if(tag.equals(AuthorizedSessionKeys.AUTHORIZED_SESSION_KEYS_TAG))
 			{
@@ -115,7 +115,7 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 					Map.Entry element = (Map.Entry) iter.next();
 					String publicCode = (String)element.getKey();
 					String sessionKeyString = (String)element.getValue();
-					SessionKey sessionKey = new SessionKey(Base64.decode(sessionKeyString));
+					SessionKey sessionKey = new SessionKey(StreamableBase64.decode(sessionKeyString));
 					authorizedEncryptedHQSessionKeys.put(publicCode, sessionKey);
 				}
 			}
@@ -204,7 +204,7 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 		public AttachmentProxy getAttachmentProxy(String accountId) throws InvalidBase64Exception
 		{
 			String attachmentLocalId = get(MartusXml.AttachmentLocalIdElementName);
-			byte[] sessionKeyBytes = Base64.decode(get(MartusXml.AttachmentKeyElementName));
+			byte[] sessionKeyBytes = StreamableBase64.decode(get(MartusXml.AttachmentKeyElementName));
 			String attachmentLabel = get(MartusXml.AttachmentLabelElementName);
 			
 			UniversalId uid = UniversalId.createFromAccountAndLocalId(accountId, attachmentLocalId);

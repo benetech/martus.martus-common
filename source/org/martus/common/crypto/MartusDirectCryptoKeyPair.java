@@ -51,8 +51,8 @@ import org.bouncycastle.crypto.engines.RSAEngine;
 import org.bouncycastle.crypto.generators.RSAKeyPairGenerator;
 import org.bouncycastle.crypto.params.RSAKeyGenerationParameters;
 import org.bouncycastle.crypto.params.RSAKeyParameters;
-import org.martus.util.Base64;
-import org.martus.util.Base64.InvalidBase64Exception;
+import org.martus.util.StreamableBase64;
+import org.martus.util.StreamableBase64.InvalidBase64Exception;
 
 /*
  * NOTE!!!!!!!
@@ -103,7 +103,7 @@ public class MartusDirectCryptoKeyPair extends MartusKeyPair
 		}
 		
 		byte[] bytes = bOut.toByteArray();
-		return Base64.encode(bytes);
+		return StreamableBase64.encode(bytes);
 	}
 
 	public void clear()
@@ -175,7 +175,7 @@ public class MartusDirectCryptoKeyPair extends MartusKeyPair
 	
 	private CipherParameters extractPublicKey(String recipientPublicKeyX509) throws InvalidBase64Exception, IOException
 	{
-		byte[] publicKeyBytes = Base64.decode(recipientPublicKeyX509);
+		byte[] publicKeyBytes = StreamableBase64.decode(recipientPublicKeyX509);
 		ByteArrayInputStream rawIn = new ByteArrayInputStream(publicKeyBytes);
 		ASN1InputStream in = new ASN1InputStream(rawIn);
 		SubjectPublicKeyInfo info = new SubjectPublicKeyInfo((ASN1Sequence)(in.readObject()));

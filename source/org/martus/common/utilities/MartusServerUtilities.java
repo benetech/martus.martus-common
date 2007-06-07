@@ -53,7 +53,7 @@ import org.martus.common.crypto.MartusCrypto.CryptoInitializationException;
 import org.martus.common.crypto.MartusCrypto.InvalidKeyPairFileVersionException;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
 import org.martus.common.packet.UniversalId;
-import org.martus.util.Base64;
+import org.martus.util.StreamableBase64;
 import org.martus.util.UnicodeReader;
 import org.martus.util.UnicodeWriter;
 
@@ -212,7 +212,7 @@ public class MartusServerUtilities
 		long filesize = fileToSign.length();
 		long lineCount = getLineCountForFile(fileToSign);
 		byte[] signature = MartusUtilities.createSignatureFromFile(fileToSign, signer);
-		String sigString = Base64.encode(signature);
+		String sigString = StreamableBase64.encode(signature);
 
 		signatureFile.delete();
 		UnicodeWriter writer = new UnicodeWriter(signatureFile, UnicodeWriter.APPEND);
@@ -271,7 +271,7 @@ public class MartusServerUtilities
 			if(!key.equals(accountId))
 				throw new FileVerificationException();
 			inData = new FileInputStream(fileToVerify);
-			if( !verifier.isValidSignatureOfStream(key, inData, Base64.decode(signature)) )
+			if( !verifier.isValidSignatureOfStream(key, inData, StreamableBase64.decode(signature)) )
 				throw new FileVerificationException();
 		}
 		catch(Exception e)

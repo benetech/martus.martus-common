@@ -56,7 +56,7 @@ import org.martus.common.network.NetworkResponse;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.Packet;
 import org.martus.common.packet.UniversalId;
-import org.martus.util.Base64;
+import org.martus.util.StreamableBase64;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 import org.martus.util.inputstreamwithseek.ZipEntryInputStreamWithSeek;
 
@@ -344,7 +344,7 @@ public class BulletinZipUtilities
 			MartusCrypto.MartusSignatureException,
 			MartusUtilities.ServerErrorException,
 			IOException,
-			Base64.InvalidBase64Exception, 
+			StreamableBase64.InvalidBase64Exception, 
 			NotYourBulletinErrorException,
 			BulletinNotFoundException
 	{
@@ -389,7 +389,7 @@ public class BulletinZipUtilities
 			String data = (String)result.get(2);
 			StringReader reader = new StringReader(data);
 	
-			Base64.decode(reader, outputStream);
+			StreamableBase64.decode(reader, outputStream);
 			chunkOffset += thisChunkSize;
 			if(progressMeter != null)
 			{

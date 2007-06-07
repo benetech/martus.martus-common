@@ -46,7 +46,7 @@ import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.Packet;
 import org.martus.common.packet.UniversalId;
-import org.martus.util.Base64;
+import org.martus.util.StreamableBase64;
 import org.martus.util.UnicodeWriter;
 
 
@@ -58,12 +58,12 @@ public class BulletinForTesting extends Bulletin
 		super(securityToUse);
 	}
 
-	public static void loadFromZipString(Bulletin b, String zipString, MartusCrypto sigVerifier) throws IOException, Base64.InvalidBase64Exception
+	public static void loadFromZipString(Bulletin b, String zipString, MartusCrypto sigVerifier) throws IOException, StreamableBase64.InvalidBase64Exception
 	{
 		File tempFile = null;
 		try
 		{
-			tempFile = Base64.decodeToTempFile(zipString);
+			tempFile = StreamableBase64.decodeToTempFile(zipString);
 			BulletinZipImporter.loadFromFile(b, tempFile, sigVerifier);
 		}
 		finally
@@ -87,7 +87,7 @@ public class BulletinForTesting extends Bulletin
 			byte[] rawBytes = new byte[len];
 			inputStream.read(rawBytes);
 			inputStream.close();
-			return Base64.encode(rawBytes);
+			return StreamableBase64.encode(rawBytes);
 		}
 		finally
 		{

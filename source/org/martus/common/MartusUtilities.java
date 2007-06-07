@@ -56,11 +56,11 @@ import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.Packet.InvalidPacketException;
 import org.martus.common.packet.Packet.SignatureVerificationException;
 import org.martus.common.packet.Packet.WrongAccountException;
-import org.martus.util.Base64;
+import org.martus.util.StreamableBase64;
 import org.martus.util.StreamFilter;
 import org.martus.util.UnicodeReader;
 import org.martus.util.UnicodeWriter;
-import org.martus.util.Base64.InvalidBase64Exception;
+import org.martus.util.StreamableBase64.InvalidBase64Exception;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 
 
@@ -171,7 +171,7 @@ public class MartusUtilities
 			newSigFile.delete();
 
 		byte[] signature = createSignatureFromFile(fileToSign, signer);
-		String sigString = Base64.encode(signature);
+		String sigString = StreamableBase64.encode(signature);
 
 		UnicodeWriter writer = new UnicodeWriter(newSigFile, UnicodeWriter.APPEND);
 		writer.writeln(signer.getPublicKeyString());
@@ -204,7 +204,7 @@ public class MartusUtilities
 				throw new FileVerificationException();
 
 			inData = new FileInputStream(fileToVerify);
-			if( !verifier.isValidSignatureOfStream(key, inData, Base64.decode(signature)) )
+			if( !verifier.isValidSignatureOfStream(key, inData, StreamableBase64.decode(signature)) )
 				throw new FileVerificationException();
 		}
 		catch(Exception e)
@@ -414,8 +414,8 @@ public class MartusUtilities
 	{
 		try
 		{
-			ByteArrayInputStream in = new ByteArrayInputStream(Base64.decode(accountId));
-			if(!verifier.isValidSignatureOfStream(accountId, in, Base64.decode(sig)))
+			ByteArrayInputStream in = new ByteArrayInputStream(StreamableBase64.decode(accountId));
+			if(!verifier.isValidSignatureOfStream(accountId, in, StreamableBase64.decode(sig)))
 				throw new PublicInformationInvalidException();
 	
 		}

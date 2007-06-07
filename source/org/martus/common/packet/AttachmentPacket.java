@@ -44,7 +44,7 @@ import org.martus.common.crypto.SessionKey;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.Database.RecordHiddenException;
-import org.martus.util.Base64;
+import org.martus.util.StreamableBase64;
 import org.martus.util.UnicodeReader;
 import org.martus.util.UnicodeWriter;
 import org.martus.util.inputstreamwithseek.FileInputStreamWithSeek;
@@ -129,7 +129,7 @@ public class AttachmentPacket extends Packet
 		org.martus.common.packet.Packet.InvalidPacketException,
 		org.martus.common.packet.Packet.SignatureVerificationException,
 		org.martus.common.packet.Packet.WrongPacketTypeException,
-		Base64.InvalidBase64Exception
+		StreamableBase64.InvalidBase64Exception
 	{
 		File encryptedTempFile = null;
 		try

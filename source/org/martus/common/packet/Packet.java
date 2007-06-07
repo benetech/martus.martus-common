@@ -43,7 +43,7 @@ import org.martus.common.crypto.MartusCrypto.CryptoException;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.Database.RecordHiddenException;
-import org.martus.util.Base64;
+import org.martus.util.StreamableBase64;
 import org.martus.util.Stopwatch;
 import org.martus.util.UnicodeReader;
 import org.martus.util.UnicodeWriter;
@@ -107,7 +107,7 @@ public class Packet
 		byte[] originalBytes = sessionKey.getBytes();
 		byte[] wantedBytes = new byte[LOCALID_RANDOM_BYTE_COUNT];
 		System.arraycopy(originalBytes, 0, wantedBytes, 0, wantedBytes.length);
-		String base64SessionKey = Base64.encode(wantedBytes);
+		String base64SessionKey = StreamableBase64.encode(wantedBytes);
 		String normalizedKey = base64SessionKey.replaceAll("/",".");
 		normalizedKey = normalizedKey.replaceAll("=", "-");
 		String localId = prefix + normalizedKey;
@@ -187,7 +187,7 @@ public class Packet
 
 				byte[] sig = dest.getSignature();
 				dest.writeDirect(MartusXml.packetSignatureStart);
-				dest.writeDirect(Base64.encode(sig));
+				dest.writeDirect(StreamableBase64.encode(sig));
 				dest.writeDirect(MartusXml.packetSignatureEnd + MartusXml.newLine);
 
 				bufferedWriter.flush();
@@ -378,9 +378,9 @@ public class Packet
 		byte[] sigBytes = null;
 		try
 		{
-			sigBytes = Base64.decode(sigLine.substring(actualSigStart, actualSigEnd));
+			sigBytes = StreamableBase64.decode(sigLine.substring(actualSigStart, actualSigEnd));
 		}
-		catch(Base64.InvalidBase64Exception e)
+		catch(StreamableBase64.InvalidBase64Exception e)
 		{
 			throw new InvalidPacketException("Signature not valid Base64");
 		}

@@ -33,7 +33,7 @@ import java.io.Writer;
 import org.martus.common.Base64XmlOutputStream;
 import org.martus.common.XmlWriterFilter;
 import org.martus.util.*;
-import org.martus.util.Base64;
+import org.martus.util.StreamableBase64;
 
 public class TestBase64XmlOutputStream extends TestCaseEnhanced
 {
@@ -46,21 +46,21 @@ public class TestBase64XmlOutputStream extends TestCaseEnhanced
 	{
 		byte[] data = {1};
 		String result = convertToBase64BySingleBytes(data);
-		assertEquals("wrong result?", Base64.encode(data) + "\n", result);
+		assertEquals("wrong result?", StreamableBase64.encode(data) + "\n", result);
 	}
 
 	public void testThreeBytes() throws Exception
 	{
 		byte[] data = {1, 127, -127};
 		String result = convertToBase64BySingleBytes(data);
-		assertEquals("wrong result?", Base64.encode(data) + "\n", result);
+		assertEquals("wrong result?", StreamableBase64.encode(data) + "\n", result);
 	}
 
 	public void testFourBytes() throws Exception
 	{
 		byte[] data = {-128, 0, -64, 64};
 		String result = convertToBase64BySingleBytes(data);
-		assertEquals("wrong result?", Base64.encode(data) + "\n", result);
+		assertEquals("wrong result?", StreamableBase64.encode(data) + "\n", result);
 	}
 
 	public void testManyBytes() throws Exception
@@ -126,12 +126,12 @@ public class TestBase64XmlOutputStream extends TestCaseEnhanced
 		int offset = 0;
 		while (offset < data.length)
 		{
-			int len = Base64.BYTESPERLINE;
+			int len = StreamableBase64.BYTESPERLINE;
 			if(len > data.length - offset)
 				len = data.length - offset;
-			expected += Base64.encode(data, offset, len);
+			expected += StreamableBase64.encode(data, offset, len);
 			expected += "\n";
-			offset += Base64.BYTESPERLINE;
+			offset += StreamableBase64.BYTESPERLINE;
 		}
 		return expected;
 	}

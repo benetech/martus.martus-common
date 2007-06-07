@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyPair;
 
-import org.martus.util.Base64;
+import org.martus.util.StreamableBase64;
 
 public class MockMartusSecurity extends MartusSecurity
 {
@@ -108,28 +108,28 @@ public class MockMartusSecurity extends MartusSecurity
 	{
 //		createKeyPair();
 //		System.out.println(Base64.encode(getKeyPairData(getKeyPair())));
-		setKeyPairFromData(Base64.decode(nonEncryptedSampleOtherClientKeyPair));
+		setKeyPairFromData(StreamableBase64.decode(nonEncryptedSampleOtherClientKeyPair));
 	}
 
 	public void createKeyPairForHQ() throws Exception
 	{
-		setKeyPairFromData(Base64.decode(nonEncryptedSampleHQKeyPair));
+		setKeyPairFromData(StreamableBase64.decode(nonEncryptedSampleHQKeyPair));
 	}
 
 	public void createKeyPairForServer() throws Exception
 	{
-		setKeyPairFromData(Base64.decode(nonEncryptedSampleServerKeyPair));
+		setKeyPairFromData(StreamableBase64.decode(nonEncryptedSampleServerKeyPair));
 	}
 
 	public void createKeyPairForOtherServer() throws Exception
 	{
-		setKeyPairFromData(Base64.decode(nonEncryptedSampleOtherServerKeyPair));
+		setKeyPairFromData(StreamableBase64.decode(nonEncryptedSampleOtherServerKeyPair));
 	}
 
 	public void createKeyPairForAmplifier() throws Exception
 	{
 		//TODO:This should create a unique keypair for the amplifier not reuse the HQKeyPair
-		setKeyPairFromData(Base64.decode(nonEncryptedSampleHQKeyPair));
+		setKeyPairFromData(StreamableBase64.decode(nonEncryptedSampleHQKeyPair));
 	}
 
 	public void createKeyPair()
@@ -151,7 +151,7 @@ public class MockMartusSecurity extends MartusSecurity
 
 	public void loadSampleAccount() throws Exception
 	{
-		setKeyPairFromData(Base64.decode(nonEncryptedSampleKeyPair));
+		setKeyPairFromData(StreamableBase64.decode(nonEncryptedSampleKeyPair));
 	}
 
 	public SignatureEngine createSignatureVerifier(String signedByPublicKey)

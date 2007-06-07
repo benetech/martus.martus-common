@@ -37,7 +37,7 @@ import org.martus.common.crypto.MartusCrypto.CryptoException;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.UniversalId;
 import org.martus.common.utilities.MartusServerUtilities;
-import org.martus.util.Base64;
+import org.martus.util.StreamableBase64;
 import org.martus.util.UnicodeStringReader;
 
 
@@ -61,7 +61,7 @@ public class BulletinUploadRecord
 				BULLETIN_UPLOAD_RECORD_IDENTIFIER + newline +
 				bulletinLocalId + newline +
 				timeStamp + newline +
-				Base64.encode(partOfPrivateKey) + newline;
+				StreamableBase64.encode(partOfPrivateKey) + newline;
 		String digest = MartusCrypto.createDigestString(stringToDigest);
 		return 
 			BULLETIN_UPLOAD_RECORD_IDENTIFIER + newline + 
@@ -103,7 +103,7 @@ public class BulletinUploadRecord
 					fileTypeIdentifier + newline +
 					localId  + newline +
 					timeStamp + newline +
-					Base64.encode(security.getDigestOfPartOfPrivateKey()) + newline;
+					StreamableBase64.encode(security.getDigestOfPartOfPrivateKey()) + newline;
 
 			digestCreatedFromThisCrypto = MartusCrypto.createDigestString(stringToDigest);
 
