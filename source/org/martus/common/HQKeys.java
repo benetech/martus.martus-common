@@ -31,6 +31,7 @@ import java.util.Vector;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlMapLoader;
 import org.martus.util.xml.SimpleXmlParser;
+import org.martus.util.xml.XmlUtilities;
 import org.xml.sax.SAXParseException;
 
 
@@ -124,7 +125,7 @@ public class HQKeys
 			if(includeLabel)
 			{
 				xmlRepresentation += MartusXml.getTagStart(HQ_LABEL_TAG);
-				xmlRepresentation += ((HQKey)hqKeys.get(i)).getLabel();
+				xmlRepresentation += XmlUtilities.getXmlEncoded(((HQKey)hqKeys.get(i)).getLabel());
 				xmlRepresentation += MartusXml.getTagEndWithoutNewline(HQ_LABEL_TAG);
 			}
 			xmlRepresentation += MartusXml.getTagEnd(HQ_KEY_TAG);

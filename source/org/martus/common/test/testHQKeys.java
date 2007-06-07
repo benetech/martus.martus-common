@@ -31,6 +31,7 @@ import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
 import org.martus.common.MartusXml;
 import org.martus.util.TestCaseEnhanced;
+import org.martus.util.xml.XmlUtilities;
 
 
 public class testHQKeys extends TestCaseEnhanced
@@ -102,19 +103,19 @@ public class testHQKeys extends TestCaseEnhanced
 		String key1 = "key 1";
 		String label1 = "label 1";
 		String key2 = "key 2";
-		String label2 = "label 2";
+		String label2 = "label 2 with <icky &xml stuff>";
 		keys.add(new HQKey(key1, label1));
 		keys.add(new HQKey(key2, label2));
 		HQKeys hqKeys = new HQKeys(keys);
 		String xmlExpected = MartusXml.getTagStartWithNewline(HQKeys.HQ_KEYS_TAG) +
 		 MartusXml.getTagStart(HQKeys.HQ_KEY_TAG) + 
 		 MartusXml.getTagStart(HQKeys.HQ_PUBLIC_KEY_TAG) + 
-		 key1 +
+		 XmlUtilities.getXmlEncoded(key1) +
 		 MartusXml.getTagEndWithoutNewline(HQKeys.HQ_PUBLIC_KEY_TAG) +
 		 MartusXml.getTagEnd(HQKeys.HQ_KEY_TAG) +
 		 MartusXml.getTagStart(HQKeys.HQ_KEY_TAG) + 
 		 MartusXml.getTagStart(HQKeys.HQ_PUBLIC_KEY_TAG) + 
-		 key2 +
+		 XmlUtilities.getXmlEncoded(key2) +
 		 MartusXml.getTagEndWithoutNewline(HQKeys.HQ_PUBLIC_KEY_TAG) +
 		 MartusXml.getTagEnd(HQKeys.HQ_KEY_TAG) +
 		 MartusXml.getTagEnd(HQKeys.HQ_KEYS_TAG);
@@ -128,25 +129,25 @@ public class testHQKeys extends TestCaseEnhanced
 		String key1 = "key 1";
 		String label1 = "label 1";
 		String key2 = "key 2";
-		String label2 = "label 2";
+		String label2 = "label 2 with <icky &xml stuff>";
 		keys.add(new HQKey(key1, label1));
 		keys.add(new HQKey(key2, label2));
 		HQKeys hqKeys = new HQKeys(keys);
 		String xmlExpected = MartusXml.getTagStartWithNewline(HQKeys.HQ_KEYS_TAG) +
 		 MartusXml.getTagStart(HQKeys.HQ_KEY_TAG) + 
 		 MartusXml.getTagStart(HQKeys.HQ_PUBLIC_KEY_TAG) + 
-		 key1 +
+		 XmlUtilities.getXmlEncoded(key1) +
 		 MartusXml.getTagEndWithoutNewline(HQKeys.HQ_PUBLIC_KEY_TAG) +
 		 MartusXml.getTagStart(HQKeys.HQ_LABEL_TAG) + 
-		 label1 +
+		 XmlUtilities.getXmlEncoded(label1) +
 		 MartusXml.getTagEndWithoutNewline(HQKeys.HQ_LABEL_TAG) +
 		 MartusXml.getTagEnd(HQKeys.HQ_KEY_TAG) +
 		 MartusXml.getTagStart(HQKeys.HQ_KEY_TAG) + 
 		 MartusXml.getTagStart(HQKeys.HQ_PUBLIC_KEY_TAG) + 
-		 key2 +
+		 XmlUtilities.getXmlEncoded(key2) +
 		 MartusXml.getTagEndWithoutNewline(HQKeys.HQ_PUBLIC_KEY_TAG) +
 		 MartusXml.getTagStart(HQKeys.HQ_LABEL_TAG) + 
-		 label2 +
+		 XmlUtilities.getXmlEncoded(label2) +
 		 MartusXml.getTagEndWithoutNewline(HQKeys.HQ_LABEL_TAG) +
 		 MartusXml.getTagEnd(HQKeys.HQ_KEY_TAG) +
 		 MartusXml.getTagEnd(HQKeys.HQ_KEYS_TAG);
