@@ -93,8 +93,8 @@ public class TestServerFileDatabase extends TestCaseEnhanced
 	{
 		UniversalId uid = UniversalIdForTesting.createDummyUniversalId();
 		DatabaseKey draftKey = DatabaseKey.createDraftKey(uid);
-		String timeStamp = MartusServerUtilities.createTimeStamp();
 		DeleteRequestRecord delRecord = new DeleteRequestRecord(uid.getAccountId(), new Vector(), "signature");
+		String timeStamp = delRecord.timeStamp;
 		DatabaseKey delKey = DeleteRequestRecord.getDelKey(draftKey.getUniversalId());
 		db.writeRecord(delKey, delRecord.getDelData());
 		long timeFromRecord = db.getmTime(draftKey);
