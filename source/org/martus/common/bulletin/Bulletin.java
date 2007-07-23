@@ -662,8 +662,8 @@ public class Bulletin implements BulletinConstants
 	public static final String PSEUDOFIELD_LAST_SAVED_TIMESTAMP = "_lastSavedTimestamp";
 	public static final String PSEUDOFIELD_ALL_PRIVATE = "_allPrivate";
 	public static final String PSEUDOFIELD_WAS_SENT = "_wasSent";
-	public static final String TOP_SECTION = "TOP SECTION";
-	public static final String BOTTOM_SECTION = "BOTTOM SECTION";
+	public static final String TOP_SECTION = "TopSection";
+	public static final String BOTTOM_SECTION = "BottomSection";
 	
 	private boolean isNonAttachmentDataValidFlag;
 	private MartusCrypto security;
