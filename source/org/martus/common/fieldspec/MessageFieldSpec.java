@@ -45,10 +45,11 @@ public class MessageFieldSpec extends FieldSpec
 
 	public String getDetailsXml()
 	{
-		String xml = MartusXml.getTagStart(MESSAGE_SPEC_MESSAGE_TAG);
-		xml += getMessage();
-		xml += MartusXml.getTagEnd(MESSAGE_SPEC_MESSAGE_TAG);
-		return xml;
+		StringBuffer xml = new StringBuffer();
+		xml.append(MartusXml.getTagStart(MESSAGE_SPEC_MESSAGE_TAG));
+		xml.append(getMessage());
+		xml.append(MartusXml.getTagEnd(MESSAGE_SPEC_MESSAGE_TAG));
+		return xml.toString();
 	}
 
 	public String getMessage()

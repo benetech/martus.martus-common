@@ -269,15 +269,16 @@ public class GridFieldSpec extends FieldSpec
 
 	public String getDetailsXml()
 	{
-		String xml = MartusXml.getTagStartWithNewline(GRID_SPEC_DETAILS_TAG);
+		StringBuffer xml = new StringBuffer(); 
+		xml.append(MartusXml.getTagStartWithNewline(GRID_SPEC_DETAILS_TAG));
 		for(int i = 0 ; i < getColumnCount(); ++i)
 		{
 			FieldSpec thisColumn = (FieldSpec)columns.get(i);
-			xml += thisColumn.toXml(GRID_COLUMN_TAG);
+			xml.append(thisColumn.toXml(GRID_COLUMN_TAG));
 		}
-		xml += MartusXml.getTagEnd(GRID_SPEC_DETAILS_TAG);
+		xml.append(MartusXml.getTagEnd(GRID_SPEC_DETAILS_TAG));
 		
-		return xml;
+		return xml.toString();
 	}
 	
 	static class GridSpecDetailsLoader extends SimpleXmlDefaultLoader

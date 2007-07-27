@@ -84,6 +84,7 @@ import org.bouncycastle.jce.X509Principal;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.x509.X509V1CertificateGenerator;
 import org.martus.common.MartusConstants;
+import org.martus.common.MartusLogger;
 import org.martus.util.StreamableBase64;
 import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
@@ -428,6 +429,7 @@ public class MartusSecurity extends MartusCrypto
 		
 		if(in.available() != 0)
 			throw new IOException();
+		MartusLogger.log("Loaded skcache: " + decryptedSessionKeys.size());
 	}
 	
 	public byte[] createSignedBundle(byte[] dataBytes) throws MartusSignatureException, IOException

@@ -27,7 +27,6 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.fieldspec;
 
 
-import org.martus.common.MartusXml;
 import org.martus.common.MiniLocalization;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlStringLoader;
@@ -95,17 +94,20 @@ public class FieldSpec
 
 	public String toXml(String rootTag)
 	{
+		// NOTE: Optimized for speed because this was a BIG bottleneck!
 		String typeString = XmlUtilities.getXmlEncoded(getTypeString(getType()));
-		String rootTagLine = MartusXml.getTagStartWithNewline(rootTag, FIELD_SPEC_TYPE_ATTR, typeString);
-		return rootTagLine +  
-				MartusXml.getTagStart(FIELD_SPEC_TAG_XML_TAG) + 
-				XmlUtilities.getXmlEncoded(getTag()) + 
-				MartusXml.getTagEnd(FIELD_SPEC_TAG_XML_TAG) +
-				MartusXml.getTagStart(FIELD_SPEC_LABEL_XML_TAG) + 
-				XmlUtilities.getXmlEncoded(getLabel()) + 
-				MartusXml.getTagEnd(FIELD_SPEC_LABEL_XML_TAG) +
-				getDetailsXml() +
-				MartusXml.getTagEnd(rootTag);
+		StringBuffer rootTagLine = new StringBuffer();
+		rootTagLine.append((("<" + rootTag + " " + FIELD_SPEC_TYPE_ATTR + "='" + typeString + "'>") + "\n"));
+		rootTagLine.append(("<" + FIELD_SPEC_TAG_XML_TAG + ">"));
+		rootTagLine.append(XmlUtilities.getXmlEncoded(getTag()));
+		rootTagLine.append((("</" + FIELD_SPEC_TAG_XML_TAG + ">") + "\n"));
+		rootTagLine.append(("<" + FIELD_SPEC_LABEL_XML_TAG + ">")); 
+		rootTagLine.append(XmlUtilities.getXmlEncoded(getLabel()));
+		rootTagLine.append((("</" + FIELD_SPEC_LABEL_XML_TAG + ">") + "\n"));
+		rootTagLine.append(getDetailsXml());
+		rootTagLine.append((("</" + rootTag + ">") + "\n"));
+		
+		return rootTagLine.toString();
 	}
 	
 	protected String getDetailsXml()
@@ -215,7 +217,7 @@ public class FieldSpec
 
 	public int hashCode()
 	{
-		return toString().hashCode();
+		return tag.hashCode() ^ label.hashCode();
 	}
 
 	public static String getTypeString(FieldType type)

@@ -91,16 +91,17 @@ public class DropDownFieldSpec extends FieldSpec
 	
 	public String getDetailsXml()
 	{
-		String xml = MartusXml.getTagStartWithNewline(DROPDOWN_SPEC_CHOICES_TAG);
+		StringBuffer xml = new StringBuffer();
+		xml.append(MartusXml.getTagStartWithNewline(DROPDOWN_SPEC_CHOICES_TAG));
 		
 		for(int i = 0 ; i < getCount(); ++i)
 		{
-			xml += MartusXml.getTagStart(DROPDOWN_SPEC_CHOICE_TAG) +
-					getValue(i) +
-					MartusXml.getTagEnd(DROPDOWN_SPEC_CHOICE_TAG);
+			xml.append(MartusXml.getTagStart(DROPDOWN_SPEC_CHOICE_TAG));
+			xml.append(getValue(i));
+			xml.append(MartusXml.getTagEnd(DROPDOWN_SPEC_CHOICE_TAG));
 		}
-		xml += MartusXml.getTagEnd(DROPDOWN_SPEC_CHOICES_TAG);
-		return xml;
+		xml.append(MartusXml.getTagEnd(DROPDOWN_SPEC_CHOICES_TAG));
+		return xml.toString();
 	}
 
 	public int findCode(String code)
