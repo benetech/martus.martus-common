@@ -120,7 +120,7 @@ public class BulletinLoader
 				//System.out.println("Packet not found: " + key.getLocalId());
 				return false;
 			}
-			packet.loadFromXml(in, expectedSig, verifier);
+			packet.loadFromXml(in.convertToInMemoryStream(), expectedSig, verifier);
 			return true;
 		}
 		catch(IOException e)
