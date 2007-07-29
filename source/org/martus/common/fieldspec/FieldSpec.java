@@ -295,11 +295,11 @@ public class FieldSpec
 		FieldSpec spec;
 	}
 
-	String tag;
-	FieldType type;
-	String label;
-	boolean hasUnknown;
-	FieldSpec parent;
+	private String tag;
+	private FieldType type;
+	private String label;
+	private boolean hasUnknown;
+	private FieldSpec parent;
 
 	public static final String FIELD_SPEC_XML_TAG = "Field";
 	public static final String FIELD_SPEC_TAG_XML_TAG = "Tag";
