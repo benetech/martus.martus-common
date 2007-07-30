@@ -188,8 +188,8 @@ public class TestFieldSpec extends TestCaseEnhanced
 		
 		b.setTag("AAA");
 		b.setLabel("zzz");
-		assertTrue("a not less than b?", a.compareTo(b) < 0);
-		assertTrue("b not greater than a?", b.compareTo(a) > 0);
+		assertNotEquals("a equals b?", 0, a.compareTo(b));
+		assertEquals("reverse inconsistent?", (a.compareTo(b) > 0), (b.compareTo(a) < 0));
 		
 		FieldSpec c = FieldSpec.createFieldSpec(new FieldTypeMultiline());
 		c.setLabel(labelA);
