@@ -28,6 +28,8 @@ package org.martus.common.fieldspec;
 
 
 import org.martus.common.MiniLocalization;
+import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.crypto.MartusCrypto.CreateDigestException;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlStringLoader;
 import org.martus.util.xml.XmlUtilities;
@@ -80,9 +82,9 @@ public class FieldSpec
 	private FieldSpec(FieldSpec parentToUse, String tagToUse, String labelToUse, FieldType typeToUse, boolean hasUnknownToUse)
 	{
 		parent = parentToUse;
-		tag = tagToUse;
-		label = labelToUse;
-		type = typeToUse;
+		this.tag = tagToUse;
+		this.label = labelToUse;
+		this.type = typeToUse;
 		hasUnknown = hasUnknownToUse;
 	}
 	
@@ -137,11 +139,6 @@ public class FieldSpec
 		return parent;
 	}
 	
-	public void setParent(FieldSpec newParent)
-	{
-		parent = newParent;
-	}
-	
 	public String getSubFieldTag()
 	{
 		return tag;
@@ -172,19 +169,53 @@ public class FieldSpec
 		return hasUnknown;
 	}
 	
+	public void setParent(FieldSpec newParent)
+	{
+		parent = newParent;
+		clearId();
+	}
+	
 	public void setLabel(String label)
 	{
 		this.label = label;
+		clearId();
 	}
 
 	public void setTag(String tag)
 	{
 		this.tag = tag;
+		clearId();
 	}
 	
 	public void setType(FieldType type)
 	{
 		this.type = type;
+		clearId();
+	}
+	
+	public String getId()
+	{
+		if(id == null)
+			refreshId();
+		return id;
+	}
+	
+	private void clearId()
+	{
+		id = null;
+	}
+	
+	private void refreshId()
+	{
+		try
+		{
+			id = MartusCrypto.createDigestString(toString());
+		} 
+		catch (CreateDigestException e)
+		{
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
 	}
 	
 	public int compareTo(Object other)
@@ -193,18 +224,13 @@ public class FieldSpec
 			return 1;
 		
 		FieldSpec otherSpec = (FieldSpec)other;
-		int weHaveUnknown = (hasUnknownStuff() ? 1 : 0);
-		int theyHaveUnknown = (otherSpec.hasUnknownStuff() ? 1 : 0);
-		int result = weHaveUnknown - theyHaveUnknown;
-		if(result == 0)
-			result = getLabel().compareTo(otherSpec.getLabel());
-		if(result == 0)
-			result = getTag().compareTo(otherSpec.getTag());
-		if(result == 0)
-			result = getTypeString(getType()).compareTo(getTypeString(otherSpec.getType()));
-		if(result == 0)
-			result = getDetailsXml().compareTo(otherSpec.getDetailsXml());
-		return result;
+		
+		// NOTE: Speed optimization
+		int tagComparison = getTag().compareTo(otherSpec.getTag());
+		if(tagComparison != 0)
+			return tagComparison;
+		
+		return getId().compareTo(otherSpec.getId());
 	}
 	
 	public boolean equals(Object other)
@@ -217,7 +243,7 @@ public class FieldSpec
 
 	public int hashCode()
 	{
-		return tag.hashCode() ^ label.hashCode();
+		return getId().hashCode();
 	}
 
 	public static String getTypeString(FieldType type)
@@ -300,6 +326,8 @@ public class FieldSpec
 	private String label;
 	private boolean hasUnknown;
 	private FieldSpec parent;
+	
+	private String id;
 
 	public static final String FIELD_SPEC_XML_TAG = "Field";
 	public static final String FIELD_SPEC_TAG_XML_TAG = "Tag";

@@ -26,7 +26,6 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.fieldspec;
 
-import org.martus.common.MartusXml;
 import org.martus.common.MiniLocalization;
 import org.martus.util.xml.XmlUtilities;
 
@@ -49,6 +48,7 @@ public class DropDownFieldSpec extends FieldSpec
 	public void setChoices(ChoiceItem[] choicesToUse)
 	{
 		choices = choicesToUse;
+		updateDetailsXml();
 	}
 	
 	public ChoiceItem[] getAllChoices()
@@ -91,17 +91,22 @@ public class DropDownFieldSpec extends FieldSpec
 	
 	public String getDetailsXml()
 	{
+		return detailsXml;
+	}
+	
+	private void updateDetailsXml()
+	{
 		StringBuffer xml = new StringBuffer();
-		xml.append(MartusXml.getTagStartWithNewline(DROPDOWN_SPEC_CHOICES_TAG));
+		xml.append("<" + DROPDOWN_SPEC_CHOICES_TAG + ">\n");
 		
 		for(int i = 0 ; i < getCount(); ++i)
 		{
-			xml.append(MartusXml.getTagStart(DROPDOWN_SPEC_CHOICE_TAG));
-			xml.append(getValue(i));
-			xml.append(MartusXml.getTagEnd(DROPDOWN_SPEC_CHOICE_TAG));
+			xml.append(("<" + DROPDOWN_SPEC_CHOICE_TAG + ">"));
+			xml.append(getChoice(i).toString());
+			xml.append("</" + DROPDOWN_SPEC_CHOICE_TAG + ">\n");
 		}
-		xml.append(MartusXml.getTagEnd(DROPDOWN_SPEC_CHOICES_TAG));
-		return xml.toString();
+		xml.append("</" + DROPDOWN_SPEC_CHOICES_TAG + ">\n");
+		detailsXml = xml.toString();
 	}
 
 	public int findCode(String code)
@@ -126,4 +131,5 @@ public class DropDownFieldSpec extends FieldSpec
 
 	
 	private ChoiceItem[] choices;
+	private String detailsXml;
 }
