@@ -65,7 +65,7 @@ public class TestZipEntryInputStream extends TestCaseEnhanced
 		assertEquals("wrong total size?", sampleBytes.length, in.totalSize());
 		assertEquals("available?", sampleBytes.length, in.available());
 		byte[] allBytes = new byte[sampleBytes.length];
-		int got = in.read(allBytes);
+		int got = saneRead(in, allBytes);
 		assertEquals("wrong length?", sampleBytes.length, got);
 		assertTrue("wrong contents?", Arrays.equals(sampleBytes, allBytes));
 	}
@@ -87,7 +87,7 @@ public class TestZipEntryInputStream extends TestCaseEnhanced
 
 		byte[] allBytes = new byte[sampleBytes.length];
 		assertEquals("wrong total size?", sampleBytes.length, in.totalSize());
-		assertEquals("wrong length?", sampleBytes.length, in.read(allBytes));
+		assertEquals("wrong length?", sampleBytes.length, saneRead(in, allBytes));
 		assertEquals("wrong bytes?", true, Arrays.equals(sampleBytes, allBytes));
 	}
 
@@ -120,6 +120,24 @@ public class TestZipEntryInputStream extends TestCaseEnhanced
 		out.close();
 
 		return new ZipFile(tempFile);
+	}
+
+	private int saneRead(ZipEntryInputStreamWithSeek inputStream, byte[] buffer) throws IOException
+	{
+		// NOTE: If you ask a Java ZipFileInputStream for 20 bytes, but those 
+		// 20 original bytes got compressed to 14, then it will give you back 
+		// only the first 14 bytes of your original data. Stupid.
+		
+		int lengthSoFar = 0;
+		while(lengthSoFar < buffer.length)
+		{
+			int got = inputStream.read(buffer, lengthSoFar, buffer.length - lengthSoFar);
+			if(got < 0)
+				break;
+			lengthSoFar += got;
+		}
+		
+		return lengthSoFar;
 	}
 
 	static final byte[] sampleBytes = {1,2,3,4,5,6,7,8,9,0,127};
