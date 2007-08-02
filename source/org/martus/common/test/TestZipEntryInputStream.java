@@ -62,9 +62,12 @@ public class TestZipEntryInputStream extends TestCaseEnhanced
 
 	public void testSimpleRead() throws Exception
 	{
+		assertEquals("wrong total size?", sampleBytes.length, in.totalSize());
 		assertEquals("available?", sampleBytes.length, in.available());
-		int firstByte = in.read();
-		assertEquals("wrong first byte?", sampleBytes[0], firstByte);
+		byte[] allBytes = new byte[sampleBytes.length];
+		int got = in.read(allBytes);
+		assertEquals("wrong length?", sampleBytes.length, got);
+		assertTrue("wrong contents?", Arrays.equals(sampleBytes, allBytes));
 	}
 
 	public void testAvailable() throws Exception
@@ -83,7 +86,8 @@ public class TestZipEntryInputStream extends TestCaseEnhanced
 		in.seek(0);
 
 		byte[] allBytes = new byte[sampleBytes.length];
-		assertEquals("got?", sampleBytes.length, in.read(allBytes));
+		assertEquals("wrong total size?", sampleBytes.length, in.totalSize());
+		assertEquals("wrong length?", sampleBytes.length, in.read(allBytes));
 		assertEquals("wrong bytes?", true, Arrays.equals(sampleBytes, allBytes));
 	}
 
