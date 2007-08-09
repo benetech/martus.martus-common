@@ -52,6 +52,8 @@ abstract public class FieldType
 			return new FieldTypeDropdown();
 		if(FieldTypeMessage.getTypeNameString().equals(name))
 			return new FieldTypeMessage();
+		if(FieldTypeSectionStart.getTypeNameString().equals(name))
+			return new FieldTypeSectionStart();
 		
 		return new FieldTypeUnknown();
 	}
@@ -115,6 +117,11 @@ abstract public class FieldType
 	}
 	
 	public boolean isMessage()
+	{
+		return false;
+	}
+	
+	public boolean isSectionStart()
 	{
 		return false;
 	}

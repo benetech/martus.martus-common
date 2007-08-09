@@ -138,6 +138,7 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertEquals("GRID", FieldSpec.getTypeString(new FieldTypeGrid()));
 		assertEquals("DROPDOWN", FieldSpec.getTypeString(new FieldTypeDropdown()));
 		assertEquals("MESSAGE", FieldSpec.getTypeString(new FieldTypeMessage()));
+		assertEquals("SECTION", FieldSpec.getTypeString(new FieldTypeSectionStart()));
 		assertEquals("UNKNOWN", FieldSpec.getTypeString(new FieldTypeUnknown()));
 		assertEquals("UNKNOWN", FieldSpec.getTypeString(new FieldTypeAnyField()));
 	}
@@ -153,6 +154,7 @@ public class TestFieldSpec extends TestCaseEnhanced
 		verifyCreatedTypeString("GRID");
 		verifyCreatedTypeString("DROPDOWN");
 		verifyCreatedTypeString("MESSAGE");
+		verifyCreatedTypeString("SECTION");
 		assertEquals("UNKNOWN", FieldSpec.getTypeCode("anything else").getTypeName());
 	}
 	
