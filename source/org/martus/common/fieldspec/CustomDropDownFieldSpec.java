@@ -62,10 +62,10 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 	
 	public String getDetailsXml()
 	{
-		String xml = super.getDetailsXml();
-		if(getDataSourceGridTag() != null)
-		{
-			String ourXml = MartusXml.getTagStartWithNewline(DROPDOWN_SPEC_DATA_SOURCE) + 
+		if(getDataSourceGridTag() == null)
+			return super.getDetailsXml();
+
+		String xml = MartusXml.getTagStartWithNewline(DROPDOWN_SPEC_DATA_SOURCE) + 
 				MartusXml.getTagStart(DROPDOWN_SPEC_DATA_SOURCE_GRID_TAG_TAG) + 
 				getDataSourceGridTag() + 
 				MartusXml.getTagEnd(DROPDOWN_SPEC_DATA_SOURCE_GRID_TAG_TAG) +
@@ -76,9 +76,6 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 				
 				MartusXml.getTagEnd(DROPDOWN_SPEC_DATA_SOURCE);
 				
-			xml += ourXml;
-		}
-		
 		return xml;
 	}
 

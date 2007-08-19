@@ -311,7 +311,7 @@ public class CustomFieldSpecValidator
 	
 	private void checkForNoDropdownChoices(DropDownFieldSpec dropdownSpec, String tag, String label)
 	{
-		if(dropdownSpec.getCount() == 0)
+		if(dropdownSpec.getCount() == 0 && dropdownSpec.getDataSourceGridTag() == null)
 			errors.add(CustomFieldError.noDropDownEntries(tag, label));				
 	}
 	
@@ -364,8 +364,9 @@ public class CustomFieldSpecValidator
 		for (int i = 0; i < specsToCheck.length; i++)
 		{
 			FieldSpec thisSpec = specsToCheck[i];
+			String tag = thisSpec.getTag();
 			if(thisSpec.getType().isGrid())
-				knownGrids.put(thisSpec.getTag(), thisSpec);
+				knownGrids.put(tag, thisSpec);
 			
 			if(!thisSpec.getType().isDropdown())
 				continue;
@@ -375,16 +376,23 @@ public class CustomFieldSpecValidator
 			if(gridTag == null)
 				continue;
 			
+			String label = thisSpec.getLabel();
+			String typeString = getType(thisSpec);
+			if(dropDownSpec.getCount() > 0)
+			{
+				errors.add(CustomFieldError.errorDropDownHasChoicesAndDataSource(tag, label, typeString));
+			}
+			
 			if(!knownGrids.containsKey(gridTag))
 			{
-				errors.add(CustomFieldError.errorDataSourceNoGridTag(thisSpec.getTag(), thisSpec.getLabel(), getType(thisSpec)));				
+				errors.add(CustomFieldError.errorDataSourceNoGridTag(tag, label, typeString));				
 				continue;
 			}
 			
 			String gridColumn = dropDownSpec.getDataSourceGridColumn();
 			GridFieldSpec grid = (GridFieldSpec)knownGrids.get(gridTag);
 			if(!grid.hasColumnLabel(gridColumn))
-				errors.add(CustomFieldError.errorDataSourceNoGridColumn(thisSpec.getTag(), thisSpec.getLabel(), getType(thisSpec)));				
+				errors.add(CustomFieldError.errorDataSourceNoGridColumn(tag, label, typeString));				
 		}
 		
 	}
