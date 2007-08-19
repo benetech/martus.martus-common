@@ -26,8 +26,11 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.fieldspec;
 
+import java.util.Map;
 import java.util.Vector;
 
+import org.martus.common.MartusXml;
+import org.martus.util.xml.SimpleXmlMapLoader;
 import org.martus.util.xml.SimpleXmlVectorLoader;
 import org.xml.sax.SAXParseException;
 
@@ -56,6 +59,54 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 		return "";
 	}
 	
+	
+	public String getDetailsXml()
+	{
+		String xml = super.getDetailsXml();
+		if(getDataSourceGridTag() != null)
+		{
+			String ourXml = MartusXml.getTagStartWithNewline(DROPDOWN_SPEC_DATA_SOURCE) + 
+				MartusXml.getTagStart(DROPDOWN_SPEC_DATA_SOURCE_GRID_TAG_TAG) + 
+				getDataSourceGridTag() + 
+				MartusXml.getTagEnd(DROPDOWN_SPEC_DATA_SOURCE_GRID_TAG_TAG) +
+
+				MartusXml.getTagStart(DROPDOWN_SPEC_DATA_SOURCE_GRID_COLUMN_TAG) + 
+				getDataSourceGridColumn() + 
+				MartusXml.getTagEnd(DROPDOWN_SPEC_DATA_SOURCE_GRID_COLUMN_TAG) +
+				
+				MartusXml.getTagEnd(DROPDOWN_SPEC_DATA_SOURCE);
+				
+			xml += ourXml;
+		}
+		
+		return xml;
+	}
+
+	public void setDataSource(String gridTagToUse, String gridColumnToUse)
+	{
+		gridTag = gridTagToUse;
+		gridColumn = gridColumnToUse;
+		updateDetailsXml();
+	}
+
+	public Object getDataSource()
+	{
+		if(getDataSourceGridTag() == null || getDataSourceGridColumn() == null)
+			return null;
+		
+		return getDataSourceGridTag() + "." + getDataSourceGridColumn();
+	}
+
+	public String getDataSourceGridTag()
+	{
+		return gridTag;
+	}
+	
+	public String getDataSourceGridColumn()
+	{
+		return gridColumn;
+	}
+
 	static class DropDownSpecLoader extends SimpleXmlVectorLoader
 	{
 		public DropDownSpecLoader(CustomDropDownFieldSpec spec)
@@ -69,6 +120,32 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 			Vector stringChoices = getVector();
 			spec.setChoices(stringChoices);
 		}
+
 		CustomDropDownFieldSpec spec;
 	}
+	
+	static class DropDownDataSourceLoader extends SimpleXmlMapLoader
+	{
+		public DropDownDataSourceLoader(CustomDropDownFieldSpec spec)
+		{
+			super(DROPDOWN_SPEC_DATA_SOURCE);
+			this.spec = spec;
+		}
+
+		public void endDocument() throws SAXParseException
+		{
+			Map map = getMap();
+			String gridTag = (String)map.get(CustomDropDownFieldSpec.DROPDOWN_SPEC_DATA_SOURCE_GRID_TAG_TAG);
+			String gridColumn = (String)map.get(CustomDropDownFieldSpec.DROPDOWN_SPEC_DATA_SOURCE_GRID_COLUMN_TAG);
+			spec.setDataSource(gridTag, gridColumn);
+		}
+
+		CustomDropDownFieldSpec spec;
+	}
+
+	public static final String DROPDOWN_SPEC_DATA_SOURCE_GRID_TAG_TAG = "GridFieldTag";
+	public static final String DROPDOWN_SPEC_DATA_SOURCE_GRID_COLUMN_TAG = "GridColumnLabel";
+
+	String gridTag;
+	String gridColumn;
 }

@@ -75,6 +75,7 @@ public class TestCustomDropDownFieldSpec extends TestCaseEnhanced
 		assertEquals(SAMPLE_DROPDOWN_CHOICE1, spec.getValue(1));
 		assertEquals(SAMPLE_DROPDOWN_CHOICE2, spec.getValue(2));
 		assertEquals(SAMPLE_DROPDOWN_FIELD_XML, spec.toString());
+		assertNull("Data source didn't default null?", spec.getDataSource());
 		try
 		{
 			spec.getValue(3);
@@ -83,6 +84,16 @@ public class TestCustomDropDownFieldSpec extends TestCaseEnhanced
 		catch(ArrayIndexOutOfBoundsException expected)
 		{
 		}
+	}
+	
+	public void testDataSource() throws Exception
+	{
+		FieldSpec.XmlFieldSpecLoader loader = new FieldSpec.XmlFieldSpecLoader();
+		loader.parse(SAMPLE_DROPDOWN_WITH_DATA_SOURCE);
+		DropDownFieldSpec spec = (DropDownFieldSpec)loader.getFieldSpec();
+		assertEquals(3, spec.getCount());
+		assertEquals(GRID_FIELD_TAG + "." + GRID_COLUMN_LABEL, spec.getDataSource());
+		assertEquals(SAMPLE_DROPDOWN_WITH_DATA_SOURCE, spec.toString());
 	}
 	
 	public void testEquals() throws Exception
@@ -149,4 +160,25 @@ public class TestCustomDropDownFieldSpec extends TestCaseEnhanced
 			"</Choice>\n" +
 			"</Choices>\n" +
 			"</Field>\n";
+	
+	public static final String GRID_FIELD_TAG = "GridTag";
+	public static final String GRID_COLUMN_LABEL = "Grid Column Label";
+	public static final String SAMPLE_DROPDOWN_WITH_DATA_SOURCE = "<Field type='DROPDOWN'>\n" +
+		"<Tag>custom</Tag>\n" +
+		"<Label>"+SAMPLE_DROPDOWN_LABEL+"</Label>\n" +
+		"<Choices>\n" +
+		"<Choice>" +
+		"</Choice>\n" +
+		"<Choice>" +
+		SAMPLE_DROPDOWN_CHOICE1 +
+		"</Choice>\n" +
+		"<Choice>" +
+		SAMPLE_DROPDOWN_CHOICE2 +
+		"</Choice>\n" +
+		"</Choices>\n" +
+		"<DataSource>\n" +
+		"<GridFieldTag>" + GRID_FIELD_TAG + "</GridFieldTag>\n" +
+		"<GridColumnLabel>" + GRID_COLUMN_LABEL + "</GridColumnLabel>\n" +
+		"</DataSource>\n" +
+		"</Field>\n";
 }

@@ -120,6 +120,16 @@ public class CustomFieldError
 		return new CustomFieldError(CODE_IO_ERROR, UNUSED_FIELD, UNUSED_FIELD, errorMessage);
 	}
 
+	public static Object errorDataSourceNoGridTag(String tag, String label, String type)
+	{
+		return new CustomFieldError(CODE_UNKNOWN_DATA_SOURCE_GRID_TAG, tag, label, type);
+	}
+
+	public static Object errorDataSourceNoGridColumn(String tag, String label, String type)
+	{
+		return new CustomFieldError(CODE_UNKNOWN_DATA_SOURCE_GRID_COLUMN, tag, label, type);
+	}
+
 	private CustomFieldError(String code, String tag, String label, String type)
 	{
 		this.code = code;
@@ -158,6 +168,8 @@ public class CustomFieldError
 	static public final String CODE_RESERVED_TAG = "110";
 	static public final String CODE_MARTUS_FIELD_IN_BOTTOM_SECTION = "111";
 	static public final String CODE_PRIVATE_FIELD_IN_TOP_SECTION = "112";
+	static public final String CODE_UNKNOWN_DATA_SOURCE_GRID_TAG = "113";
+	static public final String CODE_UNKNOWN_DATA_SOURCE_GRID_COLUMN = "114";
 	static public final String CODE_NULL_SPECS = "200";
 	static public final String CODE_UNAUTHORIZED_KEY = "201";
 	static public final String CODE_SIGNATURE_ERROR = "202";

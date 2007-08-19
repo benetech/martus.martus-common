@@ -65,6 +65,8 @@ public class CustomFieldSpecValidator
 		checkForMartusFieldsBottomSectionFields(specsToCheckBottomSection);
 		checkCommonErrors(specsToCheckBottomSection);
 
+		checkDataDrivenDropdowns(specsToCheckTopSection);
+		checkDataDrivenDropdowns(specsToCheckBottomSection);
 	}
 
 	private void checkCommonErrors(FieldSpec[] specsToCheck) 
@@ -355,6 +357,38 @@ public class CustomFieldSpecValidator
 		}
 	}
 	
+	private void checkDataDrivenDropdowns(FieldSpec[] specsToCheck)
+	{
+		HashMap knownGrids = new HashMap();
+
+		for (int i = 0; i < specsToCheck.length; i++)
+		{
+			FieldSpec thisSpec = specsToCheck[i];
+			if(thisSpec.getType().isGrid())
+				knownGrids.put(thisSpec.getTag(), thisSpec);
+			
+			if(!thisSpec.getType().isDropdown())
+				continue;
+			
+			DropDownFieldSpec dropDownSpec = (DropDownFieldSpec)thisSpec;
+			String gridTag = dropDownSpec.getDataSourceGridTag();
+			if(gridTag == null)
+				continue;
+			
+			if(!knownGrids.containsKey(gridTag))
+			{
+				errors.add(CustomFieldError.errorDataSourceNoGridTag(thisSpec.getTag(), thisSpec.getLabel(), getType(thisSpec)));				
+				continue;
+			}
+			
+			String gridColumn = dropDownSpec.getDataSourceGridColumn();
+			GridFieldSpec grid = (GridFieldSpec)knownGrids.get(gridTag);
+			if(!grid.hasColumnLabel(gridColumn))
+				errors.add(CustomFieldError.errorDataSourceNoGridColumn(thisSpec.getTag(), thisSpec.getLabel(), getType(thisSpec)));				
+		}
+		
+	}
+
 	private String getType(FieldSpec thisSpec)
 	{
 		return FieldSpec.getTypeString( thisSpec.getType());

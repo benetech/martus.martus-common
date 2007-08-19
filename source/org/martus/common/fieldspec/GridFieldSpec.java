@@ -262,6 +262,11 @@ public class GridFieldSpec extends FieldSpec
 		return columnLabels;
 	}
 	
+	public boolean hasColumnLabel(String gridColumnLabel)
+	{
+		return getAllColumnLabels().contains(gridColumnLabel);
+	}
+
 	public String getDefaultValue()
 	{
 		return "";

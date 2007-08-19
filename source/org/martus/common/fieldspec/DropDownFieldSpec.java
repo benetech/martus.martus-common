@@ -94,7 +94,7 @@ public class DropDownFieldSpec extends FieldSpec
 		return detailsXml;
 	}
 	
-	private void updateDetailsXml()
+	void updateDetailsXml()
 	{
 		StringBuffer xml = new StringBuffer();
 		xml.append("<" + DROPDOWN_SPEC_CHOICES_TAG + ">\n");
@@ -126,8 +126,25 @@ public class DropDownFieldSpec extends FieldSpec
 		return getChoice(0).getCode();
 	}
 	
+	public Object getDataSource()
+	{
+		return null;
+	}
+
+	public String getDataSourceGridTag()
+	{
+		return null;
+	}
+
+	public String getDataSourceGridColumn()
+	{
+		return null;
+	}
+
 	public static final String DROPDOWN_SPEC_CHOICES_TAG = "Choices";
 	public static final String DROPDOWN_SPEC_CHOICE_TAG = "Choice";
+	
+	public static final String DROPDOWN_SPEC_DATA_SOURCE = "DataSource";
 
 	
 	private ChoiceItem[] choices;

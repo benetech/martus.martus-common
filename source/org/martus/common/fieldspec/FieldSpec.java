@@ -293,12 +293,27 @@ public class FieldSpec
 		{
 			if(tag.equals(FieldSpec.FIELD_SPEC_TAG_XML_TAG) || tag.equals(FieldSpec.FIELD_SPEC_LABEL_XML_TAG))
 				return new SimpleXmlStringLoader(tag);
-			else if(tag.equals(GridFieldSpec.GRID_SPEC_DETAILS_TAG))
-				return new GridFieldSpec.GridSpecDetailsLoader((GridFieldSpec)spec);
-			else if(tag.equals(CustomDropDownFieldSpec.DROPDOWN_SPEC_CHOICES_TAG))
-				return new CustomDropDownFieldSpec.DropDownSpecLoader((CustomDropDownFieldSpec)spec);
-			else if(tag.equals(MessageFieldSpec.MESSAGE_SPEC_MESSAGE_TAG))
-				return new MessageFieldSpec.MessageSpecLoader((MessageFieldSpec)spec);
+
+			if(spec.getType().isGrid())
+			{
+				if(tag.equals(GridFieldSpec.GRID_SPEC_DETAILS_TAG))
+					return new GridFieldSpec.GridSpecDetailsLoader((GridFieldSpec)spec);
+			}
+			
+			if(spec.getType().isDropdown())
+			{
+				CustomDropDownFieldSpec dropDownSpec = (CustomDropDownFieldSpec)spec;
+				if(tag.equals(CustomDropDownFieldSpec.DROPDOWN_SPEC_CHOICES_TAG))
+					return new CustomDropDownFieldSpec.DropDownSpecLoader(dropDownSpec);
+				if(tag.equals(CustomDropDownFieldSpec.DROPDOWN_SPEC_DATA_SOURCE))
+					return new CustomDropDownFieldSpec.DropDownDataSourceLoader(dropDownSpec);
+			}
+			
+			if(spec.getType().isMessage())
+			{
+				if(tag.equals(MessageFieldSpec.MESSAGE_SPEC_MESSAGE_TAG))
+					return new MessageFieldSpec.MessageSpecLoader((MessageFieldSpec)spec);
+			}
 			
 			return super.startElement(tag);
 		}
