@@ -48,6 +48,8 @@ public class CustomFieldSpecValidator
 	
 	public CustomFieldSpecValidator(FieldSpec[] specsToCheckTopSection, FieldSpec[] specsToCheckBottomSection, boolean allowSpaceOnlyCustomLabels)
 	{
+		gridFieldSpecs = new HashMap();
+		
 		allowSpaceOnlyCustomFieldLabels = allowSpaceOnlyCustomLabels;
 		errors = new Vector();
 		if(specsToCheckTopSection == null || specsToCheckBottomSection == null)
@@ -56,30 +58,48 @@ public class CustomFieldSpecValidator
 			return;
 		}
 		
+		scanForGrids(specsToCheckTopSection);
+		scanForGrids(specsToCheckBottomSection);
+		
 		checkForRequiredTopSectionFields(specsToCheckTopSection);
 		checkForPrivateField(specsToCheckTopSection);
+
 		checkCommonErrors(specsToCheckTopSection);
+		checkCommonErrors(specsToCheckBottomSection);
+		
+		checkForCommonErrorsInsideGrids(specsToCheckTopSection);
+		checkForCommonErrorsInsideGrids(specsToCheckBottomSection);
 
 		checkForDuplicateFields(specsToCheckTopSection, specsToCheckBottomSection);
 		
 		checkForMartusFieldsBottomSectionFields(specsToCheckBottomSection);
 		checkCommonErrors(specsToCheckBottomSection);
 
-		checkDataDrivenDropdowns(specsToCheckTopSection);
-		checkDataDrivenDropdowns(specsToCheckBottomSection);
+		checkDataDrivenDropDowns(specsToCheckTopSection);
+		checkDataDrivenDropDowns(specsToCheckBottomSection);
+	}
+
+	private void scanForGrids(FieldSpec[] specsToCheck)
+	{
+		for (int i = 0; i < specsToCheck.length; i++)
+		{
+			FieldSpec thisSpec = specsToCheck[i];
+			if(thisSpec.getType().isGrid())
+				gridFieldSpecs.put(thisSpec.getTag(), thisSpec);
+		}
+
 	}
 
 	private void checkCommonErrors(FieldSpec[] specsToCheck) 
 	{
 		checkForReservedTags(specsToCheck);
+		checkForLabelsOnStandardFields(specsToCheck);
+
+		checkForDropdownsWithDuplicatedOrZeroEntries(specsToCheck);
 		checkForIllegalTagCharacters(specsToCheck);
 		checkForBlankTags(specsToCheck);
 		checkForMissingCustomLabels(specsToCheck);
 		checkForUnknownTypes(specsToCheck);
-		checkForLabelsOnStandardFields(specsToCheck);
-		checkForDropdownsWithDuplicatedOrZeroEntries(specsToCheck);
-		
-		checkForCommonErrorsInsideGrids(specsToCheck);
 	}
 		
 	public boolean isValid()
@@ -291,6 +311,7 @@ public class CustomFieldSpecValidator
 						String gridLabel = gridSpec.getLabel();
 						checkForDuplicateEntriesInDropDownSpec((DropDownFieldSpec)columnSpec, gridTag, gridLabel);
 						checkForNoDropdownChoices((DropDownFieldSpec)columnSpec, gridTag, gridLabel);
+						checkDataDrivenDropDown((DropDownFieldSpec)columnSpec);
 					}
 				}
 			}
@@ -357,44 +378,42 @@ public class CustomFieldSpecValidator
 		}
 	}
 	
-	private void checkDataDrivenDropdowns(FieldSpec[] specsToCheck)
+	private void checkDataDrivenDropDowns(FieldSpec[] specsToCheck)
 	{
-		HashMap knownGrids = new HashMap();
-
 		for (int i = 0; i < specsToCheck.length; i++)
 		{
-			FieldSpec thisSpec = specsToCheck[i];
-			String tag = thisSpec.getTag();
-			if(thisSpec.getType().isGrid())
-				knownGrids.put(tag, thisSpec);
-			
-			if(!thisSpec.getType().isDropdown())
+			if(!specsToCheck[i].getType().isDropdown())
 				continue;
 			
-			DropDownFieldSpec dropDownSpec = (DropDownFieldSpec)thisSpec;
-			String gridTag = dropDownSpec.getDataSourceGridTag();
-			if(gridTag == null)
-				continue;
-			
-			String label = thisSpec.getLabel();
-			String typeString = getType(thisSpec);
-			if(dropDownSpec.getCount() > 0)
-			{
-				errors.add(CustomFieldError.errorDropDownHasChoicesAndDataSource(tag, label, typeString));
-			}
-			
-			if(!knownGrids.containsKey(gridTag))
-			{
-				errors.add(CustomFieldError.errorDataSourceNoGridTag(tag, label, typeString));				
-				continue;
-			}
-			
-			String gridColumn = dropDownSpec.getDataSourceGridColumn();
-			GridFieldSpec grid = (GridFieldSpec)knownGrids.get(gridTag);
-			if(!grid.hasColumnLabel(gridColumn))
-				errors.add(CustomFieldError.errorDataSourceNoGridColumn(tag, label, typeString));				
+			checkDataDrivenDropDown((DropDownFieldSpec)specsToCheck[i]);
 		}
 		
+	}
+	
+	private void checkDataDrivenDropDown(DropDownFieldSpec specToCheck)
+	{
+		String tag = specToCheck.getTag();
+		
+		String gridTag = specToCheck.getDataSourceGridTag();
+		if(gridTag == null)
+			return;
+		
+		String label = specToCheck.getLabel();
+		String typeString = getType(specToCheck);
+		if(specToCheck.getCount() > 0)
+			errors.add(CustomFieldError.errorDropDownHasChoicesAndDataSource(tag, label, typeString));
+		
+		if(!gridFieldSpecs.containsKey(gridTag))
+		{
+			errors.add(CustomFieldError.errorDataSourceNoGridTag(tag, label, typeString));				
+			return;
+		}
+		
+		String gridColumn = specToCheck.getDataSourceGridColumn();
+		GridFieldSpec grid = (GridFieldSpec)gridFieldSpecs.get(gridTag);
+		if(!grid.hasColumnLabel(gridColumn))
+			errors.add(CustomFieldError.errorDataSourceNoGridColumn(tag, label, typeString));				
+
 	}
 
 	private String getType(FieldSpec thisSpec)
@@ -404,4 +423,5 @@ public class CustomFieldSpecValidator
 
 	private boolean allowSpaceOnlyCustomFieldLabels;
 	private Vector errors;
+	private HashMap gridFieldSpecs;
 }
