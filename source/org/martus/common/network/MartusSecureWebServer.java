@@ -65,8 +65,8 @@ public class MartusSecureWebServer extends WebServerWithSynchronousStartup
 	    	System.out.println("createServerSocket: " + e);
 	    	System.out.println(e.getMessage());
 	    	e.printStackTrace();
+	    	throw(e);
 	    }
-	    return null;
 	}
 	
 	SSLContext createSSLContext() throws Exception
