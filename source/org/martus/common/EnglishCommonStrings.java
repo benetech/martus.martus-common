@@ -82,6 +82,7 @@ public class EnglishCommonStrings
 		"language:ur=Urdu",
 		"language:uz=Uzbek",
 		"language:vi=Vietnamese",
+		"language:bur=Burmese",
 
 		"field:BulletinNotYours=Field Desk Bulletin",
 		"field:publicsection=Public Information",
