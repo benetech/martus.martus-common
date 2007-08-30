@@ -221,6 +221,11 @@ public class BulletinHtmlGenerator
 			if(tag.equals(Bulletin.TAGTITLE))
 				value = "<strong>" + value + "</strong>";
 			FieldType fieldType = spec.getType();
+			if(fieldType.isSectionStart())
+			{
+				String horizontalRuler = "<HR></HR>";
+				label = horizontalRuler+ "<b><i>" + label + "</i></b>";
+			}
 			if(fieldType.isGrid())
 				value = getGridHTML(fdp, spec, tag);
 			else
