@@ -61,22 +61,23 @@ public class CustomFieldSpecValidator
 		scanForGrids(specsToCheckTopSection);
 		scanForGrids(specsToCheckBottomSection);
 		
-		checkForRequiredTopSectionFields(specsToCheckTopSection);
-		checkForPrivateField(specsToCheckTopSection);
-
 		checkCommonErrors(specsToCheckTopSection);
 		checkCommonErrors(specsToCheckBottomSection);
 		
 		checkForCommonErrorsInsideGrids(specsToCheckTopSection);
 		checkForCommonErrorsInsideGrids(specsToCheckBottomSection);
 
-		checkForDuplicateFields(specsToCheckTopSection, specsToCheckBottomSection);
-		
-		checkForMartusFieldsBottomSectionFields(specsToCheckBottomSection);
-		checkCommonErrors(specsToCheckBottomSection);
-
 		checkDataDrivenDropDowns(specsToCheckTopSection);
 		checkDataDrivenDropDowns(specsToCheckBottomSection);
+
+
+		
+		checkForRequiredTopSectionFields(specsToCheckTopSection);
+		checkForPrivateField(specsToCheckTopSection);
+
+		checkForMartusFieldsBottomSectionFields(specsToCheckBottomSection);
+
+		checkForDuplicateFields(specsToCheckTopSection, specsToCheckBottomSection);
 	}
 
 	private void scanForGrids(FieldSpec[] specsToCheck)
