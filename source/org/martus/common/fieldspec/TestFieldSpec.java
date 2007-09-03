@@ -164,6 +164,15 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertEquals("wrong type: " + typeString, typeString, type.getTypeName());
 	}
 	
+	public void testKeepWithPrevious() throws Exception
+	{
+		String xml = "<Field Type='NORMAL'><Tag>AUTHOR</Tag><KeepWithPrevious/></Field>";
+		FieldSpec spec = FieldSpec.createFromXml(xml);
+		assertTrue("Didn't notice KeepWithPrevious?", spec.keepWithPrevious());
+		FieldSpec reloaded = FieldSpec.createFromXml(spec.toString());
+		assertTrue("Didn't save and reload KeepWithPrevious?", reloaded.keepWithPrevious());
+	}
+	
 	public void testEqualsAndCompareTo()
 	{
 		FieldSpec a = FieldSpec.createFieldSpec(new FieldTypeNormal());

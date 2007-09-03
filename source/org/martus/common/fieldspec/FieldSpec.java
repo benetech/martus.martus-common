@@ -106,6 +106,8 @@ public class FieldSpec
 		rootTagLine.append(("<" + FIELD_SPEC_LABEL_XML_TAG + ">")); 
 		rootTagLine.append(XmlUtilities.getXmlEncoded(getLabel()));
 		rootTagLine.append((("</" + FIELD_SPEC_LABEL_XML_TAG + ">") + "\n"));
+		if(keepWithPrevious())
+			rootTagLine.append("<" + FIELD_SPEC_KEEP_WITH_PREVIOUS_TAG + "/>");
 		rootTagLine.append(getDetailsXml());
 		rootTagLine.append((("</" + rootTag + ">") + "\n"));
 		
@@ -144,6 +146,11 @@ public class FieldSpec
 		return tag;
 	}
 	
+	public boolean keepWithPrevious() 
+	{
+		return keepWithPrevious;
+	}
+
 	public String convertStoredToSearchable(String storedData, MiniLocalization localization)
 	{
 		return getType().convertStoredToSearchable(storedData, localization);
@@ -191,6 +198,11 @@ public class FieldSpec
 	{
 		this.type = type;
 		clearId();
+	}
+	
+	public void setKeepWithPrevious()
+	{
+		keepWithPrevious = true;
 	}
 	
 	public String getId()
@@ -293,6 +305,9 @@ public class FieldSpec
 		{
 			if(tag.equals(FieldSpec.FIELD_SPEC_TAG_XML_TAG) || tag.equals(FieldSpec.FIELD_SPEC_LABEL_XML_TAG))
 				return new SimpleXmlStringLoader(tag);
+			
+			if(tag.equals(FieldSpec.FIELD_SPEC_KEEP_WITH_PREVIOUS_TAG))
+				return new SimpleXmlDefaultLoader(tag);
 
 			if(spec.getType().isGrid())
 			{
@@ -325,6 +340,8 @@ public class FieldSpec
 				spec.setTag(getText(ended));
 			else if(thisTag.equals(FieldSpec.FIELD_SPEC_LABEL_XML_TAG))
 				spec.setLabel(getText(ended));
+			else if(thisTag.equals(FieldSpec.FIELD_SPEC_KEEP_WITH_PREVIOUS_TAG))
+				spec.setKeepWithPrevious();
 			else
 				super.endElement(thisTag, ended);
 		}
@@ -341,12 +358,15 @@ public class FieldSpec
 	private String label;
 	private boolean hasUnknown;
 	private FieldSpec parent;
+	private boolean keepWithPrevious;
 	
 	private String id;
 
 	public static final String FIELD_SPEC_XML_TAG = "Field";
 	public static final String FIELD_SPEC_TAG_XML_TAG = "Tag";
 	public static final String FIELD_SPEC_LABEL_XML_TAG = "Label";
+	public static final String FIELD_SPEC_KEEP_WITH_PREVIOUS_TAG = "KeepWithPrevious";
+
 	public static final String FIELD_SPEC_TYPE_ATTR = "type";
 
 	public static final String TRUESTRING = "1";
