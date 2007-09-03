@@ -161,6 +161,14 @@ public class FieldCollection
 			SimpleXmlParser.parse(loader, xml);
 			return loader.getFieldSpecs();
 		}
+		catch(SAXParseException e)
+		{
+			System.out.println("Parse error line " + e.getLineNumber() + ", column " + e.getColumnNumber());
+			System.out.println("   Public Id: " + e.getPublicId());
+			System.out.println("   System Id: " + e.getSystemId());
+			e.printStackTrace();
+			throw new CustomFieldsParseException();
+		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
