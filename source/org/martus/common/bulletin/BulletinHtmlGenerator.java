@@ -227,6 +227,7 @@ public class BulletinHtmlGenerator
 			{
 				String horizontalRuler = "<HR></HR>";
 				label = horizontalRuler+ "<b><i>" + label + "</i></b>";
+				value = horizontalRuler;
 			}
 			if(fieldType.isGrid())
 				value = getGridHTML(fdp, spec, tag);
