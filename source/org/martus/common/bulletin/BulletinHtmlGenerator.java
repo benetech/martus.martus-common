@@ -29,6 +29,7 @@ package org.martus.common.bulletin;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Vector;
 
 import org.martus.common.GridData;
 import org.martus.common.HQKeys;
@@ -212,6 +213,7 @@ public class BulletinHtmlGenerator
 	{
 		FieldSpec[] fieldTags = fdp.getFieldSpecs();
 		String sectionHtml = "";
+		Vector pendingValues = new Vector();
 		for(int fieldNum = 0; fieldNum < fieldTags.length; ++fieldNum)
 		{
 			FieldSpec spec = fieldTags[fieldNum];
@@ -233,10 +235,24 @@ public class BulletinHtmlGenerator
 			
 			if(StandardFieldSpecs.isStandardFieldTag(tag))
 				label = getHTMLEscaped(localization.getFieldLabel(tag));
-							
-			String fieldHtml = getFieldHtmlString(label, value);
-			sectionHtml += fieldHtml;
+			
+			if(!spec.keepWithPrevious() && pendingValues.size() > 0)
+			{
+				String fieldHtml = getFieldRowHtmlString((String[])pendingValues.toArray(new String[0]));
+				sectionHtml += fieldHtml;
+				pendingValues.clear();
+			}
+			pendingValues.add(label);
+			pendingValues.add(value);
 		}
+		
+		if(pendingValues.size() > 0)
+		{
+			String fieldHtml = getFieldRowHtmlString((String[])pendingValues.toArray(new String[0]));
+			sectionHtml += fieldHtml;
+			pendingValues.clear();
+		}
+
 		return sectionHtml;
 	}
 
@@ -271,7 +287,10 @@ public class BulletinHtmlGenerator
 			return "";
 		
 		GridFieldSpec grid = (GridFieldSpec)spec;
-		String value = "<table border='1' align='left'><tr>";
+		String tableAlignment = "left";
+		if(LanguageOptions.isRightToLeftLanguage())
+			tableAlignment = "right";
+		String value = "<table border='1' align='" + tableAlignment + "'><tr>";
 		String justification = "center";
 		if(!LanguageOptions.isRightToLeftLanguage())
 			value += getItemToAddForTable(grid.getColumnZeroLabel(),TABLE_HEADER, justification);
@@ -394,24 +413,74 @@ public class BulletinHtmlGenerator
 
 	public static String getFieldHtmlString(String label, String value)
 	{
-		String leftData = label;
-		String rightData = value;
-		
+		return getFieldRowHtmlString(new String[] {label, value, });
+	}
+	
+	public static String getFieldRowHtmlString(String[] values)
+	{
+		int valueIndex = 0;
+		int delta = 1;
 		if(LanguageOptions.isRightToLeftLanguage())
 		{
-			leftData = value;
-			rightData = label;
+			valueIndex = values.length -1;
+			delta = -1;
+		}
+		
+		StringBuffer fieldHtml = new StringBuffer();
+		fieldHtml.append("<tr>");
+
+		if(delta > 0)
+		{
+			fieldHtml.append(getLabelHtml(values[valueIndex]));
+			valueIndex += delta;
+		}
+		
+		if(values.length > 2)
+		{
+			String alignment = LanguageOptions.isRightToLeftLanguage() ? "right" : "left";
+			fieldHtml.append("<td align='" + alignment + "' valign='top'>");
+			fieldHtml.append("<table cellpadding='0'><tr>");
+			
+			for(int i = 0; i < values.length - 1; ++i)
+			{
+				fieldHtml.append(getCellHtml(values[valueIndex]));
+				valueIndex += delta;
+			}
+	
+			fieldHtml.append("</tr></table>");
+			fieldHtml.append("</td>");
+		}
+		else
+		{
+			fieldHtml.append(getCellHtml(values[valueIndex]));
+			valueIndex += delta;
 		}
 
-		StringBuffer fieldHtml = new StringBuffer(label.length() + value.length() + 100);
-		fieldHtml.append("<tr><td align='right' valign='top'>");
-		fieldHtml.append(leftData);
-		fieldHtml.append("</td>");
-		fieldHtml.append("<td valign='top'>");
-		fieldHtml.append(rightData);
-		fieldHtml.append("</td></tr>");
-		fieldHtml.append("\n");
+		if(delta < 0)
+		{
+			fieldHtml.append(getLabelHtml(values[valueIndex]));
+			valueIndex += delta;
+		}
+		
+		fieldHtml.append("</tr>\n");
 		return new String(fieldHtml);
+	}
+
+	private static String getCellHtml(String value) 
+	{
+		String alignment = LanguageOptions.isRightToLeftLanguage() ? "right" : "left";
+		return getCellHtmlWithAlignment(value, alignment);
+	}
+
+	private static String getLabelHtml(String label) 
+	{
+		String alignment = LanguageOptions.isRightToLeftLanguage() ? "left" : "right";
+		return getCellHtmlWithAlignment(label, alignment);
+	}
+	
+	private static String getCellHtmlWithAlignment(String value, String alignment)
+	{
+		return "<td align='" + alignment + "' valign='top'>" + value + "</td>";
 	}
 
 	private String insertNewlines(String value)

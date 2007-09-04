@@ -36,6 +36,8 @@ import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldTypeNormal;
 import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.common.fieldspec.StandardFieldSpecs;
+import org.martus.common.packet.FieldDataPacket;
+import org.martus.common.packet.UniversalId;
 import org.martus.common.test.MockBulletinStore;
 import org.martus.common.test.TestGridData;
 import org.martus.util.TestCaseEnhanced;
@@ -75,18 +77,18 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 		b.set(Bulletin.TAGTITLE, title);
 		
 		BulletinHtmlGenerator generator = new BulletinHtmlGenerator(loc);
-		String expectedHtml ="<tr><td align='right' valign='top'>Language</td><td valign='top'>-Other-</td></tr>\n" +
-		"<tr><td align='right' valign='top'>Author</td><td valign='top'></td></tr>\n" +
-		"<tr><td align='right' valign='top'>Organization</td><td valign='top'></td></tr>\n" +
-		"<tr><td align='right' valign='top'>Title</td><td valign='top'><strong>My Title</strong></td></tr>\n" +
-		"<tr><td align='right' valign='top'>Location</td><td valign='top'></td></tr>\n" +
-		"<tr><td align='right' valign='top'>Keywords</td><td valign='top'></td></tr>\n" +
-		"<tr><td align='right' valign='top'>Date of Event</td><td valign='top'>"+XmlUtilities.getXmlEncoded(loc.convertStoredDateToDisplay(b.get(Bulletin.TAGEVENTDATE)))+"</td></tr>\n" +
-		"<tr><td align='right' valign='top'>Date Created</td><td valign='top'>"+XmlUtilities.getXmlEncoded(loc.convertStoredDateToDisplay(b.get(Bulletin.TAGENTRYDATE)))+"</td></tr>\n" +
-		"<tr><td align='right' valign='top'>Summary</td><td valign='top'><p></p></td></tr>\n" +
-		"<tr><td align='right' valign='top'>Details</td><td valign='top'><p></p></td></tr>\n";
+		String expectedHtml ="<tr><td align='right' valign='top'>Language</td><td align='left' valign='top'>-Other-</td></tr>\n" +
+		"<tr><td align='right' valign='top'>Author</td><td align='left' valign='top'></td></tr>\n" +
+		"<tr><td align='right' valign='top'>Organization</td><td align='left' valign='top'></td></tr>\n" +
+		"<tr><td align='right' valign='top'>Title</td><td align='left' valign='top'><strong>My Title</strong></td></tr>\n" +
+		"<tr><td align='right' valign='top'>Location</td><td align='left' valign='top'></td></tr>\n" +
+		"<tr><td align='right' valign='top'>Keywords</td><td align='left' valign='top'></td></tr>\n" +
+		"<tr><td align='right' valign='top'>Date of Event</td><td align='left' valign='top'>"+XmlUtilities.getXmlEncoded(loc.convertStoredDateToDisplay(b.get(Bulletin.TAGEVENTDATE)))+"</td></tr>\n" +
+		"<tr><td align='right' valign='top'>Date Created</td><td align='left' valign='top'>"+XmlUtilities.getXmlEncoded(loc.convertStoredDateToDisplay(b.get(Bulletin.TAGENTRYDATE)))+"</td></tr>\n" +
+		"<tr><td align='right' valign='top'>Summary</td><td align='left' valign='top'><p></p></td></tr>\n" +
+		"<tr><td align='right' valign='top'>Details</td><td align='left' valign='top'><p></p></td></tr>\n";
 		assertEquals("Public Section HTML not correct?", expectedHtml, generator.getSectionHtmlString(b.getFieldDataPacket()));
-		expectedHtml = "<tr><td align='right' valign='top'>Private</td><td valign='top'><p></p></td></tr>\n";
+		expectedHtml = "<tr><td align='right' valign='top'>Private</td><td align='left' valign='top'><p></p></td></tr>\n";
 		assertEquals("Private Section HTML not correct?",expectedHtml, generator.getSectionHtmlString(b.getPrivateFieldDataPacket()));
 	}
 
@@ -105,32 +107,32 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 
 		store.saveBulletinForTesting(b);
 		String expectedHtml = "<html><table width='80'>\n<tr><td width='15%'></td><td width='85%'></td></tr>\n" +
-			"<tr><td align='right' valign='top'>Last Saved</td><td valign='top'>"+loc.formatDateTime(b.getLastSavedTime())+"</td></tr>\n"+
-			"<tr><td align='right' valign='top'>Version</td><td valign='top'>1</td></tr>\n"+
-			"<tr><td align='right' valign='top'>Bulletin Status:</td><td valign='top'>Sealed</td></tr>\n"+
+			"<tr><td align='right' valign='top'>Last Saved</td><td align='left' valign='top'>"+loc.formatDateTime(b.getLastSavedTime())+"</td></tr>\n"+
+			"<tr><td align='right' valign='top'>Version</td><td align='left' valign='top'>1</td></tr>\n"+
+			"<tr><td align='right' valign='top'>Bulletin Status:</td><td align='left' valign='top'>Sealed</td></tr>\n"+
 			"<tr></tr>\n" + 
 			"<tr><td colspan='2' align='left'><u><b>Private Information</b></u></td></tr>\n"+
-			"<tr><td align='right' valign='top'>Keep ALL Information Private</td><td valign='top'>Yes</td></tr>\n"+
-			"<tr><td align='right' valign='top'>Language</td><td valign='top'>-Other-</td></tr>\n"+
-			"<tr><td align='right' valign='top'>Author</td><td valign='top'></td></tr>\n"+
-			"<tr><td align='right' valign='top'>Organization</td><td valign='top'></td></tr>\n"+
-			"<tr><td align='right' valign='top'>Title</td><td valign='top'><strong>"+title+"</strong></td></tr>\n"+
-			"<tr><td align='right' valign='top'>Location</td><td valign='top'></td></tr>\n"+
-			"<tr><td align='right' valign='top'>Keywords</td><td valign='top'></td></tr>\n"+
-			"<tr><td align='right' valign='top'>Date of Event</td><td valign='top'>"+XmlUtilities.getXmlEncoded(loc.convertStoredDateToDisplay(b.get(Bulletin.TAGEVENTDATE)))+"</td></tr>\n"+
-			"<tr><td align='right' valign='top'>Date Created</td><td valign='top'>"+XmlUtilities.getXmlEncoded(loc.convertStoredDateToDisplay(b.get(Bulletin.TAGENTRYDATE)))+"</td></tr>\n"+
-			"<tr><td align='right' valign='top'>Summary</td><td valign='top'><p></p></td></tr>\n"+
-			"<tr><td align='right' valign='top'>Details</td><td valign='top'><p></p></td></tr>\n"+
-			"<tr><td align='right' valign='top'>Attachments</td><td valign='top'></td></tr>\n"+
+			"<tr><td align='right' valign='top'>Keep ALL Information Private</td><td align='left' valign='top'>Yes</td></tr>\n"+
+			"<tr><td align='right' valign='top'>Language</td><td align='left' valign='top'>-Other-</td></tr>\n"+
+			"<tr><td align='right' valign='top'>Author</td><td align='left' valign='top'></td></tr>\n"+
+			"<tr><td align='right' valign='top'>Organization</td><td align='left' valign='top'></td></tr>\n"+
+			"<tr><td align='right' valign='top'>Title</td><td align='left' valign='top'><strong>"+title+"</strong></td></tr>\n"+
+			"<tr><td align='right' valign='top'>Location</td><td align='left' valign='top'></td></tr>\n"+
+			"<tr><td align='right' valign='top'>Keywords</td><td align='left' valign='top'></td></tr>\n"+
+			"<tr><td align='right' valign='top'>Date of Event</td><td align='left' valign='top'>"+XmlUtilities.getXmlEncoded(loc.convertStoredDateToDisplay(b.get(Bulletin.TAGEVENTDATE)))+"</td></tr>\n"+
+			"<tr><td align='right' valign='top'>Date Created</td><td align='left' valign='top'>"+XmlUtilities.getXmlEncoded(loc.convertStoredDateToDisplay(b.get(Bulletin.TAGENTRYDATE)))+"</td></tr>\n"+
+			"<tr><td align='right' valign='top'>Summary</td><td align='left' valign='top'><p></p></td></tr>\n"+
+			"<tr><td align='right' valign='top'>Details</td><td align='left' valign='top'><p></p></td></tr>\n"+
+			"<tr><td align='right' valign='top'>Attachments</td><td align='left' valign='top'></td></tr>\n"+
 			"<tr></tr>\n" + 
 			"<tr><td colspan='2' align='left'><u><b>Private Information</b></u></td></tr>\n"+
-			"<tr><td align='right' valign='top'>Private</td><td valign='top'><p></p></td></tr>\n"+
-			"<tr><td align='right' valign='top'>Attachments</td><td valign='top'></td></tr>\n"+
+			"<tr><td align='right' valign='top'>Private</td><td align='left' valign='top'><p></p></td></tr>\n"+
+			"<tr><td align='right' valign='top'>Attachments</td><td align='left' valign='top'></td></tr>\n"+
 			"<tr></tr>\n" + 
 			"<tr><td colspan='2' align='left'><u><b>Headquarters</b></u></td></tr>\n"+
-			"<tr><td align='right' valign='top'></td><td valign='top'>No Headquarters accounts selected for this bulletin.</td></tr>\n"+
+			"<tr><td align='right' valign='top'></td><td align='left' valign='top'>No Headquarters accounts selected for this bulletin.</td></tr>\n"+
 			"<tr></tr>\n" + 
-			"<tr><td align='right' valign='top'>Bulletin Id:</td><td valign='top'>"+b.getLocalId()+"</td></tr>\n"+
+			"<tr><td align='right' valign='top'>Bulletin Id:</td><td align='left' valign='top'>"+b.getLocalId()+"</td></tr>\n"+
 			"</table></html>";
 		assertEquals("Entire Bulletin's HTML not correct", expectedHtml, generator.getHtmlString(b, store.getDatabase(), true, true));
 	}
@@ -149,30 +151,30 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 		
 		BulletinHtmlGenerator generator = new BulletinHtmlGenerator(loc);
 		String expectedHtml = "<html><table width='80'>\n<tr><td width='15%'></td><td width='85%'></td></tr>\n" +
-			"<tr><td align='right' valign='top'>Last Saved</td><td valign='top'>"+loc.formatDateTime(b.getLastSavedTime())+"</td></tr>\n"+
-			"<tr><td align='right' valign='top'>Version</td><td valign='top'>1</td></tr>\n"+
-			"<tr><td align='right' valign='top'>Bulletin Status:</td><td valign='top'>Draft</td></tr>\n"+
+			"<tr><td align='right' valign='top'>Last Saved</td><td align='left' valign='top'>"+loc.formatDateTime(b.getLastSavedTime())+"</td></tr>\n"+
+			"<tr><td align='right' valign='top'>Version</td><td align='left' valign='top'>1</td></tr>\n"+
+			"<tr><td align='right' valign='top'>Bulletin Status:</td><td align='left' valign='top'>Draft</td></tr>\n"+
 			"<tr></tr>\n" + 
-			"<tr><td align='right' valign='top'>Field Desk Bulletin</td><td valign='top'></td></tr>\n"+
+			"<tr><td align='right' valign='top'>Field Desk Bulletin</td><td align='left' valign='top'></td></tr>\n"+
 			"<tr></tr>\n" + 
 			"<tr><td colspan='2' align='left'><u><b>Public Information</b></u></td></tr>\n"+
-			"<tr><td align='right' valign='top'>Keep ALL Information Private</td><td valign='top'>No</td></tr>\n"+
-			"<tr><td align='right' valign='top'>Language</td><td valign='top'>-Other-</td></tr>\n"+
-			"<tr><td align='right' valign='top'>Author</td><td valign='top'></td></tr>\n"+
-			"<tr><td align='right' valign='top'>Organization</td><td valign='top'></td></tr>\n"+
-			"<tr><td align='right' valign='top'>Title</td><td valign='top'><strong>"+title+"</strong></td></tr>\n"+
-			"<tr><td align='right' valign='top'>Location</td><td valign='top'></td></tr>\n"+
-			"<tr><td align='right' valign='top'>Keywords</td><td valign='top'></td></tr>\n"+
-			"<tr><td align='right' valign='top'>Date of Event</td><td valign='top'>"+XmlUtilities.getXmlEncoded(loc.convertStoredDateToDisplay(b.get(Bulletin.TAGEVENTDATE)))+"</td></tr>\n"+
-			"<tr><td align='right' valign='top'>Date Created</td><td valign='top'>"+XmlUtilities.getXmlEncoded(loc.convertStoredDateToDisplay(b.get(Bulletin.TAGENTRYDATE)))+"</td></tr>\n"+
-			"<tr><td align='right' valign='top'>Summary</td><td valign='top'><p></p></td></tr>\n"+
-			"<tr><td align='right' valign='top'>Details</td><td valign='top'><p></p></td></tr>\n"+
-			"<tr><td align='right' valign='top'>Attachments</td><td valign='top'></td></tr>\n"+
+			"<tr><td align='right' valign='top'>Keep ALL Information Private</td><td align='left' valign='top'>No</td></tr>\n"+
+			"<tr><td align='right' valign='top'>Language</td><td align='left' valign='top'>-Other-</td></tr>\n"+
+			"<tr><td align='right' valign='top'>Author</td><td align='left' valign='top'></td></tr>\n"+
+			"<tr><td align='right' valign='top'>Organization</td><td align='left' valign='top'></td></tr>\n"+
+			"<tr><td align='right' valign='top'>Title</td><td align='left' valign='top'><strong>"+title+"</strong></td></tr>\n"+
+			"<tr><td align='right' valign='top'>Location</td><td align='left' valign='top'></td></tr>\n"+
+			"<tr><td align='right' valign='top'>Keywords</td><td align='left' valign='top'></td></tr>\n"+
+			"<tr><td align='right' valign='top'>Date of Event</td><td align='left' valign='top'>"+XmlUtilities.getXmlEncoded(loc.convertStoredDateToDisplay(b.get(Bulletin.TAGEVENTDATE)))+"</td></tr>\n"+
+			"<tr><td align='right' valign='top'>Date Created</td><td align='left' valign='top'>"+XmlUtilities.getXmlEncoded(loc.convertStoredDateToDisplay(b.get(Bulletin.TAGENTRYDATE)))+"</td></tr>\n"+
+			"<tr><td align='right' valign='top'>Summary</td><td align='left' valign='top'><p></p></td></tr>\n"+
+			"<tr><td align='right' valign='top'>Details</td><td align='left' valign='top'><p></p></td></tr>\n"+
+			"<tr><td align='right' valign='top'>Attachments</td><td align='left' valign='top'></td></tr>\n"+
 			"<tr></tr>\n" + 
 			"<tr><td colspan='2' align='left'><u><b>Headquarters</b></u></td></tr>\n"+
-			"<tr><td align='right' valign='top'></td><td valign='top'>No Headquarters accounts selected for this bulletin.</td></tr>\n"+
+			"<tr><td align='right' valign='top'></td><td align='left' valign='top'>No Headquarters accounts selected for this bulletin.</td></tr>\n"+
 			"<tr></tr>\n" + 
-			"<tr><td align='right' valign='top'>Bulletin Id:</td><td valign='top'>"+b.getLocalId()+"</td></tr>\n"+
+			"<tr><td align='right' valign='top'>Bulletin Id:</td><td align='left' valign='top'>"+b.getLocalId()+"</td></tr>\n"+
 			"</table></html>";
 		assertEquals("Entire Bulletin's HTML not correct", expectedHtml, generator.getHtmlString(b, store.getDatabase(), false, false));
 	}
@@ -190,7 +192,7 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 		
 		
 		BulletinHtmlGenerator generator = new BulletinHtmlGenerator(loc);
-		String expectedHtml ="<tr><td align='right' valign='top'></td><td valign='top'>" +
+		String expectedHtml ="<tr><td align='right' valign='top'></td><td align='left' valign='top'>" +
 				"<table border='1' align='left'>" +
 				"<tr><th align='center'> </th><th align='center'>Column 1</th><th align='center'>Column 2</th></tr>" +
 				"<tr><td align='left'>1</td><td align='left'>data1</td><td align='left'>&lt;&amp;data2&gt;</td></tr>" +
@@ -217,7 +219,7 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 		
 		
 		BulletinHtmlGenerator generator = new BulletinHtmlGenerator(loc);
-		String expectedHtml ="<tr><td align='right' valign='top'>myDropdownLabel</td><td valign='top'>blue</td></tr>\n";
+		String expectedHtml ="<tr><td align='right' valign='top'>myDropdownLabel</td><td align='left' valign='top'>blue</td></tr>\n";
 		assertEquals("HTML Dropdowns not correct?", expectedHtml, generator.getSectionHtmlString(b.getFieldDataPacket()));
 	}
 
@@ -240,7 +242,7 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 		
 		
 		BulletinHtmlGenerator generator = new BulletinHtmlGenerator(loc);
-		String expectedHtml ="<tr><td align='right' valign='top'></td><td valign='top'></td></tr>\n";
+		String expectedHtml ="<tr><td align='right' valign='top'></td><td align='left' valign='top'></td></tr>\n";
 		assertEquals("HTML Empty Grids not correct?", expectedHtml, generator.getSectionHtmlString(b.getFieldDataPacket()));
 	}
 	
@@ -259,8 +261,47 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 			BulletinHtmlGenerator generator = new BulletinHtmlGenerator(loc);
 			String html = generator.getHtmlString(b, store.getDatabase(), true, true);
 			assertStartsWith("column widths not reversed?", "<html><table width='80'>\n<tr><td width='85%'></td><td width='15%'></td></tr>\n", html);
-			assertContains("column values not reversed?", "<tr><td align='right' valign='top'>Bradbury</td><td valign='top'>Author</td></tr>\n", html);
+			assertContains("column values not reversed?", "<tr><td align='right' valign='top'>Bradbury</td><td align='left' valign='top'>Author</td></tr>\n", html);
 			assertContains("heading not aligned right?", "<tr><td colspan='2' align='right'><u><b>Headquarters</b></u></td></tr>\n", html);
+		}
+		finally
+		{
+			LanguageOptions.setDirectionLeftToRight();
+		}
+	}
+	
+	public void testKeepWithPrevious() throws Exception
+	{
+		FieldSpec one = FieldSpec.createStandardField(Bulletin.TAGAUTHOR, new FieldTypeNormal());
+		FieldSpec two = FieldSpec.createFromXml("<Field type='NORMAL'><Tag>" + 
+				Bulletin.TAGKEYWORDS + 
+				"</Tag><KeepWithPrevious/></Field>");
+		FieldSpec[] specs = new FieldSpec[] {one, two, };
+		final String SAMPLE_AUTHOR = "Bill Preston";
+		final String SAMPLE_KEYWORDS = "blue green red";
+		UniversalId uid = FieldDataPacket.createUniversalId(security);
+		FieldDataPacket fdp = new FieldDataPacket(uid, specs);
+		fdp.set(Bulletin.TAGAUTHOR, SAMPLE_AUTHOR);
+		fdp.set(Bulletin.TAGKEYWORDS, SAMPLE_KEYWORDS);
+		BulletinHtmlGenerator generator = new BulletinHtmlGenerator(loc);
+		
+		{
+			String html = generator.getSectionHtmlString(fdp);
+			String EXPECTED_HTML = SAMPLE_AUTHOR + "</td>" +
+					"<td align='left' valign='top'>" + loc.getFieldLabel(Bulletin.TAGKEYWORDS) + "</td>" +
+					"<td align='left' valign='top'>" + SAMPLE_KEYWORDS;
+			assertContains("Didn't create subtable for the row?", EXPECTED_HTML, html);
+		}
+		
+		LanguageOptions.setDirectionRightToLeft();
+		try
+		{
+			String html = generator.getSectionHtmlString(fdp);
+			String EXPECTED_HTML = 
+				SAMPLE_KEYWORDS + "</td>" +
+				"<td align='right' valign='top'>" + loc.getFieldLabel(Bulletin.TAGKEYWORDS) + "</td>" +
+				"<td align='right' valign='top'>" + SAMPLE_AUTHOR;
+			assertContains("Right-to-left Didn't create subtable for the row?", EXPECTED_HTML, html);
 		}
 		finally
 		{
