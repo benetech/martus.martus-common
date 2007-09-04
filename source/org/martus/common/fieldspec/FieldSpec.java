@@ -107,7 +107,7 @@ public class FieldSpec
 		rootTagLine.append(XmlUtilities.getXmlEncoded(getLabel()));
 		rootTagLine.append((("</" + FIELD_SPEC_LABEL_XML_TAG + ">") + "\n"));
 		if(keepWithPrevious())
-			rootTagLine.append("<" + FIELD_SPEC_KEEP_WITH_PREVIOUS_TAG + "/>");
+			rootTagLine.append("<" + FIELD_SPEC_KEEP_WITH_PREVIOUS_TAG + "/>\n");
 		rootTagLine.append(getDetailsXml());
 		rootTagLine.append((("</" + rootTag + ">") + "\n"));
 		
