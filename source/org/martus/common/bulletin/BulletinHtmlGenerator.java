@@ -444,6 +444,8 @@ public class BulletinHtmlGenerator
 			
 			for(int i = 0; i < values.length - 1; ++i)
 			{
+				if(i > 0)
+					fieldHtml.append(getPaddingCellHtml());
 				fieldHtml.append(getCellHtml(values[valueIndex]));
 				valueIndex += delta;
 			}
@@ -465,6 +467,11 @@ public class BulletinHtmlGenerator
 		
 		fieldHtml.append("</tr>\n");
 		return new String(fieldHtml);
+	}
+
+	private static String getPaddingCellHtml()
+	{
+		return "<td width='10'></td>";
 	}
 
 	private static String getCellHtml(String value) 
