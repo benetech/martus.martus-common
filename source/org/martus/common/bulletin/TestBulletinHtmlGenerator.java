@@ -288,7 +288,9 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 		{
 			String html = generator.getSectionHtmlString(fdp);
 			String EXPECTED_HTML = SAMPLE_AUTHOR + "</td>" +
+					"<td width='10'></td>" +
 					"<td align='left' valign='top'>" + loc.getFieldLabel(Bulletin.TAGKEYWORDS) + "</td>" +
+					"<td width='10'></td>" + 
 					"<td align='left' valign='top'>" + SAMPLE_KEYWORDS;
 			assertContains("Didn't create subtable for the row?", EXPECTED_HTML, html);
 		}
@@ -299,7 +301,9 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 			String html = generator.getSectionHtmlString(fdp);
 			String EXPECTED_HTML = 
 				SAMPLE_KEYWORDS + "</td>" +
+				"<td width='10'></td>" +
 				"<td align='right' valign='top'>" + loc.getFieldLabel(Bulletin.TAGKEYWORDS) + "</td>" +
+				"<td width='10'></td>" +
 				"<td align='right' valign='top'>" + SAMPLE_AUTHOR;
 			assertContains("Right-to-left Didn't create subtable for the row?", EXPECTED_HTML, html);
 		}
