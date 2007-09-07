@@ -108,6 +108,8 @@ public class FieldSpec
 		rootTagLine.append((("</" + FIELD_SPEC_LABEL_XML_TAG + ">") + "\n"));
 		if(keepWithPrevious())
 			rootTagLine.append("<" + FIELD_SPEC_KEEP_WITH_PREVIOUS_TAG + "/>\n");
+		if(isRequiredField())
+			rootTagLine.append("<" + FIELD_SPEC_REQUIRED_FIELD_TAG + "/>\n");
 		rootTagLine.append(getDetailsXml());
 		rootTagLine.append((("</" + rootTag + ">") + "\n"));
 		
@@ -153,7 +155,7 @@ public class FieldSpec
 
 	public boolean isRequiredField() 
 	{
-		return false;
+		return isRequired;
 	}
 
 	public String convertStoredToSearchable(String storedData, MiniLocalization localization)
@@ -208,6 +210,11 @@ public class FieldSpec
 	public void setKeepWithPrevious()
 	{
 		keepWithPrevious = true;
+	}
+	
+	public void setRequired()
+	{
+		isRequired = true;
 	}
 	
 	public String getId()
@@ -314,6 +321,9 @@ public class FieldSpec
 			if(tag.equals(FieldSpec.FIELD_SPEC_KEEP_WITH_PREVIOUS_TAG))
 				return new SimpleXmlDefaultLoader(tag);
 
+			if(tag.equals(FieldSpec.FIELD_SPEC_REQUIRED_FIELD_TAG))
+				return new SimpleXmlDefaultLoader(tag);
+
 			if(spec.getType().isGrid())
 			{
 				if(tag.equals(GridFieldSpec.GRID_SPEC_DETAILS_TAG))
@@ -347,6 +357,8 @@ public class FieldSpec
 				spec.setLabel(getText(ended));
 			else if(thisTag.equals(FieldSpec.FIELD_SPEC_KEEP_WITH_PREVIOUS_TAG))
 				spec.setKeepWithPrevious();
+			else if(thisTag.equals(FieldSpec.FIELD_SPEC_REQUIRED_FIELD_TAG))
+				spec.setRequired();
 			else
 				super.endElement(thisTag, ended);
 		}
@@ -364,6 +376,7 @@ public class FieldSpec
 	private boolean hasUnknown;
 	private FieldSpec parent;
 	private boolean keepWithPrevious;
+	private boolean isRequired;
 	
 	private String id;
 
@@ -371,6 +384,7 @@ public class FieldSpec
 	public static final String FIELD_SPEC_TAG_XML_TAG = "Tag";
 	public static final String FIELD_SPEC_LABEL_XML_TAG = "Label";
 	public static final String FIELD_SPEC_KEEP_WITH_PREVIOUS_TAG = "KeepWithPrevious";
+	public static final String FIELD_SPEC_REQUIRED_FIELD_TAG = "RequiredField";
 
 	public static final String FIELD_SPEC_TYPE_ATTR = "type";
 

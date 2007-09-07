@@ -173,6 +173,15 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertTrue("Didn't save and reload KeepWithPrevious?", reloaded.keepWithPrevious());
 	}
 	
+	public void testIsRequired() throws Exception
+	{
+		String xml = "<Field Type='NORMAL'><Tag>AUTHOR</Tag><RequiredField/></Field>";
+		FieldSpec spec = FieldSpec.createFromXml(xml);
+		assertTrue("Didn't notice RequiredField?", spec.isRequiredField());
+		FieldSpec reloaded = FieldSpec.createFromXml(spec.toString());
+		assertTrue("Didn't save and reload RequiredField?", reloaded.isRequiredField());
+	}
+	
 	public void testEqualsAndCompareTo()
 	{
 		FieldSpec a = FieldSpec.createFieldSpec(new FieldTypeNormal());
