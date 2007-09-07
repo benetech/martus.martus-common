@@ -151,6 +151,11 @@ public class FieldSpec
 		return keepWithPrevious;
 	}
 
+	public boolean isRequiredField() 
+	{
+		return false;
+	}
+
 	public String convertStoredToSearchable(String storedData, MiniLocalization localization)
 	{
 		return getType().convertStoredToSearchable(storedData, localization);
@@ -371,5 +376,4 @@ public class FieldSpec
 
 	public static final String TRUESTRING = "1";
 	public static final String FALSESTRING = "0";
-
 }
