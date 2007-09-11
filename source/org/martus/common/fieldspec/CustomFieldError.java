@@ -160,6 +160,11 @@ public class CustomFieldError
 		return type;
 	}
 
+	public String toString() 
+	{
+		return "CustomFieldError: " + code + ", " + tag + ", " + label + ", " + type;
+	}
+
 	static public final String CODE_REQUIRED_FIELD = "100";
 	static public final String CODE_MISSING_TAG = "101";
 	static public final String CODE_DUPLICATE_FIELD = "102";

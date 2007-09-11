@@ -419,6 +419,16 @@ public class CustomFieldSpecValidator
 	{
 		return FieldSpec.getTypeString( thisSpec.getType());
 	}
+	
+	public String toString() 
+	{
+		String result = "CustomFieldSpecValidator: \n";
+		for(int i = 0; i < errors.size(); ++i)
+			result += errors.get(i).toString() + "\n";
+		return result;
+	}
+
+
 
 	private boolean allowSpaceOnlyCustomFieldLabels;
 	private Vector errors;
