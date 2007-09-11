@@ -57,5 +57,10 @@ public class MartusLogger
 		}
 	}
 	
+	public static PrintStream getDestination()
+	{
+		return destination;
+	}
+	
 	static PrintStream destination = System.out;
 }
