@@ -26,6 +26,8 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.fieldspec;
 
+import java.util.Comparator;
+
 
 public class ChoiceItem implements Comparable
 {
@@ -81,6 +83,17 @@ public class ChoiceItem implements Comparable
 		return getSpec().compareTo(otherChoiceItem.getSpec());
 	}
 	
+	public static class ChoiceItemSorterByLabel implements Comparator
+	{
+		public int compare(Object arg0, Object arg1) 
+		{
+			ChoiceItem a = (ChoiceItem)arg0;
+			ChoiceItem b = (ChoiceItem)arg1;
+			return a.toString().compareTo(b.toString());
+		}
+		
+	}
+
 	private FieldSpec spec;
 }
 
