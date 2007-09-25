@@ -396,16 +396,19 @@ public class Bulletin implements BulletinConstants
 		getFieldDataPacket().clearAll();
 		getPrivateFieldDataPacket().clearAll();
 		
-		FieldSpec[] specs = fieldData.getFieldSpecs();
-		for(int i = 0; i < specs.length; ++i)
-		{
-			set(specs[i].getTag(), specs[i].getDefaultValue());
-		}
+		clearUserDataInSection(fieldData.getFieldSpecs());
+		clearUserDataInSection(privateFieldData.getFieldSpecs());
 		
 		set(TAGENTRYDATE, DateUtilities.getTodayInStoredFormat());
 		set(TAGEVENTDATE, MartusFlexidate.toStoredDateFormat(MultiCalendar.UNKNOWN));
 		
 		setDraft();
+	}
+
+	private void clearUserDataInSection(FieldSpec[] specs) 
+	{
+		for(int i = 0; i < specs.length; ++i)
+			set(specs[i].getTag(), specs[i].getDefaultValue());
 	}
 
 	public void clearPublicAttachments()
