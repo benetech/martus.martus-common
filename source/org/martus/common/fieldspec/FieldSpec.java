@@ -155,6 +155,9 @@ public class FieldSpec
 
 	public boolean isRequiredField() 
 	{
+		if(getType().isSectionStart())
+			return false;
+		
 		return isRequired;
 	}
 

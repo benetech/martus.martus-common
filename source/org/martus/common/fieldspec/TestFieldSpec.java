@@ -175,11 +175,16 @@ public class TestFieldSpec extends TestCaseEnhanced
 	
 	public void testIsRequired() throws Exception
 	{
-		String xml = "<Field Type='NORMAL'><Tag>AUTHOR</Tag><RequiredField/></Field>";
+		String xml = "<Field type='NORMAL'><Tag>AUTHOR</Tag><RequiredField/></Field>";
 		FieldSpec spec = FieldSpec.createFromXml(xml);
 		assertTrue("Didn't notice RequiredField?", spec.isRequiredField());
 		FieldSpec reloaded = FieldSpec.createFromXml(spec.toString());
 		assertTrue("Didn't save and reload RequiredField?", reloaded.isRequiredField());
+		
+		String sectionXml = "<Field type='SECTION'><Tag>Anything</Tag><RequiredField/></Field>";
+		FieldSpec sectionSpec = FieldSpec.createFromXml(sectionXml);
+		assertFalse("Section didn't ignore required?", sectionSpec.isRequiredField());
+		
 	}
 	
 	public void testEqualsAndCompareTo()
