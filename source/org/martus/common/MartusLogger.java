@@ -57,6 +57,20 @@ public class MartusLogger
 		}
 	}
 	
+	public synchronized static void logException(Exception e)
+	{
+		if(destination == null)
+			return;
+		
+		destination.println(e.getMessage());
+		e.printStackTrace(destination);
+	}
+	
+	public static void logError(String errorText)
+	{
+		log("ERROR: " + errorText);
+	}
+	
 	public static PrintStream getDestination()
 	{
 		return destination;
