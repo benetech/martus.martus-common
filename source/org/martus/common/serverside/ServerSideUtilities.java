@@ -34,44 +34,48 @@ import org.martus.util.UnicodeReader;
 
 public class ServerSideUtilities
 {
-	public static void writeSyncFile(File syncFile, String whoCallThisMethod) 
+	public static void writeSyncFile(File syncFile, String whoCallThisMethod) throws Exception
 	{
-		try 
+		FileOutputStream out = new FileOutputStream(syncFile);
+		out.write(0);
+		out.close();
+	}
+
+
+	public static char[] getPassphraseFromConsole(File triggerDirectory, String whoCallThisMethod) throws Exception
+	{
+		System.out.print("Enter passphrase: ");
+		System.out.flush();
+
+		try
 		{
-			FileOutputStream out = new FileOutputStream(syncFile);
-			out.write(0);
-			out.close();
+			File waitingFile = new File(triggerDirectory, "waiting");
+			waitingFile.delete();
+			ServerSideUtilities.writeSyncFile(waitingFile, whoCallThisMethod);
+
+			String passphrase = null;
+			BufferedReader reader = new BufferedReader(new UnicodeReader(System.in));
+			//TODO security issue here password is a string
+			passphrase = reader.readLine();
+			return passphrase.toCharArray();
 		} 
-		catch(Exception e) 
+		catch (Exception e)
 		{
-			System.out.println(whoCallThisMethod+": " + e);
-			System.exit(6);
+			System.out.println();
+			System.out.flush();
+			throw(e);
 		}
 	}
 
 
-	public static char[] getPassphraseFromConsole(File triggerDirectory, String whoCallThisMethod)
-	{
-		System.out.print("Enter passphrase: ");
-		System.out.flush();
-	
-		File waitingFile = new File(triggerDirectory, "waiting");
-		waitingFile.delete();
-		ServerSideUtilities.writeSyncFile(waitingFile, whoCallThisMethod);
-	
-		String passphrase = null;
-		try
-		{
-			BufferedReader reader = new BufferedReader(new UnicodeReader(System.in));
-			//TODO security issue here password is a string
-			passphrase = reader.readLine();
-		}
-		catch(Exception e)
-		{
-			System.out.println(whoCallThisMethod+": " + e);
-			System.exit(3);
-		}
-		return passphrase.toCharArray();
-	}	
+	public static final int EXIT_CRYPTO_INITIALIZATION = 1;
+	public static final int EXIT_KEYPAIR_FILE_MISSING = 2;
+	public static final int EXIT_UNEXPECTED_EXCEPTION = 3;
+	public static final int EXIT_UNEXPECTED_FILE_STARTUP = 4;
+	public static final int EXIT_STARTUP_DIRECTORY_NOT_EMPTY = 5;
+	public static final int EXIT_MISSING_DATA_DIRECTORY = 6;
+	public static final int EXIT_NO_LISTENERS = 20;
+	public static final int EXIT_INVALID_IPADDRESS = 23;
+	public static final int EXIT_INVALID_PASSWORD = 73;	
 	
 }
