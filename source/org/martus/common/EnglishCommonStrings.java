@@ -115,6 +115,8 @@ public class EnglishCommonStrings
 		"field:DateRangeTemplatebegin=#FieldLabel# (beginning)",
 		"field:DateRangeTemplateend=#FieldLabel# (end)",
 
+		"field:DateNotSpecified=Unknown",
+
 		"button:yes=Yes",
 		"button:no=No",
 		
