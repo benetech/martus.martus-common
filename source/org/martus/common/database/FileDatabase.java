@@ -746,7 +746,6 @@ abstract public class FileDatabase extends Database
 			File file = getFileForRecord(key);
 			OutputStream rawOut = createOutputStream(file);
 			MartusUtilities.copyStreamWithFilter(in, rawOut, copier);
-			rawOut.close();
 			mTimeMap.remove(key);
 		}
 		catch(TooManyAccountsException e)
