@@ -79,6 +79,11 @@ public class AttachmentPacket extends Packet
 	{
 		return rawFile.length();
 	}
+	
+	public File getRawFile()
+	{
+		return rawFile;
+	}
 
 	public static UniversalId createUniversalId(MartusCrypto accountSecurity)
 	{
