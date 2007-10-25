@@ -121,6 +121,26 @@ public class AttachmentProxy
 	{
 		return pendingPacket;
 	}
+	
+	public int hashCode()
+	{
+		return uid.hashCode();
+	}
+	
+	public boolean equals(Object rawOther)
+	{
+		if(! (rawOther instanceof AttachmentProxy))
+			return false;
+		
+		AttachmentProxy other = (AttachmentProxy)rawOther;
+		if(uid != null && uid.equals(other.uid))
+			return true;
+		
+		if(file != null && file.equals(other.file))
+			return true;
+		
+		return false;
+	}
 
 	String label;
 	File file;
