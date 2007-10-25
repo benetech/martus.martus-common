@@ -296,7 +296,7 @@ abstract public class FileDatabase extends Database
 		}
 		catch(Exception e)
 		{
-			System.out.println("FileDatabase.doesRecordExist: " + e);
+			e.printStackTrace();
 		}
 
 		return false;
