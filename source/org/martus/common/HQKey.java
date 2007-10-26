@@ -70,6 +70,20 @@ public class HQKey
 		return MartusCrypto.computeFormattedPublicCode(publicKey);
 	}
 	
+	public int hashCode()
+	{
+		return publicKey.hashCode();
+	}
+	
+	public boolean equals(Object rawOther)
+	{
+		if(! (rawOther instanceof HQKey))
+			return false;
+		
+		HQKey other = (HQKey)rawOther;
+		return publicKey.equals(other.publicKey) && label.equals(other.label);
+	}
+	
 	private String publicKey;
 	private String label;
 }
