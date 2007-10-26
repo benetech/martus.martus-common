@@ -254,6 +254,11 @@ public class MiniLocalization
 	{
 		return getLabel(getCurrentLanguageCode(), "language", code);
 	}
+	
+	public String getCancelButtonLabel()
+	{
+		return getButtonLabel("cancel");
+	}
 
 	public String getButtonLabel(String code)
 	{
