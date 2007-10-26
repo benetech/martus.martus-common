@@ -162,6 +162,11 @@ public class HQKeys
 		return "";
 	}
 	
+	public boolean contains(HQKey key)
+	{
+		return hqKeys.contains(key);
+	}
+
 	public static Vector parseXml(String xml) throws HQsException
 	{
 		Vector hQs = new Vector();
