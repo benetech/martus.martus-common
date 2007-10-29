@@ -750,7 +750,7 @@ abstract public class FileDatabase extends Database
 		try
 		{
 			File file = getFileForRecord(key);
-			OutputStream rawOut = createOutputStream(file);
+			OutputStream rawOut = createOutputStream(file, getInterimDirectory(key.getAccountId()));
 			MartusUtilities.copyStreamWithFilter(in, rawOut, copier);
 			mTimeMap.remove(key);
 		}
@@ -761,7 +761,7 @@ abstract public class FileDatabase extends Database
 			throw new IOException("Too many accounts");
 		}
 	}
-	protected OutputStream createOutputStream(File file)
+	protected OutputStream createOutputStream(File file, File tempDirectory)
 		throws IOException
 	{
 		return new FileOutputStream(file);

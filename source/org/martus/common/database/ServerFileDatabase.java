@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.ParseException;
+
 import org.martus.common.MartusUtilities;
 import org.martus.common.MartusUtilities.FileVerificationException;
 import org.martus.common.crypto.MartusCrypto;
@@ -124,9 +125,9 @@ public class ServerFileDatabase extends FileDatabase
 		return MartusServerUtilities.getFormattedTimeStamp(lastModifiedMillisSince1970);
 	}
 	
-	protected OutputStream createOutputStream(File file) throws IOException
+	protected OutputStream createOutputStream(File file, File tempDirectory) throws IOException
 	{
-		return new FileOutputStreamViaTemp(file);
+		return new FileOutputStreamViaTemp(file, tempDirectory);
 	}
 	
 	protected DatabaseKey getDatabaseKey(File accountDir, String bucketName, UniversalId uid)

@@ -44,7 +44,8 @@ public class TestFileOutputStreamViaTemp extends TestCaseEnhanced
 	public void testWhenFileExists() throws Exception
 	{
 		File destFile = createTempFile();
-		FileOutputStreamViaTemp out = new FileOutputStreamViaTemp(destFile);
+		File tempDirectory = createTempDirectory();
+		FileOutputStreamViaTemp out = new FileOutputStreamViaTemp(destFile, tempDirectory);
 		byte[] sampleData = {1,2,3,4,5};
 		out.write(sampleData);
 		out.close();
@@ -65,7 +66,8 @@ public class TestFileOutputStreamViaTemp extends TestCaseEnhanced
 	{
 		File destFile = createTempFile();
 		destFile.setReadOnly();
-		FileOutputStreamViaTemp out = new FileOutputStreamViaTemp(destFile);
+		File tempDirectory = createTempDirectory();
+		FileOutputStreamViaTemp out = new FileOutputStreamViaTemp(destFile, tempDirectory);
 		byte[] sampleData = {1,2,3,4,5};
 		out.write(sampleData);
 		out.close();
@@ -86,7 +88,8 @@ public class TestFileOutputStreamViaTemp extends TestCaseEnhanced
 	{
 		File destFile = createTempFile();
 		destFile.delete();
-		FileOutputStreamViaTemp out = new FileOutputStreamViaTemp(destFile);
+		File tempDirectory = createTempDirectory();
+		FileOutputStreamViaTemp out = new FileOutputStreamViaTemp(destFile, tempDirectory);
 		assertFalse("Already created dest?", destFile.exists());
 		byte[] sampleData = {1,2,3,4,5};
 		out.write(sampleData);
