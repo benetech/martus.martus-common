@@ -184,7 +184,9 @@ public class MartusUtilities
 			existingSig.delete();
 		}
 
-		newSigFile.renameTo(existingSig);
+		if(!newSigFile.renameTo(existingSig))
+			throw new IOException("renameTo failed: " + newSigFile + " -> " + existingSig);
+
 
 		return existingSig;
 	}

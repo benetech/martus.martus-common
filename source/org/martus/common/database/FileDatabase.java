@@ -407,13 +407,19 @@ abstract public class FileDatabase extends Database
 		try
 		{
 			File moveFrom = getFileForRecord(key);
+			if(!moveFrom.exists())
+				return;
+			
 			File moveTo = getQuarantineFileForRecord(key);
 
+			moveTo.mkdirs();
 			moveTo.delete();
-			moveFrom.renameTo(moveTo);
+			if(!moveFrom.renameTo(moveTo))
+				throw new IOException("Unable to rename from " + moveFrom.getAbsolutePath() + " to " + moveTo);
 		}
 		catch(Exception nothingWeCanDoAboutIt)
 		{
+			nothingWeCanDoAboutIt.printStackTrace();
 			System.out.println("FileDatabase.moveRecordToQuarantine: " + nothingWeCanDoAboutIt);
 		}
 	}
