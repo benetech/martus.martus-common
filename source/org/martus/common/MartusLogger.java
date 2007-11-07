@@ -57,6 +57,21 @@ public class MartusLogger
 		}
 	}
 	
+	public synchronized static void logCurrentStack()
+	{
+		if(destination == null)
+			return;
+
+		try
+		{
+			throw new Throwable("Current Stack");
+		}
+		catch(Throwable t)
+		{
+			t.printStackTrace(destination);
+		}
+	}
+	
 	public synchronized static void logException(Exception e)
 	{
 		if(destination == null)
@@ -76,5 +91,5 @@ public class MartusLogger
 		return destination;
 	}
 	
-	static PrintStream destination = System.out;
+	private static PrintStream destination = System.out;
 }
