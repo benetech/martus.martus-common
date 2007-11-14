@@ -86,6 +86,11 @@ public class MartusLogger
 		log("ERROR: " + errorText);
 	}
 	
+	public static void logWarning(String errorText)
+	{
+		log("WARNING: " + errorText);
+	}
+	
 	public static PrintStream getDestination()
 	{
 		return destination;
