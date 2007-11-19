@@ -62,8 +62,8 @@ public class MartusSecureWebServer extends WebServerWithSynchronousStartup
 	    }
 	    catch(Exception e)
 	    {
-	    	System.out.println("createServerSocket: " + e);
-	    	System.out.println(e.getMessage());
+	    	System.err.println("createServerSocket failed for " + add.toString() + ":" + port);
+	    	System.err.flush();
 	    	e.printStackTrace();
 	    	throw(e);
 	    }
