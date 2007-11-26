@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 import org.martus.common.HQKeys;
+import org.martus.common.MartusLogger;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.database.Database;
@@ -52,6 +53,7 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 	public synchronized void storeWasCleared()
 	{
 		isValid = false;
+		MartusLogger.log("LeafNodeCache cleared");
 	}
 	
 	public synchronized void revisionWasSaved(UniversalId uid)
@@ -119,9 +121,12 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 		if(isValid)
 			return;
 
+		String STATUS_TEXT = "LeafNodeCache rebuild";
+		MartusLogger.logBeginProcess(STATUS_TEXT);
 		clear();
 		store.visitAllBulletinRevisions(this);
 		isValid = true;
+		MartusLogger.logEndProcess(STATUS_TEXT);
 	}
 
 	private void clear()
