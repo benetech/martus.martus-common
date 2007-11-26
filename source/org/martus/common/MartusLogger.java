@@ -52,7 +52,7 @@ public class MartusLogger
 		if(destination != null)
 		{
 			Date now = new Date();
-			DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			DateFormat df = new SimpleDateFormat("EEE MM/dd HH:mm:ss zzzz");
 			destination.println(df.format(now) + " " + text);
 		}
 	}
