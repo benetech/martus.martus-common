@@ -414,8 +414,14 @@ public class BulletinStore
 	
 		BulletinZipUtilities.validateIntegrityOfZipFilePackets(authorAccountId, zip, security);
 		Database db = getWriteableDatabase();
-		deleteDraftBulletinPackets(db, header.getUniversalId(), security);
-		revisionWasRemoved(header.getUniversalId());
+		UniversalId headerUid = header.getUniversalId();
+		DatabaseKey draftKey = DatabaseKey.createDraftKey(headerUid);
+		DatabaseKey legacyKey = DatabaseKey.createLegacyKey(headerUid);
+		if(db.doesRecordExist(draftKey) || db.doesRecordExist(legacyKey))
+		{
+			deleteDraftBulletinPackets(db, headerUid, security);
+			revisionWasRemoved(headerUid);
+		}
 	
 		HashMap zipEntries = new HashMap();
 		StreamCopier copier = new StreamCopier();
@@ -448,7 +454,7 @@ public class BulletinStore
 			zipEntries.put(key,file);
 		}
 		db.importFiles(zipEntries);
-		return header.getUniversalId();
+		return headerUid;
 	}
 
 	private static void deleteDraftBulletinPackets(Database db, UniversalId bulletinUid, MartusCrypto security) throws
