@@ -26,6 +26,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.database;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 import org.martus.common.MartusLogger;
@@ -53,4 +54,11 @@ public class MSPAFileDatabase extends ServerFileDatabase
 		} 
 		return super.getAccountMap();
 	}
+
+	synchronized File generateAccount(String accountString) throws IOException, TooManyAccountsException
+	{
+		throw new RuntimeException("MSPA is not allowed to create accounts!");
+	}
+	
+	
 }
