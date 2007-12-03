@@ -428,7 +428,7 @@ abstract public class FileDatabase extends Database
 
 	public void visitAllAccounts(AccountVisitor visitor)
 	{
-		Set accounts = accountMap.keySet();
+		Set accounts = getAccountMap().keySet();
 		Iterator iterator = accounts.iterator();
 		while(iterator.hasNext())
 		{
@@ -521,7 +521,7 @@ abstract public class FileDatabase extends Database
 
 	public File getAbsoluteAccountDirectory(String accountString)
 	{
-		return new File(absoluteBaseDir, (String)accountMap.get(accountString));
+		return new File(absoluteBaseDir, (String)getAccountMap().get(accountString));
 	}
 	
 	private File getExistingFileForRecord(UniversalId uid) throws IOException, TooManyAccountsException
@@ -583,7 +583,7 @@ abstract public class FileDatabase extends Database
 
 	public File getAccountDirectory(String accountString) throws IOException, TooManyAccountsException
 	{
-		String accountDir = (String)accountMap.get(accountString);
+		String accountDir = (String)getAccountMap().get(accountString);
 		if(accountDir == null)
 			return generateAccount(accountString);
 		return new File(absoluteBaseDir, accountDir);
@@ -608,7 +608,7 @@ abstract public class FileDatabase extends Database
 			{
 				accountDir.mkdirs();
 				String relativeDirString = convertToRelativePath(accountDir.getPath());
-				accountMap.put(accountString, relativeDirString);
+				getAccountMap().put(accountString, relativeDirString);
 				appendAccountToMapFile(accountString, relativeDirString);
 				return accountDir;
 			}
@@ -723,7 +723,7 @@ abstract public class FileDatabase extends Database
 	{
 		try
 		{
-			Set accountStrings = accountMap.keySet();
+			Set accountStrings = getAccountMap().keySet();
 			Iterator iterator = accountStrings.iterator();
 			while(iterator.hasNext())
 			{
@@ -795,6 +795,11 @@ abstract public class FileDatabase extends Database
 		return accountMapFile;
 	}
 	
+	Map getAccountMap()
+	{
+		return accountMap;
+	}
+
 	protected static final String defaultBucketPrefix = "p";
 	protected static final String draftBucketPrefix = "d" + defaultBucketPrefix;
 	protected static final String sealedQuarantinePrefix = "qs-p";
@@ -808,7 +813,7 @@ abstract public class FileDatabase extends Database
 	public MartusCrypto security;
 
 	public File absoluteBaseDir;
-	Map accountMap;
+	private Map accountMap;
 	public File accountMapFile;
 	public File accountMapSignatureFile;
 }
