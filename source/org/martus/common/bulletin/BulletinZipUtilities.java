@@ -129,7 +129,10 @@ public class BulletinZipUtilities
 
 		UniversalId loadedUid = bhp.getUniversalId();
 		if(!loadedUid.equals(headerKey.getUniversalId()))
-			throw new Packet.InvalidPacketException("Loaded uid doesn't match key uid");
+			throw new Packet.InvalidPacketException("Loaded uid doesn't match key uid: " +
+					"Expected: \n" + headerKey.getUniversalId() + 
+					"\nbut found: \n" + loadedUid
+					);
 	
 		DatabaseKey[] packetKeys = BulletinZipUtilities.getAllPacketKeys(bhp);
 	
