@@ -261,6 +261,14 @@ public abstract class MartusCrypto
 	// exceptions
 	public static class CryptoException extends Exception
 	{
+		public CryptoException()
+		{
+		}
+		
+		public CryptoException(Exception causedBy)
+		{
+			super(causedBy);
+		}
 	}
 
 	public static class CryptoInitializationException extends CryptoException
@@ -273,6 +281,14 @@ public abstract class MartusCrypto
 
 	public static class AuthorizationFailedException extends CryptoException 
 	{
+		public AuthorizationFailedException()
+		{
+		}
+		
+		public AuthorizationFailedException(Exception causedBy)
+		{
+			super(causedBy);
+		}
 	}
 
 	public static class VerifySignatureException extends CryptoException 
