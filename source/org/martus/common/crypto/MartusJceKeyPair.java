@@ -133,7 +133,7 @@ public class MartusJceKeyPair extends MartusKeyPair
 		catch(RuntimeException e)
 		{
 			//e.printStackTrace();
-			throw new AuthorizationFailedException();
+			throw new AuthorizationFailedException(e);
 		}
 	}
 	
