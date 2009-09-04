@@ -240,5 +240,5 @@ public class TestLeafNodeCache extends TestCaseEnhanced
 		assertTrue("Read packets too slow? (was " + readHeadersTime + ")", readHeadersTime < 10000);
 	}
 	
-	static final boolean DO_SPEED_TESTS = false;
+	static boolean DO_SPEED_TESTS = false;
 }
