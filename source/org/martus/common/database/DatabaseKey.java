@@ -135,6 +135,11 @@ public class DatabaseKey implements Comparable
 			statusCode = "S";
 		return statusCode + "-" + uid.toString();
 	}
+	
+	public String toString() 
+	{
+		return getString();
+	}
 
 	private static final int statusSealed = 1;
 	private static final int statusDraft = 2;
