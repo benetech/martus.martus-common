@@ -54,14 +54,16 @@ package org.martus.common.fieldspec;
 
 public class DateRangeInvertedException extends DataInvalidException
 {
-	public DateRangeInvertedException()
+	public DateRangeInvertedException(String fieldLabel)
 	{
 		super(null);
+		label = fieldLabel;
 	}
 	
-	public DateRangeInvertedException(String tag)
+	public String getFieldLabel()
 	{
-		super(tag);
+		return label;
 	}
-
+	
+	private String label;
 }
