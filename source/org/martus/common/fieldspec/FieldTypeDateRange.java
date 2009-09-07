@@ -72,4 +72,8 @@ public class FieldTypeDateRange extends FieldType
 		return BulletinXmlExportImportConstants.DATE_RANGE + startDate + "," + endDate;
 	}
 
+	public FieldSpec createEmptyFieldSpec()
+	{
+		return new DateRangeFieldSpec();
+	}
 }
