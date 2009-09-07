@@ -245,6 +245,21 @@ public class FieldSpec
 		}
 	}
 	
+	public void validate(String fullFieldLabel, String candidateValue) throws DataInvalidException 
+	{
+		if(isRequiredField())
+		{
+			validateRequiredValue(fullFieldLabel, candidateValue);
+		}
+	}
+
+	protected void validateRequiredValue(String fieldLabel, String value) throws RequiredFieldIsBlankException
+	{
+		final String REGEXP_ONLY_SPACES = "\\s*";
+		if(value.matches(REGEXP_ONLY_SPACES))
+			throw new RequiredFieldIsBlankException(fieldLabel);
+	}
+
 	public int compareTo(Object other)
 	{
 		if(other == null)
