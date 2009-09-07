@@ -68,5 +68,8 @@ public class FieldTypeDate extends FieldType
 		return BulletinXmlExportImportConstants.DATE_SIMPLE + storedData;
 	}
 
-	
+	public FieldSpec createEmptyFieldSpec()
+	{
+		return new DateFieldSpec();
+	}
 }
