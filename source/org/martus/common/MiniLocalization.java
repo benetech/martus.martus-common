@@ -535,6 +535,31 @@ public class MiniLocalization
 		return tempChoicesArray;
 	}
 
+	public String getMonthLabel(String code)
+	{
+		return getLabel(getCurrentLanguageCode(), "month", code);
+	}
+
+	public String[] getMonthLabels()
+	{
+		String[] legacyMonthTags = {
+				"jan", "feb", "mar", "apr", "may", "jun",
+				"jul", "aug", "sep", "oct", "nov", "dec",
+		};
+		int months = 12;
+		String calendarSystem = getCurrentCalendarSystem();
+		String[] labels = new String[months];
+		for(int i = 0; i < labels.length; ++i)
+		{
+			String tag = calendarSystem + Integer.toString(i + 1);
+			if(calendarSystem.equals(GREGORIAN_SYSTEM))
+				tag = legacyMonthTags[i];
+			labels[i] = getMonthLabel(tag);
+		}
+	
+		return labels;
+	}
+
 	public static final String ENGLISH = "en";
 	public static final String LANGUAGE_OTHER = "?";
 	public static final String FRENCH = "fr";
