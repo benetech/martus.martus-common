@@ -245,7 +245,7 @@ public class FieldSpec
 		}
 	}
 	
-	public void validate(String fullFieldLabel, String candidateValue) throws DataInvalidException 
+	public void validate(String fullFieldLabel, String candidateValue, MiniLocalization localization) throws DataInvalidException 
 	{
 		if(isRequiredField())
 		{
