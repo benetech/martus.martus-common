@@ -135,6 +135,11 @@ public class CustomFieldError
 		return new CustomFieldError(CODE_DROPDOWN_HAS_CHOICES_AND_DATA_SOURCE, tag, label, type);
 	}
 
+	public static Object errorInvalidIsoDate()
+	{
+		return new CustomFieldError(CODE_INVALID_ISO_DATE, null, null, null);
+	}
+
 	private CustomFieldError(String code, String tag, String label, String type)
 	{
 		this.code = code;
@@ -181,6 +186,7 @@ public class CustomFieldError
 	static public final String CODE_UNKNOWN_DATA_SOURCE_GRID_TAG = "113";
 	static public final String CODE_UNKNOWN_DATA_SOURCE_GRID_COLUMN = "114";
 	static public final String CODE_DROPDOWN_HAS_CHOICES_AND_DATA_SOURCE = "115";
+	static public final String CODE_INVALID_ISO_DATE = "116";
 	static public final String CODE_NULL_SPECS = "200";
 	static public final String CODE_UNAUTHORIZED_KEY = "201";
 	static public final String CODE_SIGNATURE_ERROR = "202";

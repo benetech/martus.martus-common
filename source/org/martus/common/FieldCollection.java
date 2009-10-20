@@ -35,6 +35,7 @@ import org.martus.common.field.MartusField;
 import org.martus.common.field.MartusGridField;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldType;
+import org.martus.common.fieldspec.InvalidIsoDateException;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlParser;
 import org.xml.sax.SAXParseException;
@@ -168,6 +169,10 @@ public class FieldCollection
 			System.out.println("   System Id: " + e.getSystemId());
 			e.printStackTrace();
 			throw new CustomFieldsParseException();
+		}
+		catch (InvalidIsoDateException e)
+		{
+			throw e;
 		}
 		catch(Exception e)
 		{

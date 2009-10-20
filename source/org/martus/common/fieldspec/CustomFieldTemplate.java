@@ -174,6 +174,11 @@ public class CustomFieldTemplate
 				return true;
 			errors.addAll(checker.getAllErrors());
 		}
+		catch (InvalidIsoDateException e)
+		{
+			e.printStackTrace();
+			errors.add(CustomFieldError.errorInvalidIsoDate());
+		}
 		catch (CustomFieldsParseException e)
 		{
 			e.printStackTrace();

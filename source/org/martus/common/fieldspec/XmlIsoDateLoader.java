@@ -66,8 +66,15 @@ public class XmlIsoDateLoader extends SimpleXmlStringLoader
 	MultiCalendar getDate()
 	{
 		String text = getText();
-		if(text.length() > 0)
-			return MultiCalendar.createFromIsoDateString(text);
+		try
+		{
+			if(text.length() > 0)
+				return MultiCalendar.createFromIsoDateString(text);
+		}
+		catch(Exception e)
+		{
+			throw new InvalidIsoDateException();
+		}
 		return new MultiCalendar(new GregorianCalendar());
 	}
 }
