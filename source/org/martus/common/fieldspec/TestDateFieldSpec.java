@@ -25,10 +25,9 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.fieldspec;
 
-import org.martus.common.MiniLocalization;
-import org.martus.util.MultiCalendar;
-
 import junit.framework.TestCase;
+
+import org.martus.common.MiniLocalization;
 
 public class TestDateFieldSpec extends TestCase
 {
@@ -40,8 +39,8 @@ public class TestDateFieldSpec extends TestCase
 		spec = new DateFieldSpec();
 		spec.setTag(TAG);
 		spec.setLabel(LABEL);
-		spec.setMinimumDate(MultiCalendar.createFromIsoDateString(MINIMUM));
-		spec.setMaximumDate(MultiCalendar.createFromIsoDateString(MAXIMUM));
+		spec.setMinimumDate(MINIMUM);
+		spec.setMaximumDate(MAXIMUM);
 	}
 	
 	public void testValidateMinimumDate() throws Exception

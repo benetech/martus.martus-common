@@ -51,8 +51,6 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.fieldspec;
 
-import java.util.GregorianCalendar;
-
 import org.martus.util.MultiCalendar;
 import org.martus.util.xml.SimpleXmlStringLoader;
 
@@ -63,18 +61,20 @@ public class XmlIsoDateLoader extends SimpleXmlStringLoader
 		super(tag);
 	}
 	
-	MultiCalendar getDate()
+	String getDateAsIsoString()
 	{
 		String text = getText();
+		if(text.length() == 0)
+			return text;
+
 		try
 		{
-			if(text.length() > 0)
-				return MultiCalendar.createFromIsoDateString(text);
+			MultiCalendar.createFromIsoDateString(text);
+			return text;
 		}
 		catch(Exception e)
 		{
 			throw new InvalidIsoDateException();
 		}
-		return new MultiCalendar(new GregorianCalendar());
 	}
 }

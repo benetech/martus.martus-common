@@ -41,8 +41,8 @@ public class TestDateRangeFieldSpec extends TestCase
 		spec = new DateRangeFieldSpec();
 		spec.setTag(TAG);
 		spec.setLabel(LABEL);
-		spec.setMinimumDate(MultiCalendar.createFromIsoDateString(MINIMUM));
-		spec.setMaximumDate(MultiCalendar.createFromIsoDateString(MAXIMUM));
+		spec.setMinimumDate(MINIMUM);
+		spec.setMaximumDate(MAXIMUM);
 	}
 	
 	public void testValidateMinimumDate() throws Exception
