@@ -33,7 +33,7 @@ public class DateTooEarlyException extends ValidationExceptionWithFieldLabel
 		minimumDate = minimumAllowedDate;
 	}
 
-	public Object getMinimumDate()
+	public String getMinimumDate()
 	{
 		return minimumDate;
 	}

@@ -33,7 +33,7 @@ public class DateTooLateException extends ValidationExceptionWithFieldLabel
 		maximumDate = MaximumAllowedDate;
 	}
 
-	public Object getMaximumDate()
+	public String getMaximumDate()
 	{
 		return maximumDate;
 	}
