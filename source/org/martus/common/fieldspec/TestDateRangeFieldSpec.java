@@ -25,19 +25,20 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.fieldspec;
 
-import org.martus.common.MiniLocalization;
-import org.martus.util.MultiCalendar;
-
 import junit.framework.TestCase;
 
-public class TestDateFieldSpec extends TestCase
+import org.martus.common.MiniLocalization;
+import org.martus.common.utilities.MartusFlexidate;
+import org.martus.util.MultiCalendar;
+
+public class TestDateRangeFieldSpec extends TestCase
 {
 	@Override
 	protected void setUp() throws Exception
 	{
 		super.setUp();
 		localization = new MiniLocalization();
-		spec = new DateFieldSpec();
+		spec = new DateRangeFieldSpec();
 		spec.setTag(TAG);
 		spec.setLabel(LABEL);
 		spec.setMinimumDate(MultiCalendar.createFromIsoDateString(MINIMUM));
@@ -47,13 +48,13 @@ public class TestDateFieldSpec extends TestCase
 	public void testValidateMinimumDate() throws Exception
 	{
 		
-		spec.validate(LABEL, MINIMUM, localization);
-		spec.validate(LABEL, IN, localization);
-		spec.validate(LABEL, MAXIMUM, localization);
+		validate(MINIMUM, IN);
+		validate(IN, MAXIMUM);
+		validate(MINIMUM, MAXIMUM);
 		
 		try
 		{
-			spec.validate(LABEL, BEFORE, localization);
+			validate(BEFORE, IN);
 			fail("Should have thrown for date too early");
 		}
 		catch(DateTooEarlyException expected)
@@ -64,7 +65,7 @@ public class TestDateFieldSpec extends TestCase
 
 		try
 		{
-			spec.validate(LABEL, AFTER, localization);
+			validate(IN, AFTER);
 			fail("Should have thrown for date too late");
 		}
 		catch(DateTooLateException expected)
@@ -74,6 +75,13 @@ public class TestDateFieldSpec extends TestCase
 		}
 	}
 	
+	private void validate(String start, String end) throws Exception
+	{
+		MultiCalendar beginDate = MultiCalendar.createFromIsoDateString(start);
+		MultiCalendar endDate = MultiCalendar.createFromIsoDateString(end);
+		spec.validate(LABEL, MartusFlexidate.toBulletinFlexidateFormat(beginDate, endDate), localization);
+	}
+
 	public void testXml() throws Exception
 	{
 		String ROOT_TAG = "Field";

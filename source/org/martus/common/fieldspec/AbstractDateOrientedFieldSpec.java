@@ -56,6 +56,18 @@ public class AbstractDateOrientedFieldSpec extends FieldSpec
 		return maximumDate;
 	}
 	
+	protected void validateDate(String fullFieldLabel, MultiCalendar candidateDate) throws DateTooEarlyException, DateTooLateException
+	{
+		if (!candidateDate.isUnknown())
+		{
+			if (getMinimumDate() != null && candidateDate.before(getMinimumDate()))
+				throw new DateTooEarlyException(fullFieldLabel, getMinimumDate().toIsoDateString());
+
+			if (getMaximumDate() != null && candidateDate.after(getMaximumDate()))
+				throw new DateTooLateException(fullFieldLabel, getMaximumDate().toIsoDateString());
+		}
+	}
+
 	public String getDetailsXml()
 	{
 		StringBuffer xml = new StringBuffer();

@@ -44,6 +44,7 @@ import org.martus.common.fieldspec.TestCustomDropDownFieldSpec;
 import org.martus.common.fieldspec.TestCustomFieldSpecValidator;
 import org.martus.common.fieldspec.TestCustomFieldTemplate;
 import org.martus.common.fieldspec.TestDateFieldSpec;
+import org.martus.common.fieldspec.TestDateRangeFieldSpec;
 import org.martus.common.fieldspec.TestDropDownFieldSpec;
 import org.martus.common.fieldspec.TestFieldSpec;
 import org.martus.common.fieldspec.TestMiniFieldSpec;
@@ -92,6 +93,7 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestCustomFieldTemplate.class));
 		suite.addTest(new TestSuite(TestDatabaseKey.class));
 		suite.addTest(new TestSuite(TestDateFieldSpec.class));
+		suite.addTest(new TestSuite(TestDateRangeFieldSpec.class));
 		suite.addTest(new TestSuite(TestDateUtilities.class));
 		suite.addTest(new TestSuite(TestDropDownFieldSpec.class));
 		suite.addTest(new TestSuite(TestFieldDataPacket.class));

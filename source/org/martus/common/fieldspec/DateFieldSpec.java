@@ -40,15 +40,7 @@ public class DateFieldSpec extends AbstractDateOrientedFieldSpec
 	public void validate(String fullFieldLabel, String candidateValue,
 			MiniLocalization localization) throws DataInvalidException
 	{
-		MultiCalendar candidateDate = MultiCalendar.createFromIsoDateString(candidateValue);
-		if(!candidateDate.isUnknown())
-		{
-			if(getMinimumDate() != null && candidateDate.before(getMinimumDate()))
-				throw new DateTooEarlyException(fullFieldLabel, getMinimumDate().toIsoDateString());
-			
-			if(getMaximumDate() != null && candidateDate.after(getMaximumDate()))
-				throw new DateTooLateException(fullFieldLabel, getMaximumDate().toIsoDateString());
-		}
+		validateDate(fullFieldLabel, MultiCalendar.createFromIsoDateString(candidateValue));
 		
 		super.validate(fullFieldLabel, candidateValue, localization);
 	}

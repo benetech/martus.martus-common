@@ -25,11 +25,26 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.fieldspec;
 
-public class DateRangeFieldSpec extends FieldSpec
+import org.martus.common.MiniLocalization;
+import org.martus.common.utilities.MartusFlexidate;
+
+public class DateRangeFieldSpec extends AbstractDateOrientedFieldSpec
 {
 	protected DateRangeFieldSpec()
 	{
 		super(new FieldTypeDateRange());
 	}
+
+	@Override
+	public void validate(String fullFieldLabel, String candidateValue,
+			MiniLocalization localization) throws DataInvalidException
+	{
+		MartusFlexidate mfd = localization.createFlexidateFromStoredData(candidateValue);
+		validateDate(fullFieldLabel, mfd.getBeginDate());
+		validateDate(fullFieldLabel, mfd.getEndDate());
+		
+		super.validate(fullFieldLabel, candidateValue, localization);
+	}
+
 
 }
