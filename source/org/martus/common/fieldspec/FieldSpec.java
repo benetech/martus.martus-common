@@ -363,6 +363,16 @@ public class FieldSpec
 					return new MessageFieldSpec.MessageSpecLoader((MessageFieldSpec)spec);
 			}
 			
+			if(spec.getType().isDate())
+			{
+				DateFieldSpec dateFieldSpec = (DateFieldSpec)spec;
+				if(tag.equals(DateFieldSpec.MINIMUM_DATE))
+					return new DateFieldSpec.MinimumDateLoader(dateFieldSpec);
+				if(tag.equals(DateFieldSpec.MAXIMUM_DATE))
+					return new DateFieldSpec.MaximumDateLoader(dateFieldSpec);
+				
+			}
+			
 			return super.startElement(tag);
 		}
 	

@@ -52,18 +52,10 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.fieldspec;
 
 
-public class DateRangeInvertedException extends DataInvalidException
+public class DateRangeInvertedException extends ValidationExceptionWithFieldLabel
 {
 	public DateRangeInvertedException(String fieldLabel)
 	{
-		super(null);
-		label = fieldLabel;
+		super(fieldLabel);
 	}
-	
-	public String getFieldLabel()
-	{
-		return label;
-	}
-	
-	private String label;
 }
