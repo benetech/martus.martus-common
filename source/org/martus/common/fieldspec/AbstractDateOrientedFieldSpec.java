@@ -74,7 +74,7 @@ public class AbstractDateOrientedFieldSpec extends FieldSpec
 		}
 	}
 
-	private MultiCalendar getAsDate(String isoDateString)
+	public static MultiCalendar getAsDate(String isoDateString)
 	{
 		if(isoDateString == null)
 			return null;
@@ -85,7 +85,7 @@ public class AbstractDateOrientedFieldSpec extends FieldSpec
 	}
 
 	// NOTE: Copied from MultiCalendar to fix a bug where today was coming back tomorrow
-	private MultiCalendar createCalendarForToday()
+	private static MultiCalendar createCalendarForToday()
 	{
 		final int UTC_OFFSET = 0;
 		GregorianCalendar cal = new GregorianCalendar(new SimpleTimeZone(UTC_OFFSET, "martus"));
