@@ -60,6 +60,40 @@ public class AbstractDateOrientedFieldSpec extends FieldSpec
 		return maximumDate;
 	}
 	
+	public String getEarliestAllowedDate()
+	{
+		MultiCalendar minDate = AbstractDateOrientedFieldSpec.getAsDate(getMinimumDate());
+		if(minDate == null)
+		{
+			minDate = DEFAULT_EARLIEST_ALLOWED_DATE;
+		}
+		return minDate.toIsoDateString();
+	}
+
+	public String getLatestAllowedDate()
+	{
+		MultiCalendar maxDate = AbstractDateOrientedFieldSpec.getAsDate(getMaximumDate());
+		if(maxDate == null)
+		{
+			if(StandardFieldSpecs.isStandardFieldTag(getTag()))
+				maxDate = AbstractDateOrientedFieldSpec.getAsDate("");
+			else
+				maxDate = tenYearsFromNow();
+		}
+		
+		return maxDate.toIsoDateString();
+	}
+
+	public static MultiCalendar tenYearsFromNow()
+	{
+		MultiCalendar today = AbstractDateOrientedFieldSpec.getAsDate("");
+		int year = today.getGregorianYear()+10;
+		int month = today.getGregorianMonth();
+		int day = today.getGregorianDay();
+		MultiCalendar tenYearsOut = MultiCalendar.createFromGregorianYearMonthDay(year, month, day);
+		return tenYearsOut;
+	}
+
 	protected void validateDate(String fullFieldLabel, MultiCalendar candidateDate) throws DateTooEarlyException, DateTooLateException
 	{
 		if (!candidateDate.isUnknown())
@@ -166,6 +200,8 @@ public class AbstractDateOrientedFieldSpec extends FieldSpec
 
 	public static final String MINIMUM_DATE = "MinimumDate";
 	public static final String MAXIMUM_DATE = "MaximumDate";
+
+	public static final MultiCalendar DEFAULT_EARLIEST_ALLOWED_DATE = MultiCalendar.createFromIsoDateString("1900-01-01");
 
 	private String minimumDate;
 	private String maximumDate;
