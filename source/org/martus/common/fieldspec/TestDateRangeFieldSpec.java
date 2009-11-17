@@ -33,7 +33,6 @@ import org.martus.util.MultiCalendar;
 
 public class TestDateRangeFieldSpec extends TestCase
 {
-	@Override
 	protected void setUp() throws Exception
 	{
 		super.setUp();

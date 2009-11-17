@@ -31,7 +31,6 @@ import org.martus.common.MiniLocalization;
 
 public class TestDateFieldSpec extends TestCase
 {
-	@Override
 	protected void setUp() throws Exception
 	{
 		super.setUp();

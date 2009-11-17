@@ -35,7 +35,6 @@ public class DateRangeFieldSpec extends AbstractDateOrientedFieldSpec
 		super(new FieldTypeDateRange());
 	}
 
-	@Override
 	public void validate(String fullFieldLabel, String candidateValue,
 			MiniLocalization localization) throws DataInvalidException
 	{
