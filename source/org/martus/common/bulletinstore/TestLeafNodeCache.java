@@ -129,8 +129,8 @@ public class TestLeafNodeCache extends TestCaseEnhanced
 		assertTrue("cache cleared 6?", cache.isCacheValid());
 		assertEquals(1, cache.getLeafUids().size());
 		assertContains("bhp3 not a leaf?", bhp3.getUniversalId(), cache.getLeafUids());
-		assertContains("bhp1 not a non-leaf?", bhp1.getUniversalId(), cache.getNonLeafUids());
-		assertContains("bhp2 not a non-leaf?", bhp2.getUniversalId(), cache.getNonLeafUids());
+		assertTrue("bhp1 not a non-leaf?", cache.isNonLeaf(bhp1.getUniversalId()));
+		assertTrue("bhp2 not a non-leaf?", cache.isNonLeaf(bhp2.getUniversalId()));
 	}
 
 	private void saveHeaderPacket(BulletinStore store, BulletinHeaderPacket bhp, MockMartusSecurity client) throws IOException, RecordHiddenException
