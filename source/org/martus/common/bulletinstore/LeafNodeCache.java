@@ -28,7 +28,6 @@ package org.martus.common.bulletinstore;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
 
@@ -95,15 +94,7 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 	public synchronized Set getLeafUids()
 	{
 		fill();
-		HashSet result = new HashSet();
-		Iterator iterator = leafKeys.iterator();
-		while(iterator.hasNext())
-		{
-			DatabaseKey key = (DatabaseKey)iterator.next();
-			result.add(key.getUniversalId());
-		}
-		
-		return result;
+		return new HashSet(leafUids);
 	}
 
 	
@@ -146,7 +137,7 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 	private void clear()
 	{
 		hitErrorsDuringScan = false;
-		leafKeys = new HashSet();
+		leafUids = new HashSet();
 		nonLeafUids = new HashSet();
 		fieldOfficesPerHq = new HashMap();
 	}
@@ -209,14 +200,13 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 	{
 		UniversalId maybeLeaf = key.getUniversalId();
 		if(!nonLeafUids.contains(maybeLeaf))
-			leafKeys.add(key);
+			leafUids.add(maybeLeaf);
 		
 		for(int i=0; i < history.size(); ++i)
 		{
 			String thisLocalId = history.get(i);
 			UniversalId uidOfNonLeaf = UniversalId.createFromAccountAndLocalId(key.getAccountId(), thisLocalId);
-			leafKeys.remove(DatabaseKey.createSealedKey(uidOfNonLeaf));
-			leafKeys.remove(DatabaseKey.createDraftKey(uidOfNonLeaf));
+			leafUids.remove(uidOfNonLeaf);
 			nonLeafUids.add(uidOfNonLeaf);
 		}
 	}
@@ -224,7 +214,7 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 	private BulletinStore store;
 	private boolean isValid;
 	private boolean hitErrorsDuringScan;
-	private HashSet leafKeys;
+	private HashSet leafUids;
 	private HashSet nonLeafUids;
 	private HashMap fieldOfficesPerHq;
 }
