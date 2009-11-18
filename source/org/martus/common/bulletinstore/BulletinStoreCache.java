@@ -38,14 +38,14 @@ public abstract class BulletinStoreCache
 	abstract public void revisionWasSaved(Bulletin b);
 	abstract public void revisionWasRemoved(UniversalId uid);
 	
-	public DatabaseKey findKey(ReadableDatabase db, UniversalId uid)
+	public static DatabaseKey findKey(ReadableDatabase db, UniversalId uid)
 	{
 		DatabaseKey[] possibleKeys = 
 		{
 			// always check legacy before draft or sealed
 			DatabaseKey.createLegacyKey(uid),
-			DatabaseKey.createDraftKey(uid),
 			DatabaseKey.createSealedKey(uid),
+			DatabaseKey.createDraftKey(uid),
 		};
 	
 		for(int i=0; i < possibleKeys.length; ++i)
