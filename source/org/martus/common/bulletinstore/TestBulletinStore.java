@@ -100,19 +100,35 @@ public class TestBulletinStore extends TestCaseEnhanced
     	Bulletin one = createAndSaveBulletin();
     	store.saveBulletinForTesting(one);
        	assertEquals("Leaf Keys should be 1?", 1, store.getBulletinCount());
-       	assertEquals("NonLeaf uid should be 0?", 0, store.getNonLeafUids().size());
+       	assertTrue("Saved should be leaf", store.isLeaf(one.getUniversalId()));
        	Bulletin clone = createAndSaveClone(one);
     	assertEquals("not just clone?", 1, store.getBulletinCount());
-       	assertEquals("NonLeaf uid should be 1?", 1, store.getNonLeafUids().size());
+       	assertTrue("Clone should be leaf", store.isLeaf(clone.getUniversalId()));
+       	assertFalse("Original should not be leaf", store.isLeaf(one.getUniversalId()));
        	Bulletin clone2 = createAndSaveClone(clone);
     	assertEquals("not just clone2?", 1, store.getBulletinCount());
-       	assertEquals("NonLeaf uid should be 2?", 2, store.getNonLeafUids().size());
-    	store.deleteBulletinRevisionFromDatabase(clone2.getBulletinHeaderPacket());
-      	
+       	assertTrue("Clone2 should be leaf", store.isLeaf(clone2.getUniversalId()));
+       	assertFalse("Clone should not be leaf", store.isLeaf(clone.getUniversalId()));
+       	assertFalse("Original should not be leaf", store.isLeaf(one.getUniversalId()));
+
+       	Bulletin anotherCloneOfOriginal = createAndSaveClone(one);
+       	assertTrue("Another clone should be leaf", store.isLeaf(anotherCloneOfOriginal.getUniversalId()));
+       	assertTrue("Clone2 should still be leaf", store.isLeaf(clone2.getUniversalId()));
+       	assertFalse("Clone should still not be leaf", store.isLeaf(clone.getUniversalId()));
+       	assertFalse("Original should still not be leaf", store.isLeaf(one.getUniversalId()));
+       	
+       	store.deleteBulletinRevisionFromDatabase(clone2.getBulletinHeaderPacket());
     	store.deleteBulletinRevisionFromDatabase(clone.getBulletinHeaderPacket());
     	assertEquals("didn't delete?", 1, store.getBulletinCount());
-       	assertEquals("NonLeaf uid should be 0 after delete?", 0, store.getNonLeafUids().size());
-    	
+       	assertTrue("Another clone should still be leaf", store.isLeaf(anotherCloneOfOriginal.getUniversalId()));
+       	assertFalse("Clone2 should no longer be leaf", store.isLeaf(clone2.getUniversalId()));
+       	assertFalse("Clone should no longer not be leaf", store.isLeaf(clone.getUniversalId()));
+       	assertFalse("Original should still not be leaf again", store.isLeaf(one.getUniversalId()));
+
+    	store.deleteBulletinRevisionFromDatabase(anotherCloneOfOriginal.getBulletinHeaderPacket());
+       	assertFalse("Another clone should no longer be leaf", store.isLeaf(anotherCloneOfOriginal.getUniversalId()));
+       	assertTrue("Original should be leaf again", store.isLeaf(one.getUniversalId()));
+       	
     	File tempZip = createTempFile();
     	store.saveBulletinForTesting(one);
     	BulletinZipUtilities.exportBulletinPacketsFromDatabaseToZipFile(store.getDatabase(), one.getDatabaseKey(), tempZip, store.getSignatureVerifier());
