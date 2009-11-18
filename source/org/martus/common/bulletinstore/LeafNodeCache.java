@@ -28,6 +28,7 @@ package org.martus.common.bulletinstore;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
 
@@ -82,19 +83,39 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 	public synchronized boolean isLeaf(UniversalId uid)
 	{
 		fill();
-		return getLeafUids().contains(uid);
+		if(!isKnown(uid))
+			return false;
+		
+		return (getChildren(uid).size() == 0);
 	}
 
 	public synchronized boolean isNonLeaf(UniversalId uid)
 	{
 		fill();
-		return new Vector(nonLeafUids).contains(uid);
+		if(!isKnown(uid))
+			return false;
+		
+		return !isLeaf(uid);
+	}
+
+	private boolean isKnown(UniversalId uid)
+	{
+		return uidToChildrenMap.containsKey(uid);
 	}
 
 	public synchronized Set getLeafUids()
 	{
 		fill();
-		return new HashSet(leafUids);
+		HashSet leafUids = new HashSet();
+		Iterator it = uidToChildrenMap.keySet().iterator();
+		while(it.hasNext())
+		{
+			UniversalId parentUid = (UniversalId)it.next();
+			if(isLeaf(parentUid))
+				leafUids.add(parentUid);
+		}
+		
+		return leafUids;
 	}
 
 	
@@ -137,8 +158,7 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 	private void clear()
 	{
 		hitErrorsDuringScan = false;
-		leafUids = new HashSet();
-		nonLeafUids = new HashSet();
+		uidToChildrenMap = new HashMap();
 		fieldOfficesPerHq = new HashMap();
 	}
 
@@ -198,24 +218,33 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 
 	protected void addToCachedLeafInformation(DatabaseKey key, BulletinHistory history)
 	{
-		UniversalId maybeLeaf = key.getUniversalId();
-		if(!nonLeafUids.contains(maybeLeaf))
-			leafUids.add(maybeLeaf);
-		
+		UniversalId child = key.getUniversalId();
+		uidToChildrenMap.put(child, getChildren(child));
+
 		for(int i=0; i < history.size(); ++i)
 		{
 			String thisLocalId = history.get(i);
-			UniversalId uidOfNonLeaf = UniversalId.createFromAccountAndLocalId(key.getAccountId(), thisLocalId);
-			leafUids.remove(uidOfNonLeaf);
-			nonLeafUids.add(uidOfNonLeaf);
+			UniversalId parent = UniversalId.createFromAccountAndLocalId(key.getAccountId(), thisLocalId);
+			Set children = getChildren(parent);
+			children.add(child);
+			uidToChildrenMap.put(parent, children);
+			
+			child = parent;
 		}
+	}
+
+	private Set getChildren(UniversalId parent)
+	{
+		Set children = (Set)uidToChildrenMap.get(parent);
+		if(children == null)
+			children = new HashSet();
+		return children;
 	}
 	
 	private BulletinStore store;
 	private boolean isValid;
 	private boolean hitErrorsDuringScan;
-	private HashSet leafUids;
-	private HashSet nonLeafUids;
+	private HashMap uidToChildrenMap;
 	private HashMap fieldOfficesPerHq;
 }
 
