@@ -86,6 +86,11 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 		return bulletinLeafUidsInSystem.contains(uid);
 	}
 
+	public boolean isNonLeaf(UniversalId uid)
+	{
+		return getNonLeafUids().contains(uid);
+	}
+
 	public synchronized Set getLeafUids()
 	{
 		fill();

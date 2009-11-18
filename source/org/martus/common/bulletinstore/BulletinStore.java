@@ -156,7 +156,7 @@ public class BulletinStore
 	
 	public boolean hasNewerRevision(UniversalId uid)
 	{
-		return getNonLeafUids().contains(uid);
+		return leafNodeCache.isNonLeaf(uid);
 	}
 
 	public void deleteAllData() throws Exception
