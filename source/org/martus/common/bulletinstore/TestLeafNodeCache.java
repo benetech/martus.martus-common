@@ -132,6 +132,54 @@ public class TestLeafNodeCache extends TestCaseEnhanced
 		assertTrue("bhp1 not a non-leaf?", cache.isNonLeaf(bhp1.getUniversalId()));
 		assertTrue("bhp2 not a non-leaf?", cache.isNonLeaf(bhp2.getUniversalId()));
 	}
+	
+	public void testRemove() throws Exception
+	{
+		File tempDirectory = createTempDirectory();
+		BulletinStore store = new BulletinStore();
+		store.doAfterSigninInitialization(tempDirectory, new MockServerDatabase());
+		LeafNodeCache cache = new LeafNodeCache(store);
+		store.addCache(cache);
+
+		MockMartusSecurity client = MockMartusSecurity.createClient();
+		
+		BulletinHeaderPacket grandparent = new BulletinHeaderPacket(client);
+		saveHeaderPacket(store, grandparent, client);
+		cache.revisionWasSaved(grandparent.getUniversalId());
+		assertTrue("saved bulletin not leaf?", cache.isLeaf(grandparent.getUniversalId()));
+		store.deleteSpecificPacket(getKey(grandparent));
+		cache.revisionWasRemoved(grandparent.getUniversalId());
+		assertFalse("still leaf after removal?", cache.isLeaf(grandparent.getUniversalId()));
+		saveHeaderPacket(store, grandparent, client);
+		cache.revisionWasSaved(grandparent.getUniversalId());
+		assertTrue("saved bulletin not a leaf again?", cache.isLeaf(grandparent.getUniversalId()));
+		
+
+		BulletinHeaderPacket parent = new BulletinHeaderPacket(client);
+		parent.getHistory().add(grandparent.getLocalId());
+		saveHeaderPacket(store, parent, client);
+		cache.revisionWasSaved(parent.getUniversalId());
+
+		BulletinHeaderPacket child = new BulletinHeaderPacket(client);
+		child.getHistory().add(grandparent.getLocalId());
+		child.getHistory().add(parent.getLocalId());
+		saveHeaderPacket(store, child, client);
+		cache.revisionWasSaved(child.getUniversalId());
+
+		// removing parent should leave child as a leaf
+		store.deleteSpecificPacket(getKey(parent));
+		cache.revisionWasRemoved(parent.getUniversalId());
+		assertTrue("child not leaf after parent removed?", cache.isLeaf(child.getUniversalId()));
+		saveHeaderPacket(store, parent, client);
+		cache.revisionWasSaved(parent.getUniversalId());
+
+		// removing child should make parent leaf again
+		store.deleteSpecificPacket(getKey(child));
+		cache.revisionWasRemoved(child.getUniversalId());
+		assertTrue("parent not leaf after child removed?", cache.isLeaf(parent.getUniversalId()));
+		saveHeaderPacket(store, child, client);
+		cache.revisionWasSaved(child.getUniversalId());
+	}
 
 	private void saveHeaderPacket(BulletinStore store, BulletinHeaderPacket bhp, MockMartusSecurity client) throws IOException, RecordHiddenException
 	{
