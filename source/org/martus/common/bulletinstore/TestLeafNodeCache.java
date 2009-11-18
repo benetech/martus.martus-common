@@ -81,24 +81,22 @@ public class TestLeafNodeCache extends TestCaseEnhanced
 		saveHeaderPacket(store, bhp1, client);
 		cache.revisionWasSaved(bhp1.getUniversalId());
 		assertTrue("cache cleared 1?", cache.isCacheValid());
-		assertEquals(1, cache.getRawLeafKeys().size());
-		assertContains("bhp1 not a leaf?", getKey(bhp1), cache.getRawLeafKeys());
-		assertEquals(0, cache.getRawNonLeafUids().size());
+		assertEquals(1, cache.getLeafUids().size());
+		assertContains("bhp1 not a leaf?", bhp1.getUniversalId(), cache.getLeafUids());
+		assertFalse("bhp1 is a non-leaf?", cache.isNonLeaf(bhp1.getUniversalId()));
 		
 		saveHeaderPacket(store, bhp2, client);
 		cache.revisionWasSaved(bhp2.getUniversalId());
 		assertTrue("cache cleared 2?", cache.isCacheValid());
-		assertEquals(1, cache.getRawLeafKeys().size());
-		assertContains("bhp2 not a leaf?", getKey(bhp2), cache.getRawLeafKeys());
-		assertEquals(1, cache.getRawNonLeafUids().size());
+		assertEquals(1, cache.getLeafUids().size());
+		assertContains("bhp2 not a leaf?", bhp2.getUniversalId(), cache.getLeafUids());
 		assertTrue("bhp1 not a non-leaf?", cache.isNonLeaf(bhp1.getUniversalId()));
 		
 		saveHeaderPacket(store, bhp3, client);
 		cache.revisionWasSaved(bhp3.getUniversalId());
 		assertTrue("cache cleared 3?", cache.isCacheValid());
-		assertEquals(1, cache.getRawLeafKeys().size());
-		assertContains("bhp3 not a leaf?", getKey(bhp3), cache.getRawLeafKeys());
-		assertEquals(2, cache.getRawNonLeafUids().size());
+		assertEquals(1, cache.getLeafUids().size());
+		assertContains("bhp3 not a leaf?", bhp3.getUniversalId(), cache.getLeafUids());
 		assertTrue("bhp1 not a non-leaf?", cache.isNonLeaf(bhp1.getUniversalId()));
 		assertTrue("bhp2 not a non-leaf?", cache.isNonLeaf(bhp2.getUniversalId()));
 
@@ -113,27 +111,24 @@ public class TestLeafNodeCache extends TestCaseEnhanced
 		saveHeaderPacket(store, bhp3, client);
 		cache.revisionWasSaved(bhp3.getUniversalId());
 		assertTrue("cache cleared 4?", cache.isCacheValid());
-		assertEquals(1, cache.getRawLeafKeys().size());
-		assertContains("bhp3 not a leaf?", getKey(bhp3), cache.getRawLeafKeys());
-		assertEquals(2, cache.getRawNonLeafUids().size());
+		assertEquals(1, cache.getLeafUids().size());
+		assertContains("bhp3 not a leaf?", bhp3.getUniversalId(), cache.getLeafUids());
 		assertTrue("bhp1 not a non-leaf?", cache.isNonLeaf(bhp1.getUniversalId()));
 		assertTrue("bhp2 not a non-leaf?", cache.isNonLeaf(bhp2.getUniversalId()));
 		
 		saveHeaderPacket(store, bhp2, client);
 		cache.revisionWasSaved(bhp2.getUniversalId());
 		assertTrue("cache cleared 5?", cache.isCacheValid());
-		assertEquals(1, cache.getRawLeafKeys().size());
-		assertContains("bhp3 not a leaf?", getKey(bhp3), cache.getRawLeafKeys());
-		assertEquals(2, cache.getRawNonLeafUids().size());
+		assertEquals(1, cache.getLeafUids().size());
+		assertContains("bhp3 not a leaf?", bhp3.getUniversalId(), cache.getLeafUids());
 		assertTrue("bhp1 not a non-leaf?", cache.isNonLeaf(bhp1.getUniversalId()));
 		assertTrue("bhp2 not a non-leaf?", cache.isNonLeaf(bhp2.getUniversalId()));
 		
 		saveHeaderPacket(store, bhp1, client);
 		cache.revisionWasSaved(bhp1.getUniversalId());
 		assertTrue("cache cleared 6?", cache.isCacheValid());
-		assertEquals(1, cache.getRawLeafKeys().size());
-		assertContains("bhp3 not a leaf?", getKey(bhp3), cache.getRawLeafKeys());
-		assertEquals(2, cache.getRawNonLeafUids().size());
+		assertEquals(1, cache.getLeafUids().size());
+		assertContains("bhp3 not a leaf?", bhp3.getUniversalId(), cache.getLeafUids());
 		assertContains("bhp1 not a non-leaf?", bhp1.getUniversalId(), cache.getNonLeafUids());
 		assertContains("bhp2 not a non-leaf?", bhp2.getUniversalId(), cache.getNonLeafUids());
 	}

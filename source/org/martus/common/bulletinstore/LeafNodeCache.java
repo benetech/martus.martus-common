@@ -225,16 +225,6 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 		}
 	}
 	
-	protected HashSet getRawLeafKeys()
-	{
-		return leafKeys;
-	}
-	
-	protected HashSet getRawNonLeafUids()
-	{
-		return nonLeafUids;
-	}
-
 	private BulletinStore store;
 	private boolean isValid;
 	private boolean hitErrorsDuringScan;
