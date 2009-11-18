@@ -388,9 +388,8 @@ public class TestBulletinStore extends TestCaseEnhanced
 		assertContains(msg+ ": missing clone?", clone.getUniversalId(), leafUids);
 		assertContains(msg+ ": missing other?", otherUid, leafUids);
 		assertEquals(msg+ ": wrong leaf count?", 2, leafUids.size());
-		Vector nonLeafUids = store.getNonLeafUids();
-		assertEquals(msg+ ": wrong nonleaf count?", 1, nonLeafUids.size());
-		assertContains(msg+ ": Original uid not in nonleaf?", original.getUniversalId(), nonLeafUids);
+		assertTrue(msg+ ": clone not leaf?", store.isLeaf(clone.getUniversalId()));
+		assertFalse(msg+ ": original is leaf?", store.isLeaf(original.getUniversalId()));
 	}
 
 	private Bulletin createAndSaveBulletin() throws IOException, CryptoException
