@@ -160,7 +160,7 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 		return results;
 	}
 
-	public synchronized boolean isCacheValid()
+	protected synchronized boolean isCacheValid()
 	{
 		return isValid;
 	}
@@ -205,7 +205,7 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 		}
 	}
 
-	void addToCachedLeafInformation(DatabaseKey key, BulletinHistory history)
+	protected void addToCachedLeafInformation(DatabaseKey key, BulletinHistory history)
 	{
 		UniversalId maybeLeaf = key.getUniversalId();
 		if(!nonLeafUids.contains(maybeLeaf))
