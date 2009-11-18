@@ -80,14 +80,16 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 		storeWasCleared();
 	}
 	
-	public boolean isLeaf(UniversalId uid)
+	public synchronized boolean isLeaf(UniversalId uid)
 	{
+		fill();
 		return getLeafUids().contains(uid);
 	}
 
-	public boolean isNonLeaf(UniversalId uid)
+	public synchronized boolean isNonLeaf(UniversalId uid)
 	{
-		return getNonLeafUids().contains(uid);
+		fill();
+		return new Vector(nonLeafUids).contains(uid);
 	}
 
 	public synchronized Set getLeafUids()
@@ -104,12 +106,6 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 		return result;
 	}
 
-	
-	public synchronized Vector getNonLeafUids()
-	{
-		fill();
-		return new Vector(nonLeafUids);
-	}
 	
 	public synchronized Vector getFieldOffices(String hqAccountId)
 	{
