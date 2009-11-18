@@ -34,6 +34,7 @@ import org.martus.common.bulletin.Bulletin;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.database.MockClientDatabase;
+import org.martus.common.packet.UniversalId;
 import org.martus.util.TestCaseEnhanced;
 
 
@@ -102,8 +103,12 @@ public class TestBulletinStoreCache extends TestCaseEnhanced
     	cache.storeWasCleared();
     	assertFalse("clear didn't work?", cache.isCacheValid());
     	
-    	cache.getNonLeafUids();
-    	assertTrue("get nonleaf didn't fill cache?", cache.isCacheValid());
+    	cache.isLeaf(UniversalId.createDummyUniversalId());
+    	assertTrue("isLeaf didn't fill cache?", cache.isCacheValid());
+    	cache.storeWasCleared();
+    	
+    	cache.isNonLeaf(UniversalId.createDummyUniversalId());
+    	assertTrue("isNonLeaf didn't fill cache?", cache.isCacheValid());
     	cache.storeWasCleared();
     	
     	cache.getFieldOffices("test");
