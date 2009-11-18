@@ -141,8 +141,7 @@ public class BulletinStore
 	
 	public boolean isLeaf(UniversalId uId)
 	{
-		Set bulletinLeafUidsInSystem  = getAllBulletinLeafUids();
-		return bulletinLeafUidsInSystem.contains(uId);
+		return leafNodeCache.isLeaf(uId);
 	}
 
 	public boolean doesBulletinRevisionExist(DatabaseKey key)

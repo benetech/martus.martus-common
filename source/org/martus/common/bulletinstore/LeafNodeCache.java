@@ -80,6 +80,12 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 		storeWasCleared();
 	}
 	
+	public boolean isLeaf(UniversalId uid)
+	{
+		Set bulletinLeafUidsInSystem  = getLeafUids();
+		return bulletinLeafUidsInSystem.contains(uid);
+	}
+
 	public synchronized Set getLeafUids()
 	{
 		fill();
