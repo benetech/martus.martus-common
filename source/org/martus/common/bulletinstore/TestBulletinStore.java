@@ -99,37 +99,37 @@ public class TestBulletinStore extends TestCaseEnhanced
 	{
     	Bulletin one = createAndSaveBulletin();
     	store.saveBulletinForTesting(one);
-       	assertEquals("Leaf Keys should be 1?", 1, store.scanForLeafKeys().size());
+       	assertEquals("Leaf Keys should be 1?", 1, store.getBulletinCount());
        	assertEquals("NonLeaf uid should be 0?", 0, store.getNonLeafUids().size());
        	Bulletin clone = createAndSaveClone(one);
-    	assertEquals("not just clone?", 1, store.scanForLeafKeys().size());
+    	assertEquals("not just clone?", 1, store.getBulletinCount());
        	assertEquals("NonLeaf uid should be 1?", 1, store.getNonLeafUids().size());
        	Bulletin clone2 = createAndSaveClone(clone);
-    	assertEquals("not just clone2?", 1, store.scanForLeafKeys().size());
+    	assertEquals("not just clone2?", 1, store.getBulletinCount());
        	assertEquals("NonLeaf uid should be 2?", 2, store.getNonLeafUids().size());
     	store.deleteBulletinRevisionFromDatabase(clone2.getBulletinHeaderPacket());
       	
     	store.deleteBulletinRevisionFromDatabase(clone.getBulletinHeaderPacket());
-    	assertEquals("didn't delete?", 1, store.scanForLeafKeys().size());
+    	assertEquals("didn't delete?", 1, store.getBulletinCount());
        	assertEquals("NonLeaf uid should be 0 after delete?", 0, store.getNonLeafUids().size());
     	
     	File tempZip = createTempFile();
     	store.saveBulletinForTesting(one);
     	BulletinZipUtilities.exportBulletinPacketsFromDatabaseToZipFile(store.getDatabase(), one.getDatabaseKey(), tempZip, store.getSignatureVerifier());
     	store.deleteBulletinRevision(one.getDatabaseKey());
-    	assertEquals("not ready for import?", 0, store.scanForLeafKeys().size());
+    	assertEquals("not ready for import?", 0, store.getBulletinCount());
     	store.importBulletinZipFile(new ZipFile(tempZip));
-    	assertEquals("didn't import?", 1, store.scanForLeafKeys().size());
+    	assertEquals("didn't import?", 1, store.getBulletinCount());
     	tempZip.delete();
 
     	Vector toHide = new Vector();
     	toHide.add(one.getUniversalId());
     	store.hidePackets(toHide, new LoggerToNull());
-    	assertEquals("didn't hide?", 0, store.scanForLeafKeys().size());
+    	assertEquals("didn't hide?", 0, store.getBulletinCount());
     	
     	store.saveBulletinForTesting(clone);
     	store.deleteAllData();
-    	assertEquals("didn't delete all?", 0, store.scanForLeafKeys().size());
+    	assertEquals("didn't delete all?", 0, store.getBulletinCount());
 	}
     
 	public void testMissingInvalidAttachment() throws Exception
@@ -384,13 +384,13 @@ public class TestBulletinStore extends TestCaseEnhanced
 		clone.setHistory(history);
 		store.saveBulletinForTesting(clone);
 
-		Vector leafKeys = store.scanForLeafKeys();
-		assertContains(msg+ ": missing clone?", DatabaseKey.createSealedKey(clone.getUniversalId()), leafKeys);
-		assertContains(msg+ ": missing other?", DatabaseKey.createSealedKey(otherUid), leafKeys);
-		assertEquals(msg+ ": wrong leaf count?", 2, leafKeys.size());
-		Vector nonLeafKeys = store.getNonLeafUids();
-		assertEquals(msg+ ": wrong nonleaf count?", 1, nonLeafKeys.size());
-		assertContains(msg+ ": Original uid not in nonleaf?", original.getUniversalId(), nonLeafKeys);
+		Set leafUids = store.getAllBulletinLeafUids();
+		assertContains(msg+ ": missing clone?", clone.getUniversalId(), leafUids);
+		assertContains(msg+ ": missing other?", otherUid, leafUids);
+		assertEquals(msg+ ": wrong leaf count?", 2, leafUids.size());
+		Vector nonLeafUids = store.getNonLeafUids();
+		assertEquals(msg+ ": wrong nonleaf count?", 1, nonLeafUids.size());
+		assertContains(msg+ ": Original uid not in nonleaf?", original.getUniversalId(), nonLeafUids);
 	}
 
 	private Bulletin createAndSaveBulletin() throws IOException, CryptoException
