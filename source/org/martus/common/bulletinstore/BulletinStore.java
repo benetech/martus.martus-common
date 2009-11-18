@@ -245,11 +245,6 @@ public class BulletinStore
 		return leafNodeCache.getLeafUids();
 	}
 	
-	public Vector getNonLeafUids()
-	{
-		return leafNodeCache.getNonLeafUids();
-	}
-	
 	public Vector getFieldOffices(String hqAccountId)
 	{
 		return leafNodeCache.getFieldOffices(hqAccountId);
