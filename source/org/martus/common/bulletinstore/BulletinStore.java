@@ -31,7 +31,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
@@ -131,16 +131,12 @@ public class BulletinStore
 
 	public int getBulletinCount()
 	{
-		return scanForLeafKeys().size();
+		return getAllBulletinLeafUids().size();
 	}
 
 	public Set getAllBulletinLeafUids()
 	{
-		Set uids = new HashSet();
-		Vector keys = scanForLeafKeys();
-		for(int i=0; i < keys.size(); ++i)
-			uids.add( ((DatabaseKey)keys.get(i)).getUniversalId());
-		return uids;
+		return scanForLeafUids();
 	}
 	
 	public boolean isLeaf(UniversalId uId)
@@ -245,9 +241,9 @@ public class BulletinStore
 		return leafNodeCache.hadErrors();
 	}
 	
-	public Vector scanForLeafKeys()
+	public Set scanForLeafUids()
 	{
-		return leafNodeCache.getLeafKeys();
+		return leafNodeCache.getLeafUids();
 	}
 	
 	public Vector getNonLeafUids()
@@ -262,11 +258,14 @@ public class BulletinStore
 
 	public void visitAllBulletins(Database.PacketVisitor visitor)
 	{
-		Vector leafKeys = scanForLeafKeys();
-		for(int i=0; i < leafKeys.size(); ++i)
-			visitor.visit((DatabaseKey)leafKeys.get(i));
+		Set uids = getAllBulletinLeafUids();
+		Iterator it = uids.iterator();
+		while(it.hasNext())
+		{
+			UniversalId uid = (UniversalId)it.next();
+			visitor.visit(BulletinStoreCache.findKey(getDatabase(), uid));
+		}
 	}
-
 	public void visitAllBulletinRevisions(Database.PacketVisitor visitorToUse)
 	{
 		class BulletinKeyFilter implements Database.PacketVisitor

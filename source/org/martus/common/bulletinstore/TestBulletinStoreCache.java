@@ -97,7 +97,7 @@ public class TestBulletinStoreCache extends TestCaseEnhanced
     	LeafNodeCache cache = new LeafNodeCache(store);
     	assertFalse("cache already valid?", cache.isCacheValid());
     	
-    	cache.getLeafKeys();
+    	cache.getLeafUids();
     	assertTrue("get leaf didn't fill cache?", cache.isCacheValid());
     	cache.storeWasCleared();
     	assertFalse("clear didn't work?", cache.isCacheValid());

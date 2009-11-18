@@ -75,7 +75,7 @@ public class TestLeafNodeCache extends TestCaseEnhanced
 
 		LeafNodeCache cache = new LeafNodeCache(store);
 		store.addCache(cache);
-		assertEquals("cache not valid and empty?", 0, cache.getLeafKeys().size());
+		assertEquals("cache not valid and empty?", 0, cache.getLeafUids().size());
 		
 		// write original, then next revision, then final revision
 		saveHeaderPacket(store, bhp1, client);
@@ -103,7 +103,7 @@ public class TestLeafNodeCache extends TestCaseEnhanced
 		assertContains("bhp2 not a non-leaf?", bhp2.getUniversalId(), cache.getNonLeafUids());
 
 		store.deleteAllBulletins();
-		assertEquals("cache not valid and empty?", 0, cache.getLeafKeys().size());
+		assertEquals("cache not valid and empty?", 0, cache.getLeafUids().size());
 		assertEquals("cache not valid and empty?", 0, cache.getNonLeafUids().size());
 
 		// write final revision, then earlier, then original
@@ -201,13 +201,13 @@ public class TestLeafNodeCache extends TestCaseEnhanced
 		watch.start();
 		LeafNodeCache cache = new LeafNodeCache(store);
 		assertFalse("cache not flushed?", cache.isCacheValid());
-		cache.getLeafKeys();
+		cache.getLeafUids();
 		long buildCacheTime = watch.elapsed();
 //		System.out.println("Time for initial cache build: " + buildCacheTime);
 		assertTrue("Leaf key cache  build too slow? (was " + buildCacheTime + ")", buildCacheTime < 1000);
 		
 		watch.start();
-		cache.getLeafKeys();
+		cache.getLeafUids();
 		long queryCacheTime = watch.elapsed();
 //		System.out.println("Time to query using the cache: " + queryCacheTime);
 		assertTrue("Time to query using cache too slow? (was " + queryCacheTime + ")", queryCacheTime < 100);

@@ -28,8 +28,10 @@ package org.martus.common.bulletinstore;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
+
 import org.martus.common.HQKeys;
 import org.martus.common.MartusLogger;
 import org.martus.common.bulletin.Bulletin;
@@ -78,10 +80,16 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 		storeWasCleared();
 	}
 	
-	public synchronized Vector getLeafKeys()
+	public synchronized Set getLeafUids()
 	{
 		fill();
-		Vector result = new Vector(leafKeys);
+		HashSet result = new HashSet();
+		Iterator iterator = leafKeys.iterator();
+		while(iterator.hasNext())
+		{
+			DatabaseKey key = (DatabaseKey)iterator.next();
+			result.add(key.getUniversalId());
+		}
 		
 		return result;
 	}
