@@ -136,7 +136,7 @@ public class BulletinStore
 
 	public Set getAllBulletinLeafUids()
 	{
-		return scanForLeafUids();
+		return leafNodeCache.getLeafUids();
 	}
 	
 	public boolean isLeaf(UniversalId uId)
@@ -238,11 +238,6 @@ public class BulletinStore
 	public boolean hadErrorsWhileCacheing()
 	{
 		return leafNodeCache.hadErrors();
-	}
-	
-	public Set scanForLeafUids()
-	{
-		return leafNodeCache.getLeafUids();
 	}
 	
 	public Vector getFieldOffices(String hqAccountId)
