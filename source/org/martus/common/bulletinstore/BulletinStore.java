@@ -31,6 +31,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
@@ -55,6 +56,7 @@ import org.martus.common.database.ReadableDatabase;
 import org.martus.common.database.Database.RecordHiddenException;
 import org.martus.common.database.FileDatabase.MissingAccountMapException;
 import org.martus.common.database.FileDatabase.MissingAccountMapSignatureException;
+import org.martus.common.database.ReadableDatabase.PacketVisitor;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.BulletinHistory;
 import org.martus.common.packet.FieldDataPacket;
@@ -134,14 +136,61 @@ public class BulletinStore
 		return getAllBulletinLeafUids().size();
 	}
 
+	class LeafFinder implements PacketVisitor
+	{
+		public LeafFinder()
+		{
+			leafUids = new HashSet();
+		}
+		
+		public Set getLeafUids()
+		{
+			return leafUids;
+		}
+		
+		public void visit(DatabaseKey key)
+		{
+			UniversalId uid = key.getUniversalId();
+			if(isLeaf(uid))
+				leafUids.add(uid);
+		}
+		
+		private HashSet leafUids;
+	}
+
 	public Set getAllBulletinLeafUids()
 	{
-		return leafNodeCache.getLeafUids();
+		LeafFinder leafFinder = new LeafFinder();
+		visitAllBulletinRevisions(leafFinder);
+				
+		return leafFinder.getLeafUids();
 	}
 	
-	public boolean isLeaf(UniversalId uId)
+	public boolean isLeaf(UniversalId uid)
 	{
-		return leafNodeCache.isLeaf(uId);
+		if(BulletinStoreCache.findKey(getDatabase(), uid) == null)
+			return false;
+
+		return !hasNewerRevision(uid);
+	}
+
+	public boolean hasNewerRevision(UniversalId uid)
+	{
+		Set descendents = leafNodeCache.getAllKnownDescendents(uid);
+		Iterator it = descendents.iterator();
+		while(it.hasNext())
+		{
+			UniversalId descendent = (UniversalId)it.next();
+			if(doesBulletinRevisionExist(descendent))
+				return true;
+		}
+		
+		return false;
+	}
+
+	public boolean doesBulletinRevisionExist(UniversalId descendent)
+	{
+		return BulletinStoreCache.findKey(getDatabase(), descendent) != null;
 	}
 
 	public boolean doesBulletinRevisionExist(DatabaseKey key)
@@ -154,20 +203,6 @@ public class BulletinStore
 		return getDatabase().doesRecordExist(key);
 	}
 	
-	public boolean hasNewerRevision(UniversalId uid)
-	{
-		Set descendents = leafNodeCache.getAllKnownDescendents(uid);
-		Iterator it = descendents.iterator();
-		while(it.hasNext())
-		{
-			UniversalId descendent = (UniversalId)it.next();
-			if(BulletinStoreCache.findKey(getDatabase(), descendent) != null)
-				return true;
-		}
-		
-		return false;
-	}
-
 	public void deleteAllData() throws Exception
 	{
 		deleteAllBulletins();
@@ -229,6 +264,11 @@ public class BulletinStore
 		cacheManager.addCache(cacheToAdd);
 	}
 	
+	public void clearCache()
+	{
+		cacheManager.clearCache();
+	}
+
 	public void revisionWasSaved(UniversalId uid)
 	{
 		cacheManager.revisionWasSaved(uid);
@@ -523,6 +563,11 @@ public class BulletinStore
 		revisionWasSaved(b);
 	}
 	
+	protected LeafNodeCache getLeafNodeCache()
+	{
+		return leafNodeCache;
+	}
+
 	private static boolean isAttachmentsValid(ReadableDatabase db, MartusCrypto verifier, AttachmentProxy[] attachmentProxies)
 	{
 		if(attachmentProxies == null)

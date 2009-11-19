@@ -49,17 +49,16 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 	{
 		store = storeToUse;
 		clear();
-		storeWasCleared();
 	}
 	
 	public synchronized void storeWasCleared()
 	{
-		isValid = false;
-		MartusLogger.log("LeafNodeCache cleared");
+		clear();
 	}
 	
 	public synchronized void revisionWasSaved(UniversalId uid)
 	{
+		fill();
 		DatabaseKey key = findKey(store.getDatabase(), uid);
 		if(key == null)
 		{
@@ -76,65 +75,12 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 	
 	public synchronized void revisionWasRemoved(UniversalId uid)
 	{
-		isValid = false;
-// Commented out while I get BulletinStore.hasNewerRevision working
-//		Iterator it = uidToChildrenMap.keySet().iterator();
-//		while(it.hasNext())
-//		{
-//			UniversalId parent = (UniversalId)it.next();
-//			Set children = getChildren(parent);
-//			if(children.contains(uid))
-//			{
-//				children.remove(uid);
-//				uidToChildrenMap.put(parent, children);
-//			}
-//		}
-//		uidToChildrenMap.remove(uid);
+		// No action required
 	}
 	
-	public synchronized boolean isLeaf(UniversalId uid)
-	{
-		fill();
-		if(!isKnown(uid))
-			return false;
-		
-		if(findKey(getDatabase(), uid) == null)
-			return false;
-		
-		return (getChildren(uid).size() == 0);
-	}
-
-	public synchronized boolean isNonLeaf(UniversalId uid)
-	{
-		fill();
-		if(!isKnown(uid))
-			return false;
-		
-		return !isLeaf(uid);
-	}
-
-	private boolean isKnown(UniversalId uid)
-	{
-		return uidToChildrenMap.containsKey(uid);
-	}
-
-	public synchronized Set getLeafUids()
-	{
-		fill();
-		HashSet leafUids = new HashSet();
-		Iterator it = uidToChildrenMap.keySet().iterator();
-		while(it.hasNext())
-		{
-			UniversalId parentUid = (UniversalId)it.next();
-			if(isLeaf(parentUid))
-				leafUids.add(parentUid);
-		}
-		
-		return leafUids;
-	}
-
 	public synchronized Set getAllKnownDescendents(UniversalId uid)
 	{
+		fill();
 		HashSet descendents = new HashSet();
 		Set children = getChildren(uid);
 		Iterator it = children.iterator();
@@ -184,8 +130,10 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 		MartusLogger.logEndProcess(STATUS_TEXT);
 	}
 
-	private void clear()
+	public synchronized void clear()
 	{
+		MartusLogger.log("LeafNodeCache cleared");
+		isValid = false;
 		hitErrorsDuringScan = false;
 		uidToChildrenMap = new HashMap();
 		fieldOfficesPerHq = new HashMap();

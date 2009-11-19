@@ -34,7 +34,6 @@ import org.martus.common.bulletin.Bulletin;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.database.MockClientDatabase;
-import org.martus.common.packet.UniversalId;
 import org.martus.util.TestCaseEnhanced;
 
 
@@ -93,25 +92,29 @@ public class TestBulletinStoreCache extends TestCaseEnhanced
 		
 	}
    
-    public void testIsCacheValid()
+    public void testIsCacheValid() throws Exception
     {
-    	LeafNodeCache cache = new LeafNodeCache(store);
+    	LeafNodeCache cache = store.getLeafNodeCache();
     	assertFalse("cache already valid?", cache.isCacheValid());
     	
-    	cache.getLeafUids();
-    	assertTrue("get leaf didn't fill cache?", cache.isCacheValid());
+    	MartusCrypto client = MockMartusSecurity.createClient();
+    	Bulletin b = new Bulletin(client);
+		store.saveBulletinForTesting(b);
+    	
+    	store.getAllBulletinLeafUids();
+    	assertTrue("get leaf uids didn't fill cache?", cache.isCacheValid());
     	cache.storeWasCleared();
     	assertFalse("clear didn't work?", cache.isCacheValid());
     	
-    	cache.isLeaf(UniversalId.createDummyUniversalId());
+    	store.isLeaf(b.getUniversalId());
     	assertTrue("isLeaf didn't fill cache?", cache.isCacheValid());
     	cache.storeWasCleared();
     	
-    	cache.isNonLeaf(UniversalId.createDummyUniversalId());
+    	store.hasNewerRevision(b.getUniversalId());
     	assertTrue("isNonLeaf didn't fill cache?", cache.isCacheValid());
     	cache.storeWasCleared();
     	
-    	cache.getFieldOffices("test");
+    	store.getFieldOffices("test");
     	assertTrue("get fo's didn't fill cache?", cache.isCacheValid());
 
     }

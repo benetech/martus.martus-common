@@ -79,5 +79,15 @@ public class BulletinStoreCacheManager
 		}
 	}
 
-	Vector caches;
+	public void clearCache()
+	{
+		for(int i = 0; i < caches.size(); ++i)
+		{
+			BulletinStoreCache cache = (BulletinStoreCache)caches.get(i);
+			cache.clear();
+		}
+	}
+
+	private Vector caches;
+
 }
