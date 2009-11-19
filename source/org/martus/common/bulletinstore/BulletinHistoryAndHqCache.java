@@ -62,7 +62,7 @@ public class BulletinHistoryAndHqCache extends BulletinStoreCache implements Dat
 		DatabaseKey key = findKey(store.getDatabase(), uid);
 		if(key == null)
 		{
-			System.out.println("LeafNodeCache.revisionWasSaved null key for " + uid.getLocalId());
+			System.out.println("BulletinHistoryAndHqCache.revisionWasSaved null key for " + uid.getLocalId());
 			return;
 		}
 		visit(key);
@@ -122,7 +122,7 @@ public class BulletinHistoryAndHqCache extends BulletinStoreCache implements Dat
 		if(isValid)
 			return;
 
-		String STATUS_TEXT = "LeafNodeCache rebuild";
+		String STATUS_TEXT = "BulletinHistoryAndHqCache rebuild";
 		MartusLogger.logBeginProcess(STATUS_TEXT);
 		clear();
 		store.visitAllBulletinRevisions(this);
@@ -132,7 +132,7 @@ public class BulletinHistoryAndHqCache extends BulletinStoreCache implements Dat
 
 	public synchronized void clear()
 	{
-		MartusLogger.log("LeafNodeCache cleared");
+		MartusLogger.log("BulletinHistoryAndHqCache cleared");
 		isValid = false;
 		hitErrorsDuringScan = false;
 		uidToChildrenMap = new HashMap();
