@@ -94,7 +94,7 @@ public class TestBulletinStoreCache extends TestCaseEnhanced
    
     public void testIsCacheValid() throws Exception
     {
-    	LeafNodeCache cache = store.getLeafNodeCache();
+    	BulletinHistoryAndHqCache cache = store.getLeafNodeCache();
     	assertFalse("cache already valid?", cache.isCacheValid());
     	
     	MartusCrypto client = MockMartusSecurity.createClient();

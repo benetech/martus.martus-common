@@ -73,7 +73,7 @@ public class TestLeafNodeCache extends TestCaseEnhanced
 		bhp3.getHistory().add(bhp1.getLocalId());
 		bhp3.getHistory().add(bhp2.getLocalId());
 
-		LeafNodeCache cache = store.getLeafNodeCache();
+		BulletinHistoryAndHqCache cache = store.getLeafNodeCache();
 		assertFalse("cache already valid?", cache.isCacheValid());
 		
 		// write original, then next revision, then final revision
@@ -133,7 +133,7 @@ public class TestLeafNodeCache extends TestCaseEnhanced
 		File tempDirectory = createTempDirectory();
 		BulletinStore store = new BulletinStore();
 		store.doAfterSigninInitialization(tempDirectory, new MockServerDatabase());
-		LeafNodeCache cache = store.getLeafNodeCache();
+		BulletinHistoryAndHqCache cache = store.getLeafNodeCache();
 
 		MockMartusSecurity client = MockMartusSecurity.createClient();
 		
@@ -210,7 +210,7 @@ public class TestLeafNodeCache extends TestCaseEnhanced
 			return;
 		
 		BulletinStore store = new BulletinStore();
-		LeafNodeCache cache = new LeafNodeCache(store);
+		BulletinHistoryAndHqCache cache = new BulletinHistoryAndHqCache(store);
 		BulletinHistory history = new BulletinHistory();
 		for(int i = 0; i < 10; ++i)
 			history.add(UniversalId.createDummyUniversalId().getLocalId());
@@ -255,7 +255,7 @@ public class TestLeafNodeCache extends TestCaseEnhanced
 //		System.out.println("Time to create bulletins: " + watch.elapsed());
 
 		watch.start();
-		LeafNodeCache cache = new LeafNodeCache(store);
+		BulletinHistoryAndHqCache cache = new BulletinHistoryAndHqCache(store);
 		assertFalse("cache not flushed?", cache.isCacheValid());
 		store.getAllBulletinLeafUids();
 		long buildCacheTime = watch.elapsed();

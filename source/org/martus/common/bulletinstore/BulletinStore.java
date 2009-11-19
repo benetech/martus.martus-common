@@ -80,7 +80,7 @@ public class BulletinStore
 	{
 		cacheManager = new BulletinStoreCacheManager();
 
-		bulletinHistoryAndHqCache = new LeafNodeCache(this);
+		bulletinHistoryAndHqCache = new BulletinHistoryAndHqCache(this);
 		addCache(bulletinHistoryAndHqCache);
 	}
 
@@ -563,7 +563,7 @@ public class BulletinStore
 		revisionWasSaved(b);
 	}
 	
-	protected LeafNodeCache getLeafNodeCache()
+	protected BulletinHistoryAndHqCache getLeafNodeCache()
 	{
 		return bulletinHistoryAndHqCache;
 	}
@@ -698,7 +698,7 @@ public class BulletinStore
 	private MartusCrypto security;
 	private File dir;
 	private Database database;
-	private LeafNodeCache bulletinHistoryAndHqCache;
+	private BulletinHistoryAndHqCache bulletinHistoryAndHqCache;
 	private BulletinStoreCacheManager cacheManager;
 }
 

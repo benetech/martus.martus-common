@@ -43,9 +43,9 @@ import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.BulletinHistory;
 import org.martus.common.packet.UniversalId;
 
-public class LeafNodeCache extends BulletinStoreCache implements Database.PacketVisitor
+public class BulletinHistoryAndHqCache extends BulletinStoreCache implements Database.PacketVisitor
 {
-	public LeafNodeCache(BulletinStore storeToUse)
+	public BulletinHistoryAndHqCache(BulletinStore storeToUse)
 	{
 		store = storeToUse;
 		clear();
