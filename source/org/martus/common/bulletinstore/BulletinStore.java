@@ -80,8 +80,8 @@ public class BulletinStore
 	{
 		cacheManager = new BulletinStoreCacheManager();
 
-		leafNodeCache = new LeafNodeCache(this);
-		addCache(leafNodeCache);
+		bulletinHistoryAndHqCache = new LeafNodeCache(this);
+		addCache(bulletinHistoryAndHqCache);
 	}
 
 	public void doAfterSigninInitialization(File dataRootDirectory, Database db) throws FileVerificationException, MissingAccountMapException, MissingAccountMapSignatureException
@@ -176,7 +176,7 @@ public class BulletinStore
 
 	public boolean hasNewerRevision(UniversalId uid)
 	{
-		Set descendents = leafNodeCache.getAllKnownDescendents(uid);
+		Set descendents = bulletinHistoryAndHqCache.getAllKnownDescendents(uid);
 		Iterator it = descendents.iterator();
 		while(it.hasNext())
 		{
@@ -286,12 +286,12 @@ public class BulletinStore
 	
 	public boolean hadErrorsWhileCacheing()
 	{
-		return leafNodeCache.hadErrors();
+		return bulletinHistoryAndHqCache.hadErrors();
 	}
 	
 	public Vector getFieldOffices(String hqAccountId)
 	{
-		return leafNodeCache.getFieldOffices(hqAccountId);
+		return bulletinHistoryAndHqCache.getFieldOffices(hqAccountId);
 	}
 
 	public void visitAllBulletins(Database.PacketVisitor visitor)
@@ -565,7 +565,7 @@ public class BulletinStore
 	
 	protected LeafNodeCache getLeafNodeCache()
 	{
-		return leafNodeCache;
+		return bulletinHistoryAndHqCache;
 	}
 
 	private static boolean isAttachmentsValid(ReadableDatabase db, MartusCrypto verifier, AttachmentProxy[] attachmentProxies)
@@ -698,7 +698,7 @@ public class BulletinStore
 	private MartusCrypto security;
 	private File dir;
 	private Database database;
-	private LeafNodeCache leafNodeCache;
+	private LeafNodeCache bulletinHistoryAndHqCache;
 	private BulletinStoreCacheManager cacheManager;
 }
 
