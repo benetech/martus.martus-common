@@ -147,8 +147,11 @@ public class TestLeafNodeCache extends TestCaseEnhanced
 		saveHeaderPacket(store, grandparent, client);
 		cache.revisionWasSaved(grandparent.getUniversalId());
 		assertTrue("saved bulletin not leaf?", cache.isLeaf(grandparent.getUniversalId()));
+		assertFalse("saved bulletin nonleaf?", cache.isNonLeaf(grandparent.getUniversalId()));
 		store.deleteSpecificPacket(getKey(grandparent));
 		cache.revisionWasRemoved(grandparent.getUniversalId());
+// Commented out until that code is un-commented
+//		assertTrue("cache was invalidated?", cache.isCacheValid());
 		assertFalse("still leaf after removal?", cache.isLeaf(grandparent.getUniversalId()));
 		saveHeaderPacket(store, grandparent, client);
 		cache.revisionWasSaved(grandparent.getUniversalId());
@@ -166,17 +169,34 @@ public class TestLeafNodeCache extends TestCaseEnhanced
 		saveHeaderPacket(store, child, client);
 		cache.revisionWasSaved(child.getUniversalId());
 
-		// removing parent should leave child as a leaf
+		// removing parent should leave child as a leaf, but not grandparent
 		store.deleteSpecificPacket(getKey(parent));
 		cache.revisionWasRemoved(parent.getUniversalId());
 		assertTrue("child not leaf after parent removed?", cache.isLeaf(child.getUniversalId()));
+		assertFalse("child nonleaf after parent removed?", cache.isNonLeaf(child.getUniversalId()));
+		assertFalse("grandparent is leaf after parent removed?", cache.isLeaf(grandparent.getUniversalId()));
+		assertTrue("grandparent isn't nonleaf after parent removed?", cache.isNonLeaf(grandparent.getUniversalId()));
+		// and then removing child should make grandparent a leaf
+		store.deleteSpecificPacket(getKey(child));
+		cache.revisionWasRemoved(child.getUniversalId());
+		assertTrue("grandparent not leaf after parent and child removed?", cache.isLeaf(grandparent.getUniversalId()));
+		assertFalse("grandparent is nonleaf after parent and child removed?", cache.isNonLeaf(grandparent.getUniversalId()));
 		saveHeaderPacket(store, parent, client);
 		cache.revisionWasSaved(parent.getUniversalId());
+		saveHeaderPacket(store, child, client);
+		cache.revisionWasSaved(child.getUniversalId());
+		assertTrue("child not leaf again?", cache.isLeaf(child.getUniversalId()));
+		assertFalse("parent is leaf again?", cache.isLeaf(parent.getUniversalId()));
+		assertFalse("grandparent is leaf again?", cache.isLeaf(grandparent.getUniversalId()));
+		assertFalse("child nonleaf again?", cache.isNonLeaf(child.getUniversalId()));
+		assertTrue("parent not nonleaf again?", cache.isNonLeaf(parent.getUniversalId()));
+		assertTrue("grandparent not nonleaf again?", cache.isNonLeaf(grandparent.getUniversalId()));
 
 		// removing child should make parent leaf again
 		store.deleteSpecificPacket(getKey(child));
 		cache.revisionWasRemoved(child.getUniversalId());
 		assertTrue("parent not leaf after child removed?", cache.isLeaf(parent.getUniversalId()));
+		assertFalse("parent nonleaf after child removed?", cache.isNonLeaf(parent.getUniversalId()));
 		saveHeaderPacket(store, child, client);
 		cache.revisionWasSaved(child.getUniversalId());
 	}

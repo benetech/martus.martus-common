@@ -76,14 +76,29 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 	
 	public synchronized void revisionWasRemoved(UniversalId uid)
 	{
-		// TODO: definitely could be optimized!
-		storeWasCleared();
+		isValid = false;
+// Commented out while I get BulletinStore.hasNewerRevision working
+//		Iterator it = uidToChildrenMap.keySet().iterator();
+//		while(it.hasNext())
+//		{
+//			UniversalId parent = (UniversalId)it.next();
+//			Set children = getChildren(parent);
+//			if(children.contains(uid))
+//			{
+//				children.remove(uid);
+//				uidToChildrenMap.put(parent, children);
+//			}
+//		}
+//		uidToChildrenMap.remove(uid);
 	}
 	
 	public synchronized boolean isLeaf(UniversalId uid)
 	{
 		fill();
 		if(!isKnown(uid))
+			return false;
+		
+		if(findKey(getDatabase(), uid) == null)
 			return false;
 		
 		return (getChildren(uid).size() == 0);
@@ -221,7 +236,7 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 		UniversalId child = key.getUniversalId();
 		uidToChildrenMap.put(child, getChildren(child));
 
-		for(int i=0; i < history.size(); ++i)
+		for(int i=history.size() - 1; i >= 0; --i)
 		{
 			String thisLocalId = history.get(i);
 			UniversalId parent = UniversalId.createFromAccountAndLocalId(key.getAccountId(), thisLocalId);
