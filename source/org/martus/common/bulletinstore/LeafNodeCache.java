@@ -133,6 +133,20 @@ public class LeafNodeCache extends BulletinStoreCache implements Database.Packet
 		return leafUids;
 	}
 
+	public synchronized Set getAllKnownDescendents(UniversalId uid)
+	{
+		HashSet descendents = new HashSet();
+		Set children = getChildren(uid);
+		Iterator it = children.iterator();
+		while(it.hasNext())
+		{
+			UniversalId child = (UniversalId)it.next();
+			descendents.add(child);
+			descendents.addAll(getAllKnownDescendents(child));
+		}
+		
+		return descendents;
+	}
 	
 	public synchronized Vector getFieldOffices(String hqAccountId)
 	{

@@ -156,7 +156,16 @@ public class BulletinStore
 	
 	public boolean hasNewerRevision(UniversalId uid)
 	{
-		return leafNodeCache.isNonLeaf(uid);
+		Set descendents = leafNodeCache.getAllKnownDescendents(uid);
+		Iterator it = descendents.iterator();
+		while(it.hasNext())
+		{
+			UniversalId descendent = (UniversalId)it.next();
+			if(BulletinStoreCache.findKey(getDatabase(), descendent) != null)
+				return true;
+		}
+		
+		return false;
 	}
 
 	public void deleteAllData() throws Exception
