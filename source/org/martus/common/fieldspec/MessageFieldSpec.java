@@ -36,6 +36,7 @@ public class MessageFieldSpec extends FieldSpec
 	public MessageFieldSpec()
 	{
 		super(new FieldTypeMessage());
+		message = "";
 	}
 	
 	public String getDefaultValue()
