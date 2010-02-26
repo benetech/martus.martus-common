@@ -51,12 +51,16 @@ public class FieldSpec
 	
 	public static FieldSpec createCustomField(String tagToUse, String labelToUse, FieldType typeToUse, boolean hasUnknownToUse)
 	{
-		return new FieldSpec(tagToUse, labelToUse, typeToUse, hasUnknownToUse);
+		FieldSpec spec = typeToUse.createEmptyFieldSpec();
+		spec.setTag(tagToUse);
+		spec.setLabel(labelToUse);
+		spec.hasUnknown = hasUnknownToUse;
+		return spec;
 	}
 	
 	public static FieldSpec createFieldSpec(FieldType typeToUse)
 	{
-		return new FieldSpec(typeToUse);
+		return typeToUse.createEmptyFieldSpec();
 	}
 
 	public static FieldSpec createFieldSpec(String labelToUse, FieldType typeToUse)
@@ -66,7 +70,11 @@ public class FieldSpec
 	
 	public static FieldSpec createSubField(FieldSpec parentToUse, String tagToUse, String labelToUse, FieldType typeToUse)
 	{
-		return new FieldSpec(parentToUse, tagToUse, labelToUse, typeToUse, false);
+		FieldSpec spec = typeToUse.createEmptyFieldSpec();
+		spec.setParent(parentToUse);
+		spec.setTag(tagToUse);
+		spec.setLabel(labelToUse);
+		return spec;
 	}
 
 	protected FieldSpec(FieldType typeToUse)
