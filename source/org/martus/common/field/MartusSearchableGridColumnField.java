@@ -26,6 +26,8 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.field;
 
+import java.util.Vector;
+
 import org.martus.common.GridData;
 import org.martus.common.MiniLocalization;
 import org.martus.common.fieldspec.FieldSpec;
@@ -98,16 +100,22 @@ public class MartusSearchableGridColumnField extends MartusField
 		super(specToUse);
 		dataInEachRow = rowData;
 	}
-
-	public boolean doesMatch(int compareOp, String searchForValue, MiniLocalization localization)
+	
+	public Integer[] getMatchingRows(int compareOp, String searchForValue, MiniLocalization localization)
 	{
+		Vector matchingRows = new Vector();
 		for(int row = 0; row < dataInEachRow.length; ++row)
 		{
 			if(dataInEachRow[row].doesMatch(compareOp, searchForValue, localization))
-				return true;
+				matchingRows.add(new Integer(row));
 		}
 		
-		return false;
+		return (Integer[])matchingRows.toArray(new Integer[0]);
+	}
+
+	public boolean doesMatch(int compareOp, String searchForValue, MiniLocalization localization)
+	{
+		return (getMatchingRows(compareOp, searchForValue, localization).length > 0);
 	}
 
 	public MartusField getSubField(String tag, MiniLocalization localization)

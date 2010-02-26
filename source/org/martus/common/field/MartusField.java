@@ -179,6 +179,11 @@ public class MartusField
 		return false;
 		
 	}
+
+	public Integer[] getMatchingRows(int compareOp, String searchForValue, MiniLocalization localization)
+	{
+		return new Integer[0];
+	}
 	
 	private String getDefaultValue()
 	{
