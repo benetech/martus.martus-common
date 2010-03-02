@@ -55,6 +55,8 @@ import org.martus.common.fieldspec.FieldTypeUnknown;
 import org.martus.common.fieldspec.StandardFieldSpecs;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.BulletinHistory;
+import org.martus.common.packet.ExtendedHistoryEntry;
+import org.martus.common.packet.ExtendedHistoryList;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.test.BulletinForTesting;
 import org.martus.common.test.MockBulletinStore;
@@ -367,6 +369,40 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals("Not Draft Status?", BulletinConstants.STATUSDRAFT, b1.getStatus());
 	}
 
+	public void testCreateDraftCopyOfFromDifferentAccount() throws Exception
+	{
+		Bulletin b1 = new Bulletin(security);
+		b1.set(Bulletin.TAGPUBLICINFO, "public info");
+		b1.set(Bulletin.TAGPRIVATEINFO, "private info");
+		HQKey hq = new HQKey(security.getPublicKeyString());
+		b1.setAuthorizedToReadKeys(new HQKeys(hq));
+		b1.setSealed();
+		BulletinHistory localHistory = b1.getHistory();
+		localHistory.add("history1");
+		localHistory.add("history2");
+		b1.setHistory(localHistory);
+		store.saveEncryptedBulletinForTesting(b1);
+
+		MartusCrypto hqSecurity = MockMartusSecurity.createHQ();
+		MockBulletinStore hqStore = new MockBulletinStore(this);
+		Bulletin b2 = new Bulletin(hqSecurity);
+		b2.createDraftCopyOf(b1, getDb());
+		
+		ExtendedHistoryList newHistory = b2.getBulletinHeaderPacket().getExtendedHistory();
+		assertEquals("Didn't copy old history to extended history?", 1, newHistory.size());
+		ExtendedHistoryEntry copiedHistory = newHistory.getHistory(0);
+		assertEquals("Didn't copy whole old history?", localHistory.size()+1, copiedHistory.getClonedHistory().size());
+		assertEquals("Didn't add most recent id?", b1.getLocalId(), copiedHistory.getClonedHistory().get(2));
+		
+		Bulletin b3 = new Bulletin(security);
+		b3.createDraftCopyOf(b2, hqStore.getDatabase());
+		
+		ExtendedHistoryList thirdHistory = b3.getBulletinHeaderPacket().getExtendedHistory();
+		assertEquals("Didn't copy history to third bulletin?", 2, thirdHistory.size());
+		assertEquals("Wrong first history?", 3, thirdHistory.getHistory(0).getClonedHistory().size());
+		assertEquals("Wrong second history?", 1, thirdHistory.getHistory(1).getClonedHistory().size());
+	}
+	
 	public void testCreateDraftCopyOf() throws Exception
 	{
 		Bulletin b1 = new Bulletin(security);

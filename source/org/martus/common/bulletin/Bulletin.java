@@ -52,6 +52,8 @@ import org.martus.common.fieldspec.StandardFieldSpecs;
 import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.BulletinHistory;
+import org.martus.common.packet.ExtendedHistoryEntry;
+import org.martus.common.packet.ExtendedHistoryList;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.UniversalId;
 import org.martus.common.packet.Packet.InvalidPacketException;
@@ -531,6 +533,24 @@ public class Bulletin implements BulletinConstants
 			BulletinHistory history = new BulletinHistory(other.getHistory());
 			history.add(other.getLocalId());
 			setHistory(history);
+		}
+		
+		if(!originalIsMine)
+		{
+			ExtendedHistoryList historyList = new ExtendedHistoryList();
+			ExtendedHistoryList extendedHistory = other.getBulletinHeaderPacket().getExtendedHistory();
+			for(int i = 0; i < extendedHistory.size(); ++i)
+			{
+				ExtendedHistoryEntry oldHistoryEntry = extendedHistory.getHistory(i);
+				String accountId = oldHistoryEntry.getClonedFromAccountId();
+				BulletinHistory localHistory = oldHistoryEntry.getClonedHistory();
+				historyList.add(accountId, localHistory);
+			}
+			BulletinHistory localHistory = new BulletinHistory(other.getHistory());
+			localHistory.add(other.getLocalId());
+			historyList.add(other.getAccount(), localHistory);
+			getBulletinHeaderPacket().setExtendedHistory(historyList);
+			setHistory(new BulletinHistory());
 		}
 
 		setDraft();
