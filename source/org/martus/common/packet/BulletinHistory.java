@@ -26,7 +26,11 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.packet;
 
+import java.io.IOException;
 import java.util.Vector;
+
+import org.martus.common.MartusXml;
+import org.martus.common.XmlWriterFilter;
 
 
 public class BulletinHistory
@@ -94,4 +98,16 @@ public class BulletinHistory
 	}
 
 	Vector localIds;
+
+	public void internalWriteXml(XmlWriterFilter dest) throws IOException
+	{
+		dest.writeStartTag(MartusXml.HistoryElementName);
+		for(int i=0; i < size(); ++i)
+		{
+			dest.writeStartTag(MartusXml.AncestorElementName);
+			dest.writeDirect(get(i));
+			dest.writeEndTag(MartusXml.AncestorElementName);
+		}
+		dest.writeEndTag(MartusXml.HistoryElementName);
+	}
 }

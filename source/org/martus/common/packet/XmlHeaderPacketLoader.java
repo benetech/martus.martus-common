@@ -56,6 +56,8 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 			return new AuthorizedToReadLoader();
 		else if(tag.equals(MartusXml.HistoryElementName))
 			return new SimpleXmlVectorLoader(tag, MartusXml.AncestorElementName);
+		else if(tag.equals(MartusXml.ExtendedHistorySectionName))
+			return new ExtendedHistoryLoader();
 		return super.startElement(tag);
 	}
 
@@ -76,6 +78,11 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 			SimpleXmlVectorLoader loader = (SimpleXmlVectorLoader)ended;
 			BulletinHistory history = new BulletinHistory(loader.getVector());
 			bhp.setHistory(history);
+		}
+		else if(tag.equals(MartusXml.ExtendedHistorySectionName))
+		{
+			ExtendedHistoryLoader loader = (ExtendedHistoryLoader)ended;
+			bhp.setExtendedHistory(loader.getHistory());
 		}
 		else
 			super.endElement(tag, ended);
@@ -135,7 +142,82 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 		Vector authorizedKeys = new Vector();
 	}
 	
+	class ExtendedHistoryLoader extends SimpleXmlDefaultLoader
+	{
+		public ExtendedHistoryLoader()
+		{
+			super(MartusXml.ExtendedHistorySectionName);
+			history = new ExtendedHistoryList();
+		}
+		
+		public SimpleXmlDefaultLoader startElement(String tag) throws SAXParseException
+		{
+			if(tag.equals(MartusXml.ExtendedHistoryEntryName))
+				return new ExtendedHistoryEntryLoader();
+			return super.startElement(tag);
+		}
+		
+		public void endElement(String tag, SimpleXmlDefaultLoader ended) throws SAXParseException
+		{
+			if(tag.equals(MartusXml.ExtendedHistoryEntryName))
+				history.add(((ExtendedHistoryEntryLoader)ended).getAccountId(), ((ExtendedHistoryEntryLoader)ended).getHistory());
+			else 
+				super.endElement(tag, ended);
+		}
+		
+		public ExtendedHistoryList getHistory()
+		{
+			return history;
+		}
+		
+		private ExtendedHistoryList history;
+	}
 	
+	class ExtendedHistoryEntryLoader extends SimpleXmlDefaultLoader
+	{
+		public ExtendedHistoryEntryLoader()
+		{
+			super(MartusXml.ExtendedHistoryEntryName);
+		}
+		
+		public SimpleXmlDefaultLoader startElement(String tag) throws SAXParseException
+		{
+			if(tag.equals(MartusXml.ExtendedHistoryClonedFromAccountName))
+				return new SimpleXmlStringLoader(tag);
+			if(tag.equals(MartusXml.HistoryElementName))
+				return new SimpleXmlVectorLoader(tag, MartusXml.AncestorElementName); 
+			
+			return super.startElement(tag);
+		}
+		
+		public void endElement(String tag, SimpleXmlDefaultLoader ended) throws SAXParseException
+		{
+			if(tag.equals(MartusXml.ExtendedHistoryClonedFromAccountName))
+			{
+				accountId = ((SimpleXmlStringLoader)ended).getText();
+			}
+			else if(tag.equals(MartusXml.HistoryElementName))
+			{
+				SimpleXmlVectorLoader loader = (SimpleXmlVectorLoader)ended;
+				history = new BulletinHistory(loader.getVector());
+			}
+			else
+				super.endElement(tag, ended);
+		}
+		
+		public String getAccountId()
+		{
+			return accountId;
+		}
+		
+		public BulletinHistory getHistory()
+		{
+			return history;
+		}
+		
+		private String accountId;
+		private BulletinHistory history;
+	}
 	
 
 	private Vector getTagsContainingStrings()

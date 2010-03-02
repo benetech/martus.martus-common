@@ -77,6 +77,7 @@ public class BulletinHeaderPacket extends Packet
 		lastSavedTime = TIME_UNKNOWN;
 		authorizedToReadKeys = new HQKeys();
 		history = new BulletinHistory();
+		extendedHistory = new ExtendedHistoryList();
 	}
 
 	public static UniversalId createUniversalId(MartusCrypto accountSecurity)
@@ -145,6 +146,16 @@ public class BulletinHeaderPacket extends Packet
 	public BulletinHistory getHistory()
 	{
 		return history;
+	}
+	
+	public void setExtendedHistory(ExtendedHistoryList newHistoryList)
+	{
+		extendedHistory = newHistoryList;
+	}
+	
+	public ExtendedHistoryList getExtendedHistory()
+	{
+		return extendedHistory;
 	}
 	
 	public int getVersionNumber()
@@ -457,14 +468,10 @@ public class BulletinHeaderPacket extends Packet
 		writeElement(dest, MartusXml.AllHQSProxyUploadName, ALL_HQS_PROXY_UPLOAD);
 		
 		if(history.size() > 0)
-		{
-			dest.writeStartTag(MartusXml.HistoryElementName);
-			for(int i=0; i < history.size(); ++i)
-			{
-				writeElement(dest, MartusXml.AncestorElementName, history.get(i));
-			}
-			dest.writeEndTag(MartusXml.HistoryElementName);
-		}
+			history.internalWriteXml(dest);
+		
+		if(extendedHistory.size() > 0)
+			extendedHistory.internalWriteXml(dest);
 	}
 
 	void setAllPrivateFromXmlTextValue(String data)
@@ -495,4 +502,5 @@ public class BulletinHeaderPacket extends Packet
 	private HQKeys authorizedToReadKeys;
 	private boolean allHQsCanProxyUpload;
 	private BulletinHistory history;
+	private ExtendedHistoryList extendedHistory;
 }

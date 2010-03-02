@@ -120,6 +120,9 @@ public class MartusXml
 	public final static String AllHQSProxyUploadName = "AllHQsProxyUpload";
 	public final static String HistoryElementName = "History";
 	public final static String AncestorElementName = "Ancestor";
+	public final static String ExtendedHistorySectionName = "ExtendedHistory";
+	public final static String ExtendedHistoryEntryName = "HistoryOfAClone";
+	public final static String ExtendedHistoryClonedFromAccountName = "ClonedFrom";
 	public final static String EncryptedDataElementName = "EncryptedData";
 	public final static String DataPacketIdElementName = "DataPacketId";
 	public final static String PrivateDataPacketIdElementName = "PrivateDataPacketId";

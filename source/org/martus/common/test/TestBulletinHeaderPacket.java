@@ -36,6 +36,8 @@ import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.BulletinHistory;
+import org.martus.common.packet.ExtendedHistoryEntry;
+import org.martus.common.packet.ExtendedHistoryList;
 import org.martus.common.packet.UniversalId;
 import org.martus.util.StreamableBase64;
 import org.martus.util.TestCaseEnhanced;
@@ -261,6 +263,10 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		assertNotContains(MartusXml.getTagStart(MartusXml.AccountsAuthorizedToReadElementName), result);
 		
 		assertNotContains(MartusXml.getTagStart(MartusXml.HistoryElementName), result);
+
+		assertNotContains(MartusXml.getTagStart(MartusXml.ExtendedHistorySectionName), result);
+		assertNotContains(MartusXml.getTagStart(MartusXml.ExtendedHistoryEntryName), result);
+		assertNotContains(MartusXml.getTagStart(MartusXml.ExtendedHistoryClonedFromAccountName), result);
 	}
 	
 	public void testWriteXmlWithHistory() throws Exception
@@ -277,13 +283,43 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		assertContains(history.get(1), result);
 		
 	}
-
+	
 	private BulletinHistory createFakeHistory()
 	{
 		BulletinHistory history = new BulletinHistory();
 		history.add("pretend local id");
 		history.add("another fake localid");
 		return history;
+	}
+
+	public void testWriteXmlWithExtendedHistory() throws Exception
+	{
+		ExtendedHistoryList history = new ExtendedHistoryList();
+
+		BulletinHistory firstClone = createFakeHistory();
+		String firstClientAccountId = MockMartusSecurity.createClient().getPublicKeyString();
+		history.add(firstClientAccountId, firstClone);
+
+		BulletinHistory secondClone = new BulletinHistory();
+		secondClone.add("random");
+		String secondClientAccountId = MockMartusSecurity.createOtherClient().getPublicKeyString();
+		history.add(secondClientAccountId, secondClone);
+
+		bhp.setExtendedHistory(history);
+		
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		bhp.writeXml(out, security);
+
+		String result = new String(out.toByteArray(), "UTF-8");
+		assertContains(MartusXml.getTagStart(MartusXml.ExtendedHistorySectionName), result);
+		assertContains(MartusXml.getTagStart(MartusXml.ExtendedHistoryEntryName), result);
+		assertContains(MartusXml.getTagStart(MartusXml.ExtendedHistoryClonedFromAccountName), result);
+		assertContains("Missing first account id?", firstClientAccountId, result);
+		assertContains("Missing second account id?", secondClientAccountId, result);
+		for(int i = 0; i < firstClone.size(); ++i)
+			assertContains("Missing first local id " + i + " ", firstClone.get(i), result);
+		for(int i = 0; i < secondClone.size(); ++i)
+			assertContains("Missing second local id " + i + " ", secondClone.get(i), result);
 	}
 
 	public void testWriteXmlWithHQKeySet() throws Exception
@@ -362,6 +398,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		assertEquals("has history?", 0, loaded.getHistory().size());
 		assertEquals("Incorrect version #?",1, loaded.getVersionNumber());
 		assertEquals("Since it has no history, should have same local id for original revision id.?", bhpUnknownTag.getLocalId(), loaded.getOriginalRevisionId());
+		assertEquals("Has extended history?", 0, loaded.getExtendedHistory().size());
 
 		String[] list = loaded.getPublicAttachmentIds();
 		assertEquals("public count", 2, list.length);
@@ -386,12 +423,53 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		loaded.loadFromXml(in, security);
 		
 		BulletinHistory loadedHistory = loaded.getHistory();
-		assertEquals("no history?", history.size(), loadedHistory.size());
-		for(int i=0; i < history.size(); ++i)
-			assertEquals("wrong history " + i + "?", history.get(i), loadedHistory.get(i));
+		verifyEqualHistories(history, loadedHistory);
 		
 		assertEquals("Incorrect version #?",history.size()+1, loaded.getVersionNumber());
 		assertEquals("Incorrect original revision id?", history.get(0), loaded.getOriginalRevisionId());
+	}
+
+	private void verifyEqualHistories(BulletinHistory history,
+			BulletinHistory loadedHistory)
+	{
+		assertEquals("no history?", history.size(), loadedHistory.size());
+		for(int i=0; i < history.size(); ++i)
+			assertEquals("wrong history " + i + "?", history.get(i), loadedHistory.get(i));
+	}
+
+	public void testLoadXmlWithExtendedHistory() throws Exception
+	{
+		ExtendedHistoryList history = new ExtendedHistoryList();
+
+		BulletinHistory firstClone = createFakeHistory();
+		String firstClientAccountId = MockMartusSecurity.createClient().getPublicKeyString();
+		history.add(firstClientAccountId, firstClone);
+
+		BulletinHistory secondClone = new BulletinHistory();
+		secondClone.add("random");
+		String secondClientAccountId = MockMartusSecurity.createOtherClient().getPublicKeyString();
+		history.add(secondClientAccountId, secondClone);
+
+		bhp.setExtendedHistory(history);
+		
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		bhp.writeXml(out, security);
+		String result = new String(out.toByteArray(), "UTF-8");
+
+		BulletinHeaderPacket loaded = new BulletinHeaderPacket(security);
+		byte[] bytes = result.getBytes("UTF-8");
+		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
+		loaded.loadFromXml(in, security);
+		
+		ExtendedHistoryList loadedHistory = loaded.getExtendedHistory();
+		assertEquals("wrong extended history size?", history.size(), loadedHistory.size());
+		for(int clone = 0; clone < history.size(); ++clone)
+		{
+			ExtendedHistoryEntry oldEntry = history.getHistory(clone);
+			ExtendedHistoryEntry newEntry = loadedHistory.getHistory(clone);
+			assertEquals("Wrong account id for " + clone + " ", oldEntry.getClonedFromAccountId(), newEntry.getClonedFromAccountId());
+			verifyEqualHistories(oldEntry.getClonedHistory(), newEntry.getClonedHistory());
+		}
 	}
 
 	public void testLoadXmlWithHQKey() throws Exception
