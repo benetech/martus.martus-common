@@ -45,6 +45,9 @@ public class BulletinXmlExportImportConstants
 	public final static String BULLETIN_STATUS = "BulletinStatus";
 	public final static String BULLETIN_STATUS_LOCALIZED = "LocalizedBulletinStatus";
 	public final static String HISTORY = "History";
+	public final static String EXTENDED_HISTORY = "ExtendedHistory";
+	public final static String EXTENDED_HISTORY_ENTRY = "ExtendedHistoryEntry";
+	public final static String EXTENDED_HISTORY_AUTHOR = "Author";
 	public final static String ANCESTOR = "Ancestor";
 	public final static String ATTACHMENT = "Attachment";
 	public final static String FILENAME = "Filename";
@@ -67,6 +70,6 @@ public class BulletinXmlExportImportConstants
 	public final static String DATE_SIMPLE = "Simple:";
 	public final static String DATE_RANGE = "Range:";
 
-	public final static String XML_EXPORT_VERSION_NUMBER = "1";
+	public final static String XML_EXPORT_VERSION_NUMBER = "2";
 
 }
