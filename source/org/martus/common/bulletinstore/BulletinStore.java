@@ -414,7 +414,7 @@ public class BulletinStore
 		}
 	}
 	
-	public void importBulletinZipFile(ZipFile zip) 
+	public UniversalId importBulletinZipFile(ZipFile zip) 
 		throws InvalidPacketException, 
 		SignatureVerificationException, 
 		DecryptionException, 
@@ -422,10 +422,10 @@ public class BulletinStore
 		RecordHiddenException, 
 		WrongAccountException
 	{
-		importBulletinZipFile(zip, null, System.currentTimeMillis());
+		return importBulletinZipFile(zip, null, System.currentTimeMillis());
 	}
 
-	public void importBulletinZipFile(ZipFile zip, String accountIdIfKnown, long mTime) 
+	public UniversalId importBulletinZipFile(ZipFile zip, String accountIdIfKnown, long mTime) 
 		throws InvalidPacketException, 
 		SignatureVerificationException, 
 		DecryptionException, 
@@ -435,6 +435,7 @@ public class BulletinStore
 	{
 		UniversalId uid = importBulletinPacketsFromZipFileToDatabase(accountIdIfKnown, zip, mTime);
 		revisionWasSaved(uid);
+		return uid;
 	}
 
 	private UniversalId importBulletinPacketsFromZipFileToDatabase(String authorAccountId, ZipFile zip, long mTime)
