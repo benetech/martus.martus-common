@@ -533,6 +533,9 @@ public class Bulletin implements BulletinConstants
 			BulletinHistory history = new BulletinHistory(other.getHistory());
 			history.add(other.getLocalId());
 			setHistory(history);
+
+			ExtendedHistoryList extendedHistory = other.getBulletinHeaderPacket().getExtendedHistory();
+			getBulletinHeaderPacket().setExtendedHistory(new ExtendedHistoryList(extendedHistory));
 		}
 		
 		if(!originalIsMine)

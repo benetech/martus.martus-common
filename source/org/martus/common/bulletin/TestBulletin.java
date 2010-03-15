@@ -411,9 +411,18 @@ public class TestBulletin extends TestCaseEnhanced
 		HQKey hq = new HQKey(security.getPublicKeyString());
 		b1.setAuthorizedToReadKeys(new HQKeys(hq));
 		b1.setSealed();
+		BulletinHistory localHistory = b1.getHistory();
+		localHistory.add("history1");
+		localHistory.add("history2");
+		b1.setHistory(localHistory);
+		
+		ExtendedHistoryList extendedHistory = new ExtendedHistoryList();
+		BulletinHistory otherHistory = new BulletinHistory();
+		otherHistory.add("older1");
+		extendedHistory.add(MockMartusSecurity.createOtherClient().getPublicKeyString(), otherHistory);
 		store.saveEncryptedBulletinForTesting(b1);
-		assertEquals(0, b1.getHistory().size());
-		assertEquals(1, b1.getVersion());
+		assertEquals(2, b1.getHistory().size());
+		assertEquals(3, b1.getVersion());
 		assertEquals(1, b1.getAuthorizedToReadKeys().size());
 		
 		Bulletin b2 = new Bulletin(security);
@@ -425,11 +434,18 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals("private info", b1.get(Bulletin.TAGPRIVATEINFO), b2.get(Bulletin.TAGPRIVATEINFO));
 		assertEquals("wrong status?", Bulletin.STATUSDRAFT, b2.getStatus());
 		assertEquals("wrong private?", b1.isAllPrivate(), b2.isAllPrivate());
-		assertEquals("modified history?", 0, b1.getHistory().size());
-		assertEquals(1, b1.getVersion());
-		assertEquals(1, b2.getAuthorizedToReadKeys().size());
+		assertEquals("didn't add to local history?", b1.getHistory().size()+1, b2.getHistory().size());
+		assertEquals("wrong newest local id?", b1.getLocalId(), b2.getHistory().get(b2.getHistory().size()-1));
+		assertEquals("wrong version?", b1.getVersion()+1, b2.getVersion());
+		assertEquals("changed HQ keys?", b1.getAuthorizedToReadKeys().size(), b2.getAuthorizedToReadKeys().size());
 		assertEquals("HQKeys doesn't match?", b1.getBulletinHeaderPacket().getLegacyHQPublicKey(), b2.getBulletinHeaderPacket().getLegacyHQPublicKey());
 
+		ExtendedHistoryList oldHistory = b1.getBulletinHeaderPacket().getExtendedHistory();
+		ExtendedHistoryList newHistory = b2.getBulletinHeaderPacket().getExtendedHistory();
+		assertEquals("Didn't retain extended history?", oldHistory.size(), newHistory.size());
+		assertEquals("Didn't copy whole old history?", oldHistory.getHistories(), newHistory.getHistories());
+		
+		
 		AttachmentProxy a1 = new AttachmentProxy(tempFile1);
 		b1.addPublicAttachment(a1);
 

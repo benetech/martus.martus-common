@@ -38,6 +38,12 @@ public class ExtendedHistoryList
 		histories = new Vector();
 	}
 	
+	public ExtendedHistoryList(ExtendedHistoryList extendedHistory)
+	{
+		this();
+		histories.addAll(extendedHistory.getHistories());
+	}
+
 	public Vector getHistories()
 	{
 		return histories;
