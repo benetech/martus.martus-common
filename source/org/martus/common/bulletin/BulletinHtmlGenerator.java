@@ -274,9 +274,7 @@ public class BulletinHtmlGenerator
 		else if(fieldType.isDropdown())
 		{
 			DropDownFieldSpec dropDownSpec = (DropDownFieldSpec)spec;
-			int at = dropDownSpec.findCode(value);
-			if(at >= 0)
-				value = dropDownSpec.getValue(at);
+			value = dropDownSpec.getDisplayString(value);
 		}
 		return value;
 	}
