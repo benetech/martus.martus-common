@@ -25,12 +25,11 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.bulletin;
 
-import java.util.Vector;
-
 import org.martus.common.EnglishCommonStrings;
 import org.martus.common.GridData;
 import org.martus.common.MiniLocalization;
 import org.martus.common.crypto.MockMartusSecurity;
+import org.martus.common.fieldspec.ChoiceItem;
 import org.martus.common.fieldspec.CustomDropDownFieldSpec;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldTypeNormal;
@@ -204,9 +203,10 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 	public void testGetHtmlStringWithDropDowns() throws Exception
 	{
 		CustomDropDownFieldSpec dropdownSpec = new CustomDropDownFieldSpec();
-		Vector choices = new Vector();
-		choices.add("green");
-		choices.add("blue");
+		ChoiceItem[] choices = new ChoiceItem[] {
+			new ChoiceItem("green", "Green"),
+			new ChoiceItem("blue", "Blue"),
+		};
 		
 		dropdownSpec.setChoices(choices);
 		dropdownSpec.setTag("myDropDownTag");
@@ -219,7 +219,7 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 		
 		
 		BulletinHtmlGenerator generator = new BulletinHtmlGenerator(loc);
-		String expectedHtml ="<tr><td align='right' valign='top'>myDropdownLabel</td><td align='left' valign='top'>blue</td></tr>\n";
+		String expectedHtml ="<tr><td align='right' valign='top'>myDropdownLabel</td><td align='left' valign='top'>Blue</td></tr>\n";
 		assertEquals("HTML Dropdowns not correct?", expectedHtml, generator.getSectionHtmlString(b.getFieldDataPacket()));
 	}
 

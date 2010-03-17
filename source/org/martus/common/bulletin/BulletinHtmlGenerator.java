@@ -37,6 +37,7 @@ import org.martus.common.MiniLocalization;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.ReadableDatabase;
 import org.martus.common.database.Database.RecordHiddenException;
+import org.martus.common.fieldspec.DropDownFieldSpec;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldType;
 import org.martus.common.fieldspec.GridFieldSpec;
@@ -232,7 +233,7 @@ public class BulletinHtmlGenerator
 			if(fieldType.isGrid())
 				value = getGridHTML(fdp, spec, tag);
 			else
-				value = getPrintableData(value, fieldType);
+				value = getPrintableData(value, spec);
 			
 			if(StandardFieldSpecs.isStandardFieldTag(tag))
 				label = getHTMLEscaped(localization.getFieldLabel(tag));
@@ -257,8 +258,9 @@ public class BulletinHtmlGenerator
 		return sectionHtml;
 	}
 
-	private String getPrintableData(String value, FieldType fieldType)
+	private String getPrintableData(String value, FieldSpec spec)
 	{
+		FieldType fieldType = spec.getType();
 		if(fieldType.isDate())
 			value = getHTMLEscaped(localization.convertStoredDateToDisplay(value));
 		else if(fieldType.isLanguageDropdown())
@@ -269,6 +271,13 @@ public class BulletinHtmlGenerator
 			value = getHTMLEscaped(localization.getViewableDateRange(value));
 		else if(fieldType.isBoolean())
 			value = getPrintableBooleanValue(value);
+		else if(fieldType.isDropdown())
+		{
+			DropDownFieldSpec dropDownSpec = (DropDownFieldSpec)spec;
+			int at = dropDownSpec.findCode(value);
+			if(at >= 0)
+				value = dropDownSpec.getValue(at);
+		}
 		return value;
 	}
 
@@ -328,8 +337,8 @@ public class BulletinHtmlGenerator
 				     column = (columnCount - 1) - i;
 
 					String rawdata = gridData.getValueAt(r, column);
-					FieldType columnType = grid.getColumnType(column);
-					String printableData = getPrintableData(rawdata, columnType);
+					FieldSpec columnSpec = grid.getFieldSpec(column);
+					String printableData = getPrintableData(rawdata, columnSpec);
 					value += getItemToAddForTable(printableData, TABLE_DATA, justification);
 				}
 				
