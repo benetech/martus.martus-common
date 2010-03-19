@@ -135,9 +135,9 @@ public class CustomFieldError
 		return new CustomFieldError(CODE_DROPDOWN_HAS_CHOICES_AND_DATA_SOURCE, tag, label, type);
 	}
 
-	public static Object errorInvalidIsoDate()
+	public static Object errorInvalidIsoDate(String tag, String label, String type)
 	{
-		return new CustomFieldError(CODE_INVALID_ISO_DATE, null, null, null);
+		return new CustomFieldError(CODE_INVALID_ISO_DATE, tag, label, type);
 	}
 
 	private CustomFieldError(String code, String tag, String label, String type)

@@ -163,7 +163,7 @@ public class AbstractDateOrientedFieldSpec extends FieldSpec
 	{
 		public XmlIsoDateLoaderWithSpec(AbstractDateOrientedFieldSpec specToUse, String tag)
 		{
-			super(tag);
+			super(tag, specToUse.getTag(), specToUse.getLabel(), specToUse.getType().getTypeName());
 			spec = specToUse;
 		}
 		

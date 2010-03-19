@@ -177,7 +177,7 @@ public class CustomFieldTemplate
 		catch (InvalidIsoDateException e)
 		{
 			e.printStackTrace();
-			errors.add(CustomFieldError.errorInvalidIsoDate());
+			errors.add(CustomFieldError.errorInvalidIsoDate(e.getTag(), e.getLabel(), e.getType()));
 		}
 		catch (CustomFieldsParseException e)
 		{

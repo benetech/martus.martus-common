@@ -27,4 +27,30 @@ package org.martus.common.fieldspec;
 
 public class InvalidIsoDateException extends RuntimeException
 {
+	public InvalidIsoDateException(String tagToUse, String labelToUse, String typeToUse)
+	{
+		tag = tagToUse;
+		label = labelToUse;
+		type = typeToUse;
+	}
+	
+	public String getTag()
+	{
+		return tag;
+	}
+
+
+	public String getLabel()
+	{
+		return label;
+	}
+
+	public String getType()
+	{
+		return type;
+	}
+	
+	private String tag;
+	private String label;
+	private String type;
 }

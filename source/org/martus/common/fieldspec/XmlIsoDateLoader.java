@@ -56,9 +56,12 @@ import org.martus.util.xml.SimpleXmlStringLoader;
 
 public class XmlIsoDateLoader extends SimpleXmlStringLoader
 {
-	public XmlIsoDateLoader(String tag)
+	public XmlIsoDateLoader(String thisTag, String fieldTagToUse, String fieldLabelToUse, String fieldTypeToUse)
 	{
-		super(tag);
+		super(thisTag);
+		fieldTag = fieldTagToUse;
+		fieldLabel = fieldLabelToUse;
+		fieldType = fieldTypeToUse;
 	}
 	
 	String getDateAsIsoString()
@@ -66,6 +69,8 @@ public class XmlIsoDateLoader extends SimpleXmlStringLoader
 		String text = getText();
 		if(text.length() == 0)
 			return text;
+		if(text.length() != 10)
+			throw new InvalidIsoDateException(getFieldTag(), getFieldLabel(), getFieldType());
 
 		try
 		{
@@ -74,7 +79,27 @@ public class XmlIsoDateLoader extends SimpleXmlStringLoader
 		}
 		catch(Exception e)
 		{
-			throw new InvalidIsoDateException();
+			throw new InvalidIsoDateException(getFieldTag(), getFieldLabel(), getFieldType());
 		}
 	}
+
+	public String getFieldTag()
+	{
+		return fieldTag;
+	}
+
+
+	public String getFieldLabel()
+	{
+		return fieldLabel;
+	}
+
+	public String getFieldType()
+	{
+		return fieldType;
+	}
+	
+	private String fieldTag;
+	private String fieldLabel;
+	private String fieldType;
 }
