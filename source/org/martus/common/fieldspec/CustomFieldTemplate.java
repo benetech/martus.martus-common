@@ -176,11 +176,13 @@ public class CustomFieldTemplate
 		}
 		catch (InvalidIsoDateException e)
 		{
+			System.out.println("isValidTemplateXml");
 			e.printStackTrace();
 			errors.add(CustomFieldError.errorInvalidIsoDate(e.getTag(), e.getLabel(), e.getType()));
 		}
 		catch (CustomFieldsParseException e)
 		{
+			System.out.println("isValidTemplateXml");
 			e.printStackTrace();
 			errors.add(CustomFieldError.errorParseXml());
 		}
