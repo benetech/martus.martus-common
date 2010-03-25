@@ -34,6 +34,7 @@ import org.martus.util.xml.SimpleXmlParser;
 import org.martus.util.xml.SimpleXmlStringLoader;
 import org.martus.util.xml.XmlUtilities;
 import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 
@@ -131,7 +132,7 @@ public class AuthorizedSessionKeys
 			super.startDocument(attrs);
 		}
 
-		public void endDocument() throws SAXParseException
+		public void endDocument() throws SAXException
 		{
 			authorizedSession.put(publicCode, getText());
 			super.endDocument();

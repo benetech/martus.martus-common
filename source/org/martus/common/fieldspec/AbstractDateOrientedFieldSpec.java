@@ -31,7 +31,7 @@ import java.util.SimpleTimeZone;
 
 import org.martus.common.MartusXml;
 import org.martus.util.MultiCalendar;
-import org.xml.sax.SAXParseException;
+import org.xml.sax.SAXException;
 
 public class AbstractDateOrientedFieldSpec extends FieldSpec
 {
@@ -177,7 +177,7 @@ public class AbstractDateOrientedFieldSpec extends FieldSpec
 			super(specToUse, MINIMUM_DATE);
 		}
 
-		public void endDocument() throws SAXParseException
+		public void endDocument() throws SAXException
 		{
 			spec.setMinimumDate(getDateAsIsoString());
 			super.endDocument();
@@ -191,7 +191,7 @@ public class AbstractDateOrientedFieldSpec extends FieldSpec
 			super(specToUse, MAXIMUM_DATE);
 		}
 
-		public void endDocument() throws SAXParseException
+		public void endDocument() throws SAXException
 		{
 			spec.setMaximumDate(getDateAsIsoString());
 			super.endDocument();

@@ -27,7 +27,7 @@ package org.martus.common.fieldspec;
 
 import org.martus.common.MartusXml;
 import org.martus.util.xml.SimpleXmlStringLoader;
-import org.xml.sax.SAXParseException;
+import org.xml.sax.SAXException;
 
 
 
@@ -73,7 +73,7 @@ public class MessageFieldSpec extends FieldSpec
 
 		MessageFieldSpec spec;
 
-		public void endDocument() throws SAXParseException
+		public void endDocument() throws SAXException
 		{
 			spec.putMessage(getText());
 			super.endDocument();

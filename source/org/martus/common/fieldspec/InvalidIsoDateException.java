@@ -25,7 +25,9 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.fieldspec;
 
-public class InvalidIsoDateException extends RuntimeException
+import org.martus.common.FieldCollection.CustomFieldsParseException;
+
+public class InvalidIsoDateException extends CustomFieldsParseException
 {
 	public InvalidIsoDateException(String tagToUse, String labelToUse, String typeToUse)
 	{

@@ -64,7 +64,7 @@ public class XmlIsoDateLoader extends SimpleXmlStringLoader
 		fieldType = fieldTypeToUse;
 	}
 	
-	String getDateAsIsoString()
+	String getDateAsIsoString() throws InvalidIsoDateException
 	{
 		String text = getText();
 		if(text.length() == 0)

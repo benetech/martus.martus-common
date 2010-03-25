@@ -38,6 +38,7 @@ import org.martus.common.fieldspec.FieldType;
 import org.martus.common.fieldspec.InvalidIsoDateException;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlParser;
+import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 
@@ -150,8 +151,12 @@ public class FieldCollection
 		return result.toString();
 	}
 	
-	public static class CustomFieldsParseException extends Exception 
+	public static class CustomFieldsParseException extends SAXException 
 	{
+		public CustomFieldsParseException()
+		{
+			super("Custom fields parse exception");
+		}
 	}
 	
 	public static FieldSpec[] parseXml(String xml) throws CustomFieldsParseException
