@@ -55,7 +55,6 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.interfaces.RSAPublicKey;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -992,31 +991,32 @@ public class MartusSecurity extends MartusCrypto
 			String basicErrorMessage = "Error reading Actual Key in File";
 			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage);
 		}
-		
-		InputStream referenceKeyFileIn = getClass().getResourceAsStream(keyFileInMartusJar);
-		if(referenceKeyFileIn == null)
-		{
-			String basicErrorMessage = "Couldn't open " + keyFileInMartusJar + " in Martus jar";
-			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage);
-		}
-		byte[] expected = null;
-		try
-		{
-			expected = readAll(size, referenceKeyFileIn);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-			String basicErrorMessage = "Error reading Reference Key in File";
-			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage);
-		}
-		
-		if(!Arrays.equals(expected, actual))
-		{
-			String basicErrorMessage = "Unequal contents for: " + keyFileNameWithoutExtension;
-			String hintsToSolve = "Might be wrong version of jar (" + jarURL + ")";
-			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage + hintsToSolve);
-		}
+
+		System.out.println("***WARNING*** Skipping verifying signatures of jars");
+//		InputStream referenceKeyFileIn = getClass().getResourceAsStream(keyFileInMartusJar);
+//		if(referenceKeyFileIn == null)
+//		{
+//			String basicErrorMessage = "Couldn't open " + keyFileInMartusJar + " in Martus jar";
+//			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage);
+//		}
+//		byte[] expected = null;
+//		try
+//		{
+//			expected = readAll(size, referenceKeyFileIn);
+//		}
+//		catch(Exception e)
+//		{
+//			e.printStackTrace();
+//			String basicErrorMessage = "Error reading Reference Key in File";
+//			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage);
+//		}
+//		
+//		if(!Arrays.equals(expected, actual))
+//		{
+//			String basicErrorMessage = "Unequal contents for: " + keyFileNameWithoutExtension;
+//			String hintsToSolve = "Might be wrong version of jar (" + jarURL + ")";
+//			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage + hintsToSolve);
+//		}
 	}
 	
 	private byte[] readAll(int size, InputStream streamToRead) throws IOException
