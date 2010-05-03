@@ -301,6 +301,14 @@ public abstract class MartusCrypto
 
 	public static class EncryptionException extends CryptoException 
 	{
+		public EncryptionException()
+		{
+		}
+
+		public EncryptionException(Exception causedBy)
+		{
+			super(causedBy);
+		}
 	}
 
 	public static class DecryptionException extends CryptoException 

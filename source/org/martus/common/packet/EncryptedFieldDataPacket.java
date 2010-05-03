@@ -34,6 +34,7 @@ import java.util.HashMap;
 import org.martus.common.AuthorizedSessionKeys;
 import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
+import org.martus.common.MartusLogger;
 import org.martus.common.MartusXml;
 import org.martus.common.XmlWriterFilter;
 import org.martus.common.crypto.MartusCrypto;
@@ -69,6 +70,7 @@ class EncryptedFieldDataPacket extends Packet
 		}
 		catch(MartusCrypto.EncryptionException e)
 		{
+			MartusLogger.logException(e);
 			throw new IOException("EncryptionException");
 		}
 	}

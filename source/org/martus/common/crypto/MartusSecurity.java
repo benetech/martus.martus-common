@@ -369,7 +369,7 @@ public class MartusSecurity extends MartusCrypto
 		{
 			//e.printStackTrace();
 			//System.out.println("MartusSecurity.createCipherOutputStream: " + e);
-			throw new EncryptionException();
+			throw new EncryptionException(e);
 		}
 	}
 
