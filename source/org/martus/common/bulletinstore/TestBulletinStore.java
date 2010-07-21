@@ -77,10 +77,10 @@ public class TestBulletinStore extends TestCaseEnhanced
     {
     	super.setUp();
     	db = new MockClientDatabase();
-    	security = MockMartusSecurity.createClient();
+    	security1 = MockMartusSecurity.createClient();
 		store = new BulletinStore();
 		store.doAfterSigninInitialization(createTempDirectory(), db);
-		store.setSignatureGenerator(security);
+		store.setSignatureGenerator(security1);
 
     	if(tempFile1 == null)
     	{
@@ -150,7 +150,7 @@ public class TestBulletinStore extends TestCaseEnhanced
     
 	public void testMissingInvalidAttachment() throws Exception
 	{
-		Bulletin b1 = new Bulletin(security);
+		Bulletin b1 = new Bulletin(security1);
 
 		File tempFile2 = createTempFileWithData(sampleBytes2);
 		AttachmentProxy a1 = new AttachmentProxy(tempFile1);
@@ -162,7 +162,7 @@ public class TestBulletinStore extends TestCaseEnhanced
 		b1.setSealed();
 		store.saveEncryptedBulletinForTesting(b1);
 
-		Bulletin loaded = BulletinLoader.loadFromDatabase(getDatabase(), DatabaseKey.createLegacyKey(b1.getUniversalId()), security);
+		Bulletin loaded = BulletinLoader.loadFromDatabase(getDatabase(), DatabaseKey.createLegacyKey(b1.getUniversalId()), security1);
 		assertEquals("not valid attachments?", true, store.areAttachmentsValid(loaded));
 		assertEquals("not valid bulletin?", true, store.isBulletinValid(loaded));
 
@@ -174,14 +174,14 @@ public class TestBulletinStore extends TestCaseEnhanced
 
 		getDatabase().discardRecord(key);
 		assertFalse("Attachment should not exist",getDatabase().doesRecordExist(key));
-		loaded = BulletinLoader.loadFromDatabase(getDatabase(), DatabaseKey.createLegacyKey(b1.getUniversalId()), security);
+		loaded = BulletinLoader.loadFromDatabase(getDatabase(), DatabaseKey.createLegacyKey(b1.getUniversalId()), security1);
 		assertEquals("not invalid for private attachment missing?", false, store.areAttachmentsValid(loaded));
 		assertEquals("not invalid for private attachment missing, Bulletin valid?", false, store.isBulletinValid(loaded));
 
 		b1.addPrivateAttachment(a2);
 		store.saveEncryptedBulletinForTesting(b1);
 		
-		loaded = BulletinLoader.loadFromDatabase(getDatabase(), DatabaseKey.createLegacyKey(b1.getUniversalId()), security);
+		loaded = BulletinLoader.loadFromDatabase(getDatabase(), DatabaseKey.createLegacyKey(b1.getUniversalId()), security1);
 		assertEquals("Should now be valid both attachments are present.", true, store.areAttachmentsValid(loaded));
 		assertEquals("Should now be valid both attachments are present, Bulletin Not Valid.", true, store.isBulletinValid(loaded));
 		
@@ -192,16 +192,16 @@ public class TestBulletinStore extends TestCaseEnhanced
 		AttachmentProxy[] publicProxy = loaded.getPublicAttachments();
 		id = publicProxy[0].getUniversalId();
 		key = DatabaseKey.createSealedKey(id);
-		getDatabase().writeRecordEncrypted(key,sampleBytes2.toString(), security);
+		getDatabase().writeRecordEncrypted(key,sampleBytes2.toString(), security1);
 		
-		loaded = BulletinLoader.loadFromDatabase(getDatabase(), DatabaseKey.createLegacyKey(b1.getUniversalId()), security);
+		loaded = BulletinLoader.loadFromDatabase(getDatabase(), DatabaseKey.createLegacyKey(b1.getUniversalId()), security1);
 		assertEquals("not invalid for modified public attachment?", false, store.areAttachmentsValid(loaded));
 		assertEquals("not invalid for modified public attachment, Bulletin Valid?", false, store.isBulletinValid(loaded));
 	}
 	
 	public void testPendingAttachment() throws Exception
 	{
-		Bulletin b1 = new Bulletin(security);
+		Bulletin b1 = new Bulletin(security1);
 
 		File tempFile2 = createTempFileWithData(sampleBytes2);
 		AttachmentProxy a1 = new AttachmentProxy(tempFile1);
@@ -315,10 +315,10 @@ public class TestBulletinStore extends TestCaseEnhanced
 	{
 		Bulletin other = createAndSaveBulletin();
 		
-		Bulletin one = new Bulletin(security);
+		Bulletin one = new Bulletin(security1);
 		one.setSealed();
 
-		Bulletin two = new Bulletin(security);
+		Bulletin two = new Bulletin(security1);
 		two.setSealed();
 		
 		verifyCloneIsLeaf("Test1", one, two, other.getUniversalId());
@@ -410,7 +410,7 @@ public class TestBulletinStore extends TestCaseEnhanced
 
 	private Bulletin createAndSaveBulletin() throws IOException, CryptoException
 	{
-		Bulletin b = new Bulletin(security);
+		Bulletin b = new Bulletin(security1);
 		store.saveBulletinForTesting(b);
 		return b;
 	}
@@ -421,7 +421,7 @@ public class TestBulletinStore extends TestCaseEnhanced
 			fail("Not tested for attachments!");
 		if(original.getPrivateFieldDataPacket().getAttachments().length > 0)
 			fail("Not tested for attachments!");
-		Bulletin clone = new Bulletin(security);
+		Bulletin clone = new Bulletin(security1);
 		BulletinHistory history = new BulletinHistory();
 		history.add(original.getLocalId());
 		clone.setHistory(history);
@@ -436,7 +436,7 @@ public class TestBulletinStore extends TestCaseEnhanced
 
 
 	private static BulletinStore store;
-	private static MockMartusSecurity security;
+	private static MockMartusSecurity security1;
 	private static MockClientDatabase db;
 
 	private static File tempFile1;
