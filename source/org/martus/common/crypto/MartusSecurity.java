@@ -927,7 +927,6 @@ public class MartusSecurity extends MartusCrypto
 		return ENCRYPTED_FILE_VERSION_IDENTIFIER;
 	}
 	
-	static final String BCPROV_JAR_FILE_NAME = "bcprov-jdk14-135.jar";
 	private static final String SESSION_ALGORITHM_NAME = "AES";
 	private static final String SESSION_ALGORITHM = "AES/CBC/PKCS5Padding";
 	private static final String PBE_ALGORITHM = "PBEWithSHAAndTwofish-CBC";

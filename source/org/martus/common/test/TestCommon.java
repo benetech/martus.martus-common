@@ -112,7 +112,6 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestMartusField.class));
 		suite.addTest(new TestSuite(TestMartusFlexidate.class));
 		suite.addTest(new TestSuite(TestMartusKeyPair.class));
-		suite.addTest(new TestSuite(TestMartusJarVerification.class));
 		suite.addTest(new TestSuite(TestMartusSearchableGridColumnField.class));
 		suite.addTest(new TestSuite(TestMartusSecurity.class));
 		suite.addTest(new TestSuite(TestMartusUtilities.class));
