@@ -78,6 +78,7 @@ public class TestBulletinStore extends TestCaseEnhanced
     	super.setUp();
     	db = new MockClientDatabase();
     	security1 = MockMartusSecurity.createClient();
+    	security2 = MockMartusSecurity.createOtherClient();
 		store = new BulletinStore();
 		store.doAfterSigninInitialization(createTempDirectory(), db);
 		store.setSignatureGenerator(security1);
@@ -97,7 +98,7 @@ public class TestBulletinStore extends TestCaseEnhanced
     
     public void testLeafKeyCache() throws Exception
 	{
-    	Bulletin one = createAndSaveBulletin();
+    	Bulletin one = createAndSaveBulletin(security1);
     	store.saveBulletinForTesting(one);
        	assertEquals("Leaf Keys should be 1?", 1, store.getBulletinCount());
        	assertTrue("Saved should be leaf", store.isLeaf(one.getUniversalId()));
@@ -216,7 +217,7 @@ public class TestBulletinStore extends TestCaseEnhanced
 
     public void testHasNewerRevision() throws Exception
 	{
-		Bulletin original = createAndSaveBulletin();
+		Bulletin original = createAndSaveBulletin(security1);
 		Bulletin clone = createAndSaveClone(original);
 		
 		assertFalse("has newer than the clone?", store.hasNewerRevision(clone.getUniversalId()));
@@ -225,10 +226,10 @@ public class TestBulletinStore extends TestCaseEnhanced
     
     public void testRemoveBulletinFromStore() throws Exception
 	{
-    	Bulletin unrelated = createAndSaveBulletin();
+    	Bulletin unrelated = createAndSaveBulletin(security1);
 		assertEquals("didn't create unrelated bulletin?", 1, store.getBulletinCount());
 
-		Bulletin original = createAndSaveBulletin();
+		Bulletin original = createAndSaveBulletin(security1);
 		Bulletin clone = createAndSaveClone(original);
 		store.removeBulletinFromStore(clone);
 		assertEquals("didn't delete clone and ancestor?", 1, store.getBulletinCount());
@@ -239,7 +240,7 @@ public class TestBulletinStore extends TestCaseEnhanced
     
     public void testRemoveBulletinWithIncompleteHistory() throws Exception
 	{
-		Bulletin original = createAndSaveBulletin();
+		Bulletin original = createAndSaveBulletin(security1);
 		Bulletin version1 = createAndSaveClone(original);
 		Bulletin version2 = createAndSaveClone(version1);
 		Bulletin version3 = createAndSaveClone(version2);
@@ -250,31 +251,12 @@ public class TestBulletinStore extends TestCaseEnhanced
 
 	public void testGetBulletinCount() throws Exception
 	{
-		Bulletin original = createAndSaveBulletin();
+		Bulletin original = createAndSaveBulletin(security1);
 		createAndSaveClone(original);
 		assertEquals(1, store.getBulletinCount());
 	}
 	
     
-
-	public void testGetAllBulletinUids() throws Exception
-	{
-		TRACE("testGetAllBulletinUids");
-		Set empty = store.getAllBulletinLeafUids();
-		assertEquals("not empty?", 0, empty.size());
-
-		Bulletin b = createAndSaveBulletin();
-		Set one = store.getAllBulletinLeafUids();
-		assertEquals("not one?", 1, one.size());
-		UniversalId bUid = b.getUniversalId();
-		assertTrue("wrong uid 1?", one.contains(bUid));
-
-		Bulletin b2 = createAndSaveBulletin();
-		Set two = store.getAllBulletinLeafUids();
-		assertEquals("not two?", 2, two.size());
-		assertTrue("missing 1?", two.contains(b.getUniversalId()));
-		assertTrue("missing 2?", two.contains(b2.getUniversalId()));
-	}
 
 	public void testVisitAllBulletinRevisions() throws Exception
 	{
@@ -297,14 +279,14 @@ public class TestBulletinStore extends TestCaseEnhanced
 
 		assertEquals("not empty?", 0, new BulletinUidCollector(store).uids.size());
 
-		Bulletin b = createAndSaveBulletin();
+		Bulletin b = createAndSaveBulletin(security1);
 		Vector one = new BulletinUidCollector(store).uids;
 		assertEquals("not one?", 1, one.size());
 		UniversalId gotUid = (UniversalId)one.get(0);
 		UniversalId bUid = b.getUniversalId();
 		assertEquals("wrong uid 1?", bUid, gotUid);
 
-		Bulletin b2 = createAndSaveBulletin();
+		Bulletin b2 = createAndSaveBulletin(security2);
 		Vector two = new BulletinUidCollector(store).uids;
 		assertEquals("not two?", 2, two.size());
 		assertTrue("missing 1?", two.contains(b.getUniversalId()));
@@ -313,7 +295,7 @@ public class TestBulletinStore extends TestCaseEnhanced
 
 	public void testScanForLeafUids() throws Exception
 	{
-		Bulletin other = createAndSaveBulletin();
+		Bulletin other = createAndSaveBulletin(security1);
 		
 		Bulletin one = new Bulletin(security1);
 		one.setSealed();
@@ -323,16 +305,16 @@ public class TestBulletinStore extends TestCaseEnhanced
 		
 		verifyCloneIsLeaf("Test1", one, two, other.getUniversalId());
 		store.deleteAllBulletins();
-		other = createAndSaveBulletin();
+		other = createAndSaveBulletin(security1);
 		verifyCloneIsLeaf("Test2", two, one, other.getUniversalId());
 	}
 	
 	public void testVisitAllBulletins() throws Exception
 	{
-		Bulletin original1 = createAndSaveBulletin();
+		Bulletin original1 = createAndSaveBulletin(security1);
 		Bulletin clone1 = createAndSaveClone(original1);
 		
-		Bulletin original2 = createAndSaveBulletin();
+		Bulletin original2 = createAndSaveBulletin(security2);
 		Bulletin clone2a = createAndSaveClone(original2);
 		Bulletin clone2b = createAndSaveClone(original2);
 		Bulletin clone2bx = createAndSaveClone(clone2b);
@@ -408,9 +390,9 @@ public class TestBulletinStore extends TestCaseEnhanced
 		assertFalse(msg+ ": original is leaf?", store.isLeaf(original.getUniversalId()));
 	}
 
-	private Bulletin createAndSaveBulletin() throws IOException, CryptoException
+	private Bulletin createAndSaveBulletin(MockMartusSecurity security) throws IOException, CryptoException
 	{
-		Bulletin b = new Bulletin(security1);
+		Bulletin b = new Bulletin(security);
 		store.saveBulletinForTesting(b);
 		return b;
 	}
@@ -421,7 +403,7 @@ public class TestBulletinStore extends TestCaseEnhanced
 			fail("Not tested for attachments!");
 		if(original.getPrivateFieldDataPacket().getAttachments().length > 0)
 			fail("Not tested for attachments!");
-		Bulletin clone = new Bulletin(security1);
+		Bulletin clone = new Bulletin(original.getSignatureGenerator());
 		BulletinHistory history = new BulletinHistory();
 		history.add(original.getLocalId());
 		clone.setHistory(history);
@@ -437,6 +419,7 @@ public class TestBulletinStore extends TestCaseEnhanced
 
 	private static BulletinStore store;
 	private static MockMartusSecurity security1;
+	private static MockMartusSecurity security2;
 	private static MockClientDatabase db;
 
 	private static File tempFile1;
