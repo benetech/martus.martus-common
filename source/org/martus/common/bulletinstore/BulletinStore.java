@@ -165,7 +165,15 @@ public class BulletinStore
 				
 		return leafFinder.getLeafUids();
 	}
-	
+
+	private Set getAllBulletinLeafUidsForAccount(String publicKeyString)
+	{
+		LeafFinder leafFinder = new LeafFinder();
+		visitAllBulletinRevisionsForAccount(leafFinder, publicKeyString);
+				
+		return leafFinder.getLeafUids();
+	}
+
 	public boolean isLeaf(UniversalId uid)
 	{
 		if(BulletinStoreCache.findKey(getDatabase(), uid) == null)
@@ -304,6 +312,18 @@ public class BulletinStore
 			visitor.visit(BulletinStoreCache.findKey(getDatabase(), uid));
 		}
 	}
+	
+	public void visitAllBulletinsForAccount(Database.PacketVisitor visitor, String publicKeyString)
+	{
+		Set uids = getAllBulletinLeafUidsForAccount(publicKeyString);
+		Iterator it = uids.iterator();
+		while(it.hasNext())
+		{
+			UniversalId uid = (UniversalId)it.next();
+			visitor.visit(BulletinStoreCache.findKey(getDatabase(), uid));
+		}
+	}
+
 	public void visitAllBulletinRevisions(Database.PacketVisitor visitorToUse)
 	{
 		class BulletinKeyFilter implements Database.PacketVisitor
@@ -327,6 +347,31 @@ public class BulletinStore
 		}
 	
 		new BulletinKeyFilter(getDatabase(), visitorToUse);
+	}
+
+	private void visitAllBulletinRevisionsForAccount(Database.PacketVisitor visitorToUse, String publicKeyString)
+	{
+		class BulletinKeyFilter implements Database.PacketVisitor
+		{
+			BulletinKeyFilter(ReadableDatabase db, Database.PacketVisitor visitorToUse2, String publicKeyString2)
+			{
+				visitor = visitorToUse2;
+				db.visitAllRecordsForAccount(this, publicKeyString2);
+			}
+	
+			public void visit(DatabaseKey key)
+			{
+				if(BulletinHeaderPacket.isValidLocalId(key.getLocalId()))
+				{
+					++count;
+					visitor.visit(key);
+				}
+			}
+			ReadableDatabase.PacketVisitor visitor;
+			int count;
+		}
+	
+		new BulletinKeyFilter(getDatabase(), visitorToUse, publicKeyString);
 	}
 
 	public synchronized void removeBulletinFromStore(Bulletin b) throws IOException

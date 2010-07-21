@@ -339,6 +339,35 @@ public class TestBulletinStore extends TestCaseEnhanced
 		
 	}
 
+	public void testVisitAllBulletinsForAccount() throws Exception
+	{
+		Bulletin original1 = createAndSaveBulletin(security1);
+		createAndSaveClone(original1);
+		
+		Bulletin original2 = createAndSaveBulletin(security2);
+		Bulletin clone2a = createAndSaveClone(original2);
+		Bulletin clone2b = createAndSaveClone(original2);
+		Bulletin clone2bx = createAndSaveClone(clone2b);
+		
+		class SimpleCollector implements PacketVisitor
+		{
+			public void visit(DatabaseKey key)
+			{
+				result.add(key.getLocalId());
+			}
+
+			Vector result = new Vector();
+		}
+		
+		SimpleCollector collector = new SimpleCollector();
+		store.visitAllBulletinsForAccount(collector, security2.getPublicKeyString());
+		
+		assertEquals(2, collector.result.size());
+		assertContains(clone2a.getLocalId(), collector.result);
+		assertContains(clone2bx.getLocalId(), collector.result);
+		
+	}
+
 	public void testImportBulletinPacketsFromZipFileToDatabase() throws Exception
 	{
 		MartusCrypto authorSecurity = MockMartusSecurity.createClient();
