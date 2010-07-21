@@ -55,6 +55,7 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -933,7 +934,7 @@ public class MartusSecurity extends MartusCrypto
 		return ENCRYPTED_FILE_VERSION_IDENTIFIER;
 	}
 	
-	public void verifyJars() throws MartusCrypto.InvalidJarException, IOException
+	public static void verifyJars() throws MartusCrypto.InvalidJarException, IOException
 	{
 		// for bcprov, look for BCKEY.SF (BCKEY.SIG)
 		// for bc-jce, look for SSMTSJAR.SF (SSMTSJAR.SIG)
@@ -956,13 +957,13 @@ public class MartusSecurity extends MartusCrypto
 		verifySignedKeyFile(bcprovJarName, bcprovJarURL, "BCKEY");
 	}
 
-	public void verifySignedKeyFile(String jarDescription, Class c, String keyFileNameWithoutExtension) throws MartusCrypto.InvalidJarException, IOException
+	public static void verifySignedKeyFile(String jarDescription, Class c, String keyFileNameWithoutExtension) throws MartusCrypto.InvalidJarException, IOException
 	{
 		URL jarURL = getJarURL(c);
 		verifySignedKeyFile(jarDescription, jarURL, keyFileNameWithoutExtension);
 	}
 
-	private void verifySignedKeyFile(String jarDescription, URL jarURL, String keyFileNameWithoutExtension) throws IOException, InvalidJarException
+	private static void verifySignedKeyFile(String jarDescription, URL jarURL, String keyFileNameWithoutExtension) throws IOException, InvalidJarException
 	{
 		String keyFileOutsideOfMartus = keyFileNameWithoutExtension + SIGNATURE_FILE_EXTENSION;
 		String keyFileInMartusJar = keyFileNameWithoutExtension + MARTUS_SIGNATURE_FILE_EXTENSION;
@@ -992,34 +993,34 @@ public class MartusSecurity extends MartusCrypto
 			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage);
 		}
 
-		System.out.println("***WARNING*** Skipping verifying signatures of jars");
-//		InputStream referenceKeyFileIn = getClass().getResourceAsStream(keyFileInMartusJar);
-//		if(referenceKeyFileIn == null)
-//		{
-//			String basicErrorMessage = "Couldn't open " + keyFileInMartusJar + " in Martus jar";
-//			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage);
-//		}
-//		byte[] expected = null;
-//		try
-//		{
-//			expected = readAll(size, referenceKeyFileIn);
-//		}
-//		catch(Exception e)
-//		{
-//			e.printStackTrace();
-//			String basicErrorMessage = "Error reading Reference Key in File";
-//			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage);
-//		}
-//		
-//		if(!Arrays.equals(expected, actual))
-//		{
-//			String basicErrorMessage = "Unequal contents for: " + keyFileNameWithoutExtension;
-//			String hintsToSolve = "Might be wrong version of jar (" + jarURL + ")";
-//			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage + hintsToSolve);
-//		}
+//		System.out.println("***WARNING*** Skipping verifying signatures of jars");
+		InputStream referenceKeyFileIn = MartusSecurity.class.getResourceAsStream(keyFileInMartusJar);
+		if(referenceKeyFileIn == null)
+		{
+			String basicErrorMessage = "Couldn't open " + keyFileInMartusJar + " in Martus jar";
+			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage);
+		}
+		byte[] expected = null;
+		try
+		{
+			expected = readAll(size, referenceKeyFileIn);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			String basicErrorMessage = "Error reading Reference Key in File";
+			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage);
+		}
+		
+		if(!Arrays.equals(expected, actual))
+		{
+			String basicErrorMessage = "Unequal contents for: " + keyFileNameWithoutExtension;
+			String hintsToSolve = "Might be wrong version of jar (" + jarURL + ")";
+			throw new MartusCrypto.InvalidJarException(errorMessageStart + basicErrorMessage + hintsToSolve);
+		}
 	}
 	
-	private byte[] readAll(int size, InputStream streamToRead) throws IOException
+	private static byte[] readAll(int size, InputStream streamToRead) throws IOException
 	{
 		byte[] gotBytes = new byte[size];
 		int got = 0;

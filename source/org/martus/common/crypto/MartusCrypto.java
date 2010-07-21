@@ -114,7 +114,6 @@ public abstract class MartusCrypto
 	public abstract byte[] getSessionKeyCache() throws IOException, NoKeyPairException, EncryptionException, MartusSignatureException;
 	public abstract void setSessionKeyCache(byte[] encryptedCacheBundle) throws IOException, NoKeyPairException, DecryptionException, MartusSignatureException, AuthorizationFailedException;
 	public abstract void flushSessionKeyCache();
-	public abstract void verifyJars() throws MartusCrypto.InvalidJarException, IOException;
 	
 	// Secret Share of Private Key
 	public abstract Vector buildKeyShareBundles();
