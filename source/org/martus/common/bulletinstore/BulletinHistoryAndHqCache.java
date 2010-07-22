@@ -56,6 +56,11 @@ public class BulletinHistoryAndHqCache extends BulletinStoreCache implements Dat
 		clear();
 	}
 	
+	public void fillCache()
+	{
+		fill();
+	}
+
 	public synchronized void revisionWasSaved(UniversalId uid)
 	{
 		fill();

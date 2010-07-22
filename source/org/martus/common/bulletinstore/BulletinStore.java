@@ -609,7 +609,7 @@ public class BulletinStore
 		revisionWasSaved(b);
 	}
 	
-	protected BulletinHistoryAndHqCache getLeafNodeCache()
+	protected BulletinHistoryAndHqCache getHistoryAndHqCache()
 	{
 		return bulletinHistoryAndHqCache;
 	}

@@ -73,7 +73,7 @@ public class TestLeafNodeCache extends TestCaseEnhanced
 		bhp3.getHistory().add(bhp1.getLocalId());
 		bhp3.getHistory().add(bhp2.getLocalId());
 
-		BulletinHistoryAndHqCache cache = store.getLeafNodeCache();
+		BulletinHistoryAndHqCache cache = store.getHistoryAndHqCache();
 		assertFalse("cache already valid?", cache.isCacheValid());
 		
 		// write original, then next revision, then final revision
@@ -133,7 +133,7 @@ public class TestLeafNodeCache extends TestCaseEnhanced
 		File tempDirectory = createTempDirectory();
 		BulletinStore store = new BulletinStore();
 		store.doAfterSigninInitialization(tempDirectory, new MockServerDatabase());
-		BulletinHistoryAndHqCache cache = store.getLeafNodeCache();
+		BulletinHistoryAndHqCache cache = store.getHistoryAndHqCache();
 
 		MockMartusSecurity client = MockMartusSecurity.createClient();
 		
