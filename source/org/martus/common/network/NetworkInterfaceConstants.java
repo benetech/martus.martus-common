@@ -53,6 +53,7 @@ public interface NetworkInterfaceConstants
 	public static final String UNKNOWN = "unknown";
 
 	public static final int CLIENT_MAX_CHUNK_SIZE = 100 * 1024;
+	public static final int MAXIMUM_CLIENT_MAX_CHUNK_SIZE = 1024*1024;
 	public static final String BASE_64_ENCODED = "Base64Encoded";
 	
 }
