@@ -28,10 +28,12 @@ package org.martus.common.test;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 
-import org.martus.util.*;
 import org.martus.util.FileOutputStreamViaTemp;
+import org.martus.util.TestCaseEnhanced;
 
 public class TestFileOutputStreamViaTemp extends TestCaseEnhanced
 {
@@ -62,23 +64,53 @@ public class TestFileOutputStreamViaTemp extends TestCaseEnhanced
 		destFile.delete();
 	}
 
-	public void testWhenFileExistsReadOnly() throws Exception
+	public void testWhenFileExistsEmptyReadOnly() throws Exception
 	{
 		File destFile = createTempFile();
-		destFile.setReadOnly();
+		UndeletableFile undeletableFile = new UndeletableFile(destFile);
+		
 		File tempDirectory = createTempDirectory();
-		FileOutputStreamViaTemp out = new FileOutputStreamViaTemp(destFile, tempDirectory);
+		FileOutputStreamViaTemp out = new FileOutputStreamViaTemp(undeletableFile, tempDirectory);
 		byte[] sampleData = {1,2,3,4,5};
 		out.write(sampleData);
+		try
+		{
+			out.close();
+			fail("Should have thrown attempting to replace existing readonly file");
+		}
+		catch(IOException ignoreExpected)
+		{
+		}
+		finally
+		{
+			destFile.delete();
+		}
+	}
+
+	public void testWhenFileExistsReadOnlyIdenticalContents() throws Exception
+	{
+		byte[] sampleData = {1,2,3,4,5};
+
+		File destFile = createTempFile();
+		FileOutputStream initialOut = new FileOutputStream(destFile);
+		initialOut.write(sampleData);
+		initialOut.close();
+		
+		UndeletableFile undeletableFile = new UndeletableFile(destFile);
+		
+		File tempDirectory = createTempDirectory();
+		FileOutputStreamViaTemp out = new FileOutputStreamViaTemp(undeletableFile, tempDirectory);
+		out.write(sampleData);
 		out.close();
-		assertTrue("Didn't create dest?", destFile.exists());
-		assertEquals("Wrong length?", sampleData.length, destFile.length());
+
+		assertTrue("Didn't reuse existing file?", destFile.exists());
+		assertEquals("Changed length?", sampleData.length, destFile.length());
 		
 		byte[] gotData = new byte[(int)destFile.length()];
 		FileInputStream in = new FileInputStream(destFile);
 		in.read(gotData);
-		assertTrue("Wrong data?", Arrays.equals(sampleData, gotData));
-		assertEquals("more data?", -1, in.read());
+		assertTrue("Chagned data?", Arrays.equals(sampleData, gotData));
+		assertEquals("Too much data?", -1, in.read());
 		in.close();
 		
 		destFile.delete();
@@ -106,4 +138,19 @@ public class TestFileOutputStreamViaTemp extends TestCaseEnhanced
 		
 		destFile.delete();
 	}
+
+	static class UndeletableFile extends File
+	{
+		public UndeletableFile(File aliasOf)
+		{
+			super(aliasOf.getAbsolutePath());
+		}
+		
+		@Override
+		public boolean delete()
+		{
+			return false;
+		}
+	}
+
 }
