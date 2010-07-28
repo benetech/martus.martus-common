@@ -178,7 +178,7 @@ abstract public class FileDatabase extends Database
 		else if(doesRecordExist(delKey))
 			return (new DeleteRequestRecord(this,key.getUniversalId(), security).getmTime());
 		else
-			throw new Exception("ServerFileDatabase.getmTime: No Bur or Del Packet");
+			throw new Exception("ServerFileDatabase.getmTime: No Bur or Del Packet: " + MartusCrypto.formatAccountIdForLog(key.getAccountId()) + " " + key.getLocalId());
 	}
 
 	
