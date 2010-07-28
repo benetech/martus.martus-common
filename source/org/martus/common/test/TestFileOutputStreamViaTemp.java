@@ -146,7 +146,6 @@ public class TestFileOutputStreamViaTemp extends TestCaseEnhanced
 			super(aliasOf.getAbsolutePath());
 		}
 		
-		@Override
 		public boolean delete()
 		{
 			return false;
