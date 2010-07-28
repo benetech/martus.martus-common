@@ -26,6 +26,8 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.test;
 
 import java.util.Vector;
+
+import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.database.BulletinUploadRecord;
 import org.martus.common.database.DatabaseKey;
@@ -73,7 +75,9 @@ public class TestServerFileDatabase extends TestCaseEnhanced
 		}
 		catch (Exception expected)
 		{
-			assertEquals("ServerFileDatabase.getmTime: No Bur or Del Packet", expected.getMessage());
+			assertStartsWith("ServerFileDatabase.getmTime: No Bur or Del Packet: ", expected.getMessage());
+			assertContains(MartusCrypto.formatAccountIdForLog(uid.getAccountId()), expected.getMessage());
+			assertContains(burKey.getLocalId(), expected.getMessage());
 		}
 	}
 	
