@@ -35,6 +35,7 @@ import org.martus.common.AuthorizedSessionKeys;
 import org.martus.common.FieldCollection;
 import org.martus.common.GridData;
 import org.martus.common.MartusXml;
+import org.martus.common.XmlCustomFieldsLoader;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.crypto.SessionKey;
 import org.martus.common.field.MartusField;
@@ -66,7 +67,7 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 		else if(tag.equals(MartusXml.AttachmentElementName))
 			return new XmlAttachmentLoader(tag);
 		else if(tag.equals(MartusXml.CustomFieldSpecsElementName))
-			return new FieldCollection.XmlCustomFieldsLoader();
+			return new XmlCustomFieldsLoader();
 		else if(getTagsContainingStrings().contains(tag))
 			return new SimpleXmlStringLoader(tag);
 		else if(tag.equals(AuthorizedSessionKeys.AUTHORIZED_SESSION_KEYS_TAG))
@@ -92,7 +93,7 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 			}
 			else if(tag.equals(MartusXml.CustomFieldSpecsElementName))
 			{
-				FieldCollection.XmlCustomFieldsLoader loader = (FieldCollection.XmlCustomFieldsLoader)ended;
+				XmlCustomFieldsLoader loader = (XmlCustomFieldsLoader)ended;
 				fdp.setCustomFields(new FieldCollection(loader.getFieldSpecs()));
 				foundModernFieldSpecs = true;
 			}

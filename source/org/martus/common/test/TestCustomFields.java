@@ -30,6 +30,7 @@ import junit.framework.TestCase;
 
 import org.martus.common.FieldCollection;
 import org.martus.common.LegacyCustomFields;
+import org.martus.common.XmlCustomFieldsLoader;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldTypeBoolean;
 import org.martus.common.fieldspec.FieldTypeDate;
@@ -73,7 +74,7 @@ public class TestCustomFields extends TestCase
 	{
 		String xml = "<CustomFields>" + TestGridFieldSpec.SAMPLE_GRID_FIELD_XML_LEGACY +
 				"</CustomFields>";
-		FieldCollection.XmlCustomFieldsLoader loader = new FieldCollection.XmlCustomFieldsLoader();
+		XmlCustomFieldsLoader loader = new XmlCustomFieldsLoader();
 		loader.parse(xml);
 		GridFieldSpec spec = (GridFieldSpec)loader.getFieldSpecs()[0];
 		assertEquals(new FieldTypeGrid(), spec.getType());

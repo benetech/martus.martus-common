@@ -36,7 +36,6 @@ import org.martus.common.field.MartusGridField;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldType;
 import org.martus.common.fieldspec.InvalidIsoDateException;
-import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlParser;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -184,48 +183,6 @@ public class FieldCollection
 			e.printStackTrace();
 			throw new CustomFieldsParseException();
 		}
-	}
-	
-	public static class XmlCustomFieldsLoader extends SimpleXmlDefaultLoader
-	{
-		public XmlCustomFieldsLoader()
-		{
-			this(MartusXml.CustomFieldSpecsElementName);
-		}
-
-		public XmlCustomFieldsLoader(String tag)
-		{
-			super(tag);
-			fields = new Vector();
-		}
-		
-		public FieldSpec[] getFieldSpecs()
-		{
-			return (FieldSpec[])fields.toArray(new FieldSpec[0]);
-		}
-
-		public SimpleXmlDefaultLoader startElement(String tag)
-			throws SAXParseException
-		{
-			if(tag.equals(FieldSpec.FIELD_SPEC_XML_TAG))
-				return new FieldSpec.XmlFieldSpecLoader(tag);
-			return super.startElement(tag);
-		}
-
-		public void addText(char[] ch, int start, int length)
-			throws SAXParseException
-		{
-			return;
-		}
-
-		public void endElement(String tag, SimpleXmlDefaultLoader ended)
-			throws SAXParseException
-		{
-			FieldSpec spec = ((FieldSpec.XmlFieldSpecLoader)ended).getFieldSpec();
-			fields.add(spec);
-		}
-
-		private Vector fields;
 	}
 	
 	public static HashMap existingFieldSpecTemplates = new HashMap();
