@@ -30,6 +30,8 @@ import junit.framework.TestCase;
 
 import org.martus.common.FieldCollection;
 import org.martus.common.LegacyCustomFields;
+import org.martus.common.ListOfChoices;
+import org.martus.common.PoolOfListsOfChoices;
 import org.martus.common.XmlCustomFieldsLoader;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldTypeBoolean;
@@ -83,6 +85,24 @@ public class TestCustomFields extends TestCase
 		assertEquals(TestGridFieldSpec.SAMPLE_GRID_HEADER_LABEL_2, spec.getColumnLabel(1));
 		
 	}
+	
+	public void testNestedDropdowns() throws Exception
+	{
+		String xml = "<CustomFields>" + SAMPLE_DROPDOWN_CHOICES + "</CustomFields>";
+		XmlCustomFieldsLoader loader = new XmlCustomFieldsLoader();
+		loader.parse(xml);
+		PoolOfListsOfChoices choiceDefinitions = loader.getChoiceDefinitions();
+		assertEquals("Didn't see two choice definitions?", 2, choiceDefinitions.size());
+		ListOfChoices outer = choiceDefinitions.getChoices(OUTER_LEVEL_NAME);
+		assertEquals("Wrong number of outer choices?", 3, outer.size());
+		assertEquals("Wrong outer code?", "2", outer.get(1).getCode());
+		assertEquals("Wrong outer label?", "Netrokona", outer.get(1).toString());
+
+		ListOfChoices middle = choiceDefinitions.getChoices(MIDDLE_LEVEL_NAME);
+		assertEquals("Wrong number of middle choices?", 4, middle.size());
+		assertEquals("Wrong middle code?", "2.01", middle.get(2).getCode());
+		assertEquals("Wrong middle label?", "Netrokona Sadar", middle.get(2).toString());
+	}
 
 	private FieldSpec[] getSampleSpecs()
 	{
@@ -101,4 +121,19 @@ public class TestCustomFields extends TestCase
 		};
 	}
 
+	private static final String OUTER_LEVEL_NAME = "DistrictChoices";
+	private static final String MIDDLE_LEVEL_NAME = "UpazillaChoices";
+	
+	private static final String SAMPLE_DROPDOWN_CHOICES = 
+		"<DefineChoices name='" + OUTER_LEVEL_NAME + "'>" + 
+			"<Choice code='1' label='Madaripur'/>" + 
+			"<Choice code='2' label='Netrokona'/>" + 
+			"<Choice code='3' label='Bogra'/>" + 
+		"</DefineChoices>" + 
+		"<DefineChoices name='" + MIDDLE_LEVEL_NAME + "'>" + 
+			"<Choice code='1.01' label='Madaripur Sadar'/>" + 
+			"<Choice code='1.02' label='Rajoir'/>" + 
+			"<Choice code='2.01' label='Netrokona Sadar'/>" + 
+			"<Choice code='3.01' label='Bogra Sadar'/>" + 
+		"</DefineChoices>";
 }
