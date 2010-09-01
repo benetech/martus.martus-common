@@ -86,7 +86,7 @@ public class TestCustomFields extends TestCase
 		
 	}
 	
-	public void testNestedDropdowns() throws Exception
+	public void testDefineChoicesXml() throws Exception
 	{
 		String xml = "<CustomFields>" + SAMPLE_DROPDOWN_CHOICES + "</CustomFields>";
 		XmlCustomFieldsLoader loader = new XmlCustomFieldsLoader();
