@@ -50,6 +50,8 @@ abstract public class FieldType
 			return new FieldTypeGrid();
 		if(FieldTypeDropdown.getTypeNameString().equals(name))
 			return new FieldTypeDropdown();
+		if(FieldTypeNestedDropdown.getTypeNameString().equals(name))
+			return new FieldTypeNestedDropdown();
 		if(FieldTypeMessage.getTypeNameString().equals(name))
 			return new FieldTypeMessage();
 		if(FieldTypeSectionStart.getTypeNameString().equals(name))
@@ -116,6 +118,11 @@ abstract public class FieldType
 		return false;
 	}
 	
+	public boolean isNestedDropdown()
+	{
+		return false;
+	}
+	
 	public boolean isMessage()
 	{
 		return false;
@@ -162,5 +169,5 @@ abstract public class FieldType
 	}
 	
 	public static String UNKNOWN_TYPE_STRING = "UNKNOWN";
-	
+
 }

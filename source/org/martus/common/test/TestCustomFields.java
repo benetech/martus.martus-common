@@ -40,8 +40,11 @@ import org.martus.common.fieldspec.FieldTypeDateRange;
 import org.martus.common.fieldspec.FieldTypeGrid;
 import org.martus.common.fieldspec.FieldTypeLanguage;
 import org.martus.common.fieldspec.FieldTypeMultiline;
+import org.martus.common.fieldspec.FieldTypeNestedDropdown;
 import org.martus.common.fieldspec.FieldTypeNormal;
 import org.martus.common.fieldspec.GridFieldSpec;
+import org.martus.common.fieldspec.NestedDropDownFieldSpec;
+import org.martus.common.fieldspec.NestedDropdownLevel;
 
 
 public class TestCustomFields extends TestCase
@@ -103,6 +106,27 @@ public class TestCustomFields extends TestCase
 		assertEquals("Wrong middle code?", "2.01", middle.get(2).getCode());
 		assertEquals("Wrong middle label?", "Netrokona Sadar", middle.get(2).toString());
 	}
+	
+	public void testDefineNestedDropdown() throws Exception
+	{
+		String xml = "<CustomFields>" + SAMPLE_DROPDOWN_CHOICES + SAMPLE_NESTED_DROPDOWN + "</CustomFields>";
+		XmlCustomFieldsLoader loader = new XmlCustomFieldsLoader();
+		loader.parse(xml);
+		FieldSpec[] specs = loader.getFieldSpecs();
+		assertEquals("Not one spec?", 1, specs.length);
+		NestedDropDownFieldSpec spec = (NestedDropDownFieldSpec) specs[0];
+		assertEquals("Wrong type?", new FieldTypeNestedDropdown(), spec.getType());
+		assertEquals("Wrong tag?", "location", spec.getTag());
+		assertEquals("Wrong label?", "Location: ", spec.getLabel());
+		assertEquals("Wrong number of levels?", 3, spec.getLevelCount());
+		
+		NestedDropdownLevel outer = spec.getLevel(0);
+		assertEquals("District", outer.getLabel());
+		assertEquals("DistrictChoices", outer.getChoicesName());
+		NestedDropdownLevel middle = spec.getLevel(1);
+		assertEquals("Upazilla", middle.getLabel());
+		assertEquals("UpazillaChoices", middle.getChoicesName());
+	}
 
 	private FieldSpec[] getSampleSpecs()
 	{
@@ -136,4 +160,15 @@ public class TestCustomFields extends TestCase
 			"<Choice code='2.01' label='Netrokona Sadar'/>" + 
 			"<Choice code='3.01' label='Bogra Sadar'/>" + 
 		"</DefineChoices>";
+	
+	private static final String SAMPLE_NESTED_DROPDOWN =
+		"<Field type='NESTEDDROPDOWN'>" + 
+		"<Tag>location</Tag>" + 
+		"<Label>Location: </Label>" + 
+		"<Levels>" + 
+			"<Level label='District' choices='DistrictChoices' />" + 
+			"<Level label='Upazilla' choices='UpazillaChoices' />" + 
+			"<Level label='Union' choices='UnionChoices' />" + 
+		"</Levels>" + 
+		"</Field>";
 }

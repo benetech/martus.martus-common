@@ -365,6 +365,13 @@ public class FieldSpec
 					return new CustomDropDownFieldSpec.DropDownDataSourceLoader(dropDownSpec);
 			}
 			
+			if(spec.getType().isNestedDropdown())
+			{
+				NestedDropDownFieldSpec nestedDropDownSpec = (NestedDropDownFieldSpec)spec;
+				if(tag.equals(NestedDropDownFieldSpec.LEVELS_TAG))
+					return new NestedDropDownFieldSpec.LevelsXmlLoader(nestedDropDownSpec);
+			}
+			
 			if(spec.getType().isMessage())
 			{
 				if(tag.equals(MessageFieldSpec.MESSAGE_SPEC_MESSAGE_TAG))
