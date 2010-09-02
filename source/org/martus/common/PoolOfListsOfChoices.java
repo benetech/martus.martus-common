@@ -36,7 +36,7 @@ public class PoolOfListsOfChoices
 		setsOfChoices = new HashMap();
 	}
 	
-	public void add(String name, ListOfChoices choices)
+	public void add(String name, ReusableChoices choices)
 	{
 		setsOfChoices.put(name, choices);
 	}
@@ -46,9 +46,9 @@ public class PoolOfListsOfChoices
 		return setsOfChoices.size();
 	}
 
-	public ListOfChoices getChoices(String name)
+	public ReusableChoices getChoices(String name)
 	{
-		return (ListOfChoices)setsOfChoices.get(name);
+		return (ReusableChoices)setsOfChoices.get(name);
 	}
 
 	private Map setsOfChoices;

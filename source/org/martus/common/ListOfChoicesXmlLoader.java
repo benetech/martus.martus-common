@@ -35,7 +35,7 @@ public class ListOfChoicesXmlLoader extends SimpleXmlDefaultLoader
 	public ListOfChoicesXmlLoader(String tag)
 	{
 		super(tag);
-		setOfChoices = new ListOfChoices();
+		setOfChoices = new ReusableChoices();
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class ListOfChoicesXmlLoader extends SimpleXmlDefaultLoader
 		return name;
 	}
 
-	public ListOfChoices getSetOfChoices()
+	public ReusableChoices getSetOfChoices()
 	{
 		return setOfChoices;
 	}
@@ -84,6 +84,6 @@ public class ListOfChoicesXmlLoader extends SimpleXmlDefaultLoader
 	private static String TAG_CHOICE = "Choice";
 
 	private String name;
-	private ListOfChoices setOfChoices;
+	private ReusableChoices setOfChoices;
 
 }
