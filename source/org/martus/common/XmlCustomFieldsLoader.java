@@ -87,7 +87,7 @@ public class XmlCustomFieldsLoader extends SimpleXmlDefaultLoader
 		if(tag.equals(FieldSpec.FIELD_SPEC_XML_TAG))
 			return new FieldSpec.XmlFieldSpecLoader(tag);
 		if(tag.equals(FieldSpec.DROPDOWN_CHOICES_XML_TAG))
-			return new ListOfChoicesXmlLoader(tag);
+			return new ReusableChoicesXmlLoader(tag);
 		return super.startElement(tag);
 	}
 
@@ -107,7 +107,7 @@ public class XmlCustomFieldsLoader extends SimpleXmlDefaultLoader
 		}
 		else if(tag.equals(FieldSpec.DROPDOWN_CHOICES_XML_TAG))
 		{
-			ListOfChoicesXmlLoader loader = (ListOfChoicesXmlLoader)ended;
+			ReusableChoicesXmlLoader loader = (ReusableChoicesXmlLoader)ended;
 			dropdownChoices.add(loader.getName(), loader.getSetOfChoices());
 		}
 		else

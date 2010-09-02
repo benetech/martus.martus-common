@@ -29,9 +29,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class PoolOfListsOfChoices
+public class PoolOfReusableChoicesLists
 {
-	public PoolOfListsOfChoices()
+	public PoolOfReusableChoicesLists()
 	{
 		setsOfChoices = new HashMap();
 	}

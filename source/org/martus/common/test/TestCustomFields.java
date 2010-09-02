@@ -30,7 +30,7 @@ import junit.framework.TestCase;
 
 import org.martus.common.FieldCollection;
 import org.martus.common.LegacyCustomFields;
-import org.martus.common.ListOfChoices;
+import org.martus.common.ReusableChoices;
 import org.martus.common.PoolOfListsOfChoices;
 import org.martus.common.XmlCustomFieldsLoader;
 import org.martus.common.fieldspec.FieldSpec;
@@ -96,12 +96,12 @@ public class TestCustomFields extends TestCase
 		loader.parse(xml);
 		PoolOfListsOfChoices choiceDefinitions = loader.getChoiceDefinitions();
 		assertEquals("Didn't see two choice definitions?", 2, choiceDefinitions.size());
-		ListOfChoices outer = choiceDefinitions.getChoices(OUTER_LEVEL_NAME);
+		ReusableChoices outer = choiceDefinitions.getChoices(OUTER_LEVEL_NAME);
 		assertEquals("Wrong number of outer choices?", 3, outer.size());
 		assertEquals("Wrong outer code?", "2", outer.get(1).getCode());
 		assertEquals("Wrong outer label?", "Netrokona", outer.get(1).toString());
 
-		ListOfChoices middle = choiceDefinitions.getChoices(MIDDLE_LEVEL_NAME);
+		ReusableChoices middle = choiceDefinitions.getChoices(MIDDLE_LEVEL_NAME);
 		assertEquals("Wrong number of middle choices?", 4, middle.size());
 		assertEquals("Wrong middle code?", "2.01", middle.get(2).getCode());
 		assertEquals("Wrong middle label?", "Netrokona Sadar", middle.get(2).toString());

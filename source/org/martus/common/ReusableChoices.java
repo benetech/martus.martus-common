@@ -23,48 +23,34 @@ Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.
 
 */
-package org.martus.common.fieldspec;
+package org.martus.common;
 
-// FIXME: Update code wherever FieldType.isDropdown is called:
-// Searching:
-//   FancySearchTableModel
-//   FieldChoicesByLabel
-//   FieldChooserSpecBuilder
-// Data entry
-//   GridChangeHandler
-//   FieldDataFormatter
-//   UiFieldCreator
-//   UiGrid
-//   (in grids)
-//     EditableGridFieldTable
-//     GridTable
-//     ReadonlyGridFieldTable
-// BulletinHtmlGenerator
-// CustomFieldSpecValidator
-// GridFieldSpec
-// (XML Export)
-// (XML Import)
-public class FieldTypeNestedDropdown extends FieldType
+import java.util.Vector;
+
+import org.martus.common.fieldspec.ChoiceItem;
+
+public class ReusableChoices
 {
-	@Override
-	public String getTypeName()
+	ReusableChoices()
 	{
-		return getTypeNameString();
+		choices = new Vector();
+	}
+	
+	public int size()
+	{
+		return choices.size();
 	}
 
-	public static String getTypeNameString()
+	public ChoiceItem get(int i)
 	{
-		return "NESTEDDROPDOWN";
+		return (ChoiceItem) choices.get(i);
 	}
-	
-	public FieldSpec createEmptyFieldSpec()
+
+	public void add(ChoiceItem choice)
 	{
-		return new NestedDropDownFieldSpec();
+		choices.add(choice);
 	}
-	
-	@Override
-	public boolean isNestedDropdown()
-	{
-		return true;
-	}
+
+	private Vector choices;
+
 }

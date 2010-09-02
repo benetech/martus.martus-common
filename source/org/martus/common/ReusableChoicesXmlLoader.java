@@ -30,9 +30,9 @@ import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
-public class ListOfChoicesXmlLoader extends SimpleXmlDefaultLoader
+public class ReusableChoicesXmlLoader extends SimpleXmlDefaultLoader
 {
-	public ListOfChoicesXmlLoader(String tag)
+	public ReusableChoicesXmlLoader(String tag)
 	{
 		super(tag);
 		setOfChoices = new ReusableChoices();
