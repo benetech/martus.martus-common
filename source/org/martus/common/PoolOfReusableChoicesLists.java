@@ -33,24 +33,24 @@ public class PoolOfReusableChoicesLists
 {
 	public PoolOfReusableChoicesLists()
 	{
-		setsOfChoices = new HashMap();
+		namedReusableChoices = new HashMap();
 	}
 	
 	public void add(String name, ReusableChoices choices)
 	{
-		setsOfChoices.put(name, choices);
+		namedReusableChoices.put(name, choices);
 	}
 
 	public Object size()
 	{
-		return setsOfChoices.size();
+		return namedReusableChoices.size();
 	}
 
 	public ReusableChoices getChoices(String name)
 	{
-		return (ReusableChoices)setsOfChoices.get(name);
+		return (ReusableChoices)namedReusableChoices.get(name);
 	}
 
-	private Map setsOfChoices;
+	private Map namedReusableChoices;
 
 }

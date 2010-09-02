@@ -31,7 +31,7 @@ import junit.framework.TestCase;
 import org.martus.common.FieldCollection;
 import org.martus.common.LegacyCustomFields;
 import org.martus.common.ReusableChoices;
-import org.martus.common.PoolOfListsOfChoices;
+import org.martus.common.PoolOfReusableChoicesLists;
 import org.martus.common.XmlCustomFieldsLoader;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldTypeBoolean;
@@ -94,7 +94,7 @@ public class TestCustomFields extends TestCase
 		String xml = "<CustomFields>" + SAMPLE_DROPDOWN_CHOICES + "</CustomFields>";
 		XmlCustomFieldsLoader loader = new XmlCustomFieldsLoader();
 		loader.parse(xml);
-		PoolOfListsOfChoices choiceDefinitions = loader.getChoiceDefinitions();
+		PoolOfReusableChoicesLists choiceDefinitions = loader.getChoiceDefinitions();
 		assertEquals("Didn't see two choice definitions?", 2, choiceDefinitions.size());
 		ReusableChoices outer = choiceDefinitions.getChoices(OUTER_LEVEL_NAME);
 		assertEquals("Wrong number of outer choices?", 3, outer.size());

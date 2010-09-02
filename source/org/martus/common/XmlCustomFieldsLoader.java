@@ -67,11 +67,11 @@ public class XmlCustomFieldsLoader extends SimpleXmlDefaultLoader
 	public XmlCustomFieldsLoader(String tag)
 	{
 		super(tag);
-		dropdownChoices = new PoolOfListsOfChoices();
+		dropdownChoices = new PoolOfReusableChoicesLists();
 		fields = new Vector();
 	}
 	
-	public PoolOfListsOfChoices getChoiceDefinitions()
+	public PoolOfReusableChoicesLists getChoiceDefinitions()
 	{
 		return dropdownChoices;
 	}
@@ -116,7 +116,7 @@ public class XmlCustomFieldsLoader extends SimpleXmlDefaultLoader
 		}
 	}
 
-	private PoolOfListsOfChoices dropdownChoices;
+	private PoolOfReusableChoicesLists dropdownChoices;
 	private Vector fields;
 
 }
