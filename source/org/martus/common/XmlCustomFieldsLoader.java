@@ -116,7 +116,7 @@ public class XmlCustomFieldsLoader extends SimpleXmlDefaultLoader
 		}
 	}
 
-	public static final String DROPDOWN_CHOICES_XML_TAG = "DefineChoices";
+	public static final String DROPDOWN_CHOICES_XML_TAG = "ReusableChoices";
 
 	private PoolOfReusableChoicesLists dropdownChoices;
 	private Vector fields;

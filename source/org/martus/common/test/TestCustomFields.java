@@ -149,17 +149,17 @@ public class TestCustomFields extends TestCase
 	private static final String MIDDLE_LEVEL_NAME = "UpazillaChoices";
 	
 	private static final String SAMPLE_DROPDOWN_CHOICES = 
-		"<DefineChoices name='" + OUTER_LEVEL_NAME + "'>" + 
+		"<ReusableChoices name='" + OUTER_LEVEL_NAME + "'>" + 
 			"<Choice code='1' label='Madaripur'/>" + 
 			"<Choice code='2' label='Netrokona'/>" + 
 			"<Choice code='3' label='Bogra'/>" + 
-		"</DefineChoices>" + 
-		"<DefineChoices name='" + MIDDLE_LEVEL_NAME + "'>" + 
+		"</ReusableChoices>" + 
+		"<ReusableChoices name='" + MIDDLE_LEVEL_NAME + "'>" + 
 			"<Choice code='1.01' label='Madaripur Sadar'/>" + 
 			"<Choice code='1.02' label='Rajoir'/>" + 
 			"<Choice code='2.01' label='Netrokona Sadar'/>" + 
 			"<Choice code='3.01' label='Bogra Sadar'/>" + 
-		"</DefineChoices>";
+		"</ReusableChoices>";
 	
 	private static final String SAMPLE_NESTED_DROPDOWN =
 		"<Field type='NESTEDDROPDOWN'>" + 
