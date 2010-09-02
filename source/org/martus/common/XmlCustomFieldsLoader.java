@@ -86,7 +86,7 @@ public class XmlCustomFieldsLoader extends SimpleXmlDefaultLoader
 	{
 		if(tag.equals(FieldSpec.FIELD_SPEC_XML_TAG))
 			return new FieldSpec.XmlFieldSpecLoader(tag);
-		if(tag.equals(FieldSpec.DROPDOWN_CHOICES_XML_TAG))
+		if(tag.equals(XmlCustomFieldsLoader.DROPDOWN_CHOICES_XML_TAG))
 			return new ReusableChoicesXmlLoader(tag);
 		return super.startElement(tag);
 	}
@@ -105,7 +105,7 @@ public class XmlCustomFieldsLoader extends SimpleXmlDefaultLoader
 			FieldSpec spec = ((FieldSpec.XmlFieldSpecLoader)ended).getFieldSpec();
 			fields.add(spec);
 		}
-		else if(tag.equals(FieldSpec.DROPDOWN_CHOICES_XML_TAG))
+		else if(tag.equals(XmlCustomFieldsLoader.DROPDOWN_CHOICES_XML_TAG))
 		{
 			ReusableChoicesXmlLoader loader = (ReusableChoicesXmlLoader)ended;
 			dropdownChoices.add(loader.getName(), loader.getSetOfChoices());
@@ -115,6 +115,8 @@ public class XmlCustomFieldsLoader extends SimpleXmlDefaultLoader
 			throw new RuntimeException("Unexpected end tag: " + tag);
 		}
 	}
+
+	public static final String DROPDOWN_CHOICES_XML_TAG = "DefineChoices";
 
 	private PoolOfReusableChoicesLists dropdownChoices;
 	private Vector fields;

@@ -423,7 +423,6 @@ public class FieldSpec
 	
 	private String id;
 
-	public static final String DROPDOWN_CHOICES_XML_TAG = "DefineChoices";
 	public static final String FIELD_SPEC_XML_TAG = "Field";
 	public static final String FIELD_SPEC_TAG_XML_TAG = "Tag";
 	public static final String FIELD_SPEC_LABEL_XML_TAG = "Label";
