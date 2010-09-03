@@ -26,17 +26,17 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.test;
 
-import junit.framework.TestCase;
-
 import org.martus.common.FieldCollection;
 import org.martus.common.LegacyCustomFields;
-import org.martus.common.ReusableChoices;
 import org.martus.common.PoolOfReusableChoicesLists;
+import org.martus.common.ReusableChoices;
 import org.martus.common.XmlCustomFieldsLoader;
+import org.martus.common.fieldspec.CustomDropDownFieldSpec;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldTypeBoolean;
 import org.martus.common.fieldspec.FieldTypeDate;
 import org.martus.common.fieldspec.FieldTypeDateRange;
+import org.martus.common.fieldspec.FieldTypeDropdown;
 import org.martus.common.fieldspec.FieldTypeGrid;
 import org.martus.common.fieldspec.FieldTypeLanguage;
 import org.martus.common.fieldspec.FieldTypeMultiline;
@@ -45,9 +45,10 @@ import org.martus.common.fieldspec.FieldTypeNormal;
 import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.common.fieldspec.NestedDropDownFieldSpec;
 import org.martus.common.fieldspec.NestedDropdownLevel;
+import org.martus.util.TestCaseEnhanced;
 
 
-public class TestCustomFields extends TestCase
+public class TestCustomFields extends TestCaseEnhanced
 {
 	public TestCustomFields(String name)
 	{
@@ -123,9 +124,30 @@ public class TestCustomFields extends TestCase
 		assertEquals("Wrong number of levels?", 3, spec.getLevelCount());
 		
 		NestedDropdownLevel outer = spec.getLevel(0);
-		assertEquals("DistrictChoices", outer.getChoicesName());
+		assertEquals("DistrictChoices", outer.getReusableChoicesCode());
 		NestedDropdownLevel middle = spec.getLevel(1);
-		assertEquals("UpazillaChoices", middle.getChoicesName());
+		assertEquals("UpazillaChoices", middle.getReusableChoicesCode());
+
+		String detailsXml = spec.getDetailsXml();
+		assertContains("Outer reusable choices code not saved?", OUTER_LEVEL_NAME, detailsXml);
+		assertContains("Middle reusable choices code not saved?", MIDDLE_LEVEL_NAME, detailsXml);
+	}
+
+	public void testDefineDropdownWithReusableChoices() throws Exception
+	{
+		String xml = "<CustomFields>" + SAMPLE_DROPDOWN_CHOICES + SAMPLE_DROPDOWN_WITH_REUSABLE + "</CustomFields>";
+		XmlCustomFieldsLoader loader = new XmlCustomFieldsLoader();
+		loader.parse(xml);
+		FieldSpec[] specs = loader.getFieldSpecs();
+		assertEquals("Not one spec?", 1, specs.length);
+		CustomDropDownFieldSpec spec = (CustomDropDownFieldSpec) specs[0];
+		assertEquals("Wrong type?", new FieldTypeDropdown(), spec.getType());
+		assertEquals("Wrong tag?", "location", spec.getTag());
+		assertEquals("Wrong label?", "Location: ", spec.getLabel());
+		assertEquals("Wrong choices code?", MIDDLE_LEVEL_NAME, spec.getReusableChoicesCode());
+		
+		String detailsXml = spec.getDetailsXml();
+		assertContains("Reusable choices code not saved?", MIDDLE_LEVEL_NAME, detailsXml);
 	}
 
 	private FieldSpec[] getSampleSpecs()
@@ -168,5 +190,11 @@ public class TestCustomFields extends TestCase
 		"<UseReusableChoices code='DistrictChoices' />" + 
 		"<UseReusableChoices code='UpazillaChoices'  />" + 
 		"<UseReusableChoices code='UnionChoices' />" + 
+		"</Field>";
+	private static final String SAMPLE_DROPDOWN_WITH_REUSABLE =
+		"<Field type='DROPDOWN'>" + 
+		"<Tag>location</Tag>" + 
+		"<Label>Location: </Label>" + 
+		"<UseReusableChoices code='UpazillaChoices' />" + 
 		"</Field>";
 }

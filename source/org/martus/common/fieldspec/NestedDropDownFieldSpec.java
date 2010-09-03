@@ -27,6 +27,8 @@ package org.martus.common.fieldspec;
 
 import java.util.Vector;
 
+import org.martus.common.MartusXml;
+
 public class NestedDropDownFieldSpec extends FieldSpec
 {
 	public NestedDropDownFieldSpec()
@@ -48,6 +50,21 @@ public class NestedDropDownFieldSpec extends FieldSpec
 	public void addLevel(NestedDropdownLevel newLevel)
 	{
 		levels.add(newLevel);
+	}
+	
+	@Override
+	public String getDetailsXml()
+	{
+		StringBuffer details = new StringBuffer();
+		for(int i = 0; i < levels.size(); ++i)
+		{
+			NestedDropdownLevel level = (NestedDropdownLevel) levels.get(i);
+			details.append("<" + USE_REUSABLE_CHOICES_TAG + " ");
+			details.append("code='" + level.getReusableChoicesCode() + "' />");
+			details.append(MartusXml.getTagEnd(USE_REUSABLE_CHOICES_TAG));
+		}
+		
+		return details.toString();
 	}
 
 	private Vector levels;

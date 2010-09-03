@@ -29,9 +29,6 @@ package org.martus.common.fieldspec;
 import org.martus.common.MiniLocalization;
 import org.martus.util.xml.XmlUtilities;
 
-
-
-
 public class DropDownFieldSpec extends FieldSpec
 {
 	public DropDownFieldSpec()
@@ -124,6 +121,11 @@ public class DropDownFieldSpec extends FieldSpec
 	public String getDefaultValue()
 	{
 		return getChoice(0).getCode();
+	}
+	
+	public String getReusableChoicesCode()
+	{
+		return null;
 	}
 	
 	public Object getDataSource()

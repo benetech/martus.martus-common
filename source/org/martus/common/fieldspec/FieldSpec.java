@@ -125,7 +125,7 @@ public class FieldSpec
 		return rootTagLine.toString();
 	}
 	
-	protected String getDetailsXml()
+	public String getDetailsXml()
 	{
 		return "";
 	}
@@ -364,6 +364,8 @@ public class FieldSpec
 					return new CustomDropDownFieldSpec.DropDownSpecLoader(dropDownSpec);
 				if(tag.equals(CustomDropDownFieldSpec.DROPDOWN_SPEC_DATA_SOURCE))
 					return new CustomDropDownFieldSpec.DropDownDataSourceLoader(dropDownSpec);
+				if(tag.equals(USE_REUSABLE_CHOICES_TAG))
+					return new AttributesOnlyXmlLoader(tag);
 			}
 			
 			if(spec.getType().isNestedDropdown())
@@ -402,12 +404,19 @@ public class FieldSpec
 				spec.setKeepWithPrevious();
 			else if(thisTag.equals(FieldSpec.FIELD_SPEC_REQUIRED_FIELD_TAG))
 				spec.setRequired();
-			else if(thisTag.equals(USE_REUSABLE_CHOICES_TAG))
+			else if(spec.getType().isNestedDropdown() && thisTag.equals(USE_REUSABLE_CHOICES_TAG))
 			{
 				AttributesOnlyXmlLoader loader = (AttributesOnlyXmlLoader)ended;
 				NestedDropDownFieldSpec nestedDropDownSpec = (NestedDropDownFieldSpec)spec;
 				String reusableChoicesCode = loader.getAttribute(REUSABLE_CHOICES_CODE_ATTRIBUTE);
 				nestedDropDownSpec.addLevel(new NestedDropdownLevel(reusableChoicesCode));
+			}
+			else if(spec.getType().isDropdown() && thisTag.equals(USE_REUSABLE_CHOICES_TAG))
+			{
+				AttributesOnlyXmlLoader loader = (AttributesOnlyXmlLoader)ended;
+				CustomDropDownFieldSpec dropDownSpec = (CustomDropDownFieldSpec)spec;
+				String reusableChoicesCode = loader.getAttribute(REUSABLE_CHOICES_CODE_ATTRIBUTE);
+				dropDownSpec.setReusableChoicesCode(reusableChoicesCode);
 			}
 			else
 				super.endElement(thisTag, ended);

@@ -32,7 +32,7 @@ public class NestedDropdownLevel
 		reusableChoicesCode = reusableChoicesCodeToUse;
 	}
 
-	public String getChoicesName()
+	public String getReusableChoicesCode()
 	{
 		return reusableChoicesCode;
 	}

@@ -36,6 +36,16 @@ import org.xml.sax.SAXParseException;
 
 public class CustomDropDownFieldSpec extends DropDownFieldSpec
 {
+	public void setReusableChoicesCode(String reusableChoicesCodeToUse)
+	{
+		reusableChoicesCode = reusableChoicesCodeToUse;
+	}
+	
+	public String getReusableChoicesCode()
+	{
+		return reusableChoicesCode;
+	}
+
 	public void setChoices(Vector stringChoicesToUse)
 	{
 		boolean hasEmptyCode = false;
@@ -62,10 +72,9 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 	
 	public String getDetailsXml()
 	{
-		if(getDataSourceGridTag() == null)
-			return super.getDetailsXml();
-
-		String xml = MartusXml.getTagStartWithNewline(DROPDOWN_SPEC_DATA_SOURCE) + 
+		if(getDataSourceGridTag() != null)
+		{
+			String xml = MartusXml.getTagStartWithNewline(DROPDOWN_SPEC_DATA_SOURCE) + 
 				MartusXml.getTagStart(DROPDOWN_SPEC_DATA_SOURCE_GRID_TAG_TAG) + 
 				getDataSourceGridTag() + 
 				MartusXml.getTagEnd(DROPDOWN_SPEC_DATA_SOURCE_GRID_TAG_TAG) +
@@ -76,7 +85,18 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 				
 				MartusXml.getTagEnd(DROPDOWN_SPEC_DATA_SOURCE);
 				
-		return xml;
+			return xml;
+		}
+
+		if(getReusableChoicesCode() != null)
+		{
+			StringBuffer details = new StringBuffer();
+			details.append("<" + USE_REUSABLE_CHOICES_TAG + " ");
+			details.append("code='" + getReusableChoicesCode() + "' />");
+			details.append(MartusXml.getTagEnd(USE_REUSABLE_CHOICES_TAG));
+			return details.toString();
+		}
+		return super.getDetailsXml();
 	}
 
 	public void setDataSource(String gridTagToUse, String gridColumnToUse)
@@ -143,6 +163,7 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 	public static final String DROPDOWN_SPEC_DATA_SOURCE_GRID_TAG_TAG = "GridFieldTag";
 	public static final String DROPDOWN_SPEC_DATA_SOURCE_GRID_COLUMN_TAG = "GridColumnLabel";
 
-	String gridTag;
-	String gridColumn;
+	private String reusableChoicesCode;
+	private String gridTag;
+	private String gridColumn;
 }
