@@ -27,10 +27,6 @@ package org.martus.common.fieldspec;
 
 import java.util.Vector;
 
-import org.martus.util.xml.SimpleXmlDefaultLoader;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXParseException;
-
 public class NestedDropDownFieldSpec extends FieldSpec
 {
 	public NestedDropDownFieldSpec()
@@ -54,76 +50,5 @@ public class NestedDropDownFieldSpec extends FieldSpec
 		levels.add(newLevel);
 	}
 
-	public static class LevelsXmlLoader extends SimpleXmlDefaultLoader
-	{
-		public LevelsXmlLoader(NestedDropDownFieldSpec nestedDropDownSpecToFill)
-		{
-			super(LEVELS_TAG);
-			nestedDropDownSpec = nestedDropDownSpecToFill;
-		}
-		
-		@Override
-		public SimpleXmlDefaultLoader startElement(String tag)
-				throws SAXParseException
-		{
-			if(tag.equals(LEVEL_TAG))
-				return new LevelLoader(tag);
-			return super.startElement(tag);
-		}
-
-		@Override
-		public void endElement(String tag, SimpleXmlDefaultLoader ended)
-				throws SAXParseException
-		{
-			if(tag.equals(LEVEL_TAG))
-			{
-				LevelLoader loader = (LevelLoader)ended;
-				String label = loader.getLabel();
-				String choicesName = loader.getChoicesName();
-				NestedDropdownLevel newLevel = new NestedDropdownLevel(label, choicesName);
-				nestedDropDownSpec.addLevel(newLevel);
-			}
-			else
-				super.endElement(tag, ended);
-		}
-		
-		private NestedDropDownFieldSpec nestedDropDownSpec;
-	}
-	
-	private static class LevelLoader extends SimpleXmlDefaultLoader
-	{
-		public LevelLoader(String tag)
-		{
-			super(tag);
-		}
-
-		@Override
-		public void startDocument(Attributes attrs) throws SAXParseException
-		{
-			super.startDocument(attrs);
-			label = attrs.getValue(LEVEL_LABEL_ATTRIBUTE_NAME);
-			choicesName = attrs.getValue(LEVEL_CHOICES_ATTRIBUTE_NAME);
-		}
-		
-		public String getLabel()
-		{
-			return label;
-		}
-		
-		public String getChoicesName()
-		{
-			return choicesName;
-		}
-		
-		private String label;
-		private String choicesName;
-	}
-
-	public static final String LEVELS_TAG = "Levels";
-	public static final String LEVEL_TAG = "Level";
-	public static final String LEVEL_LABEL_ATTRIBUTE_NAME = "label";
-	public static final String LEVEL_CHOICES_ATTRIBUTE_NAME = "choices";
-	
 	private Vector levels;
-
 }

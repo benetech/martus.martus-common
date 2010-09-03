@@ -36,9 +36,9 @@ public class PoolOfReusableChoicesLists
 		namedReusableChoices = new HashMap();
 	}
 	
-	public void add(String name, ReusableChoices choices)
+	public void add(ReusableChoices choices)
 	{
-		namedReusableChoices.put(name, choices);
+		namedReusableChoices.put(choices.getCode(), choices);
 	}
 
 	public Object size()

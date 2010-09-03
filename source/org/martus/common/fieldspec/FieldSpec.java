@@ -30,6 +30,7 @@ package org.martus.common.fieldspec;
 import org.martus.common.MiniLocalization;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusCrypto.CreateDigestException;
+import org.martus.util.xml.AttributesOnlyXmlLoader;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlStringLoader;
 import org.martus.util.xml.XmlUtilities;
@@ -367,9 +368,8 @@ public class FieldSpec
 			
 			if(spec.getType().isNestedDropdown())
 			{
-				NestedDropDownFieldSpec nestedDropDownSpec = (NestedDropDownFieldSpec)spec;
-				if(tag.equals(NestedDropDownFieldSpec.LEVELS_TAG))
-					return new NestedDropDownFieldSpec.LevelsXmlLoader(nestedDropDownSpec);
+				if(tag.equals(USE_REUSABLE_CHOICES_TAG))
+					return new AttributesOnlyXmlLoader(tag);
 			}
 			
 			if(spec.getType().isMessage())
@@ -402,6 +402,13 @@ public class FieldSpec
 				spec.setKeepWithPrevious();
 			else if(thisTag.equals(FieldSpec.FIELD_SPEC_REQUIRED_FIELD_TAG))
 				spec.setRequired();
+			else if(thisTag.equals(USE_REUSABLE_CHOICES_TAG))
+			{
+				AttributesOnlyXmlLoader loader = (AttributesOnlyXmlLoader)ended;
+				NestedDropDownFieldSpec nestedDropDownSpec = (NestedDropDownFieldSpec)spec;
+				String reusableChoicesCode = loader.getAttribute(REUSABLE_CHOICES_CODE_ATTRIBUTE);
+				nestedDropDownSpec.addLevel(new NestedDropdownLevel(reusableChoicesCode));
+			}
 			else
 				super.endElement(thisTag, ended);
 		}
@@ -428,6 +435,8 @@ public class FieldSpec
 	public static final String FIELD_SPEC_LABEL_XML_TAG = "Label";
 	public static final String FIELD_SPEC_KEEP_WITH_PREVIOUS_TAG = "KeepWithPrevious";
 	public static final String FIELD_SPEC_REQUIRED_FIELD_TAG = "RequiredField";
+	public static final String USE_REUSABLE_CHOICES_TAG = "UseReusableChoices";
+	public static final String REUSABLE_CHOICES_CODE_ATTRIBUTE = "code";
 
 	public static final String FIELD_SPEC_TYPE_ATTR = "type";
 

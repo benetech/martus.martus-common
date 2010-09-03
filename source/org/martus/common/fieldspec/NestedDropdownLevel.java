@@ -27,22 +27,15 @@ package org.martus.common.fieldspec;
 
 public class NestedDropdownLevel
 {
-	public NestedDropdownLevel(String labelToUse, String choicesNameToUse)
+	public NestedDropdownLevel(String reusableChoicesCodeToUse)
 	{
-		label = labelToUse;
-		choicesName = choicesNameToUse;
+		reusableChoicesCode = reusableChoicesCodeToUse;
 	}
 
-	public String getLabel()
-	{
-		return label;
-	}
-	
 	public String getChoicesName()
 	{
-		return choicesName;
+		return reusableChoicesCode;
 	}
 	
-	private String label;
-	private String choicesName;
+	private String reusableChoicesCode;
 }

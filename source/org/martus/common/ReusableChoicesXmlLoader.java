@@ -35,13 +35,14 @@ public class ReusableChoicesXmlLoader extends SimpleXmlDefaultLoader
 	public ReusableChoicesXmlLoader(String tag)
 	{
 		super(tag);
-		setOfChoices = new ReusableChoices();
 	}
 
 	@Override
 	public void startDocument(Attributes attrs) throws SAXParseException
 	{
-		name = attrs.getValue(ATTRIBUTE_SET_OF_CHOICES_NAME);
+		String code = attrs.getValue(ATTRIBUTE_REUSABLE_CHOICES_CODE);
+		String label = attrs.getValue(ATTRIBUTE_REUSABLE_CHOICES_LABEL);
+		setOfChoices = new ReusableChoices(code, label);
 		super.startDocument(attrs);
 	}
 	
@@ -62,17 +63,12 @@ public class ReusableChoicesXmlLoader extends SimpleXmlDefaultLoader
 		if(tag.equals(TAG_CHOICE))
 		{
 			ChoiceItemXmlLoader loader = (ChoiceItemXmlLoader)ended;
-			String code = loader.getCode();
-			String label = loader.getLabel();
-			ChoiceItem choice = new ChoiceItem(code, label);
+			String itemCode = loader.getCode();
+			String itemLabel = loader.getLabel();
+			ChoiceItem choice = new ChoiceItem(itemCode, itemLabel);
 			setOfChoices.add(choice);
 		}
 		super.endElement(tag, ended);
-	}
-
-	public String getName()
-	{
-		return name;
 	}
 
 	public ReusableChoices getSetOfChoices()
@@ -80,10 +76,10 @@ public class ReusableChoicesXmlLoader extends SimpleXmlDefaultLoader
 		return setOfChoices;
 	}
 	
-	private static String ATTRIBUTE_SET_OF_CHOICES_NAME = "name";
+	private static String ATTRIBUTE_REUSABLE_CHOICES_CODE = "code";
+	private static String ATTRIBUTE_REUSABLE_CHOICES_LABEL = "label";
 	private static String TAG_CHOICE = "Choice";
 
-	private String name;
 	private ReusableChoices setOfChoices;
 
 }

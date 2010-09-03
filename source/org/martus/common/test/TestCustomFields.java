@@ -89,7 +89,7 @@ public class TestCustomFields extends TestCase
 		
 	}
 	
-	public void testDefineChoicesXml() throws Exception
+	public void testDefineReusableChoicesXml() throws Exception
 	{
 		String xml = "<CustomFields>" + SAMPLE_DROPDOWN_CHOICES + "</CustomFields>";
 		XmlCustomFieldsLoader loader = new XmlCustomFieldsLoader();
@@ -97,14 +97,16 @@ public class TestCustomFields extends TestCase
 		PoolOfReusableChoicesLists choiceDefinitions = loader.getChoiceDefinitions();
 		assertEquals("Didn't see two choice definitions?", 2, choiceDefinitions.size());
 		ReusableChoices outer = choiceDefinitions.getChoices(OUTER_LEVEL_NAME);
+		assertEquals("Wrong reusable outer label?", "District:", outer.getLabel());
 		assertEquals("Wrong number of outer choices?", 3, outer.size());
-		assertEquals("Wrong outer code?", "2", outer.get(1).getCode());
-		assertEquals("Wrong outer label?", "Netrokona", outer.get(1).toString());
+		assertEquals("Wrong outer choice code?", "2", outer.get(1).getCode());
+		assertEquals("Wrong outer choice label?", "Netrokona", outer.get(1).toString());
 
 		ReusableChoices middle = choiceDefinitions.getChoices(MIDDLE_LEVEL_NAME);
+		assertEquals("Wrong reusable middle label?", "Upazilla:", middle.getLabel());
 		assertEquals("Wrong number of middle choices?", 4, middle.size());
-		assertEquals("Wrong middle code?", "2.01", middle.get(2).getCode());
-		assertEquals("Wrong middle label?", "Netrokona Sadar", middle.get(2).toString());
+		assertEquals("Wrong middle choice code?", "2.01", middle.get(2).getCode());
+		assertEquals("Wrong middle choice label?", "Netrokona Sadar", middle.get(2).toString());
 	}
 	
 	public void testDefineNestedDropdown() throws Exception
@@ -121,10 +123,8 @@ public class TestCustomFields extends TestCase
 		assertEquals("Wrong number of levels?", 3, spec.getLevelCount());
 		
 		NestedDropdownLevel outer = spec.getLevel(0);
-		assertEquals("District", outer.getLabel());
 		assertEquals("DistrictChoices", outer.getChoicesName());
 		NestedDropdownLevel middle = spec.getLevel(1);
-		assertEquals("Upazilla", middle.getLabel());
 		assertEquals("UpazillaChoices", middle.getChoicesName());
 	}
 
@@ -149,12 +149,12 @@ public class TestCustomFields extends TestCase
 	private static final String MIDDLE_LEVEL_NAME = "UpazillaChoices";
 	
 	private static final String SAMPLE_DROPDOWN_CHOICES = 
-		"<ReusableChoices name='" + OUTER_LEVEL_NAME + "'>" + 
+		"<ReusableChoices code='" + OUTER_LEVEL_NAME + "' label='District:' >" + 
 			"<Choice code='1' label='Madaripur'/>" + 
 			"<Choice code='2' label='Netrokona'/>" + 
 			"<Choice code='3' label='Bogra'/>" + 
 		"</ReusableChoices>" + 
-		"<ReusableChoices name='" + MIDDLE_LEVEL_NAME + "'>" + 
+		"<ReusableChoices code='" + MIDDLE_LEVEL_NAME + "' label='Upazilla:'>" + 
 			"<Choice code='1.01' label='Madaripur Sadar'/>" + 
 			"<Choice code='1.02' label='Rajoir'/>" + 
 			"<Choice code='2.01' label='Netrokona Sadar'/>" + 
@@ -165,10 +165,8 @@ public class TestCustomFields extends TestCase
 		"<Field type='NESTEDDROPDOWN'>" + 
 		"<Tag>location</Tag>" + 
 		"<Label>Location: </Label>" + 
-		"<Levels>" + 
-			"<Level label='District' choices='DistrictChoices' />" + 
-			"<Level label='Upazilla' choices='UpazillaChoices' />" + 
-			"<Level label='Union' choices='UnionChoices' />" + 
-		"</Levels>" + 
+		"<UseReusableChoices code='DistrictChoices' />" + 
+		"<UseReusableChoices code='UpazillaChoices'  />" + 
+		"<UseReusableChoices code='UnionChoices' />" + 
 		"</Field>";
 }

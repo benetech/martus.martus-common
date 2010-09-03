@@ -31,11 +31,23 @@ import org.martus.common.fieldspec.ChoiceItem;
 
 public class ReusableChoices
 {
-	ReusableChoices()
+	ReusableChoices(String codeToUse, String labelToUse)
 	{
+		code = codeToUse;
+		label = labelToUse;
 		choices = new Vector();
 	}
 	
+	public Object getCode()
+	{
+		return code;
+	}
+
+	public String getLabel()
+	{
+		return label;
+	}
+
 	public int size()
 	{
 		return choices.size();
@@ -51,6 +63,8 @@ public class ReusableChoices
 		choices.add(choice);
 	}
 
+	private String code;
+	private String label;
 	private Vector choices;
 
 }
