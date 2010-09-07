@@ -78,7 +78,9 @@ public class XmlCustomFieldsLoader extends SimpleXmlDefaultLoader
 
 	public FieldSpec[] getFieldSpecs()
 	{
-		return (FieldSpec[])fields.toArray(new FieldSpec[0]);
+		FieldSpec[] specsArray = (FieldSpec[]) fields.toArray(new FieldSpec[0]);
+		FieldSpecCollection specs = new FieldSpecCollection(specsArray);
+		return specs.asArray();
 	}
 
 	public SimpleXmlDefaultLoader startElement(String tag)
