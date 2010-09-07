@@ -37,7 +37,12 @@ public class StandardFieldSpecs
 
 	public static FieldSpec[] getDefaultTopSectionFieldSpecsAsArray()
 	{
-		if(defaultTopSectionFieldSpecs == null)
+		return getDefaultTopSetionFieldSpecs().asArray();
+	}
+
+	public static FieldSpecCollection getDefaultTopSetionFieldSpecs()
+	{
+		if(getDefaultTopSetionFieldSpecs() == null)
 		{
 			defaultTopSectionFieldSpecs = new FieldSpecCollection(new FieldSpec[] 
 			{
@@ -54,12 +59,17 @@ public class StandardFieldSpecs
 			});
 		}
 		
-		return defaultTopSectionFieldSpecs.asArray();
+		return defaultTopSectionFieldSpecs;
 	}
 
 	public static FieldSpec[] getDefaultBottomSectionFieldSpecsAsArray()
 	{
-		if(defaultBottomSectionFieldSpecs == null)
+		return getDefaultBottomSectionFieldSpecs().asArray();
+	}
+
+	public static FieldSpecCollection getDefaultBottomSectionFieldSpecs()
+	{
+		if(getDefaultBottomSectionFieldSpecs() == null)
 		{
 			defaultBottomSectionFieldSpecs = new FieldSpecCollection(new FieldSpec[]
 			{
@@ -67,7 +77,7 @@ public class StandardFieldSpecs
 			});
 		}
 		
-		return defaultBottomSectionFieldSpecs.asArray();
+		return defaultBottomSectionFieldSpecs;
 	}
 
 	public static FieldType getStandardType(String tag)
