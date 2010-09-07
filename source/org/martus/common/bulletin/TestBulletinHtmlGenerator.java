@@ -68,8 +68,8 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
     
 	public void testGetSectionHtmlString() throws Exception
 	{
-		FieldSpec[] standardPublicFields = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
-		FieldSpec[] standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
+		FieldSpec[] standardPublicFields = StandardFieldSpecs.getDefaultTopSectionFieldSpecsAsArray();
+		FieldSpec[] standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecsAsArray();
 		
 		Bulletin b = new Bulletin(security, standardPublicFields, standardPrivateFields);
 		String title = "My Title";
@@ -93,8 +93,8 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 
 	public void testGetHtmlString() throws Exception
 	{
-		FieldSpec[] standardPublicFields = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
-		FieldSpec[] standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
+		FieldSpec[] standardPublicFields = StandardFieldSpecs.getDefaultTopSectionFieldSpecsAsArray();
+		FieldSpec[] standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecsAsArray();
 		
 		Bulletin b = new Bulletin(security, standardPublicFields, standardPrivateFields);
 		String title = "My New Title";
@@ -139,8 +139,8 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 	public void testGetPublicOnlyHtmlString() throws Exception
 	{
 
-		FieldSpec[] standardPublicFields = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
-		FieldSpec[] standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
+		FieldSpec[] standardPublicFields = StandardFieldSpecs.getDefaultTopSectionFieldSpecsAsArray();
+		FieldSpec[] standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecsAsArray();
 		
 		Bulletin b = new Bulletin(security, standardPublicFields, standardPrivateFields);
 		String title = "My Title";
@@ -184,7 +184,7 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 		GridFieldSpec gridSpec = TestGridData.createSampleGridSpec();
 
 		FieldSpec[] gridSpecs = {gridSpec};
-		FieldSpec[] standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
+		FieldSpec[] standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecsAsArray();
 		
 		Bulletin b = new Bulletin(security, gridSpecs, standardPrivateFields);
 		b.set(gridSpec.getTag(), grid.getXmlRepresentation());
@@ -212,7 +212,7 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 		dropdownSpec.setTag("myDropDownTag");
 		dropdownSpec.setLabel("myDropdownLabel");
 		FieldSpec[] dropdownSpecs = {dropdownSpec};
-		FieldSpec[] standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
+		FieldSpec[] standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecsAsArray();
 		
 		Bulletin b = new Bulletin(security, dropdownSpecs, standardPrivateFields);
 		b.set(dropdownSpec.getTag(), "blue");
@@ -235,7 +235,7 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 		gridSpec.addColumn(column1);
 		gridSpec.addColumn(column2);
 		FieldSpec[] gridSpecs = {gridSpec};
-		FieldSpec[] standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
+		FieldSpec[] standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecsAsArray();
 		
 		Bulletin b = new Bulletin(security, gridSpecs, standardPrivateFields);
 		b.set(gridSpec.getTag(), grid.getXmlRepresentation());
@@ -248,8 +248,8 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 	
 	public void testRightToLeft() throws Exception
 	{
-		FieldSpec[] standardPublicFields = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
-		FieldSpec[] standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
+		FieldSpec[] standardPublicFields = StandardFieldSpecs.getDefaultTopSectionFieldSpecsAsArray();
+		FieldSpec[] standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecsAsArray();
 
 		Bulletin b = new Bulletin(security, standardPublicFields, standardPrivateFields);
 		b.set(BulletinConstants.TAGAUTHOR, "Bradbury");

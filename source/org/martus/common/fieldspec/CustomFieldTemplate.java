@@ -76,7 +76,7 @@ public class CustomFieldTemplate
 			if(isLegacyTemplateFile(fileToImport))
 			{
 				dataBundleTopSection = dataBundle;
-				FieldCollection defaultBottomFields = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs());
+				FieldCollection defaultBottomFields = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecsAsArray());
 				templateXMLToImportBottomSection = defaultBottomFields.toString();
 			}
 			else

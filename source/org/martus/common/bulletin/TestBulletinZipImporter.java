@@ -188,13 +188,13 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 
 		ZipEntry dataEntry = (ZipEntry)entries.nextElement();
 		assertStartsWith("data id wrong?", "F", dataEntry.getName());
-		FieldDataPacket fdp = new FieldDataPacket(dummyUid, StandardFieldSpecs.getDefaultTopSectionFieldSpecs());
+		FieldDataPacket fdp = new FieldDataPacket(dummyUid, StandardFieldSpecs.getDefaultTopSectionFieldSpecsAsArray());
 		fdp.loadFromXml(new ZipEntryInputStreamWithSeek(zip, dataEntry), security);
 		assertEquals("fdp id?", original.getFieldDataPacket().getUniversalId(), fdp.getUniversalId());
 
 		ZipEntry privateEntry = (ZipEntry)entries.nextElement();
 		assertStartsWith("private id wrong?", "F", privateEntry.getName());
-		FieldDataPacket pdp = new FieldDataPacket(dummyUid, StandardFieldSpecs.getDefaultBottomSectionFieldSpecs());
+		FieldDataPacket pdp = new FieldDataPacket(dummyUid, StandardFieldSpecs.getDefaultBottomSectionFieldSpecsAsArray());
 		pdp.loadFromXml(new ZipEntryInputStreamWithSeek(zip, privateEntry), security);
 		assertEquals("pdp id?", original.getPrivateFieldDataPacket().getUniversalId(), pdp.getUniversalId());
 
@@ -254,7 +254,7 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 		ZipEntry dataEntry = (ZipEntry)entries.nextElement();
 		assertNotNull("null data?", dataEntry);
 		InputStreamWithSeek dataIn = new ZipEntryInputStreamWithSeek(zip, dataEntry);
-		FieldDataPacket data = new FieldDataPacket(uid, StandardFieldSpecs.getDefaultTopSectionFieldSpecs());
+		FieldDataPacket data = new FieldDataPacket(uid, StandardFieldSpecs.getDefaultTopSectionFieldSpecsAsArray());
 		data.loadFromXml(dataIn, security);
 		assertEquals("data wrong?", b.get(Bulletin.TAGPUBLICINFO), data.get(Bulletin.TAGPUBLICINFO));
 
@@ -262,7 +262,7 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 		ZipEntry privateDataEntry = (ZipEntry)entries.nextElement();
 		assertNotNull("null data?", privateDataEntry);
 		InputStreamWithSeek privateDataIn = new ZipEntryInputStreamWithSeek(zip, privateDataEntry);
-		FieldDataPacket privateData = new FieldDataPacket(uid, StandardFieldSpecs.getDefaultBottomSectionFieldSpecs());
+		FieldDataPacket privateData = new FieldDataPacket(uid, StandardFieldSpecs.getDefaultBottomSectionFieldSpecsAsArray());
 		privateData.loadFromXml(privateDataIn, security);
 		assertEquals("data wrong?", b.get(Bulletin.TAGPRIVATEINFO), privateData.get(Bulletin.TAGPRIVATEINFO));
 
