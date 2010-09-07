@@ -497,7 +497,7 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		String xmlFieldUnknownType = "<CustomFields><Field><Tag>"+tag+"</Tag>" +
 			"<Label>" + label + "</Label><Type>xxx</Type>" +
 			"</Field></CustomFields>";
-		FieldSpec badSpecTopSection = FieldCollection.parseXml(xmlFieldUnknownType)[0]; 
+		FieldSpec badSpecTopSection = FieldCollection.parseXml(xmlFieldUnknownType).get(0); 
 		FieldSpec[] specsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
 		specsTopSection = addFieldSpec(specsTopSection, badSpecTopSection);
 		
@@ -506,7 +506,7 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		String xmlFieldUnknownType2 = "<CustomFields><Field><Tag>"+tag2+"</Tag>" +
 			"<Label>" + label2 + "</Label><Type>xxx</Type>" +
 			"</Field></CustomFields>";
-		FieldSpec badSpecBottomSection = FieldCollection.parseXml(xmlFieldUnknownType2)[0]; 
+		FieldSpec badSpecBottomSection = FieldCollection.parseXml(xmlFieldUnknownType2).get(0); 
 		FieldSpec[] specsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
 		specsBottomSection = addFieldSpec(specsBottomSection, badSpecBottomSection);
 
@@ -532,7 +532,7 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		String xmlFieldUnknownType2 = "<CustomFields><Field><Tag>"+columnTag+"</Tag>" +
 			"<Label>" + columnLabel + "</Label><Type>xxx</Type>" +
 			"</Field></CustomFields>";
-		FieldSpec badSpecBottomSection = FieldCollection.parseXml(xmlFieldUnknownType2)[0]; 
+		FieldSpec badSpecBottomSection = FieldCollection.parseXml(xmlFieldUnknownType2).get(0); 
 		
 		gridWithUnknownColumnType.addColumn(badSpecBottomSection);
 

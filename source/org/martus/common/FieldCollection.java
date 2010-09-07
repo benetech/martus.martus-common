@@ -158,7 +158,7 @@ public class FieldCollection
 		}
 	}
 	
-	public static FieldSpec[] parseXml(String xml) throws CustomFieldsParseException
+	public static FieldSpecCollection parseXml(String xml) throws CustomFieldsParseException
 	{
 		XmlCustomFieldsLoader loader = new XmlCustomFieldsLoader();
 		try

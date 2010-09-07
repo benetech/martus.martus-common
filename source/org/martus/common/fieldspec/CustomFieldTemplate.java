@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.util.Vector;
 
 import org.martus.common.FieldCollection;
+import org.martus.common.FieldSpecCollection;
 import org.martus.common.FieldCollection.CustomFieldsParseException;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
@@ -167,9 +168,9 @@ public class CustomFieldTemplate
 	{
 		try
 		{
-			FieldSpec[] newSpecsTopSection = FieldCollection.parseXml(xmlToValidateTopSection);
-			FieldSpec[] newSpecsBottomSection = FieldCollection.parseXml(xmlToValidateBottomSection);
-			CustomFieldSpecValidator checker = new CustomFieldSpecValidator(newSpecsTopSection, newSpecsBottomSection);
+			FieldSpecCollection newSpecsTopSection = FieldCollection.parseXml(xmlToValidateTopSection);
+			FieldSpecCollection newSpecsBottomSection = FieldCollection.parseXml(xmlToValidateBottomSection);
+			CustomFieldSpecValidator checker = new CustomFieldSpecValidator(newSpecsTopSection.asArray(), newSpecsBottomSection.asArray());
 			if(checker.isValid())
 				return true;
 			errors.addAll(checker.getAllErrors());

@@ -82,7 +82,7 @@ public class TestCustomFields extends TestCaseEnhanced
 				"</CustomFields>";
 		XmlCustomFieldsLoader loader = new XmlCustomFieldsLoader();
 		loader.parse(xml);
-		GridFieldSpec spec = (GridFieldSpec)loader.getFieldSpecs()[0];
+		GridFieldSpec spec = (GridFieldSpec)loader.getFieldSpecs().get(0);
 		assertEquals(new FieldTypeGrid(), spec.getType());
 		assertEquals(2, spec.getColumnCount());
 		assertEquals(TestGridFieldSpec.SAMPLE_GRID_HEADER_LABEL_1, spec.getColumnLabel(0));
@@ -115,7 +115,7 @@ public class TestCustomFields extends TestCaseEnhanced
 		String xml = "<CustomFields>" + SAMPLE_DROPDOWN_CHOICES + SAMPLE_NESTED_DROPDOWN + "</CustomFields>";
 		XmlCustomFieldsLoader loader = new XmlCustomFieldsLoader();
 		loader.parse(xml);
-		FieldSpec[] specs = loader.getFieldSpecs();
+		FieldSpec[] specs = loader.getFieldSpecs().asArray();
 		assertEquals("Not one spec?", 1, specs.length);
 		NestedDropDownFieldSpec spec = (NestedDropDownFieldSpec) specs[0];
 		assertEquals("Wrong type?", new FieldTypeNestedDropdown(), spec.getType());
@@ -138,7 +138,7 @@ public class TestCustomFields extends TestCaseEnhanced
 		String xml = "<CustomFields>" + SAMPLE_DROPDOWN_CHOICES + SAMPLE_DROPDOWN_WITH_REUSABLE + "</CustomFields>";
 		XmlCustomFieldsLoader loader = new XmlCustomFieldsLoader();
 		loader.parse(xml);
-		FieldSpec[] specs = loader.getFieldSpecs();
+		FieldSpec[] specs = loader.getFieldSpecs().asArray();
 		assertEquals("Not one spec?", 1, specs.length);
 		CustomDropDownFieldSpec spec = (CustomDropDownFieldSpec) specs[0];
 		assertEquals("Wrong type?", new FieldTypeDropdown(), spec.getType());

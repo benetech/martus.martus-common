@@ -76,11 +76,11 @@ public class XmlCustomFieldsLoader extends SimpleXmlDefaultLoader
 		return dropdownChoices;
 	}
 
-	public FieldSpec[] getFieldSpecs()
+	public FieldSpecCollection getFieldSpecs()
 	{
 		FieldSpec[] specsArray = (FieldSpec[]) fields.toArray(new FieldSpec[0]);
 		FieldSpecCollection specs = new FieldSpecCollection(specsArray);
-		return specs.asArray();
+		return specs;
 	}
 
 	public SimpleXmlDefaultLoader startElement(String tag)
