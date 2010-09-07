@@ -34,6 +34,7 @@ import java.util.Arrays;
 
 import org.martus.common.AuthorizedSessionKeys;
 import org.martus.common.FieldCollection;
+import org.martus.common.FieldSpecCollection;
 import org.martus.common.GridData;
 import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
@@ -81,13 +82,13 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 
 	public void testBasics()
 	{
-		assertEquals("getFieldCount", fieldTags.length, fdp.getFieldCount());
+		assertEquals("getFieldCount", fieldTags.size(), fdp.getFieldCount());
 		assertEquals("nope", false, fdp.fieldExists("Nope"));
 		assertEquals("plain tag", true, fdp.fieldExists(bTag));
 		assertEquals("lower", false, fdp.fieldExists(bTag.toLowerCase()));
 		assertEquals("upper", false, fdp.fieldExists(bTag.toUpperCase()));
 
-		assertEquals("tag list", true, Arrays.equals(fieldTags, fdp.getFieldSpecs()));
+		assertEquals("tag list", fieldTags, fdp.getFieldSpecs());
 		assertEquals("HQ Keys not 0", 0, fdp.getAuthorizedToReadKeys().size());
 		String hqKey = "12345";
 		HQKey key = new HQKey(hqKey);
@@ -103,7 +104,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 	public void testIsEmpty()
 	{
 		assertEquals("didn't start out empty?", true, fdp.isEmpty());
-		fdp.set(fieldTags[0].getTag(), "blah");
+		fdp.set(fieldTags.get(0).getTag(), "blah");
 		assertEquals("still empty after field?", false, fdp.isEmpty());
 		fdp.clearAll();
 		assertEquals("didn't return to empty after field?", true, fdp.isEmpty());
@@ -211,7 +212,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 			"</FieldDataPacket>\n";
 		//System.out.println("{" + simpleFieldDataPacket + "}");
 
-		FieldSpec[] tagsThatWillBeIgnored = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
+		FieldSpecCollection tagsThatWillBeIgnored = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
 		FieldDataPacket loaded = new FieldDataPacket(UniversalId.createDummyUniversalId(), tagsThatWillBeIgnored);
 
 		byte[] bytes = simpleFieldDataPacket.getBytes("UTF-8");
@@ -222,7 +223,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		assertEquals("id", id, loaded.getLocalId());
 		assertEquals("encrypted", true, loaded.isEncrypted());
 
-		FieldSpec[] tags = loaded.getFieldSpecs();
+		FieldSpec[] tags = loaded.getFieldSpecs().asArray();
 		assertEquals("Not three fields?", 3, tags.length);
 		assertEquals(aTag, tags[0].getTag());
 		assertEquals(bTag, tags[1].getTag());
@@ -254,7 +255,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 			"</FieldDataPacket>\n";
 		//System.out.println("{" + simpleFieldDataPacket + "}");
 
-		FieldSpec[] specsThatWillBeIgnored = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
+		FieldSpecCollection specsThatWillBeIgnored = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
 		FieldDataPacket loaded = new FieldDataPacket(UniversalId.createDummyUniversalId(), specsThatWillBeIgnored);
 
 		byte[] bytes = simpleFieldDataPacket.getBytes("UTF-8");
@@ -265,7 +266,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		assertEquals("id", id, loaded.getLocalId());
 		assertEquals("encrypted", true, loaded.isEncrypted());
 
-		FieldSpec[] tags = loaded.getFieldSpecs();
+		FieldSpec[] tags = loaded.getFieldSpecs().asArray();
 		assertEquals("wrong field count?", 5, tags.length);
 		assertEquals("title", tags[0].getTag());
 		assertEquals("author", tags[1].getTag());
@@ -284,7 +285,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 	{
 		class FieldDataPacketWithUnknownTags extends FieldDataPacket
 		{
-			FieldDataPacketWithUnknownTags(UniversalId uid, FieldSpec[] specs)
+			FieldDataPacketWithUnknownTags(UniversalId uid, FieldSpecCollection specs)
 			{
 				super(uid, specs);
 			}
@@ -351,7 +352,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 				MartusXml.getTagEnd(MartusXml.FieldElementPrefix + "custom1") + 
 			"</FieldDataPacket>\n";
 
-		FieldSpec[] specsThatWillBeIgnored = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
+		FieldSpecCollection specsThatWillBeIgnored = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
 		FieldDataPacket loaded = new FieldDataPacket(UniversalId.createDummyUniversalId(), specsThatWillBeIgnored);
 
 		byte[] bytes = simpleFieldDataPacket.getBytes("UTF-8");
@@ -488,7 +489,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 	
 	public void testWriteXmlCustomField() throws Exception
 	{
-		FieldSpec[] specs = {LegacyCustomFields.createFromLegacy("tag,<label>")};
+		FieldSpecCollection specs = new FieldSpecCollection(new FieldSpec[] {LegacyCustomFields.createFromLegacy("tag,<label>")});
 		FieldDataPacket fdpCustom = new FieldDataPacket(UniversalId.createDummyUniversalId(), specs);
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -496,7 +497,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		String result = new String(out.toByteArray(), "UTF-8");
 		out.close();
 		
-		String rawFieldList = LegacyCustomFields.buildFieldListString(specs);
+		String rawFieldList = LegacyCustomFields.buildFieldListString(specs.asArray());
 		String encodedFieldList = XmlUtilities.getXmlEncoded(rawFieldList);
 		assertNotContains(encodedFieldList, result);
 
@@ -507,7 +508,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 
 	public void testWriteXmlNoCustomFields() throws Exception
 	{
-		FieldSpec[] specs = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
+		FieldSpecCollection specs = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
 		FieldDataPacket fdpCustom = new FieldDataPacket(UniversalId.createDummyUniversalId(), specs);
 		assertFalse("Should only have the default fields", fdpCustom.hasCustomFieldTemplate());
 		
@@ -517,7 +518,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		out.close();
 		
 		assertNotContains("Should not contain custom field spec for default fields", "<CustomFields>", result);
-		assertContains(LegacyCustomFields.buildFieldListString(specs), result);
+		assertContains(LegacyCustomFields.buildFieldListString(specs.asArray()), result);
 	}
 
 	public void testWriteAndLoadGrids()throws Exception
@@ -525,7 +526,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		UniversalId uid = FieldDataPacket.createUniversalId(security);
 		GridData grid = TestGridData.createSampleGrid();
 		String gridTag = "grid";
-		FieldSpec[] specs = {new GridFieldSpec()};
+		FieldSpecCollection specs = new FieldSpecCollection(new FieldSpec[] {new GridFieldSpec()});
 		FieldDataPacket fdpCustom = new FieldDataPacket(uid, specs);
 		fdpCustom.set(gridTag, grid.getXmlRepresentation());
 		
@@ -809,12 +810,12 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 	String aData = "data for a";
 	String bData = line1 + "\n" + line2 + "\r\n" + line3 + "\n" + line4;
 	String cData = "after b";
-	FieldSpec[] fieldTags = 
+	FieldSpecCollection fieldTags = new FieldSpecCollection(new FieldSpec[]
 	{
 		LegacyCustomFields.createFromLegacy(aTag),
 		LegacyCustomFields.createFromLegacy(bTag),
 		LegacyCustomFields.createFromLegacy(cTag)
-	};
+	});
 
 	int SHORTEST_LEGAL_KEY_SIZE = 512;
 	static MartusCrypto security;

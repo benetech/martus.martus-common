@@ -35,6 +35,7 @@ import java.util.Vector;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.martus.common.FieldCollection;
+import org.martus.common.FieldSpecCollection;
 import org.martus.common.HQKeys;
 import org.martus.common.LegacyCustomFields;
 import org.martus.common.MartusConstants;
@@ -60,10 +61,10 @@ import org.xml.sax.SAXException;
 
 public class FieldDataPacket extends Packet
 {
-	public FieldDataPacket(UniversalId universalIdToUse, FieldSpec[] fieldSpecsToUse)
+	public FieldDataPacket(UniversalId universalIdToUse, FieldSpecCollection fieldSpecsToUse)
 	{
 		super(universalIdToUse);
-		setFieldSpecs(fieldSpecsToUse);
+		setFieldSpecs(fieldSpecsToUse.asArray());
 		authorizedToReadKeys = new HQKeys();
 		clearAll();
 	}
@@ -134,7 +135,7 @@ public class FieldDataPacket extends Packet
 		return fields.count();
 	}
 
-	public FieldSpec[] getFieldSpecs()
+	public FieldSpecCollection getFieldSpecs()
 	{
 		return fields.getSpecs();
 	}
@@ -337,7 +338,7 @@ public class FieldDataPacket extends Packet
 		}
 		else
 		{
-			writeElement(dest, MartusXml.FieldListElementName, LegacyCustomFields.buildFieldListString(fields.getSpecs()));
+			writeElement(dest, MartusXml.FieldListElementName, LegacyCustomFields.buildFieldListString(fields.getSpecs().asArray()));
 		}
 		
 		for(int i = 0; i < fields.count(); ++i)
@@ -368,7 +369,7 @@ public class FieldDataPacket extends Packet
 
 	protected String getFieldListString()
 	{
-		return LegacyCustomFields.buildFieldListString(getFieldSpecs());
+		return LegacyCustomFields.buildFieldListString(getFieldSpecs().asArray());
 	}
 
 	public boolean hasCustomFieldTemplate()

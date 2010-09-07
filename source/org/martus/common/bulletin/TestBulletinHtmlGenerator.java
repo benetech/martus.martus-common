@@ -26,6 +26,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.bulletin;
 
 import org.martus.common.EnglishCommonStrings;
+import org.martus.common.FieldSpecCollection;
 import org.martus.common.GridData;
 import org.martus.common.MiniLocalization;
 import org.martus.common.crypto.MockMartusSecurity;
@@ -68,8 +69,8 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
     
 	public void testGetSectionHtmlString() throws Exception
 	{
-		FieldSpec[] standardPublicFields = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
-		FieldSpec[] standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
+		FieldSpecCollection standardPublicFields = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
+		FieldSpecCollection standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
 		
 		Bulletin b = new Bulletin(security, standardPublicFields, standardPrivateFields);
 		String title = "My Title";
@@ -93,8 +94,8 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 
 	public void testGetHtmlString() throws Exception
 	{
-		FieldSpec[] standardPublicFields = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
-		FieldSpec[] standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
+		FieldSpecCollection standardPublicFields = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
+		FieldSpecCollection standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
 		
 		Bulletin b = new Bulletin(security, standardPublicFields, standardPrivateFields);
 		String title = "My New Title";
@@ -139,8 +140,8 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 	public void testGetPublicOnlyHtmlString() throws Exception
 	{
 
-		FieldSpec[] standardPublicFields = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
-		FieldSpec[] standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
+		FieldSpecCollection standardPublicFields = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
+		FieldSpecCollection standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
 		
 		Bulletin b = new Bulletin(security, standardPublicFields, standardPrivateFields);
 		String title = "My Title";
@@ -183,8 +184,8 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 		GridData grid = TestGridData.createSampleGridWithData();
 		GridFieldSpec gridSpec = TestGridData.createSampleGridSpec();
 
-		FieldSpec[] gridSpecs = {gridSpec};
-		FieldSpec[] standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
+		FieldSpecCollection gridSpecs = new FieldSpecCollection(new FieldSpec[] {gridSpec});
+		FieldSpecCollection standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
 		
 		Bulletin b = new Bulletin(security, gridSpecs, standardPrivateFields);
 		b.set(gridSpec.getTag(), grid.getXmlRepresentation());
@@ -211,8 +212,8 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 		dropdownSpec.setChoices(choices);
 		dropdownSpec.setTag("myDropDownTag");
 		dropdownSpec.setLabel("myDropdownLabel");
-		FieldSpec[] dropdownSpecs = {dropdownSpec};
-		FieldSpec[] standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
+		FieldSpecCollection dropdownSpecs = new FieldSpecCollection(new FieldSpec[] {dropdownSpec});
+		FieldSpecCollection standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
 		
 		Bulletin b = new Bulletin(security, dropdownSpecs, standardPrivateFields);
 		b.set(dropdownSpec.getTag(), "blue");
@@ -234,8 +235,8 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 
 		gridSpec.addColumn(column1);
 		gridSpec.addColumn(column2);
-		FieldSpec[] gridSpecs = {gridSpec};
-		FieldSpec[] standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
+		FieldSpecCollection gridSpecs = new FieldSpecCollection(new FieldSpec[] {gridSpec});
+		FieldSpecCollection standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
 		
 		Bulletin b = new Bulletin(security, gridSpecs, standardPrivateFields);
 		b.set(gridSpec.getTag(), grid.getXmlRepresentation());
@@ -248,8 +249,8 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 	
 	public void testRightToLeft() throws Exception
 	{
-		FieldSpec[] standardPublicFields = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
-		FieldSpec[] standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
+		FieldSpecCollection standardPublicFields = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
+		FieldSpecCollection standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
 
 		Bulletin b = new Bulletin(security, standardPublicFields, standardPrivateFields);
 		b.set(BulletinConstants.TAGAUTHOR, "Bradbury");
@@ -276,7 +277,7 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 		FieldSpec two = FieldSpec.createFromXml("<Field type='NORMAL'><Tag>" + 
 				Bulletin.TAGKEYWORDS + 
 				"</Tag><KeepWithPrevious/></Field>");
-		FieldSpec[] specs = new FieldSpec[] {one, two, };
+		FieldSpecCollection specs = new FieldSpecCollection(new FieldSpec[] {one, two, });
 		final String SAMPLE_AUTHOR = "Bill Preston";
 		final String SAMPLE_KEYWORDS = "blue green red";
 		UniversalId uid = FieldDataPacket.createUniversalId(security);

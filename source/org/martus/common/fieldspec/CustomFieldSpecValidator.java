@@ -38,7 +38,7 @@ public class CustomFieldSpecValidator
 {
 	public CustomFieldSpecValidator(FieldCollection specsToCheckTopSection, FieldCollection specsToCheckBottomSection, boolean allowSpaceOnlyCustomLabels)
 	{
-		this(specsToCheckTopSection.getSpecs(), specsToCheckBottomSection.getSpecs(), allowSpaceOnlyCustomLabels);
+		this(specsToCheckTopSection.getSpecs().asArray(), specsToCheckBottomSection.getSpecs().asArray(), allowSpaceOnlyCustomLabels);
 	}
 	
 	public CustomFieldSpecValidator(FieldSpec[] specsToCheckTopSection, FieldSpec[] specsToCheckBottomSection)

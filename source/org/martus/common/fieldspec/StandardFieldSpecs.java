@@ -36,7 +36,7 @@ public class StandardFieldSpecs
 {
 	public static FieldSpecCollection getDefaultTopSetionFieldSpecs()
 	{
-		if(getDefaultTopSetionFieldSpecs() == null)
+		if(defaultTopSectionFieldSpecs == null)
 		{
 			defaultTopSectionFieldSpecs = new FieldSpecCollection(new FieldSpec[] 
 			{
@@ -58,7 +58,7 @@ public class StandardFieldSpecs
 
 	public static FieldSpecCollection getDefaultBottomSectionFieldSpecs()
 	{
-		if(getDefaultBottomSectionFieldSpecs() == null)
+		if(defaultBottomSectionFieldSpecs == null)
 		{
 			defaultBottomSectionFieldSpecs = new FieldSpecCollection(new FieldSpec[]
 			{

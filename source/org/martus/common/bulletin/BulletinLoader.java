@@ -31,13 +31,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.martus.common.FieldSpecCollection;
 import org.martus.common.HQKeys;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.CryptoException;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.ReadableDatabase;
-import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.StandardFieldSpecs;
 import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.BulletinHeaderPacket;
@@ -61,8 +61,8 @@ public class BulletinLoader
 			Bulletin.DamagedBulletinException,
 			MartusCrypto.NoKeyPairException
 	{
-		FieldSpec[] standardFieldNames = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
-		FieldSpec[] privateFieldNames = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
+		FieldSpecCollection standardFieldNames = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
+		FieldSpecCollection privateFieldNames = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
 		Bulletin b = new Bulletin(verifier, standardFieldNames, privateFieldNames);
 		b.clearAllUserData();
 		b.setIsNonAttachmentDataValid(false);

@@ -108,12 +108,12 @@ public class FieldCollection
 		return null;
 	}
 	
-	public FieldSpec[] getSpecs()
+	public FieldSpecCollection getSpecs()
 	{
 		FieldSpec[] specs = new FieldSpec[count()];
 		for(int i=0; i < specs.length; ++i)
 			specs[i] = getField(i).getFieldSpec();
-		return specs;
+		return new FieldSpecCollection(specs);
 	}
 	
 	public boolean isEmpty()

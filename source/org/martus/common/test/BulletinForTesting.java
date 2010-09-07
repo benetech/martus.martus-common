@@ -28,6 +28,7 @@ package org.martus.common.test;
 
 import java.io.IOException;
 
+import org.martus.common.FieldSpecCollection;
 import org.martus.common.LegacyCustomFields;
 import org.martus.common.XmlWriterFilter;
 import org.martus.common.bulletin.Bulletin;
@@ -62,7 +63,7 @@ public class BulletinForTesting extends Bulletin
 	
 	static class FieldDataPacketWithUnknownCustomField extends FieldDataPacket
 	{
-		public FieldDataPacketWithUnknownCustomField(UniversalId universalIdToUse, FieldSpec[] fieldSpecsToUse)
+		public FieldDataPacketWithUnknownCustomField(UniversalId universalIdToUse, FieldSpecCollection fieldSpecsToUse)
 		{
 			super(universalIdToUse, customFieldSpecs);
 		}
@@ -75,19 +76,19 @@ public class BulletinForTesting extends Bulletin
 			return fields;
 		}
 
-		static FieldSpec[] customFieldSpecs = {
+		static FieldSpecCollection customFieldSpecs = new FieldSpecCollection(new FieldSpec[] {
 			LegacyCustomFields.createFromLegacy("language"), 
 			LegacyCustomFields.createFromLegacy("entrydate"),
 			LegacyCustomFields.createFromLegacy("author"),
 			LegacyCustomFields.createFromLegacy("title"),
 			LegacyCustomFields.createFromLegacy("custom,Custom"),
 			LegacyCustomFields.createFromLegacy("extra,Bad Custom!,more"),
-		};
+		});
 	}
 
 	static class FieldDataPacketWithUnknownTag extends FieldDataPacket
 	{
-		public FieldDataPacketWithUnknownTag(UniversalId universalIdToUse, FieldSpec[] fieldSpecsToUse)
+		public FieldDataPacketWithUnknownTag(UniversalId universalIdToUse, FieldSpecCollection fieldSpecsToUse)
 		{
 			super(universalIdToUse, fieldSpecsToUse);
 		}
@@ -101,7 +102,7 @@ public class BulletinForTesting extends Bulletin
 	
 	protected FieldDataPacket createPublicFieldDataPacket(
 		UniversalId dataUid,
-		FieldSpec[] publicFieldSpecs)
+		FieldSpecCollection publicFieldSpecs)
 	{
 		if(shouldCreateUnknownTagInPublicSection)
 			return new FieldDataPacketWithUnknownTag(dataUid, publicFieldSpecs);
@@ -113,7 +114,7 @@ public class BulletinForTesting extends Bulletin
 	}
 	protected FieldDataPacket createPrivateFieldDataPacket(
 		UniversalId privateDataUid,
-		FieldSpec[] privateFieldSpecs)
+		FieldSpecCollection privateFieldSpecs)
 	{
 		if(shouldCreateUnknownTagInPrivateSection)
 			return new FieldDataPacketWithUnknownTag(privateDataUid, privateFieldSpecs);

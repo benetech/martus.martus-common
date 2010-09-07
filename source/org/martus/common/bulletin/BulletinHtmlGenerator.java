@@ -212,7 +212,7 @@ public class BulletinHtmlGenerator
 
 	public String getSectionHtmlString(FieldDataPacket fdp)
 	{
-		FieldSpec[] fieldTags = fdp.getFieldSpecs();
+		FieldSpec[] fieldTags = fdp.getFieldSpecs().asArray();
 		String sectionHtml = "";
 		Vector pendingValues = new Vector();
 		for(int fieldNum = 0; fieldNum < fieldTags.length; ++fieldNum)

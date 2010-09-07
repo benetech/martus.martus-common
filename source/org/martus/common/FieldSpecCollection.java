@@ -98,9 +98,7 @@ public class FieldSpecCollection implements Comparable
 		if (getClass() != obj.getClass())
 			return false;
 		final FieldSpecCollection other = (FieldSpecCollection) obj;
-		if (!Arrays.equals(specs, other.specs))
-			return false;
-		return true;
+		return (compareTo(other) == 0);
 	}
 
 	public int compareTo(Object rawOther) 
@@ -115,12 +113,20 @@ public class FieldSpecCollection implements Comparable
 		
 		for(int i = 0; i < size(); ++i)
 		{
-			int result = get(i).compareTo(other.get(i));
+			FieldSpec thisFieldSpec = get(i);
+			FieldSpec otherFieldSpec = other.get(i);
+			int result = thisFieldSpec.compareTo(otherFieldSpec);
 			if(result != 0)
 				return result;
 		}
 		
 		return 0;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return new Vector(Arrays.asList(specs)).toString();
 	}
 
 	private FieldSpec[] specs;

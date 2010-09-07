@@ -32,12 +32,12 @@ import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 
+import org.martus.common.FieldSpecCollection;
 import org.martus.common.MartusXml;
 import org.martus.common.VersionBuildDate;
 import org.martus.common.XmlWriterFilter;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MockMartusSecurity;
-import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.StandardFieldSpecs;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.FieldDataPacket;
@@ -255,7 +255,7 @@ public class TestPacket extends TestCaseEnhanced
 
 	public void testValidatePacketWithWrongLocalId() throws Exception
 	{
-		FieldSpec[] specs = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
+		FieldSpecCollection specs = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
 		UniversalId uid = FieldDataPacket.createUniversalId(security);
 		FieldDataPacket fdp = new FieldDataPacket(uid, specs);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();

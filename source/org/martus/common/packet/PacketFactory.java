@@ -26,7 +26,7 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.packet;
 
-import org.martus.common.fieldspec.FieldSpec;
+import org.martus.common.FieldSpecCollection;
 
 
 public class PacketFactory
@@ -37,7 +37,7 @@ public class PacketFactory
 		if(BulletinHeaderPacket.isValidLocalId(localId))
 			return new BulletinHeaderPacket(uid);
 		else if(FieldDataPacket.isValidLocalId(localId))
-			return new FieldDataPacket(uid, new FieldSpec[0]);
+			return new FieldDataPacket(uid, new FieldSpecCollection(0));
 		else if(AttachmentPacket.isValidLocalId(localId))
 			return new AttachmentPacket(uid);
 			

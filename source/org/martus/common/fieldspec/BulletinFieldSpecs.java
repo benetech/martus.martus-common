@@ -26,32 +26,44 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.fieldspec;
 
+import org.martus.common.FieldSpecCollection;
+
 public class BulletinFieldSpecs
 {
 	public BulletinFieldSpecs()
 	{
 	}
 	
-	public FieldSpec[] getTopSectionSpecs()
+	public FieldSpecCollection getTopSectionSpecs()
 	{
 		return topSectionSpecs;
 	}
 
-	public FieldSpec[] getBottomSectionSpecs()
+	public FieldSpecCollection getBottomSectionSpecs()
 	{
 		return bottomSectionSpecs;
 	}
 	
 	public void setTopSectionSpecs(FieldSpec[] topSectionSpecsToUse)
 	{
+		setTopSectionSpecs(new FieldSpecCollection(topSectionSpecsToUse));
+	}
+	
+	public void setTopSectionSpecs(FieldSpecCollection topSectionSpecsToUse)
+	{
 		topSectionSpecs = topSectionSpecsToUse;
 	}
 
 	public void setBottomSectionSpecs(FieldSpec[] bottomSectionSpecsToUse)
 	{
+		setBottomSectionSpecs(new FieldSpecCollection(bottomSectionSpecsToUse));
+	}
+	
+	public void setBottomSectionSpecs(FieldSpecCollection bottomSectionSpecsToUse)
+	{
 		bottomSectionSpecs = bottomSectionSpecsToUse;
 	}
 
-	private FieldSpec[] topSectionSpecs;
-	private FieldSpec[] bottomSectionSpecs ;
+	private FieldSpecCollection topSectionSpecs;
+	private FieldSpecCollection bottomSectionSpecs ;
 }

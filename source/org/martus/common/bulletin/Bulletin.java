@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import org.martus.common.FieldSpecCollection;
 import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
 import org.martus.common.MartusUtilities;
@@ -74,15 +75,15 @@ public class Bulletin implements BulletinConstants
 
 	public Bulletin(MartusCrypto securityToUse)
 	{
-		this(securityToUse, StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray(), StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
+		this(securityToUse, StandardFieldSpecs.getDefaultTopSetionFieldSpecs(), StandardFieldSpecs.getDefaultBottomSectionFieldSpecs());
 	}
 	
-	public Bulletin(MartusCrypto securityToUse, FieldSpec[] publicFieldSpecs, FieldSpec[] privateFieldSpecs)
+	public Bulletin(MartusCrypto securityToUse, FieldSpecCollection publicFieldSpecs, FieldSpecCollection privateFieldSpecs)
 	{
 		this(securityToUse, BulletinHeaderPacket.createUniversalId(securityToUse), FieldDataPacket.createUniversalId(securityToUse), FieldDataPacket.createUniversalId(securityToUse), publicFieldSpecs, privateFieldSpecs);
 	}
 
-	public Bulletin(MartusCrypto securityToUse, UniversalId headerUid, UniversalId publicDataUid, UniversalId privateDataUid, FieldSpec[] publicFieldSpecs, FieldSpec[] privateFieldSpecs)
+	public Bulletin(MartusCrypto securityToUse, UniversalId headerUid, UniversalId publicDataUid, UniversalId privateDataUid, FieldSpecCollection publicFieldSpecs, FieldSpecCollection privateFieldSpecs)
 	{
 		security = securityToUse;
 		isNonAttachmentDataValidFlag = true;
@@ -155,7 +156,7 @@ public class Bulletin implements BulletinConstants
 	public boolean hasUnknownCustomField()
 	{
 		FieldDataPacket fdp = getFieldDataPacket();
-		FieldSpec[] specs = fdp.getFieldSpecs();
+		FieldSpec[] specs = fdp.getFieldSpecs().asArray();
 		for(int i=0; i < specs.length; ++i)
 		{
 			if(specs[i].hasUnknownStuff())
@@ -222,12 +223,12 @@ public class Bulletin implements BulletinConstants
 		return getBulletinHeaderPacket().getStatus();
 	}
 	
-	public FieldSpec[] getTopSectionFieldSpecs()
+	public FieldSpecCollection getTopSectionFieldSpecs()
 	{
 		return fieldData.getFieldSpecs();
 	}
 	
-	public FieldSpec[] getBottomSectionFieldSpecs()
+	public FieldSpecCollection getBottomSectionFieldSpecs()
 	{
 		return getPrivateFieldDataPacket().getFieldSpecs();
 	}
@@ -407,10 +408,10 @@ public class Bulletin implements BulletinConstants
 		setDraft();
 	}
 
-	private void clearUserDataInSection(FieldSpec[] specs) 
+	private void clearUserDataInSection(FieldSpecCollection specs) 
 	{
-		for(int i = 0; i < specs.length; ++i)
-			set(specs[i].getTag(), specs[i].getDefaultValue());
+		for(int i = 0; i < specs.size(); ++i)
+			set(specs.get(i).getTag(), specs.get(i).getDefaultValue());
 	}
 
 	public void clearPublicAttachments()
@@ -452,7 +453,7 @@ public class Bulletin implements BulletinConstants
 
 	private boolean doesSectionContain(FieldDataPacket section, String lookFor, MiniLocalization localization)
 	{
-		FieldSpec fields[] = section.getFieldSpecs();
+		FieldSpec fields[] = section.getFieldSpecs().asArray();
 		for(int f = 0; f < fields.length; ++f)
 		{
 			MartusField field = getField(fields[f].getTag());
@@ -582,11 +583,11 @@ public class Bulletin implements BulletinConstants
 
 	}
 	
-	public void pullFields(Bulletin other, FieldSpec[] fields)
+	public void pullFields(Bulletin other, FieldSpecCollection fields)
 	{
-		for(int f = 0; f < fields.length; ++f)
+		for(int f = 0; f < fields.size(); ++f)
 		{
-			set(fields[f].getTag(), other.get(fields[f].getTag()));
+			set(fields.get(f).getTag(), other.get(fields.get(f).getTag()));
 		}
 	}
 
@@ -664,21 +665,21 @@ public class Bulletin implements BulletinConstants
 
 	protected FieldDataPacket createPrivateFieldDataPacket(
 		UniversalId privateDataUid,
-		FieldSpec[] privateFieldSpecs)
+		FieldSpecCollection privateFieldSpecs)
 	{
 		return createFieldDataPacket(privateDataUid, privateFieldSpecs);
 	}
 
 	protected FieldDataPacket createPublicFieldDataPacket(
 		UniversalId dataUid,
-		FieldSpec[] publicFieldSpecs)
+		FieldSpecCollection publicFieldSpecs)
 	{
 		return createFieldDataPacket(dataUid, publicFieldSpecs);
 	}
 
 	protected FieldDataPacket createFieldDataPacket(
 		UniversalId dataUid,
-		FieldSpec[] publicFieldSpecs)
+		FieldSpecCollection publicFieldSpecs)
 	{
 		return new FieldDataPacket(dataUid, publicFieldSpecs);
 	}
