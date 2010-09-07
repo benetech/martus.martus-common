@@ -61,8 +61,8 @@ public class BulletinLoader
 			Bulletin.DamagedBulletinException,
 			MartusCrypto.NoKeyPairException
 	{
-		FieldSpec[] standardFieldNames = StandardFieldSpecs.getDefaultTopSectionFieldSpecsAsArray();
-		FieldSpec[] privateFieldNames = StandardFieldSpecs.getDefaultBottomSectionFieldSpecsAsArray();
+		FieldSpec[] standardFieldNames = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
+		FieldSpec[] privateFieldNames = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
 		Bulletin b = new Bulletin(verifier, standardFieldNames, privateFieldNames);
 		b.clearAllUserData();
 		b.setIsNonAttachmentDataValid(false);

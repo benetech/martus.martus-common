@@ -255,7 +255,7 @@ public class TestPacket extends TestCaseEnhanced
 
 	public void testValidatePacketWithWrongLocalId() throws Exception
 	{
-		FieldSpec[] specs = StandardFieldSpecs.getDefaultTopSectionFieldSpecsAsArray();
+		FieldSpec[] specs = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
 		UniversalId uid = FieldDataPacket.createUniversalId(security);
 		FieldDataPacket fdp = new FieldDataPacket(uid, specs);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();

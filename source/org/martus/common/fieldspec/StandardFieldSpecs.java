@@ -34,12 +34,6 @@ import org.martus.util.xml.XmlUtilities;
 
 public class StandardFieldSpecs
 {
-
-	public static FieldSpec[] getDefaultTopSectionFieldSpecsAsArray()
-	{
-		return getDefaultTopSetionFieldSpecs().asArray();
-	}
-
 	public static FieldSpecCollection getDefaultTopSetionFieldSpecs()
 	{
 		if(getDefaultTopSetionFieldSpecs() == null)
@@ -60,11 +54,6 @@ public class StandardFieldSpecs
 		}
 		
 		return defaultTopSectionFieldSpecs;
-	}
-
-	public static FieldSpec[] getDefaultBottomSectionFieldSpecsAsArray()
-	{
-		return getDefaultBottomSectionFieldSpecs().asArray();
 	}
 
 	public static FieldSpecCollection getDefaultBottomSectionFieldSpecs()
@@ -105,14 +94,14 @@ public class StandardFieldSpecs
 	
 	public static FieldSpec findStandardFieldSpec(String tag)
 	{
-		FieldSpec[] publicSpecs = StandardFieldSpecs.getDefaultTopSectionFieldSpecsAsArray();
+		FieldSpec[] publicSpecs = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
 		for(int i=0; i < publicSpecs.length; ++i)
 			if(publicSpecs[i].getTag().equals(tag))
 			{
 				return publicSpecs[i];
 			}
 				
-		FieldSpec[] privateSpecs = StandardFieldSpecs.getDefaultBottomSectionFieldSpecsAsArray();
+		FieldSpec[] privateSpecs = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
 		for(int i=0; i < privateSpecs.length; ++i)
 			if(privateSpecs[i].getTag().equals(tag))
 			{

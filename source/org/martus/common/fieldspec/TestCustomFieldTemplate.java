@@ -60,21 +60,21 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 	
 	public void testValidateXml() throws Exception
 	{
-		FieldCollection defaultTopSectionFields = new FieldCollection(StandardFieldSpecs.getDefaultTopSectionFieldSpecsAsArray());
-		FieldCollection defaultBottomSectionFields = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecsAsArray());
+		FieldCollection defaultTopSectionFields = new FieldCollection(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray());
+		FieldCollection defaultBottomSectionFields = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
 		CustomFieldTemplate template = new CustomFieldTemplate();
 		assertTrue("not valid?", template.isvalidTemplateXml(defaultTopSectionFields.toString(), defaultBottomSectionFields.toString()));
 		assertEquals(0, template.getErrors().size());
 		
 		FieldSpec invalidTopSectionField = FieldSpec.createCustomField("myTag", "", new FieldTypeNormal());
-		FieldCollection fields = FieldCollectionForTesting.extendFields(StandardFieldSpecs.getDefaultTopSectionFieldSpecsAsArray(), invalidTopSectionField);
+		FieldCollection fields = FieldCollectionForTesting.extendFields(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray(), invalidTopSectionField);
 		assertFalse("Should not be a valid template", template.isvalidTemplateXml(fields.toString(), defaultBottomSectionFields.toString()));
 		assertEquals(1, template.getErrors().size());
 		assertEquals(CustomFieldError.CODE_MISSING_LABEL,((CustomFieldError)template.getErrors().get(0)).getCode());
 
 		CustomFieldTemplate template2 = new CustomFieldTemplate();
 		FieldSpec invalidBottomSectionField = FieldSpec.createCustomField("myTag", "", new FieldTypeNormal());
-		fields = FieldCollectionForTesting.extendFields(StandardFieldSpecs.getDefaultBottomSectionFieldSpecsAsArray(), invalidBottomSectionField);
+		fields = FieldCollectionForTesting.extendFields(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray(), invalidBottomSectionField);
 		assertFalse("Should not be a valid template", template2.isvalidTemplateXml(defaultTopSectionFields.toString(), fields.toString()));
 		assertEquals(1, template2.getErrors().size());
 		assertEquals(CustomFieldError.CODE_MISSING_LABEL,((CustomFieldError)template2.getErrors().get(0)).getCode());
@@ -87,15 +87,15 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		exportFile.delete();
 		assertFalse(exportFile.exists());
 
-		FieldCollection defaultFieldsTopSection = new FieldCollection(StandardFieldSpecs.getDefaultTopSectionFieldSpecsAsArray());
-		FieldCollection defaultFieldsBottomSection = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecsAsArray());
+		FieldCollection defaultFieldsTopSection = new FieldCollection(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray());
+		FieldCollection defaultFieldsBottomSection = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
 		assertTrue(template.ExportTemplate(security, exportFile, defaultFieldsTopSection.toString(), defaultFieldsBottomSection.toString()));
 		assertTrue(exportFile.exists());
 		exportFile.delete();
 
 		FieldSpec invalidField = FieldSpec.createCustomField("myTag", "", new FieldTypeNormal());
-		FieldCollection withInvalid = FieldCollectionForTesting.extendFields(StandardFieldSpecs.getDefaultTopSectionFieldSpecsAsArray(), invalidField);
-		FieldCollection bottomSectionFields = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecsAsArray());
+		FieldCollection withInvalid = FieldCollectionForTesting.extendFields(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray(), invalidField);
+		FieldCollection bottomSectionFields = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
 		assertFalse(exportFile.exists());
 		assertFalse(template.ExportTemplate(security, exportFile, withInvalid.toString(), bottomSectionFields.toString()));
 		assertFalse(exportFile.exists());
@@ -104,7 +104,7 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 	
 	public void testImportXmlLegacy() throws Exception
 	{
-		FieldCollection fieldsTopSection = new FieldCollection(StandardFieldSpecs.getDefaultTopSectionFieldSpecsAsArray());
+		FieldCollection fieldsTopSection = new FieldCollection(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray());
 		File exportFile = createTempFileFromName("$$$testImportXmlLegacy");
 		exportFile.delete();
 		
@@ -119,7 +119,7 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		Vector authorizedKeys = new Vector();
 		authorizedKeys.add(security.getPublicKeyString());
 		assertTrue(template.importTemplate(security, exportFile, authorizedKeys));
-		FieldCollection defaultBottomSectionFields = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecsAsArray());
+		FieldCollection defaultBottomSectionFields = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
 		assertEquals(fieldsTopSection.toString(), template.getImportedTopSectionText());
 		assertEquals(defaultBottomSectionFields.toString(), template.getImportedBottomSectionText());
 		assertEquals(0, template.getErrors().size());
@@ -188,8 +188,8 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 
 	public void testImportXml() throws Exception
 	{
-		FieldCollection fieldsTopSection = new FieldCollection(StandardFieldSpecs.getDefaultTopSectionFieldSpecsAsArray());
-		FieldSpec[] fieldSpecsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecsAsArray();
+		FieldCollection fieldsTopSection = new FieldCollection(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray());
+		FieldSpec[] fieldSpecsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
 		String privateTag = "a2";
 		String privateLabel ="b2";
 		fieldSpecsBottomSection = TestCustomFieldSpecValidator.addFieldSpec(fieldSpecsBottomSection, LegacyCustomFields.createFromLegacy(privateTag+","+privateLabel));

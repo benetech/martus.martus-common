@@ -306,7 +306,7 @@ public class TestBulletin extends TestCaseEnhanced
 
 	public void testGetStandardFieldTypes()
 	{
-		FieldSpec[] standardPublicFields = StandardFieldSpecs.getDefaultTopSectionFieldSpecsAsArray();
+		FieldSpec[] standardPublicFields = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
 		for (int i = 0; i < standardPublicFields.length; i++)
 		{
 			FieldSpec spec = standardPublicFields[i];
@@ -324,7 +324,7 @@ public class TestBulletin extends TestCaseEnhanced
 				assertEquals(spec.getTag(), new FieldTypeNormal(), spec.getType());
 		}
 
-		FieldSpec[] standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecsAsArray();
+		FieldSpec[] standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
 		for (int i = 0; i < standardPrivateFields.length; i++)
 		{
 			FieldSpec spec = standardPrivateFields[i];
