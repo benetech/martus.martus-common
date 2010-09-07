@@ -28,6 +28,7 @@ package org.martus.common;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Vector;
 
 import org.martus.common.fieldspec.FieldSpec;
 
@@ -61,6 +62,11 @@ public class FieldSpecCollection implements Comparable
 	public Set asSet() 
 	{
 		return new HashSet(Arrays.asList(specs));
+	}
+	
+	public FieldSpec[] asArray()
+	{
+		return (FieldSpec[]) new Vector(Arrays.asList(specs)).toArray(new FieldSpec[0]);
 	}
 	
 	public int hashCode() 
@@ -117,6 +123,5 @@ public class FieldSpecCollection implements Comparable
 		return 0;
 	}
 
-	FieldSpec[] specs;
-
+	private FieldSpec[] specs;
 }

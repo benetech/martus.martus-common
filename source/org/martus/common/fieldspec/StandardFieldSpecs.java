@@ -26,6 +26,7 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.fieldspec;
 
+import org.martus.common.FieldSpecCollection;
 import org.martus.common.MiniLocalization;
 import org.martus.common.bulletin.BulletinConstants;
 import org.martus.util.xml.XmlUtilities;
@@ -38,7 +39,7 @@ public class StandardFieldSpecs
 	{
 		if(defaultTopSectionFieldSpecs == null)
 		{
-			defaultTopSectionFieldSpecs = new FieldSpec[] 
+			defaultTopSectionFieldSpecs = new FieldSpecCollection(new FieldSpec[] 
 			{
 				FieldSpec.createStandardField(BulletinConstants.TAGLANGUAGE, new FieldTypeLanguage()),
 				FieldSpec.createStandardField(BulletinConstants.TAGAUTHOR, new FieldTypeNormal()),
@@ -50,23 +51,23 @@ public class StandardFieldSpecs
 				FieldSpec.createStandardField(BulletinConstants.TAGENTRYDATE, new FieldTypeDate()),
 				FieldSpec.createStandardField(BulletinConstants.TAGSUMMARY, new FieldTypeMultiline()),
 				FieldSpec.createStandardField(BulletinConstants.TAGPUBLICINFO, new FieldTypeMultiline()),
-			};
+			});
 		}
 		
-		return (FieldSpec[]) defaultTopSectionFieldSpecs.clone();
+		return defaultTopSectionFieldSpecs.asArray();
 	}
 
 	public static FieldSpec[] getDefaultBottomSectionFieldSpecs()
 	{
 		if(defaultBottomSectionFieldSpecs == null)
 		{
-			defaultBottomSectionFieldSpecs = new FieldSpec[]
+			defaultBottomSectionFieldSpecs = new FieldSpecCollection(new FieldSpec[]
 			{
 				FieldSpec.createStandardField(BulletinConstants.TAGPRIVATEINFO, new FieldTypeMultiline()),
-			};
+			});
 		}
 		
-		return (FieldSpec[]) defaultBottomSectionFieldSpecs.clone();
+		return defaultBottomSectionFieldSpecs.asArray();
 	}
 
 	public static FieldType getStandardType(String tag)
@@ -127,6 +128,6 @@ public class StandardFieldSpecs
 		return XmlUtilities.getXmlEncoded(proposedLabel);
 	}
 
-	private static FieldSpec[] defaultTopSectionFieldSpecs;
-	private static FieldSpec[] defaultBottomSectionFieldSpecs;
+	private static FieldSpecCollection defaultTopSectionFieldSpecs;
+	private static FieldSpecCollection defaultBottomSectionFieldSpecs;
 }
