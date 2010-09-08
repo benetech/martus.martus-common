@@ -26,9 +26,11 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.test;
 
+import java.util.Set;
+
 import org.martus.common.FieldCollection;
+import org.martus.common.FieldSpecCollection;
 import org.martus.common.LegacyCustomFields;
-import org.martus.common.PoolOfReusableChoicesLists;
 import org.martus.common.ReusableChoices;
 import org.martus.common.XmlCustomFieldsLoader;
 import org.martus.common.fieldspec.CustomDropDownFieldSpec;
@@ -95,15 +97,20 @@ public class TestCustomFields extends TestCaseEnhanced
 		String xml = "<CustomFields>" + SAMPLE_DROPDOWN_CHOICES + "</CustomFields>";
 		XmlCustomFieldsLoader loader = new XmlCustomFieldsLoader();
 		loader.parse(xml);
-		PoolOfReusableChoicesLists choiceDefinitions = loader.getChoiceDefinitions();
-		assertEquals("Didn't see two choice definitions?", 2, choiceDefinitions.size());
-		ReusableChoices outer = choiceDefinitions.getChoices(OUTER_LEVEL_NAME);
+		FieldSpecCollection specs = loader.getFieldSpecs();
+
+		Set reusableChoicenames = specs.getReusableChoiceNames();
+		assertEquals("Didn't see two choice definitions?", 2, reusableChoicenames.size());
+		assertContains("Missing outer choices?", OUTER_LEVEL_NAME, reusableChoicenames);
+		assertContains("Missing middle choices?", MIDDLE_LEVEL_NAME, reusableChoicenames);
+
+		ReusableChoices outer = specs.getReusableChoices(OUTER_LEVEL_NAME);
 		assertEquals("Wrong reusable outer label?", "District:", outer.getLabel());
 		assertEquals("Wrong number of outer choices?", 3, outer.size());
 		assertEquals("Wrong outer choice code?", "2", outer.get(1).getCode());
 		assertEquals("Wrong outer choice label?", "Netrokona", outer.get(1).toString());
 
-		ReusableChoices middle = choiceDefinitions.getChoices(MIDDLE_LEVEL_NAME);
+		ReusableChoices middle = specs.getReusableChoices(MIDDLE_LEVEL_NAME);
 		assertEquals("Wrong reusable middle label?", "Upazilla:", middle.getLabel());
 		assertEquals("Wrong number of middle choices?", 4, middle.size());
 		assertEquals("Wrong middle choice code?", "2.01", middle.get(2).getCode());

@@ -71,15 +71,11 @@ public class XmlCustomFieldsLoader extends SimpleXmlDefaultLoader
 		fields = new Vector();
 	}
 	
-	public PoolOfReusableChoicesLists getChoiceDefinitions()
-	{
-		return dropdownChoices;
-	}
-
 	public FieldSpecCollection getFieldSpecs()
 	{
 		FieldSpec[] specsArray = (FieldSpec[]) fields.toArray(new FieldSpec[0]);
 		FieldSpecCollection specs = new FieldSpecCollection(specsArray);
+		specs.setReusableDropdownChoices(dropdownChoices);
 		return specs;
 	}
 

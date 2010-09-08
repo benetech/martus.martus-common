@@ -37,6 +37,7 @@ public class FieldSpecCollection implements Comparable
 	public FieldSpecCollection(FieldSpec[] specsToUse)
 	{
 		specs = new Vector(Arrays.asList(specsToUse));
+		reusableChoicesPool = new PoolOfReusableChoicesLists();
 	}
 	
 	public FieldSpecCollection()
@@ -64,6 +65,21 @@ public class FieldSpecCollection implements Comparable
 		return new HashSet(specs);
 	}
 	
+	public void setReusableDropdownChoices(PoolOfReusableChoicesLists dropdownChoices)
+	{
+		reusableChoicesPool = dropdownChoices;
+	}
+
+	public Set getReusableChoiceNames()
+	{
+		return reusableChoicesPool.getAvailableNames();
+	}
+
+	public ReusableChoices getReusableChoices(String name)
+	{
+		return reusableChoicesPool.getChoices(name);
+	}
+
 	public FieldSpec[] asArray()
 	{
 		return (FieldSpec[]) specs.toArray(new FieldSpec[0]);
@@ -124,4 +140,5 @@ public class FieldSpecCollection implements Comparable
 	}
 	
 	private Vector specs;
+	private PoolOfReusableChoicesLists reusableChoicesPool;
 }

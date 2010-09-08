@@ -27,6 +27,7 @@ package org.martus.common;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 
 public class PoolOfReusableChoicesLists
@@ -44,6 +45,11 @@ public class PoolOfReusableChoicesLists
 	public Object size()
 	{
 		return namedReusableChoices.size();
+	}
+
+	public Set getAvailableNames()
+	{
+		return namedReusableChoices.keySet();
 	}
 
 	public ReusableChoices getChoices(String name)
