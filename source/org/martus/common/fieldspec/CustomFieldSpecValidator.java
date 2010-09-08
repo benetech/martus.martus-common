@@ -27,6 +27,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.fieldspec;
 
 import java.util.HashMap;
+import java.util.Set;
 import java.util.Vector;
 
 import org.martus.common.FieldCollection;
@@ -39,29 +40,27 @@ public class CustomFieldSpecValidator
 {
 	public CustomFieldSpecValidator(FieldCollection specsToCheckTopSection, FieldCollection specsToCheckBottomSection, boolean allowSpaceOnlyCustomLabels)
 	{
-		this(specsToCheckTopSection.getSpecs().asArray(), specsToCheckBottomSection.getSpecs().asArray(), allowSpaceOnlyCustomLabels);
+		this(specsToCheckTopSection.getSpecs(), specsToCheckBottomSection.getSpecs(), allowSpaceOnlyCustomLabels);
 	}
 	
 	public CustomFieldSpecValidator(FieldSpecCollection specsToCheckTopSection, FieldSpecCollection specsToCheckBottomSection)
 	{
-		this(specsToCheckTopSection.asArray(), specsToCheckBottomSection.asArray(), false);
-	}
-	
-	public CustomFieldSpecValidator(FieldSpec[] specsToCheckTopSection, FieldSpec[] specsToCheckBottomSection)
-	{
 		this(specsToCheckTopSection, specsToCheckBottomSection, false);
 	}
 	
-	public CustomFieldSpecValidator(FieldSpec[] specsToCheckTopSection, FieldSpec[] specsToCheckBottomSection, boolean allowSpaceOnlyCustomLabels)
+	public CustomFieldSpecValidator(FieldSpecCollection specsToCheckTopSection, FieldSpecCollection specsToCheckBottomSection, boolean allowSpaceOnlyCustomLabels)
 	{
 		allowSpaceOnlyCustomFieldLabels = allowSpaceOnlyCustomLabels;
 		errors = new Vector();
 		
-		HashMap topGridFieldSpecs = scanForGrids(specsToCheckTopSection);
-		HashMap bottomGridFieldSpecs = scanForGrids(specsToCheckBottomSection);
+		FieldSpec[] rawSpecsToCheckTopSection = specsToCheckTopSection.asArray();
+		FieldSpec[] rawSpecsToCheckBottomSection = specsToCheckBottomSection.asArray();
 		
-		checkForRequiredTopSectionFields(specsToCheckTopSection);
-		checkForPrivateField(specsToCheckTopSection);
+		HashMap topGridFieldSpecs = scanForGrids(rawSpecsToCheckTopSection);
+		HashMap bottomGridFieldSpecs = scanForGrids(rawSpecsToCheckBottomSection);
+		
+		checkForRequiredTopSectionFields(rawSpecsToCheckTopSection);
+		checkForPrivateField(rawSpecsToCheckTopSection);
 
 		checkCommonErrors(specsToCheckTopSection);
 		checkCommonErrors(specsToCheckBottomSection);
@@ -69,12 +68,12 @@ public class CustomFieldSpecValidator
 		checkForCommonErrorsInsideGrids(specsToCheckTopSection, topGridFieldSpecs);
 		checkForCommonErrorsInsideGrids(specsToCheckBottomSection, bottomGridFieldSpecs);
 
-		checkForDuplicateFields(specsToCheckTopSection, specsToCheckBottomSection);
+		checkForDuplicateFields(rawSpecsToCheckTopSection, rawSpecsToCheckBottomSection);
 		
-		checkForMartusFieldsBottomSectionFields(specsToCheckBottomSection);
+		checkForMartusFieldsBottomSectionFields(rawSpecsToCheckBottomSection);
 
-		checkDataDrivenDropDowns(specsToCheckTopSection, topGridFieldSpecs);
-		checkDataDrivenDropDowns(specsToCheckBottomSection, bottomGridFieldSpecs);
+		checkDataDrivenDropDowns(rawSpecsToCheckTopSection, topGridFieldSpecs);
+		checkDataDrivenDropDowns(rawSpecsToCheckBottomSection, bottomGridFieldSpecs);
 	}
 
 	private HashMap scanForGrids(FieldSpec[] specsToCheck)
@@ -90,16 +89,16 @@ public class CustomFieldSpecValidator
 		return grids;
 	}
 
-	private void checkCommonErrors(FieldSpec[] specsToCheck) 
+	private void checkCommonErrors(FieldSpecCollection specsToCheck) 
 	{
-		checkForReservedTags(specsToCheck);
-		checkForLabelsOnStandardFields(specsToCheck);
+		checkForReservedTags(specsToCheck.asArray());
+		checkForLabelsOnStandardFields(specsToCheck.asArray());
 
 		checkForDropdownsWithDuplicatedOrZeroEntries(specsToCheck);
-		checkForIllegalTagCharacters(specsToCheck);
-		checkForBlankTags(specsToCheck);
-		checkForMissingCustomLabels(specsToCheck);
-		checkForUnknownTypes(specsToCheck);
+		checkForIllegalTagCharacters(specsToCheck.asArray());
+		checkForBlankTags(specsToCheck.asArray());
+		checkForMissingCustomLabels(specsToCheck.asArray());
+		checkForUnknownTypes(specsToCheck.asArray());
 	}
 		
 	public boolean isValid()
@@ -276,11 +275,11 @@ public class CustomFieldSpecValidator
 		checkForDuplicateFields(allSpecs);
 	}
 
-	private void checkForDropdownsWithDuplicatedOrZeroEntries(FieldSpec[] specsToCheck)
+	private void checkForDropdownsWithDuplicatedOrZeroEntries(FieldSpecCollection specsToCheck)
 	{
-		for (int i = 0; i < specsToCheck.length; i++)
+		for (int i = 0; i < specsToCheck.size(); i++)
 		{
-			FieldSpec thisSpec = specsToCheck[i];
+			FieldSpec thisSpec = specsToCheck.get(i);
 			if(thisSpec.getType().isDropdown())
 			{
 				DropDownFieldSpec dropdownSpec = (DropDownFieldSpec)thisSpec;
@@ -288,15 +287,16 @@ public class CustomFieldSpecValidator
 				String label = thisSpec.getLabel();
 				checkForDuplicateEntriesInDropDownSpec(dropdownSpec, tag, label);
 				checkForNoDropdownChoices(dropdownSpec, tag, label);
+				checkForMissingReusableChoices(dropdownSpec, tag, label, specsToCheck.getReusableChoiceNames());
 			}
 		}
 	}
 	
-	private void checkForCommonErrorsInsideGrids(FieldSpec[] specsToCheck, HashMap otherGrids)
+	private void checkForCommonErrorsInsideGrids(FieldSpecCollection specsToCheck, HashMap otherGrids)
 	{
-		for (int i = 0; i < specsToCheck.length; i++)
+		for (int i = 0; i < specsToCheck.size(); i++)
 		{
-			FieldSpec thisSpec = specsToCheck[i];
+			FieldSpec thisSpec = specsToCheck.get(i);
 			if(thisSpec.getType().isGrid())
 			{
 				GridFieldSpec gridSpec = (GridFieldSpec)thisSpec;
@@ -309,9 +309,11 @@ public class CustomFieldSpecValidator
 					if(columnSpec.getType().isDropdown())
 					{
 						String gridLabel = gridSpec.getLabel();
-						checkForDuplicateEntriesInDropDownSpec((DropDownFieldSpec)columnSpec, gridTag, gridLabel);
-						checkForNoDropdownChoices((DropDownFieldSpec)columnSpec, gridTag, gridLabel);
-						checkDataDrivenDropDown((DropDownFieldSpec)columnSpec, otherGrids);
+						DropDownFieldSpec dropdownSpec = (DropDownFieldSpec)columnSpec;
+						checkForDuplicateEntriesInDropDownSpec(dropdownSpec, gridTag, gridLabel);
+						checkForNoDropdownChoices(dropdownSpec, gridTag, gridLabel);
+						checkDataDrivenDropDown(dropdownSpec, otherGrids);
+						checkForMissingReusableChoices(dropdownSpec, gridTag, gridLabel, specsToCheck.getReusableChoiceNames());
 					}
 				}
 			}
@@ -332,10 +334,28 @@ public class CustomFieldSpecValidator
 	
 	private void checkForNoDropdownChoices(DropDownFieldSpec dropdownSpec, String tag, String label)
 	{
-		if(dropdownSpec.getCount() == 0 && dropdownSpec.getDataSourceGridTag() == null)
+		if(dropdownSpec.getDataSourceGridTag() != null)
+			return;
+		
+		if(dropdownSpec.getReusableChoicesCode() != null)
+			return;
+		
+		if(dropdownSpec.getCount() == 0)
 			errors.add(CustomFieldError.noDropDownEntries(tag, label));				
 	}
 	
+	private void checkForMissingReusableChoices(DropDownFieldSpec dropdownSpec, String tag, String label, Set reusableChoiceNames)
+	{
+		String reusableChoicesCode = dropdownSpec.getReusableChoicesCode();
+		if(reusableChoicesCode == null)
+			return;
+		
+		if(reusableChoiceNames.contains(reusableChoicesCode))
+			return;
+		
+		errors.add(CustomFieldError.errorMissingReusableChoices(tag, label, dropdownSpec.getType().getTypeName()));
+	}
+
 	private void checkForMissingCustomLabels(FieldSpec[] specsToCheck)
 	{
 		for (int i = 0; i < specsToCheck.length; i++)

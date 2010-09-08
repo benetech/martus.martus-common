@@ -135,6 +135,11 @@ public class CustomFieldError
 		return new CustomFieldError(CODE_INVALID_ISO_DATE, tag, label, type);
 	}
 
+	public static Object errorMissingReusableChoices(String tag, String label, String type)
+	{
+		return new CustomFieldError(CODE_MISSING_REUSABLE_CHOICES, tag, label, type);
+	}
+
 	private CustomFieldError(String code, String tag, String label, String type)
 	{
 		this.code = code;
@@ -182,6 +187,7 @@ public class CustomFieldError
 	static public final String CODE_UNKNOWN_DATA_SOURCE_GRID_COLUMN = "114";
 	static public final String CODE_DROPDOWN_HAS_CHOICES_AND_DATA_SOURCE = "115";
 	static public final String CODE_INVALID_ISO_DATE = "116";
+	static public final String CODE_MISSING_REUSABLE_CHOICES = "117";
 	
 	// Null specs is no longer a possibility
 	//static public final String CODE_NULL_SPECS = "200";

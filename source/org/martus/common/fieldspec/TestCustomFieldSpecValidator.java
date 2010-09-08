@@ -113,7 +113,7 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 
 	public void testMissingRequiredFields() throws Exception
 	{
-		FieldSpec[] emptySpecs = {};
+		FieldSpecCollection emptySpecs = new FieldSpecCollection();
 		
 		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(emptySpecs, emptySpecs);
 		assertFalse("valid?", checker.isValid());
@@ -354,18 +354,44 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		verifyExpectedError("Duplicate Dropdown Entry Bottom Section", CustomFieldError.CODE_DUPLICATE_DROPDOWN_ENTRY, tag2, label2, null, (CustomFieldError)errors.get(1));
 	}
 
-// FIXME: Un-comment as soon as this test can be written
-//	public void testDropDownWithMissingReusableChoices() throws Exception
-//	{
-//		FieldSpec[] specsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
-//		CustomDropDownFieldSpec dropdown = new CustomDropDownFieldSpec();
-//		dropdown.setReusableChoicesCode("Doesn't exist");
-//		FieldSpecCollection specsBottomSection = new FieldSpecCollection();
-//		specsBottomSection.add(dropdown);
-//		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
-//		Vector errors = checker.getAllErrors();
-//		
-//	}
+	public void testDropDownWithMissingReusableChoices() throws Exception
+	{
+		CustomDropDownFieldSpec dropdown = new CustomDropDownFieldSpec();
+		dropdown.setTag("tag");
+		dropdown.setLabel("Label:");
+		dropdown.setReusableChoicesCode("Doesn't exist");
+		specsTopSection.add(dropdown);
+		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		assertFalse("Should be invalid due to missing reusable choices", checker.isValid());
+		Vector errors = checker.getAllErrors();
+		assertEquals("Should just be the missing reusable choices error", 1, errors.size());
+		CustomFieldError error = (CustomFieldError)errors.get(0);
+		assertEquals("Wrong error code?", CustomFieldError.CODE_MISSING_REUSABLE_CHOICES, error.getCode());
+	}
+	
+	public void testDropDownWithMissingReusableChoicesInsideGrid() throws Exception
+	{
+		CustomDropDownFieldSpec dropdown = new CustomDropDownFieldSpec();
+		dropdown.setTag("tag");
+		dropdown.setLabel("Label:");
+		dropdown.setReusableChoicesCode("Doesn't exist");
+
+		GridFieldSpec gridWithDropDownWithMissingReusableChoices = new GridFieldSpec();
+		gridWithDropDownWithMissingReusableChoices.setTag("grid");
+		gridWithDropDownWithMissingReusableChoices.setLabel("Grid");
+		gridWithDropDownWithMissingReusableChoices.addColumn(dropdown);
+		specsTopSection = addFieldSpec(specsTopSection, gridWithDropDownWithMissingReusableChoices);
+		
+		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		
+		assertFalse("Should be invalid due to missing reusable choices", checker.isValid());
+		Vector errors = checker.getAllErrors();
+		assertEquals("Should just be the missing reusable choices error", 1, errors.size());
+		CustomFieldError error = (CustomFieldError)errors.get(0);
+		assertEquals("Wrong error code?", CustomFieldError.CODE_MISSING_REUSABLE_CHOICES, error.getCode());
+	}
+	
 	
 	public void testNoDropDownEntries() throws Exception
 	{
