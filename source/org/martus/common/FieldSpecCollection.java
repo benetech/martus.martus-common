@@ -39,9 +39,9 @@ public class FieldSpecCollection implements Comparable
 		specs = new Vector(Arrays.asList(specsToUse));
 	}
 	
-	public FieldSpecCollection(int size)
+	public FieldSpecCollection()
 	{
-		this(new FieldSpec[size]);
+		this(new FieldSpec[0]);
 	}
 	
 	public int size()

@@ -37,7 +37,7 @@ public class PacketFactory
 		if(BulletinHeaderPacket.isValidLocalId(localId))
 			return new BulletinHeaderPacket(uid);
 		else if(FieldDataPacket.isValidLocalId(localId))
-			return new FieldDataPacket(uid, new FieldSpecCollection(0));
+			return new FieldDataPacket(uid, new FieldSpecCollection());
 		else if(AttachmentPacket.isValidLocalId(localId))
 			return new AttachmentPacket(uid);
 			
