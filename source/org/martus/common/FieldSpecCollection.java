@@ -65,9 +65,9 @@ public class FieldSpecCollection implements Comparable
 		return new HashSet(specs);
 	}
 	
-	public void setReusableDropdownChoices(PoolOfReusableChoicesLists dropdownChoices)
+	public void addReusableChoiceList(ReusableChoices setOfChoices)
 	{
-		reusableChoicesPool = dropdownChoices;
+		reusableChoicesPool.add(setOfChoices);
 	}
 
 	public Set getReusableChoiceNames()
