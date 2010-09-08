@@ -36,7 +36,7 @@ public class FieldSpecCollection implements Comparable
 {
 	public FieldSpecCollection(FieldSpec[] specsToUse)
 	{
-		specs = specsToUse;
+		specs = new Vector(Arrays.asList(specsToUse));
 	}
 	
 	public FieldSpecCollection(int size)
@@ -46,34 +46,34 @@ public class FieldSpecCollection implements Comparable
 	
 	public int size()
 	{
-		return specs.length;
+		return specs.size();
 	}
 	
-	public void set(int index, FieldSpec spec)
+	public void add(FieldSpec spec)
 	{
-		specs[index] = spec;
+		specs.add(spec);
 	}
 	
 	public FieldSpec get(int index)
 	{
-		return specs[index];
+		return (FieldSpec) specs.get(index);
 	}
 	
 	public Set asSet() 
 	{
-		return new HashSet(Arrays.asList(specs));
+		return new HashSet(specs);
 	}
 	
 	public FieldSpec[] asArray()
 	{
-		return (FieldSpec[]) new Vector(Arrays.asList(specs)).toArray(new FieldSpec[0]);
+		return (FieldSpec[]) specs.toArray(new FieldSpec[0]);
 	}
 	
 	public int hashCode() 
 	{
 		final int PRIME = 31;
 		int result = 1;
-		result = PRIME * result + FieldSpecCollection.hashCode(specs);
+		result = PRIME * result + FieldSpecCollection.hashCode(specs.toArray());
 		return result;
 	}
 
@@ -123,11 +123,5 @@ public class FieldSpecCollection implements Comparable
 		return 0;
 	}
 	
-	@Override
-	public String toString()
-	{
-		return new Vector(Arrays.asList(specs)).toString();
-	}
-
-	private FieldSpec[] specs;
+	private Vector specs;
 }

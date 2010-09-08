@@ -66,10 +66,10 @@ public class TestFieldCollectionMemoryUsage extends TestCaseEnhanced
 		FieldCollection[] packets = new FieldCollection[bulletinCount];
 		for(int b = 0; b < packets.length; ++b)
 		{
-			FieldSpecCollection fields = new FieldSpecCollection(fieldCount);
-			for(int f = 0; f < fields.size(); ++f)
+			FieldSpecCollection fields = new FieldSpecCollection(0);
+			for(int f = 0; f < fieldCount; ++f)
 			{
-				fields.set(f, createLongMessageFieldSpec(fieldSize));
+				fields.add(createLongMessageFieldSpec(fieldSize));
 			}
 			packets[b] = new FieldCollection(fields);
 		}
