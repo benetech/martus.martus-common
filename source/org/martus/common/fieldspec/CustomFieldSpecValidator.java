@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Vector;
 
 import org.martus.common.FieldCollection;
+import org.martus.common.FieldSpecCollection;
 import org.martus.common.bulletin.BulletinConstants;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlParser;
@@ -41,6 +42,11 @@ public class CustomFieldSpecValidator
 		this(specsToCheckTopSection.getSpecs().asArray(), specsToCheckBottomSection.getSpecs().asArray(), allowSpaceOnlyCustomLabels);
 	}
 	
+	public CustomFieldSpecValidator(FieldSpecCollection specsToCheckTopSection, FieldSpecCollection specsToCheckBottomSection)
+	{
+		this(specsToCheckTopSection.asArray(), specsToCheckBottomSection.asArray(), false);
+	}
+	
 	public CustomFieldSpecValidator(FieldSpec[] specsToCheckTopSection, FieldSpec[] specsToCheckBottomSection)
 	{
 		this(specsToCheckTopSection, specsToCheckBottomSection, false);
@@ -50,11 +56,6 @@ public class CustomFieldSpecValidator
 	{
 		allowSpaceOnlyCustomFieldLabels = allowSpaceOnlyCustomLabels;
 		errors = new Vector();
-		if(specsToCheckTopSection == null || specsToCheckBottomSection == null)
-		{
-			errors.add(CustomFieldError.errorNoSpecs());
-			return;
-		}
 		
 		HashMap topGridFieldSpecs = scanForGrids(specsToCheckTopSection);
 		HashMap bottomGridFieldSpecs = scanForGrids(specsToCheckBottomSection);

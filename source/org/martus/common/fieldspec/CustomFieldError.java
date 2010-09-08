@@ -29,11 +29,6 @@ package org.martus.common.fieldspec;
 
 public class CustomFieldError
 {
-	static public CustomFieldError errorNoSpecs()
-	{
-		return new CustomFieldError(CODE_NULL_SPECS, UNUSED_FIELD, UNUSED_FIELD, UNUSED_FIELD);
-	}
-	
 	static public CustomFieldError errorRequiredField(String fieldTagMissing)
 	{
 		return new CustomFieldError(CODE_REQUIRED_FIELD, fieldTagMissing, UNUSED_FIELD, UNUSED_FIELD);
@@ -187,7 +182,9 @@ public class CustomFieldError
 	static public final String CODE_UNKNOWN_DATA_SOURCE_GRID_COLUMN = "114";
 	static public final String CODE_DROPDOWN_HAS_CHOICES_AND_DATA_SOURCE = "115";
 	static public final String CODE_INVALID_ISO_DATE = "116";
-	static public final String CODE_NULL_SPECS = "200";
+	
+	// Null specs is no longer a possibility
+	//static public final String CODE_NULL_SPECS = "200";
 	static public final String CODE_UNAUTHORIZED_KEY = "201";
 	static public final String CODE_SIGNATURE_ERROR = "202";
 	static public final String CODE_IO_ERROR = "203";

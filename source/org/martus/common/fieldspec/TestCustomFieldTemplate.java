@@ -29,8 +29,10 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Vector;
+
 import org.martus.common.FieldCollection;
 import org.martus.common.FieldCollectionForTesting;
+import org.martus.common.FieldSpecCollection;
 import org.martus.common.LegacyCustomFields;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.util.TestCaseEnhanced;
@@ -189,7 +191,7 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 	public void testImportXml() throws Exception
 	{
 		FieldCollection fieldsTopSection = new FieldCollection(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray());
-		FieldSpec[] fieldSpecsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
+		FieldSpecCollection fieldSpecsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
 		String privateTag = "a2";
 		String privateLabel ="b2";
 		fieldSpecsBottomSection = TestCustomFieldSpecValidator.addFieldSpec(fieldSpecsBottomSection, LegacyCustomFields.createFromLegacy(privateTag+","+privateLabel));

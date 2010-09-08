@@ -29,6 +29,7 @@ package org.martus.common.fieldspec;
 import java.util.Vector;
 
 import org.martus.common.FieldCollection;
+import org.martus.common.FieldSpecCollection;
 import org.martus.common.LegacyCustomFields;
 import org.martus.common.bulletin.BulletinConstants;
 import org.martus.util.TestCaseEnhanced;
@@ -40,10 +41,17 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		super(name);
 	}
 	
+	@Override
+	protected void setUp() throws Exception
+	{
+		super.setUp();
+
+		specsTopSection = new FieldSpecCollection(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray());
+		specsBottomSection = new FieldSpecCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
+	}
+	
 	public void testAllValid() throws Exception
 	{
-		FieldSpec[] specsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
-		FieldSpec[] specsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
 		String tag = "_A.-_AllValid0123456789";
 		String label = "my Label";
 		specsTopSection = addFieldSpec(specsTopSection, LegacyCustomFields.createFromLegacy(tag+","+label));
@@ -54,26 +62,8 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		assertTrue("not valid?", checker.isValid());
 	}
 
-	public void testNull() throws Exception
-	{
-		FieldSpec[] nullSpecs = null;
-		FieldSpec[] specsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
-		FieldSpec[] specsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
-		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(nullSpecs, specsBottomSection);
-		assertFalse("valid?", checker.isValid());
-		CustomFieldError error = (CustomFieldError)checker.getAllErrors().get(0);
-		assertEquals("Incorrect Error code?", CustomFieldError.CODE_NULL_SPECS, error.getCode());
-
-		checker = new CustomFieldSpecValidator(specsTopSection, nullSpecs);
-		assertFalse("valid Bottom?", checker.isValid());
-		error = (CustomFieldError)checker.getAllErrors().get(0);
-		assertEquals("Incorrect Error code Bottom?", CustomFieldError.CODE_NULL_SPECS, error.getCode());
-	}
-	
 	public void testIllegalTagCharactersTopSection() throws Exception
 	{
-		FieldSpec[] specsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
-		FieldSpec[] specsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
 		String label = "anything";
 		int[] nepaliByteValuesWithNonBreakingSpace = new int[] {
 				0xe0, 0xa5, 0x8b, 0xc2, 
@@ -103,8 +93,6 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 	
 	public void testIllegalTagCharactersBottomSection() throws Exception
 	{
-		FieldSpec[] specsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
-		FieldSpec[] specsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
 		String label = "anything";
 		String[] variousIllegalTags = {"a tag", "a&amp;b", "a=b", "a'b", ".a"};
 		for(int i=0; i < variousIllegalTags.length; ++i)
@@ -149,9 +137,6 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 	
 	public void testReservedFields() throws Exception
 	{
-		FieldSpec[] specsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
-		FieldSpec[] specsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
-
 		String tagStatus = BulletinConstants.TAGSTATUS;
 		String labelStatus ="status";
 		specsTopSection = addFieldSpec(specsTopSection, LegacyCustomFields.createFromLegacy(tagStatus+","+labelStatus));
@@ -173,7 +158,7 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		verifyExpectedError("Reserved Fields", CustomFieldError.CODE_RESERVED_TAG, tagSaved, labelSaved, null, (CustomFieldError)errors.get(2));
 		
 		
-		specsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
+		specsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
 		specsBottomSection = addFieldSpec(specsBottomSection, LegacyCustomFields.createFromLegacy(tagStatus+","+labelStatus));
 		specsBottomSection = addFieldSpec(specsBottomSection, LegacyCustomFields.createFromLegacy(tagSent+","+labelSent));
 		specsBottomSection = addFieldSpec(specsBottomSection, LegacyCustomFields.createFromLegacy(tagSaved+","+labelSaved));
@@ -189,9 +174,9 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 
 	public void testMartusFieldsInBottomSection() throws Exception
 	{
-		FieldSpec[] specsTopSection = getRequiredOnlyTopSectionFieldSpecs();
-		FieldSpec[] specsBottomSection = getAllNonRequiredMartusFieldSpecs();
-		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		FieldSpecCollection specsRequiredOnlyTopSection = getRequiredOnlyTopSectionFieldSpecs();
+		FieldSpecCollection specsNonRequiredBottomSection = getAllNonRequiredMartusFieldSpecs();
+		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsRequiredOnlyTopSection, specsNonRequiredBottomSection);
 		assertFalse("Valid?", checker.isValid());
 		Vector errors = checker.getAllErrors();
 		int numberOfMartusFields = 6;
@@ -215,12 +200,12 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 
 	public void testPrivateFieldInTopSection() throws Exception
 	{
-		FieldSpec[] specsTopSection = getRequiredOnlyTopSectionFieldSpecs();
-		FieldSpec[] specsBottomSection = {};
+		FieldSpecCollection specsTopSectionRequirePlusPrivate = getRequiredOnlyTopSectionFieldSpecs();
+		FieldSpecCollection specsEmptyBottomSection = new FieldSpecCollection();
 		
-		specsTopSection = addFieldSpec(specsTopSection, FieldSpec.createStandardField(BulletinConstants.TAGPRIVATEINFO, new FieldTypeMultiline()));
+		specsTopSectionRequirePlusPrivate.add(FieldSpec.createStandardField(BulletinConstants.TAGPRIVATEINFO, new FieldTypeMultiline()));
 
-		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSectionRequirePlusPrivate, specsEmptyBottomSection);
 		assertFalse("Valid?", checker.isValid());
 		Vector errors = checker.getAllErrors();
 		assertEquals(1, errors.size());
@@ -230,8 +215,6 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 
 	public void testMissingTag() throws Exception
 	{
-		FieldSpec[] specsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
-		FieldSpec[] specsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
 		String label = "my Label";
 		specsTopSection = addFieldSpec(specsTopSection, LegacyCustomFields.createFromLegacy(","+label));
 		specsBottomSection = addFieldSpec(specsBottomSection, LegacyCustomFields.createFromLegacy(","+label));
@@ -245,17 +228,15 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 
 	public void testDuplicateTags() throws Exception
 	{
-		FieldSpec[] specsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
-		FieldSpec[] specsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
 		String tag = "a";
 		String label ="b";
-		specsTopSection = addFieldSpec(specsTopSection, LegacyCustomFields.createFromLegacy(tag+","+label));
-		specsTopSection = addFieldSpec(specsTopSection, LegacyCustomFields.createFromLegacy(tag+","+label));
+		FieldSpecCollection withA = addFieldSpec(specsTopSection, LegacyCustomFields.createFromLegacy(tag+","+label));
+		FieldSpecCollection withATwice = addFieldSpec(withA, LegacyCustomFields.createFromLegacy(tag+","+label));
 		String tag2 = "a2";
 		String label2 ="b2";
-		specsBottomSection = addFieldSpec(specsBottomSection, LegacyCustomFields.createFromLegacy(tag2+","+label2));
-		specsBottomSection = addFieldSpec(specsBottomSection, LegacyCustomFields.createFromLegacy(tag2+","+label2));
-		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		FieldSpecCollection withA2 = addFieldSpec(specsBottomSection, LegacyCustomFields.createFromLegacy(tag2+","+label2));
+		FieldSpecCollection withA2Twice = addFieldSpec(withA2, LegacyCustomFields.createFromLegacy(tag2+","+label2));
+		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(withATwice, withA2Twice);
 		assertFalse("valid?", checker.isValid());
 		Vector errors = checker.getAllErrors();
 		assertEquals("Should have 2 error", 2, errors.size());
@@ -263,11 +244,8 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		verifyExpectedError("Duplicate Tags Bottom Section", CustomFieldError.CODE_DUPLICATE_FIELD, tag2, label2, null, (CustomFieldError)errors.get(1));
 
 		//TODO duplicate tag from top found in bottom
-		specsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
-		specsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
-		specsTopSection = addFieldSpec(specsTopSection, LegacyCustomFields.createFromLegacy(tag+","+label));
-		specsBottomSection = addFieldSpec(specsBottomSection, LegacyCustomFields.createFromLegacy(tag+","+label));
-		checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		FieldSpecCollection bottomWithA = addFieldSpec(specsBottomSection, LegacyCustomFields.createFromLegacy(tag+","+label));
+		checker = new CustomFieldSpecValidator(withA, bottomWithA);
 		assertFalse("valid?", checker.isValid());
 		errors = checker.getAllErrors();
 		assertEquals("Should have 1 error", 1, errors.size());
@@ -277,8 +255,6 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 
 	public void testDuplicateDropDownEntry() throws Exception
 	{
-		FieldSpec[] specsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
-		FieldSpec[] specsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
 		String tag = "dd";
 		String label ="cc";
 		ChoiceItem[] choicesNoDups = {new ChoiceItem("no Dup", "first item"), new ChoiceItem("second", "second item")};
@@ -298,8 +274,8 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
 		assertTrue("invalid?", checker.isValid());
 		
-		specsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
-		specsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
+		specsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
+		specsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
 
 		ChoiceItem[] choicesWithDuplicate = {new ChoiceItem("duplicate", "duplicate"), new ChoiceItem("duplicate", "duplicate")};
 		DropDownFieldSpec dropDownSpecWithDuplicates = new DropDownFieldSpec(choicesWithDuplicate);
@@ -325,10 +301,9 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 	{
 		String tag = "dd";
 		String label ="cc";
-		FieldSpec[] specsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
+
 		String tag2 = "dd2";
 		String label2 ="cc2";
-		FieldSpec[] specsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
 
 		ChoiceItem[] choicesNoDups = {new ChoiceItem("no Dup", "first item"), new ChoiceItem("second", "second item")};
 		DropDownFieldSpec dropDownSpecNoDuplicates = new DropDownFieldSpec(choicesNoDups);
@@ -351,7 +326,7 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
 		assertTrue("invalid?", checker.isValid());
 		
-		specsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
+		specsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
 		ChoiceItem[] choicesWithDuplicate = {new ChoiceItem("duplicate", "duplicate"), new ChoiceItem("duplicate", "duplicate")};
 		DropDownFieldSpec dropDownSpecWithDuplicates = new DropDownFieldSpec(choicesWithDuplicate);
 		dropDownSpecWithDuplicates.setLabel("dropdown column label with dups");
@@ -361,7 +336,7 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		gridWithDuplicateDropdownEntries.addColumn(dropDownSpecWithDuplicates);
 		specsTopSection = addFieldSpec(specsTopSection, gridWithDuplicateDropdownEntries);
 		
-		specsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
+		specsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
 		ChoiceItem[] choicesWithDuplicate2 = {new ChoiceItem("duplicate2", "duplicate2"), new ChoiceItem("duplicate2", "duplicate2")};
 		DropDownFieldSpec dropDownSpecWithDuplicates2 = new DropDownFieldSpec(choicesWithDuplicate2);
 		dropDownSpecWithDuplicates2.setLabel("Dropdown label");
@@ -378,13 +353,25 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		verifyExpectedError("Duplicate Dropdown Entry", CustomFieldError.CODE_DUPLICATE_DROPDOWN_ENTRY, tag, label, null, (CustomFieldError)errors.get(0));
 		verifyExpectedError("Duplicate Dropdown Entry Bottom Section", CustomFieldError.CODE_DUPLICATE_DROPDOWN_ENTRY, tag2, label2, null, (CustomFieldError)errors.get(1));
 	}
+
+// FIXME: Un-comment as soon as this test can be written
+//	public void testDropDownWithMissingReusableChoices() throws Exception
+//	{
+//		FieldSpec[] specsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
+//		CustomDropDownFieldSpec dropdown = new CustomDropDownFieldSpec();
+//		dropdown.setReusableChoicesCode("Doesn't exist");
+//		FieldSpecCollection specsBottomSection = new FieldSpecCollection();
+//		specsBottomSection.add(dropdown);
+//		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+//		Vector errors = checker.getAllErrors();
+//		
+//	}
 	
 	public void testNoDropDownEntries() throws Exception
 	{
-		FieldSpec[] specsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
 		String tag = "dd";
 		String label ="cc";
-		FieldSpec[] specsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
+
 		String tag2 = "dd2";
 		String label2 ="cc2";
 
@@ -410,10 +397,9 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 	{
 		String tag = "dd";
 		String label ="cc";
-		FieldSpec[] specsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
+
 		String tag2 = "dd2";
 		String label2 ="cc2";
-		FieldSpec[] specsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
 
 		DropDownFieldSpec dropDownSpecNoEntries = new DropDownFieldSpec();
 		dropDownSpecNoEntries.setLabel("dropdown label");
@@ -444,8 +430,6 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		String columnTag = "dd";
 		String columnEmptyLabel ="";
 		String columnSpaceLabel =" ";
-		FieldSpec[] specsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
-		FieldSpec[] specsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
 
 		
 		String gridTag = "Grid";
@@ -468,9 +452,7 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 
 	public void testMissingCustomLabel() throws Exception
 	{
-		FieldSpec[] specsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
 		specsTopSection = addFieldSpec(specsTopSection, LegacyCustomFields.createFromLegacy("a,label"));
-		FieldSpec[] specsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
 		specsBottomSection = addFieldSpec(specsBottomSection, LegacyCustomFields.createFromLegacy("a2,label2"));
 		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
 		assertTrue("not valid?", checker.isValid());
@@ -498,7 +480,6 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 			"<Label>" + label + "</Label><Type>xxx</Type>" +
 			"</Field></CustomFields>";
 		FieldSpec badSpecTopSection = FieldCollection.parseXml(xmlFieldUnknownType).get(0); 
-		FieldSpec[] specsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
 		specsTopSection = addFieldSpec(specsTopSection, badSpecTopSection);
 		
 		String tag2 = "weirdTag2";
@@ -507,7 +488,6 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 			"<Label>" + label2 + "</Label><Type>xxx</Type>" +
 			"</Field></CustomFields>";
 		FieldSpec badSpecBottomSection = FieldCollection.parseXml(xmlFieldUnknownType2).get(0); 
-		FieldSpec[] specsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
 		specsBottomSection = addFieldSpec(specsBottomSection, badSpecBottomSection);
 
 		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
@@ -537,11 +517,8 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		gridWithUnknownColumnType.addColumn(badSpecBottomSection);
 
 		
-		FieldSpec[] specsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
 		specsTopSection = addFieldSpec(specsTopSection, gridWithUnknownColumnType);
 		
-		FieldSpec[] specsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
-
 		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
 		assertFalse("didn't detect unknown?", checker.isValid());
 
@@ -552,17 +529,19 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 
 	public void testStandardFieldWithLabel() throws Exception
 	{
-		FieldSpec[] specsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
-		String tag = specsTopSection[3].getTag();
+		FieldSpec[] rawSpecsTop = specsTopSection.asArray();
+		String tag = rawSpecsTop[3].getTag();
 		String illegal_label = "Some Label";
-		specsTopSection[3] = LegacyCustomFields.createFromLegacy(tag + ","+ illegal_label);
+		rawSpecsTop[3] = LegacyCustomFields.createFromLegacy(tag + ","+ illegal_label);
+		FieldSpecCollection top = new FieldSpecCollection(rawSpecsTop);
 
-		FieldSpec[] specsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray();
-		String tag2 = specsBottomSection[0].getTag();
+		FieldSpec[] rawSpecsBottom = specsBottomSection.asArray();
+		String tag2 = rawSpecsBottom[0].getTag();
 		String illegal_label2 = "Some Label2";
-		specsBottomSection[0] = LegacyCustomFields.createFromLegacy(tag2 + ","+ illegal_label2);
+		rawSpecsBottom[0] = LegacyCustomFields.createFromLegacy(tag2 + ","+ illegal_label2);
+		FieldSpecCollection bottom = new FieldSpecCollection(rawSpecsBottom);
 
-		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(top, bottom);
 		assertFalse("valid?", checker.isValid());
 
 		Vector errors = checker.getAllErrors();
@@ -597,13 +576,11 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		assertEquals("Incorrect Error code for parse XML error", CustomFieldError.CODE_UNAUTHORIZED_KEY, xmlError.getCode());
 	}
 
-	static public FieldSpec[] addFieldSpec(FieldSpec[] existingFieldSpecs, FieldSpec newFieldSpec)
+	static public FieldSpecCollection addFieldSpec(FieldSpecCollection existingFieldSpecs, FieldSpec newFieldSpec)
 	{
-		int oldCount = existingFieldSpecs.length;
-		FieldSpec[] tempFieldTags = new FieldSpec[oldCount + 1];
-		System.arraycopy(existingFieldSpecs, 0, tempFieldTags, 0, oldCount);
-		tempFieldTags[oldCount] = newFieldSpec;
-		return tempFieldTags;
+		FieldSpecCollection newCollection = new FieldSpecCollection(existingFieldSpecs.asArray());
+		newCollection.add(newFieldSpec);
+		return newCollection;
 	}
 
 	private void verifyExpectedError(String reportingErrorMsg, String expectedErrorCode, String expectedTag, String expectedLabel, FieldType expectedType, CustomFieldError errorToVerify) 
@@ -617,7 +594,7 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 			assertEquals("Incorrect type: " + reportingErrorMsg , FieldSpec.getTypeString(expectedType), errorToVerify.getType());
 	}
 
-	public static FieldSpec[] getRequiredOnlyTopSectionFieldSpecs()
+	public static FieldSpecCollection getRequiredOnlyTopSectionFieldSpecs()
 	{
 		FieldSpec[] requiredOnlyTopSectionFieldSpecs = new FieldSpec[] 
 			{
@@ -627,11 +604,11 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 				FieldSpec.createStandardField(BulletinConstants.TAGENTRYDATE, new FieldTypeDate()),
 			};
 		
-		return requiredOnlyTopSectionFieldSpecs;
+		return new FieldSpecCollection(requiredOnlyTopSectionFieldSpecs);
 		
 	}
 	
-	public static FieldSpec[] getAllNonRequiredMartusFieldSpecs()
+	public static FieldSpecCollection getAllNonRequiredMartusFieldSpecs()
 	{
 		FieldSpec[] allNonRequiredMartusFieldSpecs = new FieldSpec[] 
 			{
@@ -643,7 +620,7 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 				FieldSpec.createStandardField(BulletinConstants.TAGPUBLICINFO, new FieldTypeDate()),
 			};
 		
-		return allNonRequiredMartusFieldSpecs;
+		return new FieldSpecCollection(allNonRequiredMartusFieldSpecs);
 		
 	}
 	
@@ -656,4 +633,6 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		}
 	}
 	
+	private FieldSpecCollection specsTopSection;
+	private FieldSpecCollection specsBottomSection;
 }

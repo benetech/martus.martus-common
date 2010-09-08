@@ -170,7 +170,7 @@ public class CustomFieldTemplate
 		{
 			FieldSpecCollection newSpecsTopSection = FieldCollection.parseXml(xmlToValidateTopSection);
 			FieldSpecCollection newSpecsBottomSection = FieldCollection.parseXml(xmlToValidateBottomSection);
-			CustomFieldSpecValidator checker = new CustomFieldSpecValidator(newSpecsTopSection.asArray(), newSpecsBottomSection.asArray());
+			CustomFieldSpecValidator checker = new CustomFieldSpecValidator(newSpecsTopSection, newSpecsBottomSection);
 			if(checker.isValid())
 				return true;
 			errors.addAll(checker.getAllErrors());
