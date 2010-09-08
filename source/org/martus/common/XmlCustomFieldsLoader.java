@@ -51,8 +51,6 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common;
 
-import java.util.Vector;
-
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.xml.sax.SAXParseException;
@@ -68,15 +66,13 @@ public class XmlCustomFieldsLoader extends SimpleXmlDefaultLoader
 	{
 		super(tag);
 		dropdownChoices = new PoolOfReusableChoicesLists();
-		fields = new Vector();
+		fields = new FieldSpecCollection();
 	}
 	
 	public FieldSpecCollection getFieldSpecs()
 	{
-		FieldSpec[] specsArray = (FieldSpec[]) fields.toArray(new FieldSpec[0]);
-		FieldSpecCollection specs = new FieldSpecCollection(specsArray);
-		specs.setReusableDropdownChoices(dropdownChoices);
-		return specs;
+		fields.setReusableDropdownChoices(dropdownChoices);
+		return fields;
 	}
 
 	public SimpleXmlDefaultLoader startElement(String tag)
@@ -117,6 +113,6 @@ public class XmlCustomFieldsLoader extends SimpleXmlDefaultLoader
 	public static final String REUSABLE_CHOICES_XML_TAG = "ReusableChoices";
 
 	private PoolOfReusableChoicesLists dropdownChoices;
-	private Vector fields;
+	private FieldSpecCollection fields;
 
 }
