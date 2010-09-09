@@ -48,6 +48,12 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 
 	public void setChoicesFromStringVector(Vector stringChoicesToUse)
 	{
+		ChoiceItem[] newChoiceItems = createValidChoiceItemArrayFromStrings(stringChoicesToUse);
+		setChoices(newChoiceItems);
+	}
+
+	private ChoiceItem[] createValidChoiceItemArrayFromStrings(Vector stringChoicesToUse)
+	{
 		boolean hasEmptyCode = false;
 		Vector choices = new Vector();
 		for(int i = 0; i < stringChoicesToUse.size(); i++)
@@ -62,7 +68,7 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 			choices.insertElementAt(new ChoiceItem("", ""), 0);
 		
 		ChoiceItem[] newChoiceItems = (ChoiceItem[])choices.toArray(new ChoiceItem[0]);
-		setChoices(newChoiceItems);
+		return newChoiceItems;
 	}
 
 	public String getDefaultValue()
