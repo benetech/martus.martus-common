@@ -61,7 +61,8 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 		if(!hasEmptyCode)
 			choices.insertElementAt(new ChoiceItem("", ""), 0);
 		
-		setChoices((ChoiceItem[])choices.toArray(new ChoiceItem[0]));
+		ChoiceItem[] newChoiceItems = (ChoiceItem[])choices.toArray(new ChoiceItem[0]);
+		setChoices(newChoiceItems);
 	}
 
 	public String getDefaultValue()
