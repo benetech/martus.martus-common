@@ -46,12 +46,7 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 		return reusableChoicesCode;
 	}
 
-	public void setChoicesFromStringVector(Vector stringChoicesToUse)
-	{
-		setChoices(createValidChoiceItemArrayFromStrings(stringChoicesToUse));
-	}
-
-	private ChoiceItem[] createValidChoiceItemArrayFromStrings(Vector stringChoicesToUse)
+	public ChoiceItem[] createValidChoiceItemArrayFromStrings(Vector stringChoicesToUse)
 	{
 		boolean hasEmptyCode = false;
 		Vector choices = new Vector();
@@ -140,7 +135,7 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 		public void endDocument() throws SAXParseException
 		{
 			Vector stringChoices = getVector();
-			spec.setChoicesFromStringVector(stringChoices);
+			spec.setChoices(spec.createValidChoiceItemArrayFromStrings(stringChoices));
 		}
 
 		CustomDropDownFieldSpec spec;
