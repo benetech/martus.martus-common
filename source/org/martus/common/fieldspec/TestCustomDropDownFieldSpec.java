@@ -44,7 +44,7 @@ public class TestCustomDropDownFieldSpec extends TestCaseEnhanced
 		Vector valuesWithoutBlank = new Vector();
 		valuesWithoutBlank.add("one");
 		valuesWithoutBlank.add("two");
-		spec.setChoices(valuesWithoutBlank);
+		spec.setChoicesFromStringVector(valuesWithoutBlank);
 		assertEquals("didn't add a blank entry?", valuesWithoutBlank.size() + 1, spec.getCount());
 		assertEquals("", spec.getValue(0));
 		for(int i=0; i < valuesWithoutBlank.size(); ++i)
@@ -58,7 +58,7 @@ public class TestCustomDropDownFieldSpec extends TestCaseEnhanced
 		valuesWithBlank.add("a");
 		valuesWithBlank.add("b");
 		valuesWithBlank.add("");
-		spec.setChoices(valuesWithBlank);
+		spec.setChoicesFromStringVector(valuesWithBlank);
 		assertEquals("added a blank entry?", valuesWithBlank.size(), spec.getCount());
 		for(int i=0; i < spec.getCount(); ++i)
 			assertEquals("wrong order?", valuesWithBlank.get(i), spec.getValue(i));

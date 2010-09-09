@@ -46,7 +46,7 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 		return reusableChoicesCode;
 	}
 
-	public void setChoices(Vector stringChoicesToUse)
+	public void setChoicesFromStringVector(Vector stringChoicesToUse)
 	{
 		boolean hasEmptyCode = false;
 		Vector choices = new Vector();
@@ -135,7 +135,7 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 		public void endDocument() throws SAXParseException
 		{
 			Vector stringChoices = getVector();
-			spec.setChoices(stringChoices);
+			spec.setChoicesFromStringVector(stringChoices);
 		}
 
 		CustomDropDownFieldSpec spec;

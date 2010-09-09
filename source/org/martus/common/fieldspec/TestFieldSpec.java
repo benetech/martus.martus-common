@@ -110,7 +110,7 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertEquals(emptyString, spec.getDefaultValue());
 	
 		CustomDropDownFieldSpec dropdownSpec = new CustomDropDownFieldSpec();
-		dropdownSpec.setChoices(new Vector());
+		dropdownSpec.setChoicesFromStringVector(new Vector());
 		assertEquals("", dropdownSpec.getDefaultValue());
 
 		String message = "Message in FieldSpec";
