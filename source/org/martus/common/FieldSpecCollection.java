@@ -27,9 +27,11 @@ package org.martus.common;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
 
+import org.martus.common.fieldspec.ChoiceItem;
 import org.martus.common.fieldspec.FieldSpec;
 
 public class FieldSpecCollection implements Comparable
@@ -85,6 +87,43 @@ public class FieldSpecCollection implements Comparable
 		return (FieldSpec[]) specs.toArray(new FieldSpec[0]);
 	}
 	
+	public String toXml()
+	{
+		StringBuffer result = new StringBuffer();
+		result.append('<');
+		result.append(MartusXml.CustomFieldSpecsElementName);
+		result.append(">\n\n");
+		
+		for (int i = 0; i < specs.size(); i++)
+		{
+			FieldSpec spec = get(i);
+			result.append(spec.toString());
+			result.append('\n');
+		}
+		
+		Set reusableChoiceListNames = reusableChoicesPool.getAvailableNames();
+		Iterator it = reusableChoiceListNames.iterator();
+		while(it.hasNext())
+		{
+			String name = (String)it.next();
+			ReusableChoices choiceList = reusableChoicesPool.getChoices(name);
+			result.append("<ReusableChoices code='" + choiceList.getCode() + "' label='" + choiceList.getLabel() + "'>");
+			result.append('\n');
+			for(int i = 0; i < choiceList.size(); ++i)
+			{
+				ChoiceItem choice = choiceList.get(i);
+				result.append("<Choice code='" + choice.getCode() + "' label='" + choice.toString() + "'></Choice>");
+				result.append('\n');
+			}
+			result.append("</ReusableChoices>");
+			result.append("\n\n");
+		}
+		result.append("</");
+		result.append(MartusXml.CustomFieldSpecsElementName);
+		result.append(">\n");
+		return result.toString();
+	}
+
 	public int hashCode() 
 	{
 		final int PRIME = 31;
