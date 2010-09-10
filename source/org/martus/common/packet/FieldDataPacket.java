@@ -329,7 +329,7 @@ public class FieldDataPacket extends Packet
 		if(isEncrypted() && !isEmpty())
 			writeElement(dest, MartusXml.EncryptedFlagElementName, "");
 
-		String xmlSpecs = fields.toString();
+		String xmlSpecs = fields.getSpecsXml();
 		
 		if(hasCustomFieldTemplate())
 		{
