@@ -76,7 +76,7 @@ public class FieldDataPacket extends Packet
 
 	public void setFieldSpecs(FieldSpecCollection fieldSpecsToUse)
 	{
-		fields = new FieldCollection(fieldSpecsToUse.asArray());
+		fields = new FieldCollection(fieldSpecsToUse);
 	}
 	
 	void setFieldSpecsFromString(String delimitedFieldSpecs)
