@@ -92,7 +92,7 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 		{
 			StringBuffer details = new StringBuffer();
 			details.append("<" + USE_REUSABLE_CHOICES_TAG + " ");
-			details.append("code='" + getReusableChoicesCode() + "' />");
+			details.append("code='" + getReusableChoicesCode() + "'>");
 			details.append(MartusXml.getTagEnd(USE_REUSABLE_CHOICES_TAG));
 			return details.toString();
 		}
