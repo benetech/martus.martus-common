@@ -497,7 +497,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		String result = new String(out.toByteArray(), "UTF-8");
 		out.close();
 		
-		String rawFieldList = LegacyCustomFields.buildFieldListString(specs.asArray());
+		String rawFieldList = LegacyCustomFields.buildFieldListString(specs);
 		String encodedFieldList = XmlUtilities.getXmlEncoded(rawFieldList);
 		assertNotContains(encodedFieldList, result);
 
@@ -518,7 +518,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		out.close();
 		
 		assertNotContains("Should not contain custom field spec for default fields", "<CustomFields>", result);
-		assertContains(LegacyCustomFields.buildFieldListString(specs.asArray()), result);
+		assertContains(LegacyCustomFields.buildFieldListString(specs), result);
 	}
 
 	public void testWriteAndLoadGrids()throws Exception

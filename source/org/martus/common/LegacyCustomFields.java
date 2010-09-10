@@ -37,14 +37,14 @@ import org.martus.common.fieldspec.StandardFieldSpecs;
 public class LegacyCustomFields
 {
 
-	static public String buildFieldListString(FieldSpec[] fieldSpecs)
+	static public String buildFieldListString(FieldSpecCollection fieldSpecs)
 	{
 		String fieldList = "";
-		for(int i = 0; i < fieldSpecs.length; ++i)
+		for(int i = 0; i < fieldSpecs.size(); ++i)
 		{
 			if(i > 0)
 				fieldList += FIELD_SPEC_DELIMITER;
-			FieldSpec spec = fieldSpecs[i];
+			FieldSpec spec = fieldSpecs.get(i);
 			fieldList += spec.getTag();
 			if(spec.getLabel().length() != 0)
 				fieldList += FIELD_SPEC_ELEMENT_DELIMITER + spec.getLabel();
@@ -52,7 +52,7 @@ public class LegacyCustomFields
 		return fieldList;
 	}
 	
-	static public FieldSpec[] parseFieldSpecsFromString(String delimitedTags)
+	static public FieldSpecCollection parseFieldSpecsFromString(String delimitedTags)
 	{
 		Vector fieldSpecs = new Vector();
 		int tagStart = 0;
@@ -68,7 +68,7 @@ public class LegacyCustomFields
 			tagStart = delimiter + 1;
 		}
 
-		return (FieldSpec[])fieldSpecs.toArray(new FieldSpec[0]);
+		return new FieldSpecCollection((FieldSpec[])fieldSpecs.toArray(new FieldSpec[0]));
 	}
 	
 	public static FieldSpec createFromLegacy(String legacyDescription)

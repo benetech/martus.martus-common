@@ -64,7 +64,7 @@ public class FieldDataPacket extends Packet
 	public FieldDataPacket(UniversalId universalIdToUse, FieldSpecCollection fieldSpecsToUse)
 	{
 		super(universalIdToUse);
-		setFieldSpecs(fieldSpecsToUse.asArray());
+		setFieldSpecs(fieldSpecsToUse);
 		authorizedToReadKeys = new HQKeys();
 		clearAll();
 	}
@@ -74,9 +74,9 @@ public class FieldDataPacket extends Packet
 		fields = fieldsToUse;
 	}
 
-	public void setFieldSpecs(FieldSpec[] fieldSpecsToUse)
+	public void setFieldSpecs(FieldSpecCollection fieldSpecsToUse)
 	{
-		fields = new FieldCollection(fieldSpecsToUse);
+		fields = new FieldCollection(fieldSpecsToUse.asArray());
 	}
 	
 	void setFieldSpecsFromString(String delimitedFieldSpecs)
@@ -338,7 +338,7 @@ public class FieldDataPacket extends Packet
 		}
 		else
 		{
-			writeElement(dest, MartusXml.FieldListElementName, LegacyCustomFields.buildFieldListString(fields.getSpecs().asArray()));
+			writeElement(dest, MartusXml.FieldListElementName, LegacyCustomFields.buildFieldListString(fields.getSpecs()));
 		}
 		
 		for(int i = 0; i < fields.count(); ++i)
@@ -369,7 +369,7 @@ public class FieldDataPacket extends Packet
 
 	protected String getFieldListString()
 	{
-		return LegacyCustomFields.buildFieldListString(getFieldSpecs().asArray());
+		return LegacyCustomFields.buildFieldListString(getFieldSpecs());
 	}
 
 	public boolean hasCustomFieldTemplate()
