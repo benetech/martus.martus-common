@@ -45,10 +45,10 @@ public class FieldCollection
 {
 	public FieldCollection(FieldSpecCollection specsToUse)
 	{
-		specsToUse = reuseExistingSpecCollectionIfPossible(specsToUse);
+		specs = reuseExistingSpecCollectionIfPossible(specsToUse);
 		fields = new Vector();
-		for(int i=0; i < specsToUse.size(); ++i)
-			add(specsToUse.get(i));
+		for(int i=0; i < specs.size(); ++i)
+			add(specs.get(i));
 	}
 
 	private FieldSpecCollection reuseExistingSpecCollectionIfPossible(FieldSpecCollection specsToUse)
@@ -110,10 +110,7 @@ public class FieldCollection
 	
 	public FieldSpecCollection getSpecs()
 	{
-		FieldSpec[] specs = new FieldSpec[count()];
-		for(int i=0; i < specs.length; ++i)
-			specs[i] = getField(i).getFieldSpec();
-		return new FieldSpecCollection(specs);
+		return specs;
 	}
 	
 	public boolean isEmpty()
@@ -133,21 +130,12 @@ public class FieldCollection
 	
 	public String toString()
 	{
-		StringBuffer result = new StringBuffer();
-		result.append('<');
-		result.append(MartusXml.CustomFieldSpecsElementName);
-		result.append(">\n\n");
-		
-		for (int i = 0; i < fields.size(); i++)
-		{
-			FieldSpec spec = ((MartusField)fields.get(i)).getFieldSpec();
-			result.append(spec.toString());
-			result.append('\n');
-		}
-		result.append("</");
-		result.append(MartusXml.CustomFieldSpecsElementName);
-		result.append(">\n");
-		return result.toString();
+		return getSpecsXml();
+	}
+
+	public String getSpecsXml()
+	{
+		return specs.toXml();
 	}
 	
 	public static class CustomFieldsParseException extends SAXException 
@@ -187,5 +175,6 @@ public class FieldCollection
 	
 	public static HashMap existingFieldSpecTemplates = new HashMap();
 	
-	Vector fields;
+	private Vector fields;
+	private FieldSpecCollection specs;
 }
