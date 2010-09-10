@@ -53,6 +53,11 @@ public class ReusableChoices
 		return choices.size();
 	}
 
+	public ChoiceItem[] getChoices()
+	{
+		return (ChoiceItem[]) choices.toArray(new ChoiceItem[0]);
+	}
+
 	public ChoiceItem get(int i)
 	{
 		return (ChoiceItem) choices.get(i);
@@ -66,5 +71,4 @@ public class ReusableChoices
 	private String code;
 	private String label;
 	private Vector choices;
-
 }
