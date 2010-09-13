@@ -43,8 +43,8 @@ import org.martus.common.crypto.MartusCrypto.CryptoException;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.Database.RecordHiddenException;
-import org.martus.util.StreamableBase64;
 import org.martus.util.Stopwatch;
+import org.martus.util.StreamableBase64;
 import org.martus.util.UnicodeReader;
 import org.martus.util.UnicodeWriter;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
@@ -242,11 +242,7 @@ public class Packet
 	}
 
 	static public void validateXml(InputStreamWithSeek inputStream, String accountId, String localId, byte[] expectedSig, MartusCrypto verifier) throws
-		IOException,
-		InvalidPacketException,
-		SignatureVerificationException,
-		WrongAccountException,
-		MartusCrypto.DecryptionException
+		Exception
 	{
 		verifyPacketSignature(inputStream, expectedSig, verifier);
 		

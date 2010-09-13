@@ -25,9 +25,12 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common;
 
+import java.io.StringWriter;
 import java.util.Vector;
 
+import org.martus.common.bulletin.BulletinXmlExportImportConstants;
 import org.martus.common.fieldspec.ChoiceItem;
+import org.martus.util.xml.XmlUtilities;
 
 public class ReusableChoices
 {
@@ -66,6 +69,35 @@ public class ReusableChoices
 	public void add(ChoiceItem choice)
 	{
 		choices.add(choice);
+	}
+
+	public String toExportedXml() throws Exception
+	{
+		StringWriter xml = new StringWriter();
+		XmlWriterFilter out = new XmlWriterFilter(xml);
+		
+		String listTag = BulletinXmlExportImportConstants.REUSABLE_CHOICES_LIST;
+		out.writeStartTag(getTagWithCodeAndLabelAttributes(listTag, getCode(), getLabel()));
+
+		for(int i = 0; i < choices.size(); ++i)
+		{
+			ChoiceItem choice = get(i);
+			String choiceTag = BulletinXmlExportImportConstants.REUSABLE_CHOICE_ITEM;
+			out.writeStartTag(getTagWithCodeAndLabelAttributes(choiceTag, choice.getCode(), choice.toString()));
+			out.writeEndTag(choiceTag);
+		}
+		
+		out.writeEndTag(listTag);
+		
+		return xml.toString();
+	}
+	
+	private String getTagWithCodeAndLabelAttributes(String tag, String codeValue, String labelValue)
+	{
+		String element = tag + 
+		  " " + BulletinXmlExportImportConstants.CHOICE_ITEM_CODE_ATTRIBUTE + "='" + XmlUtilities.getXmlEncoded(getCode()) + "'" + 
+		  " " + BulletinXmlExportImportConstants.CHOICE_ITEM_LABEL_ATTRIBUTE + "='" + XmlUtilities.getXmlEncoded(getLabel()) + "'";
+		return element;
 	}
 
 	private String code;

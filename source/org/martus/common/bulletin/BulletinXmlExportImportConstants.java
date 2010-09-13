@@ -62,6 +62,10 @@ public class BulletinXmlExportImportConstants
 	public final static String TOP_SECTION_ATTACHMENT_LIST = "TopAttachmentList";
 	public final static String BOTTOM_SECTION_ATTACHMENT_LIST = "BottomAttachmentList";
 	public final static String FIELD_VALUES = "FieldValues";
+	public final static String REUSABLE_CHOICES_LIST = "ReusableChoices";
+	public final static String REUSABLE_CHOICE_ITEM = "Choice";
+	public final static String CHOICE_ITEM_CODE_ATTRIBUTE = "code";
+	public final static String CHOICE_ITEM_LABEL_ATTRIBUTE = "label";
 	public final static String MAIN_FIELD_SPECS = "MainFieldSpecs";
 	public final static String PRIVATE_FIELD_SPECS = "PrivateFieldSpecs";
 

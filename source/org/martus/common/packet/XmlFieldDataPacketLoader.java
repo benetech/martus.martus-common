@@ -128,9 +128,14 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 			e.printStackTrace();
 			throw new SAXParseException("Bad base64 in " + tag, null);
 		} 
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			throw new SAXParseException("Unexpected Exception: " + e.getMessage(), null);
+		}
 	}
 
-	private void setLegacyCustomFields(String value)
+	private void setLegacyCustomFields(String value) throws Exception
 	{
 		if(!foundModernFieldSpecs)
 			fdp.setFieldSpecsFromString(value);

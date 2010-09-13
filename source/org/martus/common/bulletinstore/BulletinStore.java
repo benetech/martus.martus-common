@@ -473,12 +473,7 @@ public class BulletinStore
 	}
 
 	private UniversalId importBulletinPacketsFromZipFileToDatabase(String authorAccountId, ZipFile zip, long mTime)
-		throws IOException,
-		Database.RecordHiddenException,
-		Packet.InvalidPacketException,
-		Packet.SignatureVerificationException,
-		Packet.WrongAccountException,
-		MartusCrypto.DecryptionException
+		throws Exception
 	{
 		BulletinHeaderPacket header = BulletinHeaderPacket.loadFromZipFile(zip, security);
 		if(authorAccountId == null)

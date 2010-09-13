@@ -51,7 +51,6 @@ import org.martus.common.bulletin.BulletinZipUtilities;
 import org.martus.common.bulletinstore.BulletinStore;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MockMartusSecurity;
-import org.martus.common.crypto.MartusCrypto.DecryptionException;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.MockServerDatabase;
@@ -61,8 +60,6 @@ import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.UniversalId;
 import org.martus.common.packet.Packet.InvalidPacketException;
-import org.martus.common.packet.Packet.SignatureVerificationException;
-import org.martus.common.packet.Packet.WrongAccountException;
 import org.martus.util.StreamableBase64;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.UnicodeReader;
@@ -378,13 +375,7 @@ public class TestMartusUtilities extends TestCaseEnhanced
 	}
 
 	private void validateZipFile(String accountId, File copiedZipFile)
-		throws
-			ZipException,
-			IOException,
-			InvalidPacketException,
-			SignatureVerificationException,
-			WrongAccountException,
-			DecryptionException
+		throws Exception
 	{
 		ZipFile copiedZip = new ZipFile(copiedZipFile);
 		try

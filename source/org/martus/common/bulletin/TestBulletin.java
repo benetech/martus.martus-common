@@ -99,7 +99,7 @@ public class TestBulletin extends TestCaseEnhanced
 		store = new MockBulletinStore(this);
     }
 
-    public void testBasics()
+    public void testBasics() throws Exception
     {
 		Bulletin b = new Bulletin(security);
 		assertEquals(false, b.isFieldInPublicSection("Nope"));
@@ -121,14 +121,14 @@ public class TestBulletin extends TestCaseEnhanced
 
 	}
     
-    public void testPseudoFields()
+    public void testPseudoFields() throws Exception
     {
     	Bulletin b = new Bulletin(security);
     	assertEquals(b.getLocalId(), b.get("_localId"));
     	assertEquals(b.getLastSavedDate(), b.get("_lastSavedDate"));
     }
     
-    public void testGetFieldType()
+    public void testGetFieldType()throws Exception
     {
     	Bulletin b = new Bulletin(security);
     	assertEquals(new FieldTypeUnknown(), b.getFieldType("Not a real field tag"));
@@ -163,7 +163,7 @@ public class TestBulletin extends TestCaseEnhanced
     	assertTrue("didn't find private attachment?", b.contains(proxy2.getLabel(), localization));
     }
 	
-	public void testUnknownTags()
+	public void testUnknownTags() throws Exception
 	{
 		Bulletin b = new Bulletin(security);
 		assertFalse("already has unknown?", b.hasUnknownTags());
@@ -183,7 +183,7 @@ public class TestBulletin extends TestCaseEnhanced
 		assertFalse("not back to normal?", b.hasUnknownTags());
 	}
 	
-	public void testHasUnknownCustomField()
+	public void testHasUnknownCustomField() throws Exception
 	{
 		Bulletin noUnknown = new Bulletin(security);
 		assertFalse("has unknown custom?", noUnknown.hasUnknownCustomField());
@@ -194,7 +194,7 @@ public class TestBulletin extends TestCaseEnhanced
 		BulletinForTesting.clearShoulds();
 	}
 
-	public void testAllPrivate()
+	public void testAllPrivate() throws Exception
 	{
 		Bulletin b = new Bulletin(security);
 		assertEquals("not already all private?", true, b.isAllPrivate());
@@ -214,14 +214,14 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals("not really private?", true, privateData.isEncrypted());
 	}
 
-	public void testId()
+	public void testId() throws Exception
 	{
 		Bulletin b = new Bulletin(security);
 		assertNotNull("Id was Null?", b.getLocalId());
 		assertEquals("Id was empty?", false, b.getLocalId().length()==0);
 	}
 
-	public void testStatus()
+	public void testStatus() throws Exception
 	{
 		Bulletin b = new Bulletin(security);
 		assertEquals(Bulletin.STATUSDRAFT, b.getStatus());
@@ -236,7 +236,7 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals("Now sealed", true, b.isSealed());
 	}
 
-	public void testEmpty()
+	public void testEmpty() throws Exception
 	{
 		Bulletin b = new Bulletin(security);
 		String today = DateUtilities.getTodayInStoredFormat();
@@ -247,7 +247,7 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals(Bulletin.STATUSDRAFT, b.getStatus());
 	}
 
-	public void testGetSet()
+	public void testGetSet() throws Exception
 	{
 		Bulletin b = new Bulletin(security);
 		assertEquals("", b.get("NoSuchField"));
@@ -269,7 +269,7 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals("secret", b.get(Bulletin.TAGPRIVATEINFO));
 	}
 
-	public void testClear()
+	public void testClear() throws Exception
 	{
 		String publicInfo = "public info";
 		String privateInfo = "private info";
@@ -557,7 +557,7 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals("a6 label", tempFile3.getName(), vp[2].getLabel());
 	}
 
-	public void testGetAndSetHQPublicKey()
+	public void testGetAndSetHQPublicKey() throws Exception
 	{
 		Bulletin original = new Bulletin(security);
 		assertEquals("HQKey already set?", 0, original.getAuthorizedToReadKeys().size());
@@ -586,7 +586,7 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals(2, original.getAuthorizedToReadKeys().size());
 	}
 	
-	public void testAllowOnlyTheseAuthorizedKeysToRead()
+	public void testAllowOnlyTheseAuthorizedKeysToRead() throws Exception
 	{
 		Bulletin original = new Bulletin(security);
 		String key1String = "12345";

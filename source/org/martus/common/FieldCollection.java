@@ -43,7 +43,7 @@ import org.xml.sax.SAXParseException;
 
 public class FieldCollection
 {
-	public FieldCollection(FieldSpecCollection specsToUse)
+	public FieldCollection(FieldSpecCollection specsToUse) throws Exception
 	{
 		specs = reuseExistingSpecCollectionIfPossible(specsToUse);
 		fields = new Vector();
@@ -51,11 +51,12 @@ public class FieldCollection
 			add(specs.get(i));
 	}
 
-	private FieldSpecCollection reuseExistingSpecCollectionIfPossible(FieldSpecCollection specsToUse)
+	private FieldSpecCollection reuseExistingSpecCollectionIfPossible(FieldSpecCollection specsToUse) throws Exception
 	{
 		StringBuffer key = new StringBuffer();
 		for(int i = 0; i < specsToUse.size(); ++i)
 			key.append(specsToUse.get(i).getId());
+		key.append(specsToUse.getAllReusableChoiceLists().toXml());
 		String keyString = key.toString();
 		if(existingFieldSpecTemplates.containsKey(keyString))
 		{
@@ -68,7 +69,7 @@ public class FieldCollection
 		return specsToUse;
 	}
 	
-	public FieldCollection(FieldSpec[] specsToUse)
+	public FieldCollection(FieldSpec[] specsToUse) throws Exception
 	{
 		this(new FieldSpecCollection(specsToUse));
 	}

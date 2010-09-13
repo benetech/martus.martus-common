@@ -61,7 +61,7 @@ import org.xml.sax.SAXException;
 
 public class FieldDataPacket extends Packet
 {
-	public FieldDataPacket(UniversalId universalIdToUse, FieldSpecCollection fieldSpecsToUse)
+	public FieldDataPacket(UniversalId universalIdToUse, FieldSpecCollection fieldSpecsToUse) throws Exception
 	{
 		super(universalIdToUse);
 		setFieldSpecs(fieldSpecsToUse);
@@ -74,12 +74,12 @@ public class FieldDataPacket extends Packet
 		fields = fieldsToUse;
 	}
 
-	public void setFieldSpecs(FieldSpecCollection fieldSpecsToUse)
+	public void setFieldSpecs(FieldSpecCollection fieldSpecsToUse) throws Exception
 	{
 		fields = new FieldCollection(fieldSpecsToUse);
 	}
 	
-	void setFieldSpecsFromString(String delimitedFieldSpecs)
+	void setFieldSpecsFromString(String delimitedFieldSpecs) throws Exception
 	{
 		setFieldSpecs(LegacyCustomFields.parseFieldSpecsFromString(delimitedFieldSpecs));
 	}

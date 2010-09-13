@@ -235,12 +235,7 @@ public class BulletinZipUtilities
 	}
 
 	public static void validateIntegrityOfZipFilePublicPackets(String authorAccountId, ZipFile zip, MartusCrypto security)
-		throws
-			Packet.InvalidPacketException,
-			IOException,
-			Packet.SignatureVerificationException,
-			Packet.WrongAccountException,
-			MartusCrypto.DecryptionException
+		throws Exception
 	{
 		BulletinHeaderPacket bhp = BulletinHeaderPacket.loadFromZipFile(zip, security);
 		DatabaseKey[] keys = bhp.getPublicPacketKeys();
@@ -288,12 +283,7 @@ public class BulletinZipUtilities
 	}
 
 	public static void validateIntegrityOfZipFilePackets(String authorAccountId, ZipFile zip, MartusCrypto security)
-		throws
-			Packet.InvalidPacketException,
-			IOException,
-			Packet.SignatureVerificationException,
-			Packet.WrongAccountException,
-			MartusCrypto.DecryptionException
+		throws Exception
 	{
 		BulletinHeaderPacket bhp = BulletinHeaderPacket.loadFromZipFile(zip, security);
 		DatabaseKey[] keys = BulletinZipUtilities.getAllPacketKeys(bhp);

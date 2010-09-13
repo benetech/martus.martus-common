@@ -40,7 +40,7 @@ import org.martus.common.packet.UniversalId;
 
 public class BulletinForTesting extends Bulletin
 {
-	public BulletinForTesting(MartusCrypto securityToUse)
+	public BulletinForTesting(MartusCrypto securityToUse) throws Exception
 	{
 		super(securityToUse);
 	}
@@ -63,7 +63,7 @@ public class BulletinForTesting extends Bulletin
 	
 	static class FieldDataPacketWithUnknownCustomField extends FieldDataPacket
 	{
-		public FieldDataPacketWithUnknownCustomField(UniversalId universalIdToUse, FieldSpecCollection fieldSpecsToUse)
+		public FieldDataPacketWithUnknownCustomField(UniversalId universalIdToUse, FieldSpecCollection fieldSpecsToUse) throws Exception
 		{
 			super(universalIdToUse, customFieldSpecs);
 		}
@@ -88,7 +88,7 @@ public class BulletinForTesting extends Bulletin
 
 	static class FieldDataPacketWithUnknownTag extends FieldDataPacket
 	{
-		public FieldDataPacketWithUnknownTag(UniversalId universalIdToUse, FieldSpecCollection fieldSpecsToUse)
+		public FieldDataPacketWithUnknownTag(UniversalId universalIdToUse, FieldSpecCollection fieldSpecsToUse) throws Exception
 		{
 			super(universalIdToUse, fieldSpecsToUse);
 		}
@@ -102,7 +102,7 @@ public class BulletinForTesting extends Bulletin
 	
 	protected FieldDataPacket createPublicFieldDataPacket(
 		UniversalId dataUid,
-		FieldSpecCollection publicFieldSpecs)
+		FieldSpecCollection publicFieldSpecs) throws Exception
 	{
 		if(shouldCreateUnknownTagInPublicSection)
 			return new FieldDataPacketWithUnknownTag(dataUid, publicFieldSpecs);
@@ -114,7 +114,7 @@ public class BulletinForTesting extends Bulletin
 	}
 	protected FieldDataPacket createPrivateFieldDataPacket(
 		UniversalId privateDataUid,
-		FieldSpecCollection privateFieldSpecs)
+		FieldSpecCollection privateFieldSpecs) throws Exception
 	{
 		if(shouldCreateUnknownTagInPrivateSection)
 			return new FieldDataPacketWithUnknownTag(privateDataUid, privateFieldSpecs);

@@ -29,12 +29,12 @@ import org.martus.common.fieldspec.FieldSpec;
 
 public class FieldCollectionForTesting extends FieldCollection
 {
-	public static FieldCollection extendFields(FieldSpec[] defaultFields, FieldSpec extraFieldSpec)
+	public static FieldCollection extendFields(FieldSpec[] defaultFields, FieldSpec extraFieldSpec) throws Exception
 	{
 		return extendFields(defaultFields, new FieldSpec[] {extraFieldSpec});
 	}
 
-	public static FieldCollection extendFields(FieldSpec[] defaultFields, FieldSpec[] extraFieldSpecs)
+	public static FieldCollection extendFields(FieldSpec[] defaultFields, FieldSpec[] extraFieldSpecs) throws Exception
 	{
 		FieldSpec[] allFields = new FieldSpec[defaultFields.length + extraFieldSpecs.length];
 		System.arraycopy(defaultFields, 0, allFields, 0, defaultFields.length);
@@ -42,7 +42,7 @@ public class FieldCollectionForTesting extends FieldCollection
 		return new FieldCollection(allFields);
 	}
 
-	private FieldCollectionForTesting()
+	private FieldCollectionForTesting() throws Exception
 	{
 		super(new FieldSpec[0]);
 	}

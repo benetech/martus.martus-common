@@ -73,17 +73,17 @@ public class Bulletin implements BulletinConstants
 	{
 	}
 
-	public Bulletin(MartusCrypto securityToUse)
+	public Bulletin(MartusCrypto securityToUse) throws Exception
 	{
 		this(securityToUse, StandardFieldSpecs.getDefaultTopSetionFieldSpecs(), StandardFieldSpecs.getDefaultBottomSectionFieldSpecs());
 	}
 	
-	public Bulletin(MartusCrypto securityToUse, FieldSpecCollection publicFieldSpecs, FieldSpecCollection privateFieldSpecs)
+	public Bulletin(MartusCrypto securityToUse, FieldSpecCollection publicFieldSpecs, FieldSpecCollection privateFieldSpecs) throws Exception
 	{
 		this(securityToUse, BulletinHeaderPacket.createUniversalId(securityToUse), FieldDataPacket.createUniversalId(securityToUse), FieldDataPacket.createUniversalId(securityToUse), publicFieldSpecs, privateFieldSpecs);
 	}
 
-	public Bulletin(MartusCrypto securityToUse, UniversalId headerUid, UniversalId publicDataUid, UniversalId privateDataUid, FieldSpecCollection publicFieldSpecs, FieldSpecCollection privateFieldSpecs)
+	public Bulletin(MartusCrypto securityToUse, UniversalId headerUid, UniversalId publicDataUid, UniversalId privateDataUid, FieldSpecCollection publicFieldSpecs, FieldSpecCollection privateFieldSpecs) throws Exception
 	{
 		security = securityToUse;
 		isNonAttachmentDataValidFlag = true;
@@ -665,21 +665,21 @@ public class Bulletin implements BulletinConstants
 
 	protected FieldDataPacket createPrivateFieldDataPacket(
 		UniversalId privateDataUid,
-		FieldSpecCollection privateFieldSpecs)
+		FieldSpecCollection privateFieldSpecs) throws Exception
 	{
 		return createFieldDataPacket(privateDataUid, privateFieldSpecs);
 	}
 
 	protected FieldDataPacket createPublicFieldDataPacket(
 		UniversalId dataUid,
-		FieldSpecCollection publicFieldSpecs)
+		FieldSpecCollection publicFieldSpecs) throws Exception
 	{
 		return createFieldDataPacket(dataUid, publicFieldSpecs);
 	}
 
 	protected FieldDataPacket createFieldDataPacket(
 		UniversalId dataUid,
-		FieldSpecCollection publicFieldSpecs)
+		FieldSpecCollection publicFieldSpecs) throws Exception
 	{
 		return new FieldDataPacket(dataUid, publicFieldSpecs);
 	}

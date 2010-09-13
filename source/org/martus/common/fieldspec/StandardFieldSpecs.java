@@ -36,9 +36,7 @@ public class StandardFieldSpecs
 {
 	public static FieldSpecCollection getDefaultTopSetionFieldSpecs()
 	{
-		if(defaultTopSectionFieldSpecs == null)
-		{
-			defaultTopSectionFieldSpecs = new FieldSpecCollection(new FieldSpec[] 
+		return new FieldSpecCollection(new FieldSpec[] 
 			{
 				FieldSpec.createStandardField(BulletinConstants.TAGLANGUAGE, new FieldTypeLanguage()),
 				FieldSpec.createStandardField(BulletinConstants.TAGAUTHOR, new FieldTypeNormal()),
@@ -51,22 +49,14 @@ public class StandardFieldSpecs
 				FieldSpec.createStandardField(BulletinConstants.TAGSUMMARY, new FieldTypeMultiline()),
 				FieldSpec.createStandardField(BulletinConstants.TAGPUBLICINFO, new FieldTypeMultiline()),
 			});
-		}
-		
-		return defaultTopSectionFieldSpecs;
 	}
 
 	public static FieldSpecCollection getDefaultBottomSectionFieldSpecs()
 	{
-		if(defaultBottomSectionFieldSpecs == null)
-		{
-			defaultBottomSectionFieldSpecs = new FieldSpecCollection(new FieldSpec[]
+		return new FieldSpecCollection(new FieldSpec[]
 			{
 				FieldSpec.createStandardField(BulletinConstants.TAGPRIVATEINFO, new FieldTypeMultiline()),
 			});
-		}
-		
-		return defaultBottomSectionFieldSpecs;
 	}
 
 	public static FieldType getStandardType(String tag)
@@ -126,7 +116,4 @@ public class StandardFieldSpecs
 		
 		return XmlUtilities.getXmlEncoded(proposedLabel);
 	}
-
-	private static FieldSpecCollection defaultTopSectionFieldSpecs;
-	private static FieldSpecCollection defaultBottomSectionFieldSpecs;
 }

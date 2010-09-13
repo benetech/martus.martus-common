@@ -53,7 +53,7 @@ import org.martus.util.UnicodeWriter;
 
 public class BulletinForTesting extends Bulletin
 {
-	public BulletinForTesting(MartusCrypto securityToUse)
+	public BulletinForTesting(MartusCrypto securityToUse) throws Exception
 	{
 		super(securityToUse);
 	}

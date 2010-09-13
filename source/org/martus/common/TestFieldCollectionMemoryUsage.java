@@ -38,7 +38,7 @@ public class TestFieldCollectionMemoryUsage extends TestCaseEnhanced
 		super(name);
 	}
 
-	public void testObjectReuse()
+	public void testObjectReuse() throws Exception
 	{
 		FieldSpec[] template1 = {createLongMessageFieldSpec(10000),};
 		FieldSpec[] template2 = {createLongMessageFieldSpec(10000),};
@@ -51,7 +51,7 @@ public class TestFieldCollectionMemoryUsage extends TestCaseEnhanced
 		assertTrue("underlying FieldSpecs not shared?", c1.getSpecs().get(0) == c2.getSpecs().get(0));
 	}
 	
-	public void testMemoryUsage()
+	public void testMemoryUsage() throws Exception
 	{
 		if(!RUN_REALLY_SLOW_TEST)
 			return;

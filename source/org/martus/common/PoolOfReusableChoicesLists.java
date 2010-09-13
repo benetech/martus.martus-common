@@ -69,6 +69,22 @@ public class PoolOfReusableChoicesLists
 		return (ReusableChoices)namedReusableChoices.get(name);
 	}
 
+	public String toXml() throws Exception
+	{
+		StringBuffer xml = new StringBuffer();
+		
+		Set reusableChoicesListNames = getAvailableNames();
+		Iterator iter = reusableChoicesListNames.iterator();
+		while(iter.hasNext())
+		{
+			String name = (String)iter.next();
+			ReusableChoices choices = getChoices(name);
+			xml.append(choices.toExportedXml());
+		}
+		
+		return xml.toString();
+	}
+
 	private Map namedReusableChoices;
 
 }

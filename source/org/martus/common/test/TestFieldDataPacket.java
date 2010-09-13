@@ -143,7 +143,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 	}
 
 
-	public void testConstructorWithUniversalId()
+	public void testConstructorWithUniversalId() throws Exception
 	{
 		UniversalId uid = UniversalId.createFromAccountAndLocalId(fdp.getAccountId(), fdp.getLocalId());
 		FieldDataPacket p = new FieldDataPacket(uid, fieldTags);
@@ -285,7 +285,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 	{
 		class FieldDataPacketWithUnknownTags extends FieldDataPacket
 		{
-			FieldDataPacketWithUnknownTags(UniversalId uid, FieldSpecCollection specs)
+			FieldDataPacketWithUnknownTags(UniversalId uid, FieldSpecCollection specs) throws Exception
 			{
 				super(uid, specs);
 			}

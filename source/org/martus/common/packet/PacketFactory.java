@@ -31,7 +31,7 @@ import org.martus.common.FieldSpecCollection;
 
 public class PacketFactory
 {
-	public static Packet createEmptyPacket(UniversalId uid)
+	public static Packet createEmptyPacket(UniversalId uid) throws Exception
 	{
 		String localId = uid.getLocalId();
 		if(BulletinHeaderPacket.isValidLocalId(localId))

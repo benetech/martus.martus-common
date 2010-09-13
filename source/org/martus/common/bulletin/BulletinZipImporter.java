@@ -33,13 +33,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.martus.common.crypto.MartusCrypto;
-import org.martus.common.crypto.MartusCrypto.CryptoException;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.FieldDataPacket;
-import org.martus.common.packet.Packet.InvalidPacketException;
-import org.martus.common.packet.Packet.SignatureVerificationException;
-import org.martus.common.packet.Packet.WrongPacketTypeException;
-import org.martus.util.StreamableBase64.InvalidBase64Exception;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 import org.martus.util.inputstreamwithseek.ZipEntryInputStreamWithSeek;
 
@@ -156,12 +151,7 @@ public class BulletinZipImporter
 	}
 
 	public static Bulletin loadFromFileAsNewDraft(MartusCrypto security, File inputFile) throws 
-		InvalidPacketException, 
-		SignatureVerificationException, 
-		WrongPacketTypeException, 
-		CryptoException, 
-		IOException, 
-		InvalidBase64Exception
+		Exception
 	{
 		Bulletin original = new Bulletin(security);
 		BulletinZipImporter.loadFromFile(original, inputFile, security);

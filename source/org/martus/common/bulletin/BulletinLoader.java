@@ -57,9 +57,7 @@ public class BulletinLoader
 {
 
 	public static Bulletin loadFromDatabase(ReadableDatabase db, DatabaseKey key, MartusCrypto verifier) throws
-			IOException,
-			Bulletin.DamagedBulletinException,
-			MartusCrypto.NoKeyPairException
+			Exception
 	{
 		FieldSpecCollection standardFieldNames = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
 		FieldSpecCollection privateFieldNames = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
