@@ -52,7 +52,7 @@ public class BulletinStoreCacheManager
 		}
 	}
 	
-	public synchronized void revisionWasSaved(UniversalId uid)
+	public synchronized void revisionWasSaved(UniversalId uid) throws Exception
 	{
 		for(int i = 0; i < caches.size(); ++i)
 		{
@@ -61,7 +61,7 @@ public class BulletinStoreCacheManager
 		}
 	}
 	
-	public synchronized void revisionWasSaved(Bulletin b)
+	public synchronized void revisionWasSaved(Bulletin b) throws Exception
 	{
 		for(int i = 0; i < caches.size(); ++i)
 		{

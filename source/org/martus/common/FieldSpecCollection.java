@@ -82,6 +82,11 @@ public class FieldSpecCollection implements Comparable
 		return reusableChoicesPool.getChoices(name);
 	}
 
+	public PoolOfReusableChoicesLists getAllReusableChoiceLists()
+	{
+		return reusableChoicesPool;
+	}
+
 	public FieldSpec[] asArray()
 	{
 		return (FieldSpec[]) specs.toArray(new FieldSpec[0]);

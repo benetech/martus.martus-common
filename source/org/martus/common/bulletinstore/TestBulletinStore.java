@@ -27,7 +27,6 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.bulletinstore;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Set;
 import java.util.Vector;
 import java.util.zip.ZipFile;
@@ -37,22 +36,14 @@ import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinLoader;
 import org.martus.common.bulletin.BulletinZipUtilities;
-import org.martus.common.bulletin.Bulletin.DamagedBulletinException;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MockMartusSecurity;
-import org.martus.common.crypto.MartusCrypto.CryptoException;
-import org.martus.common.crypto.MartusCrypto.DecryptionException;
-import org.martus.common.crypto.MartusCrypto.NoKeyPairException;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.MockClientDatabase;
-import org.martus.common.database.Database.RecordHiddenException;
 import org.martus.common.database.ReadableDatabase.PacketVisitor;
 import org.martus.common.packet.BulletinHistory;
 import org.martus.common.packet.UniversalId;
-import org.martus.common.packet.Packet.InvalidPacketException;
-import org.martus.common.packet.Packet.SignatureVerificationException;
-import org.martus.common.packet.Packet.WrongAccountException;
 import org.martus.common.test.MockBulletinStore;
 import org.martus.util.Stopwatch;
 import org.martus.util.TestCaseEnhanced;
@@ -395,13 +386,13 @@ public class TestBulletinStore extends TestCaseEnhanced
 		verifyImportZip(store, key, zip);
 	}
 
-	private void verifyImportZip(BulletinStore storeToUse, DatabaseKey key, ZipFile zip) throws IOException, RecordHiddenException, InvalidPacketException, SignatureVerificationException, WrongAccountException, DecryptionException, DamagedBulletinException, NoKeyPairException
+	private void verifyImportZip(BulletinStore storeToUse, DatabaseKey key, ZipFile zip) throws Exception
 	{
 		storeToUse.importBulletinZipFile(zip);
 		BulletinLoader.loadFromDatabase(storeToUse.getDatabase(), key, storeToUse.getSignatureGenerator());
 	}
 	
-	private void verifyCloneIsLeaf(String msg, Bulletin original, Bulletin clone, UniversalId otherUid) throws IOException, CryptoException
+	private void verifyCloneIsLeaf(String msg, Bulletin original, Bulletin clone, UniversalId otherUid) throws Exception
 	{
 		original.setHistory(new BulletinHistory());
 		store.saveBulletinForTesting(original);
@@ -419,14 +410,14 @@ public class TestBulletinStore extends TestCaseEnhanced
 		assertFalse(msg+ ": original is leaf?", store.isLeaf(original.getUniversalId()));
 	}
 
-	private Bulletin createAndSaveBulletin(MockMartusSecurity security) throws IOException, CryptoException
+	private Bulletin createAndSaveBulletin(MockMartusSecurity security) throws Exception
 	{
 		Bulletin b = new Bulletin(security);
 		store.saveBulletinForTesting(b);
 		return b;
 	}
 
-	private Bulletin createAndSaveClone(Bulletin original) throws IOException, CryptoException
+	private Bulletin createAndSaveClone(Bulletin original) throws Exception
 	{
 		if(original.getFieldDataPacket().getAttachments().length > 0)
 			fail("Not tested for attachments!");

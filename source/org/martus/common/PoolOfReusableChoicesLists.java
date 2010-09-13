@@ -26,6 +26,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -40,6 +41,17 @@ public class PoolOfReusableChoicesLists
 	public void add(ReusableChoices choices)
 	{
 		namedReusableChoices.put(choices.getCode(), choices);
+	}
+
+	public void addAll(PoolOfReusableChoicesLists reusableChoicesLists)
+	{
+		Set otherNames = reusableChoicesLists.getAvailableNames();
+		Iterator it = otherNames.iterator();
+		while(it.hasNext())
+		{
+			String name = (String)it.next();
+			add(reusableChoicesLists.getChoices(name));
+		}
 	}
 
 	public Object size()

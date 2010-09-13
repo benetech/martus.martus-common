@@ -53,7 +53,6 @@ import org.martus.common.crypto.MartusCrypto.NoKeyPairException;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.ReadableDatabase;
-import org.martus.common.database.Database.RecordHiddenException;
 import org.martus.common.database.FileDatabase.MissingAccountMapException;
 import org.martus.common.database.FileDatabase.MissingAccountMapSignatureException;
 import org.martus.common.database.ReadableDatabase.PacketVisitor;
@@ -245,7 +244,7 @@ public class BulletinStore
 		return (isAttachmentsValid(getDatabase(), getSignatureVerifier(), proxies));
 	}
 
-	public void importZipFileToStoreWithSameUids(File inputFile) throws IOException, MartusCrypto.CryptoException, Packet.InvalidPacketException, Packet.SignatureVerificationException
+	public void importZipFileToStoreWithSameUids(File inputFile) throws Exception
 	{
 		ZipFile zip = new ZipFile(inputFile);
 		try
@@ -277,12 +276,12 @@ public class BulletinStore
 		cacheManager.clearCache();
 	}
 
-	public void revisionWasSaved(UniversalId uid)
+	public void revisionWasSaved(UniversalId uid) throws Exception
 	{
 		cacheManager.revisionWasSaved(uid);
 	}
 	
-	public void revisionWasSaved(Bulletin b)
+	public void revisionWasSaved(Bulletin b) throws Exception
 	{
 		cacheManager.revisionWasSaved(b);
 	}
@@ -460,23 +459,13 @@ public class BulletinStore
 	}
 	
 	public UniversalId importBulletinZipFile(ZipFile zip) 
-		throws InvalidPacketException, 
-		SignatureVerificationException, 
-		DecryptionException, 
-		IOException, 
-		RecordHiddenException, 
-		WrongAccountException
+		throws Exception
 	{
 		return importBulletinZipFile(zip, null, System.currentTimeMillis());
 	}
 
 	public UniversalId importBulletinZipFile(ZipFile zip, String accountIdIfKnown, long mTime) 
-		throws InvalidPacketException, 
-		SignatureVerificationException, 
-		DecryptionException, 
-		IOException, 
-		RecordHiddenException, 
-		WrongAccountException
+		throws Exception
 	{
 		UniversalId uid = importBulletinPacketsFromZipFileToDatabase(accountIdIfKnown, zip, mTime);
 		revisionWasSaved(uid);
@@ -587,7 +576,7 @@ public class BulletinStore
 		getWriteableDatabase().discardRecord(burKey);
 	}
 	
-	public void saveBulletinForTesting(Bulletin b) throws IOException, CryptoException
+	public void saveBulletinForTesting(Bulletin b) throws Exception
 	{
 		saveBulletin(b, false);
 	}
@@ -598,12 +587,12 @@ public class BulletinStore
 	// to simply saveBulletin, have it trust getDatabase().mustEncryptPublicData(),
 	// and then ClientBulletinStore.saveBulletin can just invoke super after clearin its cache
 	// kbs. 2004-10-06
-	public void saveEncryptedBulletinForTesting(Bulletin b) throws IOException, CryptoException
+	public void saveEncryptedBulletinForTesting(Bulletin b) throws Exception
 	{
 		saveBulletin(b, true);
 	}
 	
-	protected void saveBulletin(Bulletin b, boolean mustEncryptPublicData) throws IOException, CryptoException
+	protected void saveBulletin(Bulletin b, boolean mustEncryptPublicData) throws Exception
 	{
 		saveToClientDatabase(b, getWriteableDatabase(), mustEncryptPublicData, b.getSignatureGenerator());
 		revisionWasSaved(b);

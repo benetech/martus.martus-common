@@ -35,8 +35,8 @@ public abstract class BulletinStoreCache
 {
 	abstract public void clear();
 	abstract public void storeWasCleared();
-	abstract public void revisionWasSaved(UniversalId uid);
-	abstract public void revisionWasSaved(Bulletin b);
+	abstract public void revisionWasSaved(UniversalId uid) throws Exception;
+	abstract public void revisionWasSaved(Bulletin b) throws Exception;
 	abstract public void revisionWasRemoved(UniversalId uid);
 	
 	public static DatabaseKey findKey(ReadableDatabase db, UniversalId uid)
