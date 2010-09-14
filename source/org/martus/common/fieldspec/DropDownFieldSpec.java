@@ -45,8 +45,9 @@ public class DropDownFieldSpec extends FieldSpec
 	
 	public void setChoices(ChoiceItem[] choicesToUse)
 	{
-		choices = new ReusableChoices("", "");
-		choices.addAll(choicesToUse);
+		ReusableChoices newChoices = new ReusableChoices("", "");
+		newChoices.addAll(choicesToUse);
+		choices = newChoices;
 		updateDetailsXml();
 	}
 	
