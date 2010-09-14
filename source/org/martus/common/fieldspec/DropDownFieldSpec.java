@@ -27,6 +27,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.fieldspec;
 
 import org.martus.common.MiniLocalization;
+import org.martus.common.ReusableChoices;
 import org.martus.util.xml.XmlUtilities;
 
 public class DropDownFieldSpec extends FieldSpec
@@ -44,23 +45,24 @@ public class DropDownFieldSpec extends FieldSpec
 	
 	public void setChoices(ChoiceItem[] choicesToUse)
 	{
-		choices = choicesToUse;
+		choices = new ReusableChoices("", "");
+		choices.addAll(choicesToUse);
 		updateDetailsXml();
 	}
 	
 	public ChoiceItem[] getAllChoices()
 	{
-		return choices;
+		return choices.getChoices();
 	}
 
 	public int getCount()
 	{
-		return choices.length;
+		return getAllChoices().length;
 	}
 	
 	public ChoiceItem getChoice(int index)
 	{
-		return choices[index];
+		return getAllChoices()[index];
 	}
 	
 	public String getValue(int index) throws ArrayIndexOutOfBoundsException 
@@ -149,6 +151,6 @@ public class DropDownFieldSpec extends FieldSpec
 	public static final String DROPDOWN_SPEC_DATA_SOURCE = "DataSource";
 
 	
-	private ChoiceItem[] choices;
+	private ReusableChoices choices;
 	private String detailsXml;
 }
