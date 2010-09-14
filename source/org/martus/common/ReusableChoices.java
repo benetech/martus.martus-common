@@ -71,6 +71,12 @@ public class ReusableChoices
 		choices.add(choice);
 	}
 
+	public void addAll(ChoiceItem[] newChoices)
+	{
+		for(int i = 0; i < newChoices.length; ++i)
+			add(newChoices[i]);
+	}
+
 	public String toExportedXml() throws Exception
 	{
 		StringWriter xml = new StringWriter();
