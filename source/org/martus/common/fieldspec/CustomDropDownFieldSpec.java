@@ -43,7 +43,8 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 	
 	public String getReusableChoicesCode()
 	{
-		return reusableChoicesCodes[0];
+		int LAST = reusableChoicesCodes.length - 1;
+		return reusableChoicesCodes[LAST];
 	}
 
 	public ChoiceItem[] createValidChoiceItemArrayFromStrings(Vector stringChoicesToUse)
