@@ -89,7 +89,8 @@ public class ReusableChoices
 		{
 			ChoiceItem choice = get(i);
 			String choiceTag = BulletinXmlExportImportConstants.REUSABLE_CHOICE_ITEM;
-			out.writeStartTag(getTagWithCodeAndLabelAttributes(choiceTag, choice.getCode(), choice.toString()));
+			String xmlTag = getTagWithCodeAndLabelAttributes(choiceTag, choice.getCode(), choice.toString());
+			out.writeStartTag(xmlTag);
 			out.writeEndTag(choiceTag);
 		}
 		
@@ -101,8 +102,8 @@ public class ReusableChoices
 	private String getTagWithCodeAndLabelAttributes(String tag, String codeValue, String labelValue)
 	{
 		String element = tag + 
-		  " " + BulletinXmlExportImportConstants.CHOICE_ITEM_CODE_ATTRIBUTE + "='" + XmlUtilities.getXmlEncoded(getCode()) + "'" + 
-		  " " + BulletinXmlExportImportConstants.CHOICE_ITEM_LABEL_ATTRIBUTE + "='" + XmlUtilities.getXmlEncoded(getLabel()) + "'";
+		  " " + BulletinXmlExportImportConstants.CHOICE_ITEM_CODE_ATTRIBUTE + "='" + XmlUtilities.getXmlEncoded(codeValue) + "'" + 
+		  " " + BulletinXmlExportImportConstants.CHOICE_ITEM_LABEL_ATTRIBUTE + "='" + XmlUtilities.getXmlEncoded(labelValue) + "'";
 		return element;
 	}
 
