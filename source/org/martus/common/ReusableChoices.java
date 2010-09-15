@@ -77,6 +77,46 @@ public class ReusableChoices
 			add(newChoices[i]);
 	}
 
+	public void insertAtTop(ChoiceItem choiceItem)
+	{
+		choices.insertElementAt(choiceItem, 0);
+	}
+
+	public Object findByCode(String codeToFind)
+	{
+		for(int i = 0; i < choices.size(); ++i)
+		{
+			ChoiceItem choice = get(i);
+			if(choice.getCode().equals(codeToFind))
+				return choice;
+		}
+		
+		return null;
+	}
+	
+	public int hashCode()
+	{
+		return choices.hashCode();
+	}
+	
+	public boolean equals(Object rawOther)
+	{
+		if(rawOther == this)
+			return true;
+		
+		if(! (rawOther instanceof ReusableChoices))
+			return false;
+		
+		ReusableChoices other = (ReusableChoices) rawOther;
+		if(!getCode().equals(other.getCode()))
+			return false;
+		
+		if(!getLabel().equals(other.getLabel()))
+			return false;
+		
+		return choices.equals(other.choices);
+	}
+
 	public String toExportedXml() throws Exception
 	{
 		StringWriter xml = new StringWriter();
