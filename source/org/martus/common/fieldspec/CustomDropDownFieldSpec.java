@@ -38,12 +38,12 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 {
 	public void setReusableChoicesCode(String reusableChoicesCodeToUse)
 	{
-		reusableChoicesCode = reusableChoicesCodeToUse;
+		reusableChoicesCodes = new String[] {reusableChoicesCodeToUse};
 	}
 	
 	public String getReusableChoicesCode()
 	{
-		return reusableChoicesCode;
+		return reusableChoicesCodes[0];
 	}
 
 	public ChoiceItem[] createValidChoiceItemArrayFromStrings(Vector stringChoicesToUse)
@@ -163,7 +163,7 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 	public static final String DROPDOWN_SPEC_DATA_SOURCE_GRID_TAG_TAG = "GridFieldTag";
 	public static final String DROPDOWN_SPEC_DATA_SOURCE_GRID_COLUMN_TAG = "GridColumnLabel";
 
-	private String reusableChoicesCode;
+	private String[] reusableChoicesCodes;
 	private String gridTag;
 	private String gridColumn;
 }
