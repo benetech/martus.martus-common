@@ -47,13 +47,14 @@ public class DropDownFieldSpec extends FieldSpec
 	{
 		ReusableChoices newChoices = new ReusableChoices("", "");
 		newChoices.addAll(choicesToUse);
-		choices = newChoices;
+		choices = new ReusableChoices[] {newChoices};
 		updateDetailsXml();
 	}
 	
 	public ChoiceItem[] getAllChoices()
 	{
-		return choices.getChoices();
+		int LAST = choices.length - 1;
+		return choices[LAST].getChoices();
 	}
 
 	public int getCount()
@@ -152,6 +153,6 @@ public class DropDownFieldSpec extends FieldSpec
 	public static final String DROPDOWN_SPEC_DATA_SOURCE = "DataSource";
 
 	
-	private ReusableChoices choices;
+	private ReusableChoices[] choices;
 	private String detailsXml;
 }
