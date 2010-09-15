@@ -99,6 +99,11 @@ public class FieldSpec
 	
 	public String toString()
 	{
+		return toXml();
+	}
+
+	public String toXml()
+	{
 		String rootTag = FIELD_SPEC_XML_TAG;
 		return toXml(rootTag);
 	}
@@ -416,7 +421,7 @@ public class FieldSpec
 				AttributesOnlyXmlLoader loader = (AttributesOnlyXmlLoader)ended;
 				CustomDropDownFieldSpec dropDownSpec = (CustomDropDownFieldSpec)spec;
 				String reusableChoicesCode = loader.getAttribute(REUSABLE_CHOICES_CODE_ATTRIBUTE);
-				dropDownSpec.setReusableChoicesCode(reusableChoicesCode);
+				dropDownSpec.addReusableChoicesCode(reusableChoicesCode);
 			}
 			else
 				super.endElement(thisTag, ended);

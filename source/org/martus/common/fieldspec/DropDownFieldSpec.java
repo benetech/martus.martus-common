@@ -127,6 +127,11 @@ public class DropDownFieldSpec extends FieldSpec
 		return getChoice(0).getCode();
 	}
 	
+	public String[] getReusableChoicesCodes()
+	{
+		return new String[0];
+	}
+
 	public String getReusableChoicesCode()
 	{
 		return null;

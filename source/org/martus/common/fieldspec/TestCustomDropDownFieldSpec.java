@@ -92,8 +92,23 @@ public class TestCustomDropDownFieldSpec extends TestCaseEnhanced
 		loader.parse(SAMPLE_DROPDOWN_WITH_DATA_SOURCE);
 		DropDownFieldSpec spec = (DropDownFieldSpec)loader.getFieldSpec();
 		assertEquals(0, spec.getCount());
+		assertEquals(0, spec.getReusableChoicesCodes().length);
 		assertEquals(GRID_FIELD_TAG + "." + GRID_COLUMN_LABEL, spec.getDataSource());
 		assertEquals(SAMPLE_DROPDOWN_WITH_DATA_SOURCE, spec.toString());
+	}
+	
+	public void testNestedDropDowns() throws Exception
+	{
+		FieldSpec.XmlFieldSpecLoader loader = new FieldSpec.XmlFieldSpecLoader();
+		loader.parse(SAMPLE_NESTED_DROPDOWN);
+		DropDownFieldSpec spec = (DropDownFieldSpec)loader.getFieldSpec();
+		assertEquals(0, spec.getCount());
+		assertNull("Data source not null?", spec.getDataSource());
+		String[] codes = spec.getReusableChoicesCodes();
+		assertEquals(2, codes.length);
+		assertEquals("a", codes[0]);
+		assertEquals("b", codes[1]);
+		assertEquals(SAMPLE_NESTED_DROPDOWN, spec.toXml());
 	}
 	
 	public void testEquals() throws Exception
@@ -170,5 +185,12 @@ public class TestCustomDropDownFieldSpec extends TestCaseEnhanced
 		"<GridFieldTag>" + GRID_FIELD_TAG + "</GridFieldTag>\n" +
 		"<GridColumnLabel>" + GRID_COLUMN_LABEL + "</GridColumnLabel>\n" +
 		"</DataSource>\n" +
+		"</Field>\n";
+	
+	public static final String SAMPLE_NESTED_DROPDOWN = "<Field type='DROPDOWN'>\n" +
+		"<Tag>nested</Tag>\n" +
+		"<Label>Nested</Label>\n" +
+		"<UseReusableChoices code='a'></UseReusableChoices>\n" +
+		"<UseReusableChoices code='b'></UseReusableChoices>\n" +
 		"</Field>\n";
 }

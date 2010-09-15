@@ -359,7 +359,7 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		CustomDropDownFieldSpec dropdown = new CustomDropDownFieldSpec();
 		dropdown.setTag("tag");
 		dropdown.setLabel("Label:");
-		dropdown.setReusableChoicesCode("Doesn't exist");
+		dropdown.addReusableChoicesCode("Doesn't exist");
 		specsTopSection.add(dropdown);
 		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
 		assertFalse("Should be invalid due to missing reusable choices", checker.isValid());
@@ -374,7 +374,7 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		CustomDropDownFieldSpec dropdown = new CustomDropDownFieldSpec();
 		dropdown.setTag("tag");
 		dropdown.setLabel("Label:");
-		dropdown.setReusableChoicesCode("Doesn't exist");
+		dropdown.addReusableChoicesCode("Doesn't exist");
 
 		GridFieldSpec gridWithDropDownWithMissingReusableChoices = new GridFieldSpec();
 		gridWithDropDownWithMissingReusableChoices.setTag("grid");

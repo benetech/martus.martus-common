@@ -36,15 +36,28 @@ import org.xml.sax.SAXParseException;
 
 public class CustomDropDownFieldSpec extends DropDownFieldSpec
 {
-	public void setReusableChoicesCode(String reusableChoicesCodeToUse)
+	public CustomDropDownFieldSpec()
 	{
-		reusableChoicesCodes = new String[] {reusableChoicesCodeToUse};
+		reusableChoicesCodes = new Vector();
+	}
+	
+	public void addReusableChoicesCode(String reusableChoicesCodeToAdd)
+	{
+		reusableChoicesCodes.add(reusableChoicesCodeToAdd);
+	}
+	
+	public String[] getReusableChoicesCodes()
+	{
+		return (String[]) reusableChoicesCodes.toArray(new String[0]);
 	}
 	
 	public String getReusableChoicesCode()
 	{
-		int LAST = reusableChoicesCodes.length - 1;
-		return reusableChoicesCodes[LAST];
+		int LAST = reusableChoicesCodes.size() - 1;
+		if(LAST < 0)
+			return null;
+		
+		return (String)reusableChoicesCodes.get(LAST);
 	}
 
 	public ChoiceItem[] createValidChoiceItemArrayFromStrings(Vector stringChoicesToUse)
@@ -89,14 +102,19 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 			return xml;
 		}
 
-		if(getReusableChoicesCode() != null)
+
+		if(reusableChoicesCodes.size() > 0)
 		{
 			StringBuffer details = new StringBuffer();
-			details.append("<" + USE_REUSABLE_CHOICES_TAG + " ");
-			details.append("code='" + getReusableChoicesCode() + "'>");
-			details.append(MartusXml.getTagEnd(USE_REUSABLE_CHOICES_TAG));
+			for (int i = 0; i < reusableChoicesCodes.size(); ++i)
+			{
+				details.append("<" + USE_REUSABLE_CHOICES_TAG + " ");
+				details.append("code='" + reusableChoicesCodes.get(i) + "'>");
+				details.append(MartusXml.getTagEnd(USE_REUSABLE_CHOICES_TAG));
+			}
 			return details.toString();
 		}
+
 		return super.getDetailsXml();
 	}
 
@@ -164,7 +182,7 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 	public static final String DROPDOWN_SPEC_DATA_SOURCE_GRID_TAG_TAG = "GridFieldTag";
 	public static final String DROPDOWN_SPEC_DATA_SOURCE_GRID_COLUMN_TAG = "GridColumnLabel";
 
-	private String[] reusableChoicesCodes;
+	private Vector reusableChoicesCodes;
 	private String gridTag;
 	private String gridColumn;
 }
