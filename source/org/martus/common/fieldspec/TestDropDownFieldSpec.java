@@ -82,6 +82,14 @@ public class TestDropDownFieldSpec extends TestCaseEnhanced
 		DropDownFieldSpec similar = new DropDownFieldSpec(choices2);
 		assertNotEquals("didn't use choices in comparison?", spec, similar);
 	}
+	
+	public void testDefaultValue() throws Exception
+	{
+		DropDownFieldSpec spec = new DropDownFieldSpec();
+		assertEquals("", spec.getDefaultValue());
+		spec.setChoices(choices);
+		assertEquals(choices[0].getCode(), spec.getDefaultValue());
+	}
 
 	static final ChoiceItem[] choices = {new ChoiceItem("tag", "value"), new ChoiceItem("othertag", "othervalue"),};
 }

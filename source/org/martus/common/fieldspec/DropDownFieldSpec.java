@@ -124,6 +124,8 @@ public class DropDownFieldSpec extends FieldSpec
 	
 	public String getDefaultValue()
 	{
+		if(getCount() == 0)
+			return "";
 		return getChoice(0).getCode();
 	}
 	
