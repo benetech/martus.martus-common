@@ -27,6 +27,7 @@ package org.martus.common.test;
 
 import org.martus.common.GridData;
 import org.martus.common.GridRow;
+import org.martus.common.PoolOfReusableChoicesLists;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldTypeNormal;
 import org.martus.common.fieldspec.GridFieldSpec;
@@ -44,25 +45,25 @@ public class TestGridData extends TestCaseEnhanced
 	
 	public void setUp() throws Exception
 	{
-
 		gridSpec2Colunns = new GridFieldSpec();
 		gridSpec2Colunns.addColumn(FieldSpec.createStandardField("a", new FieldTypeNormal()));
 		gridSpec2Colunns.addColumn(FieldSpec.createStandardField("b", new FieldTypeNormal()));
+		noReusableChoices = PoolOfReusableChoicesLists.EMPTY_POOL;
 	}
 	
 	public void testBasics()
 	{
-		GridData grid = new GridData(gridSpec2Colunns);
+		GridData grid = new GridData(gridSpec2Colunns, noReusableChoices);
 		int cols = grid.getColumnCount();
 		assertEquals(gridSpec2Colunns.getColumnCount(), cols);
 
 		String mustEncodeXMLData = "<&>";
 
-		GridRow row1 = new GridRow(gridSpec2Colunns);
+		GridRow row1 = new GridRow(gridSpec2Colunns, noReusableChoices);
 		String[] row1Data = {"column1a", mustEncodeXMLData};
 		fillGridRow(row1, row1Data);
 		
-		GridRow row2 = new GridRow(gridSpec2Colunns);
+		GridRow row2 = new GridRow(gridSpec2Colunns, noReusableChoices);
 		String row2DataColumn1 = "column1b"; 
 		String[] row2Data = {row2DataColumn1, "column2b"};
 		fillGridRow(row2, row2Data);
@@ -99,7 +100,7 @@ public class TestGridData extends TestCaseEnhanced
 		assertEquals("Should only have 2 rows after a delete", 2, grid.getRowCount());
 		assertEquals("Row 2's data should now be in row 1", row2DataColumn1, grid.getValueAt(0,0));
 
-		GridRow newInsertedRow = new GridRow(gridSpec2Colunns);
+		GridRow newInsertedRow = new GridRow(gridSpec2Colunns, noReusableChoices);
 		String newRowdata = "new row inserted";
 		String[] newInsertedRowData = {newRowdata, mustEncodeXMLData};
 		fillGridRow(newInsertedRow, newInsertedRowData);
@@ -118,13 +119,13 @@ public class TestGridData extends TestCaseEnhanced
 	
 	public void testArrayBoundries() throws Exception
 	{
-		GridData grid = new GridData(gridSpec2Colunns);
+		GridData grid = new GridData(gridSpec2Colunns, noReusableChoices);
 		
 		String[] row1Data = {"column1a"};
 		
 		GridFieldSpec gridSpecWithOneColumn = new GridFieldSpec();
 		gridSpecWithOneColumn.addColumn(FieldSpec.createStandardField("a", new FieldTypeNormal()));
-		GridRow row1 = new GridRow(gridSpecWithOneColumn);
+		GridRow row1 = new GridRow(gridSpecWithOneColumn, noReusableChoices);
 		fillGridRow(row1, row1Data);
 		try
 		{
@@ -142,7 +143,7 @@ public class TestGridData extends TestCaseEnhanced
 		gridSpecWithThreeColumns.addColumn(FieldSpec.createStandardField("a", new FieldTypeNormal()));
 		gridSpecWithThreeColumns.addColumn(FieldSpec.createStandardField("b", new FieldTypeNormal()));
 		gridSpecWithThreeColumns.addColumn(FieldSpec.createStandardField("c", new FieldTypeNormal()));
-		GridRow row2 = new GridRow(gridSpecWithThreeColumns);
+		GridRow row2 = new GridRow(gridSpecWithThreeColumns, noReusableChoices);
 		fillGridRow(row2, row2Data);
 			
 		try
@@ -174,7 +175,7 @@ public class TestGridData extends TestCaseEnhanced
 		String data1 = "column1 data";
 		String data2 = "column2 data";
 		String[] rowValidData = {data1, data2};
-		GridRow rowValid = new GridRow(gridSpec2Colunns);
+		GridRow rowValid = new GridRow(gridSpec2Colunns, noReusableChoices);
 		fillGridRow(rowValid, rowValidData);
 		grid.addRow(rowValid);
 
@@ -202,7 +203,7 @@ public class TestGridData extends TestCaseEnhanced
 		String data1a = "column1 data";
 		String data2a = "column2 data";
 		String[] rowValidaData = {data1a, data2a};
-		GridRow rowValida = new GridRow(gridSpec2Colunns);
+		GridRow rowValida = new GridRow(gridSpec2Colunns, noReusableChoices);
 		fillGridRow(rowValida, rowValidaData);
 		grid.addRow(rowValida);
 		assertEquals(data1a, grid.getValueAt(1,0));
@@ -295,7 +296,7 @@ public class TestGridData extends TestCaseEnhanced
 	{
 		GridData original = createSampleGridWithData();
 		String xml = original.getXmlRepresentation();
-		GridData loaded = new GridData(createSampleGridSpec());
+		GridData loaded = new GridData(createSampleGridSpec(), noReusableChoices);
 		loaded.addEmptyRow();
 		loaded.setFromXml(xml);
 		assertEquals("Columns?", original.getColumnCount(), loaded.getColumnCount());
@@ -306,7 +307,7 @@ public class TestGridData extends TestCaseEnhanced
 	
 	public void testEmptyGridText() throws Exception
 	{
-		GridData grid = new GridData(gridSpec2Colunns);
+		GridData grid = new GridData(gridSpec2Colunns, noReusableChoices);
 		grid.setFromXml("");
 		assertEquals("No first row?", 1, grid.getRowCount());
 		assertEquals("column 1 not empty?", "", grid.getValueAt(0,0));
@@ -316,7 +317,7 @@ public class TestGridData extends TestCaseEnhanced
 	
 	public void testRemoveTrailingBlankRows() throws Exception
 	{
-		GridData grid = new GridData(gridSpec2Colunns);
+		GridData grid = new GridData(gridSpec2Colunns, noReusableChoices);
 		assertTrue("empty grid should be empty", grid.isEmpty());
 		assertEquals("should have 0 rows", 0, grid.getRowCount());
 		grid.addEmptyRow();
@@ -351,7 +352,7 @@ public class TestGridData extends TestCaseEnhanced
 	public static GridData createSampleGridWithOneEmptyRow() throws Exception
 	{
 		GridData grid = createSampleGrid();
-		GridRow row1 = GridRow.createEmptyRow(grid.getSpec());
+		GridRow row1 = GridRow.createEmptyRow(grid.getSpec(), noReusableChoices);
 		grid.addRow(row1);
 		return grid;
 	}
@@ -359,7 +360,7 @@ public class TestGridData extends TestCaseEnhanced
 	public static GridData createSampleGrid() throws UnsupportedFieldTypeException
 	{
 		GridFieldSpec spec = createSampleGridSpec();
-		GridData grid = new GridData(spec);
+		GridData grid = new GridData(spec, noReusableChoices);
 		return grid;
 	}
 
@@ -377,4 +378,5 @@ public class TestGridData extends TestCaseEnhanced
 	static public final String SAMPLE_DATA4 = "data4";
 	
 	private GridFieldSpec gridSpec2Colunns;
+	private static PoolOfReusableChoicesLists noReusableChoices;
 }

@@ -26,6 +26,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.test;
 
 import org.martus.common.GridRow;
+import org.martus.common.PoolOfReusableChoicesLists;
 import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.xml.SimpleXmlParser;
@@ -39,10 +40,16 @@ public class TestGridRow extends TestCaseEnhanced
 		super(name);
 	}
 	
+	protected void setUp() throws Exception
+	{
+		super.setUp();
+		noReusableChoices = PoolOfReusableChoicesLists.EMPTY_POOL;
+	}
+	
 	public void testBasics() throws Exception
 	{
 		GridFieldSpec gridSpecWithTwoColumns = TestGridData.createSampleGridSpec();
-		GridRow row = new GridRow(gridSpecWithTwoColumns);
+		GridRow row = new GridRow(gridSpecWithTwoColumns, noReusableChoices);
 		assertEquals ("Should start with 2 columns", 2, row.getColumnCount());
 		for(int col = 0; col < row.getColumnCount(); ++col)
 			assertEquals("column " + col + " not empty?", "", row.getCellText(col));
@@ -71,7 +78,7 @@ public class TestGridRow extends TestCaseEnhanced
 		assertEquals("column 0 wrong value?", item1b, row.getCellText(0));
 		assertEquals("column 1 wrong value?", item3, row.getCellText(1));
 		
-		GridRow rowEmpty = GridRow.createEmptyRow(gridSpecWithTwoColumns);
+		GridRow rowEmpty = GridRow.createEmptyRow(gridSpecWithTwoColumns, noReusableChoices);
 		assertEquals ("Should now have 2 empty columns", 2, rowEmpty.getColumnCount());
 		for(int col = 0; col < row.getColumnCount(); ++col)
 			assertEquals("column " + col + " not empty?", "", rowEmpty.getCellText(col));
@@ -81,7 +88,7 @@ public class TestGridRow extends TestCaseEnhanced
 	public void testBoundries() throws Exception
 	{
 		GridFieldSpec gridSpecWithTwoColumns = TestGridData.createSampleGridSpec();
-		GridRow row = new GridRow(gridSpecWithTwoColumns);
+		GridRow row = new GridRow(gridSpecWithTwoColumns, noReusableChoices);
 		String item1 = "data1";
 		String item2 = "data2";
 		String item3 = "data3";
@@ -117,7 +124,7 @@ public class TestGridRow extends TestCaseEnhanced
 	public void testIsRowEmpty() throws Exception
 	{
 		GridFieldSpec gridSpecWithTwoColumns = TestGridData.createSampleGridSpec();
-		GridRow row = new GridRow(gridSpecWithTwoColumns);
+		GridRow row = new GridRow(gridSpecWithTwoColumns, noReusableChoices);
 		String item1 = "data1";
 		String item2 = "data2";
 
@@ -136,7 +143,7 @@ public class TestGridRow extends TestCaseEnhanced
 		String data2Raw = "data2";
 		String data2 = XmlUtilities.getXmlEncoded(data2Raw);
 		String xml = "<Row>\n<Column>" + data1 + "</Column><Column>" + data2 + "</Column></Row>";
-		GridRow.XmlGridRowLoader loader = new GridRow.XmlGridRowLoader(gridSpec);
+		GridRow.XmlGridRowLoader loader = new GridRow.XmlGridRowLoader(gridSpec, noReusableChoices);
 		SimpleXmlParser.parse(loader, xml);
 		GridRow row = loader.getGridRow();
 		assertEquals(data1, row.getCellText(0));
@@ -144,4 +151,5 @@ public class TestGridRow extends TestCaseEnhanced
 		
 	}
 	
+	private PoolOfReusableChoicesLists noReusableChoices;
 }

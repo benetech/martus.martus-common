@@ -48,7 +48,7 @@ public class FieldCollection
 		specs = reuseExistingSpecCollectionIfPossible(specsToUse);
 		fields = new Vector();
 		for(int i=0; i < specs.size(); ++i)
-			add(specs.get(i));
+			add(specs.get(i), specsToUse.getAllReusableChoiceLists());
 	}
 
 	private FieldSpecCollection reuseExistingSpecCollectionIfPossible(FieldSpecCollection specsToUse) throws Exception
@@ -74,7 +74,7 @@ public class FieldCollection
 		this(new FieldSpecCollection(specsToUse));
 	}
 	
-	private void add(FieldSpec newSpec)
+	private void add(FieldSpec newSpec, PoolOfReusableChoicesLists reusableChoicesLists)
 	{
 		FieldType type = newSpec.getType();
 		if(type.isDateRange())
@@ -82,9 +82,9 @@ public class FieldCollection
 		else if(type.isDate())
 			fields.add(new MartusDateField(newSpec));
 		else if(type.isGrid())
-			fields.add(new MartusGridField(newSpec));
+			fields.add(new MartusGridField(newSpec, reusableChoicesLists));
 		else
-			fields.add(new MartusField(newSpec));
+			fields.add(new MartusField(newSpec, reusableChoicesLists));
 	}
 	
 	public int count()

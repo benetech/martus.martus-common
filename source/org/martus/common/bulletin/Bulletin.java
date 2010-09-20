@@ -36,6 +36,7 @@ import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
 import org.martus.common.MartusUtilities;
 import org.martus.common.MiniLocalization;
+import org.martus.common.PoolOfReusableChoicesLists;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.CryptoException;
@@ -250,23 +251,24 @@ public class Bulletin implements BulletinConstants
 	
 	public MartusField getField(String fieldTag)
 	{
+		PoolOfReusableChoicesLists noRelevantReusableChoices = PoolOfReusableChoicesLists.EMPTY_POOL;
 		if(fieldTag.equals(PSEUDOFIELD_LOCAL_ID))
 		{
-			MartusField localIdField = new MartusField(FieldSpec.createStandardField(fieldTag, new FieldTypeNormal()));
+			MartusField localIdField = new MartusField(FieldSpec.createStandardField(fieldTag, new FieldTypeNormal()), noRelevantReusableChoices);
 			localIdField.setData(getLocalId());
 			return localIdField;
 		}
 		
 		if(fieldTag.equals(PSEUDOFIELD_LAST_SAVED_DATE))
 		{
-			MartusField lastSavedDateField = new MartusField(FieldSpec.createStandardField(fieldTag, new FieldTypeDate()));
+			MartusField lastSavedDateField = new MartusField(FieldSpec.createStandardField(fieldTag, new FieldTypeDate()), noRelevantReusableChoices);
 			lastSavedDateField.setData(getLastSavedDate());
 			return lastSavedDateField;
 		}
 		
 		if (fieldTag.equals(Bulletin.TAGLASTSAVED) || fieldTag.equals(Bulletin.PSEUDOFIELD_LAST_SAVED_TIMESTAMP))
 		{
-			MartusField lastSavedTimestampField = new MartusField(FieldSpec.createStandardField(fieldTag, new FieldTypeNormal()));
+			MartusField lastSavedTimestampField = new MartusField(FieldSpec.createStandardField(fieldTag, new FieldTypeNormal()), noRelevantReusableChoices);
 			lastSavedTimestampField.setData(Long.toString(getLastSavedTime()));
 			return lastSavedTimestampField;
 		}
@@ -274,14 +276,14 @@ public class Bulletin implements BulletinConstants
 		// FIXME: Rename TAGSTATUS to PSEUDOFIELD_STATUS (globally)
 		if(fieldTag.equals(TAGSTATUS))
 		{
-			MartusField statusField = new MartusField(FieldSpec.createStandardField(fieldTag, new FieldTypeNormal()));
+			MartusField statusField = new MartusField(FieldSpec.createStandardField(fieldTag, new FieldTypeNormal()), noRelevantReusableChoices);
 			statusField.setData(getStatus());
 			return statusField;
 		}
 		
 		if(fieldTag.equals(PSEUDOFIELD_ALL_PRIVATE))
 		{
-			MartusField allPrivateField = new MartusField(FieldSpec.createStandardField(fieldTag, new FieldTypeBoolean()));
+			MartusField allPrivateField = new MartusField(FieldSpec.createStandardField(fieldTag, new FieldTypeBoolean()), noRelevantReusableChoices);
 			if(isAllPrivate())
 				allPrivateField.setData(FieldSpec.TRUESTRING);
 			else

@@ -84,6 +84,8 @@ public class PoolOfReusableChoicesLists
 		
 		return xml.toString();
 	}
+	
+	public static final PoolOfReusableChoicesLists EMPTY_POOL = new PoolOfReusableChoicesLists();
 
 	private Map namedReusableChoices;
 

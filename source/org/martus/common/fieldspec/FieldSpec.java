@@ -28,6 +28,7 @@ package org.martus.common.fieldspec;
 
 
 import org.martus.common.MiniLocalization;
+import org.martus.common.PoolOfReusableChoicesLists;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusCrypto.CreateDigestException;
 import org.martus.util.xml.AttributesOnlyXmlLoader;
@@ -175,17 +176,17 @@ public class FieldSpec
 		return isRequired;
 	}
 
-	public String convertStoredToSearchable(String storedData, MiniLocalization localization)
+	public String convertStoredToSearchable(String storedData, PoolOfReusableChoicesLists reusableChoicesLists, MiniLocalization localization)
 	{
 		return getType().convertStoredToSearchable(storedData, localization);
 	}
 	
-	public String convertStoredToHtml(String storedData, MiniLocalization localization)
+	public String convertStoredToHtml(String storedData, PoolOfReusableChoicesLists reusableChoicesLists, MiniLocalization localization)
 	{
 		return getType().convertStoredToHtml(storedData, localization);
 	}
 	
-	public String convertStoredToExportable(String storedData, MiniLocalization localization)
+	public String convertStoredToExportable(String storedData, PoolOfReusableChoicesLists reusableChoicesLists, MiniLocalization localization)
 	{
 		return getType().convertStoredToExportable(storedData, localization);
 	}

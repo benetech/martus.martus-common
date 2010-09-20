@@ -38,9 +38,10 @@ import org.xml.sax.SAXParseException;
 
 public class GridData
 {
-	public GridData(GridFieldSpec spec)
+	public GridData(GridFieldSpec spec, PoolOfReusableChoicesLists reusableChoicesListsToUse)
 	{
 		gridSpec = spec;
+		reusableChoicesLists = reusableChoicesListsToUse;
 		clear();
 	}
 
@@ -51,13 +52,13 @@ public class GridData
 
 	public void addEmptyRow()
 	{
-		GridRow row = GridRow.createEmptyRow(gridSpec);
+		GridRow row = GridRow.createEmptyRow(gridSpec, getReusableChoicesLists());
 		addRow(row);
 	}
 	
 	public void addEmptyRowAt(int insertAt) throws ArrayIndexOutOfBoundsException
 	{
-		GridRow row = GridRow.createEmptyRow(gridSpec);
+		GridRow row = GridRow.createEmptyRow(gridSpec, getReusableChoicesLists());
 		insertRow(row, insertAt);
 	}
 
@@ -82,6 +83,11 @@ public class GridData
 		return gridSpec;
 	}
 	
+	public PoolOfReusableChoicesLists getReusableChoicesLists()
+	{
+		return reusableChoicesLists;
+	}
+
 	private GridRow getRow(int row)
 	{
 		return (GridRow)rows.get(row);
@@ -212,7 +218,7 @@ public class GridData
 				throws SAXParseException
 		{
 			if(tag.equals(GridRow.ROW_TAG))
-				return new GridRow.XmlGridRowLoader(grid.getSpec());
+				return new GridRow.XmlGridRowLoader(grid.getSpec(), grid.getReusableChoicesLists());
 			return super.startElement(tag);
 		}
 		
@@ -230,4 +236,5 @@ public class GridData
 	public static final String GRID_ATTRIBUTE_COLUMNS = "columns";
 	private Vector rows;
 	private GridFieldSpec gridSpec;
+	private PoolOfReusableChoicesLists reusableChoicesLists;
 }

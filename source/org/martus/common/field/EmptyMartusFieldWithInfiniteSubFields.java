@@ -27,6 +27,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.field;
 
 import org.martus.common.MiniLocalization;
+import org.martus.common.PoolOfReusableChoicesLists;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldTypeNormal;
 
@@ -34,7 +35,7 @@ public class EmptyMartusFieldWithInfiniteSubFields extends MartusField
 {
 	public EmptyMartusFieldWithInfiniteSubFields(String tag)
 	{
-		super(FieldSpec.createCustomField(tag, tag, new FieldTypeNormal()));
+		super(FieldSpec.createCustomField(tag, tag, new FieldTypeNormal()), PoolOfReusableChoicesLists.EMPTY_POOL);
 	}
 
 	public MartusField getSubField(String tag, MiniLocalization localization)

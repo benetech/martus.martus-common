@@ -27,6 +27,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.field;
 
 import org.martus.common.MiniLocalization;
+import org.martus.common.PoolOfReusableChoicesLists;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldType;
 import org.martus.common.fieldspec.MiniFieldSpec;
@@ -34,15 +35,16 @@ import org.martus.common.fieldspec.StandardFieldSpecs;
 
 public class MartusField
 {
-	public MartusField(FieldSpec specToUse)
+	public MartusField(FieldSpec specToUse, PoolOfReusableChoicesLists reusableChoicesToUse)
 	{
 		spec = specToUse;
+		reusableChoicesLists = reusableChoicesToUse;
 		setData(getDefaultValue());
 	}
 	
 	public MartusField createClone() throws Exception
 	{
-		MartusField clone = new MartusField(getFieldSpec());
+		MartusField clone = new MartusField(getFieldSpec(), reusableChoicesLists);
 		clone.setData(getData());
 		return clone;
 	}
@@ -92,7 +94,7 @@ public class MartusField
 	
 	public String getSearchableData(MiniLocalization localization)
 	{
-		return getFieldSpec().convertStoredToSearchable(getData(), localization);
+		return getFieldSpec().convertStoredToSearchable(getData(), getReusableChoicesLists(), localization);
 	}
 
 	// NOTE: This method is called by velocity reports
@@ -108,12 +110,12 @@ public class MartusField
 
 	protected String internalGetHtml(MiniLocalization localization) throws Exception
 	{
-		return getFieldSpec().convertStoredToHtml(getData(), localization);
+		return getFieldSpec().convertStoredToHtml(getData(), getReusableChoicesLists(), localization);
 	}
 	
 	public String getExportableData(MiniLocalization localization)
 	{
-		return getFieldSpec().convertStoredToExportable(getData(), localization);
+		return getFieldSpec().convertStoredToExportable(getData(), getReusableChoicesLists(), localization);
 	}
 	
 	public void clearData()
@@ -124,6 +126,11 @@ public class MartusField
 	public FieldSpec getFieldSpec()
 	{
 		return spec;
+	}
+	
+	public PoolOfReusableChoicesLists getReusableChoicesLists()
+	{
+		return reusableChoicesLists;
 	}
 	
 	public void setData(String newValue)
@@ -201,5 +208,6 @@ public class MartusField
 	
 
 	protected FieldSpec spec;
+	private PoolOfReusableChoicesLists reusableChoicesLists;
 	private String data;
 }

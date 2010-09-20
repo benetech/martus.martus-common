@@ -28,6 +28,7 @@ package org.martus.common.field;
 
 import org.martus.common.GridData;
 import org.martus.common.MiniLocalization;
+import org.martus.common.PoolOfReusableChoicesLists;
 import org.martus.common.fieldspec.ChoiceItem;
 import org.martus.common.fieldspec.DropDownFieldSpec;
 import org.martus.common.fieldspec.FieldSpec;
@@ -57,12 +58,13 @@ public class TestMartusField extends TestCaseEnhanced
 	public void setUp()
 	{
 		localization = new MiniLocalization();
+		noReusableChoices = PoolOfReusableChoicesLists.EMPTY_POOL;
 	}
 
 	public void testBasics()
 	{
 		FieldSpec spec = FieldSpec.createCustomField("tag", "label", new FieldTypeNormal());
-		MartusField f = new MartusField(spec);
+		MartusField f = new MartusField(spec, noReusableChoices);
 		assertEquals("wrong tag?", spec.getTag(), f.getTag());
 		assertEquals("wrong label?", spec.getLabel(), f.getLabel());
 		assertEquals("wrong type?", spec.getType(), f.getType());
@@ -86,37 +88,37 @@ public class TestMartusField extends TestCaseEnhanced
 	public void testGridMissingSubField() throws Exception
 	{
 		GridFieldSpec gridSpec = createSampleGridSpec();
-		MartusGridField gridField = new MartusGridField(gridSpec);
+		MartusGridField gridField = new MartusGridField(gridSpec, noReusableChoices);
 		MartusField noSuchColumn = gridField.getSubField("not a real column name", localization);
 		assertNotNull("returned null for missing column?", noSuchColumn);
 	}
 	
 	public void testNonGridHtml() throws Exception
 	{
-		MartusField languageField = new MartusField(createFieldSpec(new FieldTypeLanguage()));
+		MartusField languageField = new MartusField(createFieldSpec(new FieldTypeLanguage()), noReusableChoices);
 		languageField.setData(MiniLocalization.ENGLISH);
 		assertEquals("Didn't localize language name?", "&lt;language:en&gt;", languageField.html(localization));
 		
-		MartusField dateField = new MartusField(createFieldSpec(new FieldTypeDate()));
+		MartusField dateField = new MartusField(createFieldSpec(new FieldTypeDate()), noReusableChoices);
 		dateField.setData("1968-02-21");
 		assertEquals("Didn't localize date?", "02/21/1968", dateField.html(localization));
 
-		MartusField dateRangeField = new MartusField(createFieldSpec(new FieldTypeDateRange()));
+		MartusField dateRangeField = new MartusField(createFieldSpec(new FieldTypeDateRange()), noReusableChoices);
 		dateRangeField.setData("1967-03-21,19670321+9");
 		assertEquals("Didn't localize date range?", "03/21/1967 - 03/30/1967", dateRangeField.html(localization));
 
 		DropDownFieldSpec dropdownSpec = new DropDownFieldSpec(choices);
 		dropdownSpec.setTag("c");
 		dropdownSpec.setLabel("C");
-		MartusField dropdownField = new MartusField(dropdownSpec);
+		MartusField dropdownField = new MartusField(dropdownSpec, noReusableChoices);
 		dropdownField.setData("ampersand");
 		assertEquals("Didn't decode dropdown?", "This &amp; That", dropdownField.html(localization));
 		
-		MartusField booleanField = new MartusField(createFieldSpec(new FieldTypeBoolean()));
+		MartusField booleanField = new MartusField(createFieldSpec(new FieldTypeBoolean()), noReusableChoices);
 		booleanField.setData(FieldSpec.TRUESTRING);
 		assertEquals("Didn't htmlize?", localization.getButtonLabel("yes"), booleanField.html(localization));
 		
-		MartusField blankField = new MartusField(createFieldSpec(new FieldTypeNormal()));
+		MartusField blankField = new MartusField(createFieldSpec(new FieldTypeNormal()), noReusableChoices);
 		blankField.setData("");
 		assertEquals("Empty not converted to nbsp?", "&nbsp;", blankField.html(localization));
 		
@@ -133,8 +135,8 @@ public class TestMartusField extends TestCaseEnhanced
 		spec.addColumn(dropdownSpec);
 		spec.addColumn(FieldSpec.createCustomField("d", "D", new FieldTypeDate()));
 		spec.addColumn(FieldSpec.createCustomField("e", "E", new FieldTypeDateRange()));
-		MartusField field = new MartusGridField(spec);
-		GridData data = new GridData(spec);
+		MartusField field = new MartusGridField(spec, noReusableChoices);
+		GridData data = new GridData(spec, noReusableChoices);
 		data.addEmptyRow();
 		data.addEmptyRow();
 		for(int row = 0; row < 2; ++row)
@@ -208,8 +210,8 @@ public class TestMartusField extends TestCaseEnhanced
 		spec.addColumn(FieldSpec.createCustomField("customtag", "Custom Label", new FieldTypeNormal()));
 		spec.addColumn(new DropDownFieldSpec(choices));
 		
-		MartusField gridField = new MartusField(spec);
-		GridData data = new GridData(spec);
+		MartusField gridField = new MartusField(spec, noReusableChoices);
+		GridData data = new GridData(spec, noReusableChoices);
 		data.addEmptyRow();
 		data.addEmptyRow();
 		data.addEmptyRow();
@@ -226,7 +228,7 @@ public class TestMartusField extends TestCaseEnhanced
 		GridFieldSpec spec = new GridFieldSpec();
 		spec.addColumn(FieldSpec.createCustomField("", "Date Range", new FieldTypeDateRange()));
 		
-		GridData data = new GridData(spec);
+		GridData data = new GridData(spec, noReusableChoices);
 		data.addEmptyRow();
 		data.addEmptyRow();
 		data.addEmptyRow();
@@ -237,7 +239,7 @@ public class TestMartusField extends TestCaseEnhanced
 		String rangeString = MartusFlexidate.toBulletinFlexidateFormat(begin, end);
 		data.setValueAt(rangeString, 0, 0);
 
-		MartusGridField gridField = new MartusGridField(spec);
+		MartusGridField gridField = new MartusGridField(spec, noReusableChoices);
 		gridField.setData(data.getXmlRepresentation());
 		String label = spec.getFieldSpec(0).getLabel();
 		MartusField columnFields = gridField.getSubField(label, localization);
@@ -263,7 +265,7 @@ public class TestMartusField extends TestCaseEnhanced
 
 	private void verifySearchableData(final FieldSpec spec, final String rawData, final String expectedPrintableData)
 	{
-		MartusField field = new MartusField(spec);
+		MartusField field = new MartusField(spec, noReusableChoices);
 		field.setData(rawData);
 		assertEquals("Wrong printableData for " + FieldSpec.getTypeString(spec.getType()), expectedPrintableData, field.getSearchableData(localization));
 	}
@@ -282,7 +284,7 @@ public class TestMartusField extends TestCaseEnhanced
 	public void testDropDownInitialValue()
 	{	
 		DropDownFieldSpec spec = new DropDownFieldSpec(choices);
-		MartusField f = new MartusField(spec);
+		MartusField f = new MartusField(spec, noReusableChoices);
 		assertEquals("Dropdown didn't default to first entry?", choices[0].getCode(), f.getData());
 	}
 	
@@ -292,8 +294,8 @@ public class TestMartusField extends TestCaseEnhanced
 		spec.addColumn(createFieldSpec(new FieldTypeNormal()));
 		spec.addColumn(createFieldSpec(new FieldTypeBoolean()));
 		spec.addColumn(new DropDownFieldSpec(choices));
-		MartusField f = new MartusField(spec);
-		GridData data = new GridData(spec);
+		MartusField f = new MartusField(spec, noReusableChoices);
+		GridData data = new GridData(spec, noReusableChoices);
 		data.setFromXml(f.getData());
 		for(int col = 0; col < spec.getColumnCount(); ++col)
 			assertEquals("Normal column wrong data?", spec.getFieldSpec(col).getDefaultValue(), data.getValueAt(0, col));
@@ -310,7 +312,7 @@ public class TestMartusField extends TestCaseEnhanced
 	
 	public void testCompareToTrimsSpaces()
 	{
-		MartusField f = new MartusField(createFieldSpec(new FieldTypeNormal()));
+		MartusField f = new MartusField(createFieldSpec(new FieldTypeNormal()), noReusableChoices);
 		f.setData(" with spaces ");
 		assertEquals("didn't trim data?", 0, f.compareTo("with spaces", localization));
 		assertEquals("didn't trim search string?", 0, f.compareTo("   with spaces   ", localization));
@@ -319,7 +321,7 @@ public class TestMartusField extends TestCaseEnhanced
 	private void verifyInitialValue(FieldType type)
 	{
 		FieldSpec spec = createFieldSpec(type);
-		MartusField f = new MartusField(spec);
+		MartusField f = new MartusField(spec, noReusableChoices);
 		assertEquals("wrong initial value for type " + type + ": ", spec.getDefaultValue(), f.getData());
 	}
 
@@ -337,4 +339,5 @@ public class TestMartusField extends TestCaseEnhanced
 	};
 
 	MiniLocalization localization;
+	private PoolOfReusableChoicesLists noReusableChoices;
 }

@@ -35,6 +35,7 @@ import org.martus.common.FieldSpecCollection;
 import org.martus.common.GridData;
 import org.martus.common.HQKeys;
 import org.martus.common.MiniLocalization;
+import org.martus.common.PoolOfReusableChoicesLists;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.ReadableDatabase;
 import org.martus.common.database.Database.RecordHiddenException;
@@ -234,7 +235,7 @@ public class BulletinHtmlGenerator
 			if(fieldType.isGrid())
 				value = getGridHTML(fdp, spec, tag);
 			else
-				value = getPrintableData(value, spec);
+				value = getPrintableData(value, spec, fdp.getFieldSpecs().getAllReusableChoiceLists());
 			
 			if(StandardFieldSpecs.isStandardFieldTag(tag))
 				label = getHTMLEscaped(localization.getFieldLabel(tag));
@@ -259,7 +260,7 @@ public class BulletinHtmlGenerator
 		return sectionHtml;
 	}
 
-	private String getPrintableData(String value, FieldSpec spec)
+	private String getPrintableData(String value, FieldSpec spec, PoolOfReusableChoicesLists reusableChoicesLists)
 	{
 		FieldType fieldType = spec.getType();
 		if(fieldType.isDate())
@@ -275,7 +276,7 @@ public class BulletinHtmlGenerator
 		else if(fieldType.isDropdown())
 		{
 			DropDownFieldSpec dropDownSpec = (DropDownFieldSpec)spec;
-			value = dropDownSpec.convertStoredToHtml(value, localization);
+			value = dropDownSpec.convertStoredToHtml(value, reusableChoicesLists, localization);
 		}
 		return value;
 	}
@@ -316,7 +317,7 @@ public class BulletinHtmlGenerator
 		value += "</tr>";
 		try
 		{
-			GridData gridData = new GridData(grid);
+			GridData gridData = new GridData(grid, fdp.getFieldSpecs().getAllReusableChoiceLists());
 			gridData.setFromXml(gridXMLData);
 			int rowCount = gridData.getRowCount();
 
@@ -337,7 +338,7 @@ public class BulletinHtmlGenerator
 
 					String rawdata = gridData.getValueAt(r, column);
 					FieldSpec columnSpec = grid.getFieldSpec(column);
-					String printableData = getPrintableData(rawdata, columnSpec);
+					String printableData = getPrintableData(rawdata, columnSpec, fdp.getFieldSpecs().getAllReusableChoiceLists());
 					value += getItemToAddForTable(printableData, TABLE_DATA, justification);
 				}
 				

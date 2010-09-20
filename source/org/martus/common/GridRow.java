@@ -35,12 +35,12 @@ import org.xml.sax.SAXParseException;
 
 public class GridRow
 {
-	public GridRow(GridFieldSpec gridSpecToUse)
+	public GridRow(GridFieldSpec gridSpecToUse, PoolOfReusableChoicesLists reusableChoicesLists)
 	{
 		gridSpec = gridSpecToUse;
 		data = new MartusField[gridSpec.getColumnCount()];
 		for(int i = 0; i < getColumnCount(); ++i)
-			data[i] = new MartusField(gridSpec.getFieldSpec(i));
+			data[i] = new MartusField(gridSpec.getFieldSpec(i), reusableChoicesLists);
 	}
 	
 	public int getColumnCount()
@@ -48,14 +48,14 @@ public class GridRow
 		return data.length;
 	}
 	
-	static public GridRow createEmptyRow(GridFieldSpec gridSpec)
+	static public GridRow createEmptyRow(GridFieldSpec gridSpec, PoolOfReusableChoicesLists reusableChoicesLists)
 	{
-		return new GridRow(gridSpec);
+		return new GridRow(gridSpec, reusableChoicesLists);
 	}
 	
 	public boolean isEmptyRow()
 	{
-		GridRow emptyRow = GridRow.createEmptyRow(gridSpec);
+		GridRow emptyRow = GridRow.createEmptyRow(gridSpec, PoolOfReusableChoicesLists.EMPTY_POOL);
 		for(int column = 0; column < getColumnCount(); ++column)
 		{
 			if(!emptyRow.getCellText(column).equals(getCellText(column)))
@@ -89,10 +89,10 @@ public class GridRow
 
 	public static class XmlGridRowLoader extends SimpleXmlDefaultLoader
 	{
-		public XmlGridRowLoader(GridFieldSpec gridSpec)
+		public XmlGridRowLoader(GridFieldSpec gridSpec, PoolOfReusableChoicesLists reusableChoicesLists)
 		{
 			super(ROW_TAG);
-			thisRow = new GridRow(gridSpec);
+			thisRow = new GridRow(gridSpec, reusableChoicesLists);
 		}
 		
 		public GridRow getGridRow()

@@ -30,6 +30,7 @@ import java.util.Vector;
 
 import org.martus.common.GridData;
 import org.martus.common.MiniLocalization;
+import org.martus.common.PoolOfReusableChoicesLists;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldType;
 import org.martus.common.fieldspec.GridFieldSpec;
@@ -37,20 +38,20 @@ import org.martus.common.fieldspec.GridFieldSpec;
 
 public class MartusSearchableGridColumnField extends MartusField
 {
-	public MartusSearchableGridColumnField(MartusGridField gridToUse, int columnToUse) throws Exception
+	public MartusSearchableGridColumnField(MartusGridField gridToUse, int columnToUse, PoolOfReusableChoicesLists reusableChoicesLists) throws Exception
 	{
-		super(createMartusField(gridToUse.getGridFieldSpec(), columnToUse).getFieldSpec());
+		super(createMartusField(gridToUse.getGridFieldSpec(), columnToUse, reusableChoicesLists).getFieldSpec(), reusableChoicesLists);
 		grid = gridToUse;
 		column = columnToUse;
 		
 		GridFieldSpec gridSpec = gridToUse.getGridFieldSpec();
-		GridData gridData = new GridData(gridSpec);
+		GridData gridData = new GridData(gridSpec, reusableChoicesLists);
 		gridData.setFromXml(gridToUse.getData());
 	
 		dataInEachRow = new MartusField[gridData.getRowCount()];
 		for(int row = 0; row < gridData.getRowCount(); ++row)
 		{
-			dataInEachRow[row] = createMartusField(getFieldSpec());
+			dataInEachRow[row] = createMartusField(getFieldSpec(), getReusableChoicesLists());
 			String cellData = gridData.getValueAt(row, column);
 			dataInEachRow[row].setData(cellData);
 		}
@@ -80,7 +81,7 @@ public class MartusSearchableGridColumnField extends MartusField
 	
 	public MartusField createClone() throws Exception
 	{
-		MartusField clone = new MartusSearchableGridColumnField(grid, column);
+		MartusField clone = new MartusSearchableGridColumnField(grid, column, getReusableChoicesLists());
 		clone.setData(getData());
 		return clone;
 	}
@@ -95,9 +96,9 @@ public class MartusSearchableGridColumnField extends MartusField
 		return columnSpecs;
 	}
 	
-	public MartusSearchableGridColumnField(FieldSpec specToUse, MartusField[] rowData, MiniLocalization localization) throws Exception
+	public MartusSearchableGridColumnField(FieldSpec specToUse, MartusField[] rowData, PoolOfReusableChoicesLists reusableChoicesLists, MiniLocalization localization) throws Exception
 	{
-		super(specToUse);
+		super(specToUse, reusableChoicesLists);
 		dataInEachRow = rowData;
 	}
 	
@@ -122,7 +123,7 @@ public class MartusSearchableGridColumnField extends MartusField
 	{
 		try
 		{
-			MartusField thisField = createMartusField(getFieldSpec());
+			MartusField thisField = createMartusField(getFieldSpec(), getReusableChoicesLists());
 			MartusField field = thisField.getSubField(tag, localization);
 			if(field == null)
 				return null;
@@ -133,7 +134,7 @@ public class MartusSearchableGridColumnField extends MartusField
 				subFieldDataInEachRow[row] = dataInEachRow[row].getSubField(tag, localization);
 			}
 
-			return new MartusSearchableGridColumnField(getFieldSpec(), subFieldDataInEachRow, localization);
+			return new MartusSearchableGridColumnField(getFieldSpec(), subFieldDataInEachRow, getReusableChoicesLists(), localization);
 		} 
 		catch (Exception e)
 		{
@@ -142,16 +143,16 @@ public class MartusSearchableGridColumnField extends MartusField
 		}
 	}
 	
-	private static MartusField createMartusField(GridFieldSpec gridSpec, int column)
+	private static MartusField createMartusField(GridFieldSpec gridSpec, int column, PoolOfReusableChoicesLists reusableChoicesLists)
 	{
 		String columnTag = MartusGridField.sanitizeLabel(gridSpec.getColumnLabel(column));
 		FieldSpec rawColumnSpec = gridSpec.getFieldSpec(column);
 		FieldSpec goodColumnSpec = FieldSpec.createCustomField(columnTag, rawColumnSpec.getLabel(), rawColumnSpec.getType());
 		goodColumnSpec.setParent(gridSpec);
-		return createMartusField(goodColumnSpec);
+		return createMartusField(goodColumnSpec, reusableChoicesLists);
 	}
 	
-	private static MartusField createMartusField(FieldSpec newSpec)
+	private static MartusField createMartusField(FieldSpec newSpec, PoolOfReusableChoicesLists reusableChoicesLists)
 	{
 		FieldType type = newSpec.getType();
 		if(type.isDateRange())
@@ -159,9 +160,24 @@ public class MartusSearchableGridColumnField extends MartusField
 		else if(type.isDate())
 			return new MartusDateField(newSpec);
 		else if(type.isGrid())
-			return new MartusGridField(newSpec);
+			return new MartusGridField(newSpec, reusableChoicesLists);
 		else
-			return new MartusField(newSpec);
+			return new MartusField(newSpec, reusableChoicesLists);
+	}
+
+	public String internalGetHtml(MiniLocalization localization) throws Exception
+	{
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("<table>");
+		for(int row = 0; row < dataInEachRow.length; ++row)
+		{
+			buffer.append("<tr><td>");
+			buffer.append(dataInEachRow[row].html(localization));
+			buffer.append("</td></tr>");
+		}
+		buffer.append("</table>");
+		
+		return buffer.toString();
 	}
 
 	public int size()

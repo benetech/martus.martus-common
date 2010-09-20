@@ -31,6 +31,7 @@ import java.util.Vector;
 import org.martus.common.GridData;
 import org.martus.common.MartusXml;
 import org.martus.common.MiniLocalization;
+import org.martus.common.PoolOfReusableChoicesLists;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.XmlUtilities;
 import org.xml.sax.SAXParseException;
@@ -67,21 +68,21 @@ public class GridFieldSpec extends FieldSpec
 		return (FieldSpec)columns.get(column);
 	}
 
-	public String convertStoredToSearchable(String storedData, MiniLocalization localization)
+	public String convertStoredToSearchable(String storedData, PoolOfReusableChoicesLists reusableChoicesLists, MiniLocalization localization)
 	{
 		Formatter formatter = new FormatterForSearching();
-		return getFormatted(storedData, localization, formatter);
+		return getFormatted(storedData, reusableChoicesLists, localization, formatter);
 	}
 
-	public String convertStoredToExportable(String storedData, MiniLocalization localization)
+	public String convertStoredToExportable(String storedData, PoolOfReusableChoicesLists reusableChoicesLists, MiniLocalization localization)
 	{
 		Formatter formatter = new FormatterForExporting();
-		return getFormatted(storedData, localization, formatter);
+		return getFormatted(storedData, reusableChoicesLists, localization, formatter);
 	}
 	
-	private String getFormatted(String storedData, MiniLocalization localization, Formatter formatter)
+	private String getFormatted(String storedData, PoolOfReusableChoicesLists reusableChoicesLists, MiniLocalization localization, Formatter formatter)
 	{
-		GridData data = new GridData(this);
+		GridData data = new GridData(this, reusableChoicesLists);
 		try
 		{
 			data.setFromXml(storedData);
@@ -102,7 +103,7 @@ public class GridFieldSpec extends FieldSpec
 				result.append(formatter.getCellBeginning());
 				String rawData = data.getValueAt(row, col);
 				final FieldSpec cellSpec = getFieldSpec(col);
-				String searchableData = formatter.getFormattedCell(rawData, cellSpec, localization);
+				String searchableData = formatter.getFormattedCell(rawData, cellSpec, reusableChoicesLists, localization);
 				result.append(searchableData);
 				result.append(formatter.getCellEnd());
 			}
@@ -114,7 +115,7 @@ public class GridFieldSpec extends FieldSpec
 	
 	abstract class Formatter
 	{
-		abstract public String getFormattedCell(String rawData, FieldSpec cellSpec, MiniLocalization localization);
+		abstract public String getFormattedCell(String rawData, FieldSpec cellSpec, PoolOfReusableChoicesLists resuableChoicesListst, MiniLocalization localization);
 		
 		public String getVeryBeginning(GridFieldSpec gridSpec)
 		{
@@ -149,9 +150,9 @@ public class GridFieldSpec extends FieldSpec
 	
 	class FormatterForSearching extends Formatter
 	{
-		public String getFormattedCell(String rawData, FieldSpec cellSpec, MiniLocalization localization)
+		public String getFormattedCell(String rawData, FieldSpec cellSpec, PoolOfReusableChoicesLists reusableChoicesLists, MiniLocalization localization)
 		{
-			return cellSpec.convertStoredToSearchable(rawData, localization);
+			return cellSpec.convertStoredToSearchable(rawData, reusableChoicesLists, localization);
 		}
 		
 		public String getRowEnd()
@@ -167,9 +168,9 @@ public class GridFieldSpec extends FieldSpec
 	
 	class FormatterForExporting extends Formatter
 	{
-		public String getFormattedCell(String rawData, FieldSpec cellSpec, MiniLocalization localization)
+		public String getFormattedCell(String rawData, FieldSpec cellSpec, PoolOfReusableChoicesLists reusableChoicesLists, MiniLocalization localization)
 		{
-			return XmlUtilities.getXmlEncoded(cellSpec.convertStoredToExportable(rawData, localization));
+			return XmlUtilities.getXmlEncoded(cellSpec.convertStoredToExportable(rawData, reusableChoicesLists, localization));
 		}
 		
 		public String getVeryBeginning(GridFieldSpec gridSpec)

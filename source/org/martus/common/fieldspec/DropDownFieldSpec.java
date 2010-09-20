@@ -27,6 +27,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.fieldspec;
 
 import org.martus.common.MiniLocalization;
+import org.martus.common.PoolOfReusableChoicesLists;
 import org.martus.common.ReusableChoices;
 import org.martus.util.xml.XmlUtilities;
 
@@ -72,12 +73,12 @@ public class DropDownFieldSpec extends FieldSpec
 		return getChoice(index).toString();
 	}
 	
-	public String convertStoredToSearchable(String storedData, MiniLocalization localization)
+	public String convertStoredToSearchable(String storedData, PoolOfReusableChoicesLists reusableChoicesLists, MiniLocalization localization)
 	{
 		return getDisplayString(storedData);
 	}
 
-	public String convertStoredToHtml(String storedData, MiniLocalization localization)
+	public String convertStoredToHtml(String storedData, PoolOfReusableChoicesLists reusableChoicesLists, MiniLocalization localization)
 	{
 		return XmlUtilities.getXmlEncoded(getDisplayString(storedData));
 	}

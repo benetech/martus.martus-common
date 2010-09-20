@@ -160,7 +160,7 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 		{
 			super(tag);
 			String fieldNameTag = getFieldNameTag();
-			MartusField field = fdp.getField(fieldNameTag);
+			field = fdp.getField(fieldNameTag);
 			if(field == null)
 				System.out.println("ERROR: Unknown field: " + fieldNameTag + " in " + fdp.getLocalId());
 			spec = field.getFieldSpec();
@@ -184,7 +184,7 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 				throws SAXParseException
 		{
 			if(tag.equals(GridData.GRID_DATA_TAG))
-				return new GridData.XmlGridDataLoader(new GridData((GridFieldSpec)spec));
+				return new GridData.XmlGridDataLoader(new GridData((GridFieldSpec)spec, field.getReusableChoicesLists()));
 			return super.startElement(tag);
 		}
 
@@ -196,6 +196,7 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 			super.endElement(tag, ended);
 		}
 		
+		private MartusField field;
 		FieldSpec spec;
 		String complexData;
 	}

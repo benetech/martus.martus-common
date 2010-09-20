@@ -24,6 +24,7 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.fieldspec;
 import org.martus.common.MiniLocalization;
+import org.martus.common.PoolOfReusableChoicesLists;
 import org.martus.util.TestCaseEnhanced;
 
 
@@ -38,13 +39,14 @@ public class TestDropDownFieldSpec extends TestCaseEnhanced
 	public void testGetValueFromTag() throws Exception
 	{
 		MiniLocalization localization = new MiniLocalization();
+		PoolOfReusableChoicesLists noReusableChoices = PoolOfReusableChoicesLists.EMPTY_POOL;
 		DropDownFieldSpec spec = new DropDownFieldSpec(choices);
 		String nonTag = "nontag";
-		assertEquals("Did not return code back which was not found", nonTag, spec.convertStoredToHtml(nonTag, localization));
+		assertEquals("Did not return code back which was not found", nonTag, spec.convertStoredToHtml(nonTag, noReusableChoices, localization));
 		String upperCaseTag = "TAG";
-		assertEquals("not case sensitive?", upperCaseTag, spec.convertStoredToHtml(upperCaseTag, localization));
-		assertEquals("value", spec.convertStoredToHtml("tag", localization));
-		assertEquals("othervalue", spec.convertStoredToHtml("othertag", localization));
+		assertEquals("not case sensitive?", upperCaseTag, spec.convertStoredToHtml(upperCaseTag, noReusableChoices, localization));
+		assertEquals("value", spec.convertStoredToHtml("tag", noReusableChoices, localization));
+		assertEquals("othervalue", spec.convertStoredToHtml("othertag", noReusableChoices, localization));
 	}
 	
 	public void testGetValueFromIndex() throws Exception

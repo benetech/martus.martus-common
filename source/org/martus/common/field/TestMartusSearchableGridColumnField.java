@@ -28,6 +28,7 @@ package org.martus.common.field;
 
 import org.martus.common.GridData;
 import org.martus.common.MiniLocalization;
+import org.martus.common.PoolOfReusableChoicesLists;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldTypeDateRange;
 import org.martus.common.fieldspec.GridFieldSpec;
@@ -50,7 +51,7 @@ public class TestMartusSearchableGridColumnField extends TestCaseEnhanced
 		GridFieldSpec gridSpec = new GridFieldSpec();
 		gridSpec.addColumn(dateRangeSpec);
 
-		GridData data = new GridData(gridSpec);
+		GridData data = new GridData(gridSpec, PoolOfReusableChoicesLists.EMPTY_POOL);
 		data.addEmptyRow();
 		final int SEPTEMBER = 9;
 		MultiCalendar begin = MultiCalendar.createFromGregorianYearMonthDay(2004, SEPTEMBER, 21);
@@ -58,10 +59,10 @@ public class TestMartusSearchableGridColumnField extends TestCaseEnhanced
 		String rangeString = MartusFlexidate.toBulletinFlexidateFormat(begin, end);
 		data.setValueAt(rangeString, 0, 0);
 
-		MartusGridField gridField = new MartusGridField(gridSpec);
+		MartusGridField gridField = new MartusGridField(gridSpec, PoolOfReusableChoicesLists.EMPTY_POOL);
 		gridField.setData(data.getXmlRepresentation());
 
-		MartusSearchableGridColumnField columnField = new MartusSearchableGridColumnField(gridField, 0);
+		MartusSearchableGridColumnField columnField = new MartusSearchableGridColumnField(gridField, 0, PoolOfReusableChoicesLists.EMPTY_POOL);
 		MartusField rawBeginField = columnField.getSubField("begin", localization);
 		MartusSearchableGridColumnField beginField = (MartusSearchableGridColumnField)rawBeginField;
 		assertTrue("didn't find begin?", beginField.doesMatch(MartusField.EQUAL, "2004-09-21", localization));

@@ -28,20 +28,21 @@ package org.martus.common.field;
 
 import org.martus.common.GridData;
 import org.martus.common.MiniLocalization;
+import org.martus.common.PoolOfReusableChoicesLists;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.util.xml.XmlUtilities;
 
 public class MartusGridField extends MartusField
 {
-	public MartusGridField(FieldSpec specToUse)
+	public MartusGridField(FieldSpec specToUse, PoolOfReusableChoicesLists reusableChoicesLists)
 	{
-		super(specToUse);
+		super(specToUse, reusableChoicesLists);
 	}
 	
 	public MartusField createClone()
 	{
-		MartusField clone = new MartusGridField(getFieldSpec());
+		MartusField clone = new MartusGridField(getFieldSpec(), getReusableChoicesLists());
 		clone.setData(getData());
 		return clone;
 	}
@@ -63,7 +64,7 @@ public class MartusGridField extends MartusField
 				final String thisLabel = sanitizeLabel(thisColumnSpec.getLabel());
 				if(thisLabel.equals(sanitizedLabel))
 				{
-					MartusField field = new MartusSearchableGridColumnField(this, i);
+					MartusField field = new MartusSearchableGridColumnField(this, i, getReusableChoicesLists());
 					return field;
 				}
 			}
@@ -88,7 +89,7 @@ public class MartusGridField extends MartusField
 	
 	public GridData getGridData() throws Exception
 	{
-		GridData gridData = new GridData(getGridFieldSpec());
+		GridData gridData = new GridData(getGridFieldSpec(), getReusableChoicesLists());
 		gridData.setFromXml(getData());
 		return gridData;
 	}
@@ -107,7 +108,7 @@ public class MartusGridField extends MartusField
 				buffer.append("<td>");
 				String rawCellData = gridData.getValueAt(row, col);
 				FieldSpec columnSpec = getGridFieldSpec().getFieldSpec(col);
-				String cellData = columnSpec.convertStoredToSearchable(rawCellData, localization);
+				String cellData = columnSpec.convertStoredToSearchable(rawCellData, getReusableChoicesLists(), localization);
 				buffer.append(XmlUtilities.getXmlEncoded(cellData));
 				buffer.append("</td>");
 				
