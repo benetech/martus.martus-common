@@ -26,6 +26,7 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.fieldspec;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Vector;
 
@@ -132,6 +133,29 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 	public String getDataSourceGridColumn()
 	{
 		return gridColumn;
+	}
+	
+	public void pullDynamicChoiceSettingsFrom(DropDownFieldSpec other)
+	{
+		String[] otherReusableChoicesCodes = other.getReusableChoicesCodes();
+		String dataSourceGridTag = other.getDataSourceGridTag();
+		if(otherReusableChoicesCodes.length > 0)
+		{
+			for(int i = 0; i < otherReusableChoicesCodes.length; ++i)
+				addReusableChoicesCode(otherReusableChoicesCodes[i]);
+		} 
+		else if(dataSourceGridTag != null)
+		{
+			setDataSource(dataSourceGridTag, other.getDataSourceGridColumn());
+		}
+		else
+		{
+			Vector allChoices = new Vector();
+			allChoices.addAll(Arrays.asList(getAllChoices()));
+			allChoices.addAll(Arrays.asList(other.getAllChoices()));
+			setChoices((ChoiceItem[]) allChoices.toArray(new ChoiceItem[0]));
+		}
+		
 	}
 
 	static class DropDownSpecLoader extends SimpleXmlVectorLoader

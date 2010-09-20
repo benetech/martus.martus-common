@@ -92,6 +92,28 @@ public class FieldSpecCollection implements Comparable
 		return (FieldSpec[]) specs.toArray(new FieldSpec[0]);
 	}
 	
+	public void addAllSpecs(Set allKnownFieldSpecs)
+	{
+		Iterator iter = allKnownFieldSpecs.iterator();
+		while(iter.hasNext())
+		{
+			FieldSpec spec = (FieldSpec)iter.next();
+			add(spec);
+		}
+	}
+
+	public void addAllReusableChoicesLists(PoolOfReusableChoicesLists allReusableChoiceLists)
+	{
+		Set names = allReusableChoiceLists.getAvailableNames();
+		Iterator iter = names.iterator();
+		while(iter.hasNext())
+		{
+			String name = (String) iter.next();
+			ReusableChoices reusableChoices = allReusableChoiceLists.getChoices(name);
+			reusableChoicesPool.add(reusableChoices);
+		}
+	}
+
 	public String toXml()
 	{
 		StringBuffer result = new StringBuffer();
