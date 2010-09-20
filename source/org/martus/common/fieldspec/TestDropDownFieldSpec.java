@@ -23,6 +23,7 @@ Boston, MA 02111-1307, USA.
 
 */
 package org.martus.common.fieldspec;
+import org.martus.common.MiniLocalization;
 import org.martus.util.TestCaseEnhanced;
 
 
@@ -36,13 +37,14 @@ public class TestDropDownFieldSpec extends TestCaseEnhanced
 	
 	public void testGetValueFromTag() throws Exception
 	{
+		MiniLocalization localization = new MiniLocalization();
 		DropDownFieldSpec spec = new DropDownFieldSpec(choices);
 		String nonTag = "nontag";
-		assertEquals("Did not return code back which was not found", nonTag, spec.getDisplayString(nonTag));
+		assertEquals("Did not return code back which was not found", nonTag, spec.convertStoredToHtml(nonTag, localization));
 		String upperCaseTag = "TAG";
-		assertEquals("not case sensitive?", upperCaseTag, spec.getDisplayString(upperCaseTag));
-		assertEquals("value", spec.getDisplayString("tag"));
-		assertEquals("othervalue", spec.getDisplayString("othertag"));
+		assertEquals("not case sensitive?", upperCaseTag, spec.convertStoredToHtml(upperCaseTag, localization));
+		assertEquals("value", spec.convertStoredToHtml("tag", localization));
+		assertEquals("othervalue", spec.convertStoredToHtml("othertag", localization));
 	}
 	
 	public void testGetValueFromIndex() throws Exception

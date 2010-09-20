@@ -82,7 +82,7 @@ public class DropDownFieldSpec extends FieldSpec
 		return XmlUtilities.getXmlEncoded(getDisplayString(storedData));
 	}
 
-	public String getDisplayString(String code)
+	private String getDisplayString(String code)
 	{
 		int at = findCode(code);
 		if(at < 0)

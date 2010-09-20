@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Vector;
 
+import org.martus.common.FieldSpecCollection;
 import org.martus.common.GridData;
 import org.martus.common.HQKeys;
 import org.martus.common.MiniLocalization;
@@ -212,12 +213,12 @@ public class BulletinHtmlGenerator
 
 	public String getSectionHtmlString(FieldDataPacket fdp)
 	{
-		FieldSpec[] fieldTags = fdp.getFieldSpecs().asArray();
+		FieldSpecCollection fieldTags = fdp.getFieldSpecs();
 		String sectionHtml = "";
 		Vector pendingValues = new Vector();
-		for(int fieldNum = 0; fieldNum < fieldTags.length; ++fieldNum)
+		for(int fieldNum = 0; fieldNum < fieldTags.size(); ++fieldNum)
 		{
-			FieldSpec spec = fieldTags[fieldNum];
+			FieldSpec spec = fieldTags.get(fieldNum);
 			String tag = spec.getTag();
 			String label = getHTMLEscaped(spec.getLabel());			
 			String value = getHTMLEscaped(fdp.get(tag));
@@ -274,7 +275,7 @@ public class BulletinHtmlGenerator
 		else if(fieldType.isDropdown())
 		{
 			DropDownFieldSpec dropDownSpec = (DropDownFieldSpec)spec;
-			value = dropDownSpec.getDisplayString(value);
+			value = dropDownSpec.convertStoredToHtml(value, localization);
 		}
 		return value;
 	}
