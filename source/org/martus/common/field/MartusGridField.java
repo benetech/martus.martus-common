@@ -93,7 +93,7 @@ public class MartusGridField extends MartusField
 		return gridData;
 	}
 	
-	public String internalGetHtml(MiniLocalization localization) throws Exception
+	protected String internalGetHtml(MiniLocalization localization) throws Exception
 	{
 		GridData gridData = getGridData();
 		
