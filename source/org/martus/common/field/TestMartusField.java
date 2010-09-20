@@ -95,7 +95,7 @@ public class TestMartusField extends TestCaseEnhanced
 	{
 		MartusField languageField = new MartusField(createFieldSpec(new FieldTypeLanguage()));
 		languageField.setData(MiniLocalization.ENGLISH);
-		assertEquals("Didn't localize language name?", "&lt;language:en&gt;", languageField.getFieldSpec().convertStoredToHtml(languageField.getData(), localization));
+		assertEquals("Didn't localize language name?", "&lt;language:en&gt;", languageField.html(localization));
 		
 		MartusField dateField = new MartusField(createFieldSpec(new FieldTypeDate()));
 		dateField.setData("1968-02-21");
@@ -122,11 +122,39 @@ public class TestMartusField extends TestCaseEnhanced
 		
 		blankField.setData("  ");
 		assertEquals("Spaces not converted to nbsp?", "&nbsp;", blankField.html(localization));
-		
-		
-		
 	}
 	
+	public void testGridHtml() throws Exception
+	{
+		GridFieldSpec spec = createSampleGridSpec();
+		DropDownFieldSpec dropdownSpec = new DropDownFieldSpec(choices);
+		dropdownSpec.setTag("c");
+		dropdownSpec.setLabel("C");
+		spec.addColumn(dropdownSpec);
+		spec.addColumn(FieldSpec.createCustomField("d", "D", new FieldTypeDate()));
+		spec.addColumn(FieldSpec.createCustomField("e", "E", new FieldTypeDateRange()));
+		MartusField field = new MartusGridField(spec);
+		GridData data = new GridData(spec);
+		data.addEmptyRow();
+		data.addEmptyRow();
+		for(int row = 0; row < 2; ++row)
+		{
+			data.setValueAt("&" + row + "," + 0, row, 0);
+			data.setValueAt(FieldSpec.TRUESTRING, row, 1);
+			data.setValueAt("ampersand", row, 2);
+			data.setValueAt("2004-12-30", row, 3);
+			data.setValueAt("2002-07-21,20020721+5", row, 4);
+		}
+		field.setData(data.getXmlRepresentation());
+		String expected = "<table>" +
+				"<tr><td>&amp;0,0</td><td>&lt;button:yes&gt;</td><td>This &amp; That</td>" +
+				"<td>12/30/2004</td><td>07/21/2002 - 07/26/2002</td></tr>" +
+				"<tr><td>&amp;1,0</td><td>&lt;button:yes&gt;</td><td>This &amp; That</td>" +
+				"<td>12/30/2004</td><td>07/21/2002 - 07/26/2002</td></tr>" +
+				"</table>";
+		assertEquals("Didn't htmlize grid?", expected, field.html(localization));
+	}
+
 	public void testGetSearchableDataForStringFields()
 	{
 		verifyNormalDataIsAlsoPrintable(new FieldTypeNormal(), "sample string");

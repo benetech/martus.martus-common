@@ -94,7 +94,8 @@ public class MartusField
 	{
 		return getFieldSpec().convertStoredToSearchable(getData(), localization);
 	}
-	
+
+	// NOTE: This method is called by velocity reports
 	public final String html(MiniLocalization localization) throws Exception
 	{
 		String fieldData = internalGetHtml(localization);
