@@ -105,7 +105,7 @@ public class MartusField
 		return fieldData;
 	}
 
-	private String internalGetHtml(MiniLocalization localization) throws Exception
+	protected String internalGetHtml(MiniLocalization localization) throws Exception
 	{
 		return getFieldSpec().convertStoredToHtml(getData(), localization);
 	}
