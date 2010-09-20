@@ -105,7 +105,7 @@ public class MartusField
 		return fieldData;
 	}
 
-	String internalGetHtml(MiniLocalization localization) throws Exception
+	private String internalGetHtml(MiniLocalization localization) throws Exception
 	{
 		return getFieldSpec().convertStoredToHtml(getData(), localization);
 	}
@@ -199,6 +199,6 @@ public class MartusField
 	public final static int NOT_EQUAL = 6;
 	
 
-	FieldSpec spec;
-	String data;
+	protected FieldSpec spec;
+	private String data;
 }
