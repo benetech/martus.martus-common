@@ -134,11 +134,6 @@ public class DropDownFieldSpec extends FieldSpec
 		return new String[0];
 	}
 
-	public String getReusableChoicesCode()
-	{
-		return null;
-	}
-	
 	public Object getDataSource()
 	{
 		return null;

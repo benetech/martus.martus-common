@@ -51,15 +51,6 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 		return (String[]) reusableChoicesCodes.toArray(new String[0]);
 	}
 	
-	public String getReusableChoicesCode()
-	{
-		int LAST = reusableChoicesCodes.size() - 1;
-		if(LAST < 0)
-			return null;
-		
-		return (String)reusableChoicesCodes.get(LAST);
-	}
-
 	public ChoiceItem[] createValidChoiceItemArrayFromStrings(Vector stringChoicesToUse)
 	{
 		boolean hasEmptyCode = false;

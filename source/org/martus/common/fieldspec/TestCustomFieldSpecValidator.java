@@ -31,6 +31,7 @@ import java.util.Vector;
 import org.martus.common.FieldCollection;
 import org.martus.common.FieldSpecCollection;
 import org.martus.common.LegacyCustomFields;
+import org.martus.common.ReusableChoices;
 import org.martus.common.bulletin.BulletinConstants;
 import org.martus.util.TestCaseEnhanced;
 
@@ -356,9 +357,14 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 
 	public void testDropDownWithMissingReusableChoices() throws Exception
 	{
+		String reusableChoicesName = "a";
+		ReusableChoices reusableChoices = new ReusableChoices(reusableChoicesName, "whatever");
+		specsTopSection.addReusableChoiceList(reusableChoices);
+		
 		CustomDropDownFieldSpec dropdown = new CustomDropDownFieldSpec();
 		dropdown.setTag("tag");
 		dropdown.setLabel("Label:");
+		dropdown.addReusableChoicesCode(reusableChoicesName);
 		dropdown.addReusableChoicesCode("Doesn't exist");
 		specsTopSection.add(dropdown);
 		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
@@ -371,9 +377,13 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 	
 	public void testDropDownWithMissingReusableChoicesInsideGrid() throws Exception
 	{
+		String reusableChoicesName = "a";
+		ReusableChoices reusableChoices = new ReusableChoices(reusableChoicesName, "whatever");
+
 		CustomDropDownFieldSpec dropdown = new CustomDropDownFieldSpec();
 		dropdown.setTag("tag");
 		dropdown.setLabel("Label:");
+		dropdown.addReusableChoicesCode(reusableChoicesName);
 		dropdown.addReusableChoicesCode("Doesn't exist");
 
 		GridFieldSpec gridWithDropDownWithMissingReusableChoices = new GridFieldSpec();
@@ -381,6 +391,7 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		gridWithDropDownWithMissingReusableChoices.setLabel("Grid");
 		gridWithDropDownWithMissingReusableChoices.addColumn(dropdown);
 		specsTopSection = addFieldSpec(specsTopSection, gridWithDropDownWithMissingReusableChoices);
+		specsTopSection.addReusableChoiceList(reusableChoices);
 		
 		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
 		checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);

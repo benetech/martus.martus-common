@@ -337,7 +337,7 @@ public class CustomFieldSpecValidator
 		if(dropdownSpec.getDataSourceGridTag() != null)
 			return;
 		
-		if(dropdownSpec.getReusableChoicesCode() != null)
+		if(dropdownSpec.getReusableChoicesCodes().length > 0)
 			return;
 		
 		if(dropdownSpec.getCount() == 0)
@@ -346,14 +346,18 @@ public class CustomFieldSpecValidator
 	
 	private void checkForMissingReusableChoices(DropDownFieldSpec dropdownSpec, String tag, String label, Set reusableChoiceNames)
 	{
-		String reusableChoicesCode = dropdownSpec.getReusableChoicesCode();
-		if(reusableChoicesCode == null)
-			return;
-		
-		if(reusableChoiceNames.contains(reusableChoicesCode))
-			return;
-		
-		errors.add(CustomFieldError.errorMissingReusableChoices(tag, label, dropdownSpec.getType().getTypeName()));
+		String[] reusableChoicesCodes = dropdownSpec.getReusableChoicesCodes();
+
+		for(int i = 0; i < reusableChoicesCodes.length; ++i)
+		{
+			String reusableChoicesCode = reusableChoicesCodes[i];
+			if(!reusableChoiceNames.contains(reusableChoicesCode))
+			{
+				String typeName = dropdownSpec.getType().getTypeName();
+				String fullTag = tag + "." + reusableChoicesCode;
+				errors.add(CustomFieldError.errorMissingReusableChoices(fullTag, label, typeName));
+			}
+		}
 	}
 
 	private void checkForMissingCustomLabels(FieldSpec[] specsToCheck)

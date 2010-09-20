@@ -151,7 +151,7 @@ public class TestCustomFields extends TestCaseEnhanced
 		assertEquals("Wrong type?", new FieldTypeDropdown(), spec.getType());
 		assertEquals("Wrong tag?", "location", spec.getTag());
 		assertEquals("Wrong label?", "Location: ", spec.getLabel());
-		assertEquals("Wrong choices code?", MIDDLE_LEVEL_NAME, spec.getReusableChoicesCode());
+		assertEquals("Wrong choices code?", MIDDLE_LEVEL_NAME, spec.getReusableChoicesCodes()[0]);
 		
 		String detailsXml = spec.getDetailsXml();
 		assertContains("Reusable choices code not saved?", MIDDLE_LEVEL_NAME, detailsXml);
