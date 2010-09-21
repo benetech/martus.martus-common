@@ -54,7 +54,7 @@ public class PoolOfReusableChoicesLists
 		}
 	}
 
-	public Object size()
+	public int size()
 	{
 		return namedReusableChoices.size();
 	}
