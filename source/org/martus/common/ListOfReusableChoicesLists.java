@@ -48,6 +48,15 @@ public class ListOfReusableChoicesLists
 		this(new ReusableChoices[] {singleSetOfReusableChoices});
 	}
 
+	public ListOfReusableChoicesLists(PoolOfReusableChoicesLists poolOfReusableChoicesLists, String[] reusableChoicesCodes)
+	{
+		this();
+		for(int i = 0; i < reusableChoicesCodes.length; ++i)
+		{
+			add(poolOfReusableChoicesLists.getChoices(reusableChoicesCodes[i]));
+		}
+	}
+
 	public int size()
 	{
 		return reusableChoicesLists.size();

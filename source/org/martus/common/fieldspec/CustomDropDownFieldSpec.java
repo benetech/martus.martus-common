@@ -30,9 +30,13 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Vector;
 
+import org.martus.common.ListOfReusableChoicesLists;
 import org.martus.common.MartusXml;
+import org.martus.common.MiniLocalization;
+import org.martus.common.field.MartusField;
 import org.martus.util.xml.SimpleXmlMapLoader;
 import org.martus.util.xml.SimpleXmlVectorLoader;
+import org.martus.util.xml.XmlUtilities;
 import org.xml.sax.SAXParseException;
 
 public class CustomDropDownFieldSpec extends DropDownFieldSpec
@@ -158,6 +162,40 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 		
 	}
 
+	@Override
+	public String convertStoredToHtml(MartusField field, MiniLocalization localization)
+	{
+		String rawData = field.getData();
+		if(getDataSourceGridTag() != null)
+			return XmlUtilities.getXmlEncoded(rawData);
+		
+		String[] reusableChoicesListsCodes = getReusableChoicesCodes();
+		if(reusableChoicesListsCodes.length == 0)
+		{
+			int found = findCode(rawData);
+			if(found < 0)
+				return XmlUtilities.getXmlEncoded(rawData);
+			return XmlUtilities.getXmlEncoded(getChoice(found).toString());
+		}
+		
+		ListOfReusableChoicesLists reusableChoicesLists = new ListOfReusableChoicesLists(field.getReusableChoicesLists(), reusableChoicesListsCodes);
+		String[] values = reusableChoicesLists.getDisplayValuesAtAllLevels(rawData);
+		
+		if(values.length == 1)
+			return XmlUtilities.getXmlEncoded(values[0]);
+		
+		StringBuffer result = new StringBuffer();
+		result.append("<table border='1'><tr>");
+		for(int i = 0; i < values.length; ++i)
+		{
+			result.append("<td>");
+			result.append(XmlUtilities.getXmlEncoded(values[i]));
+			result.append("</td>");
+		}
+		result.append("</tr></table>");
+		return result.toString();
+	}
+	
 	static class DropDownSpecLoader extends SimpleXmlVectorLoader
 	{
 		public DropDownSpecLoader(CustomDropDownFieldSpec spec)
