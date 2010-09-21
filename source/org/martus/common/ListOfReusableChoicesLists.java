@@ -28,6 +28,8 @@ package org.martus.common;
 import java.util.Arrays;
 import java.util.Vector;
 
+import org.martus.common.fieldspec.ChoiceItem;
+
 public class ListOfReusableChoicesLists
 {
 	public ListOfReusableChoicesLists()
@@ -60,6 +62,48 @@ public class ListOfReusableChoicesLists
 	{
 		reusableChoicesLists.add(reusableChoices);
 	}
+	
+	public String[] getDisplayValuesAtAllLevels(String newText)
+	{
+		String[] displayText = new String[size()];
+		for(int level = 0; level < size(); ++level)
+		{
+			ChoiceItem[] choices = get(level).getChoices();
+			int LAST = size() - 1;
+			if(level == LAST)
+			{
+				displayText[level] = findLabelByCode(choices, newText);
+			}
+			else
+			{
+				displayText[level] = findLabelByPartialCode(choices, newText);
+			}
+		}
+		return displayText;
+	}
+
+	private String findLabelByCode(ChoiceItem[] choices, String code)
+	{
+		for(int index = 0; index < choices.length; ++index)
+			if(code.equals(choices[index].getCode()))
+				return choices[index].toString();
+		
+		return "";
+	}
+
+	private String findLabelByPartialCode(ChoiceItem[] choices, String code)
+	{
+		for(int index = 0; index < choices.length; ++index)
+		{
+			String thisCode = choices[index].getCode();
+			if(thisCode.length() > 0 && code.startsWith(thisCode))
+				return choices[index].toString();
+		}
+		
+		return "";
+	}
+
+
 
 	private Vector reusableChoicesLists;
 
