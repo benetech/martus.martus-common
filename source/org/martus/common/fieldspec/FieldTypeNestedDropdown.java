@@ -46,7 +46,6 @@ package org.martus.common.fieldspec;
 // (XML Import)
 public class FieldTypeNestedDropdown extends FieldType
 {
-	@Override
 	public String getTypeName()
 	{
 		return getTypeNameString();
@@ -62,7 +61,6 @@ public class FieldTypeNestedDropdown extends FieldType
 		return new NestedDropDownFieldSpec();
 	}
 	
-	@Override
 	public boolean isNestedDropdown()
 	{
 		return true;

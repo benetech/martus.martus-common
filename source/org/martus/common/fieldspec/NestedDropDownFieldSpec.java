@@ -52,7 +52,6 @@ public class NestedDropDownFieldSpec extends FieldSpec
 		levels.add(newLevel);
 	}
 	
-	@Override
 	public String getDetailsXml()
 	{
 		StringBuffer details = new StringBuffer();

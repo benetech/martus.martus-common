@@ -36,7 +36,6 @@ public class ChoiceItemXmlLoader extends SimpleXmlDefaultLoader
 		super(tag);
 	}
 
-	@Override
 	public void startDocument(Attributes attrs) throws SAXParseException
 	{
 		code = attrs.getValue(ATTRIBUTE_CODE);

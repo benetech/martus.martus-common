@@ -162,7 +162,6 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 		
 	}
 
-	@Override
 	public String convertStoredToHtml(MartusField field, MiniLocalization localization)
 	{
 		String rawData = field.getData();

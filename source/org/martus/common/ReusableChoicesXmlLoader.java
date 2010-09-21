@@ -37,7 +37,6 @@ public class ReusableChoicesXmlLoader extends SimpleXmlDefaultLoader
 		super(tag);
 	}
 
-	@Override
 	public void startDocument(Attributes attrs) throws SAXParseException
 	{
 		String code = attrs.getValue(ATTRIBUTE_REUSABLE_CHOICES_CODE);
@@ -46,7 +45,6 @@ public class ReusableChoicesXmlLoader extends SimpleXmlDefaultLoader
 		super.startDocument(attrs);
 	}
 	
-	@Override
 	public SimpleXmlDefaultLoader startElement(String tag)
 			throws SAXParseException
 	{
@@ -56,7 +54,6 @@ public class ReusableChoicesXmlLoader extends SimpleXmlDefaultLoader
 		return super.startElement(tag);
 	}
 	
-	@Override
 	public void endElement(String tag, SimpleXmlDefaultLoader ended)
 			throws SAXParseException
 	{
