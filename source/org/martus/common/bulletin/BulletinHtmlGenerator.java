@@ -239,7 +239,7 @@ public class BulletinHtmlGenerator
 			else if(fieldType.isGrid())
 				value = getGridHTML(fdp, spec, tag);
 			else
-				value = getFieldDataAsHtml(value, spec, fdp.getFieldSpecs().getAllReusableChoiceLists());
+				value = getFieldDataAsHtml(field);
 			
 			if(StandardFieldSpecs.isStandardFieldTag(tag))
 				label = getHTMLEscaped(localization.getFieldLabel(tag));
@@ -264,8 +264,12 @@ public class BulletinHtmlGenerator
 		return sectionHtml;
 	}
 
-	private String getFieldDataAsHtml(String value, FieldSpec spec, PoolOfReusableChoicesLists reusableChoicesLists)
+	private String getFieldDataAsHtml(MartusField field)
 	{
+		String value = field.getData();
+		FieldSpec spec = field.getFieldSpec();
+		PoolOfReusableChoicesLists reusableChoicesLists = field.getReusableChoicesLists();
+		
 		FieldType fieldType = spec.getType();
 		if(fieldType.isDate())
 			value = getHTMLEscaped(localization.convertStoredDateToDisplay(value));
@@ -340,9 +344,11 @@ public class BulletinHtmlGenerator
 				   if(LanguageOptions.isRightToLeftLanguage())
 				     column = (columnCount - 1) - i;
 
-					String rawdata = gridData.getValueAt(r, column);
 					FieldSpec columnSpec = grid.getFieldSpec(column);
-					String printableData = getFieldDataAsHtml(rawdata, columnSpec, fdp.getFieldSpecs().getAllReusableChoiceLists());
+					MartusField field = new MartusField(columnSpec, fdp.getFieldSpecs().getAllReusableChoiceLists());
+					String rawData = gridData.getValueAt(r, column);
+					field.setData(rawData);
+					String printableData = getFieldDataAsHtml(field);
 					value += getItemToAddForTable(printableData, TABLE_DATA, justification);
 				}
 				
