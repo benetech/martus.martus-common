@@ -39,6 +39,7 @@ import org.martus.common.PoolOfReusableChoicesLists;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.ReadableDatabase;
 import org.martus.common.database.Database.RecordHiddenException;
+import org.martus.common.field.MartusField;
 import org.martus.common.fieldspec.DropDownFieldSpec;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldType;
@@ -217,12 +218,14 @@ public class BulletinHtmlGenerator
 		FieldSpecCollection fieldTags = fdp.getFieldSpecs();
 		String sectionHtml = "";
 		Vector pendingValues = new Vector();
-		for(int fieldNum = 0; fieldNum < fieldTags.size(); ++fieldNum)
+		for(int fieldNum = 0; fieldNum < fdp.getFieldCount(); ++fieldNum)
 		{
 			FieldSpec spec = fieldTags.get(fieldNum);
 			String tag = spec.getTag();
+			MartusField field = fdp.getField(tag);
+
 			String label = getHTMLEscaped(spec.getLabel());			
-			String value = fdp.get(tag);
+			String value = field.getData();
 			FieldType fieldType = spec.getType();
 
 			if(tag.equals(Bulletin.TAGTITLE))
