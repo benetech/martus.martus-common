@@ -39,7 +39,6 @@ import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.ReadableDatabase;
 import org.martus.common.database.Database.RecordHiddenException;
 import org.martus.common.field.MartusField;
-import org.martus.common.fieldspec.DropDownFieldSpec;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldType;
 import org.martus.common.fieldspec.GridFieldSpec;
@@ -62,7 +61,7 @@ public class BulletinHtmlGenerator
 		localization = localizationToUse;
 	}
 
-	public String getHtmlString(Bulletin b, ReadableDatabase database, boolean includePrivateData, boolean yourBulletin)
+	public String getHtmlString(Bulletin b, ReadableDatabase database, boolean includePrivateData, boolean yourBulletin) throws Exception
 	{
 		StringBuffer result = new StringBuffer();
 		result.append("<html>");
@@ -71,7 +70,7 @@ public class BulletinHtmlGenerator
 		return result.toString();
 	}
 
-	public String getHtmlFragment(Bulletin b, ReadableDatabase database, boolean includePrivateData, boolean yourBulletin)
+	public String getHtmlFragment(Bulletin b, ReadableDatabase database, boolean includePrivateData, boolean yourBulletin) throws Exception
 	{
 		StringBuffer html = new StringBuffer(1000);
 		appendTableStart(html, width);
@@ -212,7 +211,7 @@ public class BulletinHtmlGenerator
 	}
 	
 
-	public String getSectionHtmlString(FieldDataPacket fdp)
+	public String getSectionHtmlString(FieldDataPacket fdp) throws Exception
 	{
 		FieldSpecCollection fieldTags = fdp.getFieldSpecs();
 		String sectionHtml = "";
@@ -263,7 +262,7 @@ public class BulletinHtmlGenerator
 		return sectionHtml;
 	}
 
-	private String getFieldDataAsHtml(MartusField field)
+	private String getFieldDataAsHtml(MartusField field) throws Exception
 	{
 		String value = field.getData();
 		FieldSpec spec = field.getFieldSpec();
@@ -280,10 +279,8 @@ public class BulletinHtmlGenerator
 		else if(fieldType.isBoolean())
 			value = getPrintableBooleanValue(value);
 		else if(fieldType.isDropdown())
-		{
-			DropDownFieldSpec dropDownSpec = (DropDownFieldSpec)spec;
-			value = dropDownSpec.convertStoredToHtml(field, localization);
-		}
+			value = field.html(localization);
+
 		return value;
 	}
 
