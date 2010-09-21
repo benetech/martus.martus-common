@@ -35,7 +35,6 @@ import org.martus.common.FieldSpecCollection;
 import org.martus.common.GridData;
 import org.martus.common.HQKeys;
 import org.martus.common.MiniLocalization;
-import org.martus.common.PoolOfReusableChoicesLists;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.ReadableDatabase;
 import org.martus.common.database.Database.RecordHiddenException;
@@ -268,7 +267,6 @@ public class BulletinHtmlGenerator
 	{
 		String value = field.getData();
 		FieldSpec spec = field.getFieldSpec();
-		PoolOfReusableChoicesLists reusableChoicesLists = field.getReusableChoicesLists();
 		
 		FieldType fieldType = spec.getType();
 		if(fieldType.isDate())
@@ -284,7 +282,7 @@ public class BulletinHtmlGenerator
 		else if(fieldType.isDropdown())
 		{
 			DropDownFieldSpec dropDownSpec = (DropDownFieldSpec)spec;
-			value = dropDownSpec.convertStoredToHtml(value, reusableChoicesLists, localization);
+			value = dropDownSpec.convertStoredToHtml(field, localization);
 		}
 		return value;
 	}

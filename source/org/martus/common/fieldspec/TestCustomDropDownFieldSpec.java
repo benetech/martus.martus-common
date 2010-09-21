@@ -28,6 +28,10 @@ package org.martus.common.fieldspec;
 
 import java.util.Vector;
 
+import org.martus.common.MiniLocalization;
+import org.martus.common.PoolOfReusableChoicesLists;
+import org.martus.common.ReusableChoices;
+import org.martus.common.field.MartusField;
 import org.martus.util.TestCaseEnhanced;
 
 public class TestCustomDropDownFieldSpec extends TestCaseEnhanced
@@ -109,6 +113,21 @@ public class TestCustomDropDownFieldSpec extends TestCaseEnhanced
 		assertEquals("a", codes[0]);
 		assertEquals("b", codes[1]);
 		assertEquals(SAMPLE_NESTED_DROPDOWN, spec.toXml());
+	
+		PoolOfReusableChoicesLists reusableChoicesLists = new PoolOfReusableChoicesLists();
+		ReusableChoices choicesA = new ReusableChoices("a", "level 1");
+		choicesA.add(new ChoiceItem("1", "top first"));
+		choicesA.add(new ChoiceItem("2", "top second"));
+		reusableChoicesLists.add(choicesA);
+		ReusableChoices choicesB = new ReusableChoices("b", "level 2");
+		choicesB.add(new ChoiceItem("1.1", "inner first"));
+		choicesB.add(new ChoiceItem("1.2", "inner second"));
+		choicesB.add(new ChoiceItem("2.1", "other inner first"));
+		reusableChoicesLists.add(choicesB);
+		MartusField field = new MartusField(spec, reusableChoicesLists);
+		field.setData("1.2");
+		assertContains("top first", spec.convertStoredToHtml(field, new MiniLocalization()));
+		assertContains("inner second", spec.convertStoredToHtml(field, new MiniLocalization()));
 	}
 	
 	public void testEquals() throws Exception

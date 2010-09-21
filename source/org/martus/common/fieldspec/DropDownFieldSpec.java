@@ -29,6 +29,7 @@ package org.martus.common.fieldspec;
 import org.martus.common.MiniLocalization;
 import org.martus.common.PoolOfReusableChoicesLists;
 import org.martus.common.ReusableChoices;
+import org.martus.common.field.MartusField;
 import org.martus.util.xml.XmlUtilities;
 
 public class DropDownFieldSpec extends FieldSpec
@@ -76,9 +77,9 @@ public class DropDownFieldSpec extends FieldSpec
 		return getDisplayString(storedData);
 	}
 
-	public String convertStoredToHtml(String storedData, PoolOfReusableChoicesLists reusableChoicesLists, MiniLocalization localization)
+	public String convertStoredToHtml(MartusField field, MiniLocalization localization)
 	{
-		return XmlUtilities.getXmlEncoded(getDisplayString(storedData));
+		return XmlUtilities.getXmlEncoded(getDisplayString(field.getData()));
 	}
 
 	private String getDisplayString(String code)
