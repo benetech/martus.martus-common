@@ -222,17 +222,18 @@ public class BulletinHtmlGenerator
 			FieldSpec spec = fieldTags.get(fieldNum);
 			String tag = spec.getTag();
 			String label = getHTMLEscaped(spec.getLabel());			
-			String value = getHTMLEscaped(fdp.get(tag));
-			if(tag.equals(Bulletin.TAGTITLE))
-				value = "<strong>" + value + "</strong>";
+			String value = fdp.get(tag);
 			FieldType fieldType = spec.getType();
-			if(fieldType.isSectionStart())
+
+			if(tag.equals(Bulletin.TAGTITLE))
+				value = "<strong>" + getHTMLEscaped(value) + "</strong>";
+			else if(fieldType.isSectionStart())
 			{
 				String horizontalRuler = "<HR></HR>";
 				label = horizontalRuler+ "<b><i>" + label + "</i></b>";
 				value = horizontalRuler;
 			}
-			if(fieldType.isGrid())
+			else if(fieldType.isGrid())
 				value = getGridHTML(fdp, spec, tag);
 			else
 				value = getFieldDataAsHtml(value, spec, fdp.getFieldSpecs().getAllReusableChoiceLists());
