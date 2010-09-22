@@ -47,9 +47,9 @@ public class MartusDateRangeField extends MartusField
 		return clone;
 	}
 	
-	public boolean contains(String value)
+	public boolean contains(String value, MiniLocalization localization)
 	{
-		// date ranges don't support contains searching at all!
+		// NOTE: date ranges don't support contains searching at all!
 		return false;
 	}
 
