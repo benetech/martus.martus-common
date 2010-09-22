@@ -27,30 +27,21 @@ package org.martus.common.field;
 
 import org.martus.common.MiniLocalization;
 import org.martus.common.PoolOfReusableChoicesLists;
-import org.martus.common.fieldspec.FieldSpec;
+import org.martus.common.fieldspec.CustomDropDownFieldSpec;
+import org.martus.util.TestCaseEnhanced;
 
-public class MartusDropdownField extends MartusField
+public class TestMartusDropdownField extends TestCaseEnhanced
 {
-	public MartusDropdownField(FieldSpec specToUse, PoolOfReusableChoicesLists reusableChoicesToUse)
+	public TestMartusDropdownField(String name)
 	{
-		super(specToUse, reusableChoicesToUse);
+		super(name);
 	}
 
-	public MartusField createClone() throws Exception
+	public void testContains() throws Exception
 	{
-		MartusDropdownField clone = new MartusDropdownField(getFieldSpec(), getReusableChoicesLists());
-		clone.setData(getData());
-		return clone;
-	}
-
-	public boolean contains(String value, MiniLocalization localization)
-	{
-		// NOTE: this type doesn't support contains searching at all!
-		return false;
-	}
-
-	public MartusField getSubField(String tag, MiniLocalization localization)
-	{
-		return super.getSubField(tag, localization);
+		PoolOfReusableChoicesLists reusableChoicesPool = new PoolOfReusableChoicesLists();
+		CustomDropDownFieldSpec spec = new CustomDropDownFieldSpec();
+		MartusDropdownField field = new MartusDropdownField(spec, reusableChoicesPool);
+		assertFalse(field.contains("", new MiniLocalization()));
 	}
 }

@@ -38,6 +38,7 @@ import org.martus.common.bulletin.TestBulletinZipUtilities;
 import org.martus.common.bulletinstore.TestBulletinStore;
 import org.martus.common.bulletinstore.TestBulletinStoreCache;
 import org.martus.common.bulletinstore.TestLeafNodeCache;
+import org.martus.common.field.TestMartusDropdownField;
 import org.martus.common.field.TestMartusField;
 import org.martus.common.field.TestMartusSearchableGridColumnField;
 import org.martus.common.fieldspec.TestCustomDropDownFieldSpec;
@@ -109,6 +110,7 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestKeyShareSaveRestore.class));
 		suite.addTest(new TestSuite(TestMagicWordEntry.class));
 		suite.addTest(new TestSuite(TestMagicWords.class));
+		suite.addTest(new TestSuite(TestMartusDropdownField.class));
 		suite.addTest(new TestSuite(TestMartusField.class));
 		suite.addTest(new TestSuite(TestMartusFlexidate.class));
 		suite.addTest(new TestSuite(TestMartusKeyPair.class));
