@@ -47,8 +47,8 @@ public class TestFieldCollectionMemoryUsage extends TestCaseEnhanced
 		FieldCollection c1 = new FieldCollection(template1);
 		FieldCollection c2 = new FieldCollection(template2);
 		assertFalse("collections are identical object?", c1 == c2);
-		assertFalse("returned FieldSpec[] are identical?", c1.getSpecs() == c2.getSpecs());
 		assertTrue("underlying FieldSpecs not shared?", c1.getSpecs().get(0) == c2.getSpecs().get(0));
+		assertTrue("returned FieldSpecCollection not identical?", c1.getSpecs() == c2.getSpecs());
 	}
 	
 	public void testMemoryUsage() throws Exception
