@@ -228,7 +228,7 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertTrue("not greater than null?", a.compareTo(null) > 0);
 	}
 	
-	public void testSubFields() throws Exception
+	public void testSubFieldsGrid() throws Exception
 	{
 		GridFieldSpec grid = new GridFieldSpec();
 		grid.setTag("grid");
@@ -241,5 +241,15 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertEquals("not column parent?", columnSubField, beginSubField.getParent());
 		assertEquals("bad subfield tag?", "begin", beginSubField.getSubFieldTag());
 		assertEquals("bad full tag?", "grid.Column 1.begin", beginSubField.getTag());
+	}
+	
+	public void testSubFieldsNestedDropDown() throws Exception
+	{
+		CustomDropDownFieldSpec parentSpec = new CustomDropDownFieldSpec();
+		parentSpec.setTag("parent");
+		FieldSpec subSpec = FieldSpec.createSubField(parentSpec, "a", "A", new FieldTypeDropdown());
+
+		assertEquals(parentSpec, subSpec.getParent());
+		assertEquals("parent.a", subSpec.getTag());
 	}
 }
