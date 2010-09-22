@@ -31,6 +31,7 @@ import java.util.Vector;
 
 import org.martus.common.field.MartusDateField;
 import org.martus.common.field.MartusDateRangeField;
+import org.martus.common.field.MartusDropdownField;
 import org.martus.common.field.MartusField;
 import org.martus.common.field.MartusGridField;
 import org.martus.common.fieldspec.FieldSpec;
@@ -81,6 +82,8 @@ public class FieldCollection
 			fields.add(new MartusDateRangeField(newSpec));
 		else if(type.isDate())
 			fields.add(new MartusDateField(newSpec));
+		else if(type.isDropdown())
+			fields.add(new MartusDropdownField(newSpec, reusableChoicesLists));
 		else if(type.isGrid())
 			fields.add(new MartusGridField(newSpec, reusableChoicesLists));
 		else

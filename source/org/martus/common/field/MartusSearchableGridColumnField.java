@@ -159,6 +159,8 @@ public class MartusSearchableGridColumnField extends MartusField
 			return new MartusDateRangeField(newSpec);
 		else if(type.isDate())
 			return new MartusDateField(newSpec);
+		else if(type.isDropdown())
+			return new MartusDropdownField(newSpec, reusableChoicesLists);
 		else if(type.isGrid())
 			return new MartusGridField(newSpec, reusableChoicesLists);
 		else
