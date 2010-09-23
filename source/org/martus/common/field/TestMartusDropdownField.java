@@ -72,15 +72,26 @@ public class TestMartusDropdownField extends TestCaseEnhanced
 	{
 		ChoiceItem sampleChoice = choicesB.get(0);
 		field.setData(sampleChoice.getCode());
+		
+		MartusField subA = field.getSubField(choicesA.getCode(), localization);
+		assertTrue("sub a isn't a dropdown?", subA.getType().isDropdown());
+		assertEquals("sub a didn't inherit full code?", field.getData(), subA.getData());
+		String exportableDataA = subA.getFieldSpec().convertStoredToExportable(subA.getData(), reusableChoicesPool, localization);
+		assertEquals("sub a exportable wrong?", field.getData(), exportableDataA);
+		String htmlDataA = subA.getFieldSpec().convertStoredToHtml(subA, localization);
+		assertEquals("sub a html wrong?", choicesA.get(0).toString(), htmlDataA);
+		String searchableDataA = subA.getFieldSpec().convertStoredToSearchable(subA.getData(), reusableChoicesPool, localization);
+		assertEquals("sub a searchable wrong?", field.getData(), searchableDataA);
+
 		MartusField subB = field.getSubField(choicesB.getCode(), localization);
 		assertTrue("sub b isn't a dropdown?", subB.getType().isDropdown());
 		assertEquals("sub b didn't inherit full code?", field.getData(), subB.getData());
-		String exportableData = subB.getFieldSpec().convertStoredToExportable(subB.getData(), reusableChoicesPool, localization);
-		assertEquals("sub b exportable wrong?", field.getData(), exportableData);
-		String htmlData = subB.getFieldSpec().convertStoredToHtml(subB, localization);
-		assertEquals("sub b html wrong?", sampleChoice.toString(), htmlData);
-		String searchableData = subB.getFieldSpec().convertStoredToSearchable(subB.getData(), reusableChoicesPool, localization);
-		assertEquals("sub b searchable wrong?", field.getData(), searchableData);
+		String exportableDataB = subB.getFieldSpec().convertStoredToExportable(subB.getData(), reusableChoicesPool, localization);
+		assertEquals("sub b exportable wrong?", field.getData(), exportableDataB);
+		String htmlDataB = subB.getFieldSpec().convertStoredToHtml(subB, localization);
+		assertEquals("sub b html wrong?", sampleChoice.toString(), htmlDataB);
+		String searchableDataB = subB.getFieldSpec().convertStoredToSearchable(subB.getData(), reusableChoicesPool, localization);
+		assertEquals("sub b searchable wrong?", field.getData(), searchableDataB);
 	}
 	
 	public void testDoesMatch() throws Exception

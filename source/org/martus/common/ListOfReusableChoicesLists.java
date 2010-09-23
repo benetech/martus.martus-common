@@ -83,12 +83,8 @@ public class ListOfReusableChoicesLists
 		for(int level = 0; level < size(); ++level)
 		{
 			ChoiceItem[] choices = get(level).getChoices();
-			int LAST = size() - 1;
-			if(level == LAST)
-			{
-				displayText[level] = findLabelByCode(choices, newText);
-			}
-			else
+			displayText[level] = findLabelByCode(choices, newText);
+			if(displayText[level].length() == 0)
 			{
 				displayText[level] = findLabelByFullCodeAllowingPartialMatches(choices, newText);
 			}
