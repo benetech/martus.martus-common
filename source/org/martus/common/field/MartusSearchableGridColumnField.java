@@ -31,6 +31,8 @@ import java.util.Vector;
 import org.martus.common.GridData;
 import org.martus.common.MiniLocalization;
 import org.martus.common.PoolOfReusableChoicesLists;
+import org.martus.common.fieldspec.CustomDropDownFieldSpec;
+import org.martus.common.fieldspec.DropDownFieldSpec;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldType;
 import org.martus.common.fieldspec.GridFieldSpec;
@@ -149,6 +151,16 @@ public class MartusSearchableGridColumnField extends MartusField
 		FieldSpec rawColumnSpec = gridSpec.getFieldSpec(column);
 		FieldSpec goodColumnSpec = FieldSpec.createCustomField(columnTag, rawColumnSpec.getLabel(), rawColumnSpec.getType());
 		goodColumnSpec.setParent(gridSpec);
+		if(goodColumnSpec.getType().isDropdown())
+		{
+			DropDownFieldSpec oldDropdownSpec = (DropDownFieldSpec) rawColumnSpec;
+			DropDownFieldSpec newDropdownSpec = (DropDownFieldSpec) goodColumnSpec;
+			if(oldDropdownSpec.getReusableChoicesCodes().length > 0)
+			{
+				CustomDropDownFieldSpec customDropdownSpec = (CustomDropDownFieldSpec) newDropdownSpec;
+				customDropdownSpec.pullDynamicChoiceSettingsFrom(oldDropdownSpec);
+			}
+		}
 		return createMartusField(goodColumnSpec, reusableChoicesLists);
 	}
 	
