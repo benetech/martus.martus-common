@@ -67,6 +67,11 @@ public class ListOfReusableChoicesLists
 		return (ReusableChoices) reusableChoicesLists.get(index);
 	}
 
+	public ReusableChoices getLastLevel()
+	{
+		return get(size() - 1);
+	}
+
 	public void add(ReusableChoices reusableChoices)
 	{
 		reusableChoicesLists.add(reusableChoices);
@@ -85,7 +90,7 @@ public class ListOfReusableChoicesLists
 			}
 			else
 			{
-				displayText[level] = findLabelByPartialCode(choices, newText);
+				displayText[level] = findLabelByFullCodeAllowingPartialMatches(choices, newText);
 			}
 		}
 		return displayText;
@@ -100,7 +105,7 @@ public class ListOfReusableChoicesLists
 		return "";
 	}
 
-	private String findLabelByPartialCode(ChoiceItem[] choices, String code)
+	private String findLabelByFullCodeAllowingPartialMatches(ChoiceItem[] choices, String code)
 	{
 		for(int index = 0; index < choices.length; ++index)
 		{
@@ -111,8 +116,6 @@ public class ListOfReusableChoicesLists
 		
 		return "";
 	}
-
-
 
 	private Vector reusableChoicesLists;
 

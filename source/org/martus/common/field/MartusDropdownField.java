@@ -70,14 +70,34 @@ public class MartusDropdownField extends MartusField
 		ReusableChoices reusableChoices = getReusableChoicesLists().getChoices(reusableChoicesCodes[level]);
 		CustomDropDownFieldSpec subSpec = (CustomDropDownFieldSpec) FieldSpec.createSubField(outerSpec, tag, reusableChoices.getLabel(), new FieldTypeDropdown());
 		subSpec.addReusableChoicesCode(tag);
-		MartusField subField = new MartusField(subSpec, getReusableChoicesLists());
+		MartusField subField = new MartusDropdownField(subSpec, getReusableChoicesLists());
 		subField.setData(getData());
 		return subField;
 	}
 
 	public boolean doesMatch(int compareOp, String searchForValue, MiniLocalization localization)
 	{
-		return super.doesMatch(compareOp, searchForValue, localization);
+		boolean doesEqual = doesEqual(searchForValue);
+		switch(compareOp)
+		{
+			case EQUAL:		return doesEqual;
+			case NOT_EQUAL: return !doesEqual;
+			default:		return false;
+		}
+	}
+	
+	private boolean doesEqual(String searchForValue)
+	{
+		if(StandardFieldSpecs.isStandardFieldTag(getTag()))
+		{
+			int found = getDropDownSpec().findCode(searchForValue);
+			return (found >= 0);
+		}
+		
+		if(searchForValue.length() == 0)
+			return false;
+		
+		return (getData().startsWith(searchForValue));
 	}
 
 	private CustomDropDownFieldSpec getDropDownSpec()

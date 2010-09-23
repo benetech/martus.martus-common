@@ -54,21 +54,22 @@ public class TestMartusDropdownField extends TestCaseEnhanced
 		choicesB.add(new ChoiceItem(levelACode2 + "." + levelBCode2, "innersecond2"));
 		reusableChoicesPool.add(choicesA);
 		reusableChoicesPool.add(choicesB);
+
+		CustomDropDownFieldSpec spec = new CustomDropDownFieldSpec();
+		spec.addReusableChoicesCode(choicesA.getCode());
+		spec.addReusableChoicesCode(choicesB.getCode());
+		field = new MartusDropdownField(spec, reusableChoicesPool);
 	}
 	
 	public void testContains() throws Exception
 	{
-		CustomDropDownFieldSpec spec = new CustomDropDownFieldSpec();
-		MartusDropdownField field = new MartusDropdownField(spec, reusableChoicesPool);
-		assertFalse(field.contains("", localization));
+		ChoiceItem sampleChoice = choicesB.get(0);
+		field.setData(sampleChoice.getCode());
+		assertFalse(field.contains(field.getData(), localization));
 	}
 	
 	public void testSubfields() throws Exception
 	{
-		CustomDropDownFieldSpec spec = new CustomDropDownFieldSpec();
-		spec.addReusableChoicesCode(choicesA.getCode());
-		spec.addReusableChoicesCode(choicesB.getCode());
-		MartusDropdownField field = new MartusDropdownField(spec, reusableChoicesPool);
 		ChoiceItem sampleChoice = choicesB.get(0);
 		field.setData(sampleChoice.getCode());
 		MartusField subB = field.getSubField(choicesB.getCode(), localization);
@@ -82,6 +83,16 @@ public class TestMartusDropdownField extends TestCaseEnhanced
 		assertEquals("sub b searchable wrong?", field.getData(), searchableData);
 	}
 	
+	public void testDoesMatch() throws Exception
+	{
+		ChoiceItem sampleChoice = choicesB.get(0);
+		field.setData(sampleChoice.getCode());
+		assertTrue("didn't do complete match?", field.doesMatch(MartusField.EQUAL, field.getData(), localization));
+		assertTrue("didn't do partial match?", field.doesMatch(MartusField.EQUAL, choicesA.get(0).getCode(), localization));
+		assertFalse("did a bad partial match?", field.doesMatch(MartusField.EQUAL, choicesA.get(1).getCode(), localization));
+		assertFalse("matched empty string?", field.doesMatch(MartusField.EQUAL, "", localization));
+	}
+	
 	private static final String levelACode1 = "A1";
 	private static final String levelACode2 = "A2";
 	private static final String levelBCode1 = "B1";
@@ -90,4 +101,5 @@ public class TestMartusDropdownField extends TestCaseEnhanced
 	private PoolOfReusableChoicesLists reusableChoicesPool;
 	private ReusableChoices choicesA;
 	private ReusableChoices choicesB;
+	private MartusDropdownField field;
 }
