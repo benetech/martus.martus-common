@@ -47,12 +47,6 @@ public class MartusDateRangeField extends MartusField
 		return clone;
 	}
 	
-	public boolean contains(String value, MiniLocalization localization)
-	{
-		// NOTE: date ranges don't support contains searching at all!
-		return false;
-	}
-
 	public MartusField getSubField(String tag, MiniLocalization localization)
 	{
 		MartusFlexidate date = localization.createFlexidateFromStoredData(getData());
