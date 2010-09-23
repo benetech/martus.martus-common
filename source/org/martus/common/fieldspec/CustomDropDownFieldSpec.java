@@ -139,6 +139,16 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 		return gridColumn;
 	}
 	
+	public int findReusableLevelByCode(String tag)
+	{
+		for(int level = 0; level < getReusableChoicesCodes().length; ++level)
+		{
+			if(getReusableChoicesCodes()[level].equals(tag))
+				return level;
+		}
+		return -1;
+	}
+
 	public void pullDynamicChoiceSettingsFrom(DropDownFieldSpec other)
 	{
 		String[] otherReusableChoicesCodes = other.getReusableChoicesCodes();

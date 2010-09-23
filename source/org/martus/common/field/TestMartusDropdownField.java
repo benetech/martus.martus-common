@@ -27,6 +27,8 @@ package org.martus.common.field;
 
 import org.martus.common.MiniLocalization;
 import org.martus.common.PoolOfReusableChoicesLists;
+import org.martus.common.ReusableChoices;
+import org.martus.common.fieldspec.ChoiceItem;
 import org.martus.common.fieldspec.CustomDropDownFieldSpec;
 import org.martus.util.TestCaseEnhanced;
 
@@ -37,11 +39,55 @@ public class TestMartusDropdownField extends TestCaseEnhanced
 		super(name);
 	}
 
+	protected void setUp() throws Exception
+	{
+		super.setUp();
+		localization = new MiniLocalization();
+		reusableChoicesPool = new PoolOfReusableChoicesLists();
+		choicesA = new ReusableChoices("a", "Choices A");
+		choicesA.add(new ChoiceItem(levelACode1, "first"));
+		choicesA.add(new ChoiceItem(levelACode2, "second"));
+		choicesB = new ReusableChoices("b", "Choices B");
+		choicesB.add(new ChoiceItem(levelACode1 + "." + levelBCode1, "innerfirst1"));
+		choicesB.add(new ChoiceItem(levelACode1 + "." + levelBCode2, "innersecond1"));
+		choicesB.add(new ChoiceItem(levelACode2 + "." + levelBCode1, "innerfirst2"));
+		choicesB.add(new ChoiceItem(levelACode2 + "." + levelBCode2, "innersecond2"));
+		reusableChoicesPool.add(choicesA);
+		reusableChoicesPool.add(choicesB);
+	}
+	
 	public void testContains() throws Exception
 	{
-		PoolOfReusableChoicesLists reusableChoicesPool = new PoolOfReusableChoicesLists();
 		CustomDropDownFieldSpec spec = new CustomDropDownFieldSpec();
 		MartusDropdownField field = new MartusDropdownField(spec, reusableChoicesPool);
-		assertFalse(field.contains("", new MiniLocalization()));
+		assertFalse(field.contains("", localization));
 	}
+	
+	public void testSubfields() throws Exception
+	{
+		CustomDropDownFieldSpec spec = new CustomDropDownFieldSpec();
+		spec.addReusableChoicesCode(choicesA.getCode());
+		spec.addReusableChoicesCode(choicesB.getCode());
+		MartusDropdownField field = new MartusDropdownField(spec, reusableChoicesPool);
+		ChoiceItem sampleChoice = choicesB.get(0);
+		field.setData(sampleChoice.getCode());
+		MartusField subB = field.getSubField(choicesB.getCode(), localization);
+		assertTrue("sub b isn't a dropdown?", subB.getType().isDropdown());
+		assertEquals("sub b didn't inherit full code?", field.getData(), subB.getData());
+		String exportableData = subB.getFieldSpec().convertStoredToExportable(subB.getData(), reusableChoicesPool, localization);
+		assertEquals("sub b exportable wrong?", field.getData(), exportableData);
+		String htmlData = subB.getFieldSpec().convertStoredToHtml(subB, localization);
+		assertEquals("sub b html wrong?", sampleChoice.toString(), htmlData);
+		String searchableData = subB.getFieldSpec().convertStoredToSearchable(subB.getData(), reusableChoicesPool, localization);
+		assertEquals("sub b searchable wrong?", field.getData(), searchableData);
+	}
+	
+	private static final String levelACode1 = "A1";
+	private static final String levelACode2 = "A2";
+	private static final String levelBCode1 = "B1";
+	private static final String levelBCode2 = "B2";
+	private MiniLocalization localization;
+	private PoolOfReusableChoicesLists reusableChoicesPool;
+	private ReusableChoices choicesA;
+	private ReusableChoices choicesB;
 }

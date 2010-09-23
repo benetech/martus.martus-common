@@ -27,7 +27,11 @@ package org.martus.common.field;
 
 import org.martus.common.MiniLocalization;
 import org.martus.common.PoolOfReusableChoicesLists;
+import org.martus.common.ReusableChoices;
+import org.martus.common.fieldspec.CustomDropDownFieldSpec;
 import org.martus.common.fieldspec.FieldSpec;
+import org.martus.common.fieldspec.FieldTypeDropdown;
+import org.martus.common.fieldspec.StandardFieldSpecs;
 
 public class MartusDropdownField extends MartusField
 {
@@ -51,6 +55,33 @@ public class MartusDropdownField extends MartusField
 
 	public MartusField getSubField(String tag, MiniLocalization localization)
 	{
-		return super.getSubField(tag, localization);
+		if(StandardFieldSpecs.isStandardFieldTag(getTag()))
+			return null;
+		
+		CustomDropDownFieldSpec outerSpec = getDropDownSpec();
+		String[] reusableChoicesCodes = outerSpec.getReusableChoicesCodes();
+		if(reusableChoicesCodes.length < 2)
+			return null;
+
+		int level = outerSpec.findReusableLevelByCode(tag);
+		if(level < 0)
+			return null;
+
+		ReusableChoices reusableChoices = getReusableChoicesLists().getChoices(reusableChoicesCodes[level]);
+		CustomDropDownFieldSpec subSpec = (CustomDropDownFieldSpec) FieldSpec.createSubField(outerSpec, tag, reusableChoices.getLabel(), new FieldTypeDropdown());
+		subSpec.addReusableChoicesCode(tag);
+		MartusField subField = new MartusField(subSpec, getReusableChoicesLists());
+		subField.setData(getData());
+		return subField;
+	}
+
+	public boolean doesMatch(int compareOp, String searchForValue, MiniLocalization localization)
+	{
+		return super.doesMatch(compareOp, searchForValue, localization);
+	}
+
+	private CustomDropDownFieldSpec getDropDownSpec()
+	{
+		return (CustomDropDownFieldSpec) getFieldSpec();
 	}
 }
