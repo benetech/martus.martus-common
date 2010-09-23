@@ -82,7 +82,7 @@ public class ReusableChoices
 		choices.insertElementAt(choiceItem, 0);
 	}
 
-	public Object findByCode(String codeToFind)
+	public ChoiceItem findByCode(String codeToFind)
 	{
 		for(int i = 0; i < choices.size(); ++i)
 		{
