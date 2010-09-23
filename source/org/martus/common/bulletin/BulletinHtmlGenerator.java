@@ -269,19 +269,19 @@ public class BulletinHtmlGenerator
 		
 		FieldType fieldType = spec.getType();
 		if(fieldType.isDate())
-			value = getHTMLEscaped(localization.convertStoredDateToDisplay(value));
+			return getHTMLEscaped(localization.convertStoredDateToDisplay(value));
 		else if(fieldType.isLanguageDropdown())
-			value = getHTMLEscaped(localization.getLanguageName(value));
+			return getHTMLEscaped(localization.getLanguageName(value));
 		else if(fieldType.isMultiline())
-			value = insertNewlines(value);
+			return insertNewlines(getHTMLEscaped(value));
 		else if(fieldType.isDateRange())
-			value = getHTMLEscaped(localization.getViewableDateRange(value));
+			return getHTMLEscaped(localization.getViewableDateRange(value));
 		else if(fieldType.isBoolean())
-			value = getPrintableBooleanValue(value);
+			return getPrintableBooleanValue(value);
 		else if(fieldType.isDropdown())
-			value = field.html(localization);
+			return field.html(localization);
 
-		return value;
+		return getHTMLEscaped(value);
 	}
 
 	private String getPrintableBooleanValue(String value)
@@ -306,17 +306,17 @@ public class BulletinHtmlGenerator
 		String value = "<table border='1' align='" + tableAlignment + "'><tr>";
 		String justification = "center";
 		if(!LanguageOptions.isRightToLeftLanguage())
-			value += getItemToAddForTable(grid.getColumnZeroLabel(),TABLE_HEADER, justification);
+			value += buildElementWithAlignment(getHTMLEscaped(grid.getColumnZeroLabel()),TABLE_HEADER, justification);
 		int columnCount = grid.getColumnCount();
 		for(int i = 0; i < columnCount; ++i)
 		{
 			String data = grid.getColumnLabel(i);
 			if(LanguageOptions.isRightToLeftLanguage())
 				data = grid.getColumnLabel((columnCount-1)-i);
-			value += getItemToAddForTable(data,TABLE_HEADER, justification);
+			value += buildElementWithAlignment(getHTMLEscaped(data),TABLE_HEADER, justification);
 		}
 		if(LanguageOptions.isRightToLeftLanguage())
-			value += getItemToAddForTable(grid.getColumnZeroLabel(),TABLE_HEADER, justification);
+			value += buildElementWithAlignment(getHTMLEscaped(grid.getColumnZeroLabel()),TABLE_HEADER, justification);
 		value += "</tr>";
 		try
 		{
@@ -332,7 +332,7 @@ public class BulletinHtmlGenerator
 			{
 				value += "<tr>";
 				if(!LanguageOptions.isRightToLeftLanguage())
-					value += getItemToAddForTable(Integer.toString(r+1),TABLE_DATA, justification);
+					value += buildElementWithAlignment(getHTMLEscaped(Integer.toString(r+1)),TABLE_DATA, justification);
 				for(int i = 0; i<columnCount; ++i)
 				{
 				   int column = i;
@@ -344,11 +344,11 @@ public class BulletinHtmlGenerator
 					String rawData = gridData.getValueAt(r, column);
 					field.setData(rawData);
 					String printableData = getFieldDataAsHtml(field);
-					value += getItemToAddForTable(printableData, TABLE_DATA, justification);
+					value += buildElementWithAlignment(printableData, TABLE_DATA, justification);
 				}
 				
 				if(LanguageOptions.isRightToLeftLanguage())
-					value += getItemToAddForTable(Integer.toString(r+1),TABLE_DATA, justification);
+					value += buildElementWithAlignment(getHTMLEscaped(Integer.toString(r+1)),TABLE_DATA, justification);
 				value += "</tr>";
 			}
 		}
@@ -360,9 +360,9 @@ public class BulletinHtmlGenerator
 		return value;
 	}
 
-	private String getItemToAddForTable(String data, String type, String justification)
+	private String buildElementWithAlignment(String data, String type, String justification)
 	{
-		return "<"+type+" align='"+justification+"'>"+getHTMLEscaped(data)+"</"+type+">";
+		return "<"+type+" align='"+justification+"'>"+data+"</"+type+">";
 	}
 
 	private String getSizeInKb(int sizeBytes)
