@@ -27,11 +27,14 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.fieldspec;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
 
 import org.martus.common.FieldCollection;
 import org.martus.common.FieldSpecCollection;
+import org.martus.common.PoolOfReusableChoicesLists;
+import org.martus.common.ReusableChoices;
 import org.martus.common.bulletin.BulletinConstants;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlParser;
@@ -99,8 +102,26 @@ public class CustomFieldSpecValidator
 		checkForBlankTags(specsToCheck.asArray());
 		checkForMissingCustomLabels(specsToCheck.asArray());
 		checkForUnknownTypes(specsToCheck.asArray());
+		
+		checkReusableChoicesHaveCodesAndLabels(specsToCheck.getAllReusableChoiceLists());
 	}
 		
+	private void checkReusableChoicesHaveCodesAndLabels(PoolOfReusableChoicesLists allReusableChoiceLists)
+	{
+		Iterator iter = allReusableChoiceLists.getAvailableNames().iterator();
+		while(iter.hasNext())
+		{
+			String name = (String)iter.next();
+			ReusableChoices choices = allReusableChoiceLists.getChoices(name);
+			for(int i = 0; i < choices.size(); ++i)
+			{
+				ChoiceItem choice = choices.get(i);
+				if(choice.getCode() == null || choice.toString() == null)
+					errors.add(CustomFieldError.errorInvalidReusableChoice(name, i));
+			}
+		}
+	}
+
 	public boolean isValid()
 	{
 		if(errors.size()>0)
