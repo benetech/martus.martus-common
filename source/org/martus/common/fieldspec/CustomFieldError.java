@@ -147,7 +147,7 @@ public class CustomFieldError
 
 	public static Object errorInvalidReusableChoice(String tag, int index)
 	{
-		return new CustomFieldError(CODE_INVALID_REUSABLE_CHOICE, tag, Integer.toString(index+1), "");
+		return new CustomFieldError(CODE_INVALID_REUSABLE_CHOICE, tag, "", "");
 	}
 
 	private CustomFieldError(String code, String tag, String label, String type)
