@@ -33,6 +33,7 @@ import java.util.Vector;
 
 import org.martus.common.fieldspec.ChoiceItem;
 import org.martus.common.fieldspec.FieldSpec;
+import org.martus.util.xml.XmlUtilities;
 
 public class FieldSpecCollection implements Comparable
 {
@@ -134,12 +135,12 @@ public class FieldSpecCollection implements Comparable
 		{
 			String name = (String)it.next();
 			ReusableChoices choiceList = reusableChoicesPool.getChoices(name);
-			result.append("<ReusableChoices code='" + choiceList.getCode() + "' label='" + choiceList.getLabel() + "'>");
+			result.append("<ReusableChoices code='" + XmlUtilities.getXmlEncoded(choiceList.getCode()) + "' label='" + XmlUtilities.getXmlEncoded(choiceList.getLabel()) + "'>");
 			result.append('\n');
 			for(int i = 0; i < choiceList.size(); ++i)
 			{
 				ChoiceItem choice = choiceList.get(i);
-				result.append("<Choice code='" + choice.getCode() + "' label='" + choice.toString() + "'></Choice>");
+				result.append("<Choice code='" + XmlUtilities.getXmlEncoded(choice.getCode()) + "' label='" + XmlUtilities.getXmlEncoded(choice.toString()) + "'></Choice>");
 				result.append('\n');
 			}
 			result.append("</ReusableChoices>");
