@@ -365,13 +365,21 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		dropdown.setLabel("Label:");
 		dropdown.addReusableChoicesCode(reusableChoicesName);
 		dropdown.addReusableChoicesCode("Doesn't exist");
+		dropdown.addReusableChoicesCode(null);
 		specsTopSection.add(dropdown);
 		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
 		assertFalse("Should be invalid due to missing reusable choices", checker.isValid());
 		Vector errors = checker.getAllErrors();
-		assertEquals("Should just be the missing reusable choices error", 1, errors.size());
-		CustomFieldError error = (CustomFieldError)errors.get(0);
-		assertEquals("Wrong error code?", CustomFieldError.CODE_MISSING_REUSABLE_CHOICES, error.getCode());
+		assertEquals("Not just the missing and null reusable choices errors?", 2, errors.size());
+		CustomFieldError missingError = (CustomFieldError)errors.get(0);
+		assertEquals("Wrong missing error code?", CustomFieldError.CODE_MISSING_REUSABLE_CHOICES, missingError.getCode());
+		assertContains("Wrong missing tag?", dropdown.getTag(), missingError.getTag());
+		assertContains("Wrong missing tag?", "Doesn't exist", missingError.getTag());
+		assertEquals("Wrong missing label?", dropdown.getLabel(), missingError.getLabel());
+		CustomFieldError nullError = (CustomFieldError)errors.get(1);
+		assertEquals("Wrong null error code?", CustomFieldError.CODE_NULL_REUSABLE_CHOICES, nullError.getCode());
+		assertEquals("Wrong null tag?", dropdown.getTag(), nullError.getTag());
+		assertEquals("Wrong null label?", dropdown.getLabel(), nullError.getLabel());
 	}
 	
 	public void testDropDownWithMissingReusableChoicesInsideGrid() throws Exception

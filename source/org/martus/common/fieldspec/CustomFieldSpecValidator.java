@@ -351,7 +351,12 @@ public class CustomFieldSpecValidator
 		for(int i = 0; i < reusableChoicesCodes.length; ++i)
 		{
 			String reusableChoicesCode = reusableChoicesCodes[i];
-			if(!reusableChoiceNames.contains(reusableChoicesCode))
+			if(reusableChoicesCode == null)
+			{
+				String typeName = dropdownSpec.getType().getTypeName();
+				errors.add(CustomFieldError.errorNullReusableChoices(tag, label, typeName));
+			}
+			else if(!reusableChoiceNames.contains(reusableChoicesCode))
 			{
 				String typeName = dropdownSpec.getType().getTypeName();
 				String fullTag = tag + "." + reusableChoicesCode;
