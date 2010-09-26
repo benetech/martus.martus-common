@@ -493,6 +493,46 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		verifyExpectedError("Empty Column Label in Grids", CustomFieldError.CODE_MISSING_LABEL, gridTag, null, null, (CustomFieldError)errors.get(0));
 		verifyExpectedError("Space Column Label in Grids", CustomFieldError.CODE_MISSING_LABEL, gridTag, null, null, (CustomFieldError)errors.get(1));
 	}
+	
+	public void testDropdownDataSourceHasReusableCodes() throws Exception
+	{
+		String reusableDropdownColumnLabel = "Reusable Label";
+		String reusableChoicesCode = "reusablechoicescode";
+
+		ReusableChoices choices = new ReusableChoices(reusableChoicesCode, "Choices");
+		specsTopSection.addReusableChoiceList(choices);
+		
+		String gridTag = "Grid";
+		String gridLabel = "Grid Label";
+		GridFieldSpec gridWithReusableDropdown = new GridFieldSpec();
+		gridWithReusableDropdown.setTag(gridTag);
+		gridWithReusableDropdown.setLabel(gridLabel);
+		
+		CustomDropDownFieldSpec reusableDropdownSpec = new CustomDropDownFieldSpec();
+		reusableDropdownSpec.setTag("reusableTag");
+		reusableDropdownSpec.setLabel(reusableDropdownColumnLabel);
+		reusableDropdownSpec.addReusableChoicesCode(reusableChoicesCode);
+		gridWithReusableDropdown.addColumn(reusableDropdownSpec);
+		specsTopSection.add(gridWithReusableDropdown);
+
+		CustomDropDownFieldSpec dataDrivenDropdownSpec = new CustomDropDownFieldSpec();
+		dataDrivenDropdownSpec.setTag("datadriven");
+		dataDrivenDropdownSpec.setLabel("Data Driven");
+		dataDrivenDropdownSpec.setDataSource(gridTag, reusableDropdownColumnLabel);
+		specsTopSection.add(dataDrivenDropdownSpec);
+		
+		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		assertFalse("valid?", checker.isValid());
+		Vector errors = checker.getAllErrors();
+		assertEquals("Should have 1 error", 1, errors.size());
+		verifyExpectedError("DDDD refers to DD w/1 reusable code", 
+				CustomFieldError.CODE_NESTED_DATA_SOURCE, 
+				dataDrivenDropdownSpec.getTag(), 
+				dataDrivenDropdownSpec.getLabel(), 
+				dataDrivenDropdownSpec.getType(), 
+				(CustomFieldError)errors.get(0));
+		
+	}
 
 	public void testMissingCustomLabel() throws Exception
 	{

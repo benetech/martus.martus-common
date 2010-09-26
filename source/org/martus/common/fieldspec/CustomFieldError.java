@@ -150,6 +150,11 @@ public class CustomFieldError
 		return new CustomFieldError(CODE_INVALID_REUSABLE_CHOICE, tag, "", "");
 	}
 
+	public static Object errorDataSourceReusableDropdown(String tag, String label)
+	{
+		return new CustomFieldError(CODE_NESTED_DATA_SOURCE, tag, label, new FieldTypeDropdown().getTypeName());
+	}
+
 	private CustomFieldError(String code, String tag, String label, String type)
 	{
 		this.code = code;
@@ -200,6 +205,7 @@ public class CustomFieldError
 	static public final String CODE_MISSING_REUSABLE_CHOICES = "117";
 	static public final String CODE_NULL_REUSABLE_CHOICES = "118";
 	static public final String CODE_INVALID_REUSABLE_CHOICE = "119";
+	static public final String CODE_NESTED_DATA_SOURCE = "120";
 	
 	// Null specs is no longer a possibility
 	//static public final String CODE_NULL_SPECS = "200";

@@ -309,10 +309,32 @@ public class CustomFieldSpecValidator
 				checkForDuplicateEntriesInDropDownSpec(dropdownSpec, tag, label);
 				checkForNoDropdownChoices(dropdownSpec, tag, label);
 				checkForMissingReusableChoices(dropdownSpec, tag, label, specsToCheck.getReusableChoiceNames());
+				checkForDataSourceReusableOrNested(dropdownSpec, specsToCheck);
 			}
 		}
 	}
 	
+	private void checkForDataSourceReusableOrNested(DropDownFieldSpec dropdownSpec, FieldSpecCollection specsToCheck)
+	{
+		String gridTag = dropdownSpec.getDataSourceGridTag();
+		if(gridTag == null || gridTag.length() == 0)
+			return;
+		
+		FieldSpec rawGridSpec = specsToCheck.findBytag(gridTag);
+		if(rawGridSpec == null)
+			return;
+
+		GridFieldSpec gridSpec = (GridFieldSpec)rawGridSpec;
+		String gridColumnLabel = dropdownSpec.getDataSourceGridColumn();
+		FieldSpec rawColumnSpec = gridSpec.findColumnSpecByLabel(gridColumnLabel);
+		if(!rawColumnSpec.getType().isDropdown())
+			return;
+		
+		DropDownFieldSpec columnDropdownSpec = (DropDownFieldSpec) rawColumnSpec;
+		if(columnDropdownSpec.getReusableChoicesCodes().length > 0)
+			errors.add(CustomFieldError.errorDataSourceReusableDropdown(dropdownSpec.getTag(), dropdownSpec.getLabel()));
+	}
+
 	private void checkForCommonErrorsInsideGrids(FieldSpecCollection specsToCheck, HashMap otherGrids)
 	{
 		for (int i = 0; i < specsToCheck.size(); i++)
