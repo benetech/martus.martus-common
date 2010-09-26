@@ -182,7 +182,10 @@ public class MartusSearchableGridColumnField extends MartusField
 	public String internalGetHtml(MiniLocalization localization) throws Exception
 	{
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("<table>");
+		String border = "";
+		if(dataInEachRow.length > 1)
+			border = "border = '1'";
+		buffer.append("<table " + border + " >");
 		for(int row = 0; row < dataInEachRow.length; ++row)
 		{
 			buffer.append("<tr><td>");
