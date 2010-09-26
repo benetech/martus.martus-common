@@ -184,7 +184,7 @@ public class MartusSearchableGridColumnField extends MartusField
 		StringBuffer buffer = new StringBuffer();
 		String border = "";
 		if(dataInEachRow.length > 1)
-			border = "border = '1'";
+			border = "border='1'";
 		buffer.append("<table " + border + " >");
 		for(int row = 0; row < dataInEachRow.length; ++row)
 		{

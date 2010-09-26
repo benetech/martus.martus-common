@@ -101,7 +101,7 @@ public class MartusGridField extends MartusField
 		StringBuffer buffer = new StringBuffer();
 		String border = "";
 		if(gridData.getRowCount() > 1 || gridData.getColumnCount() > 1)
-			border = "border = '1'";
+			border = "border='1'";
 		buffer.append("<table " + border + " >");
 		for(int row = 0; row < gridData.getRowCount(); ++row)
 		{

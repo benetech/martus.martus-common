@@ -148,7 +148,7 @@ public class TestMartusField extends TestCaseEnhanced
 			data.setValueAt("2002-07-21,20020721+5", row, 4);
 		}
 		field.setData(data.getXmlRepresentation());
-		String expected = "<table>" +
+		String expected = "<table border='1' >" +
 				"<tr><td>&amp;0,0</td><td>&lt;button:yes&gt;</td><td>This &amp; That</td>" +
 				"<td>12/30/2004</td><td>07/21/2002 - 07/26/2002</td></tr>" +
 				"<tr><td>&amp;1,0</td><td>&lt;button:yes&gt;</td><td>This &amp; That</td>" +
