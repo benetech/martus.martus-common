@@ -68,6 +68,18 @@ public class GridFieldSpec extends FieldSpec
 		return (FieldSpec)columns.get(column);
 	}
 
+	public FieldSpec findColumnSpecByLabel(String gridColumnLabel)
+	{
+		for(int column = 0; column < getColumnCount(); ++column)
+		{
+			FieldSpec columnSpec = getFieldSpec(column);
+			if(columnSpec.getLabel().equals(gridColumnLabel))
+				return columnSpec;
+		}
+		
+		return null;
+	}
+
 	public String convertStoredToSearchable(String storedData, PoolOfReusableChoicesLists reusableChoicesLists, MiniLocalization localization)
 	{
 		Formatter formatter = new FormatterForSearching();

@@ -68,6 +68,17 @@ public class FieldSpecCollection implements Comparable
 		return new HashSet(specs);
 	}
 	
+	public FieldSpec findBytag(String tagToFind)
+	{
+		for(int index = 0; index < size(); ++index)
+		{
+			FieldSpec thisSpec = get(index);
+			if(thisSpec.getTag().equals(tagToFind))
+				return thisSpec;
+		}
+		return null;
+	}
+
 	public void addReusableChoiceList(ReusableChoices setOfChoices)
 	{
 		reusableChoicesPool.add(setOfChoices);
