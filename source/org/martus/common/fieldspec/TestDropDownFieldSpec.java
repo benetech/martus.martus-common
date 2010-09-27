@@ -100,6 +100,6 @@ public class TestDropDownFieldSpec extends TestCaseEnhanced
 		spec.setChoices(choices);
 		assertEquals(choices[0].getCode(), spec.getDefaultValue());
 	}
-
+	
 	static final ChoiceItem[] choices = {new ChoiceItem("tag", "value"), new ChoiceItem("othertag", "othervalue"),};
 }

@@ -162,14 +162,11 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 		{
 			setDataSource(dataSourceGridTag, other.getDataSourceGridColumn());
 		}
-		else
-		{
-			Vector allChoices = new Vector();
-			allChoices.addAll(Arrays.asList(getAllChoices()));
-			allChoices.addAll(Arrays.asList(other.getAllChoices()));
-			setChoices((ChoiceItem[]) allChoices.toArray(new ChoiceItem[0]));
-		}
-		
+
+		Vector allChoices = new Vector();
+		allChoices.addAll(Arrays.asList(getAllChoices()));
+		allChoices.addAll(Arrays.asList(other.getAllChoices()));
+		setChoices((ChoiceItem[]) allChoices.toArray(new ChoiceItem[0]));
 	}
 
 	public String convertStoredToHtml(MartusField field, MiniLocalization localization)

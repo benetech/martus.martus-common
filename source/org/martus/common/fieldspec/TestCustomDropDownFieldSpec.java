@@ -175,6 +175,19 @@ public class TestCustomDropDownFieldSpec extends TestCaseEnhanced
 		assertNotEquals("not checking choice order?", specAC, flipped);
 		
 	}
+
+	public void testDataDrivenDropdownId()
+	{
+		CustomDropDownFieldSpec spec = new CustomDropDownFieldSpec();
+		spec.setTag("tag");
+		spec.setLabel("Label");
+		spec.setDataSource("gridtag", "Grid Column");
+		String emptyId = spec.getId();
+		ChoiceItem choice = new ChoiceItem("a", "a");
+		spec.setChoices(new ChoiceItem[] {choice});
+		assertNotEquals("Current choices not included in id?", emptyId, spec.getId());
+	}
+
 	
 	static final ChoiceItem[] choices = {new ChoiceItem("tag", "value"), new ChoiceItem("othertag", "othervalue"),};
 	public static final String SAMPLE_DROPDOWN_CHOICE1 = "choice #1";

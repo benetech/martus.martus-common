@@ -72,6 +72,16 @@ public class DropDownFieldSpec extends FieldSpec
 		return getChoice(index).toString();
 	}
 	
+	protected String getStringRepresentationToComputeId()
+	{
+		String xml = super.getStringRepresentationToComputeId();
+		if(getDataSourceGridTag() == null)
+			return xml;
+		
+		xml += getChoicesListAsXml();
+		return xml;
+	}
+	
 	public String convertStoredToSearchable(String storedData, PoolOfReusableChoicesLists reusableChoicesLists, MiniLocalization localization)
 	{
 		return getDisplayString(storedData);
@@ -97,6 +107,12 @@ public class DropDownFieldSpec extends FieldSpec
 	
 	void updateDetailsXml()
 	{
+		detailsXml = getChoicesListAsXml();
+		clearId();
+	}
+
+	private String getChoicesListAsXml()
+	{
 		StringBuffer xml = new StringBuffer();
 		xml.append("<" + DROPDOWN_SPEC_CHOICES_TAG + ">\n");
 		
@@ -107,7 +123,8 @@ public class DropDownFieldSpec extends FieldSpec
 			xml.append("</" + DROPDOWN_SPEC_CHOICE_TAG + ">\n");
 		}
 		xml.append("</" + DROPDOWN_SPEC_CHOICES_TAG + ">\n");
-		detailsXml = xml.toString();
+		String xmlString = xml.toString();
+		return xmlString;
 	}
 
 	public int findCode(String code)

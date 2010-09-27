@@ -243,7 +243,7 @@ public class FieldSpec
 		return id;
 	}
 	
-	private void clearId()
+	protected void clearId()
 	{
 		id = null;
 	}
@@ -252,13 +252,18 @@ public class FieldSpec
 	{
 		try
 		{
-			id = MartusCrypto.createDigestString(toString());
+			id = MartusCrypto.createDigestString(getStringRepresentationToComputeId());
 		} 
 		catch (CreateDigestException e)
 		{
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
+	}
+
+	protected String getStringRepresentationToComputeId()
+	{
+		return toXml();
 	}
 	
 	public void validate(String fullFieldLabel, String candidateValue, MiniLocalization localization) throws DataInvalidException 
