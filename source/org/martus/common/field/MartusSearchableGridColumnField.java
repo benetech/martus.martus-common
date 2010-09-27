@@ -164,7 +164,7 @@ public class MartusSearchableGridColumnField extends MartusField
 		return createMartusField(goodColumnSpec, reusableChoicesLists);
 	}
 	
-	private static MartusField createMartusField(FieldSpec newSpec, PoolOfReusableChoicesLists reusableChoicesLists)
+	public static MartusField createMartusField(FieldSpec newSpec, PoolOfReusableChoicesLists reusableChoicesLists)
 	{
 		FieldType type = newSpec.getType();
 		if(type.isDateRange())

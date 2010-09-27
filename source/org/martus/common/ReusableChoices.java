@@ -82,6 +82,16 @@ public class ReusableChoices
 		choices.insertElementAt(choiceItem, 0);
 	}
 
+	public void set(int level, ChoiceItem choiceItem)
+	{
+		choices.set(level, choiceItem);
+	}
+
+	public ChoiceItem remove(int i)
+	{
+		return (ChoiceItem) choices.remove(i);
+	}
+
 	public ChoiceItem findByCode(String codeToFind)
 	{
 		for(int i = 0; i < choices.size(); ++i)

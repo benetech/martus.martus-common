@@ -46,6 +46,16 @@ public class MartusDropdownField extends MartusField
 		clone.setData(getData());
 		return clone;
 	}
+	
+	protected String internalGetHtml(MiniLocalization localization) throws Exception
+	{
+		CustomDropDownFieldSpec dropDownSpec = getDropDownSpec();
+		String[] reusableChoicesCodes = dropDownSpec.getReusableChoicesCodes();
+		if(reusableChoicesCodes.length == 0)
+			return super.internalGetHtml(localization);
+		
+		return dropDownSpec.convertStoredToHtml(this, localization);
+	}
 
 	public boolean contains(String value, MiniLocalization localization)
 	{
