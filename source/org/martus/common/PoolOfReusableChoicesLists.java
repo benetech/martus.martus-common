@@ -30,6 +30,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.martus.common.fieldspec.ChoiceItem;
+
 
 public class PoolOfReusableChoicesLists
 {
@@ -43,14 +45,40 @@ public class PoolOfReusableChoicesLists
 		namedReusableChoices.put(choices.getCode(), choices);
 	}
 
-	public void addAll(PoolOfReusableChoicesLists reusableChoicesLists)
+	public void mergeAll(PoolOfReusableChoicesLists reusableChoicesLists)
 	{
 		Set otherNames = reusableChoicesLists.getAvailableNames();
 		Iterator it = otherNames.iterator();
 		while(it.hasNext())
 		{
 			String name = (String)it.next();
-			add(reusableChoicesLists.getChoices(name));
+			merge(reusableChoicesLists.getChoices(name));
+		}
+	}
+
+	private void merge(ReusableChoices choices)
+	{
+		ReusableChoices existingChoices = getChoices(choices.getCode());
+		if(existingChoices == null)
+		{
+			add(choices);
+			return;
+		}
+
+		for(int i = 0; i < choices.size(); ++i)
+		{
+			ChoiceItem incoming = choices.get(i);
+			String code = incoming.getCode();
+			String label = incoming.toString();
+			ChoiceItem existingChoice = existingChoices.findByCode(code);
+			if(existingChoice == null)
+				existingChoices.add(incoming);
+			else if(existingChoice.toString().equals(label))
+				continue;
+			else
+			{
+				existingChoice.setLabel(existingChoice.toString() + "; " + label); 
+			}
 		}
 	}
 

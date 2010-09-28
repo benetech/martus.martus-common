@@ -43,9 +43,19 @@ public class ChoiceItem implements Comparable
 	
 	public String toString()
 	{
+		return getLabel();
+	}
+
+	private String getLabel()
+	{
 		return spec.getLabel();
 	}
 	
+	public void setLabel(String newLabel)
+	{
+		spec.setLabel(newLabel);
+	}
+
 	public FieldSpec getSpec()
 	{
 		return spec;
@@ -95,5 +105,6 @@ public class ChoiceItem implements Comparable
 	}
 
 	private FieldSpec spec;
+
 }
 
