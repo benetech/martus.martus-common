@@ -71,6 +71,28 @@ public class ChoiceItem implements Comparable
 		return spec.getType();
 	}
 	
+	public boolean nestedCodeStartsWith(String partialCode)
+	{
+		if(getCode().length()==0 || partialCode.length() == 0)
+			return false;
+		
+		if(getCode().equals(partialCode))
+			return true;
+		
+		return getCode().startsWith(partialCode + ".");
+	}
+	
+	public boolean codeIsAtStartOf(String fullCode)
+	{
+		if(getCode().length()==0 || fullCode.length() == 0)
+			return false;
+		
+		if(fullCode.equals(getCode()))
+			return true;
+		
+		return fullCode.startsWith(getCode() + ".");
+	}
+	
 	public boolean equals(Object other)
 	{
 		if(!(other instanceof ChoiceItem))

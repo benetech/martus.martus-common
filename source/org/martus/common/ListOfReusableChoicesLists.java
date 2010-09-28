@@ -105,8 +105,7 @@ public class ListOfReusableChoicesLists
 	{
 		for(int index = 0; index < choices.length; ++index)
 		{
-			String thisCode = choices[index].getCode();
-			if(thisCode.length() > 0 && code.startsWith(thisCode))
+			if(choices[index].codeIsAtStartOf(code))
 				return choices[index].toString();
 		}
 		
