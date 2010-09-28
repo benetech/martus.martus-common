@@ -357,6 +357,7 @@ public class CustomFieldSpecValidator
 						checkForNoDropdownChoices(dropdownSpec, gridTag, gridLabel);
 						checkDataDrivenDropDown(dropdownSpec, otherGrids);
 						checkForMissingReusableChoices(dropdownSpec, gridTag, gridLabel, specsToCheck.getReusableChoiceNames());
+						checkForDataSourceReusableOrNested(dropdownSpec, specsToCheck);
 					}
 				}
 			}
