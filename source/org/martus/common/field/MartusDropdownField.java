@@ -71,11 +71,11 @@ public class MartusDropdownField extends MartusField
 		CustomDropDownFieldSpec outerSpec = getDropDownSpec();
 		String[] reusableChoicesCodes = outerSpec.getReusableChoicesCodes();
 		if(reusableChoicesCodes.length < 2)
-			return null;
+			return new EmptyMartusFieldWithInfiniteSubFields(tag);
 
 		int level = outerSpec.findReusableLevelByCode(tag);
 		if(level < 0)
-			return null;
+			return new EmptyMartusFieldWithInfiniteSubFields(tag);
 
 		ReusableChoices reusableChoices = getReusableChoicesLists().getChoices(reusableChoicesCodes[level]);
 		CustomDropDownFieldSpec subSpec = (CustomDropDownFieldSpec) FieldSpec.createSubField(outerSpec, tag, reusableChoices.getLabel(), new FieldTypeDropdown());
