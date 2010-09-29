@@ -77,6 +77,7 @@ public class PoolOfReusableChoicesLists
 				continue;
 			else if(existingChoice.toString().indexOf(label) > 0)
 				continue;
+			else
 			{
 				existingChoice.setLabel(existingChoice.toString() + "; " + label); 
 			}
