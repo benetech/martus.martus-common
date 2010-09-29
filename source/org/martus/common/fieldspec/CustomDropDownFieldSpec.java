@@ -188,7 +188,13 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 		String[] values = reusableChoicesLists.getDisplayValuesAtAllLevels(rawData);
 		
 		if(values.length == 1)
-			return XmlUtilities.getXmlEncoded(values[0]);
+		{
+			String result = values[0];
+			if(reusableChoicesLists.get(0).getCode().equals(INTERNAL_CHOICES_FOR_BREAK_CODE))
+				return result;
+
+			return XmlUtilities.getXmlEncoded(result);
+		}
 		
 		StringBuffer result = new StringBuffer();
 		result.append("<table border='1'><tr>");
@@ -244,4 +250,5 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 	private Vector reusableChoicesCodes;
 	private String gridTag;
 	private String gridColumn;
+	public static String INTERNAL_CHOICES_FOR_BREAK_CODE = "**__InternalChoicesForBreak__**";
 }
