@@ -46,7 +46,7 @@ public class ChoiceItem implements Comparable
 		return getLabel();
 	}
 
-	private String getLabel()
+	public String getLabel()
 	{
 		return spec.getLabel();
 	}
