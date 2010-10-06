@@ -27,6 +27,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.fieldspec;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
@@ -61,6 +62,9 @@ public class CustomFieldSpecValidator
 		
 		HashMap topGridFieldSpecs = scanForGrids(rawSpecsToCheckTopSection);
 		HashMap bottomGridFieldSpecs = scanForGrids(rawSpecsToCheckBottomSection);
+	
+		checkForDuplicatesInResuableChoiceLists(specsToCheckTopSection);
+		checkForDuplicatesInResuableChoiceLists(specsToCheckBottomSection);
 		
 		checkForRequiredTopSectionFields(rawSpecsToCheckTopSection);
 		checkForPrivateField(rawSpecsToCheckTopSection);
@@ -77,6 +81,38 @@ public class CustomFieldSpecValidator
 
 		checkDataDrivenDropDowns(rawSpecsToCheckTopSection, topGridFieldSpecs);
 		checkDataDrivenDropDowns(rawSpecsToCheckBottomSection, bottomGridFieldSpecs);
+	}
+
+	private void checkForDuplicatesInResuableChoiceLists(FieldSpecCollection specsToCheckBottomSection)
+	{
+		PoolOfReusableChoicesLists reusableChoicesLists = specsToCheckBottomSection.getAllReusableChoiceLists();
+		Set choicesListNames = reusableChoicesLists.getAvailableNames();
+		Iterator iter = choicesListNames.iterator();
+		while(iter.hasNext())
+		{
+			String name = (String) iter.next();
+			ReusableChoices choices = reusableChoicesLists.getChoices(name);
+			checkForDuplicatesInReusableChoices(choices);
+		}
+	}
+
+	private void checkForDuplicatesInReusableChoices(ReusableChoices choices)
+	{
+		HashSet codes = new HashSet();
+		HashSet labels = new HashSet();
+		for(int i = 0; i < choices.size(); ++i)
+		{
+			ChoiceItem choice = choices.get(i);
+			String code = choice.getCode();
+			String label = choice.getLabel();
+			if(codes.contains(code) || labels.contains(label))
+			{
+				errors.add(CustomFieldError.errorDuplicateDropDownEntryInReusableChoices(choices.getCode(), choices.getLabel()));
+				return;
+			}
+			codes.add(code);
+			labels.add(label);
+		}
 	}
 
 	private HashMap scanForGrids(FieldSpec[] specsToCheck)

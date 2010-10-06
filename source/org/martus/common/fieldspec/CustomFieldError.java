@@ -75,6 +75,11 @@ public class CustomFieldError
 		return new CustomFieldError(CODE_DUPLICATE_DROPDOWN_ENTRY, tag, label, FieldSpec.getTypeString(new FieldTypeDropdown()));
 	}
 
+	static public CustomFieldError errorDuplicateDropDownEntryInReusableChoices(String tag, String label)
+	{
+		return new CustomFieldError(CODE_DUPLICATE_DROPDOWN_ENTRY, tag, label, "Reusable");
+	}
+
 	static public CustomFieldError noDropDownEntries(String tag, String label)
 	{
 		return new CustomFieldError(CODE_NO_DROPDOWN_ENTRIES, tag, label, FieldSpec.getTypeString(new FieldTypeDropdown()));

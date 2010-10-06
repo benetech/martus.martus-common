@@ -253,6 +253,38 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		
 	}
 
+	public void testDuplicateDropDownLabelsInsideReusableList() throws Exception
+	{
+		String duplicateLabel = "Label";
+		ReusableChoices choices = new ReusableChoices("choicescode", "choices label");
+		choices.add(new ChoiceItem("code1", duplicateLabel));
+		choices.add(new ChoiceItem("code2", duplicateLabel));
+		choices.add(new ChoiceItem("code3", "Other label"));
+		specsTopSection.addReusableChoiceList(choices);
+		
+		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		assertFalse("valid?", checker.isValid());
+		Vector errors = checker.getAllErrors();
+		assertEquals("Should have 1 error", 1, errors.size());
+		verifyExpectedError("Duplicate Labels", CustomFieldError.CODE_DUPLICATE_DROPDOWN_ENTRY, choices.getCode(), choices.getLabel(), null, (CustomFieldError)errors.get(0));
+	}
+
+	public void testDuplicateDropDownCodesInsideReusableList() throws Exception
+	{
+		String duplicateCode = "code";
+		ReusableChoices choices = new ReusableChoices("choicescode", "choices label");
+		choices.add(new ChoiceItem(duplicateCode, "Label 1"));
+		choices.add(new ChoiceItem(duplicateCode, "Label 2"));
+		choices.add(new ChoiceItem("othercode", "Label 3"));
+		specsTopSection.addReusableChoiceList(choices);
+		
+		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		assertFalse("valid?", checker.isValid());
+		Vector errors = checker.getAllErrors();
+		assertEquals("Should have 1 error", 1, errors.size());
+		verifyExpectedError("Duplicate Labels", CustomFieldError.CODE_DUPLICATE_DROPDOWN_ENTRY, choices.getCode(), choices.getLabel(), null, (CustomFieldError)errors.get(0));
+	}
+
 	public void testDuplicateDropDownEntry() throws Exception
 	{
 		String tag = "dd";
