@@ -146,7 +146,12 @@ public class FieldCollection
 	{
 		public CustomFieldsParseException()
 		{
-			super("Custom fields parse exception");
+			this("Custom fields parse exception");
+		}
+
+		public CustomFieldsParseException(String message)
+		{
+			super(message);
 		}
 	}
 	
@@ -164,7 +169,7 @@ public class FieldCollection
 			System.out.println("   Public Id: " + e.getPublicId());
 			System.out.println("   System Id: " + e.getSystemId());
 			e.printStackTrace();
-			throw new CustomFieldsParseException();
+			throw new CustomFieldsParseException(e.getMessage());
 		}
 		catch (InvalidIsoDateException e)
 		{

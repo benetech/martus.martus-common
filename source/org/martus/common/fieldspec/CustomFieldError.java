@@ -100,9 +100,9 @@ public class CustomFieldError
 		return new CustomFieldError(CODE_PRIVATE_FIELD_IN_TOP_SECTION, martusTag, UNUSED_FIELD, UNUSED_FIELD);
 	}
 
-	static public CustomFieldError errorParseXml()
+	static public CustomFieldError errorParseXml(String message)
 	{
-		return new CustomFieldError(CODE_PARSE_XML, UNUSED_FIELD, UNUSED_FIELD, UNUSED_FIELD);
+		return new CustomFieldError(CODE_PARSE_XML, message, UNUSED_FIELD, UNUSED_FIELD);
 	}
 	
 	static public CustomFieldError errorUnauthorizedKey()

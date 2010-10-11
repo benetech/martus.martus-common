@@ -204,6 +204,16 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertFalse(FieldSpec.createCustomField("section", "Label", new FieldTypeSectionStart()).allowUserDefaultValue());
 	}
 	
+	public void testGetUserDefaultValue() throws Exception
+	{
+		String value = "xyz";
+		String xml = "<Field type='NORMAL'><Tag>AUTHOR</Tag><DefaultValue>" + value + "</DefaultValue></Field>";
+		FieldSpec spec = FieldSpec.createFromXml(xml);
+		assertEquals("Didn't notice default value?", value, spec.getDefaultValue());
+		FieldSpec reloaded = FieldSpec.createFromXml(spec.toString());
+		assertEquals("Didn't save and reload default value?", value, reloaded.getDefaultValue());
+	}
+	
 	public void testEqualsAndCompareTo()
 	{
 		FieldSpec a = FieldSpec.createFieldSpec(new FieldTypeNormal());

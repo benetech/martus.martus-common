@@ -126,6 +126,12 @@ public class FieldSpec
 			rootTagLine.append("<" + FIELD_SPEC_KEEP_WITH_PREVIOUS_TAG + "/>\n");
 		if(isRequiredField())
 			rootTagLine.append("<" + FIELD_SPEC_REQUIRED_FIELD_TAG + "/>\n");
+		if(defaultValue != null)
+		{
+			rootTagLine.append("<" + FIELD_SPEC_DEFAULT_VALUE_TAG + ">");
+			rootTagLine.append(XmlUtilities.getXmlEncoded(defaultValue));
+			rootTagLine.append("</" + FIELD_SPEC_DEFAULT_VALUE_TAG + ">");
+		}
 		rootTagLine.append(getDetailsXml());
 		rootTagLine.append((("</" + rootTag + ">") + "\n"));
 		
@@ -192,8 +198,16 @@ public class FieldSpec
 		return getType().convertStoredToExportable(storedData, localization);
 	}
 	
+	public void setDefaultValue(String text)
+	{
+		defaultValue = text;
+	}
+
 	public String getDefaultValue()
 	{
+		if(defaultValue != null)
+			return defaultValue;
+		
 		return getSystemDefaultValue();
 	}
 	
@@ -379,6 +393,13 @@ public class FieldSpec
 
 			if(tag.equals(FieldSpec.FIELD_SPEC_REQUIRED_FIELD_TAG))
 				return new SimpleXmlDefaultLoader(tag);
+			
+			if(tag.equals(FieldSpec.FIELD_SPEC_DEFAULT_VALUE_TAG))
+			{
+				if(!spec.allowUserDefaultValue())
+					throw new SAXParseException("DefaultValue not allowed for " + spec.getType().getTypeName(), null);
+				return new SimpleXmlStringLoader(tag);
+			}
 
 			if(spec.getType().isGrid())
 			{
@@ -433,6 +454,8 @@ public class FieldSpec
 				spec.setKeepWithPrevious();
 			else if(thisTag.equals(FieldSpec.FIELD_SPEC_REQUIRED_FIELD_TAG))
 				spec.setRequired();
+			else if(thisTag.equals(FieldSpec.FIELD_SPEC_DEFAULT_VALUE_TAG))
+				spec.setDefaultValue(getText(ended));
 			else if(spec.getType().isNestedDropdown() && thisTag.equals(USE_REUSABLE_CHOICES_TAG))
 			{
 				AttributesOnlyXmlLoader loader = (AttributesOnlyXmlLoader)ended;
@@ -465,6 +488,7 @@ public class FieldSpec
 	private FieldSpec parent;
 	private boolean keepWithPrevious;
 	private boolean isRequired;
+	private String defaultValue;
 	
 	private String id;
 
@@ -473,6 +497,7 @@ public class FieldSpec
 	public static final String FIELD_SPEC_LABEL_XML_TAG = "Label";
 	public static final String FIELD_SPEC_KEEP_WITH_PREVIOUS_TAG = "KeepWithPrevious";
 	public static final String FIELD_SPEC_REQUIRED_FIELD_TAG = "RequiredField";
+	public static final String FIELD_SPEC_DEFAULT_VALUE_TAG = "DefaultValue";
 	public static final String USE_REUSABLE_CHOICES_TAG = "UseReusableChoices";
 	public static final String REUSABLE_CHOICES_CODE_ATTRIBUTE = "code";
 

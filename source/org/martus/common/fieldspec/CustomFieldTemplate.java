@@ -185,7 +185,7 @@ public class CustomFieldTemplate
 		{
 			System.out.println("isValidTemplateXml");
 			e.printStackTrace();
-			errors.add(CustomFieldError.errorParseXml());
+			errors.add(CustomFieldError.errorParseXml(e.getMessage()));
 		}
 		return false;
 	}

@@ -668,7 +668,7 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 
 	public void testParseXmlError() throws Exception
 	{
-		CustomFieldError xmlError = CustomFieldError.errorParseXml();
+		CustomFieldError xmlError = CustomFieldError.errorParseXml("message");
 		assertEquals("Incorrect Error code for parse XML error", CustomFieldError.CODE_PARSE_XML, xmlError.getCode());
 	}
 
