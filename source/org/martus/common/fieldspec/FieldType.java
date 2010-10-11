@@ -50,8 +50,6 @@ abstract public class FieldType
 			return new FieldTypeGrid();
 		if(FieldTypeDropdown.getTypeNameString().equals(name))
 			return new FieldTypeDropdown();
-		if(FieldTypeNestedDropdown.getTypeNameString().equals(name))
-			return new FieldTypeNestedDropdown();
 		if(FieldTypeMessage.getTypeNameString().equals(name))
 			return new FieldTypeMessage();
 		if(FieldTypeSectionStart.getTypeNameString().equals(name))

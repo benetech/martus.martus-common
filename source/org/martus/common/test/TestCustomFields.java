@@ -42,11 +42,8 @@ import org.martus.common.fieldspec.FieldTypeDropdown;
 import org.martus.common.fieldspec.FieldTypeGrid;
 import org.martus.common.fieldspec.FieldTypeLanguage;
 import org.martus.common.fieldspec.FieldTypeMultiline;
-import org.martus.common.fieldspec.FieldTypeNestedDropdown;
 import org.martus.common.fieldspec.FieldTypeNormal;
 import org.martus.common.fieldspec.GridFieldSpec;
-import org.martus.common.fieldspec.NestedDropDownFieldSpec;
-import org.martus.common.fieldspec.NestedDropdownLevel;
 import org.martus.util.TestCaseEnhanced;
 
 
@@ -117,29 +114,6 @@ public class TestCustomFields extends TestCaseEnhanced
 		assertEquals("Wrong middle choice label?", "Netrokona Sadar", middle.get(2).toString());
 	}
 	
-	public void testDefineNestedDropdown() throws Exception
-	{
-		String xml = "<CustomFields>" + SAMPLE_DROPDOWN_CHOICES + SAMPLE_NESTED_DROPDOWN + "</CustomFields>";
-		XmlCustomFieldsLoader loader = new XmlCustomFieldsLoader();
-		loader.parse(xml);
-		FieldSpec[] specs = loader.getFieldSpecs().asArray();
-		assertEquals("Not one spec?", 1, specs.length);
-		NestedDropDownFieldSpec spec = (NestedDropDownFieldSpec) specs[0];
-		assertEquals("Wrong type?", new FieldTypeNestedDropdown(), spec.getType());
-		assertEquals("Wrong tag?", "location", spec.getTag());
-		assertEquals("Wrong label?", "Location: ", spec.getLabel());
-		assertEquals("Wrong number of levels?", 3, spec.getLevelCount());
-		
-		NestedDropdownLevel outer = spec.getLevel(0);
-		assertEquals("DistrictChoices", outer.getReusableChoicesCode());
-		NestedDropdownLevel middle = spec.getLevel(1);
-		assertEquals("UpazillaChoices", middle.getReusableChoicesCode());
-
-		String detailsXml = spec.getDetailsXml();
-		assertContains("Outer reusable choices code not saved?", OUTER_LEVEL_NAME, detailsXml);
-		assertContains("Middle reusable choices code not saved?", MIDDLE_LEVEL_NAME, detailsXml);
-	}
-
 	public void testDefineDropdownWithReusableChoices() throws Exception
 	{
 		String xml = "<CustomFields>" + SAMPLE_DROPDOWN_CHOICES + SAMPLE_DROPDOWN_WITH_REUSABLE + "</CustomFields>";
@@ -190,14 +164,6 @@ public class TestCustomFields extends TestCaseEnhanced
 			"<Choice code='3.01' label='Bogra Sadar'/>" + 
 		"</ReusableChoices>";
 	
-	private static final String SAMPLE_NESTED_DROPDOWN =
-		"<Field type='NESTEDDROPDOWN'>" + 
-		"<Tag>location</Tag>" + 
-		"<Label>Location: </Label>" + 
-		"<UseReusableChoices code='DistrictChoices' />" + 
-		"<UseReusableChoices code='UpazillaChoices'  />" + 
-		"<UseReusableChoices code='UnionChoices' />" + 
-		"</Field>";
 	private static final String SAMPLE_DROPDOWN_WITH_REUSABLE =
 		"<Field type='DROPDOWN'>" + 
 		"<Tag>location</Tag>" + 

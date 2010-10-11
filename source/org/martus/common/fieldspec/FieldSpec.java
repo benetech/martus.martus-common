@@ -456,13 +456,6 @@ public class FieldSpec
 				spec.setRequired();
 			else if(thisTag.equals(FieldSpec.FIELD_SPEC_DEFAULT_VALUE_TAG))
 				spec.setDefaultValue(getText(ended));
-			else if(spec.getType().isNestedDropdown() && thisTag.equals(USE_REUSABLE_CHOICES_TAG))
-			{
-				AttributesOnlyXmlLoader loader = (AttributesOnlyXmlLoader)ended;
-				NestedDropDownFieldSpec nestedDropDownSpec = (NestedDropDownFieldSpec)spec;
-				String reusableChoicesCode = loader.getAttribute(REUSABLE_CHOICES_CODE_ATTRIBUTE);
-				nestedDropDownSpec.addLevel(new NestedDropdownLevel(reusableChoicesCode));
-			}
 			else if(spec.getType().isDropdown() && thisTag.equals(USE_REUSABLE_CHOICES_TAG))
 			{
 				AttributesOnlyXmlLoader loader = (AttributesOnlyXmlLoader)ended;
