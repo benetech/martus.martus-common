@@ -255,6 +255,8 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 
 	public void testDuplicateDropDownLabelsInsideReusableList() throws Exception
 	{
+		// NOTE: We allow duplicate labels because in an inner nested dropdown, 
+		// they might not appear at the same time (e.g. Springfield IL and Springfield MO)
 		String duplicateLabel = "Label";
 		ReusableChoices choices = new ReusableChoices("choicescode", "choices label");
 		choices.add(new ChoiceItem("code1", duplicateLabel));
@@ -263,10 +265,7 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		specsTopSection.addReusableChoiceList(choices);
 		
 		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
-		assertFalse("valid?", checker.isValid());
-		Vector errors = checker.getAllErrors();
-		assertEquals("Should have 1 error", 1, errors.size());
-		verifyExpectedError("Duplicate Labels", CustomFieldError.CODE_DUPLICATE_DROPDOWN_ENTRY, choices.getCode(), choices.getLabel(), null, (CustomFieldError)errors.get(0));
+		assertTrue("invalid?", checker.isValid());
 	}
 
 	public void testDuplicateDropDownCodesInsideReusableList() throws Exception
