@@ -28,7 +28,6 @@ package org.martus.common.fieldspec;
 
 import org.martus.common.MiniLocalization;
 import org.martus.common.bulletin.BulletinXmlExportImportConstants;
-import org.martus.util.MultiCalendar;
 import org.martus.util.xml.XmlUtilities;
 
 public class FieldTypeDate extends FieldType
@@ -46,11 +45,6 @@ public class FieldTypeDate extends FieldType
 	public static String getTypeNameString()
 	{
 		return "DATE";
-	}
-
-	public String getDefaultValue()
-	{
-		return MultiCalendar.UNKNOWN.toIsoDateString();
 	}
 
 	public String convertStoredToSearchable(String storedData, MiniLocalization localization)

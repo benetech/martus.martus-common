@@ -30,7 +30,6 @@ import org.martus.common.MiniLocalization;
 import org.martus.common.bulletin.BulletinXmlExportImportConstants;
 import org.martus.common.utilities.DateUtilities;
 import org.martus.common.utilities.MartusFlexidate;
-import org.martus.util.MultiCalendar;
 import org.martus.util.xml.XmlUtilities;
 
 public class FieldTypeDateRange extends FieldType
@@ -58,11 +57,6 @@ public class FieldTypeDateRange extends FieldType
 	public String convertStoredToHtml(String storedData, MiniLocalization localization)
 	{
 		return XmlUtilities.getXmlEncoded(localization.getViewableDateRange(storedData));
-	}
-
-	public String getDefaultValue()
-	{
-		return MultiCalendar.UNKNOWN.toIsoDateString();
 	}
 
 	public String convertStoredToExportable(String storedData, MiniLocalization localization)

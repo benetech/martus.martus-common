@@ -280,11 +280,6 @@ public class GridFieldSpec extends FieldSpec
 		return getAllColumnLabels().contains(gridColumnLabel);
 	}
 
-	public String getDefaultValue()
-	{
-		return "";
-	}
-
 	public String getDetailsXml()
 	{
 		StringBuffer xml = new StringBuffer(); 
