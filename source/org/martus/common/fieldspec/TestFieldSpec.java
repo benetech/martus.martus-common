@@ -193,10 +193,10 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertTrue(FieldSpec.createStandardField(Bulletin.TAGAUTHOR, new FieldTypeNormal()).allowUserDefaultValue());
 		assertTrue(FieldSpec.createCustomField("normal", "Label", new FieldTypeNormal()).allowUserDefaultValue());
 		assertTrue(FieldSpec.createCustomField("multiline", "Label", new FieldTypeMultiline()).allowUserDefaultValue());
-		assertTrue(FieldSpec.createCustomField("date", "Label", new FieldTypeDate()).allowUserDefaultValue());
-		assertTrue(FieldSpec.createCustomField("daterange", "Label", new FieldTypeDateRange()).allowUserDefaultValue());
 		assertTrue(FieldSpec.createCustomField("dropdown", "Label", new FieldTypeDropdown()).allowUserDefaultValue());
 
+		assertFalse(FieldSpec.createCustomField("date", "Label", new FieldTypeDate()).allowUserDefaultValue());
+		assertFalse(FieldSpec.createCustomField("daterange", "Label", new FieldTypeDateRange()).allowUserDefaultValue());
 		assertFalse(FieldSpec.createCustomField("boolean", "Label", new FieldTypeBoolean()).allowUserDefaultValue());
 		assertFalse(FieldSpec.createCustomField("grid", "Label", new FieldTypeGrid()).allowUserDefaultValue());
 		assertFalse(FieldSpec.createCustomField("message", "Label", new FieldTypeMessage()).allowUserDefaultValue());

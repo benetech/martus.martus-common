@@ -39,6 +39,11 @@ public class AbstractDateOrientedFieldSpec extends FieldSpec
 	{
 		super(typeToUse);
 	}
+	
+	protected boolean allowUserDefaultValue()
+	{
+		return false;
+	}
 
 	protected String getSystemDefaultValue()
 	{
