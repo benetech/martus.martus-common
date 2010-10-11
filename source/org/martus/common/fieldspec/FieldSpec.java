@@ -196,6 +196,18 @@ public class FieldSpec
 	{
 		return getSystemDefaultValue();
 	}
+	
+	protected boolean allowUserDefaultValue()
+	{
+		if(getType().isBoolean())
+			return false;
+		if(getType().isLanguageDropdown())
+			return false;
+		if(getType().isSectionStart())
+			return false;
+		
+		return true;
+	}
 
 	protected String getSystemDefaultValue()
 	{

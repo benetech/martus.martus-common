@@ -39,6 +39,11 @@ public class MessageFieldSpec extends FieldSpec
 		message = "";
 	}
 	
+	protected boolean allowUserDefaultValue()
+	{
+		return false;
+	}
+
 	protected String getSystemDefaultValue()
 	{
 		return getMessage();

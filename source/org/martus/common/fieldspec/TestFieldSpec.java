@@ -30,6 +30,7 @@ import java.util.Vector;
 
 import org.martus.common.LegacyCustomFields;
 import org.martus.common.MiniLocalization;
+import org.martus.common.bulletin.Bulletin;
 import org.martus.common.test.UnicodeConstants;
 import org.martus.util.MultiCalendar;
 import org.martus.util.TestCaseEnhanced;
@@ -185,6 +186,22 @@ public class TestFieldSpec extends TestCaseEnhanced
 		FieldSpec sectionSpec = FieldSpec.createFromXml(sectionXml);
 		assertFalse("Section didn't ignore required?", sectionSpec.isRequiredField());
 		
+	}
+	
+	public void testAllowUserDefaultValue() throws Exception
+	{
+		assertTrue(FieldSpec.createStandardField(Bulletin.TAGAUTHOR, new FieldTypeNormal()).allowUserDefaultValue());
+		assertTrue(FieldSpec.createCustomField("normal", "Label", new FieldTypeNormal()).allowUserDefaultValue());
+		assertTrue(FieldSpec.createCustomField("multiline", "Label", new FieldTypeMultiline()).allowUserDefaultValue());
+		assertTrue(FieldSpec.createCustomField("date", "Label", new FieldTypeDate()).allowUserDefaultValue());
+		assertTrue(FieldSpec.createCustomField("daterange", "Label", new FieldTypeDateRange()).allowUserDefaultValue());
+		assertTrue(FieldSpec.createCustomField("dropdown", "Label", new FieldTypeDropdown()).allowUserDefaultValue());
+
+		assertFalse(FieldSpec.createCustomField("boolean", "Label", new FieldTypeBoolean()).allowUserDefaultValue());
+		assertFalse(FieldSpec.createCustomField("grid", "Label", new FieldTypeGrid()).allowUserDefaultValue());
+		assertFalse(FieldSpec.createCustomField("message", "Label", new FieldTypeMessage()).allowUserDefaultValue());
+		assertFalse(FieldSpec.createCustomField("language", "Label", new FieldTypeLanguage()).allowUserDefaultValue());
+		assertFalse(FieldSpec.createCustomField("section", "Label", new FieldTypeSectionStart()).allowUserDefaultValue());
 	}
 	
 	public void testEqualsAndCompareTo()

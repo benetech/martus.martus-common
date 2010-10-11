@@ -46,6 +46,11 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 		reusableChoicesCodes = new Vector();
 	}
 	
+	protected boolean allowUserDefaultValue()
+	{
+		return true;
+	}
+
 	public void addReusableChoicesCode(String reusableChoicesCodeToAdd)
 	{
 		reusableChoicesCodes.add(reusableChoicesCodeToAdd);

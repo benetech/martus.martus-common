@@ -46,6 +46,11 @@ public class GridFieldSpec extends FieldSpec
 		columnZeroLabel = " ";
 	}
 	
+	protected boolean allowUserDefaultValue()
+	{
+		return false;
+	}
+
 	public int getColumnCount()
 	{
 		return columns.size();

@@ -45,6 +45,11 @@ public class DropDownFieldSpec extends FieldSpec
 		setChoices(choicesToUse);
 	}
 	
+	protected boolean allowUserDefaultValue()
+	{
+		return false;
+	}
+
 	public void setChoices(ChoiceItem[] choicesToUse)
 	{
 		choices = new ReusableChoices("", "");
