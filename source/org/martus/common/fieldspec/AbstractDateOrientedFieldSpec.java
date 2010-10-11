@@ -40,7 +40,7 @@ public class AbstractDateOrientedFieldSpec extends FieldSpec
 		super(typeToUse);
 	}
 
-	public String getDefaultValue()
+	protected String getSystemDefaultValue()
 	{
 		return MultiCalendar.UNKNOWN.toIsoDateString();
 	}

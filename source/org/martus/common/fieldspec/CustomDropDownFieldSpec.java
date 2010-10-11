@@ -74,7 +74,7 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 		return (ChoiceItem[])choices.toArray(new ChoiceItem[0]);
 	}
 
-	public String getDefaultValue()
+	protected String getSystemDefaultValue()
 	{
 		return "";
 	}

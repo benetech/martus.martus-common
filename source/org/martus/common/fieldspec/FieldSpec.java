@@ -194,6 +194,11 @@ public class FieldSpec
 	
 	public String getDefaultValue()
 	{
+		return getSystemDefaultValue();
+	}
+
+	protected String getSystemDefaultValue()
+	{
 		return(getType().getDefaultValue());
 	}
 	

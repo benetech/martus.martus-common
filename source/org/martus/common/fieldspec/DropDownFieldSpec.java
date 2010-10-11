@@ -139,10 +139,10 @@ public class DropDownFieldSpec extends FieldSpec
 		return -1;
 	}
 	
-	public String getDefaultValue()
+	protected String getSystemDefaultValue()
 	{
 		if(getCount() == 0)
-			return super.getDefaultValue();
+			return super.getSystemDefaultValue();
 		
 		return getChoice(0).getCode();
 	}
