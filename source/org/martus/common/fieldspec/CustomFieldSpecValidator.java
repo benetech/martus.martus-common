@@ -99,19 +99,16 @@ public class CustomFieldSpecValidator
 	private void checkForDuplicatesInReusableChoices(ReusableChoices choices)
 	{
 		HashSet codes = new HashSet();
-		HashSet labels = new HashSet();
 		for(int i = 0; i < choices.size(); ++i)
 		{
 			ChoiceItem choice = choices.get(i);
 			String code = choice.getCode();
-			String label = choice.getLabel();
-			if(codes.contains(code) || labels.contains(label))
+			if(codes.contains(code))
 			{
 				errors.add(CustomFieldError.errorDuplicateDropDownEntryInReusableChoices(choices.getCode(), choices.getLabel()));
 				return;
 			}
 			codes.add(code);
-			labels.add(label);
 		}
 	}
 
