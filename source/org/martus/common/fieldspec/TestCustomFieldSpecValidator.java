@@ -564,7 +564,127 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 				(CustomFieldError)errors.get(0));
 		
 	}
+	
+	public void testDefaultValueInPlainDropdown() throws Exception
+	{
+		CustomDropDownFieldSpec spec = (CustomDropDownFieldSpec) FieldSpec.createCustomField("tag", "Label", new FieldTypeDropdown());
+		ChoiceItem[] choices = new ChoiceItem[] {
+			new ChoiceItem("a", "A"),
+			new ChoiceItem("b", "B"),
+		};
+		spec.setChoices(choices);
+		spec.setDefaultValue(choices[0].getCode());
+		specsTopSection.add(spec);
+		
+		CustomFieldSpecValidator checkerValid = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		assertTrue("not valid?", checkerValid.isValid());
 
+		spec.setDefaultValue("whatever");
+		
+		CustomFieldSpecValidator checkerInvalid = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		assertFalse("valid?", checkerInvalid.isValid());
+		Vector errors = checkerInvalid.getAllErrors();
+		assertEquals("Should have 1 error", 1, errors.size());
+		verifyExpectedError("dd default value is not a valid code", 
+				CustomFieldError.CODE_INVALID_DEFAULT_VALUE,
+				spec.getTag(), 
+				spec.getLabel(), 
+				spec.getType(), 
+				(CustomFieldError)errors.get(0));
+	}
+	
+	public void testDefaultValueInReusableDropdown() throws Exception
+	{
+		ReusableChoices reusableChoices = new ReusableChoices("code", "label");
+		reusableChoices.add(new ChoiceItem("", "(Unspecified)"));
+		reusableChoices.add(new ChoiceItem("a", "A"));
+		specsTopSection.addReusableChoiceList(reusableChoices);
+		
+		CustomDropDownFieldSpec spec = (CustomDropDownFieldSpec) FieldSpec.createCustomField("valid", "Valid", new FieldTypeDropdown());
+		spec.addReusableChoicesCode(reusableChoices.getCode());
+		specsTopSection.add(spec);
+
+		spec.setDefaultValue(reusableChoices.get(0).getCode());
+		CustomFieldSpecValidator checkerValid = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		assertTrue("not valid?", checkerValid.isValid());
+		
+		spec.setDefaultValue("whatever");
+		CustomFieldSpecValidator checkerInvalid = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		assertFalse("valid?", checkerInvalid.isValid());
+		Vector errors = checkerInvalid.getAllErrors();
+		assertEquals("Should have 1 error", 1, errors.size());
+		verifyExpectedError("dd default value is not a valid code", 
+				CustomFieldError.CODE_INVALID_DEFAULT_VALUE,
+				spec.getTag(), 
+				spec.getLabel(), 
+				spec.getType(), 
+				(CustomFieldError)errors.get(0));
+	}
+	
+	public void testDefaultValueInNestedDropdown() throws Exception
+	{
+		ReusableChoices reusableChoicesOuter = new ReusableChoices("outer", "Outer");
+		reusableChoicesOuter.add(new ChoiceItem("", "(Unspecified)"));
+		reusableChoicesOuter.add(new ChoiceItem("a", "A"));
+		specsTopSection.addReusableChoiceList(reusableChoicesOuter);
+
+		ReusableChoices reusableChoicesInner = new ReusableChoices("inner", "Inner");
+		reusableChoicesInner.add(new ChoiceItem("", "(Unspecified)"));
+		reusableChoicesInner.add(new ChoiceItem("a.1", "A1"));
+		specsTopSection.addReusableChoiceList(reusableChoicesInner);
+
+		CustomDropDownFieldSpec spec = (CustomDropDownFieldSpec) FieldSpec.createCustomField("valid", "Valid", new FieldTypeDropdown());
+		spec.addReusableChoicesCode(reusableChoicesOuter.getCode());
+		spec.addReusableChoicesCode(reusableChoicesInner.getCode());
+		specsTopSection.add(spec);
+		
+		spec.setDefaultValue(reusableChoicesInner.get(0).getCode());
+		CustomFieldSpecValidator checkerFullCode = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		assertTrue("not valid?", checkerFullCode.isValid());
+		
+		spec.setDefaultValue(reusableChoicesOuter.get(0).getCode());
+		CustomFieldSpecValidator checkerPartialCode = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		assertTrue("not valid?", checkerPartialCode.isValid());
+		
+		spec.setDefaultValue("whatever");
+		CustomFieldSpecValidator checkerInvalid = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		assertFalse("valid?", checkerInvalid.isValid());
+		Vector errors = checkerInvalid.getAllErrors();
+		assertEquals("Should have 1 error", 1, errors.size());
+		verifyExpectedError("default value is not a partial or full nested code", 
+				CustomFieldError.CODE_INVALID_DEFAULT_VALUE,
+				spec.getTag(), 
+				spec.getLabel(), 
+				spec.getType(), 
+				(CustomFieldError)errors.get(0));
+		
+	}
+
+	public void testDataDrivenDropdownDefaultValue() throws Exception
+	{
+		GridFieldSpec gridSpec = new GridFieldSpec();
+		gridSpec.setTag("gridtag");
+		gridSpec.setLabel("grid label");
+		gridSpec.addColumn(FieldSpec.createCustomField("column", "column", new FieldTypeNormal()));
+		specsTopSection.add(gridSpec);
+		
+		CustomDropDownFieldSpec spec = (CustomDropDownFieldSpec) FieldSpec.createCustomField("tag", "Label", new FieldTypeDropdown());
+		spec.setDataSource(gridSpec.getTag(), gridSpec.getColumnLabel(0));
+		spec.setDefaultValue("a");
+		specsTopSection.add(spec);
+
+		CustomFieldSpecValidator checkerInvalid = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		assertFalse("valid?", checkerInvalid.isValid());
+		Vector errors = checkerInvalid.getAllErrors();
+		assertEquals("Should have 1 error", 1, errors.size());
+		verifyExpectedError("dddd default value is never valid", 
+				CustomFieldError.CODE_INVALID_DEFAULT_VALUE,
+				spec.getTag(), 
+				spec.getLabel(), 
+				spec.getType(), 
+				(CustomFieldError)errors.get(0));
+	}
+	
 	public void testMissingCustomLabel() throws Exception
 	{
 		specsTopSection = addFieldSpec(specsTopSection, LegacyCustomFields.createFromLegacy("a,label"));

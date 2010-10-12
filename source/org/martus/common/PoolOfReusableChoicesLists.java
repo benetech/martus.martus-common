@@ -45,6 +45,41 @@ public class PoolOfReusableChoicesLists
 		namedReusableChoices.put(choices.getCode(), choices);
 	}
 
+	public ChoiceItem findChoiceFromFullOrPartialCode(String[] reusableChoiceListCodes, String fullOrPartialCode)
+	{
+		int levelCount = reusableChoiceListCodes.length;
+		for(int level = 0; level < levelCount; ++level)
+		{
+			ReusableChoices choices = getChoices(reusableChoiceListCodes[level]);
+			
+			int LAST = levelCount - 1;
+			ChoiceItem found = null;
+			if(level == LAST)
+			{
+				found = findItemByCode(choices, fullOrPartialCode);
+			}
+			else
+			{
+				found = findItemByPartialMatch(choices, fullOrPartialCode);
+			}
+			
+			if(found != null)
+				return found;
+		}
+		
+		return null;
+	}
+
+	private ChoiceItem findItemByCode(ReusableChoices choices, String fullCode)
+	{
+		return choices.findByCode(fullCode);
+	}
+
+	private ChoiceItem findItemByPartialMatch(ReusableChoices choices, String fullOrPartialCode)
+	{
+		return choices.findByFullOrPartialCode(fullOrPartialCode);
+	}
+
 	public void mergeAll(PoolOfReusableChoicesLists reusableChoicesLists)
 	{
 		Set otherNames = reusableChoicesLists.getAvailableNames();

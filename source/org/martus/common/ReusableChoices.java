@@ -104,6 +104,19 @@ public class ReusableChoices
 		return null;
 	}
 	
+	public ChoiceItem findByFullOrPartialCode(String fullOrPartialCode)
+	{
+		for(int i = 0; i < choices.size(); ++i)
+		{
+			ChoiceItem choice = get(i);
+			String thisCode = choice.getCode();
+			if(thisCode.length() > 0 && thisCode.startsWith(fullOrPartialCode))
+				return choice;
+		}
+		
+		return null;
+	}
+
 	public int hashCode()
 	{
 		return choices.hashCode();

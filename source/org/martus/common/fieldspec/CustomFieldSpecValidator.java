@@ -135,6 +135,7 @@ public class CustomFieldSpecValidator
 		checkForBlankTags(specsToCheck.asArray());
 		checkForMissingCustomLabels(specsToCheck.asArray());
 		checkForUnknownTypes(specsToCheck.asArray());
+		checkForInvalidDefaultValuesInDropdowns(specsToCheck);
 		
 		checkReusableChoicesHaveCodesAndLabels(specsToCheck.getAllReusableChoiceLists());
 	}
@@ -329,6 +330,47 @@ public class CustomFieldSpecValidator
 		checkForDuplicateFields(allSpecs);
 	}
 
+	private void checkForInvalidDefaultValuesInDropdowns(FieldSpecCollection specsToCheck)
+	{
+		for (int i = 0; i < specsToCheck.size(); i++)
+		{
+			FieldSpec thisSpec = specsToCheck.get(i);
+			if(thisSpec.getType().isDropdown())
+			{
+				DropDownFieldSpec dropdownSpec = (DropDownFieldSpec)thisSpec;
+				checkForInvalidDefaultValueInDropdown(dropdownSpec, specsToCheck.getAllReusableChoiceLists());
+			}
+		}
+	}
+
+	private void checkForInvalidDefaultValueInDropdown(DropDownFieldSpec dropdownSpec, PoolOfReusableChoicesLists reusableChoicesLists)
+	{
+		String defaultValue = dropdownSpec.getDefaultValue();
+		if(defaultValue == null || defaultValue.length() == 0)
+			return;
+		
+		Object candidateError = CustomFieldError.errorInvalidDefaultValue(dropdownSpec.getTag(), dropdownSpec.getLabel(), getType(dropdownSpec));
+
+		if(dropdownSpec.hasDataSource())
+		{
+			errors.add(candidateError);
+			return;
+		}
+		
+		if(dropdownSpec.hasReusableCodes())
+		{
+			ChoiceItem match = reusableChoicesLists.findChoiceFromFullOrPartialCode(dropdownSpec.getReusableChoicesCodes(), defaultValue);
+			if(match == null)
+				errors.add(candidateError);
+			return;
+		}
+		
+		if(dropdownSpec.findCode(defaultValue) >= 0)
+			return;
+		
+		errors.add(candidateError);
+	}
+
 	private void checkForDropdownsWithDuplicatedOrZeroEntries(FieldSpecCollection specsToCheck)
 	{
 		for (int i = 0; i < specsToCheck.size(); i++)
@@ -391,6 +433,7 @@ public class CustomFieldSpecValidator
 						checkDataDrivenDropDown(dropdownSpec, otherGrids);
 						checkForMissingReusableChoices(dropdownSpec, gridTag, gridLabel, specsToCheck.getReusableChoiceNames());
 						checkForDataSourceReusableOrNested(dropdownSpec, specsToCheck);
+						checkForInvalidDefaultValueInDropdown(dropdownSpec, specsToCheck.getAllReusableChoiceLists());
 					}
 				}
 			}

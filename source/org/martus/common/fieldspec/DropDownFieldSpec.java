@@ -77,6 +77,16 @@ public class DropDownFieldSpec extends FieldSpec
 		return getChoice(index).toString();
 	}
 	
+	public boolean hasDataSource()
+	{
+		return (getDataSourceGridTag() != null);
+	}
+
+	public boolean hasReusableCodes()
+	{
+		return (getReusableChoicesCodes().length > 0);
+	}
+
 	protected String getStringRepresentationToComputeId()
 	{
 		String xml = super.getStringRepresentationToComputeId();

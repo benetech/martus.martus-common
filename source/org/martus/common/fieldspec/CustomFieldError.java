@@ -160,6 +160,11 @@ public class CustomFieldError
 		return new CustomFieldError(CODE_NESTED_DATA_SOURCE, tag, label, new FieldTypeDropdown().getTypeName());
 	}
 
+	public static Object errorInvalidDefaultValue(String tag, String label, String type)
+	{
+		return new CustomFieldError(CODE_INVALID_DEFAULT_VALUE, tag, label, type);
+	}
+
 	private CustomFieldError(String code, String tag, String label, String type)
 	{
 		this.code = code;
@@ -211,6 +216,7 @@ public class CustomFieldError
 	static public final String CODE_NULL_REUSABLE_CHOICES = "118";
 	static public final String CODE_INVALID_REUSABLE_CHOICE = "119";
 	static public final String CODE_NESTED_DATA_SOURCE = "120";
+	public static final String CODE_INVALID_DEFAULT_VALUE = "121";
 	
 	// Null specs is no longer a possibility
 	//static public final String CODE_NULL_SPECS = "200";
