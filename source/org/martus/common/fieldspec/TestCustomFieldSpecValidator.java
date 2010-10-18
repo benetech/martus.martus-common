@@ -253,7 +253,7 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		
 	}
 
-	public void testDuplicateDropDownLabelsInsideReusableList() throws Exception
+	public void testDuplicateDropDownLabelsInNestedReusableList() throws Exception
 	{
 		String duplicateLabel = "Springfield";
 		ReusableChoices choices = new ReusableChoices("choicescode", "choices label");
@@ -261,6 +261,22 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		choices.add(new ChoiceItem("US.TX.S2", duplicateLabel));
 		choices.add(new ChoiceItem("US.MO.SPR", duplicateLabel));
 		choices.add(new ChoiceItem("MX.TX.SPR", duplicateLabel));
+		specsTopSection.addReusableChoiceList(choices);
+		
+		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		assertFalse("invalid?", checker.isValid());
+		Vector errors = checker.getAllErrors();
+		assertEquals("Should have 1 error", 1, errors.size());
+		verifyExpectedError("Duplicate Labels", CustomFieldError.CODE_DUPLICATE_DROPDOWN_ENTRY, choices.get(1).getCode(), choices.get(1).getLabel(), null, (CustomFieldError)errors.get(0));
+	}
+
+	public void testDuplicateDropDownLabelsInReusableList() throws Exception
+	{
+		String duplicateLabel = "United States";
+		ReusableChoices choices = new ReusableChoices("choicescode", "choices label");
+		choices.add(new ChoiceItem("US", duplicateLabel));
+		choices.add(new ChoiceItem("CA", duplicateLabel));
+		choices.add(new ChoiceItem("MX", "Mexico"));
 		specsTopSection.addReusableChoiceList(choices);
 		
 		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);

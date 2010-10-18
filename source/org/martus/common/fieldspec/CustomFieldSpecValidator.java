@@ -130,7 +130,10 @@ public class CustomFieldSpecValidator
 					int lastDotAt1 = code1.lastIndexOf('.');
 					int lastDotAt2 = code2.lastIndexOf('.');
 					if(lastDotAt1 < 0 || lastDotAt2 < 0)
+					{
+						errors.add(CustomFieldError.errorDuplicateDropDownEntryInReusableChoices(code2, label));
 						continue;
+					}
 					String prefix1 = code1.substring(0, lastDotAt1);
 					String prefix2 = code2.substring(0, lastDotAt2);
 					if(prefix1.equals(prefix2))
