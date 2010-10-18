@@ -137,9 +137,29 @@ public class CustomFieldSpecValidator
 		checkForUnknownTypes(specsToCheck.asArray());
 		checkForInvalidDefaultValuesInDropdowns(specsToCheck);
 		
+		checkReusableChoicesListLabels(specsToCheck.getAllReusableChoiceLists());
 		checkReusableChoicesHaveCodesAndLabels(specsToCheck.getAllReusableChoiceLists());
 	}
 		
+	private void checkReusableChoicesListLabels(PoolOfReusableChoicesLists allReusableChoiceLists)
+	{
+		Set labels = new HashSet();
+		Iterator iter = allReusableChoiceLists.getAvailableNames().iterator();
+		while(iter.hasNext())
+		{
+			String name = (String)iter.next();
+			ReusableChoices choices = allReusableChoiceLists.getChoices(name);
+			String thisLabel = choices.getLabel();
+
+			if(thisLabel.length() == 0)
+				errors.add(CustomFieldError.errorMissingLabel(choices.getCode(), CustomFieldError.TYPE_STRING_FOR_REUSABLE_LISTS));
+			
+			if(labels.contains(thisLabel))
+				errors.add(CustomFieldError.errorDuplicateReusableChoicesListLabel(thisLabel));
+			labels.add(thisLabel);
+		}
+	}
+
 	private void checkReusableChoicesHaveCodesAndLabels(PoolOfReusableChoicesLists allReusableChoiceLists)
 	{
 		Iterator iter = allReusableChoiceLists.getAvailableNames().iterator();

@@ -467,6 +467,32 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		verifyExpectedError("No Dropdown Entries", CustomFieldError.CODE_NO_DROPDOWN_ENTRIES, tag, label, null, (CustomFieldError)errors.get(0));
 		verifyExpectedError("No Dropdown Entries Bottom Section", CustomFieldError.CODE_NO_DROPDOWN_ENTRIES, tag2, label2, null, (CustomFieldError)errors.get(1));
 	}
+	
+	public void testBlankReusableChoicesListLabel() throws Exception
+	{
+		ReusableChoices blankLabel = new ReusableChoices("code", "");
+		specsTopSection.addReusableChoiceList(blankLabel);
+
+		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		assertFalse("valid?", checker.isValid());
+		Vector errors = checker.getAllErrors();
+		assertEquals("Should have 1 error", 1, errors.size());
+		verifyExpectedError("Blank Reusable Choice label", CustomFieldError.CODE_MISSING_LABEL, blankLabel.getCode(), "", null, (CustomFieldError)errors.get(0));
+	}
+	
+	public void testDuplicateReusableChoicesListLabels() throws Exception
+	{
+		ReusableChoices list1 = new ReusableChoices("code1", "label");
+		ReusableChoices list2 = new ReusableChoices("code2", list1.getLabel());
+		specsTopSection.addReusableChoiceList(list1);
+		specsTopSection.addReusableChoiceList(list2);
+
+		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		assertFalse("valid?", checker.isValid());
+		Vector errors = checker.getAllErrors();
+		assertEquals("Should have 1 error", 1, errors.size());
+		verifyExpectedError("Duplicate Reusable Choice labels", CustomFieldError.CODE_DUPLICATE_REUSABLE_CHOICES_LIST_LABELS, null, list1.getLabel(), null, (CustomFieldError)errors.get(0));
+	}
 
 	public void testNoDropDownEntriesInsideOfAGrid() throws Exception
 	{

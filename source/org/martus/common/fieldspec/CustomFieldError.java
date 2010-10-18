@@ -77,7 +77,12 @@ public class CustomFieldError
 
 	static public CustomFieldError errorDuplicateDropDownEntryInReusableChoices(String tag, String label)
 	{
-		return new CustomFieldError(CODE_DUPLICATE_DROPDOWN_ENTRY, tag, label, "Reusable");
+		return new CustomFieldError(CODE_DUPLICATE_DROPDOWN_ENTRY, tag, label, TYPE_STRING_FOR_REUSABLE_LISTS);
+	}
+
+	static public CustomFieldError errorDuplicateReusableChoicesListLabel(String label)
+	{
+		return new CustomFieldError(CODE_DUPLICATE_REUSABLE_CHOICES_LIST_LABELS, "", label, TYPE_STRING_FOR_REUSABLE_LISTS);
 	}
 
 	static public CustomFieldError noDropDownEntries(String tag, String label)
@@ -217,6 +222,7 @@ public class CustomFieldError
 	static public final String CODE_INVALID_REUSABLE_CHOICE = "119";
 	static public final String CODE_NESTED_DATA_SOURCE = "120";
 	public static final String CODE_INVALID_DEFAULT_VALUE = "121";
+	public static final String CODE_DUPLICATE_REUSABLE_CHOICES_LIST_LABELS = "122";
 	
 	// Null specs is no longer a possibility
 	//static public final String CODE_NULL_SPECS = "200";
@@ -226,6 +232,8 @@ public class CustomFieldError
 	static public final String CODE_MISSING_CUSTOM_FIELD_IN_SPEC = "204";
 	
 	static private final String UNUSED_FIELD = "";
+
+	public static final String TYPE_STRING_FOR_REUSABLE_LISTS = "Reusable";
 
 	private String code;
 	private String tag;
