@@ -255,17 +255,19 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 
 	public void testDuplicateDropDownLabelsInsideReusableList() throws Exception
 	{
-		// NOTE: We allow duplicate labels because in an inner nested dropdown, 
-		// they might not appear at the same time (e.g. Springfield IL and Springfield MO)
-		String duplicateLabel = "Label";
+		String duplicateLabel = "Springfield";
 		ReusableChoices choices = new ReusableChoices("choicescode", "choices label");
-		choices.add(new ChoiceItem("code1", duplicateLabel));
-		choices.add(new ChoiceItem("code2", duplicateLabel));
-		choices.add(new ChoiceItem("code3", "Other label"));
+		choices.add(new ChoiceItem("US.TX.SPR", duplicateLabel));
+		choices.add(new ChoiceItem("US.TX.S2", duplicateLabel));
+		choices.add(new ChoiceItem("US.MO.SPR", duplicateLabel));
+		choices.add(new ChoiceItem("MX.TX.SPR", duplicateLabel));
 		specsTopSection.addReusableChoiceList(choices);
 		
 		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
-		assertTrue("invalid?", checker.isValid());
+		assertFalse("invalid?", checker.isValid());
+		Vector errors = checker.getAllErrors();
+		assertEquals("Should have 1 error", 1, errors.size());
+		verifyExpectedError("Duplicate Labels", CustomFieldError.CODE_DUPLICATE_DROPDOWN_ENTRY, choices.get(1).getCode(), choices.get(1).getLabel(), null, (CustomFieldError)errors.get(0));
 	}
 
 	public void testDuplicateDropDownCodesInsideReusableList() throws Exception
@@ -281,7 +283,7 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		assertFalse("valid?", checker.isValid());
 		Vector errors = checker.getAllErrors();
 		assertEquals("Should have 1 error", 1, errors.size());
-		verifyExpectedError("Duplicate Labels", CustomFieldError.CODE_DUPLICATE_DROPDOWN_ENTRY, choices.getCode(), choices.getLabel(), null, (CustomFieldError)errors.get(0));
+		verifyExpectedError("Duplicate codes", CustomFieldError.CODE_DUPLICATE_DROPDOWN_ENTRY, choices.get(1).getCode(), choices.get(1).getLabel(), null, (CustomFieldError)errors.get(0));
 	}
 
 	public void testDuplicateDropDownEntry() throws Exception

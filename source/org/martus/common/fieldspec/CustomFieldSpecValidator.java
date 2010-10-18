@@ -99,16 +99,44 @@ public class CustomFieldSpecValidator
 	private void checkForDuplicatesInReusableChoices(ReusableChoices choices)
 	{
 		HashSet codes = new HashSet();
+		HashMap labelToCodesMap = new HashMap();
 		for(int i = 0; i < choices.size(); ++i)
 		{
 			ChoiceItem choice = choices.get(i);
 			String code = choice.getCode();
+			String label = choice.getLabel();
+
 			if(codes.contains(code))
-			{
-				errors.add(CustomFieldError.errorDuplicateDropDownEntryInReusableChoices(choices.getCode(), choices.getLabel()));
-				return;
-			}
+				errors.add(CustomFieldError.errorDuplicateDropDownEntryInReusableChoices(code, label));
 			codes.add(code);
+			
+			if(!labelToCodesMap.containsKey(label))
+				labelToCodesMap.put(label, new Vector());
+			Vector codesForLabel = (Vector) labelToCodesMap.get(label);
+			codesForLabel.add(code);
+		}
+		
+		Iterator iter = labelToCodesMap.keySet().iterator();
+		while(iter.hasNext())
+		{
+			String label = (String)iter.next();
+			Vector codesForLabel = (Vector) labelToCodesMap.get(label);
+			for(int i = 0; i < codesForLabel.size(); ++i)
+			{
+				for(int j = i+1; j < codesForLabel.size(); ++j)
+				{
+					String code1 = (String) codesForLabel.get(i);
+					String code2 = (String) codesForLabel.get(j);
+					int lastDotAt1 = code1.lastIndexOf('.');
+					int lastDotAt2 = code2.lastIndexOf('.');
+					if(lastDotAt1 < 0 || lastDotAt2 < 0)
+						continue;
+					String prefix1 = code1.substring(0, lastDotAt1);
+					String prefix2 = code2.substring(0, lastDotAt2);
+					if(prefix1.equals(prefix2))
+						errors.add(CustomFieldError.errorDuplicateDropDownEntryInReusableChoices(code2, label));
+				}
+			}
 		}
 	}
 
