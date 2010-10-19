@@ -459,6 +459,115 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		assertEquals("Wrong error code?", CustomFieldError.CODE_MISSING_REUSABLE_CHOICES, error.getCode());
 	}
 	
+	public void testNestedDropdownWithInvalidChoiceInvalidParent() throws Exception
+	{
+		ReusableChoices outer = new ReusableChoices("outer", "Outer");
+		outer.add(new ChoiceItem("1", "first"));
+		specsTopSection.addReusableChoiceList(outer);
+		
+		ReusableChoices inner = new ReusableChoices("inner", "Inner");
+		inner.add(new ChoiceItem("2.1", "bad parent"));
+		specsTopSection.addReusableChoiceList(inner);
+		
+		CustomDropDownFieldSpec dropdownSpec = new CustomDropDownFieldSpec();
+		dropdownSpec.setTag("tag");
+		dropdownSpec.setLabel("Label");
+		dropdownSpec.addReusableChoicesCode(outer.getCode());
+		dropdownSpec.addReusableChoicesCode(inner.getCode());
+		specsTopSection.add(dropdownSpec);
+
+		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		assertFalse("Should be invalid due to invalid parent code", checker.isValid());
+		Vector errors = checker.getAllErrors();
+		assertEquals(1, errors.size());
+		CustomFieldError error = (CustomFieldError)errors.get(0);
+		String errorTag = dropdownSpec.getTag() + ":" + inner.get(0).getCode();
+		String errorLabel = dropdownSpec.getLabel() + ":" + inner.get(0).getLabel();
+		verifyExpectedError("Duplicate Dropdown Entry", CustomFieldError.CODE_IMPROPERLY_NESTED_CHOICE_CODE, errorTag, errorLabel, null, error);
+	}
+	
+	public void testNestedDropdownWithInvalidChoiceExtraParent() throws Exception
+	{
+		ReusableChoices outer = new ReusableChoices("outer", "Outer");
+		outer.add(new ChoiceItem("1", "first"));
+		specsTopSection.addReusableChoiceList(outer);
+		
+		ReusableChoices inner = new ReusableChoices("inner", "Inner");
+		inner.add(new ChoiceItem("1.x.1", "extra parent"));
+		specsTopSection.addReusableChoiceList(inner);
+
+		CustomDropDownFieldSpec dropdownSpec = new CustomDropDownFieldSpec();
+		dropdownSpec.setTag("tag");
+		dropdownSpec.setLabel("Label");
+		dropdownSpec.addReusableChoicesCode(outer.getCode());
+		dropdownSpec.addReusableChoicesCode(inner.getCode());
+		specsTopSection.add(dropdownSpec);
+
+		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		assertFalse("Should be invalid due to extra parent code", checker.isValid());
+		Vector errors = checker.getAllErrors();
+		assertEquals(1, errors.size());
+		CustomFieldError error = (CustomFieldError)errors.get(0);
+		String errorTag = dropdownSpec.getTag() + ":" + inner.get(0).getCode();
+		String errorLabel = dropdownSpec.getLabel() + ":" + inner.get(0).getLabel();
+		verifyExpectedError("Duplicate Dropdown Entry", CustomFieldError.CODE_IMPROPERLY_NESTED_CHOICE_CODE, errorTag, errorLabel, null, error);
+	}
+	
+	public void testNestedDropdownWithInvalidChoiceWrongLevel() throws Exception
+	{
+		ReusableChoices outer = new ReusableChoices("outer", "Outer");
+		outer.add(new ChoiceItem("1", "first"));
+		specsTopSection.addReusableChoiceList(outer);
+		
+		ReusableChoices inner = new ReusableChoices("inner", "Inner");
+		inner.add(new ChoiceItem("2", "same as parent"));
+		specsTopSection.addReusableChoiceList(inner);
+
+		CustomDropDownFieldSpec dropdownSpec = new CustomDropDownFieldSpec();
+		dropdownSpec.setTag("tag");
+		dropdownSpec.setLabel("Label");
+		dropdownSpec.addReusableChoicesCode(outer.getCode());
+		dropdownSpec.addReusableChoicesCode(inner.getCode());
+		specsTopSection.add(dropdownSpec);
+
+		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		assertFalse("Should be invalid due to same as parent code", checker.isValid());
+		Vector errors = checker.getAllErrors();
+		assertEquals(1, errors.size());
+		CustomFieldError error = (CustomFieldError)errors.get(0);
+		String errorTag = dropdownSpec.getTag() + ":" + inner.get(0).getCode();
+		String errorLabel = dropdownSpec.getLabel() + ":" + inner.get(0).getLabel();
+		verifyExpectedError("Duplicate Dropdown Entry", CustomFieldError.CODE_IMPROPERLY_NESTED_CHOICE_CODE, errorTag, errorLabel, null, error);
+	}
+	
+	public void testNestedDropdownWithInvalidChoiceSameAsParent() throws Exception
+	{
+		ReusableChoices outer = new ReusableChoices("outer", "Outer");
+		outer.add(new ChoiceItem("1.1", "first"));
+		specsTopSection.addReusableChoiceList(outer);
+		
+		ReusableChoices inner = new ReusableChoices("inner", "Inner");
+		inner.add(new ChoiceItem("1.1", "same as parent"));
+		specsTopSection.addReusableChoiceList(inner);
+
+		CustomDropDownFieldSpec dropdownSpec = new CustomDropDownFieldSpec();
+		dropdownSpec.setTag("tag");
+		dropdownSpec.setLabel("Label");
+		dropdownSpec.addReusableChoicesCode(outer.getCode());
+		dropdownSpec.addReusableChoicesCode(inner.getCode());
+		specsTopSection.add(dropdownSpec);
+
+		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		assertFalse("Should be invalid due to same as parent code", checker.isValid());
+		Vector errors = checker.getAllErrors();
+		assertEquals(1, errors.size());
+		CustomFieldError error = (CustomFieldError)errors.get(0);
+		String errorTag = dropdownSpec.getTag() + ":" + inner.get(0).getCode();
+		String errorLabel = dropdownSpec.getLabel() + ":" + inner.get(0).getLabel();
+		verifyExpectedError("Duplicate Dropdown Entry", CustomFieldError.CODE_IMPROPERLY_NESTED_CHOICE_CODE, errorTag, errorLabel, null, error);
+	}
+	
+	
 	
 	public void testNoDropDownEntries() throws Exception
 	{
@@ -673,7 +782,7 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		specsTopSection.addReusableChoiceList(reusableChoicesOuter);
 
 		ReusableChoices reusableChoicesInner = new ReusableChoices("inner", "Inner");
-		reusableChoicesInner.add(new ChoiceItem("", "(Unspecified)"));
+		reusableChoicesInner.add(new ChoiceItem("a.", "(Unspecified)"));
 		reusableChoicesInner.add(new ChoiceItem("a.1", "A1"));
 		specsTopSection.addReusableChoiceList(reusableChoicesInner);
 

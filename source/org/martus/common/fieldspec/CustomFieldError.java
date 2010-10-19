@@ -170,6 +170,11 @@ public class CustomFieldError
 		return new CustomFieldError(CODE_INVALID_DEFAULT_VALUE, tag, label, type);
 	}
 
+	public static Object errorImproperlyNestedDropdownCode(String fieldTag, String choiceCode, String fieldLabel, String choiceLabel)
+	{
+		return new CustomFieldError(CODE_IMPROPERLY_NESTED_CHOICE_CODE, fieldTag + ":" + choiceCode, fieldLabel + ":" + choiceLabel, new FieldTypeDropdown().getTypeName());
+	}
+
 	private CustomFieldError(String code, String tag, String label, String type)
 	{
 		this.code = code;
@@ -223,6 +228,7 @@ public class CustomFieldError
 	static public final String CODE_NESTED_DATA_SOURCE = "120";
 	public static final String CODE_INVALID_DEFAULT_VALUE = "121";
 	public static final String CODE_DUPLICATE_REUSABLE_CHOICES_LIST_LABELS = "122";
+	public static final String CODE_IMPROPERLY_NESTED_CHOICE_CODE = "123";
 	
 	// Null specs is no longer a possibility
 	//static public final String CODE_NULL_SPECS = "200";

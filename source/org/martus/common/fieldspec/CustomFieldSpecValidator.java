@@ -167,6 +167,7 @@ public class CustomFieldSpecValidator
 		checkForMissingCustomLabels(specsToCheck.asArray());
 		checkForUnknownTypes(specsToCheck.asArray());
 		checkForInvalidDefaultValuesInDropdowns(specsToCheck);
+		checkForInvalidNestedDropdownCodes(specsToCheck);
 		
 		checkReusableChoicesListLabels(specsToCheck.getAllReusableChoiceLists());
 		checkReusableChoicesHaveCodesAndLabels(specsToCheck.getAllReusableChoiceLists());
@@ -381,6 +382,65 @@ public class CustomFieldSpecValidator
 		checkForDuplicateFields(allSpecs);
 	}
 
+	private void checkForInvalidNestedDropdownCodes(FieldSpecCollection specsToCheck)
+	{
+		for (int i = 0; i < specsToCheck.size(); i++)
+		{
+			FieldSpec thisSpec = specsToCheck.get(i);
+			if(thisSpec.getType().isDropdown())
+			{
+				DropDownFieldSpec dropdownSpec = (DropDownFieldSpec)thisSpec;
+				checkForInvalidNestedDropdownCodes(dropdownSpec, "", "", specsToCheck);
+			}
+		}
+	}
+
+	private void checkForInvalidNestedDropdownCodes(DropDownFieldSpec dropdownSpec, String gridTag, String gridLabel, FieldSpecCollection specsToCheck)
+	{
+		if(!dropdownSpec.hasReusableCodes())
+			return;
+		
+		String fieldTag = dropdownSpec.getTag();
+		String fieldLabel = dropdownSpec.getLabel();
+		
+		if(gridTag.length() > 0)
+			fieldTag = gridTag + ":" + fieldLabel;
+		
+		if(gridLabel.length() > 0)
+			fieldLabel = gridLabel;
+
+		String[] reusableChoicesListCodes = dropdownSpec.getReusableChoicesCodes();
+		for(int level = 1; level < reusableChoicesListCodes.length; ++level)
+		{
+			ReusableChoices choicesAtThisLevel = specsToCheck.getReusableChoices(reusableChoicesListCodes[level]);
+			if(choicesAtThisLevel == null)
+				continue;
+			
+			for(int choiceIndex = 0; choiceIndex < choicesAtThisLevel.size(); ++choiceIndex)
+			{
+				ChoiceItem thisChoice = choicesAtThisLevel.get(choiceIndex);
+				String thisCode = thisChoice.getCode();
+				int lastDotAt = thisCode.lastIndexOf('.');
+				if(lastDotAt < 0)
+				{
+					errors.add(CustomFieldError.errorImproperlyNestedDropdownCode(fieldTag, thisCode, fieldLabel, thisChoice.getLabel()));
+				}
+				else
+				{
+					int parentLevel = level - 1;
+					ReusableChoices parentChoices = specsToCheck.getReusableChoices(reusableChoicesListCodes[parentLevel]);
+					if(parentChoices == null)
+						continue;
+					String parentPart = thisCode.substring(0, lastDotAt);
+					if(parentChoices.findByCode(parentPart) == null)
+					{
+						errors.add(CustomFieldError.errorImproperlyNestedDropdownCode(fieldTag, thisCode, fieldLabel, thisChoice.getLabel()));
+					}
+				}
+			}
+		}
+	}
+
 	private void checkForInvalidDefaultValuesInDropdowns(FieldSpecCollection specsToCheck)
 	{
 		for (int i = 0; i < specsToCheck.size(); i++)
@@ -483,6 +543,7 @@ public class CustomFieldSpecValidator
 						checkForNoDropdownChoices(dropdownSpec, gridTag, gridLabel);
 						checkDataDrivenDropDown(dropdownSpec, otherGrids);
 						checkForMissingReusableChoices(dropdownSpec, gridTag, gridLabel, specsToCheck.getReusableChoiceNames());
+						checkForInvalidNestedDropdownCodes(dropdownSpec, gridTag, gridLabel, specsToCheck);
 						checkForDataSourceReusableOrNested(dropdownSpec, specsToCheck);
 						checkForInvalidDefaultValueInDropdown(dropdownSpec, specsToCheck.getAllReusableChoiceLists());
 					}
