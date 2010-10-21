@@ -340,6 +340,16 @@ public class FieldSpec
 		return getId().hashCode();
 	}
 
+	public boolean hasReusableCodes()
+	{
+		return (getReusableChoicesCodes().length > 0);
+	}
+
+	public String[] getReusableChoicesCodes()
+	{
+		return new String[0];
+	}
+
 	public static String getTypeString(FieldType type)
 	{
 		return type.getTypeName();

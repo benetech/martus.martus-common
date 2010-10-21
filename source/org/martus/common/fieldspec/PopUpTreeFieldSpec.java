@@ -54,19 +54,9 @@ public class PopUpTreeFieldSpec extends FieldSpec
 		return item;
 	}
 	
-	public SearchableFieldChoiceItem findSearchTag(String tagToFind)
+	public SearchableFieldChoiceItem findSearchTag(MiniFieldSpec miniSpecToFind)
 	{
-		TreeNode root = (TreeNode)model.getRoot();
-		for(int i = 0; i < root.getChildCount(); ++i)
-		{
-			DefaultMutableTreeNode node = (DefaultMutableTreeNode)root.getChildAt(i);
-			if(node.getChildCount() > 0)
-				continue;
-			SearchableFieldChoiceItem item = (SearchableFieldChoiceItem)node.getUserObject();
-			if(item.getSearchTag().equals(tagToFind))
-				return item;
-		}
-		return null;
+		return findCode(miniSpecToFind.toJson().toString());
 	}
 	
 	public SearchableFieldChoiceItem findCode(String codeToFind)

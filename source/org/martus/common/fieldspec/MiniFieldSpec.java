@@ -25,6 +25,8 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.fieldspec;
 
+import java.util.Vector;
+
 import org.json.JSONObject;
 
 
@@ -43,6 +45,7 @@ public class MiniFieldSpec implements Comparable
 		tag = basedOn.getTag();
 		label = basedOn.getLabel();
 		type = basedOn.getType();
+		dropdownReusableChoicesCodes = basedOn.getReusableChoicesCodes();
 	}
 	
 	public MiniFieldSpec(JSONObject json)
@@ -52,8 +55,26 @@ public class MiniFieldSpec implements Comparable
 		type = FieldType.createFromTypeName(json.getString(TAG_TYPE));
 		topLevelLabel = json.getString(TAG_TOP_LEVEL_LABEL);
 		topLevelType = FieldType.createFromTypeName(json.getString(TAG_TOP_LEVEL_TYPE));
+		dropdownReusableChoicesCodes = split(json.optString(TAG_REUSABLE_CHOICES_CODES));
 	}
 	
+	private String[] split(String codesAsString)
+	{
+		Vector codes = new Vector();
+		int nextCodeStart = 0;
+		while(nextCodeStart < codesAsString.length())
+		{
+			int nextSpace = codesAsString.indexOf(' ', nextCodeStart);
+			if(nextSpace < 0)
+				nextSpace = codesAsString.length();
+			String code = codesAsString.substring(nextCodeStart, nextSpace);
+			codes.add(code);
+			nextCodeStart = nextSpace + 1;
+		}
+		
+		return (String[]) codes.toArray(new String[0]);
+	}
+
 	public String getTag()
 	{
 		return tag;
@@ -77,6 +98,24 @@ public class MiniFieldSpec implements Comparable
 	public FieldType getTopLevelType()
 	{
 		return topLevelType;
+	}
+	
+	public String[] getReusableChoicesCodes()
+	{
+		return dropdownReusableChoicesCodes;
+	}
+	
+	public String getReusableChoicesCodesAsString()
+	{
+		String result = "";
+		for(int level = 0; level < getReusableChoicesCodes().length; ++level)
+		{
+			if(level > 0)
+				result += " ";
+			result += getReusableChoicesCodes()[level];
+		}
+		
+		return result;
 	}
 	
 	private FieldSpec standardize(FieldSpec spec)
@@ -140,12 +179,20 @@ public class MiniFieldSpec implements Comparable
 		if(topLevelTypeResult != 0)
 			return topLevelTypeResult;
 		
+		int reusableCodesResult = getReusableChoicesCodesAsString().compareTo(other.getReusableChoicesCodesAsString());
+		if(reusableCodesResult != 0)
+			return reusableCodesResult;
+		
 		return 0;
 	}
 	
 	public String toString()
 	{
-		return label + "(" + FieldSpec.getTypeString(type) + ", " + tag + ")";
+		String result = label + "(" + FieldSpec.getTypeString(type) + ", " + tag;
+		if(getReusableChoicesCodes().length > 0)
+			result += ", [" + getReusableChoicesCodesAsString() + "]";
+		result += ")";
+		return result;
 	}
 	
 	public JSONObject toJson()
@@ -156,6 +203,8 @@ public class MiniFieldSpec implements Comparable
 		json.put(TAG_TYPE, type.getTypeName());
 		json.put(TAG_TOP_LEVEL_LABEL, getTopLevelLabel());
 		json.put(TAG_TOP_LEVEL_TYPE, getTopLevelType().getTypeName());
+		if(getReusableChoicesCodes().length > 0)
+			json.put(TAG_REUSABLE_CHOICES_CODES, getReusableChoicesCodesAsString());
 		return json;
 	}
 	
@@ -164,10 +213,12 @@ public class MiniFieldSpec implements Comparable
 	private static final String TAG_TYPE = "Type";
 	private static final String TAG_TOP_LEVEL_LABEL = "TopLevelLabel";
 	private static final String TAG_TOP_LEVEL_TYPE = "TopLevelType";
+	private static final String TAG_REUSABLE_CHOICES_CODES = "ReusableChoicesCodes";
 
 	String tag;
 	String label;
 	FieldType type;
 	String topLevelLabel;
 	FieldType topLevelType;
+	String[] dropdownReusableChoicesCodes;
 }

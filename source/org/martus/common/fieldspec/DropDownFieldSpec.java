@@ -82,11 +82,6 @@ public class DropDownFieldSpec extends FieldSpec
 		return (getDataSourceGridTag() != null);
 	}
 
-	public boolean hasReusableCodes()
-	{
-		return (getReusableChoicesCodes().length > 0);
-	}
-
 	protected String getStringRepresentationToComputeId()
 	{
 		String xml = super.getStringRepresentationToComputeId();
@@ -162,11 +157,6 @@ public class DropDownFieldSpec extends FieldSpec
 		return getChoice(0).getCode();
 	}
 	
-	public String[] getReusableChoicesCodes()
-	{
-		return new String[0];
-	}
-
 	public Object getDataSource()
 	{
 		return null;

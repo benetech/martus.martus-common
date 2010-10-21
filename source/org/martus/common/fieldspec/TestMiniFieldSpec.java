@@ -107,6 +107,32 @@ public class TestMiniFieldSpec extends TestCaseEnhanced
 	
 	}
 	
+	public void testReusableCodes()
+	{
+		CustomDropDownFieldSpec none = (CustomDropDownFieldSpec) FieldSpec.createCustomField("tag", "Label", new FieldTypeDropdown());
+
+		CustomDropDownFieldSpec oneA = (CustomDropDownFieldSpec) FieldSpec.createCustomField("tag", "Label", new FieldTypeDropdown());
+		oneA.addReusableChoicesCode("a");
+		verifyMinisNotEqual("Didn't notice reusable choice?", none, oneA);
+
+		CustomDropDownFieldSpec oneB = (CustomDropDownFieldSpec) FieldSpec.createCustomField("tag", "Label", new FieldTypeDropdown());
+		oneB.addReusableChoicesCode("b");
+		verifyMinisNotEqual("Didn't notice different reusable choice?", oneA, oneB);
+
+		CustomDropDownFieldSpec two = (CustomDropDownFieldSpec) FieldSpec.createCustomField("tag", "Label", new FieldTypeDropdown());
+		two.addReusableChoicesCode("a");
+		two.addReusableChoicesCode("c");
+		verifyMinisNotEqual("Didn't notice extra reusable choice?", oneA, two);
+	}
+	
+	private void verifyMinisNotEqual(String message, CustomDropDownFieldSpec first, CustomDropDownFieldSpec second)
+	{
+		MiniFieldSpec mini1 = new MiniFieldSpec(first);
+		MiniFieldSpec mini2 = new MiniFieldSpec(second);
+		assertNotEquals("equals " + message, mini1, mini2);
+		assertNotEquals("toStrings " + message, mini1.toString(), mini2.toString());
+	}
+
 	private void verifyOrder(MiniFieldSpec lower, MiniFieldSpec higher)
 	{
 		assertNotEquals("compareTo said equal?", lower, higher);
