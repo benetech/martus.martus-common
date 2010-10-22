@@ -186,6 +186,11 @@ public class MiniFieldSpec implements Comparable
 		return 0;
 	}
 	
+	public String getCodeString()
+	{
+		return toJson().toString();
+	}
+
 	public String toString()
 	{
 		String result = label + "(" + FieldSpec.getTypeString(type) + ", " + tag;

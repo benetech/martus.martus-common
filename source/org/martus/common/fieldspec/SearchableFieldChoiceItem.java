@@ -48,10 +48,16 @@ public class SearchableFieldChoiceItem extends ChoiceItem
 		return new MiniFieldSpec(getSpec()).toJson().toString();
 	}
 	
+	public String getSpecialCode()
+	{
+		return specialCode;
+	}
+
 	public String getSearchTag()
 	{
 		return getSpec().getTag();
 	}
 	
 	String specialCode;
+
 }

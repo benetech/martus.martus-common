@@ -54,9 +54,9 @@ public class PopUpTreeFieldSpec extends FieldSpec
 		return item;
 	}
 	
-	public SearchableFieldChoiceItem findSearchTag(MiniFieldSpec miniSpecToFind)
+	public SearchableFieldChoiceItem findSearchTag(String code)
 	{
-		return findCode(miniSpecToFind.toJson().toString());
+		return findCode(code);
 	}
 	
 	public SearchableFieldChoiceItem findCode(String codeToFind)
