@@ -52,65 +52,140 @@ public class TestMartusDropdownField extends TestCaseEnhanced
 		choicesB.add(new ChoiceItem(levelACode1 + "." + levelBCode2, "innersecond1"));
 		choicesB.add(new ChoiceItem(levelACode2 + "." + levelBCode1, "innerfirst2"));
 		choicesB.add(new ChoiceItem(levelACode2 + "." + levelBCode2, "innersecond2"));
+		choicesC = new ReusableChoices("c", "Choices C");
+		choicesC.add(new ChoiceItem(levelACode1 + "." + levelBCode1 + "." + levelCCode1, "deepest"));
 		reusableChoicesPool.add(choicesA);
 		reusableChoicesPool.add(choicesB);
+		reusableChoicesPool.add(choicesC);
 
-		CustomDropDownFieldSpec spec = new CustomDropDownFieldSpec();
-		spec.addReusableChoicesCode(choicesA.getCode());
-		spec.addReusableChoicesCode(choicesB.getCode());
-		field = new MartusDropdownField(spec, reusableChoicesPool);
+		CustomDropDownFieldSpec oneLevelSpec = new CustomDropDownFieldSpec();
+		oneLevelSpec.addReusableChoicesCode(choicesA.getCode());
+		oneLevelField = new MartusDropdownField(oneLevelSpec, reusableChoicesPool);
+		
+		CustomDropDownFieldSpec twoLevelSpec = new CustomDropDownFieldSpec();
+		twoLevelSpec.addReusableChoicesCode(choicesA.getCode());
+		twoLevelSpec.addReusableChoicesCode(choicesB.getCode());
+		twoLevelField = new MartusDropdownField(twoLevelSpec, reusableChoicesPool);
+
+		CustomDropDownFieldSpec threeLevelSpec = new CustomDropDownFieldSpec();
+		threeLevelSpec.addReusableChoicesCode(choicesA.getCode());
+		threeLevelSpec.addReusableChoicesCode(choicesB.getCode());
+		threeLevelSpec.addReusableChoicesCode(choicesC.getCode());
+		threeLevelField = new MartusDropdownField(threeLevelSpec, reusableChoicesPool);
+
 	}
 	
 	public void testContains() throws Exception
 	{
 		ChoiceItem sampleChoice = choicesB.get(0);
-		field.setData(sampleChoice.getCode());
-		assertFalse(field.contains(field.getData(), localization));
+		twoLevelField.setData(sampleChoice.getCode());
+		assertFalse(twoLevelField.contains(twoLevelField.getData(), localization));
 	}
 	
 	public void testSubfields() throws Exception
 	{
 		ChoiceItem sampleChoice = choicesB.get(0);
-		field.setData(sampleChoice.getCode());
+		twoLevelField.setData(sampleChoice.getCode());
 		
-		MartusField subA = field.getSubField(choicesA.getCode(), localization);
+		MartusField subA = twoLevelField.getSubField(choicesA.getCode(), localization);
 		assertTrue("sub a isn't a dropdown?", subA.getType().isDropdown());
-		assertEquals("sub a didn't inherit full code?", field.getData(), subA.getData());
+		assertEquals("sub a didn't inherit full code?", twoLevelField.getData(), subA.getData());
 		String exportableDataA = subA.getFieldSpec().convertStoredToExportable(subA.getData(), reusableChoicesPool, localization);
-		assertEquals("sub a exportable wrong?", field.getData(), exportableDataA);
+		assertEquals("sub a exportable wrong?", twoLevelField.getData(), exportableDataA);
 		String htmlDataA = subA.getFieldSpec().convertStoredToHtml(subA, localization);
 		assertEquals("sub a html wrong?", choicesA.get(0).toString(), htmlDataA);
 		String searchableDataA = subA.getFieldSpec().convertStoredToSearchable(subA.getData(), reusableChoicesPool, localization);
-		assertEquals("sub a searchable wrong?", field.getData(), searchableDataA);
+		assertEquals("sub a searchable wrong?", twoLevelField.getData(), searchableDataA);
 
-		MartusField subB = field.getSubField(choicesB.getCode(), localization);
+		MartusField subB = twoLevelField.getSubField(choicesB.getCode(), localization);
 		assertTrue("sub b isn't a dropdown?", subB.getType().isDropdown());
-		assertEquals("sub b didn't inherit full code?", field.getData(), subB.getData());
+		assertEquals("sub b didn't inherit full code?", twoLevelField.getData(), subB.getData());
 		String exportableDataB = subB.getFieldSpec().convertStoredToExportable(subB.getData(), reusableChoicesPool, localization);
-		assertEquals("sub b exportable wrong?", field.getData(), exportableDataB);
+		assertEquals("sub b exportable wrong?", twoLevelField.getData(), exportableDataB);
 		String htmlDataB = subB.getFieldSpec().convertStoredToHtml(subB, localization);
 		assertEquals("sub b html wrong?", sampleChoice.toString(), htmlDataB);
 		String searchableDataB = subB.getFieldSpec().convertStoredToSearchable(subB.getData(), reusableChoicesPool, localization);
-		assertEquals("sub b searchable wrong?", field.getData(), searchableDataB);
+		assertEquals("sub b searchable wrong?", twoLevelField.getData(), searchableDataB);
 	}
 	
-	public void testDoesMatch() throws Exception
+	public void testDoesMatchSingleLevel() throws Exception
 	{
-		ChoiceItem sampleChoice = choicesB.get(0);
-		field.setData(sampleChoice.getCode());
-		assertTrue("didn't do complete match?", field.doesMatch(MartusField.EQUAL, field.getData(), localization));
-		assertTrue("didn't do partial match?", field.doesMatch(MartusField.EQUAL, choicesA.get(0).getCode(), localization));
-		assertFalse("did a bad partial match?", field.doesMatch(MartusField.EQUAL, choicesA.get(1).getCode(), localization));
-		assertFalse("matched empty string?", field.doesMatch(MartusField.EQUAL, "", localization));
+		oneLevelField.setData("");
+		verifyEquals(oneLevelField, "");
+		
+		oneLevelField.setData(choicesA.get(0).getCode());
+		verifyEquals(oneLevelField, oneLevelField.getData());
+		verifyNotEquals(oneLevelField, oneLevelField.getData() + ".");
+		verifyNotEquals(oneLevelField, oneLevelField.getData().substring(0, 1));
+		verifyNotEquals(oneLevelField, "");
 	}
 	
+	public void testDoesMatchMultilevel() throws Exception
+	{
+		threeLevelField.setData("");
+		verifyEquals(threeLevelField, "");
+
+		threeLevelField.setData(choicesC.get(0).getCode());
+		assertEquals(levelACode1 + "." + levelBCode1 + "." + levelCCode1, threeLevelField.getData());
+		verifyEquals(threeLevelField, threeLevelField.getData());
+		verifyNotEquals(threeLevelField, threeLevelField.getData() + ".");
+		verifyNotEquals(threeLevelField, choicesB.get(0).getCode());
+		verifyNotEquals(threeLevelField, choicesB.get(0).getCode() + ".");
+		verifyNotEquals(threeLevelField, "");
+
+		threeLevelField.setData(choicesB.get(0).getCode() + ".");
+		verifyEquals(threeLevelField, threeLevelField.getData());
+		verifyNotEquals(threeLevelField, choicesB.get(0).getCode());
+		verifyEquals(threeLevelField, choicesB.get(0).getCode() + ".");
+		verifyNotEquals(threeLevelField, "");
+
+		threeLevelField.setData(choicesC.get(0).getCode() + ".OTHER");
+		verifyEquals(threeLevelField, threeLevelField.getData());
+		verifyNotEquals(threeLevelField, threeLevelField.getData() + ".");
+		verifyNotEquals(threeLevelField, choicesC.get(0).getCode());
+		verifyNotEquals(threeLevelField, choicesB.get(0).getCode() + ".");
+		verifyNotEquals(threeLevelField, "");
+	}
+	
+	public void testDoesMatchSpecificLevel() throws Exception
+	{
+		MartusField specificLevelField = threeLevelField.getSubField(choicesB.getCode(), localization);
+
+		specificLevelField.setData("");
+		verifyEquals(specificLevelField, "");
+
+		specificLevelField.setData(choicesB.get(0).getCode() + ".WHATEVER");
+		verifyEquals(specificLevelField, choicesB.get(0).getCode());
+		verifyNotEquals(specificLevelField, choicesB.get(0).getCode() + ".");
+		verifyNotEquals(specificLevelField, specificLevelField.getData());
+		verifyNotEquals(specificLevelField, "");
+		
+		verifyNotEquals(specificLevelField, choicesA.get(0).getCode());
+	}
+	
+	private void verifyEquals(MartusField fieldToSearch, String searchForValue)
+	{
+		assertTrue(fieldToSearch.doesMatch(MartusField.EQUAL, searchForValue, localization));
+		assertFalse(fieldToSearch.doesMatch(MartusField.NOT_EQUAL, searchForValue, localization));
+	}
+
+	private void verifyNotEquals(MartusField fieldToSearch, String searchForValue)
+	{
+		assertFalse(fieldToSearch.doesMatch(MartusField.EQUAL, searchForValue, localization));
+		assertTrue(fieldToSearch.doesMatch(MartusField.NOT_EQUAL, searchForValue, localization));
+	}
+
 	private static final String levelACode1 = "A1";
 	private static final String levelACode2 = "A2";
 	private static final String levelBCode1 = "B1";
 	private static final String levelBCode2 = "B2";
+	private static final String levelCCode1 = "C1";
 	private MiniLocalization localization;
 	private PoolOfReusableChoicesLists reusableChoicesPool;
 	private ReusableChoices choicesA;
 	private ReusableChoices choicesB;
-	private MartusDropdownField field;
+	private ReusableChoices choicesC;
+	private MartusField oneLevelField;
+	private MartusField twoLevelField;
+	private MartusField threeLevelField;
 }

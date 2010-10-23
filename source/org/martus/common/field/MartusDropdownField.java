@@ -98,16 +98,51 @@ public class MartusDropdownField extends MartusField
 	
 	private boolean doesEqual(String searchForValue)
 	{
+		CustomDropDownFieldSpec dropDownSpec = getDropDownSpec();
 		if(StandardFieldSpecs.isStandardFieldTag(getTag()))
 		{
-			int found = getDropDownSpec().findCode(searchForValue);
+			int found = dropDownSpec.findCode(searchForValue);
 			return (found >= 0);
 		}
 		
+		boolean isExactMatch = getData().equals(searchForValue);
+
+		// Empty search always needs an exact match
 		if(searchForValue.length() == 0)
-			return false;
+			return isExactMatch;
 		
+		// Multi-level or non-reusable dropdown always needs an exact match
+		if(dropDownSpec.getReusableChoicesCodes().length != 1)
+			return isExactMatch;
+		
+		// Non-subfield always needs an exact match
+		FieldSpec rawParentSpec = dropDownSpec.getParent();
+		if(rawParentSpec == null)
+			return isExactMatch;
+
+		// if the code is not a valid reusable list in the parent (unlikely), fail
+		String thisReusableChoicesListCode = dropDownSpec.getReusableChoicesCodes()[0];
+		CustomDropDownFieldSpec parentSpec = (CustomDropDownFieldSpec) rawParentSpec;
+		int level = parentSpec.findReusableLevelByCode(thisReusableChoicesListCode);
+		if(level == -1)
+			return false;
+
+		// if searching for something at the wrong level, fail
+		if(numberOfDots(searchForValue) != level)
+			return false;
+
+		// searching for specific level within possibly-deeper field data
 		return (getData().startsWith(searchForValue));
+	}
+
+	private int numberOfDots(String searchForValue)
+	{
+		int dots = 0;
+		for(int i = 0; i < searchForValue.length(); ++i)
+			if(searchForValue.charAt(i) == '.')
+				++dots;
+		
+		return dots;
 	}
 
 	private CustomDropDownFieldSpec getDropDownSpec()
