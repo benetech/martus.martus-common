@@ -118,6 +118,20 @@ public class MiniFieldSpec implements Comparable
 		return result;
 	}
 	
+	public MiniFieldSpec cloneInReportStyle()
+	{
+		MiniFieldSpec clone = new MiniFieldSpec(toJson());
+		int reusableChoicesCodeCount = clone.getReusableChoicesCodes().length;
+		if(reusableChoicesCodeCount > 1)
+		{
+			String lastCode = clone.getReusableChoicesCodes()[reusableChoicesCodeCount-1];
+			String[] newReusableChoicesCodes = dropdownReusableChoicesCodes = new String[] {lastCode};
+			clone.dropdownReusableChoicesCodes = newReusableChoicesCodes;
+		}
+
+		return clone;
+	}
+
 	private FieldSpec standardize(FieldSpec spec)
 	{
 		if(spec.getParent() != null)
