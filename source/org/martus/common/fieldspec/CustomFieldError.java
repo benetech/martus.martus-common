@@ -49,6 +49,15 @@ public class CustomFieldError
 		return new CustomFieldError(CODE_ILLEGAL_TAG, tag, label, type);
 	}
 	
+	public static Object errorIllegalReusableChoiceItemCode(String listCode, String itemCode, String itemLabel)
+	{
+		return new CustomFieldError(CODE_ILLEGAL_TAG, listCode + "." + itemCode, itemLabel, TYPE_STRING_FOR_REUSABLE_LISTS);
+	}
+	
+	public static Object errorIllegalReusableChoiceListCode(String listCode, String listLabel)
+	{
+		return new CustomFieldError(CODE_ILLEGAL_TAG, listCode, listLabel, TYPE_STRING_FOR_REUSABLE_LISTS);
+	}
 	
 	static public CustomFieldError errorDuplicateFields(String tag, String label, String type)
 	{

@@ -252,6 +252,36 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		verifyExpectedError("Duplicate Tags not found in Bottom?", CustomFieldError.CODE_DUPLICATE_FIELD, tag, label, null, (CustomFieldError)errors.get(0));
 		
 	}
+	
+	public void testIllegalReusableChoiceListCodes() throws Exception
+	{
+		ReusableChoices choices = new ReusableChoices("a 1 . /", "choices label");
+		specsTopSection.addReusableChoiceList(choices);
+		
+		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		assertFalse("invalid?", checker.isValid());
+		Vector errors = checker.getAllErrors();
+		assertEquals("Should have 1 error", 1, errors.size());
+		verifyExpectedError("Illegal code", CustomFieldError.CODE_ILLEGAL_TAG, choices.getCode(), choices.getLabel(), null, (CustomFieldError)errors.get(0));
+	}
+	
+	public void testIllegalReusableChoiceItemCodes() throws Exception
+	{
+		ReusableChoices choices = new ReusableChoices("choicescode", "choices label");
+		choices.add(new ChoiceItem("US TX.SPR", "label 1"));
+		choices.add(new ChoiceItem("US/TX/S2", "label 2"));
+		choices.add(new ChoiceItem("<>'", "label 3"));
+		choices.add(new ChoiceItem("Mañana-is-legal", "label 4"));
+		specsTopSection.addReusableChoiceList(choices);
+		
+		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		assertFalse("invalid?", checker.isValid());
+		Vector errors = checker.getAllErrors();
+		assertEquals("Should have 3 errors", 3, errors.size());
+		verifyExpectedError("Illegal code", CustomFieldError.CODE_ILLEGAL_TAG, choices.getCode() + "." + choices.get(0).getCode(), choices.get(0).getLabel(), null, (CustomFieldError)errors.get(0));
+		verifyExpectedError("Illegal code", CustomFieldError.CODE_ILLEGAL_TAG, choices.getCode() + "." + choices.get(1).getCode(), choices.get(1).getLabel(), null, (CustomFieldError)errors.get(1));
+		verifyExpectedError("Illegal code", CustomFieldError.CODE_ILLEGAL_TAG, choices.getCode() + "." + choices.get(2).getCode(), choices.get(2).getLabel(), null, (CustomFieldError)errors.get(2));
+	}
 
 	public void testDuplicateDropDownLabelsInNestedReusableList() throws Exception
 	{

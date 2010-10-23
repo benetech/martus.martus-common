@@ -63,6 +63,9 @@ public class CustomFieldSpecValidator
 		HashMap topGridFieldSpecs = scanForGrids(rawSpecsToCheckTopSection);
 		HashMap bottomGridFieldSpecs = scanForGrids(rawSpecsToCheckBottomSection);
 	
+		checkForIllegalCodesInReusableChoiceListsAndItems(specsToCheckTopSection);
+		checkForIllegalCodesInReusableChoiceListsAndItems(specsToCheckBottomSection);
+		
 		checkForDuplicatesInResuableChoiceLists(specsToCheckTopSection);
 		checkForDuplicatesInResuableChoiceLists(specsToCheckBottomSection);
 		
@@ -81,6 +84,29 @@ public class CustomFieldSpecValidator
 
 		checkDataDrivenDropDowns(rawSpecsToCheckTopSection, topGridFieldSpecs);
 		checkDataDrivenDropDowns(rawSpecsToCheckBottomSection, bottomGridFieldSpecs);
+	}
+
+	private void checkForIllegalCodesInReusableChoiceListsAndItems(FieldSpecCollection specsToCheck)
+	{
+		Set choiceListNames = specsToCheck.getAllReusableChoiceLists().getAvailableNames();
+		Iterator iter = choiceListNames.iterator();
+		while(iter.hasNext())
+		{
+			String listCode = (String)iter.next();
+			ReusableChoices choiceList = specsToCheck.getReusableChoices(listCode);
+			if(!isValidTagOrCode(listCode))
+				errors.add(CustomFieldError.errorIllegalReusableChoiceListCode(listCode, choiceList.getLabel()));
+			
+			for(int i = 0; i < choiceList.size(); ++ i)
+			{
+				ChoiceItem choice = choiceList.get(i);
+				String itemCode = choice.getCode();
+				if(!isValidTagOrCode(itemCode))
+					errors.add(CustomFieldError.errorIllegalReusableChoiceItemCode(listCode, itemCode, choice.getLabel()));
+			}
+				
+		}
+
 	}
 
 	private void checkForDuplicatesInResuableChoiceLists(FieldSpecCollection specsToCheckBottomSection)
@@ -305,35 +331,42 @@ public class CustomFieldSpecValidator
 		for (int i = 0; i < specsToCheck.length; i++)
 		{
 			FieldSpec thisSpec = specsToCheck[i];
-			boolean allValid = true;
 			String thisTag = thisSpec.getTag();
-			if(thisTag.length() < 1)
-				continue;
-			char[] tagChars = thisTag.toCharArray();
-			if(!isValidFirstTagCharacter(tagChars[0]))
-				allValid = false;
-			for(int j = 1; j < tagChars.length; ++j)
-			{
-				if(!isValidTagCharacter(tagChars[j]))
-					allValid = false;
-			}
-
-			String xmlTag = "Field-" + thisTag;
-			SimpleXmlDefaultLoader loader = new SimpleXmlDefaultLoader(xmlTag);
-			String xml = "<" + xmlTag + "/>";
-			try 
-			{
-				SimpleXmlParser.parse(loader, xml);
-			} 
-			catch (Exception e) 
-			{
-				allValid = false;
-			}
-			
-			
-			if(!allValid)
+			if(!isValidTagOrCode(thisTag))
 				errors.add(CustomFieldError.errorIllegalTag(thisTag, thisSpec.getLabel(), getType(thisSpec)));
 		}
+	}
+	
+	private boolean isValidTagOrCode(String thisTag)
+	{
+		// Blank tags/codes are handled separately
+		if(thisTag.length() < 1)
+			return true;
+
+		boolean allValid = true;
+		
+		char[] tagChars = thisTag.toCharArray();
+		if(!isValidFirstTagCharacter(tagChars[0]))
+			allValid = false;
+		for(int j = 1; j < tagChars.length; ++j)
+		{
+			if(!isValidTagCharacter(tagChars[j]))
+				allValid = false;
+		}
+
+		String xmlTag = "Field-" + thisTag;
+		SimpleXmlDefaultLoader loader = new SimpleXmlDefaultLoader(xmlTag);
+		String xml = "<" + xmlTag + "/>";
+		try 
+		{
+			SimpleXmlParser.parse(loader, xml);
+		} 
+		catch (Exception e) 
+		{
+			allValid = false;
+		}
+
+		return allValid;
 	}
 	
 	private boolean isValidTagCharacter(char c)
