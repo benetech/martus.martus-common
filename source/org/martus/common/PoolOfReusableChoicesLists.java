@@ -51,6 +51,8 @@ public class PoolOfReusableChoicesLists
 		for(int level = 0; level < levelCount; ++level)
 		{
 			ReusableChoices choices = getChoices(reusableChoiceListCodes[level]);
+			if(choices == null)
+				return null;
 			
 			int LAST = levelCount - 1;
 			ChoiceItem found = null;

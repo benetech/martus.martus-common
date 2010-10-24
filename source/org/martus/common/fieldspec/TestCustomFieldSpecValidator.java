@@ -804,6 +804,25 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 				(CustomFieldError)errors.get(0));
 	}
 	
+	public void testDefaultValueInReusableDropdownWithMissingList() throws Exception
+	{
+		CustomDropDownFieldSpec spec = (CustomDropDownFieldSpec) FieldSpec.createCustomField("valid", "Valid", new FieldTypeDropdown());
+		spec.addReusableChoicesCode("Missing");
+		specsTopSection.add(spec);
+
+		spec.setDefaultValue("whatever");
+		CustomFieldSpecValidator checkerInvalid = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		assertFalse("valid?", checkerInvalid.isValid());
+		Vector errors = checkerInvalid.getAllErrors();
+		assertEquals("Should have 2 errors (bad default and missing reusable list)", 2, errors.size());
+		verifyExpectedError("dd default value is not a valid code", 
+				CustomFieldError.CODE_INVALID_DEFAULT_VALUE,
+				spec.getTag(), 
+				spec.getLabel(), 
+				spec.getType(), 
+				(CustomFieldError)errors.get(1));
+	}
+	
 	public void testDefaultValueInNestedDropdown() throws Exception
 	{
 		ReusableChoices reusableChoicesOuter = new ReusableChoices("outer", "Outer");
