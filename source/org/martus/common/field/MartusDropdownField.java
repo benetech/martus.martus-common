@@ -115,9 +115,9 @@ public class MartusDropdownField extends MartusField
 		if(dropDownSpec.getReusableChoicesCodes().length != 1)
 			return isExactMatch;
 		
-		// Non-subfield always needs an exact match
+		// anything other than a subfield of a dropdown always needs an exact match
 		FieldSpec rawParentSpec = dropDownSpec.getParent();
-		if(rawParentSpec == null)
+		if(rawParentSpec == null || !rawParentSpec.getType().isDropdown())
 			return isExactMatch;
 
 		// if the code is not a valid reusable list in the parent (unlikely), fail

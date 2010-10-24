@@ -25,11 +25,13 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.field;
 
+import org.martus.common.GridData;
 import org.martus.common.MiniLocalization;
 import org.martus.common.PoolOfReusableChoicesLists;
 import org.martus.common.ReusableChoices;
 import org.martus.common.fieldspec.ChoiceItem;
 import org.martus.common.fieldspec.CustomDropDownFieldSpec;
+import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.util.TestCaseEnhanced;
 
 public class TestMartusDropdownField extends TestCaseEnhanced
@@ -59,15 +61,21 @@ public class TestMartusDropdownField extends TestCaseEnhanced
 		reusableChoicesPool.add(choicesC);
 
 		CustomDropDownFieldSpec oneLevelSpec = new CustomDropDownFieldSpec();
+		oneLevelSpec.setTag("one");
+		oneLevelSpec.setLabel("One");
 		oneLevelSpec.addReusableChoicesCode(choicesA.getCode());
 		oneLevelField = new MartusDropdownField(oneLevelSpec, reusableChoicesPool);
 		
 		CustomDropDownFieldSpec twoLevelSpec = new CustomDropDownFieldSpec();
+		twoLevelSpec.setTag("two");
+		twoLevelSpec.setLabel("Two");
 		twoLevelSpec.addReusableChoicesCode(choicesA.getCode());
 		twoLevelSpec.addReusableChoicesCode(choicesB.getCode());
 		twoLevelField = new MartusDropdownField(twoLevelSpec, reusableChoicesPool);
 
 		CustomDropDownFieldSpec threeLevelSpec = new CustomDropDownFieldSpec();
+		threeLevelSpec.setTag("three");
+		threeLevelSpec.setLabel("Three");
 		threeLevelSpec.addReusableChoicesCode(choicesA.getCode());
 		threeLevelSpec.addReusableChoicesCode(choicesB.getCode());
 		threeLevelSpec.addReusableChoicesCode(choicesC.getCode());
@@ -161,6 +169,28 @@ public class TestMartusDropdownField extends TestCaseEnhanced
 		verifyNotEquals(specificLevelField, "");
 		
 		verifyNotEquals(specificLevelField, choicesA.get(0).getCode());
+	}
+	
+	public void testSearchDropdownWithinGrid() throws Exception
+	{
+		GridFieldSpec gridSpec = new GridFieldSpec();
+		gridSpec.addColumn(oneLevelField.getFieldSpec());
+		gridSpec.addColumn(twoLevelField.getFieldSpec());
+		MartusGridField gridField = new MartusGridField(gridSpec, reusableChoicesPool);
+		GridData gridData = gridField.getGridData();
+		gridData.addEmptyRow();
+		gridData.setValueAt(choicesA.get(0).getCode(), 0, 0);
+		gridData.setValueAt(choicesA.get(0).getCode() + ".", 0, 1);
+		gridField.setData(gridData.getXmlRepresentation());
+
+		MartusField firstDropdown = gridField.getSubField(gridSpec.getColumnLabel(0), localization);
+		firstDropdown.setData(choicesA.get(0).getCode());
+		verifyEquals(firstDropdown, gridData.getValueAt(0, 0));
+
+		MartusField secondDropdown = gridField.getSubField(gridSpec.getColumnLabel(1), localization);
+		secondDropdown.setData(choicesB.get(0).getCode());
+		verifyEquals(secondDropdown, gridData.getValueAt(0, 1));
+		verifyNotEquals(secondDropdown, choicesA.get(0).getCode());
 	}
 	
 	private void verifyEquals(MartusField fieldToSearch, String searchForValue)
