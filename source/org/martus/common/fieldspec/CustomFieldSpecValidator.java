@@ -443,11 +443,24 @@ public class CustomFieldSpecValidator
 			fieldLabel = gridLabel;
 
 		String[] reusableChoicesListCodes = dropdownSpec.getReusableChoicesCodes();
+		
+		ReusableChoices choicesAtTopLevel = specsToCheck.getReusableChoices(reusableChoicesListCodes[0]);
+		if(choicesAtTopLevel != null)
+		{
+			for(int choiceIndex = 0; choiceIndex < choicesAtTopLevel.size(); ++choiceIndex)
+			{
+				ChoiceItem thisChoice = choicesAtTopLevel.get(choiceIndex);
+				String thisCode = thisChoice.getCode();
+				if(thisCode.indexOf('.') >= 0)
+					errors.add(CustomFieldError.errorImproperlyNestedDropdownCode(fieldTag, thisCode, fieldLabel, thisChoice.getLabel()));
+			}
+		}
+		
 		for(int level = 1; level < reusableChoicesListCodes.length; ++level)
 		{
 			ReusableChoices choicesAtThisLevel = specsToCheck.getReusableChoices(reusableChoicesListCodes[level]);
 			if(choicesAtThisLevel == null)
-				continue;
+				break;
 			
 			for(int choiceIndex = 0; choiceIndex < choicesAtThisLevel.size(); ++choiceIndex)
 			{

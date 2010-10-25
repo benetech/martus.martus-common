@@ -533,14 +533,24 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		dropdownSpec.addReusableChoicesCode(inner.getCode());
 		specsTopSection.add(dropdownSpec);
 
+		CustomDropDownFieldSpec onlySecondLevelChoices = new CustomDropDownFieldSpec();
+		onlySecondLevelChoices.setTag("tag2");
+		onlySecondLevelChoices.setLabel("Label2");
+		onlySecondLevelChoices.addReusableChoicesCode(inner.getCode());
+		specsTopSection.add(onlySecondLevelChoices);
+
 		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
 		assertFalse("Should be invalid due to extra parent code", checker.isValid());
 		Vector errors = checker.getAllErrors();
-		assertEquals(1, errors.size());
+		assertEquals(2, errors.size());
 		CustomFieldError error = (CustomFieldError)errors.get(0);
 		String errorTag = dropdownSpec.getTag() + ":" + inner.get(0).getCode();
 		String errorLabel = dropdownSpec.getLabel() + ":" + inner.get(0).getLabel();
-		verifyExpectedError("Duplicate Dropdown Entry", CustomFieldError.CODE_IMPROPERLY_NESTED_CHOICE_CODE, errorTag, errorLabel, null, error);
+		verifyExpectedError("Extra parent in inner level", CustomFieldError.CODE_IMPROPERLY_NESTED_CHOICE_CODE, errorTag, errorLabel, null, error);
+		CustomFieldError error2 = (CustomFieldError)errors.get(1);
+		String errorTag2 = onlySecondLevelChoices.getTag() + ":" + inner.get(0).getCode();
+		String errorLabel2 = onlySecondLevelChoices.getLabel() + ":" + inner.get(0).getLabel();
+		verifyExpectedError("Extra dot in outer level", CustomFieldError.CODE_IMPROPERLY_NESTED_CHOICE_CODE, errorTag2, errorLabel2, null, error2);
 	}
 	
 	public void testNestedDropdownWithInvalidChoiceWrongLevel() throws Exception
@@ -573,11 +583,11 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 	public void testNestedDropdownWithInvalidChoiceSameAsParent() throws Exception
 	{
 		ReusableChoices outer = new ReusableChoices("outer", "Outer");
-		outer.add(new ChoiceItem("1.1", "first"));
+		outer.add(new ChoiceItem("1", "first"));
 		specsTopSection.addReusableChoiceList(outer);
 		
 		ReusableChoices inner = new ReusableChoices("inner", "Inner");
-		inner.add(new ChoiceItem("1.1", "same as parent"));
+		inner.add(new ChoiceItem("1", "same as parent"));
 		specsTopSection.addReusableChoiceList(inner);
 
 		CustomDropDownFieldSpec dropdownSpec = new CustomDropDownFieldSpec();
