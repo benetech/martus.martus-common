@@ -92,6 +92,11 @@ public class MartusField
 		return data;
 	}
 	
+	public String getDataForSubtotals()
+	{
+		return getData();
+	}
+
 	public String getSearchableData(MiniLocalization localization)
 	{
 		return getFieldSpec().convertStoredToSearchable(getData(), getReusableChoicesLists(), localization);
@@ -106,6 +111,21 @@ public class MartusField
 			return "&nbsp;";
 		
 		return fieldData;
+	}
+
+	public String htmlForSubtotals(MiniLocalization localization) throws Exception
+	{
+		String fieldData = internalGetHtmlForSubtotals(localization);
+		
+		if(fieldData.trim().length() == 0)
+			return "&nbsp;";
+		
+		return fieldData;
+	}
+
+	protected String internalGetHtmlForSubtotals(MiniLocalization localization) throws Exception
+	{
+		return internalGetHtml(localization);
 	}
 
 	protected String internalGetHtml(MiniLocalization localization) throws Exception

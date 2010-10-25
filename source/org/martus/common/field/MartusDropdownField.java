@@ -49,6 +49,14 @@ public class MartusDropdownField extends MartusField
 		return clone;
 	}
 	
+	public String getDataForSubtotals()
+	{
+		if(relevantLevelCount < 0)
+			return getData();
+		
+		return truncateData(getData(), relevantLevelCount);
+	}
+	
 	protected String internalGetHtml(MiniLocalization localization) throws Exception
 	{
 		CustomDropDownFieldSpec dropDownSpec = getDropDownSpec();
@@ -57,6 +65,16 @@ public class MartusDropdownField extends MartusField
 			return super.internalGetHtml(localization);
 		
 		return dropDownSpec.convertStoredToHtml(this, localization);
+	}
+	
+	protected String internalGetHtmlForSubtotals(MiniLocalization localization) throws Exception
+	{
+		CustomDropDownFieldSpec dropDownSpec = getDropDownSpec();
+		String[] reusableChoicesCodes = dropDownSpec.getReusableChoicesCodes();
+		if(reusableChoicesCodes.length == 0)
+			return super.internalGetHtml(localization);
+		
+		return dropDownSpec.convertStoredToHtml(this, getDataForSubtotals(), localization);
 	}
 
 	public boolean contains(String value, MiniLocalization localization)

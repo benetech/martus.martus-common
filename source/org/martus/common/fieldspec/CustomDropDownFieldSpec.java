@@ -33,6 +33,7 @@ import java.util.Vector;
 import org.martus.common.ListOfReusableChoicesLists;
 import org.martus.common.MartusXml;
 import org.martus.common.MiniLocalization;
+import org.martus.common.field.MartusDropdownField;
 import org.martus.common.field.MartusField;
 import org.martus.util.xml.SimpleXmlMapLoader;
 import org.martus.util.xml.SimpleXmlVectorLoader;
@@ -176,7 +177,11 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 
 	public String convertStoredToHtml(MartusField field, MiniLocalization localization)
 	{
-		String rawData = field.getData();
+		return convertStoredToHtml((MartusDropdownField)field, field.getData(), localization);
+	}
+	
+	public String convertStoredToHtml(MartusDropdownField field, String rawData, MiniLocalization localization)
+	{
 		if(getDataSourceGridTag() != null)
 			return XmlUtilities.getXmlEncoded(rawData);
 		
