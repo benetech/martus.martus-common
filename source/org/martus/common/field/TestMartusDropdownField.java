@@ -149,20 +149,50 @@ public class TestMartusDropdownField extends TestCaseEnhanced
 		verifyNotEquals(threeLevelField, "");
 	}
 	
-	public void testDoesMatchSpecificLevel() throws Exception
+	public void testDoesMatchSpecificInnermostLevel() throws Exception
+	{
+		MartusField specificLevelField = threeLevelField.getSubField(choicesC.getCode(), localization);
+
+		specificLevelField.setData("");
+		verifyEquals(specificLevelField, "");
+
+		specificLevelField.setData("");
+		verifyEquals(specificLevelField, "");
+
+		specificLevelField.setData(choicesC.get(0).getCode());
+		assertEquals(levelACode1 + "." + levelBCode1 + "." + levelCCode1, specificLevelField.getData());
+		verifyEquals(specificLevelField, specificLevelField.getData());
+		verifyNotEquals(specificLevelField, choicesB.get(0).getCode());
+		verifyNotEquals(specificLevelField, "");
+
+		specificLevelField.setData(choicesB.get(0).getCode());
+		verifyEquals(specificLevelField, specificLevelField.getData());
+		verifyEquals(specificLevelField, choicesB.get(0).getCode());
+		verifyNotEquals(specificLevelField, "");
+
+		specificLevelField.setData(choicesC.get(0).getCode() + ".OTHER");
+		verifyNotEquals(specificLevelField, threeLevelField.getData());
+		verifyEquals(specificLevelField, choicesC.get(0).getCode());
+		verifyNotEquals(specificLevelField, "");
+	}
+	
+	public void testDoesMatchSpecificMiddleLevel() throws Exception
 	{
 		MartusField specificLevelField = threeLevelField.getSubField(choicesB.getCode(), localization);
 
 		specificLevelField.setData("");
 		verifyEquals(specificLevelField, "");
 
-		specificLevelField.setData(choicesB.get(0).getCode() + ".WHATEVER");
+		specificLevelField.setData(choicesC.get(0).getCode());
 		verifyEquals(specificLevelField, choicesB.get(0).getCode());
-		verifyNotEquals(specificLevelField, choicesB.get(0).getCode() + ".");
 		verifyNotEquals(specificLevelField, specificLevelField.getData());
+		verifyNotEquals(specificLevelField, choicesA.get(0).getCode());
 		verifyNotEquals(specificLevelField, "");
 		
+		specificLevelField.setData(choicesB.get(0).getCode());
+		verifyEquals(specificLevelField, choicesB.get(0).getCode());
 		verifyNotEquals(specificLevelField, choicesA.get(0).getCode());
+		verifyNotEquals(specificLevelField, "");
 	}
 	
 	public void testSearchDropdownWithinGrid() throws Exception

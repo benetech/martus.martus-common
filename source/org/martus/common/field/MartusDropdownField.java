@@ -38,11 +38,13 @@ public class MartusDropdownField extends MartusField
 	public MartusDropdownField(FieldSpec specToUse, PoolOfReusableChoicesLists reusableChoicesToUse)
 	{
 		super(specToUse, reusableChoicesToUse);
+		relevantLevelCount = -1;
 	}
 
 	public MartusField createClone() throws Exception
 	{
 		MartusDropdownField clone = new MartusDropdownField(getFieldSpec(), getReusableChoicesLists());
+		clone.relevantLevelCount = relevantLevelCount;
 		clone.setData(getData());
 		return clone;
 	}
@@ -80,7 +82,8 @@ public class MartusDropdownField extends MartusField
 		ReusableChoices reusableChoices = getReusableChoicesLists().getChoices(reusableChoicesCodes[level]);
 		CustomDropDownFieldSpec subSpec = (CustomDropDownFieldSpec) FieldSpec.createSubField(outerSpec, tag, reusableChoices.getLabel(), new FieldTypeDropdown());
 		subSpec.addReusableChoicesCode(tag);
-		MartusField subField = new MartusDropdownField(subSpec, getReusableChoicesLists());
+		MartusDropdownField subField = new MartusDropdownField(subSpec, getReusableChoicesLists());
+		subField.relevantLevelCount = level + 1;
 		subField.setData(getData());
 		return subField;
 	}
@@ -123,30 +126,39 @@ public class MartusDropdownField extends MartusField
 		// if the code is not a valid reusable list in the parent (unlikely), fail
 		String thisReusableChoicesListCode = dropDownSpec.getReusableChoicesCodes()[0];
 		CustomDropDownFieldSpec parentSpec = (CustomDropDownFieldSpec) rawParentSpec;
-		int level = parentSpec.findReusableLevelByCode(thisReusableChoicesListCode);
-		if(level == -1)
+		int foundReusableCode = parentSpec.findReusableLevelByCode(thisReusableChoicesListCode);
+		if(foundReusableCode == -1)
 			return false;
 
-		// if searching for something at the wrong level, fail
-		if(numberOfDots(searchForValue) != level)
-			return false;
-
-		// searching for specific level within possibly-deeper field data
-		return (getData().startsWith(searchForValue));
+		// if field is State/City/Neighborhood
+		//  State=CA should match CA
+		//  State=CA should match CA.SF 
+		//  City=CA should match CA 
+		//  City=CA should NOT match CA.SF
+		//  City=CA.SF should match CA.SF
+		String searchOn = truncateData(getData(), relevantLevelCount);
+		return searchOn.equals(searchForValue);
 	}
 
-	private int numberOfDots(String searchForValue)
+	private String truncateData(String dataToTruncate, int maxLevels)
 	{
-		int dots = 0;
-		for(int i = 0; i < searchForValue.length(); ++i)
-			if(searchForValue.charAt(i) == '.')
-				++dots;
+		int truncateAt = -1;
+		while(maxLevels > 0)
+		{
+			int nextDot = dataToTruncate.indexOf('.', truncateAt+1);
+			if(nextDot < 0)
+				return dataToTruncate;
+			truncateAt = nextDot;
+			--maxLevels;
+		}
 		
-		return dots;
+		return dataToTruncate.substring(0, truncateAt);
 	}
 
 	private CustomDropDownFieldSpec getDropDownSpec()
 	{
 		return (CustomDropDownFieldSpec) getFieldSpec();
 	}
+	
+	private int relevantLevelCount;
 }
