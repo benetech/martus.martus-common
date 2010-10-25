@@ -123,7 +123,6 @@ public class TestMartusDropdownField extends TestCaseEnhanced
 		
 		oneLevelField.setData(choicesA.get(0).getCode());
 		verifyEquals(oneLevelField, oneLevelField.getData());
-		verifyNotEquals(oneLevelField, oneLevelField.getData() + ".");
 		verifyNotEquals(oneLevelField, oneLevelField.getData().substring(0, 1));
 		verifyNotEquals(oneLevelField, "");
 	}
@@ -136,22 +135,17 @@ public class TestMartusDropdownField extends TestCaseEnhanced
 		threeLevelField.setData(choicesC.get(0).getCode());
 		assertEquals(levelACode1 + "." + levelBCode1 + "." + levelCCode1, threeLevelField.getData());
 		verifyEquals(threeLevelField, threeLevelField.getData());
-		verifyNotEquals(threeLevelField, threeLevelField.getData() + ".");
 		verifyNotEquals(threeLevelField, choicesB.get(0).getCode());
-		verifyNotEquals(threeLevelField, choicesB.get(0).getCode() + ".");
 		verifyNotEquals(threeLevelField, "");
 
-		threeLevelField.setData(choicesB.get(0).getCode() + ".");
+		threeLevelField.setData(choicesB.get(0).getCode());
 		verifyEquals(threeLevelField, threeLevelField.getData());
-		verifyNotEquals(threeLevelField, choicesB.get(0).getCode());
-		verifyEquals(threeLevelField, choicesB.get(0).getCode() + ".");
+		verifyEquals(threeLevelField, choicesB.get(0).getCode());
 		verifyNotEquals(threeLevelField, "");
 
 		threeLevelField.setData(choicesC.get(0).getCode() + ".OTHER");
 		verifyEquals(threeLevelField, threeLevelField.getData());
-		verifyNotEquals(threeLevelField, threeLevelField.getData() + ".");
 		verifyNotEquals(threeLevelField, choicesC.get(0).getCode());
-		verifyNotEquals(threeLevelField, choicesB.get(0).getCode() + ".");
 		verifyNotEquals(threeLevelField, "");
 	}
 	
