@@ -271,7 +271,7 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		choices.add(new ChoiceItem("US TX.SPR", "label 1"));
 		choices.add(new ChoiceItem("US/TX/S2", "label 2"));
 		choices.add(new ChoiceItem("<>'", "label 3"));
-		choices.add(new ChoiceItem("Mañana-is-legal", "label 4"));
+		choices.add(new ChoiceItem("Ma\u00F1ana-is-legal", "label 4"));
 		specsTopSection.addReusableChoiceList(choices);
 		
 		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
