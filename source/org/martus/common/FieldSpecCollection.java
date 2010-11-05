@@ -204,21 +204,7 @@ public class FieldSpecCollection implements Comparable
 		if(!(rawOther instanceof FieldSpecCollection))
 			return 0;
 		FieldSpecCollection other = (FieldSpecCollection)rawOther;
-		if(size() < other.size())
-			return -1;
-		else if(size() > other.size())
-			return 1;
-		
-		for(int i = 0; i < size(); ++i)
-		{
-			FieldSpec thisFieldSpec = get(i);
-			FieldSpec otherFieldSpec = other.get(i);
-			int result = thisFieldSpec.compareTo(otherFieldSpec);
-			if(result != 0)
-				return result;
-		}
-		
-		return 0;
+		return toXml().compareTo(other.toXml());
 	}
 	
 	private Vector specs;
