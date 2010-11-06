@@ -119,6 +119,7 @@ public class PoolOfReusableChoicesLists
 				existingChoice.setLabel(existingChoice.toString() + "; " + label); 
 			}
 		}
+		existingChoices.sortChoicesByLabel();
 	}
 
 	public int size()

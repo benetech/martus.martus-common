@@ -26,6 +26,8 @@ Boston, MA 02111-1307, USA.
 package org.martus.common;
 
 import java.io.StringWriter;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Vector;
 
 import org.martus.common.bulletin.BulletinXmlExportImportConstants;
@@ -115,6 +117,25 @@ public class ReusableChoices
 		}
 		
 		return null;
+	}
+	class ChoiceItemByLabelSorter implements Comparator
+	{
+		public int compare(Object rawChoiceItem1, Object rawChoiceItem2)
+		{
+			// NOTE: ChoiceItem.toString returns the label, 
+			// which is exactly what we want to sort on
+			if(rawChoiceItem1 == null || rawChoiceItem2 == null)
+				return 0;
+			
+			return rawChoiceItem1.toString().compareTo(rawChoiceItem2.toString());
+		}
+		
+	}
+
+	public void sortChoicesByLabel()
+	{
+		ChoiceItemByLabelSorter sorter = new ChoiceItemByLabelSorter();
+		Collections.sort(choices, sorter);
 	}
 
 	public int hashCode()
