@@ -98,18 +98,21 @@ public class PoolOfReusableChoicesLists
 		ReusableChoices existingChoices = getChoices(choices.getCode());
 		if(existingChoices == null)
 		{
-			add(choices);
+			ReusableChoices copy = new ReusableChoices(choices.getCode(), choices.getLabel());
+			for(int i = 0; i < choices.size(); ++i)
+				copy.add(choices.get(i));
+			add(copy);
 			return;
 		}
 
 		for(int i = 0; i < choices.size(); ++i)
 		{
 			ChoiceItem incoming = choices.get(i);
-			String code = incoming.getCode();
-			String label = incoming.toString();
+			String code = new String(incoming.getCode());
+			String label = new String(incoming.toString());
 			ChoiceItem existingChoice = existingChoices.findByCode(code);
 			if(existingChoice == null)
-				existingChoices.add(incoming);
+				existingChoices.add(new ChoiceItem(code, label));
 			else if(existingChoice.toString().equals(label))
 				continue;
 			else if(existingChoice.toString().indexOf(label) > 0)
