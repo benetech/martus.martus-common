@@ -100,7 +100,10 @@ public class PoolOfReusableChoicesLists
 		{
 			ReusableChoices copy = new ReusableChoices(choices.getCode(), choices.getLabel());
 			for(int i = 0; i < choices.size(); ++i)
-				copy.add(choices.get(i));
+			{
+				ChoiceItem thisChoice = choices.get(i);
+				copy.add(new ChoiceItem(thisChoice.getCode(), thisChoice.getLabel()));
+			}
 			add(copy);
 			return;
 		}
