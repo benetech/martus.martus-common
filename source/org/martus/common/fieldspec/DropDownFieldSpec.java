@@ -110,6 +110,11 @@ public class DropDownFieldSpec extends FieldSpec
 		return getValue(at);
 	}
 	
+	public void sortChoicesByLabel()
+	{
+		choices.sortChoicesByLabel();
+	}
+
 	public String getDetailsXml()
 	{
 		return detailsXml;
