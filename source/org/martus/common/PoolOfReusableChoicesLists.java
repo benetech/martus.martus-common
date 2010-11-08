@@ -115,15 +115,20 @@ public class PoolOfReusableChoicesLists
 			String label = new String(incoming.toString());
 			ChoiceItem existingChoice = existingChoices.findByCode(code);
 			if(existingChoice == null)
-				existingChoices.add(new ChoiceItem(code, label));
-			else if(existingChoice.toString().equals(label))
-				continue;
-			else if(existingChoice.toString().indexOf(label) > 0)
-				continue;
-			else
 			{
-				existingChoice.setLabel(existingChoice.toString() + "; " + label); 
+				existingChoices.add(new ChoiceItem(code, label));
+				continue;
 			}
+			String existingLabel = existingChoice.toString();
+			if(existingLabel.equals(label))
+				continue;
+			int positionAtEnd = existingLabel.length() - label.length();
+			if(positionAtEnd > 0 && existingLabel.substring(positionAtEnd).equals(label))
+				continue;
+			String SEPARATOR = "; ";
+			if(existingLabel.indexOf(label + SEPARATOR) >= 0)
+				continue;
+			existingChoice.setLabel(existingLabel + SEPARATOR + label); 
 		}
 		existingChoices.sortChoicesByLabel();
 	}
