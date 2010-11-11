@@ -26,6 +26,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -140,7 +141,8 @@ public class FieldSpecCollection implements Comparable
 			result.append('\n');
 		}
 		
-		Set reusableChoiceListNames = reusableChoicesPool.getAvailableNames();
+		Vector reusableChoiceListNames = new Vector(reusableChoicesPool.getAvailableNames());
+		Collections.sort(reusableChoiceListNames);
 		Iterator it = reusableChoiceListNames.iterator();
 		while(it.hasNext())
 		{
@@ -204,7 +206,9 @@ public class FieldSpecCollection implements Comparable
 		if(!(rawOther instanceof FieldSpecCollection))
 			return 0;
 		FieldSpecCollection other = (FieldSpecCollection)rawOther;
-		return toXml().compareTo(other.toXml());
+		String thisXml = toXml();
+		String otherXml = other.toXml();
+		return thisXml.compareTo(otherXml);
 	}
 	
 	private Vector specs;
