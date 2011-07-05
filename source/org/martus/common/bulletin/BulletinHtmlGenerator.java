@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Vector;
 
+import org.martus.common.FieldCollection;
 import org.martus.common.FieldSpecCollection;
 import org.martus.common.GridData;
 import org.martus.common.HQKeys;
@@ -307,19 +308,26 @@ public class BulletinHtmlGenerator
 		String justification = "center";
 		if(!LanguageOptions.isRightToLeftLanguage())
 			value += buildElementWithAlignment(getHTMLEscaped(grid.getColumnZeroLabel()),TABLE_HEADER, justification);
+		
 		int columnCount = grid.getColumnCount();
+		FieldSpecCollection columnSpecs = new FieldSpecCollection();
 		for(int i = 0; i < columnCount; ++i)
 		{
 			String data = grid.getColumnLabel(i);
 			if(LanguageOptions.isRightToLeftLanguage())
 				data = grid.getColumnLabel((columnCount-1)-i);
 			value += buildElementWithAlignment(getHTMLEscaped(data),TABLE_HEADER, justification);
+			columnSpecs.add(grid.getFieldSpec(i));
 		}
 		if(LanguageOptions.isRightToLeftLanguage())
 			value += buildElementWithAlignment(getHTMLEscaped(grid.getColumnZeroLabel()),TABLE_HEADER, justification);
 		value += "</tr>";
+		
 		try
 		{
+			columnSpecs.addAllReusableChoicesLists(fdp.getFieldSpecs().getAllReusableChoiceLists());
+			FieldCollection fieldsForColumns = new FieldCollection(columnSpecs);
+			
 			GridData gridData = new GridData(grid, fdp.getFieldSpecs().getAllReusableChoiceLists());
 			gridData.setFromXml(gridXMLData);
 			int rowCount = gridData.getRowCount();
@@ -339,8 +347,7 @@ public class BulletinHtmlGenerator
 				   if(LanguageOptions.isRightToLeftLanguage())
 				     column = (columnCount - 1) - i;
 
-					FieldSpec columnSpec = grid.getFieldSpec(column);
-					MartusField field = new MartusField(columnSpec, fdp.getFieldSpecs().getAllReusableChoiceLists());
+					MartusField field = fieldsForColumns.getField(column);
 					String rawData = gridData.getValueAt(r, column);
 					field.setData(rawData);
 					String printableData = getFieldDataAsHtml(field);
