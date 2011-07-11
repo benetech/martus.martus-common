@@ -47,7 +47,6 @@ import java.security.Provider;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.security.SignatureException;
-import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateCrtKey;
@@ -78,6 +77,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.x509.X509V1CertificateGenerator;
 import org.martus.common.MartusConstants;
 import org.martus.common.MartusLogger;
+import org.martus.common.network.SimpleX509TrustManager;
 import org.martus.util.StreamableBase64;
 import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
@@ -717,7 +717,11 @@ public class MartusSecurity extends MartusCrypto
 		X509Certificate cert2 = createCertificate(serverPublicKey, serverPrivateKey);
 
 
-		Certificate[] chain = {cert0, cert1, cert2};
+		X509Certificate[] chain = {cert0, cert1, cert2};
+		
+		SimpleX509TrustManager trustManager = new SimpleX509TrustManager();
+		trustManager.setExpectedPublicKey(getPublicKeyString());
+		trustManager.checkServerTrusted(chain, "RSA");
 		keyStore.setKeyEntry( "cert", sslPrivateKey, passphrase.toCharArray(), chain );
 
 		KeyManagerFactory kmf = KeyManagerFactory.getInstance( "SunX509" );
