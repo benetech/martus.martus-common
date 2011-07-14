@@ -319,7 +319,7 @@ public class MiniLocalization
 		int gregorianYear = cal.getGregorianYear();
 		if(getCurrentCalendarSystem().equals(THAI_SYSTEM))
 			return gregorianYear + MultiCalendar.THAI_YEAR_OFFSET;
-		if(getCurrentCalendarSystem().equals(PERSIAN_SYSTEM))
+		if(getCurrentCalendarSystem().equals(PERSIAN_SYSTEM) || getCurrentCalendarSystem().equals(AFGHAN_SYSTEM))
 			return getPersianYear(cal);
 		
 		return gregorianYear;
@@ -339,7 +339,7 @@ public class MiniLocalization
 
 	public int getLocalizedMonth(MultiCalendar cal)
 	{
-		if(getCurrentCalendarSystem().equals(PERSIAN_SYSTEM))
+		if(getCurrentCalendarSystem().equals(PERSIAN_SYSTEM) || getCurrentCalendarSystem().equals(AFGHAN_SYSTEM))
 			return getPersianMonth(cal);
 		
 		return cal.getGregorianMonth();
@@ -352,7 +352,7 @@ public class MiniLocalization
 
 	public int getLocalizedDay(MultiCalendar cal)
 	{
-		if(getCurrentCalendarSystem().equals(PERSIAN_SYSTEM))
+		if(getCurrentCalendarSystem().equals(PERSIAN_SYSTEM) || getCurrentCalendarSystem().equals(AFGHAN_SYSTEM))
 			return getPersianDay(cal);
 		return cal.getGregorianDay();
 	}
@@ -366,7 +366,7 @@ public class MiniLocalization
 	{
 		if(getCurrentCalendarSystem().equals(THAI_SYSTEM))
 			return MultiCalendar.createFromGregorianYearMonthDay(year - MultiCalendar.THAI_YEAR_OFFSET, month, day);
-		if(getCurrentCalendarSystem().equals(PERSIAN_SYSTEM))
+		if(getCurrentCalendarSystem().equals(PERSIAN_SYSTEM) || getCurrentCalendarSystem().equals(AFGHAN_SYSTEM))
 			return MultiCalendar.createCalendarFromPersianYearMonthDay(year, month, day);
 		return MultiCalendar.createFromGregorianYearMonthDay(year, month, day);	
 	}
@@ -581,7 +581,8 @@ public class MiniLocalization
 	public static final String GREGORIAN_SYSTEM = "Gregorian";
 	public static final String THAI_SYSTEM = "Thai";
 	public static final String PERSIAN_SYSTEM = "Persian";
-	public static final String[] ALL_CALENDAR_SYSTEMS = {GREGORIAN_SYSTEM, THAI_SYSTEM, PERSIAN_SYSTEM, };
+	public static final String AFGHAN_SYSTEM = "Afghan";
+	public static final String[] ALL_CALENDAR_SYSTEMS = {GREGORIAN_SYSTEM, THAI_SYSTEM, PERSIAN_SYSTEM, AFGHAN_SYSTEM, };
 
 	protected Map textResources;
 	protected Vector rightToLeftLanguages;
