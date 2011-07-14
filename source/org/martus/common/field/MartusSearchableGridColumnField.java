@@ -60,6 +60,11 @@ public class MartusSearchableGridColumnField extends MartusField
 		
 	}
 	
+	public boolean isGridColumnField()
+	{
+		return true;
+	}
+	
 	public int getRowCount()
 	{
 		return dataInEachRow.length;

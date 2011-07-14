@@ -49,6 +49,11 @@ public class MartusField
 		return clone;
 	}
 	
+	public boolean isGridColumnField()
+	{
+		return false;
+	}
+	
 	public MartusField getSubField(String tag, MiniLocalization localization)
 	{
 		return null;
