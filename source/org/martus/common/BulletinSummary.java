@@ -37,6 +37,12 @@ import org.martus.common.packet.UniversalId;
 
 public class BulletinSummary
 {
+	public static Object createFromBulletin(Bulletin bulletin) throws WrongValueCount
+	{
+		int pretendSizeIsZero = 0;
+		return createFromString(bulletin.getAccount(), bulletin.getLocalId()+fieldDelimeter+ bulletin.getFieldDataPacket().getLocalId()+fieldDelimeter+pretendSizeIsZero);
+	}
+
 	public static BulletinSummary createFromString(String accountId, String parameters) throws WrongValueCount
 	{
 		String args[] = parameters.split(fieldDelimeter, -1);
@@ -188,6 +194,44 @@ public class BulletinSummary
 		public int expected;
 	}
 
+	public int hashCode()
+	{
+		return localId.hashCode();
+	}
+	
+	public boolean equals(Object rawOther)
+	{
+		if(rawOther == this)
+			return true;
+		if(! (rawOther instanceof BulletinSummary))
+			return false;
+		BulletinSummary other = (BulletinSummary)rawOther;
+		
+		if(!accountId.equals(other.accountId))
+			return false;
+		if(!localId.equals(other.localId))
+			return false;
+		if(!toString().equals(other.toString()))
+			return false;
+		
+		return true;
+	}
+	
+	public String toString()
+	{
+		StringBuffer sb = new StringBuffer();
+		sb.append(accountId);
+		sb.append("-" + localId);
+		sb.append("-" + title);
+		sb.append("-" + author);
+		sb.append("-" + dateTimeSaved);
+		sb.append("-" + size);
+		sb.append("-" + checkedFlag);
+		sb.append("-" + downloadable);
+		sb.append("-" + history.toString());
+		return sb.toString();
+	}
+	
 	private FieldDataPacket fdp;
 	private String accountId;
 	private String fdpLocalId;
