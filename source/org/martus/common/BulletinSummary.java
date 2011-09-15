@@ -46,13 +46,15 @@ public class BulletinSummary
 	public static BulletinSummary createFromString(String accountId, String parameters) throws WrongValueCount
 	{
 		String args[] = parameters.split(fieldDelimeter, -1);
-		if(args.length < 3 || args.length > 2+getNormalRetrieveTags().size())
-			throw new WrongValueCount(args.length);
+		if(args.length < 1 || args.length > 5)
+			throw new WrongValueCount(args.length, parameters);
 		
 		int at = 0;
 		String bulletinLocalId= args[at++];
 		String fdpLocalId = args[at++];
-		int size = Integer.parseInt(args[at++]);
+		int size = 0;
+		if(args.length > at)
+			size = Integer.parseInt(args[at++]);
 		String date = "";
 		if(args.length > at)
 			date = args[at++];
@@ -186,6 +188,12 @@ public class BulletinSummary
 	{
 		WrongValueCount(int gotCount)
 		{
+			this(gotCount, "");
+		}
+		
+		WrongValueCount(int gotCount, String message)
+		{
+			super(message);
 			got = gotCount;
 			expected = getNormalRetrieveTags().size();
 		}
