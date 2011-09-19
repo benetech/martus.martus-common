@@ -50,6 +50,39 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		specsBottomSection = new FieldSpecCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
 	}
 	
+	public void testBurmeseCharactersInTags() throws Exception
+	{
+		String burmese = new String(new char[] {0x102B, 0x1039, 0x103F });
+		String label = "whatever";
+		specsTopSection = addFieldSpec(specsTopSection, FieldSpec.createCustomField(burmese, label, new FieldTypeNormal()));
+		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		assertFalse("valid?", checker.isValid());
+		Vector errors = checker.getAllErrors();
+		assertEquals("didn't catch all errors?", 1, errors.size());
+		verifyExpectedError("IllegalTagCharactersTop", CustomFieldError.CODE_ILLEGAL_TAG, burmese, label, null, (CustomFieldError)errors.get(0));
+	}
+	
+	public void testBurmeseCharactersInReusableListCode() throws Exception
+	{
+		String burmese = new String(new char[] {0x102B, 0x1039, 0x103F });
+		String label = "whatever";
+		specsTopSection.getAllReusableChoiceLists().add(new ReusableChoices(burmese, label));
+		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		assertTrue("not valid?", checker.isValid());
+	}
+	
+	public void testBurmeseCharactersInReusableItemCode() throws Exception
+	{
+		String burmese = new String(new char[] {0x102B, 0x1039, 0x103F });
+		String label = "whatever";
+		ChoiceItem choice = new ChoiceItem(burmese, label);
+		ReusableChoices choices = new ReusableChoices("code", label);
+		choices.add(choice);
+		specsTopSection.getAllReusableChoiceLists().add(choices);
+		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
+		assertTrue("not valid?", checker.isValid());
+	}
+	
 	public void testAllValid() throws Exception
 	{
 		String tag = "_A.-_AllValid0123456789";

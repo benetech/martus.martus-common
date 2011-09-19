@@ -94,14 +94,14 @@ public class CustomFieldSpecValidator
 		{
 			String listCode = (String)iter.next();
 			ReusableChoices choiceList = specsToCheck.getReusableChoices(listCode);
-			if(!isValidTagOrCode(listCode))
+			if(!isValidCode(listCode))
 				errors.add(CustomFieldError.errorIllegalReusableChoiceListCode(listCode, choiceList.getLabel()));
 			
 			for(int i = 0; i < choiceList.size(); ++ i)
 			{
 				ChoiceItem choice = choiceList.get(i);
 				String itemCode = choice.getCode();
-				if(!isValidTagOrCode(itemCode))
+				if(!isValidCode(itemCode))
 					errors.add(CustomFieldError.errorIllegalReusableChoiceItemCode(listCode, itemCode, choice.getLabel()));
 			}
 				
@@ -343,16 +343,12 @@ public class CustomFieldSpecValidator
 		if(thisTag.length() < 1)
 			return true;
 
-		boolean allValid = true;
-		
+		if(!isValidCode(thisTag))
+			return false;
+
 		char[] tagChars = thisTag.toCharArray();
 		if(!isValidFirstTagCharacter(tagChars[0]))
-			allValid = false;
-		for(int j = 1; j < tagChars.length; ++j)
-		{
-			if(!isValidTagCharacter(tagChars[j]))
-				allValid = false;
-		}
+			return false;
 
 		String xmlTag = "Field-" + thisTag;
 		SimpleXmlDefaultLoader loader = new SimpleXmlDefaultLoader(xmlTag);
@@ -360,12 +356,29 @@ public class CustomFieldSpecValidator
 		try 
 		{
 			SimpleXmlParser.parse(loader, xml);
+			return true;
 		} 
 		catch (Exception e) 
 		{
-			allValid = false;
+			return false;
 		}
+	}
 
+	private boolean isValidCode(String thisTagOrCode)
+	{
+		// Blank tags/codes are handled separately
+		if(thisTagOrCode.length() < 1)
+			return true;
+
+		boolean allValid = true;
+		
+		char[] tagChars = thisTagOrCode.toCharArray();
+		for(int j = 1; j < tagChars.length; ++j)
+		{
+			if(!isValidTagCharacter(tagChars[j]))
+				allValid = false;
+		}
+		
 		return allValid;
 	}
 	
