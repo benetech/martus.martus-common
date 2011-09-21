@@ -177,6 +177,20 @@ public class DropDownFieldSpec extends FieldSpec
 		return null;
 	}
 
+	public static boolean isDataDrivenDropdown(FieldSpec spec)
+	{
+		if(!isDropDown(spec))
+			return false;
+		
+		DropDownFieldSpec ddSpec = (DropDownFieldSpec) spec;
+		return (ddSpec.hasDataSource());
+	}
+
+	public static boolean isDropDown(FieldSpec spec)
+	{
+		return spec.getType().isDropdown();
+	}
+
 	public static final String DROPDOWN_SPEC_CHOICES_TAG = "Choices";
 	public static final String DROPDOWN_SPEC_CHOICE_TAG = "Choice";
 	
