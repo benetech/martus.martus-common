@@ -126,7 +126,8 @@ public class MartusDropdownField extends MartusField
 			return (found >= 0);
 		}
 		
-		boolean isExactMatch = getData().equals(searchForValue);
+		String trimmedFieldData = getData().trim();
+		boolean isExactMatch = trimmedFieldData.equals(searchForValue);
 
 		// Empty search always needs an exact match
 		if(searchForValue.length() == 0)
@@ -154,7 +155,7 @@ public class MartusDropdownField extends MartusField
 		//  City=CA should match CA 
 		//  City=CA should NOT match CA.SF
 		//  City=CA.SF should match CA.SF
-		String searchOn = truncateData(getData(), relevantLevelCount);
+		String searchOn = truncateData(trimmedFieldData, relevantLevelCount);
 		return searchOn.equals(searchForValue);
 	}
 

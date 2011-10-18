@@ -121,10 +121,14 @@ public class TestMartusDropdownField extends TestCaseEnhanced
 		oneLevelField.setData("");
 		verifyEquals(oneLevelField, "");
 		
-		oneLevelField.setData(choicesA.get(0).getCode());
-		verifyEquals(oneLevelField, oneLevelField.getData());
+		String searchForValue = choicesA.get(0).getCode();
+		oneLevelField.setData(searchForValue);
+		verifyEquals(oneLevelField, searchForValue);
 		verifyNotEquals(oneLevelField, oneLevelField.getData().substring(0, 1));
 		verifyNotEquals(oneLevelField, "");
+		
+		oneLevelField.setData("\t" + choicesA.get(0).getCode() + "\t");
+		assertTrue(oneLevelField.doesMatch(MartusField.EQUAL, searchForValue, localization));
 	}
 	
 	public void testDoesMatchMultilevel() throws Exception
