@@ -127,7 +127,7 @@ public class MartusDropdownField extends MartusField
 		}
 		
 		String trimmedFieldData = getData().trim();
-		boolean isExactMatch = trimmedFieldData.equals(searchForValue);
+		boolean isExactMatch = trimmedFieldData.equals(searchForValue.trim());
 
 		// Empty search always needs an exact match
 		if(searchForValue.length() == 0)
