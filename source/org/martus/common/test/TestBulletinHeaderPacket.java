@@ -59,8 +59,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		{
 			security = MockMartusSecurity.createClient();
 		}
-		if(bhp == null)
-			bhp = new BulletinHeaderPacket(security);
+		bhp = new BulletinHeaderPacket(security);
 	}
 
 	public void testCreateUniversalId()
@@ -557,6 +556,6 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 	final String attachmentId3 = "alphabetically after 4";
 	final String attachmentId4 = "4 first";
 
-	static BulletinHeaderPacket bhp;
+	private BulletinHeaderPacket bhp;
 	static MartusCrypto security;
 }
