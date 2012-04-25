@@ -101,4 +101,11 @@ public class TestAttachmentProxy extends TestCaseEnhanced
 		assertEquals(label, a.getLabel());
 		assertNull("file", a.getFile());
 	}
+	
+	public void testEscapeFileNameForWindows() throws Exception
+	{
+		String original = "^ & = ( ) | , ; ' \" % ^";
+		String expected = "^^ ^& ^= ^( ^) ^| ^, ^; ^' ^\" ^% ^^";
+		assertEquals("Didn't escape properly?", expected, AttachmentProxy.escapeFilenameForWindows(original));
+	}
 }

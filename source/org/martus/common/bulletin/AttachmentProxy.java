@@ -142,6 +142,26 @@ public class AttachmentProxy
 		return false;
 	}
 
+	public static String escapeFilenameForWindows(String fileName)
+	{
+		// NOTE: See http://www.robvanderwoude.com/escapechars.php 
+		fileName = fileName.replaceAll("\\^", "^^");
+		
+		fileName = fileName.replaceAll("\\&", "^&");
+		fileName = fileName.replaceAll("\\=", "^=");
+		fileName = fileName.replaceAll("\\(", "^(");
+		fileName = fileName.replaceAll("\\)", "^)");
+		fileName = fileName.replaceAll("\\|", "^|");
+		fileName = fileName.replaceAll("\\,", "^,");
+		fileName = fileName.replaceAll("\\;", "^;");
+		fileName = fileName.replaceAll("\\'", "^'");
+		fileName = fileName.replaceAll("\\\"", "^\"");
+	
+		fileName = fileName.replaceAll("\\%", "^%");
+	
+		return fileName;
+	}
+
 	String label;
 	File file;
 	SessionKey sessionKey;
