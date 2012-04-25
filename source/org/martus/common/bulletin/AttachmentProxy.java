@@ -144,24 +144,28 @@ public class AttachmentProxy
 
 	public static String escapeFilenameForWindows(String fileName)
 	{
-		// NOTE: See http://www.robvanderwoude.com/escapechars.php 
-		fileName = fileName.replaceAll("\\^", "^^");
-		
-		fileName = fileName.replaceAll("\\&", "^&");
-		fileName = fileName.replaceAll("\\=", "^=");
-		fileName = fileName.replaceAll("\\(", "^(");
-		fileName = fileName.replaceAll("\\)", "^)");
-		fileName = fileName.replaceAll("\\|", "^|");
-		fileName = fileName.replaceAll("\\,", "^,");
-		fileName = fileName.replaceAll("\\;", "^;");
-		fileName = fileName.replaceAll("\\'", "^'");
-		fileName = fileName.replaceAll("\\\"", "^\"");
-	
-		fileName = fileName.replaceAll("\\%", "^%");
-	
+		fileName = addQuotesAround(fileName, ' ');
+		fileName = addQuotesAround(fileName, '^');
+		fileName = addQuotesAround(fileName, '&');
+		fileName = addQuotesAround(fileName, '%');
+		fileName = addQuotesAround(fileName, '=');
+		fileName = addQuotesAround(fileName, '(');
+		fileName = addQuotesAround(fileName, ')');
+		fileName = addQuotesAround(fileName, '|');
+		fileName = addQuotesAround(fileName, ',');
+		fileName = addQuotesAround(fileName, ';');
+		fileName = addQuotesAround(fileName, '\'');
+
 		return fileName;
 	}
 
+	private static String addQuotesAround(String fileName, char characterToQuote)
+	{
+		String from = "\\" + characterToQuote;
+		String to = "\"" + characterToQuote + "\"";
+		return fileName.replaceAll(from, to);
+	}
+	
 	String label;
 	File file;
 	SessionKey sessionKey;

@@ -105,7 +105,7 @@ public class TestAttachmentProxy extends TestCaseEnhanced
 	public void testEscapeFileNameForWindows() throws Exception
 	{
 		String original = "^ & = ( ) | , ; ' \" % ^";
-		String expected = "^^ ^& ^= ^( ^) ^| ^, ^; ^' ^\" ^% ^^";
+		String expected = "\"^\"\" \"\"&\"\" \"\"=\"\" \"\"(\"\" \"\")\"\" \"\"|\"\" \"\",\"\" \"\";\"\" \"\"'\"\" \"\"\" \"\"%\"\" \"\"^\"";
 		assertEquals("Didn't escape properly?", expected, AttachmentProxy.escapeFilenameForWindows(original));
 	}
 }
