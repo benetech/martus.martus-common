@@ -34,6 +34,7 @@ import java.util.GregorianCalendar;
 import org.martus.common.FieldSpecCollection;
 import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
+import org.martus.common.MartusLogger;
 import org.martus.common.MartusUtilities;
 import org.martus.common.MiniLocalization;
 import org.martus.common.PoolOfReusableChoicesLists;
@@ -119,7 +120,12 @@ public class Bulletin implements BulletinConstants
 
 	public String getAccount()
 	{
-		return getBulletinHeaderPacket().getAccountId();
+		String accountId = getBulletinHeaderPacket().getAccountId();
+		if(accountId == null)
+		{
+			MartusLogger.logWarning("No account Id found for: " + getLocalId());
+		}
+		return accountId;
 	}
 
 	public String getLocalId()
