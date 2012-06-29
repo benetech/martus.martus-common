@@ -570,7 +570,7 @@ public class MiniLocalization
 	public static final String FARSI = "fa";
 	public static final String BURMESE = "bur";
 	public static final String[] ALL_LANGUAGE_CODES = {
-				LANGUAGE_OTHER, ENGLISH, ARABIC,
+				LANGUAGE_OTHER, ENGLISH, ARABIC, "arm", 
 				"az", "bg", "bn", BURMESE, "km","my","zh", "nl", "eo", FARSI, FRENCH, "de","gu","ha","he","hi","hu",
 				"it", "ja","jv","kn","kk","ky","ko","ku","ml","mr","ne","or","pa","ps","pl","pt","ro",RUSSIAN,
 				"sr", "sd","si",SPANISH,"ta","tg","te",THAI,"tr","tk","uk","ur","uz","vi"};

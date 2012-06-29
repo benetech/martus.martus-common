@@ -34,6 +34,7 @@ public class EnglishCommonStrings
 		"language:?=-Other-",
 		"language:en=English",
 		"language:ar=Arabic",
+		"language:arm=Armenian",
 		"language:az=Azerbaijani",
 		"language:bg=Bulgarian",
 		"language:bn=Bengali, Bangla",
