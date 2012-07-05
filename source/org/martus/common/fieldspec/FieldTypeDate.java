@@ -27,6 +27,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.fieldspec;
 
 import org.martus.common.MiniLocalization;
+import org.martus.common.PoolOfReusableChoicesLists;
 import org.martus.common.bulletin.BulletinXmlExportImportConstants;
 import org.martus.util.xml.XmlUtilities;
 
@@ -46,15 +47,26 @@ public class FieldTypeDate extends FieldType
 	{
 		return "DATE";
 	}
+	
+	@Override
+	public String[] convertStoredToHumanReadable(String storedData, PoolOfReusableChoicesLists reusableChoicesLists, MiniLocalization localization)
+	{
+		return new String[] { getViewableData(storedData, localization) };
+	}
 
 	public String convertStoredToSearchable(String storedData, MiniLocalization localization)
 	{
-		return localization.convertStoredDateToDisplay(storedData);
+		return getViewableData(storedData, localization);
 	}
 
 	public String convertStoredToHtml(String storedData, MiniLocalization localization)
 	{
-		return XmlUtilities.getXmlEncoded(localization.convertStoredDateToDisplay(storedData));
+		return XmlUtilities.getXmlEncoded(getViewableData(storedData, localization));
+	}
+
+	private String getViewableData(String storedData, MiniLocalization localization)
+	{
+		return localization.convertStoredDateToDisplay(storedData);
 	}
 
 	public String convertStoredToExportable(String storedData, MiniLocalization localization)

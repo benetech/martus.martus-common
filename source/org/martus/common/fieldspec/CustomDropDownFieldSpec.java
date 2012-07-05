@@ -33,6 +33,7 @@ import java.util.Vector;
 import org.martus.common.ListOfReusableChoicesLists;
 import org.martus.common.MartusXml;
 import org.martus.common.MiniLocalization;
+import org.martus.common.PoolOfReusableChoicesLists;
 import org.martus.common.field.MartusDropdownField;
 import org.martus.common.field.MartusField;
 import org.martus.util.xml.SimpleXmlMapLoader;
@@ -216,6 +217,37 @@ public class CustomDropDownFieldSpec extends DropDownFieldSpec
 		}
 		result.append("</tr></table>");
 		return result.toString();
+	}
+	
+	@Override
+	public String[] convertStoredToHumanReadable(String rawData, PoolOfReusableChoicesLists poolOfReusableChoicesLists, MiniLocalization localization)
+	{
+		if(getDataSourceGridTag() != null)
+			return new String[] { rawData };
+		
+		String[] reusableChoicesListsCodes = getReusableChoicesCodes();
+		if(reusableChoicesListsCodes.length == 0)
+		{
+			int found = findCode(rawData);
+			if(found < 0)
+				return new String[] { rawData };
+			
+			return new String[] { getChoice(found).toString() };
+		}
+		
+		ListOfReusableChoicesLists reusableChoicesLists = new ListOfReusableChoicesLists(poolOfReusableChoicesLists, reusableChoicesListsCodes);
+		String[] values = reusableChoicesLists.getDisplayValuesAtAllLevels(rawData);
+		
+		if(values.length == 1)
+		{
+			String result = values[0];
+			if(reusableChoicesLists.get(0).getCode().equals(INTERNAL_CHOICES_FOR_BREAK_CODE))
+				return new String[] { result };
+
+			return new String[] { result };
+		}
+		
+		return values;
 	}
 	
 	static class DropDownSpecLoader extends SimpleXmlVectorLoader

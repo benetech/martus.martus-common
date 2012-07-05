@@ -183,6 +183,11 @@ public class FieldSpec
 		return isRequired;
 	}
 
+	public String[] convertStoredToHumanReadable(String data, PoolOfReusableChoicesLists reusableChoicesLists, MiniLocalization localization)
+	{
+		return getType().convertStoredToHumanReadable(data, reusableChoicesLists, localization);
+	}
+
 	public String convertStoredToSearchable(String storedData, PoolOfReusableChoicesLists reusableChoicesLists, MiniLocalization localization)
 	{
 		return getType().convertStoredToSearchable(storedData, localization);

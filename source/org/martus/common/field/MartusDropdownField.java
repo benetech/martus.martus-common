@@ -76,6 +76,17 @@ public class MartusDropdownField extends MartusField
 		
 		return dropDownSpec.convertStoredToHtml(this, getDataForSubtotals(), localization);
 	}
+	
+	@Override
+	public String[] getHumanReadableData(MiniLocalization localization)
+	{
+		CustomDropDownFieldSpec dropDownSpec = getDropDownSpec();
+		String[] reusableChoicesCodes = dropDownSpec.getReusableChoicesCodes();
+		if(reusableChoicesCodes.length == 0)
+			return super.getHumanReadableData(localization);
+		
+		return dropDownSpec.convertStoredToHumanReadable(getData(), getReusableChoicesLists(), localization);
+	}
 
 	public boolean contains(String value, MiniLocalization localization)
 	{

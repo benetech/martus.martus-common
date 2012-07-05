@@ -80,6 +80,15 @@ public class MiniFieldSpec implements Comparable
 		return tag;
 	}
 	
+	public String getTopLevelTag()
+	{
+		int dotAt = getTag().indexOf('.');
+		if(dotAt < 0)
+			return getTag();
+		
+		return getTag().substring(0, dotAt);
+	}
+	
 	public String getLabel()
 	{
 		return label;

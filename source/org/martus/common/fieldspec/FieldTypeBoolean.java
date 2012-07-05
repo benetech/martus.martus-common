@@ -27,6 +27,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.fieldspec;
 
 import org.martus.common.MiniLocalization;
+import org.martus.common.PoolOfReusableChoicesLists;
 
 public class FieldTypeBoolean extends FieldType
 {
@@ -49,6 +50,12 @@ public class FieldTypeBoolean extends FieldType
 	public String getDefaultValue()
 	{
 		return FieldSpec.FALSESTRING;
+	}
+	
+	@Override
+	public String[] convertStoredToHumanReadable(String storedData, PoolOfReusableChoicesLists reusableChoicesLists, MiniLocalization localization)
+	{
+		return new String[] { getViewableData(storedData, localization) };
 	}
 
 	public String convertStoredToSearchable(String storedData, MiniLocalization localization)

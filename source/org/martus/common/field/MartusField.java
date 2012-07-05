@@ -102,6 +102,11 @@ public class MartusField
 		return getData();
 	}
 
+	public String[] getHumanReadableData(MiniLocalization localization)
+	{
+		return getFieldSpec().convertStoredToHumanReadable(getData(), getReusableChoicesLists(), localization);
+	}
+
 	public String getSearchableData(MiniLocalization localization)
 	{
 		return getFieldSpec().convertStoredToSearchable(getData(), getReusableChoicesLists(), localization);
