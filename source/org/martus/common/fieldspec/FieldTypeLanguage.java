@@ -70,6 +70,9 @@ public class FieldTypeLanguage extends FieldType
 
 	private String getViewableData(String storedData, MiniLocalization localization)
 	{
+		if(storedData.length() == 0)
+			return "";
+		
 		return localization.getLanguageName(storedData);
 	}
 }
