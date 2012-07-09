@@ -572,6 +572,9 @@ public class CustomFieldSpecValidator
 		GridFieldSpec gridSpec = (GridFieldSpec)rawGridSpec;
 		String gridColumnLabel = dropdownSpec.getDataSourceGridColumn();
 		FieldSpec rawColumnSpec = gridSpec.findColumnSpecByLabel(gridColumnLabel);
+		if(rawColumnSpec == null)
+			return;
+		
 		if(!rawColumnSpec.getType().isDropdown())
 			return;
 		
