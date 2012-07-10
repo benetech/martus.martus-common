@@ -103,17 +103,18 @@ public class MartusLogger
 
 	public static String getMemoryStatistics()
 	{
+		System.gc();
 		Runtime runtime = Runtime.getRuntime();
-		String memoryStatistics = "\nMemory Statistics:\n" +
-						"  Available in heap: " + megs(runtime.freeMemory()) + "\n" + 
-						"  Current heap size: " + megs(runtime.totalMemory()) + "\n" +
-						"  Maximum heap size: " + megs(runtime.maxMemory());
+		long totalMegs = megs(runtime.totalMemory());
+		long maxMegs = megs(runtime.maxMemory());
+		long usedMegs = megs(runtime.totalMemory() - runtime.freeMemory());
+		String memoryStatistics = "\nMemory Statistics: Using " + usedMegs + " megs of " + totalMegs + " megs; max avail=" + maxMegs;
 		return memoryStatistics;
 	}
 
-	public static String megs(long bytes)
+	public static long megs(long bytes)
 	{
-		return "" + bytes/1024L/1024L + " megs";
+		return bytes/1024L/1024L;
 	}
 
 	private static PrintStream destination = System.out;
