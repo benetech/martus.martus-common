@@ -36,6 +36,7 @@ import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 import java.util.Vector;
+import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
@@ -200,10 +201,7 @@ public class BulletinZipUtilities
 		UnsupportedEncodingException
 	{
 		ZipOutputStream zipOut = new ZipOutputStream(outputStream);
-// TODO: Setting the method to STORED seems like it should dramatically
-// speed up writing and reading zip files. The javadocs say it is supported.
-// But every time I try it, the zip file ends up empty. kbs.
-//		zipOut.setMethod(zipOut.STORED);
+		zipOut.setLevel(Deflater.BEST_COMPRESSION);
 
 		try
 		{
