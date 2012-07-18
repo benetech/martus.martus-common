@@ -34,8 +34,8 @@ import java.io.OutputStream;
 import org.martus.common.FieldSpecCollection;
 import org.martus.common.HQKeys;
 import org.martus.common.crypto.MartusCrypto;
-import org.martus.common.crypto.MartusCrypto.CryptoException;
 import org.martus.common.crypto.SessionKey;
+import org.martus.common.crypto.MartusCrypto.CryptoException;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.ReadableDatabase;
 import org.martus.common.fieldspec.StandardFieldSpecs;
@@ -43,13 +43,12 @@ import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.Packet;
+import org.martus.common.packet.UniversalId;
 import org.martus.common.packet.Packet.InvalidPacketException;
 import org.martus.common.packet.Packet.SignatureVerificationException;
 import org.martus.common.packet.Packet.WrongPacketTypeException;
-import org.martus.common.packet.UniversalId;
 import org.martus.util.StreamableBase64;
 import org.martus.util.StreamableBase64.InvalidBase64Exception;
-import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 
 
@@ -113,10 +112,12 @@ public class BulletinLoader
 		packet.setUniversalId(key.getUniversalId());
 		try
 		{
-			if(!db.doesRecordExist(key))
+			InputStreamWithSeek in = db.openInputStream(key, verifier);
+			if(in == null)
+			{
+				//System.out.println("Packet not found: " + key.getLocalId());
 				return false;
-			
-			InputStreamWithSeek in = openStreamForPacket(db, key, verifier);
+			}
 			try
 			{
 				packet.loadFromXml(in.convertToInMemoryStream(), expectedSig, verifier);
@@ -141,18 +142,6 @@ public class BulletinLoader
 			//e.printStackTrace();
 			return false;
 		}
-	}
-
-	private static InputStreamWithSeek openStreamForPacket(ReadableDatabase db,
-			DatabaseKey key, MartusCrypto verifier) throws Exception
-	{
-		final int MAX_PACKET_SIZE_TO_HANDLE_IN_MEMORY = 1 * 1024 * 1024;
-		if(db.getRecordSize(key) > MAX_PACKET_SIZE_TO_HANDLE_IN_MEMORY)
-			return db.openInputStream(key, verifier);
-		
-		String contents = db.readRecord(key, verifier);
-		byte[] bytes = contents.getBytes("UTF-8");
-		return new ByteArrayInputStreamWithSeek(bytes);
 	}
 
 	public static void extractAttachmentToFile(ReadableDatabase db, AttachmentProxy a, MartusCrypto verifier, File destFile) throws
