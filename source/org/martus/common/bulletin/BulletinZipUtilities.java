@@ -79,12 +79,12 @@ public class BulletinZipUtilities
 			FileNotFoundException
 	{
 		BulletinHeaderPacket bhp = BulletinStore.loadBulletinHeaderPacket(db, headerKey, security);
+		FileOutputStream outputStream = new FileOutputStream(destZipFile);
 
 		try
 		{
 			DatabaseKey[] packetKeys = bhp.getPublicPacketKeys();
 	
-			FileOutputStream outputStream = new FileOutputStream(destZipFile);
 			BulletinZipUtilities.extractPacketsToZipStream(db, packetKeys, outputStream, security);
 		}
 		catch(Exception e)
