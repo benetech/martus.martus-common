@@ -78,11 +78,10 @@ public class BulletinZipUtilities
 			MartusCrypto.NoKeyPairException,
 			FileNotFoundException
 	{
-		BulletinHeaderPacket bhp = null;
-	
+		BulletinHeaderPacket bhp = BulletinStore.loadBulletinHeaderPacket(db, headerKey, security);
+
 		try
 		{
-			bhp = BulletinStore.loadBulletinHeaderPacket(db, headerKey, security);
 			DatabaseKey[] packetKeys = bhp.getPublicPacketKeys();
 	
 			FileOutputStream outputStream = new FileOutputStream(destZipFile);
