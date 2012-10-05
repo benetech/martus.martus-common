@@ -85,7 +85,7 @@ public class BulletinZipUtilities
 			DatabaseKey[] packetKeys = bhp.getPublicPacketKeys();
 	
 			FileOutputStream outputStream = new FileOutputStream(destZipFile);
-			BulletinZipUtilities.extractPacketsToZipStream(headerKey.getAccountId(), db, packetKeys, outputStream, security);
+			BulletinZipUtilities.extractPacketsToZipStream(db, packetKeys, outputStream, security);
 		}
 		catch(Exception e)
 		{
@@ -138,7 +138,7 @@ public class BulletinZipUtilities
 		DatabaseKey[] packetKeys = BulletinZipUtilities.getAllPacketKeys(bhp);
 	
 		FileOutputStream outputStream = new FileOutputStream(destZipFile);
-		BulletinZipUtilities.extractPacketsToZipStream(headerKey.getAccountId(), db, packetKeys, outputStream, security);
+		BulletinZipUtilities.extractPacketsToZipStream(db, packetKeys, outputStream, security);
 		
 		if (!debugValidateIntegrityOfZipFilePublicPackets)
 			return;
@@ -196,7 +196,7 @@ public class BulletinZipUtilities
 		return keys;
 	}
 
-	public static void extractPacketsToZipStream(String clientId, ReadableDatabase db, DatabaseKey[] packetKeys, OutputStream outputStream, MartusCrypto security) throws
+	public static void extractPacketsToZipStream(ReadableDatabase db, DatabaseKey[] packetKeys, OutputStream outputStream, MartusCrypto security) throws
 		IOException,
 		UnsupportedEncodingException
 	{
