@@ -31,7 +31,7 @@ import java.io.ObjectStreamConstants;
 import java.math.BigInteger;
 import java.security.KeyPair;
 
-import org.bouncycastle.jce.provider.JCERSAPrivateCrtKey;
+import org.bouncycastle.jcajce.provider.asymmetric.rsa.BCRSAPrivateCrtKey;
 
 public class MartusKeyPairSaver
 {
@@ -47,7 +47,7 @@ public class MartusKeyPairSaver
 	
 	void writeKeyPair(DataOutputStream out, KeyPair keyPair) throws Exception
 	{
-		JCERSAPrivateCrtKey privateKey = (JCERSAPrivateCrtKey)keyPair.getPrivate();
+		BCRSAPrivateCrtKey privateKey = (BCRSAPrivateCrtKey) keyPair.getPrivate();
 		nextHandle = MartusKeyPairDataConstants.INITIAL_HANDLE;
 		
 		out.writeShort(ObjectStreamConstants.STREAM_MAGIC);
@@ -225,7 +225,7 @@ public class MartusKeyPairSaver
 			writeBigIntegerObjectHeader(out);
 			
 			writeBigIntegerData(out, privateKey.getPrivateExponent());
-			
+
 			// BigInt crtCoefficient (PrivateCRTKey Field 1)
 			writeBigIntegerObjectHeader(out);
 			writeBigIntegerData(out, privateKey.getCrtCoefficient());
