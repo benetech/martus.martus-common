@@ -32,6 +32,16 @@ import java.util.Date;
 
 public class MartusLogger 
 {
+	public static void temporarilyDisableLogging()
+	{
+		disabled = true;
+	}
+
+	public static void reEnableLogging()
+	{
+		disabled = false;
+	}
+
 	public static void disableLogging()
 	{
 		destination = null;
@@ -54,19 +64,30 @@ public class MartusLogger
 
 	public synchronized static void log(String text)
 	{
-		if(destination != null)
-		{
-			Date now = new Date();
-			DateFormat df = new SimpleDateFormat("EEE MM/dd HH:mm:ss zzz");
-			destination.println(df.format(now) + " " + text);
-		}
+		if(!canLog())
+			return;
+		
+		Date now = new Date();
+		DateFormat df = new SimpleDateFormat("EEE MM/dd HH:mm:ss zzz");
+		destination.println(df.format(now) + " " + text);
+	}
+
+	private static boolean canLog()
+	{
+		if(disabled)
+			return false;
+		
+		if(destination == null)
+			return false;
+			
+		return true;
 	}
 	
 	public synchronized static void logCurrentStack()
 	{
-		if(destination == null)
+		if(!canLog())
 			return;
-
+		
 		try
 		{
 			throw new Throwable("Current Stack");
@@ -79,7 +100,7 @@ public class MartusLogger
 	
 	public synchronized static void logException(Exception e)
 	{
-		if(destination == null)
+		if(!canLog())
 			return;
 		
 		destination.println(e.getMessage());
@@ -103,6 +124,9 @@ public class MartusLogger
 	
 	public static void logMemoryStatistics()
 	{
+		if(!canLog())
+			return;
+		
 		log(getMemoryStatistics());
 	}
 
@@ -123,5 +147,5 @@ public class MartusLogger
 	}
 
 	private static PrintStream destination = System.out;
-
+	private static boolean disabled = false;
 }
