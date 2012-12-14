@@ -37,6 +37,11 @@ public class MartusLogger
 		destination = null;
 	}
 	
+	public static void setDestination(PrintStream newDestination)
+	{
+		destination = newDestination;
+	}
+	
 	public static void logBeginProcess(String text)
 	{
 		log("Begin " + text);
