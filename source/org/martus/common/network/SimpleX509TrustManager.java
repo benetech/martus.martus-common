@@ -34,6 +34,7 @@ import java.security.cert.X509Certificate;
 
 import javax.net.ssl.X509TrustManager;
 
+import org.martus.common.MartusLogger;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusJceKeyPair;
 import org.martus.util.StreamableBase64;
@@ -98,18 +99,18 @@ public class SimpleX509TrustManager implements X509TrustManager
 		}
 		catch (SignatureException e)
 		{
-			e.printStackTrace();
-			System.out.println("Failed cert: " + failedCert);
+			MartusLogger.logException(e);
+			MartusLogger.log("Failed cert: " + failedCert);
 			String key0 = SimpleX509TrustManager.getKeyString(cert0.getPublicKey());
 			String key1 = SimpleX509TrustManager.getKeyString(cert1.getPublicKey());
 			String key2 = SimpleX509TrustManager.getKeyString(cert2.getPublicKey());
-			System.out.println("Cert0 public: " + key0);
+			MartusLogger.log("Cert0 public: " + key0);
 			if(!key0.equals(key1))
-				System.out.println("Cert1 public: " + key1);
-			System.out.println("Cert2 public: " + key2);
-			System.out.println("Cert2 public code: " + MartusCrypto.formatAccountIdForLog(key2));
+				MartusLogger.log("Cert1 public: " + key1);
+			MartusLogger.log("Cert2 public: " + key2);
+			MartusLogger.log("Cert2 public code: " + MartusCrypto.formatAccountIdForLog(key2));
 			String expectedKeyString = SimpleX509TrustManager.getKeyString(expectedPublicKey);
-			System.out.println("Expected public code: " + MartusCrypto.formatAccountIdForLog(expectedKeyString));
+			MartusLogger.log("Expected public code: " + MartusCrypto.formatAccountIdForLog(expectedKeyString));
 
 			throw new CertificateException(e.toString());
 		}
