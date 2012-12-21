@@ -35,6 +35,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
@@ -51,6 +52,7 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -673,10 +675,9 @@ public class MartusSecurity extends MartusCrypto
 		try
 		{
 			SignatureEngine verifier = SignatureEngine.createVerifier(signedBy);
-			for(int element = 0; element < dataToTest.size(); ++element)
+			for(int index = 0; index < dataToTest.size(); ++index)
 			{
-				String thisElement = dataToTest.get(element).toString();
-				byte[] bytesToSign = thisElement.getBytes("UTF-8");
+				byte[] bytesToSign = extractBytes(dataToTest.get(index));
 				verifier.digest(bytesToSign);
 				verifier.digest((byte)0);
 			}
@@ -686,6 +687,33 @@ public class MartusSecurity extends MartusCrypto
 		catch(Exception e)
 		{
 			return false;
+		}
+	}
+
+	private byte[] extractBytes(Object element) throws UnsupportedEncodingException
+	{
+		String thisElement = extractString(element);
+		byte[] bytesToSign = thisElement.getBytes("UTF-8");
+		return bytesToSign;
+	}
+
+	private String extractString(Object rawElement)
+	{
+		// NOTE: Martus was originally written with a version of XMLRPC
+		// that passed Vectors as Vectors. Newer versions auto-convert 
+		// them to Object[] arrays. The legacy callers are still signing
+		// Vectors, so we need to verify the signatures as if they were 
+		// Vectors on the receiving end as well.
+		try
+		{
+			Object[] array = (Object[])rawElement;
+			Vector vector = new Vector(Arrays.asList(array));
+			return vector.toString();
+		}
+		catch(ClassCastException e)
+		{
+			// NOTE: Not a Vector, so just verify normally
+			return rawElement.toString();
 		}
 	}
 		

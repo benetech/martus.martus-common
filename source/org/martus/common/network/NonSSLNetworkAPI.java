@@ -28,30 +28,8 @@ package org.martus.common.network;
 
 import java.util.Vector;
 
-import org.martus.common.MartusUtilities;
-import org.martus.common.Exceptions.ServerNotAvailableException;
-import org.martus.common.MartusUtilities.PublicInformationInvalidException;
-import org.martus.common.crypto.MartusCrypto;
-
 abstract public class NonSSLNetworkAPI
 {
 	abstract public String ping();
 	abstract public Vector getServerInformation();
-	public String getServerPublicKey(MartusCrypto verifier) throws ServerNotAvailableException, PublicInformationInvalidException
-	{
-		if(ping() == null)
-			throw new ServerNotAvailableException();
-	
-		Vector serverInformation = getServerInformation();
-		if(serverInformation == null)
-			throw new ServerNotAvailableException();
-	
-		if(serverInformation.size() != 3)
-			throw new PublicInformationInvalidException();
-	
-		String accountId = (String)serverInformation.get(1);
-		String sig = (String)serverInformation.get(2);
-		MartusUtilities.validatePublicInfo(accountId, sig, verifier);
-		return accountId;
-	}
 }

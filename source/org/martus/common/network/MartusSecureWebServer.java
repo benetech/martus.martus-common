@@ -50,7 +50,6 @@ public class MartusSecureWebServer extends WebServerWithSynchronousStartup
 	}
 	
 	public ServerSocket createServerSocket(int port, int backlog, java.net.InetAddress add)
-			throws Exception
 	{
 		try
 	    {
@@ -65,7 +64,7 @@ public class MartusSecureWebServer extends WebServerWithSynchronousStartup
 	    	System.err.println("createServerSocket failed for " + add.toString() + ":" + port);
 	    	System.err.flush();
 	    	e.printStackTrace();
-	    	throw(e);
+	    	throw(new RuntimeException(e));
 	    }
 	}
 	

@@ -26,6 +26,7 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.network;
 
+import java.util.Arrays;
 import java.util.Vector;
 
 public class NetworkResponse
@@ -40,7 +41,10 @@ public class NetworkResponse
 		{
 			resultCode = (String)rawServerReturnData.get(0);
 			if(rawServerReturnData.size() >= 2)
-				resultVector = (Vector)rawServerReturnData.get(1);
+			{
+				Object[] result = (Object[]) rawServerReturnData.get(1);
+				resultVector = new Vector(Arrays.asList(result));
+			}
 		}
 	}
 

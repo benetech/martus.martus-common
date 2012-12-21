@@ -26,6 +26,7 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.xmlrpc;
 
+import java.io.IOException;
 import java.net.InetAddress;
 
 public class WebServerWithSynchronousStartup extends WebServerWithClientId
@@ -40,7 +41,7 @@ public class WebServerWithSynchronousStartup extends WebServerWithClientId
 		return (serverSocket != null);
 	}
 	
-	public void start()
+	public void start() throws IOException
 	{
 		super.start();
 		while(!isListening())
