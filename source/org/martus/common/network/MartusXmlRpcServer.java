@@ -28,18 +28,25 @@ package org.martus.common.network;
 
 import java.net.InetAddress;
 
+import org.apache.xmlrpc.server.PropertyHandlerMapping;
 import org.martus.common.xmlrpc.WebServerWithClientId;
 import org.martus.common.xmlrpc.WebServerWithSynchronousStartup;
 
 
 public class MartusXmlRpcServer
 {
-	public static WebServerWithClientId createNonSSLXmlRpcServer(Object server, String handlerName, int port, InetAddress address)
+	public static WebServerWithClientId createNonSSLXmlRpcServer(Object server, Class classThatDefinesTheApi, String handlerName, int port, InetAddress address)
 	{
+		SaneRequestProcessorFactoryFactory factoryFactory = new SaneRequestProcessorFactoryFactory(server, classThatDefinesTheApi);
+
 		try
 		{
 			WebServerWithClientId webServer = new WebServerWithSynchronousStartup(port, address);
-			webServer.addHandler(handlerName, server);
+			PropertyHandlerMapping mapping = new PropertyHandlerMapping();
+			mapping.setRequestProcessorFactoryFactory(factoryFactory);
+			Class actualServerClass = factoryFactory.getActualServerClass();
+			mapping.addHandler(handlerName, actualServerClass);
+			webServer.getXmlRpcServer().setHandlerMapping(mapping);
 			webServer.start();
 			return webServer;
 		}
@@ -51,12 +58,17 @@ public class MartusXmlRpcServer
 		return null;
 	}
 	
-	public static MartusSecureWebServer createSSLXmlRpcServer(Object server, String destObjectName, int port, InetAddress address)
+	public static MartusSecureWebServer createSSLXmlRpcServer(Object server, Class classThatDefinesTheApi, String destObjectName, int port, InetAddress address)
 	{
+		SaneRequestProcessorFactoryFactory factoryFactory = new SaneRequestProcessorFactoryFactory(server, classThatDefinesTheApi);
+		
 		try
 		{
 			MartusSecureWebServer secureWebServer = new MartusSecureWebServer(port, address);
-			secureWebServer.addHandler(destObjectName, server);
+			PropertyHandlerMapping mapping = new PropertyHandlerMapping();
+			mapping.setRequestProcessorFactoryFactory(factoryFactory);
+			mapping.addHandler(destObjectName, factoryFactory.getActualServerClass());
+			secureWebServer.getXmlRpcServer().setHandlerMapping(mapping);
 			secureWebServer.start();
 			return secureWebServer;
 		}

@@ -27,12 +27,14 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.network.mirroring;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Vector;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
+import org.apache.xmlrpc.client.XmlRpcClient;
+import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import org.martus.common.MartusUtilities;
 import org.martus.common.network.SimpleHostnameVerifier;
 import org.martus.common.network.SimpleX509TrustManager;
@@ -107,7 +109,12 @@ public class CallerSideMirroringGatewayForXmlRpc implements MirroringInterface
 		// NOTE: We **MUST** create a new XmlRpcClient for each call, because
 		// there is a memory leak in apache xmlrpc 1.1 that will cause out of 
 		// memory exceptions if we reuse an XmlRpcClient object
-		XmlRpcClient xmlRpc = new XmlRpcClient(serverUrl);
+		XmlRpcClient xmlRpc = new XmlRpcClient();
+
+		XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+		config.setServerURL(new URL(serverUrl));
+		xmlRpc.setConfig(config);
+		
 		return xmlRpc.execute(MirroringInterface.DEST_OBJECT_NAME + "." + method, params);
 	}
 

@@ -26,9 +26,11 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.network;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Vector;
 
-import org.apache.xmlrpc.XmlRpcClient;
+import org.apache.xmlrpc.client.XmlRpcClient;
+import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 
 public class MartusNonSSLXmlrpcClient implements NetworkInterfaceConstants
 {
@@ -51,7 +53,12 @@ public class MartusNonSSLXmlrpcClient implements NetworkInterfaceConstants
 			// NOTE: We **MUST** create a new XmlRpcClient for each call, because
 			// there is a memory leak in apache xmlrpc 1.1 that will cause out of 
 			// memory exceptions if we reuse an XmlRpcClient object
-			XmlRpcClient client = new XmlRpcClient(serverUrl);
+			XmlRpcClient client = new XmlRpcClient();
+
+			XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+			config.setServerURL(new URL(serverUrl));
+			client.setConfig(config);
+
 			result = client.execute(serverObjectName + "." + method, params);
 		}
 		catch (IOException e)
