@@ -32,6 +32,7 @@ import java.net.ServerSocket;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 
 import org.martus.common.crypto.MartusCrypto;
@@ -56,7 +57,10 @@ public class MartusSecureWebServer extends WebServerWithSynchronousStartup
 			SSLContext sslContext = createSSLContext();
 			SSLServerSocketFactory sf = sslContext.getServerSocketFactory();
 
-	    	ServerSocket ss = sf.createServerSocket( port, backlog, add);
+	    	SSLServerSocket ss = (SSLServerSocket)sf.createServerSocket( port, backlog, add);
+	    	
+	    	// NOTE: Existing clients expect "RSA", not "ECDH_RSA"
+	    	ss.setEnabledCipherSuites(new String[] {"TLS_RSA_WITH_AES_256_CBC_SHA"});
 	    	return ss;
 	    }
 	    catch(Exception e)
