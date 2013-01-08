@@ -56,7 +56,6 @@ public class SaneRequestProcessorFactoryFactory extends StatelessProcessorFactor
 	
 	class SaneRequestProcessorFactory implements RequestProcessorFactory
 	{
-		@Override
 		public Object getRequestProcessor(XmlRpcRequest request) throws XmlRpcException
 		{
 			return server;
