@@ -842,7 +842,7 @@ public class MartusSecurity extends MartusCrypto
 		}
 		catch(Exception e)
 		{
-			//System.out.println("pbeEncryptDecrypt: " + e);
+			MartusLogger.logException(e);
 		}
 
 		return null;
