@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.ParseException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -42,9 +43,9 @@ import java.util.TreeMap;
 import org.martus.common.MartusUtilities;
 import org.martus.common.MartusUtilities.FileVerificationException;
 import org.martus.common.crypto.MartusCrypto;
-import org.martus.common.crypto.StreamEncryptor;
 import org.martus.common.crypto.MartusCrypto.CryptoException;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
+import org.martus.common.crypto.StreamEncryptor;
 import org.martus.common.packet.UniversalId;
 import org.martus.util.DirectoryUtils;
 import org.martus.util.ScrubFile;
@@ -99,7 +100,7 @@ abstract public class FileDatabase extends Database
 	public void initialize() throws FileVerificationException, MissingAccountMapException, MissingAccountMapSignatureException
 	{
 		accountMap = new TreeMap();
-		mTimeMap = new HashMap();
+		mTimeMap = Collections.synchronizedMap(new HashMap());
 		loadAccountMap();
 		if(isAccountMapExpected(absoluteBaseDir) && !accountMapFile.exists())
 		{
