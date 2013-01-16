@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.ParseException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -99,7 +100,7 @@ abstract public class FileDatabase extends Database
 	public void initialize() throws FileVerificationException, MissingAccountMapException, MissingAccountMapSignatureException
 	{
 		accountMap = new TreeMap();
-		mTimeMap = new HashMap();
+		mTimeMap = Collections.synchronizedMap(new HashMap());
 		loadAccountMap();
 		if(isAccountMapExpected(absoluteBaseDir) && !accountMapFile.exists())
 		{
