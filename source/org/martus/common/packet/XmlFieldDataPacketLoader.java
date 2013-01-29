@@ -26,6 +26,7 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.packet;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -55,8 +56,8 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 	{
 		super(packetToFill);
 		fdp = packetToFill;
-		authorizedEncryptedHQSessionKeyStrings = new HashMap();
-		authorizedEncryptedHQSessionKeys = new HashMap();
+		authorizedEncryptedHQSessionKeyStrings = Collections.synchronizedMap(new HashMap());
+		authorizedEncryptedHQSessionKeys = Collections.synchronizedMap(new HashMap());
 	}
 	
 	public SimpleXmlDefaultLoader startElement(String tag)
@@ -232,8 +233,8 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 	String encryptedData;
 	private boolean foundModernFieldSpecs;
 	private SessionKey encryptedHQSessionKey;
-	private HashMap authorizedEncryptedHQSessionKeys;
-	private HashMap authorizedEncryptedHQSessionKeyStrings;
+	private Map authorizedEncryptedHQSessionKeys;
+	private Map authorizedEncryptedHQSessionKeyStrings;
 	private FieldDataPacket fdp;
 	private static Vector stringTags;
 }

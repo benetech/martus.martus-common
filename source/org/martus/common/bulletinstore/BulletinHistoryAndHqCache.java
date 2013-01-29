@@ -26,9 +26,11 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.bulletinstore;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
@@ -86,7 +88,7 @@ public class BulletinHistoryAndHqCache extends BulletinStoreCache implements Dat
 	public synchronized Set getAllKnownDescendents(UniversalId uid)
 	{
 		fill();
-		HashSet descendents = new HashSet();
+		Set descendents = Collections.synchronizedSet(new HashSet());
 		Set children = getChildren(uid);
 		Iterator it = children.iterator();
 		while(it.hasNext())
@@ -140,15 +142,15 @@ public class BulletinHistoryAndHqCache extends BulletinStoreCache implements Dat
 		MartusLogger.log("BulletinHistoryAndHqCache cleared");
 		isValid = false;
 		hitErrorsDuringScan = false;
-		uidToChildrenMap = new HashMap();
-		fieldOfficesPerHq = new HashMap();
+		uidToChildrenMap = Collections.synchronizedMap(new HashMap());
+		fieldOfficesPerHq = Collections.synchronizedMap(new HashMap());
 	}
 
 	private Set internalGetFieldOffices(String hqAccountId)
 	{
 		Set results = (Set)fieldOfficesPerHq.get(hqAccountId);
 		if(results == null)
-			results = new HashSet();
+			results = Collections.synchronizedSet(new HashSet());
 		
 		return results;
 	}
@@ -219,14 +221,14 @@ public class BulletinHistoryAndHqCache extends BulletinStoreCache implements Dat
 	{
 		Set children = (Set)uidToChildrenMap.get(parent);
 		if(children == null)
-			children = new HashSet();
+			children = Collections.synchronizedSet(new HashSet());
 		return children;
 	}
 	
 	private BulletinStore store;
 	private boolean isValid;
 	private boolean hitErrorsDuringScan;
-	private HashMap uidToChildrenMap;
-	private HashMap fieldOfficesPerHq;
+	private Map uidToChildrenMap;
+	private Map fieldOfficesPerHq;
 }
 
