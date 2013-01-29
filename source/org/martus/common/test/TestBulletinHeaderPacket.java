@@ -88,19 +88,23 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 
 	public void testGetFieldDataPacketId()
 	{
+		BulletinHeaderPacket simple = new BulletinHeaderPacket(security);
+		assertNull("data not null?", simple.getFieldDataPacketId());
+		assertNull("private data not null?", simple.getPrivateFieldDataPacketId());
+
 		String sampleId = "this is a valid id. really.";
-		assertNull("data not null?", bhp.getFieldDataPacketId());
 		bhp.setFieldDataPacketId(sampleId);
 		assertEquals(sampleId, bhp.getFieldDataPacketId());
 
 		String privateId = "private data id";
-		assertNull("private data not null?", bhp.getPrivateFieldDataPacketId());
 		bhp.setPrivateFieldDataPacketId(privateId);
 		assertEquals(privateId, bhp.getPrivateFieldDataPacketId());
 	}
 
 	public void testAddAndGetAttachments()
 	{
+		bhp.clearAllUserData();
+		
 		assertEquals("count before adding public", 0, bhp.getPublicAttachmentIds().length);
 		assertEquals("count before adding private", 0, bhp.getPrivateAttachmentIds().length);
 
@@ -210,6 +214,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 	{
 		String dataId = "this data id";
 		String privateId = "this data id";
+		bhp.clearAllUserData();
 		bhp.updateLastSavedTime();
 		bhp.setFieldDataPacketId(dataId);
 		bhp.setPrivateFieldDataPacketId(privateId);
