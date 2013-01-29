@@ -102,6 +102,7 @@ import org.apache.xmlrpc.AuthenticationFailed;
 import org.apache.xmlrpc.Base64;
 import org.apache.xmlrpc.XmlRpc;
 import org.apache.xmlrpc.XmlRpcServer;
+import org.martus.common.MartusLogger;
 
 /**
  * A minimal web server that exclusively handles XML-RPC requests.
@@ -829,7 +830,7 @@ public class WebServerWithClientId implements Runnable
 			}
 			catch (Exception exception)
 			{
-				System.err.println(exception);
+				MartusLogger.logException(exception);
 				if (XmlRpc.debug)
 				{
 					exception.printStackTrace();
