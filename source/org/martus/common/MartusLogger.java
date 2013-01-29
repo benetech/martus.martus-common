@@ -96,5 +96,10 @@ public class MartusLogger
 		return destination;
 	}
 	
+	public static void setDestination(PrintStream newDestination)
+	{
+		destination = newDestination;
+	}
+	
 	private static PrintStream destination = System.out;
 }
