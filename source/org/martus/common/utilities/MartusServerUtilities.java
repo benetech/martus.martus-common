@@ -43,6 +43,7 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import org.martus.common.LoggerInterface;
+import org.martus.common.MartusLogger;
 import org.martus.common.MartusUtilities;
 import org.martus.common.MartusUtilities.FileVerificationException;
 import org.martus.common.bulletinstore.BulletinStore;
@@ -276,6 +277,7 @@ public class MartusServerUtilities
 		}
 		catch(Exception e)
 		{
+			MartusLogger.log("Signature Verification error using " + signatureFile.getAbsolutePath());
 			throw new FileVerificationException();
 		}
 		finally
