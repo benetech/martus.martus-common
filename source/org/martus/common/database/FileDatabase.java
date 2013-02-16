@@ -99,7 +99,7 @@ abstract public class FileDatabase extends Database
 
 	public void initialize() throws FileVerificationException, MissingAccountMapException, MissingAccountMapSignatureException
 	{
-		accountMap = new TreeMap();
+		accountMap = Collections.synchronizedMap(new TreeMap());
 		mTimeMap = Collections.synchronizedMap(new HashMap());
 		loadAccountMap();
 		if(isAccountMapExpected(absoluteBaseDir) && !accountMapFile.exists())
