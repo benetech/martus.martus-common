@@ -29,12 +29,16 @@ package org.martus.common.network;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.Vector;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 
+import org.martus.common.MartusLogger;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.xmlrpc.WebServerWithSynchronousStartup;
 
@@ -60,7 +64,9 @@ public class MartusSecureWebServer extends WebServerWithSynchronousStartup
 	    	SSLServerSocket ss = (SSLServerSocket)sf.createServerSocket( port, backlog, add);
 	    	
 	    	// NOTE: Existing clients expect "RSA", not "ECDH_RSA"
-	    	ss.setEnabledCipherSuites(new String[] {"TLS_RSA_WITH_AES_256_CBC_SHA"});
+	    	String[] rawSupportedCipherSuites = ss.getSupportedCipherSuites();
+	    	Vector<String> supportedCipherSuites = new Vector<String>(Arrays.asList(rawSupportedCipherSuites));
+	    	ss.setEnabledCipherSuites(getAcceptableCipherSuites(supportedCipherSuites).toArray(new String[0]));
 	    	return ss;
 	    }
 	    catch(Exception e)
@@ -72,6 +78,23 @@ public class MartusSecureWebServer extends WebServerWithSynchronousStartup
 	    }
 	}
 	
+	public static Vector<String> getAcceptableCipherSuites(Vector<String> supportedCipherSuites) throws NoSuchAlgorithmException 
+	{
+		Vector<String> goodCipherSuites = new Vector<String>();
+		for (String cipher : supportedCipherSuites) {
+			if(!cipher.contains("TLS"))
+				continue;
+			if(!cipher.contains("RSA"))
+				continue;
+			if(cipher.contains("ECDH"))
+				continue;
+			
+			goodCipherSuites.add(cipher);
+		}
+		MartusLogger.log("Limiting SSL cipher suites to: " + goodCipherSuites);
+		return goodCipherSuites;
+	}
+
 	SSLContext createSSLContext() throws Exception
 	{
 		SSLContext sslContext = SSLContext.getInstance( "TLS" );
