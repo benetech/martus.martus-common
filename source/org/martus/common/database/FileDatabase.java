@@ -617,7 +617,7 @@ abstract public class FileDatabase extends Database
 		throw new TooManyAccountsException();
 	}
 
-	void appendAccountToMapFile(String accountString, String accountDir) throws IOException
+	public void appendAccountToMapFile(String accountString, String accountDir) throws IOException
 	{
 		FileOutputStream out = new FileOutputStream(accountMapFile.getPath(), true);
 		UnicodeWriter writer = new UnicodeWriter(out);
