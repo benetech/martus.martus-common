@@ -101,7 +101,7 @@ public class AuthorizedSessionKeys
 	
 	public static class XmlAuthorizedLoader extends SimpleXmlDefaultLoader
 	{
-		public XmlAuthorizedLoader(HashMap mapToUse)
+		public XmlAuthorizedLoader(Map mapToUse)
 		{
 			super(AUTHORIZED_SESSION_KEYS_TAG);
 			sessionKeys = mapToUse;
@@ -115,12 +115,12 @@ public class AuthorizedSessionKeys
 			return super.startElement(tag);
 		}
 
-		HashMap sessionKeys;
+		Map sessionKeys;
 }
 	
 	public static class XmlSessionKeyLoader extends SimpleXmlStringLoader
 	{
-		public XmlSessionKeyLoader(HashMap authorizedSessionKey)
+		public XmlSessionKeyLoader(Map authorizedSessionKey)
 		{
 			super(AUTHORIZED_SESSION_KEY_TAG);
 			authorizedSession = authorizedSessionKey;
@@ -139,7 +139,7 @@ public class AuthorizedSessionKeys
 		}
 		
 		String publicCode;
-		HashMap authorizedSession;
+		Map authorizedSession;
 		
 	}
 

@@ -26,6 +26,7 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.packet;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,5 +69,5 @@ public class AccountId
 	
 	private String idString;
 	
-	private static Map accountIds = new HashMap();
+	private static Map accountIds = Collections.synchronizedMap(new HashMap());
 }

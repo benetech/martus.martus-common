@@ -117,7 +117,7 @@ public class SimpleX509TrustManager implements X509TrustManager
 		catch (Exception e)
 		{
 			//Tests will cause this to fire
-			//System.out.println("checkServerTrusted: " + e);
+			MartusLogger.logException(e);
 			throw new CertificateException(e.toString());
 		}
 	}

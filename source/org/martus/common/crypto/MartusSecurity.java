@@ -53,6 +53,7 @@ import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -118,7 +119,7 @@ public class MartusSecurity extends MartusCrypto
 			throw new CryptoInitializationException();
 		}
 
-		decryptedSessionKeys = new HashMap();
+		decryptedSessionKeys = Collections.synchronizedMap(new HashMap());
 	}
 
 	// begin MartusCrypto interface
