@@ -80,6 +80,14 @@ public class TestFileDatabase extends TestCaseEnhanced
 	{
 		assertEquals("count not 0?", 0, getRecordCount());
 	}
+	
+	public void testGetHash() throws Exception
+	{
+		assertEquals("b2d", FileDatabase.getBaseBucketName("B-ETDfGg5lYthENicCASWfSw--"));
+		assertEquals("bdd", FileDatabase.getBaseBucketName("BUR-B-ETDfGg5lYthENicCASWfSw--"));
+		assertEquals("b3d", FileDatabase.getBaseBucketName("B-mVji1pfNcvQOAm.9TvvrDg--"));
+		assertEquals("b2d", FileDatabase.getBaseBucketName("DEL-B-mVji1pfNcvQOAm.9TvvrDg--"));
+	}
 
 /*
  * This test was an attempt to figure out why the sync() call was working in the
