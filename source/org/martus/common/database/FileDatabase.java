@@ -40,6 +40,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.martus.common.MartusLogger;
 import org.martus.common.MartusUtilities;
 import org.martus.common.MartusUtilities.FileVerificationException;
 import org.martus.common.crypto.MartusCrypto;
@@ -631,6 +632,7 @@ abstract public class FileDatabase extends Database
 			out.flush();
 			out.getFD().sync();
 			writer.close();
+			out.close();
 
 			try
 			{
@@ -638,7 +640,8 @@ abstract public class FileDatabase extends Database
 			}
 			catch (MartusSignatureException e)
 			{
-				System.out.println("FileDatabase.appendAccountToMapFile: " + e);
+				MartusLogger.logException(e);
+				throw new IOException();
 			}
 		}
 	}

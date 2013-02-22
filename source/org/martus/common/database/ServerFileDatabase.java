@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.text.ParseException;
 
+import org.martus.common.MartusLogger;
 import org.martus.common.MartusUtilities;
 import org.martus.common.MartusUtilities.FileVerificationException;
 import org.martus.common.crypto.MartusCrypto;
@@ -108,7 +109,7 @@ public class ServerFileDatabase extends FileDatabase
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			MartusLogger.logException(e);
 			throw new MartusSignatureException();
 		}
 	}
