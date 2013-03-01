@@ -35,6 +35,7 @@ import javax.net.ssl.HttpsURLConnection;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
+import org.martus.common.MartusLogger;
 import org.martus.common.MartusUtilities;
 import org.martus.common.network.SimpleHostnameVerifier;
 import org.martus.common.network.SimpleX509TrustManager;
@@ -74,17 +75,18 @@ public class CallerSideMirroringGatewayForXmlRpc implements MirroringInterface
 		}
 		catch (XmlRpcException e)
 		{
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
+			MartusLogger.log("Error calling " + serverUrl);
+			MartusLogger.logException(e);
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
-		} catch (SSLSocketSetupException e)
+			MartusLogger.log("Error calling " + serverUrl);
+			MartusLogger.logException(e);
+		} 
+		catch (SSLSocketSetupException e)
 		{
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
+			MartusLogger.log("Error calling " + serverUrl);
+			MartusLogger.logException(e);
 		}
 		return null;
 	}
