@@ -27,6 +27,8 @@ package org.martus.common.network.mirroring;
 
 import java.util.Vector;
 
+import org.martus.common.MartusLogger;
+
 public class PassThroughMirroringGateway implements	CallerSideMirroringInterface
 {
 	public PassThroughMirroringGateway(SupplierSideMirroringInterface realHandler)
@@ -36,7 +38,57 @@ public class PassThroughMirroringGateway implements	CallerSideMirroringInterface
 	
 	public Vector request(String callerAccountId, Vector parameters, String signature)
 	{
-		return handler.request(callerAccountId, parameters, signature);
+		parameters = recursivelyConvertVectorsToArrays(parameters);
+		Vector result = handler.request(callerAccountId, parameters, signature);
+		result = recursivelyConvertVectorsToArrays(result);
+		return result;
+	}
+
+	private Vector recursivelyConvertVectorsToArrays(Vector vectorToConvert)
+	{
+		Vector withArraysInsteadOfVectors = new Vector();
+		for (Object object : vectorToConvert)
+		{
+			if (object instanceof Vector)
+			{
+				MartusLogger.log("Converting vector");
+				Vector childVector = (Vector)object;
+				childVector = recursivelyConvertVectorsToArrays(childVector);
+				object = childVector.toArray();
+			}
+			else if(object instanceof Object[])
+			{
+				MartusLogger.log("Converting array");
+				Object[] childArray = (Object[])object;
+				recursivelyConvertVectorsToArrays(childArray);
+			}
+			withArraysInsteadOfVectors.add(object);
+		}
+		
+		return withArraysInsteadOfVectors;
+	}
+
+	private void recursivelyConvertVectorsToArrays(Object[] arrayToConvert)
+	{
+		for(int i = 0; i < arrayToConvert.length; ++i)
+		{
+			Object object = arrayToConvert[i];
+			if (object instanceof Vector)
+			{
+				MartusLogger.log("Converting vector");
+				Vector childVector = (Vector)object;
+				childVector = recursivelyConvertVectorsToArrays(childVector);
+				object = childVector.toArray();
+			}
+			else if(object instanceof Object[])
+			{
+				MartusLogger.log("Converting array");
+				Object[] childArray = (Object[])object;
+				recursivelyConvertVectorsToArrays(childArray);
+			}
+			
+			arrayToConvert[i] = object;
+		}
 	}
 
 	private SupplierSideMirroringInterface handler;

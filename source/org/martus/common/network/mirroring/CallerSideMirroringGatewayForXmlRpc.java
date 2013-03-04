@@ -28,6 +28,7 @@ package org.martus.common.network.mirroring;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Vector;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -71,7 +72,8 @@ public class CallerSideMirroringGatewayForXmlRpc implements CallerSideMirroringI
 		params.add(signature);
 		try
 		{
-			return (Vector)callServer("request", params);
+			Object[] resultAsArray = (Object[]) callServer("request", params);
+			return new Vector(Arrays.asList(resultAsArray));
 		}
 		catch (XmlRpcException e)
 		{
