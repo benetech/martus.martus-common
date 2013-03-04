@@ -40,7 +40,7 @@ import org.martus.common.MartusUtilities;
 import org.martus.common.network.SimpleHostnameVerifier;
 import org.martus.common.network.SimpleX509TrustManager;
 
-public class CallerSideMirroringGatewayForXmlRpc implements MirroringInterface
+public class CallerSideMirroringGatewayForXmlRpc implements CallerSideMirroringInterface
 {
 	public static class SSLSocketSetupException extends Exception
 	{
