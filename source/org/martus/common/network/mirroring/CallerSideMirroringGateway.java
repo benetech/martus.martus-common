@@ -89,7 +89,8 @@ public class CallerSideMirroringGateway implements CallerSideMirroringGatewayInt
 			}
 		}
 		String signature = signer.createSignatureOfVectorOfStrings(parameters);
-		return new NetworkResponse(handler.request(signer.getPublicKeyString(), parameters, signature));
+		Vector result = handler.request(signer.getPublicKeyString(), parameters, signature);
+		return new NetworkResponse(result);
 	}
 					
 	MirroringInterface handler;
