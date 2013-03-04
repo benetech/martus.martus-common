@@ -77,8 +77,11 @@ public class CallerSideMirroringGatewayForXmlRpc implements CallerSideMirroringI
 		}
 		catch (XmlRpcException e)
 		{
-			MartusLogger.log("Error calling " + serverUrl);
-			MartusLogger.logException(e);
+			if(!e.getMessage().contains("Connection refused"))
+			{
+				MartusLogger.log("Error calling " + serverUrl);
+				MartusLogger.logException(e);
+			}
 		}
 		catch (IOException e)
 		{
