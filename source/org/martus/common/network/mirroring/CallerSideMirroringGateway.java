@@ -35,7 +35,7 @@ import org.martus.common.packet.UniversalId;
 
 public class CallerSideMirroringGateway implements CallerSideMirroringGatewayInterface
 {
-	public CallerSideMirroringGateway(MirroringInterface handlerToUse)
+	public CallerSideMirroringGateway(CallerSideMirroringInterface handlerToUse)
 	{
 		handler = handlerToUse;
 	}
@@ -93,6 +93,6 @@ public class CallerSideMirroringGateway implements CallerSideMirroringGatewayInt
 		return new NetworkResponse(result);
 	}
 					
-	MirroringInterface handler;
+	private CallerSideMirroringInterface handler;
 }
 
