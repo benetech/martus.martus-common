@@ -1,8 +1,8 @@
 /*
 
 The Martus(tm) free, social justice documentation and
-monitoring software. Copyright (C) 2001-2007, Beneficent
-Technology, Inc. (The Benetech Initiative).
+monitoring software. Copyright (C) 2013, Beneficent
+Technology, Inc. (Benetech).
 
 Martus is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -23,16 +23,9 @@ Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.
 
 */
-
 package org.martus.common;
 
-
-import java.util.Vector;
-
-public interface AmplifierNetworkInterface
+public interface SupplierSideAmplifierNetworkInterface extends AmplifierNetworkInterface
 {
-	public Vector getAccountIds(String myAccountId, Vector parameters, String signature) throws Exception;
-	public Vector getContactInfo(String myAccountId, Vector parameters, String signature) throws Exception;
-	public Vector getPublicBulletinLocalIds(String myAccountId, Vector parameters, String signature) throws Exception;
-	public Vector getAmplifierBulletinChunk(String myAccountId, Vector parameters, String signature) throws Exception;
+
 }

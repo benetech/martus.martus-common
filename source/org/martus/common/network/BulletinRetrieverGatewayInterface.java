@@ -26,15 +26,12 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.network;
 
-import java.io.IOException;
-
-import org.martus.common.crypto.*;
+import org.martus.common.crypto.MartusCrypto;
 
 
 
 public interface BulletinRetrieverGatewayInterface
 {
 	public NetworkResponse getBulletinChunk(MartusCrypto signer, String authorAccountId, String bulletinLocalId,
-					int chunkOffset, int maxChunkSize) throws
-			MartusCrypto.MartusSignatureException, IOException;
+					int chunkOffset, int maxChunkSize) throws Exception;
 }

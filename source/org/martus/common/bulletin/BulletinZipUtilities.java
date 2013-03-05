@@ -44,14 +44,12 @@ import java.util.zip.ZipOutputStream;
 import org.martus.common.MartusConstants;
 import org.martus.common.MartusUtilities;
 import org.martus.common.ProgressMeterInterface;
-import org.martus.common.MartusUtilities.BulletinNotFoundException;
-import org.martus.common.MartusUtilities.NotYourBulletinErrorException;
 import org.martus.common.bulletinstore.BulletinStore;
 import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.database.Database.RecordHiddenException;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.PacketStreamOpener;
 import org.martus.common.database.ReadableDatabase;
-import org.martus.common.database.Database.RecordHiddenException;
 import org.martus.common.network.BulletinRetrieverGatewayInterface;
 import org.martus.common.network.NetworkInterfaceConstants;
 import org.martus.common.network.NetworkResponse;
@@ -331,13 +329,7 @@ public class BulletinZipUtilities
 	public static int retrieveBulletinZipToStream(UniversalId uid, OutputStream outputStream,
 			int chunkSize, BulletinRetrieverGatewayInterface gateway, MartusCrypto security,
 			ProgressMeterInterface progressMeter)
-		throws
-			MartusCrypto.MartusSignatureException,
-			MartusUtilities.ServerErrorException,
-			IOException,
-			StreamableBase64.InvalidBase64Exception, 
-			NotYourBulletinErrorException,
-			BulletinNotFoundException
+		throws Exception
 	{
 		int masterTotalSize = 0;
 		int totalSize = 0;
