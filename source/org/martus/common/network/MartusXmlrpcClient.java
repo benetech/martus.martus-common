@@ -37,6 +37,7 @@ import javax.net.ssl.TrustManager;
 
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
+import org.martus.common.MartusLogger;
 
 public class MartusXmlrpcClient 
 	implements NetworkInterfaceConstants
@@ -96,8 +97,9 @@ public class MartusXmlrpcClient
 		}
 		catch (Exception e)
 		{
-			System.out.println("ServerInterfaceXmlRpcHandler:callServer Exception=" + e);
-			e.printStackTrace();
+			MartusLogger.log("callServer: " + serverUrl);
+			MartusLogger.log("Exception=" + e);
+			MartusLogger.logException(e);
 		}
 		return result;
 	}
