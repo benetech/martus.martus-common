@@ -501,18 +501,6 @@ public class MiniLocalization
 	{
 		adjustPersianLegacyDates = newAdjustPersian;
 	}
-
-    public boolean getUseZawgyi()
-    {
-        return useZawgyi;
-    }
-
-    public void setUseZawgyi(boolean newUseZawgyi)
-    {
-        useZawgyi = newUseZawgyi;
-    }
-	
-	
 	
 	private boolean isRightToLeftLanguage()
 	{
@@ -601,6 +589,5 @@ public class MiniLocalization
 	private String currentCalendarSystem;
 	private boolean adjustThaiLegacyDates;
 	private boolean adjustPersianLegacyDates;
-	private boolean useZawgyi;
 
 }
