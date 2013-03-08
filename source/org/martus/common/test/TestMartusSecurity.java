@@ -28,6 +28,7 @@ package org.martus.common.test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.PublicKey;
@@ -38,19 +39,20 @@ import java.util.Random;
 import java.util.Vector;
 
 import org.martus.common.crypto.MartusCrypto;
-import org.martus.common.crypto.MartusJceKeyPair;
-import org.martus.common.crypto.MartusKeyPair;
-import org.martus.common.crypto.MartusSecurity;
-import org.martus.common.crypto.MockMartusSecurity;
-import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
 import org.martus.common.crypto.MartusCrypto.DecryptionException;
 import org.martus.common.crypto.MartusCrypto.EncryptionException;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
 import org.martus.common.crypto.MartusCrypto.NoKeyPairException;
+import org.martus.common.crypto.MartusJceKeyPair;
+import org.martus.common.crypto.MartusKeyPair;
+import org.martus.common.crypto.MartusSecurity;
+import org.martus.common.crypto.MockMartusSecurity;
+import org.martus.common.crypto.SessionKey;
 import org.martus.util.StreamableBase64;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
+import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 
 
 
@@ -90,6 +92,33 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		assertTrue("setup: KeyPair returned NULL", security.hasKeyPair());
 		assertNotNull("setup: Key returned NULL", security.getKeyPair().getPrivateKey());
 		TRACE_END();
+	}
+	
+	public void testLargerRsaKeys() throws Exception
+	{
+		final int LARGE_KEY_BITS = 4192;
+		MartusSecurity bigKeySecurity = new MartusSecurity();
+		bigKeySecurity.createKeyPair(LARGE_KEY_BITS);
+		
+		byte[] data = "This is a test!".getBytes("UTF-8");
+		InputStream plainStream = new ByteArrayInputStream(data);
+		ByteArrayOutputStream cipherStream = new ByteArrayOutputStream();
+		bigKeySecurity.encrypt(plainStream, cipherStream);
+		
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		char[] passPhrase = "whatever".toCharArray();
+		bigKeySecurity.writeKeyPair(out, passPhrase);
+		
+		bigKeySecurity.clearKeyPair();
+		
+		ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+		bigKeySecurity.readKeyPair(in, passPhrase);
+		
+		InputStreamWithSeek encryptedStream = new ByteArrayInputStreamWithSeek(cipherStream.toByteArray());
+		ByteArrayOutputStream decryptedStream = new ByteArrayOutputStream();
+		bigKeySecurity.decrypt(encryptedStream, decryptedStream);
+		
+		assertTrue(Arrays.equals(data, decryptedStream.toByteArray()));
 	}
 	
 	public void testCacheOfDecryptedSessionKeys() throws Exception
