@@ -136,7 +136,7 @@ public class MartusSecurity extends MartusCrypto
 	public void createKeyPair()
 	{
 		int currentBits = bitsInPublicKey;
-		if(currentBits != 2048)
+		if(currentBits != 3072)
 			System.out.println("Creating unusual size public key: " + bitsInPublicKey);
 		createKeyPair(bitsInPublicKey);
 	}

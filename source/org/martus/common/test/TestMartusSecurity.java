@@ -96,7 +96,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 	
 	public void testLargerRsaKeys() throws Exception
 	{
-		final int LARGE_KEY_BITS = 4192;
+		final int LARGE_KEY_BITS = 4096;
 		MartusSecurity bigKeySecurity = new MartusSecurity();
 		bigKeySecurity.createKeyPair(LARGE_KEY_BITS);
 		
@@ -128,7 +128,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		String publicKeyString = bigKeySecurity.getPublicKeyString();
 		
 		byte[] emptyCache1 = bigKeySecurity.getSessionKeyCache();
-		assertTrue("emptyCache1 too big?", emptyCache1.length < 1000);
+		assertTrue("emptyCache1 too big?", emptyCache1.length < 1500);
 
 		final int MAX_KEYS = 100;
 		SessionKey[] plainSessionKeys = new SessionKey[MAX_KEYS];
@@ -145,7 +145,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 
 		bigKeySecurity.flushSessionKeyCache();
 		byte[] emptyCache2 = bigKeySecurity.getSessionKeyCache();
-		assertTrue("emptyCache2 too big?", emptyCache2.length < 1000);
+		assertTrue("emptyCache2 too big?", emptyCache2.length < 1500);
 
 		for(int i = 0; i < MAX_KEYS; ++i)
 		{
