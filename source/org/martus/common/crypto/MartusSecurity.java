@@ -217,7 +217,7 @@ public class MartusSecurity extends MartusCrypto
 		try 
 		{
 			SessionKey sessionKey = createSessionKey();
-			Vector sessionKeyShares = MartusSecretShare.buildShares(sessionKey.getBytes());
+			Vector sessionKeyShares = MartusSecretShare.buildShares(sessionKey.getBytes(), rand);
 			
 			ByteArrayInputStream in = new ByteArrayInputStream(keyPair.getKeyPairData());
 			ByteArrayOutputStream encryptedKeypair = new ByteArrayOutputStream();

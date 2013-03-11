@@ -28,6 +28,7 @@ package org.martus.common.crypto;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.SecureRandom;
 import java.util.Vector;
 
 import org.logi.crypto.Crypto;
@@ -40,9 +41,10 @@ import org.martus.util.StreamableBase64;
 public class MartusSecretShare
 {
 
-	public static Vector buildShares(byte[] secretToShare) throws SecretSharingException
+	public static Vector buildShares(byte[] secretToShare, SecureRandom random) throws SecretSharingException
 	{
 		Vector shares = new Vector();
+		Crypto.random = random;
 		Crypto.initRandom();
 		byte[] paddedSecret = new byte[secretToShare.length + 1];
 		System.arraycopy(secretToShare,0,paddedSecret,1,secretToShare.length);

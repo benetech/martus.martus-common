@@ -28,6 +28,7 @@ package org.martus.common.test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.security.SecureRandom;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Date;
@@ -35,10 +36,10 @@ import java.util.Vector;
 
 import org.martus.common.MartusConstants;
 import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.crypto.MartusCrypto.KeyShareException;
 import org.martus.common.crypto.MartusSecretShare;
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.SessionKey;
-import org.martus.common.crypto.MartusCrypto.KeyShareException;
 import org.martus.util.StreamableBase64;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.UnicodeReader;
@@ -57,8 +58,10 @@ public class TestKeyShareSaveRestore extends TestCaseEnhanced
 
 	public void testSecretShare() throws Exception
 	{
+		SecureRandom random = new SecureRandom();
+		
 		byte[] secret = {1,2,3,4,0,8,5,6,7,0};
-		Vector allShares = MartusSecretShare.buildShares(secret);
+		Vector allShares = MartusSecretShare.buildShares(secret, random);
 		assertNotNull("Shares null?",allShares);
 		assertEquals("Incorrect number of Shares",  MartusConstants.numberOfFilesInShare, allShares.size());
 
@@ -102,7 +105,7 @@ public class TestKeyShareSaveRestore extends TestCaseEnhanced
 		}
 
 		byte[] allZeroSecret = {0,0,0,0,0,0,0};
-		allShares = MartusSecretShare.buildShares(allZeroSecret);
+		allShares = MartusSecretShare.buildShares(allZeroSecret, random);
 		assertNotNull("Shares null for zeroSecret?",allShares);
 		assertEquals("Incorrect number of Shares for zeroSecret",  MartusConstants.numberOfFilesInShare, allShares.size());
 		byte[] recoveredZeroSecret = MartusSecretShare.recoverShares(allShares);
@@ -110,7 +113,7 @@ public class TestKeyShareSaveRestore extends TestCaseEnhanced
 		assertTrue("Zero Secret didn't match with allparts?", Arrays.equals(allZeroSecret,recoveredZeroSecret));
 
 		byte[] all255Secret = {(byte)255,(byte)255,(byte)255,(byte)255,(byte)255,(byte)255,(byte)255};
-		allShares = MartusSecretShare.buildShares(all255Secret);
+		allShares = MartusSecretShare.buildShares(all255Secret, random);
 		assertNotNull("Shares null for zeroSecret?",allShares);
 		assertEquals("Incorrect number of Shares for zeroSecret",  MartusConstants.numberOfFilesInShare, allShares.size());
 		byte[] recovered255Secret = MartusSecretShare.recoverShares(allShares);
