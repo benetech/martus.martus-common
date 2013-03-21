@@ -57,13 +57,21 @@ public class DataInvalidException extends Exception
 	{
 		localizedTag = null;
 	}
+	
 	public DataInvalidException(String tag)
 	{
 		localizedTag = tag;
 	}
+	
+	public DataInvalidException(Exception causedBy)
+	{
+		super(causedBy);
+	}
+	
 	public String getlocalizedTag()
 	{
 		return localizedTag;
 	}
-	String localizedTag;
+	
+	private String localizedTag;
 }

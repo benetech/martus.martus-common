@@ -29,7 +29,7 @@ public class ValidationExceptionWithFieldLabel extends DataInvalidException
 {
 	public ValidationExceptionWithFieldLabel(String fieldLabel)
 	{
-		super(null);
+		super((String)null);
 		label = fieldLabel;
 	}
 	
