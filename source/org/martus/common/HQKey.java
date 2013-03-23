@@ -25,11 +25,7 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common;
 
-import org.martus.common.crypto.MartusCrypto;
-import org.martus.util.StreamableBase64.InvalidBase64Exception;
-
-
-public class HQKey
+public class HQKey extends ExternalPublicKey
 {
 	public HQKey(String publicKey)
 	{
@@ -38,52 +34,6 @@ public class HQKey
 
 	public HQKey(String publicKey, String label)
 	{
-		super();
-		this.publicKey = publicKey;
-		setLabel(label);
+		super(publicKey, label);
 	}
-	
-	public String getLabel()
-	{
-		return label;
-	}
-	
-	public void setLabel(String newLabel)
-	{
-		if(newLabel == null)
-			newLabel = "";
-		label = newLabel;
-	}
-	
-	public String getPublicKey()
-	{
-		return publicKey;
-	}
-	
-	public String getRawPublicCode() throws InvalidBase64Exception
-	{
-		return MartusCrypto.computePublicCode(publicKey);
-	}
-	
-	public String getPublicCode() throws InvalidBase64Exception
-	{
-		return MartusCrypto.computeFormattedPublicCode(publicKey);
-	}
-	
-	public int hashCode()
-	{
-		return publicKey.hashCode();
-	}
-	
-	public boolean equals(Object rawOther)
-	{
-		if(! (rawOther instanceof HQKey))
-			return false;
-		
-		HQKey other = (HQKey)rawOther;
-		return publicKey.equals(other.publicKey) && label.equals(other.label);
-	}
-	
-	private String publicKey;
-	private String label;
 }
