@@ -27,6 +27,7 @@ package org.martus.common.test;
 
 import java.util.Vector;
 
+import org.martus.common.ExternalPublicKeys;
 import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
 import org.martus.common.MartusXml;
@@ -109,14 +110,14 @@ public class testHQKeys extends TestCaseEnhanced
 		HQKeys hqKeys = new HQKeys(keys);
 		String xmlExpected = MartusXml.getTagStartWithNewline(HQKeys.HQ_KEYS_TAG) +
 		 MartusXml.getTagStart(HQKeys.HQ_KEY_TAG) + 
-		 MartusXml.getTagStart(HQKeys.HQ_PUBLIC_KEY_TAG) + 
+		 MartusXml.getTagStart(ExternalPublicKeys.PUBLIC_KEY_TAG) + 
 		 XmlUtilities.getXmlEncoded(key1) +
-		 MartusXml.getTagEndWithoutNewline(HQKeys.HQ_PUBLIC_KEY_TAG) +
+		 MartusXml.getTagEndWithoutNewline(ExternalPublicKeys.PUBLIC_KEY_TAG) +
 		 MartusXml.getTagEnd(HQKeys.HQ_KEY_TAG) +
 		 MartusXml.getTagStart(HQKeys.HQ_KEY_TAG) + 
-		 MartusXml.getTagStart(HQKeys.HQ_PUBLIC_KEY_TAG) + 
+		 MartusXml.getTagStart(ExternalPublicKeys.PUBLIC_KEY_TAG) + 
 		 XmlUtilities.getXmlEncoded(key2) +
-		 MartusXml.getTagEndWithoutNewline(HQKeys.HQ_PUBLIC_KEY_TAG) +
+		 MartusXml.getTagEndWithoutNewline(ExternalPublicKeys.PUBLIC_KEY_TAG) +
 		 MartusXml.getTagEnd(HQKeys.HQ_KEY_TAG) +
 		 MartusXml.getTagEnd(HQKeys.HQ_KEYS_TAG);
 		
@@ -135,20 +136,20 @@ public class testHQKeys extends TestCaseEnhanced
 		HQKeys hqKeys = new HQKeys(keys);
 		String xmlExpected = MartusXml.getTagStartWithNewline(HQKeys.HQ_KEYS_TAG) +
 		 MartusXml.getTagStart(HQKeys.HQ_KEY_TAG) + 
-		 MartusXml.getTagStart(HQKeys.HQ_PUBLIC_KEY_TAG) + 
+		 MartusXml.getTagStart(ExternalPublicKeys.PUBLIC_KEY_TAG) + 
 		 XmlUtilities.getXmlEncoded(key1) +
-		 MartusXml.getTagEndWithoutNewline(HQKeys.HQ_PUBLIC_KEY_TAG) +
-		 MartusXml.getTagStart(HQKeys.HQ_LABEL_TAG) + 
+		 MartusXml.getTagEndWithoutNewline(ExternalPublicKeys.PUBLIC_KEY_TAG) +
+		 MartusXml.getTagStart(ExternalPublicKeys.LABEL_TAG) + 
 		 XmlUtilities.getXmlEncoded(label1) +
-		 MartusXml.getTagEndWithoutNewline(HQKeys.HQ_LABEL_TAG) +
+		 MartusXml.getTagEndWithoutNewline(ExternalPublicKeys.LABEL_TAG) +
 		 MartusXml.getTagEnd(HQKeys.HQ_KEY_TAG) +
 		 MartusXml.getTagStart(HQKeys.HQ_KEY_TAG) + 
-		 MartusXml.getTagStart(HQKeys.HQ_PUBLIC_KEY_TAG) + 
+		 MartusXml.getTagStart(ExternalPublicKeys.PUBLIC_KEY_TAG) + 
 		 XmlUtilities.getXmlEncoded(key2) +
-		 MartusXml.getTagEndWithoutNewline(HQKeys.HQ_PUBLIC_KEY_TAG) +
-		 MartusXml.getTagStart(HQKeys.HQ_LABEL_TAG) + 
+		 MartusXml.getTagEndWithoutNewline(ExternalPublicKeys.PUBLIC_KEY_TAG) +
+		 MartusXml.getTagStart(ExternalPublicKeys.LABEL_TAG) + 
 		 XmlUtilities.getXmlEncoded(label2) +
-		 MartusXml.getTagEndWithoutNewline(HQKeys.HQ_LABEL_TAG) +
+		 MartusXml.getTagEndWithoutNewline(ExternalPublicKeys.LABEL_TAG) +
 		 MartusXml.getTagEnd(HQKeys.HQ_KEY_TAG) +
 		 MartusXml.getTagEnd(HQKeys.HQ_KEYS_TAG);
 		
@@ -166,8 +167,9 @@ public class testHQKeys extends TestCaseEnhanced
 		keys.add(new HQKey(key1, label1));
 		keys.add(new HQKey(key2, label2));
 		HQKeys hqKeys = new HQKeys(keys);
+
 		
-		Vector newKeys = HQKeys.parseXml(hqKeys.toString());
+		Vector newKeys = new HQKeys().parseXml(hqKeys.toString());
 		HQKeys hqKeys2 = new HQKeys(newKeys);
 		
 		assertEquals(hqKeys.toString(), hqKeys2.toString());

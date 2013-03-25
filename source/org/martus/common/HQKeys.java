@@ -25,17 +25,10 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common;
 
-import java.util.Iterator;
 import java.util.Vector;
 
-import org.martus.util.xml.SimpleXmlDefaultLoader;
-import org.martus.util.xml.SimpleXmlMapLoader;
-import org.martus.util.xml.SimpleXmlParser;
-import org.martus.util.xml.XmlUtilities;
-import org.xml.sax.SAXParseException;
 
-
-public class HQKeys
+public class HQKeys extends ExternalPublicKeys
 {
 	public HQKeys()
 	{
@@ -60,164 +53,46 @@ public class HQKeys
 	}
 	
 
-	public HQKeys(String xml) throws HQsException
+	public HQKeys(String xml) throws Exception
 	{
 		hqKeys = parseXml(xml);	
 	}
 	
-	public boolean isEmpty()
+	String getTopLevelXmlElementName()
 	{
-		return hqKeys.isEmpty();
+		return HQ_KEYS_TAG;
 	}
 	
-	public int size()
+	String getSingleEntryXmlElementName()
 	{
-		return hqKeys.size();
-	}
-	
-	public void add(HQKey keyToAdd)
-	{
-		hqKeys.add(keyToAdd);
-	}
-	
-	public void add(HQKeys keysToAdd)
-	{
-		for(int i = 0; i < keysToAdd.size(); ++i)
-		{
-			add(keysToAdd.get(i));
-		}
-	}
-	
-	public void remove(int index)
-	{
-		hqKeys.remove(index);
-	}
-	
-	public void clear()
-	{
-		hqKeys.clear();
-	}
-	
-	public HQKey get(int index)
-	{
-		return (HQKey)hqKeys.get(index);
-	}
-	
-	public String toString()
-	{
-		return getXMLRepresntation(DONT_INCLUDE_LABEL);
+		return HQ_KEY_TAG;
 	}
 
-	public String toStringWithLabel()
+	ExternalPublicKeysXmlLoader createXmlLoader(Vector xmlKeys)
 	{
-		return getXMLRepresntation(INCLUDE_LABEL);
+		return createLoader(xmlKeys);
+	}
+
+	public static ExternalPublicKeysXmlLoader createLoader(Vector xmlKeys)
+	{
+		return new HQKeysXmlLoader(xmlKeys);
+	}
+
+	public HQKey get(int i)
+	{
+		return (HQKey)rawGet(i);
 	}
 	
-	private String getXMLRepresntation(boolean includeLabel)
+	public void add(HQKey key)
 	{
-		String xmlRepresentation = MartusXml.getTagStartWithNewline(HQ_KEYS_TAG);
-		for(int i = 0; i < hqKeys.size(); ++i)
-		{
-			xmlRepresentation += MartusXml.getTagStart(HQ_KEY_TAG);
-			xmlRepresentation += MartusXml.getTagStart(HQ_PUBLIC_KEY_TAG);
-			xmlRepresentation += ((HQKey)hqKeys.get(i)).getPublicKey();
-			xmlRepresentation += MartusXml.getTagEndWithoutNewline(HQ_PUBLIC_KEY_TAG);
-			if(includeLabel)
-			{
-				xmlRepresentation += MartusXml.getTagStart(HQ_LABEL_TAG);
-				xmlRepresentation += XmlUtilities.getXmlEncoded(((HQKey)hqKeys.get(i)).getLabel());
-				xmlRepresentation += MartusXml.getTagEndWithoutNewline(HQ_LABEL_TAG);
-			}
-			xmlRepresentation += MartusXml.getTagEnd(HQ_KEY_TAG);
-		}
-		xmlRepresentation += MartusXml.getTagEnd(HQ_KEYS_TAG);
-		
-		return xmlRepresentation;
-	}
-
-	public static class HQsException extends Exception 
-	{
-	}
-
-	public boolean containsKey(String publicKey)
-	{
-		for (Iterator iter = hqKeys.iterator(); iter.hasNext();)
-		{
-			HQKey key = (HQKey) iter.next();
-			if(key.getPublicKey().equals(publicKey))
-				return true;
-		}
-		return false;
-	}
-
-	public String getLabelIfPresent(HQKey hqKey)
-	{
-		String publicKey = hqKey.getPublicKey();
-		for (Iterator iter = hqKeys.iterator(); iter.hasNext();)
-		{
-			HQKey key = (HQKey) iter.next();
-			if(key.getPublicKey().equals(publicKey))
-				return key.getLabel();
-		}
-		return "";
+		rawAdd(key);
 	}
 	
-	public boolean contains(HQKey key)
+	public void add(HQKeys keys)
 	{
-		return hqKeys.contains(key);
-	}
-
-	public static Vector parseXml(String xml) throws HQsException
-	{
-		Vector hQs = new Vector();
-		if(xml.length() == 0)
-			return hQs;
-		XmlHQsLoader loader = new XmlHQsLoader(hQs);
-		try
-		{
-			SimpleXmlParser.parse(loader, xml);
-			return hQs;
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-			throw new HQsException();
-		}
+		rawAdd(keys);
 	}
 	
-	public static class XmlHQsLoader extends SimpleXmlDefaultLoader
-	{
-		public XmlHQsLoader(Vector hqKeys)
-		{
-			super(HQ_KEYS_TAG);
-			keys = hqKeys;
-		}
-		
-		public SimpleXmlDefaultLoader startElement(String tag)
-			throws SAXParseException
-		{
-			if(tag.equals(HQ_KEY_TAG))
-				return new SimpleXmlMapLoader(tag);
-			return super.startElement(tag);
-		}
-
-		public void endElement(String tag, SimpleXmlDefaultLoader ended)
-			throws SAXParseException
-		{
-			SimpleXmlMapLoader loader = (SimpleXmlMapLoader)ended;
-			String publicCode = loader.get(HQ_PUBLIC_KEY_TAG);
-			String label = loader.get(HQ_LABEL_TAG);
-			HQKey key = new HQKey(publicCode, label);
-			keys.add(key);
-		}
-		Vector keys;
-	}
-
 	public static final String HQ_KEYS_TAG = "HQs";
 	public static final String HQ_KEY_TAG = "HQ";
-	public static final String HQ_PUBLIC_KEY_TAG = "PublicKey";
-	public static final String HQ_LABEL_TAG = "Label";
-	private final boolean DONT_INCLUDE_LABEL = false;
-	private final boolean INCLUDE_LABEL = true;
-	Vector hqKeys;
 }
