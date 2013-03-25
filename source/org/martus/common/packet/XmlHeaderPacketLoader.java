@@ -31,7 +31,6 @@ import java.util.Vector;
 import org.martus.common.HQKey;
 import org.martus.common.HQKeys;
 import org.martus.common.MartusXml;
-import org.martus.common.HQKeys.XmlHQsLoader;
 import org.martus.util.StreamableBase64;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.martus.util.xml.SimpleXmlStringLoader;
@@ -136,7 +135,7 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 			throws SAXParseException
 		{
 			if(tag.equals(HQKeys.HQ_KEYS_TAG))
-				return new XmlHQsLoader(authorizedKeys);
+				return HQKeys.createLoader(authorizedKeys);
 			return super.startElement(tag);
 		}
 		Vector authorizedKeys = new Vector();
