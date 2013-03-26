@@ -35,9 +35,9 @@ import org.martus.util.TestCaseEnhanced;
 import org.martus.util.xml.XmlUtilities;
 
 
-public class testHQKeys extends TestCaseEnhanced
+public class TestHeadquartersKeys extends TestCaseEnhanced
 {
-	public testHQKeys(String name)
+	public TestHeadquartersKeys(String name)
 	{
 		super(name);
 	}

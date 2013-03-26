@@ -106,7 +106,7 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestGridData.class));
 		suite.addTest(new TestSuite(TestGridFieldSpec.class));
 		suite.addTest(new TestSuite(TestGridRow.class));
-		suite.addTest(new TestSuite(testHQKeys.class));
+		suite.addTest(new TestSuite(TestHeadquartersKeys.class));
 		suite.addTest(new TestSuite(TestLeafNodeCache.class));
 		suite.addTest(new TestSuite(TestKeyShareSaveRestore.class));
 		suite.addTest(new TestSuite(TestMagicWordEntry.class));
