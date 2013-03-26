@@ -187,5 +187,5 @@ abstract public class ExternalPublicKeys
 	private final boolean DONT_INCLUDE_LABEL = false;
 	private final boolean INCLUDE_LABEL = true;
 
-	Vector externalPublicKeys;
+	private Vector externalPublicKeys;
 }
