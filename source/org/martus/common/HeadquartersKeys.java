@@ -32,30 +32,27 @@ public class HeadquartersKeys extends ExternalPublicKeys
 {
 	public HeadquartersKeys()
 	{
-		hqKeys = new Vector();
+		super();
 	}
 	
 	public HeadquartersKeys(Vector keysToUse)
 	{
-		hqKeys = keysToUse;
+		super(keysToUse);
 	}
 	
 	public HeadquartersKeys(HeadquartersKey key) 
 	{
-		hqKeys = new Vector();
 		add(key);
 	}
 	
 	public HeadquartersKeys(HeadquartersKeys keys) 
 	{
-		hqKeys = new Vector();
 		add(keys);
 	}
-	
 
 	public HeadquartersKeys(String xml) throws Exception
 	{
-		hqKeys = parseXml(xml);	
+		super(xml);	
 	}
 	
 	String getTopLevelXmlElementName()
