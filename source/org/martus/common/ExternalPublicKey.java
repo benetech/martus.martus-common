@@ -71,7 +71,7 @@ public class ExternalPublicKey
 	
 	public boolean equals(Object rawOther)
 	{
-		if(! (rawOther instanceof HQKey))
+		if(! (rawOther instanceof HeadquartersKey))
 			return false;
 		
 		ExternalPublicKey other = (ExternalPublicKey)rawOther;

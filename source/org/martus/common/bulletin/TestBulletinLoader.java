@@ -28,8 +28,8 @@ package org.martus.common.bulletin;
 
 import java.io.File;
 
-import org.martus.common.HQKey;
-import org.martus.common.HQKeys;
+import org.martus.common.HeadquartersKey;
+import org.martus.common.HeadquartersKeys;
 import org.martus.common.MartusXml;
 import org.martus.common.bulletin.Bulletin.DamagedBulletinException;
 import org.martus.common.bulletinstore.BulletinStore;
@@ -127,8 +127,8 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		Bulletin original = new Bulletin(security);
 		original.set(Bulletin.TAGPUBLICINFO, "public info");
 		String key = security.getPublicKeyString();
-		HQKeys keys = new HQKeys();
-		HQKey key1 = new HQKey(key);
+		HeadquartersKeys keys = new HeadquartersKeys();
+		HeadquartersKey key1 = new HeadquartersKey(key);
 		keys.add(key1);
 		original.setAuthorizedToReadKeys(keys);
 		store.saveEncryptedBulletinForTesting(original);
@@ -168,8 +168,8 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		Bulletin b = new Bulletin(security);
 		b.set(Bulletin.TAGPUBLICINFO, samplePublic);
 		b.set(Bulletin.TAGPRIVATEINFO, samplePrivate);
-		HQKeys keys = new HQKeys();
-		HQKey key1 = new HQKey(b.getAccount());
+		HeadquartersKeys keys = new HeadquartersKeys();
+		HeadquartersKey key1 = new HeadquartersKey(b.getAccount());
 		keys.add(key1);
 		b.setAuthorizedToReadKeys(keys);
 		saveAndVerifyValid("freshly created", b);

@@ -32,7 +32,7 @@ import java.util.Enumeration;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import org.martus.common.HQKeys;
+import org.martus.common.HeadquartersKeys;
 import org.martus.common.MartusXml;
 import org.martus.common.XmlWriterFilter;
 import org.martus.common.bulletin.BulletinConstants;
@@ -75,7 +75,7 @@ public class BulletinHeaderPacket extends Packet
 		privateAttachments = new Vector();
 		legacyHqPublicKey = "";
 		lastSavedTime = TIME_UNKNOWN;
-		authorizedToReadKeys = new HQKeys();
+		authorizedToReadKeys = new HeadquartersKeys();
 		history = new BulletinHistory();
 		extendedHistory = new ExtendedHistoryList();
 	}
@@ -104,7 +104,7 @@ public class BulletinHeaderPacket extends Packet
 	
 	private void clearAuthorizedToRead()
 	{
-		authorizedToReadKeys = new HQKeys();
+		authorizedToReadKeys = new HeadquartersKeys();
 		legacyHqPublicKey = "";
 	}
 
@@ -196,7 +196,7 @@ public class BulletinHeaderPacket extends Packet
 		return legacyHqPublicKey;
 	}
 
-	public HQKeys getAuthorizedToReadKeys()
+	public HeadquartersKeys getAuthorizedToReadKeys()
 	{
 		return authorizedToReadKeys;
 	}
@@ -212,12 +212,12 @@ public class BulletinHeaderPacket extends Packet
 			allHQsCanProxyUpload = true;
 	}
 
-	public HQKeys getAuthorizedToUploadKeys()
+	public HeadquartersKeys getAuthorizedToUploadKeys()
 	{
 		return authorizedToReadKeys;
 	}
 	
-	public void setAuthorizedToReadKeys(HQKeys accountsKeys)
+	public void setAuthorizedToReadKeys(HeadquartersKeys accountsKeys)
 	{
 		authorizedToReadKeys = accountsKeys;
 		if(!accountsKeys.isEmpty())
@@ -499,7 +499,7 @@ public class BulletinHeaderPacket extends Packet
 	private Vector publicAttachments;
 	private Vector privateAttachments;
 	private static final String prefix = "B-";
-	private HQKeys authorizedToReadKeys;
+	private HeadquartersKeys authorizedToReadKeys;
 	private boolean allHQsCanProxyUpload;
 	private BulletinHistory history;
 	private ExtendedHistoryList extendedHistory;

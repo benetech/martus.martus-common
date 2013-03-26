@@ -27,16 +27,16 @@ package org.martus.common;
 
 import java.util.Vector;
 
-public class HQKeysXmlLoader extends ExternalPublicKeysXmlLoader
+public class HeadquartersKeysXmlLoader extends ExternalPublicKeysXmlLoader
 {
-	public HQKeysXmlLoader(Vector xmlKeys)
+	public HeadquartersKeysXmlLoader(Vector xmlKeys)
 	{
-		super(xmlKeys, HQKeys.HQ_KEYS_TAG, HQKeys.HQ_KEY_TAG);
+		super(xmlKeys, HeadquartersKeys.HQ_KEYS_TAG, HeadquartersKeys.HQ_KEY_TAG);
 	}
 
 	ExternalPublicKey createKey(String publicCode, String label)
 	{
-		return new HQKey(publicCode, label);
+		return new HeadquartersKey(publicCode, label);
 	}
 	
 }

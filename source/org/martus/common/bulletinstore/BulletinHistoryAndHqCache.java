@@ -34,7 +34,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-import org.martus.common.HQKeys;
+import org.martus.common.HeadquartersKeys;
 import org.martus.common.MartusLogger;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.crypto.MartusCrypto;
@@ -186,7 +186,7 @@ public class BulletinHistoryAndHqCache extends BulletinStoreCache implements Dat
 		return store.getSignatureVerifier();
 	}
 	
-	private void addToCachedHqInformation(DatabaseKey key, HQKeys hqs)
+	private void addToCachedHqInformation(DatabaseKey key, HeadquartersKeys hqs)
 	{
 		for(int i=0; i < hqs.size(); ++i)
 		{

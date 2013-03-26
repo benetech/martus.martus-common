@@ -25,14 +25,14 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common;
 
-public class HQKey extends ExternalPublicKey
+public class HeadquartersKey extends ExternalPublicKey
 {
-	public HQKey(String publicKey)
+	public HeadquartersKey(String publicKey)
 	{
 		this(publicKey, "");
 	}
 
-	public HQKey(String publicKey, String label)
+	public HeadquartersKey(String publicKey, String label)
 	{
 		super(publicKey, label);
 	}

@@ -28,32 +28,32 @@ package org.martus.common;
 import java.util.Vector;
 
 
-public class HQKeys extends ExternalPublicKeys
+public class HeadquartersKeys extends ExternalPublicKeys
 {
-	public HQKeys()
+	public HeadquartersKeys()
 	{
 		hqKeys = new Vector();
 	}
 	
-	public HQKeys(Vector keysToUse)
+	public HeadquartersKeys(Vector keysToUse)
 	{
 		hqKeys = keysToUse;
 	}
 	
-	public HQKeys(HQKey key) 
+	public HeadquartersKeys(HeadquartersKey key) 
 	{
 		hqKeys = new Vector();
 		add(key);
 	}
 	
-	public HQKeys(HQKeys keys) 
+	public HeadquartersKeys(HeadquartersKeys keys) 
 	{
 		hqKeys = new Vector();
 		add(keys);
 	}
 	
 
-	public HQKeys(String xml) throws Exception
+	public HeadquartersKeys(String xml) throws Exception
 	{
 		hqKeys = parseXml(xml);	
 	}
@@ -75,20 +75,20 @@ public class HQKeys extends ExternalPublicKeys
 
 	public static ExternalPublicKeysXmlLoader createLoader(Vector xmlKeys)
 	{
-		return new HQKeysXmlLoader(xmlKeys);
+		return new HeadquartersKeysXmlLoader(xmlKeys);
 	}
 
-	public HQKey get(int i)
+	public HeadquartersKey get(int i)
 	{
-		return (HQKey)rawGet(i);
+		return (HeadquartersKey)rawGet(i);
 	}
 	
-	public void add(HQKey key)
+	public void add(HeadquartersKey key)
 	{
 		rawAdd(key);
 	}
 	
-	public void add(HQKeys keys)
+	public void add(HeadquartersKeys keys)
 	{
 		rawAdd(keys);
 	}

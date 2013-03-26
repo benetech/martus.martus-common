@@ -35,8 +35,8 @@ import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 import java.util.Vector;
 
-import org.martus.common.HQKey;
-import org.martus.common.HQKeys;
+import org.martus.common.HeadquartersKey;
+import org.martus.common.HeadquartersKeys;
 import org.martus.common.MartusUtilities;
 import org.martus.common.MiniLocalization;
 import org.martus.common.bulletinstore.BulletinStore;
@@ -277,12 +277,12 @@ public class TestBulletin extends TestCaseEnhanced
 		Bulletin b = new Bulletin(security);
 		b.set(Bulletin.TAGPUBLICINFO, publicInfo);
 		b.set(Bulletin.TAGPRIVATEINFO, privateInfo);
-		HQKey key1 = new HQKey("account1");
-		HQKey key2 = new HQKey("account2");
+		HeadquartersKey key1 = new HeadquartersKey("account1");
+		HeadquartersKey key2 = new HeadquartersKey("account2");
 		Vector keysToUse = new Vector();
 		keysToUse.add(key1);
 		keysToUse.add(key2);
-		HQKeys keys = new HQKeys(keysToUse);
+		HeadquartersKeys keys = new HeadquartersKeys(keysToUse);
 		BulletinHeaderPacket bhp = b.getBulletinHeaderPacket();
 		b.setAuthorizedToReadKeys(keys);
 		BulletinHistory history = new BulletinHistory();
@@ -374,8 +374,8 @@ public class TestBulletin extends TestCaseEnhanced
 		Bulletin b1 = new Bulletin(security);
 		b1.set(Bulletin.TAGPUBLICINFO, "public info");
 		b1.set(Bulletin.TAGPRIVATEINFO, "private info");
-		HQKey hq = new HQKey(security.getPublicKeyString());
-		b1.setAuthorizedToReadKeys(new HQKeys(hq));
+		HeadquartersKey hq = new HeadquartersKey(security.getPublicKeyString());
+		b1.setAuthorizedToReadKeys(new HeadquartersKeys(hq));
 		b1.setSealed();
 		BulletinHistory localHistory = b1.getHistory();
 		localHistory.add("history1");
@@ -408,8 +408,8 @@ public class TestBulletin extends TestCaseEnhanced
 		Bulletin b1 = new Bulletin(security);
 		b1.set(Bulletin.TAGPUBLICINFO, "public info");
 		b1.set(Bulletin.TAGPRIVATEINFO, "private info");
-		HQKey hq = new HQKey(security.getPublicKeyString());
-		b1.setAuthorizedToReadKeys(new HQKeys(hq));
+		HeadquartersKey hq = new HeadquartersKey(security.getPublicKeyString());
+		b1.setAuthorizedToReadKeys(new HeadquartersKeys(hq));
 		b1.setSealed();
 		BulletinHistory localHistory = b1.getHistory();
 		localHistory.add("history1");
@@ -563,8 +563,8 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals("HQKey already set?", 0, original.getAuthorizedToReadKeys().size());
 		original.set(Bulletin.TAGPUBLICINFO, "public info");
 		String key = "12345";
-		HQKeys keys = new HQKeys();
-		HQKey key1 = new HQKey(key);
+		HeadquartersKeys keys = new HeadquartersKeys();
+		HeadquartersKey key1 = new HeadquartersKey(key);
 		keys.add(key1);
 		
 		original.setAuthorizedToReadKeys(keys);
@@ -572,9 +572,9 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals("HQKey not set in public?", key, (original.getFieldDataPacket().getAuthorizedToReadKeys().get(0)).getPublicKey());
 		assertEquals("HQKey not set in private?", key, (original.getPrivateFieldDataPacket().getAuthorizedToReadKeys().get(0)).getPublicKey());
 
-		HQKeys moreKeys = new HQKeys();
+		HeadquartersKeys moreKeys = new HeadquartersKeys();
 		String publickey2 = "1234522";
-		HQKey key2 = new HQKey(publickey2);
+		HeadquartersKey key2 = new HeadquartersKey(publickey2);
 		moreKeys.add(key2);
 		assertEquals(1, original.getAuthorizedToReadKeys().size());
 		assertTrue(original.getAuthorizedToReadKeys().containsKey(key1.getPublicKey()));
@@ -591,16 +591,16 @@ public class TestBulletin extends TestCaseEnhanced
 		Bulletin original = new Bulletin(security);
 		String key1String = "12345";
 		String key2String = "22343";
-		HQKeys keys = new HQKeys();
-		HQKey key1 = new HQKey(key1String);
-		HQKey key2 = new HQKey(key2String);
+		HeadquartersKeys keys = new HeadquartersKeys();
+		HeadquartersKey key1 = new HeadquartersKey(key1String);
+		HeadquartersKey key2 = new HeadquartersKey(key2String);
 		keys.add(key1);
 		keys.add(key2);
 		
 		original.setAuthorizedToReadKeys(keys);
 		assertEquals("both keys not set?", 2, original.getAuthorizedToReadKeys().size());
 
-		HQKeys only1Key = new HQKeys();
+		HeadquartersKeys only1Key = new HeadquartersKeys();
 		only1Key.add(key2);
 		original.allowOnlyTheseAuthorizedKeysToRead(only1Key);
 		assertEquals("Should now only have 1 key?", 1, original.getAuthorizedToReadKeys().size());

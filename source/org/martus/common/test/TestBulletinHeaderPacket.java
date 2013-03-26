@@ -29,8 +29,8 @@ package org.martus.common.test;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
-import org.martus.common.HQKey;
-import org.martus.common.HQKeys;
+import org.martus.common.HeadquartersKey;
+import org.martus.common.HeadquartersKeys;
 import org.martus.common.MartusXml;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MockMartusSecurity;
@@ -331,8 +331,8 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		String dataId = "this data id";
 		String privateId = "this data id";
 		String hqPublicKey = "hqkey123";
-		HQKeys hqKeys = new HQKeys();
-		HQKey hqKey = new HQKey(hqPublicKey);
+		HeadquartersKeys hqKeys = new HeadquartersKeys();
+		HeadquartersKey hqKey = new HeadquartersKey(hqPublicKey);
 		hqKeys.add(hqKey);
 		bhp.setAuthorizedToReadKeys(hqKeys);
 		bhp.setFieldDataPacketId(dataId);
@@ -480,8 +480,8 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 	{
 		String hqPublicKey = "sdjflksj";
 		String hqLabel = "Should never be shown in BHP";
-		HQKeys hqKeys = new HQKeys();
-		HQKey hqKey = new HQKey(hqPublicKey, hqLabel);
+		HeadquartersKeys hqKeys = new HeadquartersKeys();
+		HeadquartersKey hqKey = new HeadquartersKey(hqPublicKey, hqLabel);
 		hqKeys.add(hqKey);
 		bhp.setAuthorizedToReadKeys(hqKeys);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -495,7 +495,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 
 		assertEquals("hqKey", bhp.getLegacyHQPublicKey(), loaded.getLegacyHQPublicKey());
 		assertEquals("The # of authorized accounts not set by just setting the HQ Key?", 1, loaded.getAuthorizedToReadKeys().size());
-		HQKey loadedKey = loaded.getAuthorizedToReadKeys().get(0);
+		HeadquartersKey loadedKey = loaded.getAuthorizedToReadKeys().get(0);
 		assertEquals("hqKey not present in authorized list?", hqPublicKey, loadedKey.getPublicKey());
 		assertNotEquals("Should not contain label", hqLabel, loadedKey.getLabel());
 	}
@@ -504,9 +504,9 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 	{
 		String hqKey1 = "Key 1";
 		String hqKey2 = "Key 2";
-		HQKeys hqKeys = new HQKeys();
-		HQKey key1 = new HQKey(hqKey1);
-		HQKey key2 = new HQKey(hqKey2);
+		HeadquartersKeys hqKeys = new HeadquartersKeys();
+		HeadquartersKey key1 = new HeadquartersKey(hqKey1);
+		HeadquartersKey key2 = new HeadquartersKey(hqKey2);
 		hqKeys.add(key1);
 		hqKeys.add(key2);
 		bhp.setAuthorizedToReadKeys(hqKeys);
@@ -548,9 +548,9 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		BulletinHeaderPacket bhpToTest = new BulletinHeaderPacket();
 		InputStreamWithSeek in = new ByteArrayInputStreamWithSeek(fieldOfficeBulletinCreatedWithOldMartus.getBytes("UTF-8"));
 		bhpToTest.loadFromXml(in, security);
-		HQKeys hqKeys = bhpToTest.getAuthorizedToReadKeys();
+		HeadquartersKeys hqKeys = bhpToTest.getAuthorizedToReadKeys();
 		assertEquals(1, hqKeys.size());
-		HQKey thisKey = hqKeys.get(0);
+		HeadquartersKey thisKey = hqKeys.get(0);
 		assertEquals(hqAccountId, thisKey.getPublicKey());
 	}
 	

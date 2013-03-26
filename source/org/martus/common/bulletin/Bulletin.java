@@ -32,8 +32,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.martus.common.FieldSpecCollection;
-import org.martus.common.HQKey;
-import org.martus.common.HQKeys;
+import org.martus.common.HeadquartersKey;
+import org.martus.common.HeadquartersKeys;
 import org.martus.common.MartusLogger;
 import org.martus.common.MartusUtilities;
 import org.martus.common.MiniLocalization;
@@ -375,24 +375,24 @@ public class Bulletin implements BulletinConstants
 		return getPrivateFieldDataPacket().getAttachments();
 	}
 	
-	public void allowOnlyTheseAuthorizedKeysToRead(HQKeys authorizedKeys)
+	public void allowOnlyTheseAuthorizedKeysToRead(HeadquartersKeys authorizedKeys)
 	{
-		HQKeys keys = getAuthorizedToReadKeys();
+		HeadquartersKeys keys = getAuthorizedToReadKeys();
 		for(int i = 0; i < keys.size(); ++i)
 		{
-			HQKey oldKey = keys.get(i);
+			HeadquartersKey oldKey = keys.get(i);
 			if(!authorizedKeys.containsKey(oldKey.getPublicKey()))
 				keys.remove(i);
 		}
 		setAuthorizedToReadKeys(keys);
 	}
 
-	public void addAuthorizedToReadKeys(HQKeys keysToAdd)
+	public void addAuthorizedToReadKeys(HeadquartersKeys keysToAdd)
 	{
-		HQKeys keys = getAuthorizedToReadKeys();
+		HeadquartersKeys keys = getAuthorizedToReadKeys();
 		for(int i = 0; i < keysToAdd.size(); ++i)
 		{
-			HQKey keyToAdd = keysToAdd.get(i);
+			HeadquartersKey keyToAdd = keysToAdd.get(i);
 			if(!keys.containsKey(keyToAdd.getPublicKey()))
 			{
 				keys.add(keyToAdd);
@@ -471,12 +471,12 @@ public class Bulletin implements BulletinConstants
 		return false;
 	}
 
-	public HQKeys getAuthorizedToReadKeys()
+	public HeadquartersKeys getAuthorizedToReadKeys()
 	{
 		return getBulletinHeaderPacket().getAuthorizedToReadKeys();
 	}
 
-	public void setAuthorizedToReadKeys(HQKeys authorizedKeys)
+	public void setAuthorizedToReadKeys(HeadquartersKeys authorizedKeys)
 	{
 		getBulletinHeaderPacket().setAuthorizedToReadKeys(authorizedKeys);
 		getFieldDataPacket().setAuthorizedToReadKeys(authorizedKeys);
