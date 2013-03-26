@@ -36,45 +36,45 @@ abstract public class ExternalPublicKeys
 {
 	public ExternalPublicKeys()
 	{
-		hqKeys = new Vector();
+		externalPublicKeys = new Vector();
 	}
 	
 	public ExternalPublicKeys(Vector keysToUse)
 	{
-		hqKeys = keysToUse;
+		externalPublicKeys = keysToUse;
 	}
 	
 	public ExternalPublicKeys(ExternalPublicKey key) 
 	{
-		hqKeys = new Vector();
+		externalPublicKeys = new Vector();
 		rawAdd(key);
 	}
 	
 	public ExternalPublicKeys(ExternalPublicKeys keys) 
 	{
-		hqKeys = new Vector();
+		externalPublicKeys = new Vector();
 		rawAdd(keys);
 	}
 	
 
 	public ExternalPublicKeys(String xml) throws Exception
 	{
-		hqKeys = parseXml(xml);	
+		externalPublicKeys = parseXml(xml);	
 	}
 	
 	public boolean isEmpty()
 	{
-		return hqKeys.isEmpty();
+		return externalPublicKeys.isEmpty();
 	}
 	
 	public int size()
 	{
-		return hqKeys.size();
+		return externalPublicKeys.size();
 	}
 	
 	public void rawAdd(ExternalPublicKey keyToAdd)
 	{
-		hqKeys.add(keyToAdd);
+		externalPublicKeys.add(keyToAdd);
 	}
 	
 	public void rawAdd(ExternalPublicKeys keysToAdd)
@@ -87,17 +87,17 @@ abstract public class ExternalPublicKeys
 	
 	public void remove(int index)
 	{
-		hqKeys.remove(index);
+		externalPublicKeys.remove(index);
 	}
 	
 	public void clear()
 	{
-		hqKeys.clear();
+		externalPublicKeys.clear();
 	}
 	
 	public ExternalPublicKey rawGet(int index)
 	{
-		return (ExternalPublicKey)hqKeys.get(index);
+		return (ExternalPublicKey)externalPublicKeys.get(index);
 	}
 	
 	public String toString()
@@ -113,7 +113,7 @@ abstract public class ExternalPublicKeys
 	private String getXMLRepresntation(boolean includeLabel)
 	{
 		String xmlRepresentation = MartusXml.getTagStartWithNewline(getTopLevelXmlElementName());
-		for(int i = 0; i < hqKeys.size(); ++i)
+		for(int i = 0; i < externalPublicKeys.size(); ++i)
 		{
 			xmlRepresentation += MartusXml.getTagStart(getSingleEntryXmlElementName());
 			xmlRepresentation += MartusXml.getTagStart(PUBLIC_KEY_TAG);
@@ -122,7 +122,7 @@ abstract public class ExternalPublicKeys
 			if(includeLabel)
 			{
 				xmlRepresentation += MartusXml.getTagStart(LABEL_TAG);
-				xmlRepresentation += XmlUtilities.getXmlEncoded(((HeadquartersKey)hqKeys.get(i)).getLabel());
+				xmlRepresentation += XmlUtilities.getXmlEncoded(((ExternalPublicKey)externalPublicKeys.get(i)).getLabel());
 				xmlRepresentation += MartusXml.getTagEndWithoutNewline(LABEL_TAG);
 			}
 			xmlRepresentation += MartusXml.getTagEnd(getSingleEntryXmlElementName());
@@ -137,19 +137,19 @@ abstract public class ExternalPublicKeys
 
 	public boolean containsKey(String publicKey)
 	{
-		for (Iterator iter = hqKeys.iterator(); iter.hasNext();)
+		for (Iterator iter = externalPublicKeys.iterator(); iter.hasNext();)
 		{
-			HeadquartersKey key = (HeadquartersKey) iter.next();
+			ExternalPublicKey key = (ExternalPublicKey) iter.next();
 			if(key.getPublicKey().equals(publicKey))
 				return true;
 		}
 		return false;
 	}
 
-	public String getLabelIfPresent(ExternalPublicKey hqKey)
+	public String getLabelIfPresent(ExternalPublicKey searchForKey)
 	{
-		String publicKey = hqKey.getPublicKey();
-		for (Iterator iter = hqKeys.iterator(); iter.hasNext();)
+		String publicKey = searchForKey.getPublicKey();
+		for (Iterator iter = externalPublicKeys.iterator(); iter.hasNext();)
 		{
 			ExternalPublicKey key = (ExternalPublicKey) iter.next();
 			if(key.getPublicKey().equals(publicKey))
@@ -160,7 +160,7 @@ abstract public class ExternalPublicKeys
 	
 	public boolean contains(ExternalPublicKey key)
 	{
-		return hqKeys.contains(key);
+		return externalPublicKeys.contains(key);
 	}
 
 	public Vector parseXml(String xml) throws Exception
@@ -187,5 +187,5 @@ abstract public class ExternalPublicKeys
 	private final boolean DONT_INCLUDE_LABEL = false;
 	private final boolean INCLUDE_LABEL = true;
 
-	Vector hqKeys;
+	Vector externalPublicKeys;
 }
