@@ -122,7 +122,7 @@ abstract public class ExternalPublicKeys
 			if(includeLabel)
 			{
 				xmlRepresentation += MartusXml.getTagStart(LABEL_TAG);
-				xmlRepresentation += XmlUtilities.getXmlEncoded(((HQKey)hqKeys.get(i)).getLabel());
+				xmlRepresentation += XmlUtilities.getXmlEncoded(((HeadquartersKey)hqKeys.get(i)).getLabel());
 				xmlRepresentation += MartusXml.getTagEndWithoutNewline(LABEL_TAG);
 			}
 			xmlRepresentation += MartusXml.getTagEnd(getSingleEntryXmlElementName());
@@ -139,7 +139,7 @@ abstract public class ExternalPublicKeys
 	{
 		for (Iterator iter = hqKeys.iterator(); iter.hasNext();)
 		{
-			HQKey key = (HQKey) iter.next();
+			HeadquartersKey key = (HeadquartersKey) iter.next();
 			if(key.getPublicKey().equals(publicKey))
 				return true;
 		}

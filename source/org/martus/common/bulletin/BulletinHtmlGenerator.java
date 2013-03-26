@@ -34,7 +34,7 @@ import java.util.Vector;
 import org.martus.common.FieldCollection;
 import org.martus.common.FieldSpecCollection;
 import org.martus.common.GridData;
-import org.martus.common.HQKeys;
+import org.martus.common.HeadquartersKeys;
 import org.martus.common.MiniLocalization;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.ReadableDatabase;
@@ -184,7 +184,7 @@ public class BulletinHtmlGenerator
 	{
 		appendTitleOfSection(html, localization.getFieldLabel("HQSummaryLabel"));
 
-		HQKeys keys = b.getAuthorizedToReadKeys();
+		HeadquartersKeys keys = b.getAuthorizedToReadKeys();
 		int size = keys.size();
 		if(size==0)
 		{

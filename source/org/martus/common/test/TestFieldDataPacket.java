@@ -36,8 +36,8 @@ import org.martus.common.AuthorizedSessionKeys;
 import org.martus.common.FieldCollection;
 import org.martus.common.FieldSpecCollection;
 import org.martus.common.GridData;
-import org.martus.common.HQKey;
-import org.martus.common.HQKeys;
+import org.martus.common.HeadquartersKey;
+import org.martus.common.HeadquartersKeys;
 import org.martus.common.LegacyCustomFields;
 import org.martus.common.MartusConstants;
 import org.martus.common.MartusXml;
@@ -91,8 +91,8 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		assertEquals("tag list", fieldTags, fdp.getFieldSpecs());
 		assertEquals("HQ Keys not 0", 0, fdp.getAuthorizedToReadKeys().size());
 		String hqKey = "12345";
-		HQKey key = new HQKey(hqKey);
-		HQKeys keys = new HQKeys(key);
+		HeadquartersKey key = new HeadquartersKey(hqKey);
+		HeadquartersKeys keys = new HeadquartersKeys(key);
 		keys.add(key);
 		
 		fdp.setAuthorizedToReadKeys(keys);
@@ -646,8 +646,8 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 	public void testWriteAndLoadXmlEncryptedWithHQ() throws Exception
 	{
 		fdp.setEncrypted(true);
-		HQKeys keys = new HQKeys();
-		HQKey key = new HQKey(securityHQ.getPublicKeyString());
+		HeadquartersKeys keys = new HeadquartersKeys();
+		HeadquartersKey key = new HeadquartersKey(securityHQ.getPublicKeyString());
 		keys.add(key);
 		
 		fdp.setAuthorizedToReadKeys(keys);
@@ -698,9 +698,9 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 	{
 		fdp.setEncrypted(true);
 		MartusCrypto seconndHQ = MockMartusSecurity.createOtherServer();
-		HQKeys keys = new HQKeys();
-		HQKey key1 = new HQKey(securityHQ.getPublicKeyString());
-		HQKey key2 = new HQKey(seconndHQ.getPublicKeyString());
+		HeadquartersKeys keys = new HeadquartersKeys();
+		HeadquartersKey key1 = new HeadquartersKey(securityHQ.getPublicKeyString());
+		HeadquartersKey key2 = new HeadquartersKey(seconndHQ.getPublicKeyString());
 		keys.add(key1);
 		keys.add(key2);
 		

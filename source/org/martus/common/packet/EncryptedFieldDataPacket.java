@@ -32,8 +32,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import org.martus.common.AuthorizedSessionKeys;
-import org.martus.common.HQKey;
-import org.martus.common.HQKeys;
+import org.martus.common.HeadquartersKey;
+import org.martus.common.HeadquartersKeys;
 import org.martus.common.MartusLogger;
 import org.martus.common.MartusXml;
 import org.martus.common.XmlWriterFilter;
@@ -48,7 +48,7 @@ class EncryptedFieldDataPacket extends Packet
 	EncryptedFieldDataPacket(UniversalId uid, String plainTextData, MartusCrypto crypto) throws IOException
 	{
 		super(uid);
-		authorizedToReadKeys = new HQKeys();
+		authorizedToReadKeys = new HeadquartersKeys();
 		security = crypto;
 		try
 		{
@@ -80,7 +80,7 @@ class EncryptedFieldDataPacket extends Packet
 		return MartusXml.FieldDataPacketElementName;
 	}
 
-	void setHQPublicKeys(HQKeys hqKeys)
+	void setHQPublicKeys(HeadquartersKeys hqKeys)
 	{
 		authorizedToReadKeys = hqKeys;
 	}
@@ -94,7 +94,7 @@ class EncryptedFieldDataPacket extends Packet
 			try
 			{
 				//Legacy HQ
-				HQKey publicKey = authorizedToReadKeys.get(0);
+				HeadquartersKey publicKey = authorizedToReadKeys.get(0);
 				String sessionKeyString = getSessionKeyString(publicKey.getPublicKey());
 				writeElement(dest, MartusXml.HQSessionKeyElementName, sessionKeyString);
 				
@@ -136,6 +136,6 @@ class EncryptedFieldDataPacket extends Packet
 
 	MartusCrypto security;
 	String encryptedData;
-	private HQKeys authorizedToReadKeys;
+	private HeadquartersKeys authorizedToReadKeys;
 	private SessionKey sessionKey;
 }

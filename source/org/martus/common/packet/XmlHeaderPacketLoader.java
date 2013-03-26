@@ -28,8 +28,8 @@ package org.martus.common.packet;
 
 import java.util.Vector;
 
-import org.martus.common.HQKey;
-import org.martus.common.HQKeys;
+import org.martus.common.HeadquartersKey;
+import org.martus.common.HeadquartersKeys;
 import org.martus.common.MartusXml;
 import org.martus.util.StreamableBase64;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
@@ -71,7 +71,7 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 		if(getTagsContainingStrings().contains(tag))
 			endStringElement(ended);
 		else if(tag.equals(MartusXml.AccountsAuthorizedToReadElementName))
-			bhp.setAuthorizedToReadKeys(new HQKeys(((AuthorizedToReadLoader)ended).authorizedKeys));
+			bhp.setAuthorizedToReadKeys(new HeadquartersKeys(((AuthorizedToReadLoader)ended).authorizedKeys));
 		else if(tag.equals(MartusXml.HistoryElementName))
 		{
 			SimpleXmlVectorLoader loader = (SimpleXmlVectorLoader)ended;
@@ -115,7 +115,7 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 			else if(tag.equals(MartusXml.AllHQSProxyUploadName))
 				bhp.setAllHQsProxyUploadFromXmlTextValue(value);
 			else if(tag.equals(MartusXml.HQPublicKeyElementName))
-				bhp.setAuthorizedToReadKeys(new HQKeys(new HQKey(value)));
+				bhp.setAuthorizedToReadKeys(new HeadquartersKeys(new HeadquartersKey(value)));
 		}
 		catch (Exception e)
 		{
@@ -134,8 +134,8 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 		public SimpleXmlDefaultLoader startElement(String tag)
 			throws SAXParseException
 		{
-			if(tag.equals(HQKeys.HQ_KEYS_TAG))
-				return HQKeys.createLoader(authorizedKeys);
+			if(tag.equals(HeadquartersKeys.HQ_KEYS_TAG))
+				return HeadquartersKeys.createLoader(authorizedKeys);
 			return super.startElement(tag);
 		}
 		Vector authorizedKeys = new Vector();

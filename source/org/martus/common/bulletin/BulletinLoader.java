@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.martus.common.FieldSpecCollection;
-import org.martus.common.HQKeys;
+import org.martus.common.HeadquartersKeys;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.CryptoException;
@@ -93,7 +93,7 @@ public class BulletinLoader
 		}
 		else
 		{
-			HQKeys emptySetOfKeys = new HQKeys();
+			HeadquartersKeys emptySetOfKeys = new HeadquartersKeys();
 			b.setAuthorizedToReadKeys(emptySetOfKeys);
 			if(!isHeaderValid)
 			{

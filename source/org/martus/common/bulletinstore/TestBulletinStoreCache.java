@@ -28,8 +28,8 @@ package org.martus.common.bulletinstore;
 
 import java.util.Vector;
 
-import org.martus.common.HQKey;
-import org.martus.common.HQKeys;
+import org.martus.common.HeadquartersKey;
+import org.martus.common.HeadquartersKeys;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MockMartusSecurity;
@@ -68,7 +68,7 @@ public class TestBulletinStoreCache extends TestCaseEnhanced
     	
     	MartusCrypto hqSecurity = MockMartusSecurity.createHQ();
 		Bulletin b = new Bulletin(security);
-		b.addAuthorizedToReadKeys(new HQKeys(new HQKey(hqSecurity.getPublicKeyString())));
+		b.addAuthorizedToReadKeys(new HeadquartersKeys(new HeadquartersKey(hqSecurity.getPublicKeyString())));
 		store.saveBulletinForTesting(b);
     	Vector one = store.getFieldOffices(hqSecurity.getPublicKeyString());
     	assertEquals(1, one.size());
@@ -76,9 +76,9 @@ public class TestBulletinStoreCache extends TestCaseEnhanced
     	
     	MartusCrypto hqOther = MockMartusSecurity.createOtherClient();
     	Bulletin b2 = new Bulletin(security);
-    	HQKeys twoHqs = new HQKeys();
-    	twoHqs.add(new HQKey(hqSecurity.getPublicKeyString()));
-    	twoHqs.add(new HQKey(hqOther.getPublicKeyString()));
+    	HeadquartersKeys twoHqs = new HeadquartersKeys();
+    	twoHqs.add(new HeadquartersKey(hqSecurity.getPublicKeyString()));
+    	twoHqs.add(new HeadquartersKey(hqOther.getPublicKeyString()));
 		b2.addAuthorizedToReadKeys(twoHqs);
 		store.saveBulletinForTesting(b2);
 		
