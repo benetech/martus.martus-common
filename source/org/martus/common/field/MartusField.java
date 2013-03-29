@@ -32,6 +32,7 @@ import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldType;
 import org.martus.common.fieldspec.MiniFieldSpec;
 import org.martus.common.fieldspec.StandardFieldSpecs;
+import org.martus.common.utilities.BurmeseUtilities;
 
 public class MartusField
 {
@@ -76,7 +77,10 @@ public class MartusField
 
 	public String getLocalizedLabelHtml(MiniLocalization localization)
 	{
-		return StandardFieldSpecs.getLocalizedLabelHtml(getTag(), getLabel(), localization);
+		String result =  StandardFieldSpecs.getLocalizedLabelHtml(getTag(), getLabel(), localization);
+		if (convertStandardLabelToStorable && StandardFieldSpecs.isStandardFieldTag(getTag()))
+			result = BurmeseUtilities.getStorable(result);
+		return result;
 	}
 
 	public FieldType getType()
@@ -222,7 +226,12 @@ public class MartusField
 	{
 		return new Integer[0];
 	}
-	
+
+	public void setConvertStandardLabelToStorable(boolean convertStandardLabelToStorable)
+	{
+		this.convertStandardLabelToStorable = convertStandardLabelToStorable;
+	}
+
 	private String getDefaultValue()
 	{
 		return spec.getDefaultValue();
@@ -240,4 +249,5 @@ public class MartusField
 	protected FieldSpec spec;
 	private PoolOfReusableChoicesLists reusableChoicesLists;
 	private String data;
+	private boolean convertStandardLabelToStorable;
 }
