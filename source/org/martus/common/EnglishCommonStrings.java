@@ -85,6 +85,7 @@ public class EnglishCommonStrings
 		"language:vi=Vietnamese",
 		"language:bur=Burmese",
 
+		"field:BulletinUnverifiedFieldDesk=Created by an UNVERIFIED Field Desk",
 		"field:BulletinNotYours=Field Desk Bulletin",
 		"field:publicsection=Public Information",
 		"field:privatesection=Private Information",
