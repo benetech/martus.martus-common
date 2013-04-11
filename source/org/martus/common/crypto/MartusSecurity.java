@@ -843,7 +843,7 @@ public class MartusSecurity extends MartusCrypto
 		}
 		catch(Exception e)
 		{
-			MartusLogger.logException(e);
+			//expected exception in cases of bad password
 		}
 
 		return null;
