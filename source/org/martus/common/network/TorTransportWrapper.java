@@ -29,8 +29,7 @@ import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcTransportFactory;
 import org.martus.common.MartusLogger;
 import org.martus.common.ProgressMeterInterface;
-import org.torproject.jtor.TorInitializationListener;
-import org.torproject.jtor.xmlrpc.JTorXmlRpcTransportFactory;
+//import org.torproject.jtor.TorInitializationListener;
 
 
 public class TorTransportWrapper
@@ -82,20 +81,6 @@ public class TorTransportWrapper
 		return createRealTorTransportFactory(client, tm);
 	}
 
-	class TorInitializationHandler implements TorInitializationListener
-	{
-		public void initializationProgress(String message, int percent)
-		{
-			updateProgress(message, percent);
-		}
-		
-		public void initializationCompleted()
-		{
-			updateProgressComplete();
-		}
-
-	}
-	
 	void updateProgress(String message, int percent)
 	{
 		if(initializationProgressMeter != null)
@@ -115,6 +100,21 @@ public class TorTransportWrapper
 	private void createRealTorClient()
 	{
 //		tor = new TorClient();
+//
+//		class TorInitializationHandler implements TorInitializationListener
+//		{
+//			public void initializationProgress(String message, int percent)
+//			{
+//				updateProgress(message, percent);
+//			}
+//			
+//			public void initializationCompleted()
+//			{
+//				updateProgressComplete();
+//			}
+//
+//		}
+		
 //		tor.addInitializationListener(new TorInitializationHandler());
 	}
 	
@@ -126,7 +126,7 @@ public class TorTransportWrapper
 
 	private XmlRpcTransportFactory createRealTorTransportFactory(XmlRpcClient client, SimpleX509TrustManager tm) throws Exception
 	{
-		JTorXmlRpcTransportFactory factory = null;
+		XmlRpcTransportFactory factory = null;
 //		factory = new JTorXmlRpcTransportFactory(client, tor, MartusUtilities.createSSLContext(tm));
 		return factory;
 	}
