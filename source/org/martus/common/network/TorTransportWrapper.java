@@ -27,41 +27,113 @@ package org.martus.common.network;
 
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcTransportFactory;
+import org.martus.common.MartusLogger;
+import org.martus.common.ProgressMeterInterface;
+import org.torproject.jtor.TorInitializationListener;
+import org.torproject.jtor.xmlrpc.JTorXmlRpcTransportFactory;
 
 
 public class TorTransportWrapper
 {
-	public TorTransportWrapper()
+	public static TorTransportWrapper create()
 	{
-//		createRealTorClient();
+		return new TorTransportWrapper();
+	}
+	
+	private TorTransportWrapper()
+	{
+		isTorActive = false;
+		isTorReady = false;
+
+		createRealTorClient();
+	}
+
+	public void setProgressMeter(ProgressMeterInterface initializationProgressMeterToUse)
+	{
+		initializationProgressMeter = initializationProgressMeterToUse;
 	}
 
 	public void start()
 	{
-//		startRealTorClient();
+		enableRealTorClient();
+	}
+	
+	public void stop()
+	{
+		isTorActive = false;
+	}
+	
+	public boolean isReady()
+	{
+		if(!isTorActive)
+			return true;
+		
+		return isTorReady;
 	}
 
 	public XmlRpcTransportFactory createTransport(XmlRpcClient client, SimpleX509TrustManager tm)	throws Exception 
 	{
-		XmlRpcTransportFactory transportFactory = null;
-//		transportFactory = createRealTorTransportFactory(client, tm);
-		return transportFactory;
+		if(!isTorActive)
+			return null;
+		
+		if(!isReady())
+			throw new RuntimeException("Tor not initialized yet");
+		
+		return createRealTorTransportFactory(client, tm);
 	}
 
-//	private void createRealTorClient()
-//	{
+	class TorInitializationHandler implements TorInitializationListener
+	{
+		public void initializationProgress(String message, int percent)
+		{
+			updateProgress(message, percent);
+		}
+		
+		public void initializationCompleted()
+		{
+			updateProgressComplete();
+		}
+
+	}
+	
+	void updateProgress(String message, int percent)
+	{
+		if(initializationProgressMeter != null)
+			initializationProgressMeter.updateProgressMeter(percent, 100);
+		
+		MartusLogger.log("JTor initialization: " + percent + "% - " + message);
+	}
+
+	void updateProgressComplete()
+	{
+		if(initializationProgressMeter != null)
+			initializationProgressMeter.updateProgressMeter(100, 100);
+		
+		isTorReady = true;
+	}
+
+	private void createRealTorClient()
+	{
 //		tor = new TorClient();
-//	}
-//	
-//	private void startRealTorClient()
-//	{
+//		tor.addInitializationListener(new TorInitializationHandler());
+	}
+	
+	private void enableRealTorClient()
+	{
+//		isTorActive = true;
 //		tor.start();
-//	}
-//
-//	private XmlRpcTransportFactory createRealTorTransportFactory(XmlRpcClient client, SimpleX509TrustManager tm) throws Exception
-//	{
-//		return new JTorXmlRpcTransportFactory(client, tor, MartusUtilities.createSSLContext(tm));
-//	}
-//
+	}
+
+	private XmlRpcTransportFactory createRealTorTransportFactory(XmlRpcClient client, SimpleX509TrustManager tm) throws Exception
+	{
+		JTorXmlRpcTransportFactory factory = null;
+//		factory = new JTorXmlRpcTransportFactory(client, tor, MartusUtilities.createSSLContext(tm));
+		return factory;
+	}
+
 //	private TorClient tor;
+	private ProgressMeterInterface initializationProgressMeter;
+
+	private boolean isTorActive;
+	private boolean isTorReady;
 }
