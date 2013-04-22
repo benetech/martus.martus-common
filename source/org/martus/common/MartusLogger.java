@@ -117,6 +117,11 @@ public class MartusLogger
 		log("WARNING: " + errorText);
 	}
 	
+	public static void logVerbose(String string)
+	{
+		// TODO: Add a verbose mode where verbose logging really happens
+	}
+
 	public static PrintStream getDestination()
 	{
 		return destination;
