@@ -37,6 +37,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -62,6 +63,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
@@ -841,9 +843,13 @@ public class MartusSecurity extends MartusCrypto
 			byte[] outputText = pbeCipherEngine.doFinal(inputText);
 			return outputText;
 		}
+		catch (GeneralSecurityException e)
+		{
+		 	//expected exception in cases of bad password
+		}
 		catch(Exception e)
 		{
-			//expected exception in cases of bad password
+			MartusLogger.logException(e);
 		}
 
 		return null;
