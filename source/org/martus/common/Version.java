@@ -45,4 +45,15 @@ public class Version
 	{
 		return System.getProperty("os.name").indexOf("Windows") >= 0;
 	}
+	
+	public static boolean isRunningUnderOpenJDK()
+	{
+		String runtimeName = System.getProperty("java.runtime.name");
+		if(runtimeName == null)
+			return false;
+		
+		return runtimeName.contains("OpenJDK");
+	}
+
+
 }
