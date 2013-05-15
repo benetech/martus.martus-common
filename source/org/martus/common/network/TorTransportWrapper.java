@@ -28,8 +28,12 @@ package org.martus.common.network;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcTransportFactory;
 import org.martus.common.MartusLogger;
+import org.martus.common.MartusUtilities;
 import org.martus.common.ProgressMeterInterface;
-//import org.torproject.jtor.TorInitializationListener;
+
+import com.subgraph.orchid.TorClient;
+import com.subgraph.orchid.TorInitializationListener;
+import com.subgraph.orchid.xmlrpc.OrchidXmlRpcTransportFactory;
 
 
 public class TorTransportWrapper
@@ -99,39 +103,39 @@ public class TorTransportWrapper
 
 	private void createRealTorClient()
 	{
-//		tor = new TorClient();
-//
-//		class TorInitializationHandler implements TorInitializationListener
-//		{
-//			public void initializationProgress(String message, int percent)
-//			{
-//				updateProgress(message, percent);
-//			}
-//			
-//			public void initializationCompleted()
-//			{
-//				updateProgressComplete();
-//			}
-//
-//		}
+		tor = new TorClient();
+
+		class TorInitializationHandler implements TorInitializationListener
+		{
+			public void initializationProgress(String message, int percent)
+			{
+				updateProgress(message, percent);
+			}
+			
+			public void initializationCompleted()
+			{
+				updateProgressComplete();
+			}
+
+		}
 		
-//		tor.addInitializationListener(new TorInitializationHandler());
+		tor.addInitializationListener(new TorInitializationHandler());
 	}
 	
 	private void enableRealTorClient()
 	{
-//		isTorActive = true;
-//		tor.start();
+		isTorActive = true;
+		tor.start();
 	}
 
 	private XmlRpcTransportFactory createRealTorTransportFactory(XmlRpcClient client, SimpleX509TrustManager tm) throws Exception
 	{
 		XmlRpcTransportFactory factory = null;
-//		factory = new JTorXmlRpcTransportFactory(client, tor, MartusUtilities.createSSLContext(tm));
+		factory = new OrchidXmlRpcTransportFactory(client, tor, MartusUtilities.createSSLContext(tm));
 		return factory;
 	}
 
-//	private TorClient tor;
+	private TorClient tor;
 	private ProgressMeterInterface initializationProgressMeter;
 
 	private boolean isTorActive;
