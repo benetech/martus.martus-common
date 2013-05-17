@@ -53,17 +53,26 @@ public class TorTransportWrapper
 
 	public void setProgressMeter(ProgressMeterInterface initializationProgressMeterToUse)
 	{
-		initializationProgressMeter = initializationProgressMeterToUse;
+		progressMeter = initializationProgressMeterToUse;
 	}
 
 	public void start()
 	{
-		enableRealTorClient();
+		isTorActive = true;
+		updateStatus();
+		if(!isTorReady)
+			tor.start();
 	}
 	
 	public void stop()
 	{
 		isTorActive = false;
+		updateStatus();
+	}
+	
+	public boolean isEnabled()
+	{
+		return isTorActive;
 	}
 	
 	public boolean isReady()
@@ -74,6 +83,30 @@ public class TorTransportWrapper
 		return isTorReady;
 	}
 
+	public void updateStatus()
+	{
+		if(progressMeter == null)
+			return;
+		
+		if(isTorActive)
+		{
+			if(isTorReady)
+			{
+				progressMeter.setStatusMessage("TorStatusActive");
+				progressMeter.hideProgressMeter();
+			}
+			else
+			{
+				progressMeter.setStatusMessage("TorStatusInitializing");
+				progressMeter.updateProgressMeter(0, 100);
+			}
+		}
+		else
+		{
+			progressMeter.setStatusMessage("TorStatusDisabled");
+		}
+	}
+	
 	public XmlRpcTransportFactory createTransport(XmlRpcClient client, SimpleX509TrustManager tm)	throws Exception 
 	{
 		if(!isTorActive)
@@ -87,18 +120,17 @@ public class TorTransportWrapper
 
 	void updateProgress(String message, int percent)
 	{
-		if(initializationProgressMeter != null)
-			initializationProgressMeter.updateProgressMeter(percent, 100);
-		
-		MartusLogger.log("JTor initialization: " + percent + "% - " + message);
+		MartusLogger.log("Tor initialization: " + percent + "% - " + message);
+		if(progressMeter != null)
+			progressMeter.updateProgressMeter(percent, 100);
+		updateStatus();
 	}
 
 	void updateProgressComplete()
 	{
-		if(initializationProgressMeter != null)
-			initializationProgressMeter.updateProgressMeter(100, 100);
-		
+		MartusLogger.log("Tor initialization complete");
 		isTorReady = true;
+		updateStatus();
 	}
 
 	private void createRealTorClient()
@@ -122,12 +154,6 @@ public class TorTransportWrapper
 		tor.addInitializationListener(new TorInitializationHandler());
 	}
 	
-	private void enableRealTorClient()
-	{
-		isTorActive = true;
-		tor.start();
-	}
-
 	private XmlRpcTransportFactory createRealTorTransportFactory(XmlRpcClient client, SimpleX509TrustManager tm) throws Exception
 	{
 		XmlRpcTransportFactory factory = null;
@@ -136,7 +162,7 @@ public class TorTransportWrapper
 	}
 
 	private TorClient tor;
-	private ProgressMeterInterface initializationProgressMeter;
+	private ProgressMeterInterface progressMeter;
 
 	private boolean isTorActive;
 	private boolean isTorReady;
