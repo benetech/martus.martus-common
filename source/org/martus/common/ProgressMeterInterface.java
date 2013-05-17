@@ -29,6 +29,7 @@ package org.martus.common;
 public interface ProgressMeterInterface
 {
 	public void setStatusMessage(String message);
-	public abstract void updateProgressMeter(int currentValue, int maxValue);
-	public abstract boolean shouldExit();
+	public void updateProgressMeter(int currentValue, int maxValue);
+	public boolean shouldExit();
+	public void hideProgressMeter();
 }
