@@ -25,6 +25,8 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.network;
 
+import java.io.File;
+
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcTransportFactory;
 import org.martus.common.MartusLogger;
@@ -49,6 +51,11 @@ public class TorTransportWrapper
 		isTorReady = false;
 
 		createRealTorClient();
+	}
+	
+	public void setTorDataDirectory(File directory)
+	{
+		tor.getConfig().setDataDirectory(directory);
 	}
 
 	public void setProgressMeter(ProgressMeterInterface initializationProgressMeterToUse)
