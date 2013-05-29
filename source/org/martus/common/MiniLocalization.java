@@ -38,6 +38,7 @@ import java.util.TreeSet;
 import java.util.Vector;
 
 import org.martus.common.fieldspec.ChoiceItem;
+import org.martus.common.utilities.BurmeseUtilities;
 import org.martus.common.utilities.MartusFlexidate;
 import org.martus.util.DatePreference;
 import org.martus.util.MultiCalendar;
@@ -249,6 +250,10 @@ public class MiniLocalization
 		return getLabel(languageCode, "field", fieldName);
 	}
 
+	public String getStorable(String text)
+	{
+		return text;
+	}
 
 	public String getLanguageName(String code)
 	{
