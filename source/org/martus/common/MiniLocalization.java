@@ -532,7 +532,7 @@ public class MiniLocalization
 		for(int i = 0; i < languageCodes.length; i++)
 		{
 			tempChoicesArray[i] =
-				new ChoiceItem(languageCodes[i], getLanguageName(languageCodes[i]));
+				new ChoiceItem(languageCodes[i], BurmeseUtilities.getStorable(getLanguageName(languageCodes[i])));
 		}
 		Arrays.sort(tempChoicesArray);
 		return tempChoicesArray;
