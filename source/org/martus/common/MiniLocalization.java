@@ -250,9 +250,9 @@ public class MiniLocalization
 		return getLabel(languageCode, "field", fieldName);
 	}
 
-	public String getStorable(String text)
+	public String getStorableFieldLabel(String fieldName)
 	{
-		return text;
+		return BurmeseUtilities.getStorable(getFieldLabel(fieldName));
 	}
 
 	public String getLanguageName(String code)
