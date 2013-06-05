@@ -68,7 +68,7 @@ public class TorTransportWrapper
 		isTorActive = true;
 		updateStatus();
 		if(!isTorReady)
-			tor.start();
+			new TorInitializer().start();
 	}
 	
 	public void stop()
@@ -77,6 +77,21 @@ public class TorTransportWrapper
 		updateStatus();
 	}
 	
+	protected class TorInitializer extends Thread
+	{
+		@Override
+		public void run()
+		{
+			getTor().start();
+		}
+
+	}
+	
+	protected TorClient getTor()
+	{
+		return tor;
+	}
+
 	public boolean isEnabled()
 	{
 		return isTorActive;
@@ -105,12 +120,12 @@ public class TorTransportWrapper
 			else
 			{
 				progressMeter.setStatusMessage("TorStatusInitializing");
-				progressMeter.updateProgressMeter(0, 100);
 			}
 		}
 		else
 		{
 			progressMeter.setStatusMessage("TorStatusDisabled");
+			progressMeter.hideProgressMeter();
 		}
 	}
 	
