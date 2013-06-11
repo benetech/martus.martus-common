@@ -32,9 +32,9 @@ import java.util.Vector;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 
-public class MartusNonSSLXmlrpcClient implements NetworkInterfaceConstants
+public class MspaNonSSLXmlrpcClient implements NetworkInterfaceConstants
 {
-	public MartusNonSSLXmlrpcClient(String serverIPAddressToUse, int portToUse)
+	public MspaNonSSLXmlrpcClient(String serverIPAddressToUse, int portToUse)
 	{
 		serverIPAddress = serverIPAddressToUse;
 		port = portToUse;
