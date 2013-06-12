@@ -27,6 +27,8 @@ package org.martus.common.network;
 
 import java.io.File;
 
+import javax.net.ssl.TrustManager;
+
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcTransportFactory;
 import org.martus.common.MartusLogger;
@@ -129,7 +131,7 @@ public class TorTransportWrapper
 		}
 	}
 	
-	public XmlRpcTransportFactory createTransport(XmlRpcClient client, SimpleX509TrustManager tm)	throws Exception 
+	public XmlRpcTransportFactory createTransport(XmlRpcClient client, TrustManager tm)	throws Exception 
 	{
 		if(!isTorActive)
 			return null;
@@ -176,7 +178,7 @@ public class TorTransportWrapper
 		tor.addInitializationListener(new TorInitializationHandler());
 	}
 	
-	private XmlRpcTransportFactory createRealTorTransportFactory(XmlRpcClient client, SimpleX509TrustManager tm) throws Exception
+	private XmlRpcTransportFactory createRealTorTransportFactory(XmlRpcClient client, TrustManager tm) throws Exception
 	{
 		XmlRpcTransportFactory factory = null;
 		factory = new OrchidXmlRpcTransportFactory(client, tor, MartusUtilities.createSSLContext(tm));
