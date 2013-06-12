@@ -70,10 +70,13 @@ public class SimpleX509TrustManager implements X509TrustManager
 		int failedCert = 0;
 		try
 		{
+			// NOTE: cert0 is a self-signed key used only for SSL
 			failedCert = 0;
 			cert0.verify(cert0.getPublicKey());
+			// NOTE: cert1 is the SSL key signed by the server's Martus key
 			failedCert = 1;
 			cert1.verify(cert2.getPublicKey());
+			// NOTE: cert2 is a self-signed key of and by the server's Martus key
 			failedCert = 2;
 			cert2.verify(cert2.getPublicKey());
 			failedCert = -1;
