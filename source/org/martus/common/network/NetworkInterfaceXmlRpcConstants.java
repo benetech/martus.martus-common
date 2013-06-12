@@ -28,7 +28,6 @@ package org.martus.common.network;
 public interface NetworkInterfaceXmlRpcConstants
 {
 	public static final int[] defaultSSLPorts = {987, 443};
-	public static final int[] defaultNonSSLPorts = {988, 80};
 
 	public static final String cmdGetServerInfo = "getServerInfo";
 	public static final String cmdGetUploadRights = "getUploadRights";
