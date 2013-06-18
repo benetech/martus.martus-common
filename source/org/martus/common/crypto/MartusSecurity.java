@@ -63,7 +63,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
@@ -78,7 +77,6 @@ import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 
 import org.bouncycastle.jce.X509Principal;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.x509.X509V1CertificateGenerator;
 import org.martus.common.MartusConstants;
 import org.martus.common.MartusLogger;
@@ -91,6 +89,18 @@ public class MartusSecurity extends MartusCrypto
 {
 	public MartusSecurity() throws CryptoInitializationException
 	{
+		this(null);
+	}
+
+	public MartusSecurity(SecurityProviderAccessor securityProviderAccessor) throws CryptoInitializationException
+	{
+		if (securityProviderAccessor == null)
+		{
+			providerAccessor = new DefaultSecurityProviderAccessor();
+		} else {
+			providerAccessor = securityProviderAccessor;
+		}
+
 		if(rand == null)
 			rand = new SecureRandom();
 
@@ -104,7 +114,7 @@ public class MartusSecurity extends MartusCrypto
 
 	synchronized void initialize(SecureRandom randToUse)throws CryptoInitializationException
 	{
-		insertHighestPriorityProvider(new BouncyCastleProvider());
+		insertHighestPriorityProvider(providerAccessor.createSecurityProvider());
 
 		try
 		{
@@ -113,7 +123,7 @@ public class MartusSecurity extends MartusCrypto
 			sessionKeyGenerator = KeyGenerator.getInstance(SESSION_ALGORITHM_NAME, "BC");
 			keyFactory = SecretKeyFactory.getInstance(PBE_ALGORITHM, "BC");
 
-			keyPair = new MartusJceKeyPair(randToUse);
+			keyPair = new MartusJceKeyPair(randToUse, providerAccessor);
 		}
 		catch(Exception e)
 		{
@@ -983,4 +993,5 @@ public class MartusSecurity extends MartusCrypto
 	private Cipher sessionCipherEngine;
 	private KeyGenerator sessionKeyGenerator;
 	private SecretKeyFactory keyFactory;
+	private SecurityProviderAccessor providerAccessor;
 }

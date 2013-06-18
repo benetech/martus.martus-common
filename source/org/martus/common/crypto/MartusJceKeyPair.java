@@ -40,7 +40,6 @@ import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
-import java.security.Security;
 import java.security.spec.EncodedKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
@@ -51,22 +50,20 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
 import org.martus.util.StreamableBase64;
 
 public class MartusJceKeyPair extends MartusKeyPair
 {
-	public MartusJceKeyPair(KeyPair keyPair)
+	public MartusJceKeyPair(KeyPair keyPair, SecurityProviderAccessor securityProviderAccessor)
 	{
-		setJceKeyPair(keyPair);		
+		providerAccessor = securityProviderAccessor;
+		setJceKeyPair(keyPair);
 	}
-	
-	public MartusJceKeyPair(SecureRandom randomGenerator) throws Exception
+
+	public MartusJceKeyPair(SecureRandom randomGenerator, SecurityProviderAccessor securityProviderAccessor) throws Exception
 	{
-		if(Security.getProvider("BC") == null)
-			Security.addProvider(new BouncyCastleProvider());
-			
+		providerAccessor = securityProviderAccessor;
 		rand = randomGenerator;
 	}
 	
@@ -108,7 +105,7 @@ public class MartusJceKeyPair extends MartusKeyPair
 	
 	public void createRSA(int publicKeyBits) throws Exception
 	{
-		KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(RSA_ALGORITHM_NAME, "BC");
+		KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(RSA_ALGORITHM_NAME, getProviderName());
 		keyPairGenerator.initialize(publicKeyBits, rand);
 		setJceKeyPair(keyPairGenerator.genKeyPair());
 	}
@@ -125,7 +122,7 @@ public class MartusJceKeyPair extends MartusKeyPair
 		DataInputStream dataInputStream = new DataInputStream(inputStream);
 		try
 		{
-			KeyPair candidatePair = MartusKeyPairLoader.load(dataInputStream);
+			KeyPair candidatePair = MartusKeyPairLoader.load(dataInputStream, providerAccessor);
 			if(!isKeyPairValid(candidatePair))
 				throw (new AuthorizationFailedException());
 			setJceKeyPair(candidatePair);
@@ -244,7 +241,7 @@ public class MartusJceKeyPair extends MartusKeyPair
 
 	private static Cipher createRSAEngine(Key key, int mode) throws NoSuchAlgorithmException, NoSuchProviderException, NoSuchPaddingException, InvalidKeyException
 	{
-		Cipher rsaCipherEngine = Cipher.getInstance(RSA_ALGORITHM, "BC");
+		Cipher rsaCipherEngine = Cipher.getInstance(RSA_ALGORITHM, getProviderName());
 		rsaCipherEngine.init(mode, key, rand);
 		return rsaCipherEngine;
 	}
@@ -268,9 +265,14 @@ public class MartusJceKeyPair extends MartusKeyPair
 		return StreamableBase64.encode(key.getEncoded());
 	}
 
+	public static String getProviderName()
+	{
+		return providerAccessor.getSecurityProviderName();
+	}
+
 	private static SecureRandom rand;
 	private KeyPair jceKeyPair;
-
+	private static SecurityProviderAccessor providerAccessor;
 
 	static final String RSA_ALGORITHM_NAME = "RSA";
 	private static final String RSA_ALGORITHM = "RSA/NONE/PKCS1Padding";
