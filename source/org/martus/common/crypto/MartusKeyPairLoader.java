@@ -39,14 +39,15 @@ import java.security.spec.RSAPublicKeySpec;
 public class MartusKeyPairLoader
 {
 
-	public static KeyPair load(DataInputStream in) throws Exception
+	public static KeyPair load(DataInputStream in, SecurityProviderAccessor securityProviderAccessor) throws Exception
 	{
-		MartusKeyPairLoader loader = new MartusKeyPairLoader();
+		MartusKeyPairLoader loader = new MartusKeyPairLoader(securityProviderAccessor);
 		return loader.readKeyPair(in);
 	}
 
-	private MartusKeyPairLoader()
-	{	
+	private MartusKeyPairLoader(SecurityProviderAccessor securityProviderAccessor)
+	{
+		this.providerAccessor = securityProviderAccessor;
 	}
 
 	KeyPair readKeyPair(DataInputStream in) throws Exception
@@ -348,7 +349,7 @@ public class MartusKeyPairLoader
 		// Reconstitute Keypair
 		RSAPublicKeySpec publicSpec = new RSAPublicKeySpec(modulus, publicExponent);
 		RSAPrivateCrtKeySpec privateSpec = new RSAPrivateCrtKeySpec(modulus, publicExponent, privateExponent, primeP, primeQ, primeExponentP, primeExponentQ, crtCoefficient);
-		KeyFactory factory = KeyFactory.getInstance("RSA", "BC");
+		KeyFactory factory = KeyFactory.getInstance("RSA",  providerAccessor.getSecurityProviderName());
 		PublicKey publicKey = factory.generatePublic(publicSpec);
 		PrivateKey privateCRTKey = factory.generatePrivate(privateSpec);
 		
@@ -587,4 +588,6 @@ public class MartusKeyPairLoader
 	BigInteger primeQ;
 	BigInteger privateExponent;
 	MartusKeyPair gotKeyPair;
+
+	private SecurityProviderAccessor providerAccessor;
 }
