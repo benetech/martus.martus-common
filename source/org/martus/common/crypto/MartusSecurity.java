@@ -354,7 +354,14 @@ public class MartusSecurity extends MartusCrypto
 			byte[] ivBytes = new byte[IV_BYTE_COUNT];
 			rand.nextBytes(ivBytes);
 
-			byte[] encryptedKeyBytes = encryptSessionKey(sessionKey, publicKeyString).getBytes();
+			byte[] encryptedKeyBytes;
+            if (shouldWriteAuthorDecryptableData)
+            {
+                encryptedKeyBytes = encryptSessionKey(sessionKey, publicKeyString).getBytes();
+            } else
+            {
+                encryptedKeyBytes = new byte[0];
+            }
 
 			SecretKey secretSessionKey = new SecretKeySpec(sessionKey.getBytes(), SESSION_ALGORITHM_NAME);
 			IvParameterSpec spec = new IvParameterSpec(ivBytes);
@@ -929,6 +936,16 @@ public class MartusSecurity extends MartusCrypto
 	{
 		return ENCRYPTED_FILE_VERSION_IDENTIFIER;
 	}
+
+	public boolean isShouldWriteAuthorDecryptableData()
+	{
+        return shouldWriteAuthorDecryptableData;
+    }
+
+    public void setShouldWriteAuthorDecryptableData(boolean shouldWriteAuthorDecryptableData)
+    {
+        this.shouldWriteAuthorDecryptableData = shouldWriteAuthorDecryptableData;
+    }
 	
 	private static final String SESSION_ALGORITHM_NAME = "AES";
 	private static final String SESSION_ALGORITHM = "AES/CBC/PKCS5Padding";
@@ -947,5 +964,7 @@ public class MartusSecurity extends MartusCrypto
 	private Cipher sessionCipherEngine;
 	private KeyGenerator sessionKeyGenerator;
 	private SecretKeyFactory keyFactory;
+
+	private boolean shouldWriteAuthorDecryptableData = true;
 	private SecurityContext securityContext;
 }
