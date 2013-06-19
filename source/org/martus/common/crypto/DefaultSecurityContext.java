@@ -46,19 +46,16 @@ import org.bouncycastle.x509.X509V1CertificateGenerator;
 
 public class DefaultSecurityContext implements SecurityContext
 {
-	@Override
 	public String getSecurityProviderName()
 	{
 		return MartusCrypto.SECURITY_PROVIDER_BOUNCYCASTLE;
 	}
 
-	@Override
 	public Provider createSecurityProvider()
 	{
 		return new BouncyCastleProvider();
 	}
 
-	@Override
 	public X509Certificate createCertificate(RSAPublicKey publicKey, RSAPrivateCrtKey privateKey, SecureRandom secureRandom)
 			throws SecurityException, SignatureException, InvalidKeyException,
 			CertificateEncodingException, IllegalStateException, NoSuchAlgorithmException
