@@ -38,12 +38,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.Vector;
+
 import org.martus.common.MartusUtilities;
 import org.martus.common.MartusUtilities.FileVerificationException;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.database.FileDatabase.MissingAccountMapException;
 import org.martus.common.packet.UniversalId;
-import org.martus.util.TestCaseEnhanced;
 import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 
@@ -318,7 +318,7 @@ abstract public class MockDatabase extends Database
 		File dir = getInterimFile(uid, incomingInterimMap);
 		dir.deleteOnExit();
 		dir.mkdirs();
-		File file = new File(dir, "$$$in"+TestCaseEnhanced.getCallingTestClass());
+		File file = new File(dir, "$$$in"+getClass().getSimpleName());
 		file.deleteOnExit();
 		return file;
 	}
@@ -329,7 +329,7 @@ abstract public class MockDatabase extends Database
 		File dir = getInterimFile(uid, outgoingInterimMap);
 		dir.deleteOnExit();
 		dir.mkdirs();
-		File file = new File(dir, "$$$out"+TestCaseEnhanced.getCallingTestClass());
+		File file = new File(dir, "$$$out"+getClass().getSimpleName());
 		file.deleteOnExit();
 		File sigFile = MartusUtilities.getSignatureFileFromFile(file);
 		sigFile.deleteOnExit();
@@ -342,7 +342,7 @@ abstract public class MockDatabase extends Database
 		File dir = getInterimFile(uid, outgoingInterimMap);
 		dir.deleteOnExit();
 		dir.mkdirs();
-		File file = new File(dir, "$$$public"+TestCaseEnhanced.getCallingTestClass());
+		File file = new File(dir, "$$$public"+getClass().getSimpleName());
 		file.deleteOnExit();
 		File sigFile = MartusUtilities.getSignatureFileFromFile(file);
 		sigFile.deleteOnExit();
@@ -354,7 +354,7 @@ abstract public class MockDatabase extends Database
 		File dir = new File(getFolderForAccount(accountId));
 		dir.deleteOnExit();
 		dir.mkdirs();
-		File file = new File(dir, "$$$"+TestCaseEnhanced.getCallingTestClass()+"ContactFile.dat");
+		File file = new File(dir, "$$$"+getClass().getSimpleName()+"ContactFile.dat");
 		file.deleteOnExit();
 		return file;
 	}
@@ -405,7 +405,7 @@ abstract public class MockDatabase extends Database
 
 		try
 		{
-			File interimFile = File.createTempFile("$$$MockDbInterim_"+TestCaseEnhanced.getCallingTestClass(), null);
+			File interimFile = File.createTempFile("$$$MockDbInterim_"+getClass().getSimpleName(), null);
 			interimFile.deleteOnExit();
 			interimFile.delete();
 			map.put(uid, interimFile);
