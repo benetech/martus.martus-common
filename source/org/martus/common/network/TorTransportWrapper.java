@@ -72,6 +72,13 @@ public class TorTransportWrapper
 		if(!isTorReady)
 			new TorInitializer().start();
 	}
+
+	public void startInSameThread()
+	{
+		isTorActive = true;
+		if(!isTorReady)
+			getTor().start();
+	}
 	
 	public void stop()
 	{
@@ -146,8 +153,11 @@ public class TorTransportWrapper
 	{
 		MartusLogger.log("Tor initialization: " + percent + "% - " + message);
 		if(progressMeter != null)
+		{
+			progressMeter.setStatusMessage(message);
 			progressMeter.updateProgressMeter(percent, 100);
-		updateStatus();
+			updateStatus();
+		}
 	}
 
 	void updateProgressComplete()
