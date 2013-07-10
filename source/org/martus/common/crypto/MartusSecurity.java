@@ -90,6 +90,7 @@ public class MartusSecurity extends MartusCrypto
 
 	public MartusSecurity(SecurityContext securityContext) throws CryptoInitializationException
 	{
+		shouldWriteAuthorDecryptableData = true;
 		if (securityContext == null)
 		{
 			this.securityContext = new DefaultSecurityContext();
@@ -965,6 +966,6 @@ public class MartusSecurity extends MartusCrypto
 	private KeyGenerator sessionKeyGenerator;
 	private SecretKeyFactory keyFactory;
 
-	private boolean shouldWriteAuthorDecryptableData = true;
+	private boolean shouldWriteAuthorDecryptableData;
 	private SecurityContext securityContext;
 }
