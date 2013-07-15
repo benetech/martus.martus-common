@@ -26,6 +26,8 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.packet;
 
+import org.martus.util.StreamableBase64;
+
 public class UniversalId implements Comparable
 {
 	public static class NotUniversalIdException extends Exception 
@@ -115,6 +117,18 @@ public class UniversalId implements Comparable
 		localId = newLocalId.replace(':', '-');
 	}
 	
+	public static String createLocalIdFromByteArray(String prefix, byte[] originalBytes)
+	{
+		byte[] wantedBytes = new byte[UniversalId.LOCALID_RANDOM_BYTE_COUNT];
+		System.arraycopy(originalBytes, 0, wantedBytes, 0, wantedBytes.length);
+		String base64SessionKey = StreamableBase64.encode(wantedBytes);
+		String normalizedKey = base64SessionKey.replaceAll("/",".");
+		normalizedKey = normalizedKey.replaceAll("=", "-");
+		String localId = prefix + normalizedKey;
+		return localId;
+	}
+
 	private AccountId accountId;
 	private String localId;
+	public static final int LOCALID_RANDOM_BYTE_COUNT = 128/8;
 }
