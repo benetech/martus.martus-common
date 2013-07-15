@@ -25,7 +25,8 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.test;
 
-import java.rmi.server.UID;
+import java.util.Random;
+
 import org.martus.common.packet.UniversalId;
 
 
@@ -38,11 +39,19 @@ public class UniversalIdForTesting extends UniversalId
 	
 	static public UniversalId createFromAccountAndPrefix(String accountId, String prefix)
 	{
-		return createFromAccountAndLocalId(accountId, prefix + new UID().toString());
+		if(insecureRandom == null)
+			insecureRandom = new Random();
+		
+		byte[] randomBytes = new byte[UniversalId.LOCALID_RANDOM_BYTE_COUNT];
+		insecureRandom.nextBytes(randomBytes);
+		String localId = UniversalId.createLocalIdFromByteArray(prefix, randomBytes);
+		return createFromAccountAndLocalId(accountId, localId);
 	}
 
 	public static UniversalId createDummyUniversalId()
 	{
-		return UniversalId.createFromAccountAndLocalId("DummyAccount", "Dummy" + new UID().toString());
+		return createFromAccountAndPrefix("Dummy", "D-");
 	}
+	
+	private static Random insecureRandom;
 }
