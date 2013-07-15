@@ -47,7 +47,7 @@ public class TestDatabaseKey extends TestCaseEnhanced
 
 	public void testConstructors() throws Exception
 	{
-		UniversalId uid1 = UniversalId.createDummyUniversalId();
+		UniversalId uid1 = UniversalIdForTesting.createDummyUniversalId();
 		DatabaseKey key1 = DatabaseKey.createDraftKey(uid1);
 		assertEquals("bad uid1?", uid1, key1.getUniversalId());
 		assertEquals("not draft?", true, key1.isDraft());
@@ -74,8 +74,8 @@ public class TestDatabaseKey extends TestCaseEnhanced
 
 	public void testEqualsStrings() throws Exception
 	{
-		UniversalId uid1 = UniversalId.createDummyUniversalId();
-		UniversalId uid2 = UniversalId.createDummyUniversalId();
+		UniversalId uid1 = UniversalIdForTesting.createDummyUniversalId();
+		UniversalId uid2 = UniversalIdForTesting.createDummyUniversalId();
 
 		DatabaseKey key1 = DatabaseKey.createSealedKey(uid1);
 		DatabaseKey key2 = DatabaseKey.createSealedKey(UniversalId.createFromAccountAndLocalId(uid1.getAccountId(), uid1.getLocalId()));
@@ -98,11 +98,11 @@ public class TestDatabaseKey extends TestCaseEnhanced
 
 	public void testEquals() throws Exception
 	{
-		UniversalId uid = UniversalId.createDummyUniversalId();
+		UniversalId uid = UniversalIdForTesting.createDummyUniversalId();
 
 		DatabaseKey key1 = DatabaseKey.createSealedKey(uid);
 		DatabaseKey key2 = DatabaseKey.createSealedKey(uid);
-		DatabaseKey key3 = DatabaseKey.createSealedKey(UniversalId.createDummyUniversalId());
+		DatabaseKey key3 = DatabaseKey.createSealedKey(UniversalIdForTesting.createDummyUniversalId());
 		assertEquals("self should match", key1, key1);
 		assertEquals("never match null", false, key1.equals(null));
 		assertEquals("never match string", false, key1.equals(uid));
@@ -117,14 +117,14 @@ public class TestDatabaseKey extends TestCaseEnhanced
 
 	public void testGetAccount() throws Exception
 	{
-		UniversalId uid = UniversalId.createDummyUniversalId();
+		UniversalId uid = UniversalIdForTesting.createDummyUniversalId();
 		DatabaseKey key = DatabaseKey.createSealedKey(uid);
 		assertEquals("wrong account?", uid.getAccountId(), key.getAccountId());
 	}
 
 	public void testStatus() throws Exception
 	{
-		UniversalId uid = UniversalId.createDummyUniversalId();
+		UniversalId uid = UniversalIdForTesting.createDummyUniversalId();
 		DatabaseKey key = DatabaseKey.createSealedKey(uid);
 		assertEquals("Default not sealed?", true, key.isSealed());
 		assertEquals("Default was draft?", false, key.isDraft());

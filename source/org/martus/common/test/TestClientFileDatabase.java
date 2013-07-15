@@ -67,7 +67,7 @@ public class TestClientFileDatabase extends TestCaseEnhanced
 	{
 		MartusCrypto security = MockMartusSecurity.createClient();
 
-		UniversalId uid = UniversalId.createDummyUniversalId();
+		UniversalId uid = UniversalIdForTesting.createDummyUniversalId();
 		DatabaseKey legacyKey = DatabaseKey.createLegacyKey(uid);
 		db.writeRecord(legacyKey, smallString);
 		InputStream inLegacy = db.openInputStream(legacyKey, security);

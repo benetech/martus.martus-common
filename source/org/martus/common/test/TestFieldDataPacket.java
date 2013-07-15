@@ -109,7 +109,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		fdp.clearAll();
 		assertEquals("didn't return to empty after field?", true, fdp.isEmpty());
 
-		UniversalId uid = UniversalId.createDummyUniversalId();
+		UniversalId uid = UniversalIdForTesting.createDummyUniversalId();
 		AttachmentProxy a = new AttachmentProxy(uid, "label", null);
 		fdp.addAttachment(a);
 		assertEquals("still empty after attachment?", false, fdp.isEmpty());
@@ -213,7 +213,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		//System.out.println("{" + simpleFieldDataPacket + "}");
 
 		FieldSpecCollection tagsThatWillBeIgnored = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
-		FieldDataPacket loaded = new FieldDataPacket(UniversalId.createDummyUniversalId(), tagsThatWillBeIgnored);
+		FieldDataPacket loaded = new FieldDataPacket(UniversalIdForTesting.createDummyUniversalId(), tagsThatWillBeIgnored);
 
 		byte[] bytes = simpleFieldDataPacket.getBytes("UTF-8");
 		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
@@ -256,7 +256,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		//System.out.println("{" + simpleFieldDataPacket + "}");
 
 		FieldSpecCollection specsThatWillBeIgnored = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
-		FieldDataPacket loaded = new FieldDataPacket(UniversalId.createDummyUniversalId(), specsThatWillBeIgnored);
+		FieldDataPacket loaded = new FieldDataPacket(UniversalIdForTesting.createDummyUniversalId(), specsThatWillBeIgnored);
 
 		byte[] bytes = simpleFieldDataPacket.getBytes("UTF-8");
 		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
@@ -353,7 +353,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 			"</FieldDataPacket>\n";
 
 		FieldSpecCollection specsThatWillBeIgnored = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
-		FieldDataPacket loaded = new FieldDataPacket(UniversalId.createDummyUniversalId(), specsThatWillBeIgnored);
+		FieldDataPacket loaded = new FieldDataPacket(UniversalIdForTesting.createDummyUniversalId(), specsThatWillBeIgnored);
 
 		byte[] bytes = simpleFieldDataPacket.getBytes("UTF-8");
 		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
@@ -490,7 +490,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 	public void testWriteXmlCustomField() throws Exception
 	{
 		FieldSpecCollection specs = new FieldSpecCollection(new FieldSpec[] {LegacyCustomFields.createFromLegacy("tag,<label>")});
-		FieldDataPacket fdpCustom = new FieldDataPacket(UniversalId.createDummyUniversalId(), specs);
+		FieldDataPacket fdpCustom = new FieldDataPacket(UniversalIdForTesting.createDummyUniversalId(), specs);
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		fdpCustom.writeXml(out, security);
@@ -509,7 +509,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 	public void testWriteXmlNoCustomFields() throws Exception
 	{
 		FieldSpecCollection specs = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
-		FieldDataPacket fdpCustom = new FieldDataPacket(UniversalId.createDummyUniversalId(), specs);
+		FieldDataPacket fdpCustom = new FieldDataPacket(UniversalIdForTesting.createDummyUniversalId(), specs);
 		assertFalse("Should only have the default fields", fdpCustom.hasCustomFieldTemplate());
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -576,7 +576,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		assertTrue("uid after label?", attachmentUidAt < attachmentLabelAt);
 		assertTrue("key after label?", attachmentKeyAt < attachmentLabelAt);
 
-		UniversalId uid = UniversalId.createDummyUniversalId();
+		UniversalId uid = UniversalIdForTesting.createDummyUniversalId();
 		FieldDataPacket got = new FieldDataPacket(uid, fieldTags);
 
 		byte[] bytes = result.getBytes("UTF-8");
@@ -766,7 +766,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		bytes[50] ^= 255;
 
 		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
-		UniversalId newUid = UniversalId.createDummyUniversalId();
+		UniversalId newUid = UniversalIdForTesting.createDummyUniversalId();
 		FieldDataPacket loadedBad = new FieldDataPacket(newUid, fieldTags);
 		try
 		{
@@ -784,7 +784,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		ByteArrayInputStreamWithSeek inputStream = new ByteArrayInputStreamWithSeek(input);
 		try
 		{
-			UniversalId uid = UniversalId.createDummyUniversalId();
+			UniversalId uid = UniversalIdForTesting.createDummyUniversalId();
 			FieldDataPacket loaded = new FieldDataPacket(uid, fieldTags);
 			loaded.loadFromXml(inputStream, security);
 			fail("Should have thrown " + expectedExceptionClass.getName());

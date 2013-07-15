@@ -40,4 +40,9 @@ public class UniversalIdForTesting extends UniversalId
 	{
 		return createFromAccountAndLocalId(accountId, prefix + new UID().toString());
 	}
+
+	public static UniversalId createDummyUniversalId()
+	{
+		return UniversalId.createFromAccountAndLocalId("DummyAccount", "Dummy" + new UID().toString());
+	}
 }

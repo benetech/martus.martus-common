@@ -27,7 +27,6 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.test;
 
 import org.martus.common.packet.AccountId;
-import org.martus.common.packet.UniversalId;
 import org.martus.util.Stopwatch;
 import org.martus.util.TestCaseEnhanced;
 
@@ -55,7 +54,7 @@ public class TestAccountId extends TestCaseEnhanced
 	{
 		for(int i = 0; i < 10000; ++i)
 		{
-			String fakeAccountId = UniversalId.createDummyUniversalId().getLocalId();
+			String fakeAccountId = UniversalIdForTesting.createDummyUniversalId().getLocalId();
 			AccountId.create(fakeAccountId);
 		}
 		

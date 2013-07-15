@@ -58,14 +58,14 @@ public class TestUniversalId extends TestCaseEnhanced
 
 	public void testLocalId()
 	{
-		UniversalId uid = UniversalId.createDummyUniversalId();
+		UniversalId uid = UniversalIdForTesting.createDummyUniversalId();
 
 		assertNotNull("no local id?", uid.getLocalId());
 		assertTrue("local id too short?", uid.getLocalId().length() > 20);
 		assertTrue("local id too long?", uid.getLocalId().length() < 40);
 		assertEquals("contructor didn't strip colons?", -1, uid.getLocalId().indexOf(":"));
 
-		UniversalId uid2 = UniversalId.createDummyUniversalId();
+		UniversalId uid2 = UniversalIdForTesting.createDummyUniversalId();
 		assertNotEquals("dupe?", uid.getLocalId(), uid2.getLocalId());
 
 		uid.setLocalId(sampleLocalId);

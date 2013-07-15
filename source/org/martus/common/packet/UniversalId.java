@@ -26,9 +26,6 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.packet;
 
-// TODO: Remove this reference...use whatever we're using to create new uids from scratch
-import java.rmi.server.UID;
-
 public class UniversalId implements Comparable
 {
 	public static class NotUniversalIdException extends Exception 
@@ -38,11 +35,6 @@ public class UniversalId implements Comparable
 	public static UniversalId createFromAccountAndLocalId(String accountId, String localId)
 	{
 		return new UniversalId(accountId, localId);
-	}
-
-	public static UniversalId createDummyUniversalId()
-	{
-		return createFromAccountAndLocalId("DummyAccount", "Dummy" + new UID().toString());
 	}
 
 	static UniversalId createDummyFromString(String uidAsString)

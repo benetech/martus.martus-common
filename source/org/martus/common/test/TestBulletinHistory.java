@@ -45,8 +45,8 @@ public class TestBulletinHistory extends TestCase
 		BulletinHistory fromEmpty = BulletinHistory.createFromHistoryString(empty.toString());
 		assertEquals(0, fromEmpty.size());
 		
-		UniversalId uid1 = UniversalId.createDummyUniversalId();
-		UniversalId uid2 = UniversalId.createDummyUniversalId();
+		UniversalId uid1 = UniversalIdForTesting.createDummyUniversalId();
+		UniversalId uid2 = UniversalIdForTesting.createDummyUniversalId();
 		BulletinHistory two = new BulletinHistory();
 		two.add(uid1.getLocalId());
 		two.add(uid2.getLocalId());
