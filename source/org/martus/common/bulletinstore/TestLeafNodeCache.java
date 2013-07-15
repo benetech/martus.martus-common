@@ -39,6 +39,7 @@ import org.martus.common.database.Database.RecordHiddenException;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.BulletinHistory;
 import org.martus.common.packet.UniversalId;
+import org.martus.common.test.UniversalIdForTesting;
 import org.martus.util.Stopwatch;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.UnicodeStringWriter;
@@ -213,12 +214,12 @@ public class TestLeafNodeCache extends TestCaseEnhanced
 		BulletinHistoryAndHqCache cache = new BulletinHistoryAndHqCache(store);
 		BulletinHistory history = new BulletinHistory();
 		for(int i = 0; i < 10; ++i)
-			history.add(UniversalId.createDummyUniversalId().getLocalId());
+			history.add(UniversalIdForTesting.createDummyUniversalId().getLocalId());
 		
 		Stopwatch watch = new Stopwatch();
 		for(int i = 0; i < 500; ++i)
 		{
-			UniversalId uid = UniversalId.createDummyUniversalId();
+			UniversalId uid = UniversalIdForTesting.createDummyUniversalId();
 			DatabaseKey key = DatabaseKey.createSealedKey(uid);
 			cache.addToCachedLeafInformation(key, history);
 		}
@@ -226,7 +227,7 @@ public class TestLeafNodeCache extends TestCaseEnhanced
 
 		for(int i = 0; i < 1000; ++i)
 		{
-			UniversalId uid = UniversalId.createDummyUniversalId();
+			UniversalId uid = UniversalIdForTesting.createDummyUniversalId();
 			DatabaseKey key = DatabaseKey.createSealedKey(uid);
 			cache.addToCachedLeafInformation(key, history);
 		}

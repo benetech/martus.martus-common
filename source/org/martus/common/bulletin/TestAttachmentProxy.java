@@ -34,6 +34,7 @@ import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.crypto.SessionKey;
 import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.UniversalId;
+import org.martus.common.test.UniversalIdForTesting;
 import org.martus.util.*;
 
 public class TestAttachmentProxy extends TestCaseEnhanced
@@ -58,7 +59,7 @@ public class TestAttachmentProxy extends TestCaseEnhanced
 		assertEquals("file", file, a.getFile());
 		assertNull("not null key?", a.getSessionKey());
 
-		UniversalId uid = UniversalId.createDummyUniversalId();
+		UniversalId uid = UniversalIdForTesting.createDummyUniversalId();
 		assertNull("already has a uid?", a.getUniversalId());
 		a.setUniversalIdAndSessionKey(uid, sessionKey);
 		assertEquals("wrong uid?", uid, a.getUniversalId());
@@ -85,7 +86,7 @@ public class TestAttachmentProxy extends TestCaseEnhanced
 
 	public void testUidProxy() throws Exception
 	{
-		UniversalId uid = UniversalId.createDummyUniversalId();
+		UniversalId uid = UniversalIdForTesting.createDummyUniversalId();
 		String label = "label";
 		AttachmentProxy a = new AttachmentProxy(uid, label, null);
 		assertEquals("wrong uid?", uid, a.getUniversalId());

@@ -50,6 +50,7 @@ import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.FieldDataPacket;
 import org.martus.common.packet.UniversalId;
 import org.martus.common.test.MockBulletinStore;
+import org.martus.common.test.UniversalIdForTesting;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 import org.martus.util.inputstreamwithseek.ZipEntryInputStreamWithSeek;
@@ -157,7 +158,7 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 		ReadableDatabase dbWithAttachments = store.getDatabase();
 		File tempFile1 = createTempFileWithData(sampleBytes1);
 		File tempFile2 = createTempFileWithData(sampleBytes2);
-		UniversalId dummyUid = UniversalId.createDummyUniversalId();
+		UniversalId dummyUid = UniversalIdForTesting.createDummyUniversalId();
 
 		Bulletin original = new Bulletin(security);
 		AttachmentProxy a = new AttachmentProxy(tempFile1);
@@ -248,7 +249,7 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 		ZipFile zip = new ZipFile(tempFile);
 		Enumeration entries = zip.entries();
 
-		UniversalId uid = UniversalId.createDummyUniversalId();
+		UniversalId uid = UniversalIdForTesting.createDummyUniversalId();
 
 		assertEquals("no data?", true, entries.hasMoreElements());
 		ZipEntry dataEntry = (ZipEntry)entries.nextElement();

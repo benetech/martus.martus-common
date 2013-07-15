@@ -152,7 +152,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 
 	public void testAllPrivate() throws Exception
 	{
-		UniversalId dummyUid = UniversalId.createDummyUniversalId();
+		UniversalId dummyUid = UniversalIdForTesting.createDummyUniversalId();
 		BulletinHeaderPacket unknownPrivacy = new BulletinHeaderPacket(dummyUid);
 		assertEquals("knows privacy?", false, unknownPrivacy.hasAllPrivateFlag());
 		unknownPrivacy.setAllPrivate(true);
@@ -165,7 +165,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		bhp.writeXml(out1, security);
 		
 		ByteArrayInputStreamWithSeek in1 = new ByteArrayInputStreamWithSeek(out1.toByteArray());
-		BulletinHeaderPacket loadedBhp1 = new BulletinHeaderPacket(UniversalId.createDummyUniversalId());
+		BulletinHeaderPacket loadedBhp1 = new BulletinHeaderPacket(UniversalIdForTesting.createDummyUniversalId());
 		loadedBhp1.loadFromXml(in1, security);
 		assertEquals("doesn't know privacy after loaded false?", true, loadedBhp1.hasAllPrivateFlag());
 		assertEquals("private after load?", false, loadedBhp1.isAllPrivate());
@@ -177,7 +177,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		ByteArrayOutputStream out2 = new ByteArrayOutputStream();
 		bhp.writeXml(out2, security);
 		ByteArrayInputStreamWithSeek in2 = new ByteArrayInputStreamWithSeek(out2.toByteArray());
-		BulletinHeaderPacket loadedBhp2 = new BulletinHeaderPacket(UniversalId.createDummyUniversalId());
+		BulletinHeaderPacket loadedBhp2 = new BulletinHeaderPacket(UniversalIdForTesting.createDummyUniversalId());
 		loadedBhp2.loadFromXml(in2, security);
 		assertEquals("doesn't know privacy after loaded true?", true, loadedBhp2.hasAllPrivateFlag());
 		assertEquals("not private after load?", true, loadedBhp2.isAllPrivate());
@@ -187,7 +187,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		int endTagEnd = result2.indexOf("/" + MartusXml.AllPrivateElementName) + MartusXml.AllPrivateElementName.length() + 1;
 		String withoutTag = result2.substring(0, startTagStart) + result2.substring(endTagEnd);
 		ByteArrayInputStreamWithSeek in3 = new ByteArrayInputStreamWithSeek(withoutTag.getBytes("UTF-8"));
-		BulletinHeaderPacket loadedBhp3 = new BulletinHeaderPacket(UniversalId.createDummyUniversalId());
+		BulletinHeaderPacket loadedBhp3 = new BulletinHeaderPacket(UniversalIdForTesting.createDummyUniversalId());
 		loadedBhp3.setAllPrivate(true);
 		loadedBhp3.loadFromXml(in3, null);
 		assertEquals("knows privacy after loaded without tag?", false, loadedBhp3.hasAllPrivateFlag());
@@ -196,7 +196,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 
 	public void testAllHQsProxyUpload() throws Exception
 	{
-		UniversalId dummyUid = UniversalId.createDummyUniversalId();
+		UniversalId dummyUid = UniversalIdForTesting.createDummyUniversalId();
 		BulletinHeaderPacket noProxyUploaders = new BulletinHeaderPacket(dummyUid);
 		assertEquals("Can Upload?", false, noProxyUploaders.canAllHQsProxyUpload());
 
@@ -204,7 +204,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		bhp.writeXml(out1, security);
 		
 		ByteArrayInputStreamWithSeek in1 = new ByteArrayInputStreamWithSeek(out1.toByteArray());
-		BulletinHeaderPacket loadedBhp1 = new BulletinHeaderPacket(UniversalId.createDummyUniversalId());
+		BulletinHeaderPacket loadedBhp1 = new BulletinHeaderPacket(UniversalIdForTesting.createDummyUniversalId());
 		loadedBhp1.loadFromXml(in1, security);
 		assertEquals("Should now have all HQs as proxy uploaders?", true, loadedBhp1.canAllHQsProxyUpload());
 	}
