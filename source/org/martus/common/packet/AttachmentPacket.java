@@ -58,10 +58,9 @@ public class AttachmentPacket extends Packet
 {
 	public AttachmentPacket(String account, SessionKey sessionKeyToUse, File fileToAttach, MartusCrypto crypto)
 	{
-		super(createUniversalId(crypto));
+		this(crypto);
 		sessionKey = sessionKeyToUse;
 		rawFile = fileToAttach;
-		security = crypto;
 	}
 
 	public AttachmentPacket(UniversalId uId)
@@ -71,7 +70,7 @@ public class AttachmentPacket extends Packet
 	
 	private AttachmentPacket(MartusCrypto crypto)
 	{
-		super(UniversalId.createDummyUniversalId());
+		super(createUniversalId(crypto));
 		security = crypto;
 	}
 	
