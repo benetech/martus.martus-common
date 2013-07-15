@@ -105,18 +105,7 @@ public class Packet
 	{
 		SessionKey sessionKey = crypto.createSessionKey();
 		byte[] originalBytes = sessionKey.getBytes();
-		return createLocalIdFromByteArray(prefix, originalBytes);
-	}
-
-	public static String createLocalIdFromByteArray(String prefix, byte[] originalBytes)
-	{
-		byte[] wantedBytes = new byte[LOCALID_RANDOM_BYTE_COUNT];
-		System.arraycopy(originalBytes, 0, wantedBytes, 0, wantedBytes.length);
-		String base64SessionKey = StreamableBase64.encode(wantedBytes);
-		String normalizedKey = base64SessionKey.replaceAll("/",".");
-		normalizedKey = normalizedKey.replaceAll("=", "-");
-		String localId = prefix + normalizedKey;
-		return localId;
+		return UniversalId.createLocalIdFromByteArray(prefix, originalBytes);
 	}
 
 	public UniversalId getUniversalId()
@@ -460,7 +449,5 @@ public class Packet
 	// typically, we print the values to the console when Help/About is done
 	public static int callsToVerifyPacketSignature;
 	public static long millisInVerifyPacketSignature;
-
-	private static final int LOCALID_RANDOM_BYTE_COUNT = 128/8;
 
 }
