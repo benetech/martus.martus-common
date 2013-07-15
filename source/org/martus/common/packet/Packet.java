@@ -105,6 +105,11 @@ public class Packet
 	{
 		SessionKey sessionKey = crypto.createSessionKey();
 		byte[] originalBytes = sessionKey.getBytes();
+		return createLocalIdFromByteArray(prefix, originalBytes);
+	}
+
+	public static String createLocalIdFromByteArray(String prefix, byte[] originalBytes)
+	{
 		byte[] wantedBytes = new byte[LOCALID_RANDOM_BYTE_COUNT];
 		System.arraycopy(originalBytes, 0, wantedBytes, 0, wantedBytes.length);
 		String base64SessionKey = StreamableBase64.encode(wantedBytes);
