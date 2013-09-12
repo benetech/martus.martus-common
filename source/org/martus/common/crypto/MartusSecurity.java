@@ -99,7 +99,10 @@ public class MartusSecurity extends MartusCrypto
 		}
 
 		if(rand == null)
+		{
 			rand = new SecureRandom();
+			MartusLogger.log("RNG: " + rand.getAlgorithm());
+		}
 
 		initialize(rand);
 	}
