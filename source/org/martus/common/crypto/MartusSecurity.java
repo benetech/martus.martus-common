@@ -98,13 +98,7 @@ public class MartusSecurity extends MartusCrypto
 			this.securityContext = securityContext;
 		}
 
-		if(rand == null)
-		{
-			rand = new SecureRandom();
-			MartusLogger.log("RNG: " + rand.getAlgorithm());
-		}
-
-		initialize(rand);
+		initialize();
 	}
 
 	private void insertHighestPriorityProvider(Provider provider)
@@ -112,9 +106,15 @@ public class MartusSecurity extends MartusCrypto
 		Security.insertProviderAt(provider, 1);
 	}
 
-	synchronized void initialize(SecureRandom randToUse)throws CryptoInitializationException
+	synchronized void initialize() throws CryptoInitializationException
 	{
 		insertHighestPriorityProvider(securityContext.createSecurityProvider());
+
+		if(rand == null)
+		{
+			rand = new SecureRandom();
+			MartusLogger.log("RNG: " + rand.getAlgorithm());
+		}
 
 		try
 		{
@@ -123,7 +123,7 @@ public class MartusSecurity extends MartusCrypto
 			sessionKeyGenerator = KeyGenerator.getInstance(SESSION_ALGORITHM_NAME, "BC");
 			keyFactory = SecretKeyFactory.getInstance(PBE_ALGORITHM, "BC");
 
-			keyPair = new MartusJceKeyPair(randToUse, securityContext);
+			keyPair = new MartusJceKeyPair(rand, securityContext);
 		}
 		catch(Exception e)
 		{
