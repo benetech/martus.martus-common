@@ -287,7 +287,7 @@ public class MiniLocalization
 		return defaultLanguageDateFormat;
 	}
 	
-	private static DatePreference getDefaultDatePreferenceForLanguage(String languageCode)
+	public static DatePreference getDefaultDatePreferenceForLanguage(String languageCode)
 	{
 		Map defaultLanguageDateFormat = getDefaultDateFormats();
 		if(!defaultLanguageDateFormat.containsKey(languageCode))
