@@ -128,7 +128,8 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		String publicKeyString = bigKeySecurity.getPublicKeyString();
 		
 		byte[] emptyCache1 = bigKeySecurity.getSessionKeyCache();
-		assertTrue("emptyCache1 too big?", emptyCache1.length < 1500);
+		int conservativeMaximumSize = MartusSecurity.getBitsWhenCreatingKeyPair();
+		assertTrue("emptyCache1 too big? (was " + emptyCache1.length + ")", emptyCache1.length < conservativeMaximumSize);
 
 		final int MAX_KEYS = 100;
 		SessionKey[] plainSessionKeys = new SessionKey[MAX_KEYS];
