@@ -39,7 +39,7 @@ public class MSPAFileDatabase extends ServerFileDatabase
 		super(directory, security);
 	}
 
-	Map getAccountMap()
+	protected Map getAccountMap()
 	{
 		// NOTE: MSPAServer always needs to re-read latest account map
 		// from disk because the MartusServer may have modified it
