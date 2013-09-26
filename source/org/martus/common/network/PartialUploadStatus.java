@@ -27,8 +27,10 @@ package org.martus.common.network;
 
 public class PartialUploadStatus
 {
-	public PartialUploadStatus(long length, String sha256)
+	public PartialUploadStatus(long lengthToUse, String sha1ToUse)
 	{
+		length = lengthToUse;
+		sha1 = sha1ToUse;
 	}
 
 	public boolean hasPartialUpload()
@@ -38,11 +40,14 @@ public class PartialUploadStatus
 	
 	public long lengthOfPartialUpload()
 	{
-		return 0L;
+		return length;
 	}
 	
-	public String sha256OfPartialUpload()
+	public String sha1OfPartialUpload()
 	{
-		return "";
+		return sha1;
 	}
+	
+	private long length;
+	private String sha1;
 }
