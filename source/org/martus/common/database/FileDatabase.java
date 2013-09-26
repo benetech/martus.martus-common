@@ -428,7 +428,7 @@ abstract public class FileDatabase extends Database
 
 	// end Database interface
 
-	public void visitAllAccounts(AccountVisitor visitor)
+	public synchronized void visitAllAccounts(AccountVisitor visitor)
 	{
 		Set accounts = getAccountMap().keySet();
 		Iterator iterator = accounts.iterator();
@@ -799,7 +799,7 @@ abstract public class FileDatabase extends Database
 		return accountMapFile;
 	}
 	
-	Map getAccountMap()
+	protected synchronized Map getAccountMap()
 	{
 		return accountMap;
 	}
