@@ -904,9 +904,15 @@ public class MartusSecurity extends MartusCrypto
 	{
 		return securityContext.createCertificate(publicKey, privateKey, rand);
 	}
+	
+	public static String createBase64Digest(InputStream in) throws CreateDigestException, IOException
+	{
+		byte[] rawDigest = MartusSecurity.createDigest(in);
+		String hexDigest = StreamableBase64.encode(rawDigest);
+		return hexDigest;
+	}
 
-	protected static byte[] createDigest(ByteArrayInputStream in)
-		throws IOException, CreateDigestException
+	public static byte[] createDigest(InputStream in) throws IOException, CreateDigestException
 	{
 		try
 		{
