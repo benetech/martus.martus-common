@@ -128,8 +128,8 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		String publicKeyString = bigKeySecurity.getPublicKeyString();
 		
 		byte[] emptyCache1 = bigKeySecurity.getSessionKeyCache();
-		int conservativeMaximumSize = MartusSecurity.getBitsWhenCreatingKeyPair();
-		assertTrue("emptyCache1 too big? (was " + emptyCache1.length + ")", emptyCache1.length < conservativeMaximumSize);
+		int conservativeMaximumEmptySize = MartusSecurity.getBitsWhenCreatingKeyPair();
+		assertTrue("emptyCache1 too big? (was " + emptyCache1.length + ")", emptyCache1.length < conservativeMaximumEmptySize);
 
 		final int MAX_KEYS = 100;
 		SessionKey[] plainSessionKeys = new SessionKey[MAX_KEYS];
@@ -142,11 +142,11 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		
 		
 		byte[] fullCache1 = bigKeySecurity.getSessionKeyCache();
-		assertTrue("fullCache1 too small?", fullCache1.length > 2000);
+		assertTrue("fullCache1 too small? (was " + fullCache1.length + ")", fullCache1.length > conservativeMaximumEmptySize);
 
 		bigKeySecurity.flushSessionKeyCache();
 		byte[] emptyCache2 = bigKeySecurity.getSessionKeyCache();
-		assertTrue("emptyCache2 too big?", emptyCache2.length < 1500);
+		assertTrue("emptyCache2 too big?", emptyCache2.length < conservativeMaximumEmptySize);
 
 		for(int i = 0; i < MAX_KEYS; ++i)
 		{
@@ -155,7 +155,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		}
 		
 		byte[] fullCache2 = bigKeySecurity.getSessionKeyCache();
-		assertTrue("fullCache2 too small?", fullCache2.length > 2000);
+		assertTrue("fullCache2 too small?", fullCache2.length > conservativeMaximumEmptySize);
 
 		for(int i=0; i < MAX_KEYS; ++i)
 		{
@@ -173,7 +173,7 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		bigKeySecurity.flushSessionKeyCache();
 		bigKeySecurity.setSessionKeyCache(fullCache2);
 		byte[] fullCache3 = bigKeySecurity.getSessionKeyCache();
-		assertTrue("fullCache3 too small?", fullCache3.length > 2000);
+		assertTrue("fullCache3 too small?", fullCache3.length > conservativeMaximumEmptySize);
 
 		long stopTime2 = System.currentTimeMillis() + 1000;
 		for(int i=0; i < MAX_KEYS; ++i)
