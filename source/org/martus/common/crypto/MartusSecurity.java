@@ -905,29 +905,16 @@ public class MartusSecurity extends MartusCrypto
 		return securityContext.createCertificate(publicKey, privateKey, rand);
 	}
 	
-	public static String createBase64Digest(InputStream in) throws CreateDigestException, IOException
+	public static String createBase64Digest(InputStream in) throws Exception
 	{
 		byte[] rawDigest = MartusSecurity.createDigest(in);
 		String hexDigest = StreamableBase64.encode(rawDigest);
 		return hexDigest;
 	}
 
-	public static byte[] createDigest(InputStream in) throws IOException, CreateDigestException
+	public static byte[] createDigest(InputStream in) throws Exception
 	{
-		try
-		{
-			MessageDigest digester = MessageDigest.getInstance(DIGEST_ALGORITHM);
-			digester.reset();
-			int got;
-			byte[] bytes = new byte[MartusConstants.digestBufferSize];
-			while( (got=in.read(bytes)) >= 0)
-				digester.update(bytes, 0, got);
-			return digester.digest();
-		}
-		catch(NoSuchAlgorithmException e)
-		{
-			throw new CreateDigestException(e);
-		}
+		return createPartialDigest(in, -1);
 	}
 	
 	public static byte[] createPartialDigest(InputStream in, long length) throws Exception
@@ -942,24 +929,24 @@ public class MartusSecurity extends MartusCrypto
 
 			while(true)
 			{
-				if(digestedCount > length)
+				if(length >= 0 && digestedCount > length)
 					throw new CreateDigestException("createPartialDigest went too far");
 				
-				if(digestedCount == length)
+				if(length >= 0 && digestedCount == length)
 					break;
 				
 				int got = in.read(bytes);
 				if(got < 0)
 					break;
 				
-				if(digestedCount + got > length)
+				if(length >= 0 && digestedCount + got > length)
 					got = (int) (length - digestedCount);
 
 				digester.update(bytes, 0, got);
 				digestedCount += got;
 			}
 			
-			if(digestedCount < length)
+			if(length >= 0 && digestedCount < length)
 				throw new CreateDigestException("Ran out of bytes to digest");
 			
 			return digester.digest();
