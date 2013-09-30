@@ -370,11 +370,14 @@ public abstract class MartusCrypto
 		}
 	}
 	
-	public static byte[] createDigestBytes(String inputText) throws UnsupportedEncodingException, CreateDigestException, IOException {
+	public static byte[] createDigestBytes(String inputText) throws Exception
+	{
 		byte[] bytesToDigest = inputText.getBytes("UTF-8");
 		return createDigest(bytesToDigest);
 	}
-	public static byte[] createDigest(byte[] bytesToDigest) throws CreateDigestException, IOException {
+	
+	public static byte[] createDigest(byte[] bytesToDigest) throws Exception 
+	{
 		ByteArrayInputStream in = new ByteArrayInputStream(bytesToDigest);
 		byte[] result = MartusSecurity.createDigest(in);
 		in.close();
