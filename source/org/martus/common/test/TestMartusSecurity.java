@@ -38,8 +38,10 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.Vector;
 
+import org.martus.common.MartusConstants;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
+import org.martus.common.crypto.MartusCrypto.CreateDigestException;
 import org.martus.common.crypto.MartusCrypto.DecryptionException;
 import org.martus.common.crypto.MartusCrypto.EncryptionException;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
@@ -92,6 +94,60 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		assertTrue("setup: KeyPair returned NULL", security.hasKeyPair());
 		assertNotNull("setup: Key returned NULL", security.getKeyPair().getPrivateKey());
 		TRACE_END();
+	}
+	
+	public void testCreateDigest() throws Exception
+	{
+		byte[] bytes1 = new byte[] {1, 5, 100, 96, 7};
+		byte[] bytes2 = new byte[] {1, 5, 100, 96, 8};
+		
+		ByteArrayInputStreamWithSeek in1 = new ByteArrayInputStreamWithSeek(bytes1);
+		byte[] digest1 = MartusSecurity.createDigest(in1);
+		ByteArrayInputStreamWithSeek in2 = new ByteArrayInputStreamWithSeek(bytes2);
+		byte[] digest2 = MartusSecurity.createDigest(in2);
+		assertFalse("Digests matched?", Arrays.equals(digest1, digest2));
+		
+		in1.seek(0);
+		byte[] digest1Again = MartusSecurity.createDigest(in1);
+		assertTrue("Digest changed?", Arrays.equals(digest1, digest1Again));
+	}
+	
+	public void testCreatePartialDigest() throws Exception
+	{
+		verifyPartialDigest(10, 0);
+		verifyPartialDigest(10, 5);
+		verifyPartialDigest(10, 10);
+		try
+		{
+			verifyPartialDigest(10, 11);
+			fail("Expected exception");
+		}
+		catch(CreateDigestException ignoreExpected)
+		{
+		}
+		int bufferSize = MartusConstants.digestBufferSize;
+		verifyPartialDigest(bufferSize, bufferSize-1);
+		verifyPartialDigest(bufferSize, bufferSize);
+		verifyPartialDigest(bufferSize+1, bufferSize);
+		verifyPartialDigest(bufferSize+1, bufferSize+1);
+		verifyPartialDigest(bufferSize+2, bufferSize+1);
+		
+	}
+
+	public void verifyPartialDigest(int fullLength, int partialLength)
+			throws Exception
+	{
+		byte[] longerThanTheBuffer = new byte[fullLength];
+		Arrays.fill(longerThanTheBuffer, (byte)2);
+		byte[] longPartial = new byte[partialLength];
+		int lengthToCopy = Math.min(partialLength, longerThanTheBuffer.length);
+		System.arraycopy(longerThanTheBuffer, 0, longPartial, 0, lengthToCopy);
+		
+		ByteArrayInputStreamWithSeek longIn = new ByteArrayInputStreamWithSeek(longerThanTheBuffer);
+		byte[] longPartialDigest = MartusSecurity.createPartialDigest(longIn, partialLength);
+		ByteArrayInputStreamWithSeek longPartialIn = new ByteArrayInputStreamWithSeek(longPartial);
+		byte[] expectedLongPartialDigest = MartusSecurity.createPartialDigest(longPartialIn, partialLength);
+		assertTrue("Long digests different?", Arrays.equals(expectedLongPartialDigest, longPartialDigest));
 	}
 	
 	public void testLargerRsaKeys() throws Exception

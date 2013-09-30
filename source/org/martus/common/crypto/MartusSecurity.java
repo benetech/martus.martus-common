@@ -926,7 +926,47 @@ public class MartusSecurity extends MartusCrypto
 		}
 		catch(NoSuchAlgorithmException e)
 		{
-			throw new CreateDigestException();
+			throw new CreateDigestException(e);
+		}
+	}
+	
+	public static byte[] createPartialDigest(InputStream in, long length) throws Exception
+	{
+		try
+		{
+			MessageDigest digester = MessageDigest.getInstance(DIGEST_ALGORITHM);
+			digester.reset();
+
+			long digestedCount = 0;
+			byte[] bytes = new byte[MartusConstants.digestBufferSize];
+
+			while(true)
+			{
+				if(digestedCount > length)
+					throw new CreateDigestException("createPartialDigest went too far");
+				
+				if(digestedCount == length)
+					break;
+				
+				int got = in.read(bytes);
+				if(got < 0)
+					break;
+				
+				if(digestedCount + got > length)
+					got = (int) (length - digestedCount);
+
+				digester.update(bytes, 0, got);
+				digestedCount += got;
+			}
+			
+			if(digestedCount < length)
+				throw new CreateDigestException("Ran out of bytes to digest");
+			
+			return digester.digest();
+		}
+		catch(NoSuchAlgorithmException e)
+		{
+			throw new CreateDigestException(e);
 		}
 	}
 
@@ -938,7 +978,7 @@ public class MartusSecurity extends MartusCrypto
 		}
 		catch (Exception e)
 		{
-			throw new CreateDigestException();
+			throw new CreateDigestException(e);
 		}
 	}
 	
