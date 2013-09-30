@@ -390,7 +390,7 @@ public abstract class MartusCrypto
 	}
 	
 	protected static final int bitsInSessionKey = 256;
-	protected static final int EXPECTED_PUBLIC_KEY_BITS = 4096;
+	protected static final int EXPECTED_PUBLIC_KEY_BITS = 3072;
 	protected static final int bitsInPublicKey = EXPECTED_PUBLIC_KEY_BITS;
 	protected static final int SALT_BYTE_COUNT = 8;
 	protected static final int ITERATION_COUNT = 1000;
