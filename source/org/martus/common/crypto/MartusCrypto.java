@@ -268,6 +268,11 @@ public abstract class MartusCrypto
 		{
 			super(causedBy);
 		}
+
+		public CryptoException(String message)
+		{
+			super(message);
+		}
 	}
 
 	public static class CryptoInitializationException extends CryptoException
@@ -320,6 +325,15 @@ public abstract class MartusCrypto
 
 	public static class CreateDigestException extends CryptoException 
 	{
+		public CreateDigestException(Exception cause)
+		{
+			super(cause);
+		}
+		
+		public CreateDigestException(String message)
+		{
+			super(message);
+		}
 	}
 
 	
@@ -352,7 +366,7 @@ public abstract class MartusCrypto
 		}
 		catch (Exception e)
 		{
-			throw new CreateDigestException();
+			throw new CreateDigestException(e);
 		}
 	}
 	
