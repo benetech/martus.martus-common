@@ -151,9 +151,14 @@ abstract public class FileDatabase extends Database
 		}
 		return 0;
 	}
+	
+	public long getPacketTimestamp(DatabaseKey key) throws IOException, RecordHiddenException
+	{
+		File file = getFileForRecord(key);
+		return file.lastModified();
+	}
 
-	public long getmTime(DatabaseKey key) 
-	throws IOException, RecordHiddenException
+	public long getmTime(DatabaseKey key) throws IOException, RecordHiddenException
 	{
 	    if(mTimeMap.containsKey(key))
 	    	return ((Long)mTimeMap.get(key)).longValue();

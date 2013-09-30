@@ -46,7 +46,6 @@ import org.martus.common.MartusUtilities;
 import org.martus.common.ProgressMeterInterface;
 import org.martus.common.bulletinstore.BulletinStore;
 import org.martus.common.crypto.MartusCrypto;
-import org.martus.common.database.Database.RecordHiddenException;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.PacketStreamOpener;
 import org.martus.common.database.ReadableDatabase;
@@ -113,16 +112,7 @@ public class BulletinZipUtilities
 		}
 	}
 
-	public static void exportBulletinPacketsFromDatabaseToZipFile(ReadableDatabase db, DatabaseKey headerKey, File destZipFile, MartusCrypto security) throws
-			IOException,
-			MartusCrypto.CryptoException,
-			UnsupportedEncodingException,
-			Packet.InvalidPacketException,
-			Packet.WrongPacketTypeException,
-			Packet.SignatureVerificationException,
-			MartusCrypto.DecryptionException,
-			MartusCrypto.NoKeyPairException,
-			FileNotFoundException, RecordHiddenException
+	public static void exportBulletinPacketsFromDatabaseToZipFile(ReadableDatabase db, DatabaseKey headerKey, File destZipFile, MartusCrypto security) throws Exception
 	{
 		BulletinHeaderPacket bhp = BulletinStore.loadBulletinHeaderPacket(db, headerKey, security); 
 
@@ -195,8 +185,7 @@ public class BulletinZipUtilities
 	}
 
 	public static void extractPacketsToZipStream(PacketStreamOpener db, DatabaseKey[] packetKeys, OutputStream outputStream, MartusCrypto security) throws
-		IOException,
-		UnsupportedEncodingException
+		Exception
 	{
 		ZipOutputStream zipOut = new ZipOutputStream(outputStream);
 		zipOut.setLevel(Deflater.BEST_COMPRESSION);
@@ -207,6 +196,7 @@ public class BulletinZipUtilities
 			{
 				DatabaseKey key = packetKeys[i];
 				ZipEntry entry = new ZipEntry(key.getLocalId());
+				entry.setTime(db.getPacketTimestamp(key));
 				zipOut.putNextEntry(entry);
 
 				InputStream in = db.openInputStream(key, security);

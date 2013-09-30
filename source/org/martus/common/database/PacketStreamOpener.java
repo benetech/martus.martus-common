@@ -28,9 +28,11 @@ package org.martus.common.database;
 import java.io.IOException;
 
 import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.database.Database.RecordHiddenException;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 
 public interface PacketStreamOpener
 {
 	abstract public InputStreamWithSeek openInputStream(DatabaseKey key, MartusCrypto decrypter) throws IOException, MartusCrypto.CryptoException;
+	abstract public long getPacketTimestamp(DatabaseKey key) throws IOException, RecordHiddenException;
 }

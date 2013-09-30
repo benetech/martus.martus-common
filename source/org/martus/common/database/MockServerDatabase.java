@@ -28,12 +28,14 @@ package org.martus.common.database;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
 import org.martus.common.MartusUtilities;
+import org.martus.common.database.Database.RecordHiddenException;
 import org.martus.common.database.FileDatabase.MissingAccountMapSignatureException;
 
 public class MockServerDatabase extends MockDatabase
@@ -46,6 +48,7 @@ public class MockServerDatabase extends MockDatabase
 	{
 		sealedPacketMap = new TreeMap();
 		draftPacketMap = new TreeMap();
+		timestampMap = new TreeMap();
 		super.deleteAllData();
 	}
 
@@ -71,6 +74,7 @@ public class MockServerDatabase extends MockDatabase
 	synchronized void addKeyToMap(DatabaseKey key, byte[] record)
 	{
 		getPacketMapFor(key).put(key, record);
+		timestampMap.put(key, new Date().getTime());
 	}
 
 	synchronized byte[] readRawRecord(DatabaseKey key)
@@ -106,6 +110,12 @@ public class MockServerDatabase extends MockDatabase
 		return null;
 	}
 
+	public long getPacketTimestamp(DatabaseKey key) throws IOException, RecordHiddenException
+	{
+		return ((Long)timestampMap.get(key)).longValue();
+	}
+
 	Map sealedPacketMap;
 	Map draftPacketMap;
+	Map timestampMap;
 }

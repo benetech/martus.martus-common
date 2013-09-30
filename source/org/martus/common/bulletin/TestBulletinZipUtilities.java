@@ -26,20 +26,46 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.bulletin;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Arrays;
+
+import org.martus.common.crypto.MartusSecurity;
+import org.martus.common.crypto.MockMartusSecurity;
+import org.martus.common.test.MockBulletinStore;
+import org.martus.util.StreamableBase64;
 import org.martus.util.TestCaseEnhanced;
 
 
-public class TestBulletinZipUtilities extends TestCaseEnhanced {
-
+public class TestBulletinZipUtilities extends TestCaseEnhanced 
+{
 	public TestBulletinZipUtilities(String name)
 	{
 		super(name);
 	}
 
-	public void testNothing()
+	public void testTimestamps() throws Exception
 	{
-		// this is just a placeholder to keep junit from barfing
-		// as soon as there is a real test in this class, delete this method!
+		MockMartusSecurity security = MockMartusSecurity.createClient();
+		MockBulletinStore store = new MockBulletinStore(this);
+		Bulletin b = new Bulletin(security);
+		store.saveBulletinForTesting(b);
+		
+		File destZipFile1 = createTempFile();
+		BulletinZipUtilities.exportBulletinPacketsFromDatabaseToZipFile(store.getDatabase(), b.getDatabaseKey(), destZipFile1, security);
+		FileInputStream in1 = new FileInputStream(destZipFile1);
+		String digest1 = StreamableBase64.encode(MartusSecurity.createDigest(in1));
+		in1.close();
+		
+		Thread.sleep(3000);
+		
+		File destZipFile2 = createTempFile();
+		BulletinZipUtilities.exportBulletinPacketsFromDatabaseToZipFile(store.getDatabase(), b.getDatabaseKey(), destZipFile2, security);
+		FileInputStream in2 = new FileInputStream(destZipFile2);
+		String digest2 = StreamableBase64.encode(MartusSecurity.createDigest(in2));
+		in2.close();
+		
+		assertEquals("Same bulletin zip has different digests?", digest1, digest2);
 	}
 
 }

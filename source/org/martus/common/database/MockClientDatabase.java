@@ -28,6 +28,7 @@ package org.martus.common.database;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -50,6 +51,7 @@ public class MockClientDatabase extends MockDatabase
 	public void deleteAllData()
 	{
 		packetMap = new TreeMap();
+		timestampMap = new TreeMap();
 		super.deleteAllData();
 	}
 
@@ -57,6 +59,7 @@ public class MockClientDatabase extends MockDatabase
 	{
 		DatabaseKey newKey = DatabaseKey.createLegacyKey(key.getUniversalId());
 		packetMap.put(newKey, record);
+		timestampMap.put(newKey, new Date().getTime());
 	}
 
 	synchronized byte[] readRawRecord(DatabaseKey key)
@@ -88,6 +91,15 @@ public class MockClientDatabase extends MockDatabase
 		// NOTE: return null to force usage of system default temp directory
 		return null;
 	}
+	
+	public long getPacketTimestamp(DatabaseKey key) throws IOException, RecordHiddenException
+	{
+		Long timestamp = (Long)timestampMap.get(key);
+		if(timestamp == null)
+			return 0;
+		return timestamp.longValue();
+	}
 
 	Map packetMap;
+	Map timestampMap;
 }
