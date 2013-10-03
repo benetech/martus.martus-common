@@ -160,7 +160,6 @@ public abstract class MartusCrypto
 		return new String(bytes, "UTF-8");
 	}
 	
-	
 	// public codes
 	public static String computePublicCode(String publicKeyString) throws
 		StreamableBase64.InvalidBase64Exception
@@ -256,6 +255,47 @@ public abstract class MartusCrypto
 		}
 	}
 	
+	// Digests
+	public static String createDigestString(String inputText) throws CreateDigestException {
+		try
+		{
+			byte[] result = createDigestBytes(inputText);
+			return StreamableBase64.encode(result);
+		}
+		catch (Exception e)
+		{
+			throw new CreateDigestException(e);
+		}
+	}
+	
+	public static byte[] createDigestBytes(String inputText) throws Exception
+	{
+		byte[] bytesToDigest = inputText.getBytes("UTF-8");
+		return createDigest(bytesToDigest);
+	}
+	
+	public static byte[] createDigest(byte[] bytesToDigest) throws Exception 
+	{
+		ByteArrayInputStream in = new ByteArrayInputStream(bytesToDigest);
+		byte[] result = MartusSecurity.createDigest(in);
+		in.close();
+		return result;
+	}
+	
+	static public String getPartialDigest(File file, long partialLength) throws Exception
+	{
+		InputStream in = new FileInputStream(file);
+		try
+		{
+			byte[] digest = MartusSecurity.createPartialDigest(in, partialLength);
+			return StreamableBase64.encode(digest);
+		}
+		finally
+		{
+			in.close();
+		}
+	}
+
 
 	// exceptions
 	public static class CryptoException extends Exception
@@ -358,32 +398,6 @@ public abstract class MartusCrypto
 		}
 	}
 
-	public static String createDigestString(String inputText) throws CreateDigestException {
-		try
-		{
-			byte[] result = createDigestBytes(inputText);
-			return StreamableBase64.encode(result);
-		}
-		catch (Exception e)
-		{
-			throw new CreateDigestException(e);
-		}
-	}
-	
-	public static byte[] createDigestBytes(String inputText) throws Exception
-	{
-		byte[] bytesToDigest = inputText.getBytes("UTF-8");
-		return createDigest(bytesToDigest);
-	}
-	
-	public static byte[] createDigest(byte[] bytesToDigest) throws Exception 
-	{
-		ByteArrayInputStream in = new ByteArrayInputStream(bytesToDigest);
-		byte[] result = MartusSecurity.createDigest(in);
-		in.close();
-		return result;
-	}
-	
 	public static int getBitsWhenCreatingKeyPair()
 	{
 		return bitsInPublicKey;
