@@ -122,12 +122,12 @@ public class BulletinSummary
 		return fdpLocalId;
 	}
 
-	public String getDisplayableTitle()
+	public String getStorableTitle()
 	{
 		return title;
 	}
 
-	public String getDisplayableAuthor()
+	public String getStorableAuthor()
 	{
 		return author;
 	}
