@@ -28,6 +28,7 @@ package org.martus.common.fieldspec;
 
 import org.martus.common.MiniLocalization;
 import org.martus.common.PoolOfReusableChoicesLists;
+import org.martus.common.utilities.BurmeseUtilities;
 import org.martus.util.xml.XmlUtilities;
 
 public class FieldTypeLanguage extends FieldType
@@ -65,7 +66,16 @@ public class FieldTypeLanguage extends FieldType
 	
 	public String convertStoredToHtml(String storedData, MiniLocalization localization)
 	{
-		return XmlUtilities.getXmlEncoded(getViewableData(storedData, localization));
+		String data = getViewableData(storedData, localization);
+		
+		// NOTE: This is a hack for Burmese. 
+		// Language dropdown values are stored in displayable encoding, 
+		// but report code expects dropdown values to be in storeable encoding,
+		// so if the zawgyi flag is set in the UI, convert to storeable.
+		if(localization.getSpecialZawgyiFlagForReportRunner())
+			data = BurmeseUtilities.getStorable(data);
+		
+		return XmlUtilities.getXmlEncoded(data);
 	}
 
 	private String getViewableData(String storedData, MiniLocalization localization)
