@@ -563,6 +563,11 @@ public class MiniLocalization
 		return labels;
 	}
 
+	public boolean getSpecialZawgyiFlagForReportRunner()
+	{
+		return false;
+	}
+
 	public static final String ENGLISH = "en";
 	public static final String LANGUAGE_OTHER = "?";
 	public static final String FRENCH = "fr";
@@ -594,5 +599,4 @@ public class MiniLocalization
 	private String currentCalendarSystem;
 	private boolean adjustThaiLegacyDates;
 	private boolean adjustPersianLegacyDates;
-
 }
