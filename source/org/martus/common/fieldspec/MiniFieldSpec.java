@@ -94,6 +94,16 @@ public class MiniFieldSpec implements Comparable
 		return label;
 	}
 	
+	public void setLabel(String storableLabel)
+	{
+		label = storableLabel;
+	}
+
+	public void setTopLevelLabel(String storableLabel)
+	{
+		topLevelLabel = storableLabel;
+	}
+
 	public FieldType getType()
 	{
 		return type;
