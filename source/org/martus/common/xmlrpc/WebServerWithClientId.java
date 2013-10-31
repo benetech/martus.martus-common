@@ -55,41 +55,11 @@ public class WebServerWithClientId extends WebServer
 		return new ConnectionWithIpTracking(pServer, pXmlRpcServer, pSocket);
 	}
 
-	// The following methods access the active thread count
+	// NOTE: The following method used to return the active thread count
+	// from within the thread group for a given XMLRPC server
 	public int getActiveRunnerCount()
 	{
-		log("NOTE: getActiveRunnerCount is not yet implemented");
+		log("NOTE: getActiveRunnerCount is no longer implemented");
 		return 0;
 	}
-	
-	// NOTE: Work in progress. Fix or delete by 2013-11-01
-//	@Override
-//	protected ThreadPool newThreadPool()
-//	{
-//		threadPool = super.newThreadPool();
-//		return threadPool;
-//	}
-//	
-//	class ThreadPoolWithIpTracking extends ThreadPool
-//	{
-//		public ThreadPoolWithIpTracking(int pMaxSize, String pName)
-//		{
-//			// NOTE: Constructor parameters duplicated from WebServer.newThreadPool
-//	        super(getServer().getMaxThreads(), "XML-RPC");
-//		}
-//
-//		@Override
-//		public boolean startTask(Task pTask)
-//		{
-//			// TODO Auto-generated method stub
-//			return super.startTask(pTask);
-//		}
-//	}
-//	
-//	public XmlRpcStreamServer getServer()
-//	{
-//		return server;
-//	}
-//	
-//	private ThreadPool threadPool; 
 }
