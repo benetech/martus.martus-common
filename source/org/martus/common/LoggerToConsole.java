@@ -29,7 +29,6 @@ package org.martus.common;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
-import org.apache.xmlrpc.webserver.ConnectionServerWithIpTracking;
 import org.martus.util.LoggerUtil;
 
 
@@ -43,12 +42,7 @@ public class LoggerToConsole implements LoggerInterface
 	{
 		Timestamp stamp = new Timestamp(System.currentTimeMillis());
 		SimpleDateFormat formatDate = new SimpleDateFormat(LOG_DATE_FORMAT);
-		String threadId = getCurrentClientAddress();
-		if(threadId == null)
-			threadId = "";
-		else
-			threadId = threadId + ": ";
-		String logEntry = formatDate.format(stamp) + " " + threadId + message;
+		String logEntry = formatDate.format(stamp) + " " + message;
 		System.out.println(logEntry);
 	}
 
@@ -88,10 +82,5 @@ public class LoggerToConsole implements LoggerInterface
 		log("Debug: " + message);
 	}
 
-	static public String getCurrentClientAddress()
-	{
-		return ConnectionServerWithIpTracking.getRemoteHostAddressAndPort();
-	}
-	
 	static public String LOG_DATE_FORMAT = "EE MM/dd HH:mm:ss z";
 }
