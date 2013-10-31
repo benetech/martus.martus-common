@@ -35,7 +35,7 @@ public class ConnectionServerWithIpTracking extends ConnectionServer
 	public void execute(XmlRpcStreamRequestConfig pConfig,
 			ServerStreamConnection pConnection) throws XmlRpcException
 	{
-		if(pConnection instanceof Connection)
+		if(pConnection instanceof ConnectionWithIpTracking)
 		{
 			ConnectionWithIpTracking connection = (ConnectionWithIpTracking)pConnection;
 			setRemoteHostAndPort(connection);
