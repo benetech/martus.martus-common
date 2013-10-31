@@ -29,7 +29,7 @@ package org.martus.common;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
-import org.martus.common.xmlrpc.XmlRpcThread;
+import org.apache.xmlrpc.webserver.ConnectionServerWithIpTracking;
 import org.martus.util.LoggerUtil;
 
 
@@ -90,13 +90,7 @@ public class LoggerToConsole implements LoggerInterface
 
 	static public String getCurrentClientAddress()
 	{
-		Thread currThread = Thread.currentThread();
-		if( XmlRpcThread.class.getName() == currThread.getClass().getName() )
-		{
-			String ip = ((XmlRpcThread) Thread.currentThread()).getClientAddress();
-			return ip;
-		}
-		return null;
+		return ConnectionServerWithIpTracking.getRemoteHostAddressAndPort();
 	}
 	
 	static public String LOG_DATE_FORMAT = "EE MM/dd HH:mm:ss z";
