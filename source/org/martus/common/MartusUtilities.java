@@ -445,9 +445,13 @@ public class MartusUtilities
 	public static void startTimer(TimerTask task, long interval)
 	{
 		final long IMMEDIATELY = 0;
+		startTimerWithDelayInMillis(task, IMMEDIATELY, interval);
+	}
 	
+	public static void startTimerWithDelayInMillis(TimerTask task, long millisToDelay, long intervalInMillis)
+	{
 		Timer timer = new Timer(true);
-		timer.schedule(task, IMMEDIATELY, interval);
+		timer.schedule(task, millisToDelay, intervalInMillis);
 	}
 
 	public static boolean isValidCharInFolder(char c)
