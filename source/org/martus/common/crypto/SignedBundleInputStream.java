@@ -40,7 +40,7 @@ public class SignedBundleInputStream extends DataInputStream
 		security = securityToUse;
 		
 		if(readInt() != MartusSecurity.BUNDLE_VERSION)
-			throw new IOException("Unsupported signed bundle version:");
+			throw new IOException("Unsupported version:");
 		signedByPublicKey = readUTF();
 		readSignedBundleData();
 	}
