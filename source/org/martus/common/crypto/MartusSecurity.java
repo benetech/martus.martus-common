@@ -76,6 +76,7 @@ import javax.net.ssl.KeyManagerFactory;
 
 import org.martus.common.MartusConstants;
 import org.martus.common.MartusLogger;
+import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
 import org.martus.common.network.SimpleX509TrustManager;
 import org.martus.util.StreamableBase64;
 import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
@@ -464,6 +465,11 @@ public class MartusSecurity extends MartusCrypto
 		return bundleBytes;
 	}
 
+	public String getSignedBundleSigner(byte[] dataBytes) throws MartusSignatureException
+	{
+		throw new RuntimeException("Not implemented yet");
+	}
+	
 	public byte[] extractFromSignedBundle(byte[] dataBundle) throws IOException, MartusSignatureException, AuthorizationFailedException
 	{
 		Vector authorizedKeys = new Vector();
