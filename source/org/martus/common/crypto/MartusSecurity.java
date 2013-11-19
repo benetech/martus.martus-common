@@ -479,15 +479,17 @@ public class MartusSecurity extends MartusCrypto
 	public byte[] extractFromSignedBundle(byte[] dataBundle, Vector authorizedKeys) throws IOException, MartusSignatureException, AuthorizationFailedException
 	{
 		ByteArrayInputStream bundleRawIn = new ByteArrayInputStream(dataBundle);
-		DataInputStream bundleIn = new DataInputStream(bundleRawIn);
-
-		if(bundleIn.readInt() != BUNDLE_VERSION)
-			throw new IOException();
-		
-		String signerPublicKey = bundleIn.readUTF();	
-		throwIfSignerNotAuthorized(authorizedKeys, signerPublicKey);
-		
-		return readSignedBundleData(bundleIn, signerPublicKey);
+		SignedBundleInputStream bundleIn = new SignedBundleInputStream(bundleRawIn, this);
+		try
+		{
+			String signerPublicKey = bundleIn.getSignedByPublicKey();
+			throwIfSignerNotAuthorized(authorizedKeys, signerPublicKey);
+			return bundleIn.getDataBytes();
+		}
+		finally
+		{
+			bundleIn.close();
+		}
 	}
 
 	public void throwIfSignerNotAuthorized(Vector authorizedKeys, String signerPublicKey) throws AuthorizationFailedException
@@ -504,17 +506,6 @@ public class MartusSecurity extends MartusCrypto
 		}
 		if(!authorized)
 			throw new AuthorizationFailedException();
-	}
-
-	public byte[] readSignedBundleData(DataInputStream bundleIn, String signerPublicKey) throws IOException, MartusSignatureException
-	{
-		byte[] sig = new byte[bundleIn.readInt()];
-		bundleIn.read(sig);
-		byte[] dataBytes = new byte[bundleIn.readInt()];
-		bundleIn.read(dataBytes);
-		if(!isValidSignatureOfStream(signerPublicKey, new ByteArrayInputStream(dataBytes), sig))
-			throw new MartusSignatureException();
-		return dataBytes;
 	}
 
 	public synchronized void flushSessionKeyCache()
@@ -1008,7 +999,7 @@ public class MartusSecurity extends MartusCrypto
 	private static final String DIGEST_ALGORITHM = "SHA1";
 	private static final String ENCRYPTED_FILE_VERSION_IDENTIFIER = "Martus Encrypted File Version 001";
 	private static final int CACHE_VERSION = 1;
-	private static final int BUNDLE_VERSION = 1;
+	protected static final int BUNDLE_VERSION = 1;
 	
 	private static final int ARBITRARY_MAX_SESSION_KEY_LENGTH = 8192;
 	private static SecureRandom rand;
