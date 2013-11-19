@@ -464,9 +464,18 @@ public class MartusSecurity extends MartusCrypto
 		return bundleBytes;
 	}
 
-	public String getSignedBundleSigner(byte[] dataBytes) throws MartusSignatureException
+	public String getSignedBundleSigner(byte[] dataBundle) throws IOException, MartusSignatureException
 	{
-		throw new RuntimeException("Not implemented yet");
+		ByteArrayInputStream bundleRawIn = new ByteArrayInputStream(dataBundle);
+		SignedBundleInputStream bundleIn = new SignedBundleInputStream(bundleRawIn, this);
+		try
+		{
+			return bundleIn.getSignedByPublicKey();
+		}
+		finally
+		{
+			bundleIn.close();
+		}
 	}
 	
 	public byte[] extractFromSignedBundle(byte[] dataBundle) throws IOException, MartusSignatureException, AuthorizationFailedException
