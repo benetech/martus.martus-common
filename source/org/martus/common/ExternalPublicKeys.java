@@ -148,8 +148,7 @@ abstract public class ExternalPublicKeys
 
 	public String getLabelIfPresent(ExternalPublicKey searchForKey)
 	{
-		String publicKey = searchForKey.getPublicKey();
-		return getLabelIfPresent(publicKey);
+		return getLabelIfPresent(searchForKey.getPublicKey());
 	}
 
 	public String getLabelIfPresent(String publicKey)
