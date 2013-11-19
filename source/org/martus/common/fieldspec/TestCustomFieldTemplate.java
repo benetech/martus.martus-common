@@ -118,25 +118,17 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 
 		CustomFieldTemplate template = new CustomFieldTemplate();
 		assertEquals("", template.getImportedTopSectionText());
-		Vector authorizedKeys = new Vector();
-		authorizedKeys.add(security.getPublicKeyString());
-		assertTrue(template.importTemplate(security, exportFile, authorizedKeys));
+		assertTrue(template.importTemplate(security, exportFile));
 		FieldCollection defaultBottomSectionFields = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
 		assertEquals(fieldsTopSection.toString(), template.getImportedTopSectionText());
 		assertEquals(defaultBottomSectionFields.toString(), template.getImportedBottomSectionText());
 		assertEquals(0, template.getErrors().size());
 		
-		Vector unKnownKey = new Vector();
-		unKnownKey.add("unknown");
-		assertFalse(template.importTemplate(security, exportFile, unKnownKey));
-		assertEquals(1, template.getErrors().size());
-		assertEquals(CustomFieldError.CODE_UNAUTHORIZED_KEY, ((CustomFieldError)template.getErrors().get(0)).getCode());
-		
 		UnicodeWriter writer = new UnicodeWriter(exportFile,UnicodeWriter.APPEND);
 		writer.write("unauthorizedTextAppended Should not be read.");
 		writer.close();
 		
-		assertTrue(template.importTemplate(security, exportFile, authorizedKeys));
+		assertTrue(template.importTemplate(security, exportFile));
 		assertEquals(fieldsTopSection.toString(), template.getImportedTopSectionText());
 		assertEquals(0, template.getErrors().size());
 
@@ -148,13 +140,13 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		out.flush();
 		out.close();
 		
-		assertFalse(template.importTemplate(security, exportFile, authorizedKeys));
+		assertFalse(template.importTemplate(security, exportFile));
 		assertEquals("", template.getImportedTopSectionText());
 		assertEquals(1, template.getErrors().size());
 		assertEquals(CustomFieldError.CODE_SIGNATURE_ERROR, ((CustomFieldError)template.getErrors().get(0)).getCode());
 		
 		exportFile.delete();
-		assertFalse(template.importTemplate(security, exportFile, authorizedKeys));
+		assertFalse(template.importTemplate(security, exportFile));
 		assertEquals("", template.getImportedTopSectionText());
 		assertEquals(1, template.getErrors().size());
 		assertEquals(CustomFieldError.CODE_IO_ERROR, ((CustomFieldError)template.getErrors().get(0)).getCode());
@@ -176,11 +168,9 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		dataOut.close();
 
 		CustomFieldTemplate template = new CustomFieldTemplate();
-		Vector authorizedKeys = new Vector();
-		authorizedKeys.add(security.getPublicKeyString());
 		try
 		{
-			template.importTemplate(security, exportFile, authorizedKeys);
+			template.importTemplate(security, exportFile);
 			fail("Should have thrown future version Exception");
 		}
 		catch(CustomFieldTemplate.FutureVersionException expected)
@@ -202,24 +192,16 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		exportFile.delete();
 		template.ExportTemplate(security, exportFile, fieldsTopSection.toString(), fieldsBottomSection.toString());
 		assertEquals("", template.getImportedTopSectionText());
-		Vector authorizedKeys = new Vector();
-		authorizedKeys.add(security.getPublicKeyString());
-		assertTrue(template.importTemplate(security, exportFile, authorizedKeys));
+		assertTrue(template.importTemplate(security, exportFile));
 		assertEquals(fieldsTopSection.toString(), template.getImportedTopSectionText());
 		assertEquals(fieldsBottomSection.toString(), template.getImportedBottomSectionText());
 		assertEquals(0, template.getErrors().size());
-		
-		Vector unKnownKey = new Vector();
-		unKnownKey.add("unknown");
-		assertFalse(template.importTemplate(security, exportFile, unKnownKey));
-		assertEquals(1, template.getErrors().size());
-		assertEquals(CustomFieldError.CODE_UNAUTHORIZED_KEY, ((CustomFieldError)template.getErrors().get(0)).getCode());
 		
 		UnicodeWriter writer = new UnicodeWriter(exportFile,UnicodeWriter.APPEND);
 		writer.write("unauthorizedTextAppended Should not be read.");
 		writer.close();
 		
-		assertTrue(template.importTemplate(security, exportFile, authorizedKeys));
+		assertTrue(template.importTemplate(security, exportFile));
 		assertEquals(fieldsTopSection.toString(), template.getImportedTopSectionText());
 		assertEquals(fieldsBottomSection.toString(), template.getImportedBottomSectionText());
 		assertEquals(0, template.getErrors().size());
@@ -232,14 +214,14 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		out.flush();
 		out.close();
 		
-		assertFalse(template.importTemplate(security, exportFile, authorizedKeys));
+		assertFalse(template.importTemplate(security, exportFile));
 		assertEquals("", template.getImportedTopSectionText());
 		assertEquals("", template.getImportedBottomSectionText());
 		assertEquals(1, template.getErrors().size());
 		assertEquals(CustomFieldError.CODE_SIGNATURE_ERROR, ((CustomFieldError)template.getErrors().get(0)).getCode());
 		
 		exportFile.delete();
-		assertFalse(template.importTemplate(security, exportFile, authorizedKeys));
+		assertFalse(template.importTemplate(security, exportFile));
 		assertEquals("", template.getImportedTopSectionText());
 		assertEquals("", template.getImportedBottomSectionText());
 		assertEquals(1, template.getErrors().size());
