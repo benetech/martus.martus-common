@@ -76,7 +76,6 @@ import javax.net.ssl.KeyManagerFactory;
 
 import org.martus.common.MartusConstants;
 import org.martus.common.MartusLogger;
-import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
 import org.martus.common.network.SimpleX509TrustManager;
 import org.martus.util.StreamableBase64;
 import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
@@ -481,9 +480,18 @@ public class MartusSecurity extends MartusCrypto
 	{
 		ByteArrayInputStream bundleRawIn = new ByteArrayInputStream(dataBundle);
 		DataInputStream bundleIn = new DataInputStream(bundleRawIn);
+
 		if(bundleIn.readInt() != BUNDLE_VERSION)
 			throw new IOException();
-		String signerPublicKey = bundleIn.readUTF();
+		
+		String signerPublicKey = bundleIn.readUTF();	
+		throwIfSignerNotAuthorized(authorizedKeys, signerPublicKey);
+		
+		return readSignedBundleData(bundleIn, signerPublicKey);
+	}
+
+	public void throwIfSignerNotAuthorized(Vector authorizedKeys, String signerPublicKey) throws AuthorizationFailedException
+	{
 		boolean authorized = false;
 		for(int i = 0; i < authorizedKeys.size(); ++i)
 		{
@@ -496,6 +504,10 @@ public class MartusSecurity extends MartusCrypto
 		}
 		if(!authorized)
 			throw new AuthorizationFailedException();
+	}
+
+	public byte[] readSignedBundleData(DataInputStream bundleIn, String signerPublicKey) throws IOException, MartusSignatureException
+	{
 		byte[] sig = new byte[bundleIn.readInt()];
 		bundleIn.read(sig);
 		byte[] dataBytes = new byte[bundleIn.readInt()];
