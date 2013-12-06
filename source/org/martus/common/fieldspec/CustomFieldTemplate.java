@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Vector;
 
 import org.martus.common.FieldCollection;
@@ -62,7 +63,7 @@ public class CustomFieldTemplate
 	}
 
 	
-	public boolean importTemplate(MartusCrypto security, File fileToImport, Vector authroizedKeys) throws FutureVersionException
+	public boolean importTemplate(MartusCrypto security, File fileToImport) throws FutureVersionException
 	{
 		try
 		{
@@ -94,11 +95,14 @@ public class CustomFieldTemplate
 				byte[] dataBundleBottomSection = new byte[bottomSectionBundleLength];
 				bundleIn.read(dataBundleTopSection,0, topSectionBundleLength);
 				bundleIn.read(dataBundleBottomSection,0, bottomSectionBundleLength);
-				byte[] xmlBytesBottomSection = security.extractFromSignedBundle(dataBundleBottomSection, authroizedKeys);
+				
+				Vector authorizedKeys = getSignedByAsVector(dataBundleBottomSection, security);
+				byte[] xmlBytesBottomSection = security.extractFromSignedBundle(dataBundleBottomSection, authorizedKeys);
 				templateXMLToImportBottomSection = new String(xmlBytesBottomSection, "UTF-8");
 			}
 
-			byte[] xmlBytesTopSection = security.extractFromSignedBundle(dataBundleTopSection, authroizedKeys);
+			Vector authorizedKeys = getSignedByAsVector(dataBundleTopSection, security);
+			byte[] xmlBytesTopSection = security.extractFromSignedBundle(dataBundleTopSection, authorizedKeys);
 			templateXMLToImportTopSection = new String(xmlBytesTopSection, "UTF-8");
 			
 			if(isvalidTemplateXml(templateXMLToImportTopSection, templateXMLToImportBottomSection))
@@ -121,7 +125,24 @@ public class CustomFieldTemplate
 		{
 			errors.add(CustomFieldError.errorUnauthorizedKey());
 		}
+		catch(Exception e)
+		{
+			errors.add(CustomFieldError.errorIO(e.getMessage()));
+		}
 		return false;
+	}
+
+	public Vector getSignedByAsVector(byte[] dataBundleBottomSection, MartusCrypto security) throws Exception
+	{
+		String signedBy = security.getSignedBundleSigner(dataBundleBottomSection);
+		if(signedByPublicKey == null)
+			signedByPublicKey = signedBy;
+		else if(!signedByPublicKey.equals(signedBy))
+			throw new MartusSignatureException();
+		
+		String[] authorizedKeysArray = new String[] { signedBy };
+		Vector authorizedKeysVector = new Vector(Arrays.asList(authorizedKeysArray));
+		return authorizedKeysVector;
 	}
 	
 	public boolean isLegacyTemplateFile(File fileToImport) throws IOException
@@ -205,10 +226,15 @@ public class CustomFieldTemplate
 		return xmlImportedBottomSectionText;
 	}
 
+	public String getSignedBy()
+	{
+		return signedByPublicKey;
+	} 
+	
 	private Vector errors;
 	private String xmlImportedTopSectionText;
 	private String xmlImportedBottomSectionText;
+	private String signedByPublicKey;
 	public static final String versionHeader = "Export Version Number:";
-	public static final int exportVersionNumber = 2; 
-	
+	public static final int exportVersionNumber = 2;
 }
