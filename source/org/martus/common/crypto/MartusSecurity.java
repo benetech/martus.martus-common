@@ -464,6 +464,20 @@ public class MartusSecurity extends MartusCrypto
 		return bundleBytes;
 	}
 
+	public String getSignedBundleSigner(byte[] dataBundle) throws IOException, MartusSignatureException
+	{
+		ByteArrayInputStream bundleRawIn = new ByteArrayInputStream(dataBundle);
+		SignedBundleInputStream bundleIn = new SignedBundleInputStream(bundleRawIn, this);
+		try
+		{
+			return bundleIn.getSignedByPublicKey();
+		}
+		finally
+		{
+			bundleIn.close();
+		}
+	}
+	
 	public byte[] extractFromSignedBundle(byte[] dataBundle) throws IOException, MartusSignatureException, AuthorizationFailedException
 	{
 		Vector authorizedKeys = new Vector();
@@ -474,10 +488,21 @@ public class MartusSecurity extends MartusCrypto
 	public byte[] extractFromSignedBundle(byte[] dataBundle, Vector authorizedKeys) throws IOException, MartusSignatureException, AuthorizationFailedException
 	{
 		ByteArrayInputStream bundleRawIn = new ByteArrayInputStream(dataBundle);
-		DataInputStream bundleIn = new DataInputStream(bundleRawIn);
-		if(bundleIn.readInt() != BUNDLE_VERSION)
-			throw new IOException();
-		String signerPublicKey = bundleIn.readUTF();
+		SignedBundleInputStream bundleIn = new SignedBundleInputStream(bundleRawIn, this);
+		try
+		{
+			String signerPublicKey = bundleIn.getSignedByPublicKey();
+			throwIfSignerNotAuthorized(authorizedKeys, signerPublicKey);
+			return bundleIn.getDataBytes();
+		}
+		finally
+		{
+			bundleIn.close();
+		}
+	}
+
+	public void throwIfSignerNotAuthorized(Vector authorizedKeys, String signerPublicKey) throws AuthorizationFailedException
+	{
 		boolean authorized = false;
 		for(int i = 0; i < authorizedKeys.size(); ++i)
 		{
@@ -490,13 +515,6 @@ public class MartusSecurity extends MartusCrypto
 		}
 		if(!authorized)
 			throw new AuthorizationFailedException();
-		byte[] sig = new byte[bundleIn.readInt()];
-		bundleIn.read(sig);
-		byte[] dataBytes = new byte[bundleIn.readInt()];
-		bundleIn.read(dataBytes);
-		if(!isValidSignatureOfStream(signerPublicKey, new ByteArrayInputStream(dataBytes), sig))
-			throw new MartusSignatureException();
-		return dataBytes;
 	}
 
 	public synchronized void flushSessionKeyCache()
@@ -990,7 +1008,7 @@ public class MartusSecurity extends MartusCrypto
 	private static final String DIGEST_ALGORITHM = "SHA1";
 	private static final String ENCRYPTED_FILE_VERSION_IDENTIFIER = "Martus Encrypted File Version 001";
 	private static final int CACHE_VERSION = 1;
-	private static final int BUNDLE_VERSION = 1;
+	protected static final int BUNDLE_VERSION = 1;
 	
 	private static final int ARBITRARY_MAX_SESSION_KEY_LENGTH = 8192;
 	private static SecureRandom rand;
