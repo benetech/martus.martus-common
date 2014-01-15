@@ -27,23 +27,26 @@ package org.martus.common;
 
 public class MartusAccountAccessToken
 {
-	public MartusAccountAccessToken(String newToken)
+	public static class TokenInvalidException extends Exception 
+	{
+	}
+	
+	
+	public MartusAccountAccessToken(String newToken) throws TokenInvalidException
 	{
 		setToken(newToken);
 	}
 
 	public String getToken()
 	{
-		return m_sToken;
+		return token;
 	}
 	
-	//We could make this public if needed.
-	private void setToken(String newToken)
+	private void setToken(String newToken) throws TokenInvalidException
 	{
-		if(validToken(newToken))
-			m_sToken = newToken;
-		else
-			m_sToken = "";
+		if(!validToken(newToken))
+			throw new TokenInvalidException();
+		token = newToken;
 	}
 
 	private boolean validToken(String tokenToValidate)
@@ -51,5 +54,6 @@ public class MartusAccountAccessToken
 		DammCheckDigitAlgorithm validationCheck = new DammCheckDigitAlgorithm();
 		return validationCheck.validateToken(tokenToValidate);
 	}
-	String m_sToken;
+	
+	private String token;
 }

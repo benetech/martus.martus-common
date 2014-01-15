@@ -25,13 +25,12 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.test;
 
-import org.martus.common.DammCheckDigitAlgorithm;
 import org.martus.common.MartusAccountAccessToken;
+import org.martus.common.MartusAccountAccessToken.TokenInvalidException;
 import org.martus.util.TestCaseEnhanced;
 
 public class TestMartusAccountAccessToken extends TestCaseEnhanced
 {
-
 	public TestMartusAccountAccessToken(String name)
 	{
 		super(name);
@@ -40,11 +39,25 @@ public class TestMartusAccountAccessToken extends TestCaseEnhanced
 	public void testBasics()
 	{
 		String invalidToken = "12345678";
-		MartusAccountAccessToken accessTokenInvalid = new MartusAccountAccessToken(invalidToken);
-		assertEquals("accessToken should be still blank since the token is invalid", "", accessTokenInvalid.getToken());
+		try
+		{
+			new MartusAccountAccessToken(invalidToken);
+			fail("Should have thrown TokenInvalidException");
+		}
+		catch( TokenInvalidException expectedException)
+		{
+		}
 
 		String validToken = "34482187";
-		MartusAccountAccessToken accessTokenValid = new MartusAccountAccessToken(validToken);
-		assertEquals("accessToken should be valid since the token given was valid", validToken, accessTokenValid.getToken());
+		MartusAccountAccessToken accessTokenValid;
+		try
+		{
+			accessTokenValid = new MartusAccountAccessToken(validToken);
+			assertEquals("accessToken should be valid since the token given was valid", validToken, accessTokenValid.getToken());
+		} 
+		catch (TokenInvalidException e)
+		{
+			fail("Should not have thrown for a valid Token");
+		}
 	}
 }

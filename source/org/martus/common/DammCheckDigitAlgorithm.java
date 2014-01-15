@@ -45,19 +45,21 @@ package org.martus.common;
 public class DammCheckDigitAlgorithm
 {
 
-	public int getCheckDigitforIndex(int single, int previous)
+	public static class CheckDigitInvalidException extends Exception 
+	{
+	}
+
+	public int getCheckDigitforIndex(int single, int previous) throws CheckDigitInvalidException
 	{
 		if(single < MIN_DIGIT || single > MAX_DIGIT)
-			return ERROR_DIGIT;
+			throw new CheckDigitInvalidException();
 		if(previous < MIN_DIGIT || previous > MAX_DIGIT)
-			return ERROR_DIGIT;
+			throw new CheckDigitInvalidException();
 		return quasiGroupTable[previous][single];
 	}
 
-	public String getCheckDigit(String originalData)
+	public String getCheckDigit(String originalData) throws CheckDigitInvalidException
 	{
-		if(originalData.length() != m_nNumDataDigits)
-			return Integer.toString(ERROR_DIGIT);
 		int checkDigit = 0;
 		for(int i = 0; i < originalData.length(); ++i)
 		{
@@ -71,24 +73,24 @@ public class DammCheckDigitAlgorithm
 	public boolean validateToken(String token)
 	{
 		int length = token.length();
-		if(length < m_nNumDataDigits)
+		if(length <= 1)
 			return false;
-		
 		String tokenDataOnly = token.substring(0,length-1);
 		char checkDigitOriginal = token.charAt(length-1);
 		
-		String checkDigitReturned = getCheckDigit(tokenDataOnly);
+		String checkDigitReturned = "";
+		try
+		{
+			checkDigitReturned = getCheckDigit(tokenDataOnly);
+		} 
+		catch (CheckDigitInvalidException e)
+		{
+			return false;
+		}
 		char charCheckDigitReturned = checkDigitReturned.charAt(0);
 		return checkDigitOriginal == charCheckDigitReturned;
 	}
 
-	public void setMaxNumberDataDigits(int nNewMax)
-	{
-		if(nNewMax > 0)
-			m_nNumDataDigits = nNewMax;
-	}
-	
-	
 	final private int[][] quasiGroupTable = {	{0,3,1,7,5,9,8,6,4,2}, 
 			{7,0,9,2,1,5,4,8,6,3}, 
 			{4,2,0,6,8,7,1,3,5,9}, 
@@ -101,9 +103,6 @@ public class DammCheckDigitAlgorithm
 			{2,5,8,1,4,3,6,7,9,0}
 		};
 	
-	final private static int ERROR_DIGIT = -1;
 	final private static int MIN_DIGIT = 0;
 	final private static int MAX_DIGIT = 9;
-	private int m_nNumDataDigits = 7;
-	
 }
