@@ -129,7 +129,8 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestUniversalId.class));
 		suite.addTest(new TestSuite(TestXmlWriterFilter.class));
 		suite.addTest(new TestSuite(TestZipEntryInputStream.class));
-
+		suite.addTest(new TestSuite(TestDammCheckDigitAlgorithm.class));
+		suite.addTest(new TestSuite(TestMartusAccountAccessToken.class));
 		return suite;
 	}
 }
