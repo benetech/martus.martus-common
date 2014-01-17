@@ -82,6 +82,7 @@ public class BulletinUploadRecord
 		reader.readLine(); //header
 		reader.readLine(); //localId
 		String timeStamp = reader.readLine();
+		reader.close();
 		return MartusServerUtilities.getDateFromFormattedTimeStamp(timeStamp).getTime();
 	}
 	
