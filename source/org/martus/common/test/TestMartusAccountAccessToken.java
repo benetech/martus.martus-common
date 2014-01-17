@@ -49,15 +49,33 @@ public class TestMartusAccountAccessToken extends TestCaseEnhanced
 		}
 
 		String validToken = "34482187";
-		MartusAccountAccessToken accessTokenValid;
+		MartusAccountAccessToken accessTokenValidData1;
 		try
 		{
-			accessTokenValid = new MartusAccountAccessToken(validToken);
-			assertEquals("accessToken should be valid since the token given was valid", validToken, accessTokenValid.getToken());
+			accessTokenValidData1 = new MartusAccountAccessToken(validToken);
+			assertEquals("accessToken should be valid since the token given was valid", validToken, accessTokenValidData1.getToken());
+
+			MartusAccountAccessToken annotherAccessTokenValidData1 = new MartusAccountAccessToken(validToken);
+			assertTrue("Two different Token objects with same token data should be equal", accessTokenValidData1.equals(annotherAccessTokenValidData1));
+			
+			
+			String validToken2 = "11223344";
+			MartusAccountAccessToken tokenWithDifferentData = new MartusAccountAccessToken(validToken2);
+			assertFalse("Two different Token objects with different token data should not be equal", accessTokenValidData1.equals(tokenWithDifferentData));
+			
+			assertEquals("toString should return the same code", validToken2, tokenWithDifferentData.toString());
+			
+			assertEquals("HashCodes should also match", validToken2.hashCode(), tokenWithDifferentData.hashCode());
+			assertEquals("Two different token objects with same token HashCodes should not also match", accessTokenValidData1.hashCode(), annotherAccessTokenValidData1.hashCode());
+			assertNotEquals("Two different token objects with different tokens HashCodes should not also match", accessTokenValidData1.hashCode(), tokenWithDifferentData.hashCode());
+			
 		} 
 		catch (TokenInvalidException e)
 		{
 			fail("Should not have thrown for a valid Token");
 		}
+		
+		
+		
 	}
 }
