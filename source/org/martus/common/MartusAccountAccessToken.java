@@ -25,12 +25,12 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common;
 
+
 public class MartusAccountAccessToken
 {
 	public static class TokenInvalidException extends Exception 
 	{
 	}
-	
 	
 	public MartusAccountAccessToken(String newToken) throws TokenInvalidException
 	{
@@ -41,6 +41,24 @@ public class MartusAccountAccessToken
 	{
 		return token;
 	}
+	
+	public boolean equals(Object otherObject)
+	{
+		if(!(otherObject instanceof MartusAccountAccessToken))
+			return false;
+		return getToken() == ((MartusAccountAccessToken)otherObject).getToken();
+	}
+
+	public String toString()
+	{
+		return getToken();
+	}
+	
+	public int hashCode()
+	{
+		return getToken().hashCode();
+	}
+	
 	
 	private void setToken(String newToken) throws TokenInvalidException
 	{
@@ -54,6 +72,6 @@ public class MartusAccountAccessToken
 		DammCheckDigitAlgorithm validationCheck = new DammCheckDigitAlgorithm();
 		return validationCheck.validateToken(tokenToValidate);
 	}
-	
+
 	private String token;
 }
