@@ -43,5 +43,5 @@ public interface NetworkInterface
 	public Vector getNews(String myAccountId, Vector parameters, String signature);
 	public Vector getServerCompliance(String myAccountId, Vector parameters, String signature);
 	public Vector getPartialUploadStatus(String publicKeyString, Vector parameters, String signature);
-	public Vector getMartusAccountAccessToken(String myAccountId);
+	public Vector getMartusAccountAccessToken(String myAccountId, Vector parameters, String signature);
 }
