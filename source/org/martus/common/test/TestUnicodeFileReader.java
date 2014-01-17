@@ -132,6 +132,7 @@ public class TestUnicodeFileReader extends TestCaseEnhanced
 		catch(BOMNotFoundException expected)
 		{
 		}
+		reader.close();
 		
 		File utf8File = createTempFile();
 		UnicodeWriter writer = new UnicodeWriter(utf8File);
