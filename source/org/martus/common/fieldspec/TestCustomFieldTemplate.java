@@ -28,7 +28,6 @@ package org.martus.common.fieldspec;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.Vector;
 
 import org.martus.common.FieldCollection;
 import org.martus.common.FieldCollectionForTesting;

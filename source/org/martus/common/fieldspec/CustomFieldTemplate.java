@@ -115,7 +115,6 @@ public class CustomFieldTemplate
 		catch(IOException e)
 		{
 			errors.add(CustomFieldError.errorIO(e.getMessage()));
-			
 		}
 		catch(MartusSignatureException e)
 		{
@@ -125,14 +124,10 @@ public class CustomFieldTemplate
 		{
 			errors.add(CustomFieldError.errorUnauthorizedKey());
 		}
-		catch(Exception e)
-		{
-			errors.add(CustomFieldError.errorIO(e.getMessage()));
-		}
 		return false;
 	}
 
-	public Vector getSignedByAsVector(byte[] dataBundleBottomSection, MartusCrypto security) throws Exception
+	public Vector getSignedByAsVector(byte[] dataBundleBottomSection, MartusCrypto security) throws MartusSignatureException, IOException
 	{
 		String signedBy = security.getSignedBundleSigner(dataBundleBottomSection);
 		if(signedByPublicKey == null)
