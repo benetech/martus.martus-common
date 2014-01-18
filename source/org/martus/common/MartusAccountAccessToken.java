@@ -46,7 +46,7 @@ public class MartusAccountAccessToken
 	{
 		if(!(otherObject instanceof MartusAccountAccessToken))
 			return false;
-		return getToken() == ((MartusAccountAccessToken)otherObject).getToken();
+		return getToken().equals(((MartusAccountAccessToken)otherObject).getToken());
 	}
 
 	public String toString()
