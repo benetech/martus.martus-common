@@ -49,13 +49,14 @@ public class TestMartusAccountAccessToken extends TestCaseEnhanced
 		}
 
 		String validToken = "34482187";
+		String copyOfValidToken = "34482187";
 		MartusAccountAccessToken accessTokenValidData1;
 		try
 		{
 			accessTokenValidData1 = new MartusAccountAccessToken(validToken);
 			assertEquals("accessToken should be valid since the token given was valid", validToken, accessTokenValidData1.getToken());
 
-			MartusAccountAccessToken annotherAccessTokenValidData1 = new MartusAccountAccessToken(validToken);
+			MartusAccountAccessToken annotherAccessTokenValidData1 = new MartusAccountAccessToken(copyOfValidToken);
 			assertTrue("Two different Token objects with same token data should be equal", accessTokenValidData1.equals(annotherAccessTokenValidData1));
 			
 			
