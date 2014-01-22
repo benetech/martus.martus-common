@@ -82,7 +82,7 @@ public class BulletinUploadRecord
 		reader.readLine(); //header
 		reader.readLine(); //localId
 		String timeStamp = reader.readLine();
-		reader.close();
+		//TODO (add this back once verified it is harmless) reader.close();
 		return MartusServerUtilities.getDateFromFormattedTimeStamp(timeStamp).getTime();
 	}
 	
