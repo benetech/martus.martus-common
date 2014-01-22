@@ -366,7 +366,7 @@ public class MartusServerUtilities
 			UnicodeReader reader = new UnicodeReader(System.in);
 			//TODO security issue here password is a string
 			String passphrase = reader.readLine();
-			reader.close();
+			//TODO (add this back once verified it is harmless) reader.close();
 			return MartusServerUtilities.loadCurrentMartusSecurity(keyPairFile, passphrase.toCharArray());
 		}
 		catch (MartusCrypto.AuthorizationFailedException e)
