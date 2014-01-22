@@ -385,11 +385,9 @@ public class MartusUtilities
 			if(thisLine.indexOf(encryptedTag) >= 0)
 			{
 				fdpInputStream.seek(0);
-				reader.close();
 				return false;
 			}
 		}
-		reader.close();
 		fdpInputStream.seek(0);
 		return true;
 	}
