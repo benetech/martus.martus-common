@@ -358,6 +358,26 @@ abstract public class MockDatabase extends Database
 		file.deleteOnExit();
 		return file;
 	}
+	
+	public File getAccountAccessTokenFile(String accountId) throws IOException
+	{
+		File dir = new File(getFolderForAccount(accountId));
+		dir.deleteOnExit();
+		dir.mkdirs();
+		File file = new File(dir, "$$$"+getClass().getSimpleName()+"AccessTokens.dat");
+		file.deleteOnExit();
+		return file;
+	}
+
+	public File getAccountAccessTokenSignatureFile(String accountId) throws IOException
+	{
+		File dir = new File(getFolderForAccount(accountId));
+		dir.deleteOnExit();
+		dir.mkdirs();
+		File file = new File(dir, "$$$"+getClass().getSimpleName()+"AccessTokens.sig");
+		file.deleteOnExit();
+		return file;
+	}
 
 	public synchronized boolean isInQuarantine(DatabaseKey key) throws RecordHiddenException
 	{

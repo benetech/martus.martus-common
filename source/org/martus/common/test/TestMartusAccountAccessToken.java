@@ -25,6 +25,10 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.test;
 
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+
 import org.martus.common.MartusAccountAccessToken;
 import org.martus.common.MartusAccountAccessToken.TokenInvalidException;
 import org.martus.util.TestCaseEnhanced;
@@ -75,8 +79,55 @@ public class TestMartusAccountAccessToken extends TestCaseEnhanced
 		{
 			fail("Should not have thrown for a valid Token");
 		}
-		
-		
-		
+	}
+
+	public void testLoadFromFile() throws Exception
+	{
+		try
+		{
+			File invalidFile = createTempFile();
+			MartusAccountAccessToken.loadFromFile(invalidFile);
+			fail("Should have thrown invalid file");
+		}
+		catch (Exception expectedException)
+		{
+		}
+
+		String invalidToken = "12345678";
+		File tokenInvalidFile = createTempFile();
+		tokenInvalidFile.deleteOnExit();
+		FileOutputStream outputStream = new FileOutputStream(tokenInvalidFile);
+		DataOutputStream out = new DataOutputStream(outputStream);
+		out.writeUTF(invalidToken);
+		out.flush();
+		out.close();
+		try
+		{
+			MartusAccountAccessToken.loadFromFile(tokenInvalidFile);
+			fail("Should have thown TokenInvalidException");
+		} 
+		catch (TokenInvalidException expectedException)
+		{
+		}
+		tokenInvalidFile.delete();
+
+		String validToken = "34482187";
+		File tokenValidFile = createTempFile();
+		tokenValidFile.deleteOnExit();
+		FileOutputStream outputStream2 = new FileOutputStream(tokenValidFile);
+		DataOutputStream out2 = new DataOutputStream(outputStream2);
+		out2.writeUTF(validToken);
+		out2.flush();
+		out2.close();
+		try
+		{
+			MartusAccountAccessToken loadedToken = MartusAccountAccessToken.loadFromFile(tokenValidFile);
+			assertEquals("Token retrieved from file didn't match?", validToken, loadedToken.getToken());
+		} 
+		catch (Exception expectedException)
+		{
+			fail("Should not have thown any exceptions, valid file with valid token");
+		}
+		tokenValidFile.delete();
 	}
 }

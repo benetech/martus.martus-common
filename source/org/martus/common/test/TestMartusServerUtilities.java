@@ -227,6 +227,25 @@ public class TestMartusServerUtilities extends TestCaseEnhanced
 		contactInfoFile.getParentFile().delete();
 	}
 
+	public void testWriteAccessToken() throws Exception
+	{
+		String clientId = "id";
+		File accessTokenFile = createTempFile();
+		String tokenData = "invalid";
+		MartusServerUtilities.writeAccessTokenData(clientId, tokenData, accessTokenFile);
+
+		assertTrue("File doesn't exist?", accessTokenFile.exists());
+
+		FileInputStream accessTokenFileInputStream = new FileInputStream(accessTokenFile);
+		DataInputStream in = new DataInputStream(accessTokenFileInputStream);
+
+		String inputToken = in.readUTF();
+		in.close();
+
+		assertEquals("Tokens doesn't match", tokenData, inputToken);
+		accessTokenFile.delete();
+		accessTokenFile.getParentFile().delete();
+	}
 	
 	public File createTempFileWithContents(String content)
 		throws IOException
