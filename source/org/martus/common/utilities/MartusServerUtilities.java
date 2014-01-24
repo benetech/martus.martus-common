@@ -396,7 +396,16 @@ public class MartusServerUtilities
 		out.close();
 	}
 	
-	
+
+	public static void writeAccessTokenData(String accountId, String tokenData, File accessTokenFile) throws IOException
+	{
+		accessTokenFile.getParentFile().mkdirs();
+		FileOutputStream accessTokenFileOutputStream = new FileOutputStream(accessTokenFile);
+		DataOutputStream out = new DataOutputStream(accessTokenFileOutputStream);
+		out.writeUTF(tokenData);
+		out.flush();
+		out.close();
+	}
 	
 	public static void loadHiddenPacketsFile(File hiddenFile, BulletinStore store, LoggerInterface logger)
 	{	

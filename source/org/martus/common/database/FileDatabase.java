@@ -361,6 +361,14 @@ abstract public class FileDatabase extends Database
 		return ContactFolder;
 	}
 
+	public File getAbsoluteAccountAccessTokenFolderForAccount(String accountString) throws
+	IOException
+	{
+		File accountFolder = new File(absoluteBaseDir, getFolderForAccount(accountString));
+		File ContactFolder = new File(accountFolder, ACCESSTOKEN_FOLDER_NAME);
+		return ContactFolder;
+	}
+
 	public File getIncomingInterimFile(UniversalId uid) throws
 		IOException, RecordHiddenException
 	{
@@ -392,6 +400,20 @@ abstract public class FileDatabase extends Database
 	{
 		File folder = getAbsoluteContactInfoFolderForAccount(accountId);
 		return new File(folder, "contactInfo.dat");
+	}
+	
+	public File getAccountAccessTokenFile(String accountId) throws
+	IOException
+	{
+		File folder = getAbsoluteAccountAccessTokenFolderForAccount(accountId);
+		return new File(folder, "tokens.dat");
+	}
+	
+	public File getAccountAccessTokenSignatureFile(String accountId) throws
+	IOException
+	{
+		File folder = getAbsoluteAccountAccessTokenFolderForAccount(accountId);
+		return new File(folder, "tokens.sig");
 	}
 
 	public boolean isInQuarantine(DatabaseKey key) throws RecordHiddenException
@@ -815,6 +837,7 @@ abstract public class FileDatabase extends Database
 	protected static final String draftQuarantinePrefix = "qd-p";
 	protected static final String INTERIM_FOLDER_NAME = "interim";
 	protected static final String CONTACTINFO_FOLDER_NAME = "contactInfo";
+	protected static final String ACCESSTOKEN_FOLDER_NAME = "accessTokens";
 	protected static final String ACCOUNTMAP_FILENAME = "acctmap.txt";
 	public static final String BUR_PREFIX = "BUR-";
 	public static final String DEL_PREFIX = "DEL-";

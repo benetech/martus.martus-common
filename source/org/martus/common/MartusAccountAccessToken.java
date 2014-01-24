@@ -25,6 +25,12 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common;
 
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 
 public class MartusAccountAccessToken
 {
@@ -36,6 +42,20 @@ public class MartusAccountAccessToken
 	{
 		setToken(newToken);
 	}
+	
+	public static MartusAccountAccessToken loadFromFile(File tokensFile) throws FileNotFoundException, IOException, TokenInvalidException
+	{
+		FileInputStream contactFileInputStream = new FileInputStream(tokensFile);
+		DataInputStream in = new DataInputStream(contactFileInputStream);
+		String data = in.readUTF();
+		in.close();
+		return loadFromString(data);
+	}
+	
+	public static MartusAccountAccessToken loadFromString(String rawTokenData) throws TokenInvalidException
+	{
+		return new MartusAccountAccessToken(rawTokenData);
+	}
 
 	public String getToken()
 	{
@@ -44,9 +64,9 @@ public class MartusAccountAccessToken
 	
 	public boolean equals(Object otherObject)
 	{
-		if(!(otherObject instanceof MartusAccountAccessToken))
-			return false;
-		return getToken().equals(((MartusAccountAccessToken)otherObject).getToken());
+		if(otherObject instanceof MartusAccountAccessToken)
+			return getToken().equals(((MartusAccountAccessToken)otherObject).getToken());
+		return false;
 	}
 
 	public String toString()
