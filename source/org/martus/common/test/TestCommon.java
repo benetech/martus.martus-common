@@ -51,6 +51,7 @@ import org.martus.common.fieldspec.TestFieldSpec;
 import org.martus.common.fieldspec.TestMiniFieldSpec;
 import org.martus.common.utilities.TestDateUtilities;
 import org.martus.common.utilities.TestMartusFlexidate;
+import org.miradi.utils.TestEnhancedJsonObject;
 
 
 public class TestCommon
@@ -131,6 +132,7 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestZipEntryInputStream.class));
 		suite.addTest(new TestSuite(TestDammCheckDigitAlgorithm.class));
 		suite.addTest(new TestSuite(TestMartusAccountAccessToken.class));
+		suite.addTest(new TestSuite(TestEnhancedJsonObject.class));
 		return suite;
 	}
 }
