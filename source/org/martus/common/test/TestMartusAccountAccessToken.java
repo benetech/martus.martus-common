@@ -28,10 +28,14 @@ package org.martus.common.test;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Calendar;
+import java.util.Date;
 
 import org.martus.common.MartusAccountAccessToken;
 import org.martus.common.MartusAccountAccessToken.TokenInvalidException;
 import org.martus.util.TestCaseEnhanced;
+import org.miradi.utils.EnhancedJsonArray;
+import org.miradi.utils.EnhancedJsonObject;
 
 public class TestMartusAccountAccessToken extends TestCaseEnhanced
 {
@@ -93,12 +97,11 @@ public class TestMartusAccountAccessToken extends TestCaseEnhanced
 		{
 		}
 
-		String invalidToken = "12345678";
 		File tokenInvalidFile = createTempFile();
 		tokenInvalidFile.deleteOnExit();
 		FileOutputStream outputStream = new FileOutputStream(tokenInvalidFile);
 		DataOutputStream out = new DataOutputStream(outputStream);
-		out.writeUTF(invalidToken);
+		out.writeUTF(invalidMartusAccessJsonTokenString);
 		out.flush();
 		out.close();
 		try
@@ -111,18 +114,17 @@ public class TestMartusAccountAccessToken extends TestCaseEnhanced
 		}
 		tokenInvalidFile.delete();
 
-		String validToken = "34482187";
 		File tokenValidFile = createTempFile();
 		tokenValidFile.deleteOnExit();
 		FileOutputStream outputStream2 = new FileOutputStream(tokenValidFile);
 		DataOutputStream out2 = new DataOutputStream(outputStream2);
-		out2.writeUTF(validToken);
+		out2.writeUTF(validMartusAccessJsonTokenString);
 		out2.flush();
 		out2.close();
 		try
 		{
 			MartusAccountAccessToken loadedToken = MartusAccountAccessToken.loadFromFile(tokenValidFile);
-			assertEquals("Token retrieved from file didn't match?", validToken, loadedToken.getToken());
+			assertEquals("Token retrieved from file didn't match?", validMartusAccessTokenString, loadedToken.getToken());
 		} 
 		catch (Exception expectedException)
 		{
@@ -130,4 +132,54 @@ public class TestMartusAccountAccessToken extends TestCaseEnhanced
 		}
 		tokenValidFile.delete();
 	}
+	
+	public void testMartusAccessJsonTokenResponse() throws Exception
+	{
+
+		Date date = new Date();
+		Calendar cal = Calendar.getInstance();
+		cal.set(2014,01,15);
+		cal.set(Calendar.HOUR_OF_DAY, 1);
+		cal.set(Calendar.MINUTE, 30);
+		cal.set(Calendar.SECOND, 45);
+		cal.set(Calendar.MILLISECOND, 0);
+		date = cal.getTime();
+
+		String tokendate = date.toString();
+		EnhancedJsonObject jsonInner = new EnhancedJsonObject();
+		jsonInner.put(MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_JSON_TAG, validMartusAccessTokenString);
+		jsonInner.put(MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_CREATION_DATE_JSON_TAG, tokendate);
+		
+		EnhancedJsonObject jsonOutter = new EnhancedJsonObject();
+		jsonOutter.put(MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_RESPONSE_TAG, jsonInner);
+		EnhancedJsonObject jsonRetrievedInnter = (EnhancedJsonObject) jsonOutter.get(MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_RESPONSE_TAG);
+		
+		assertEquals("didn't get inner JSON response?", jsonInner, jsonRetrievedInnter);
+		
+		assertEquals("didn't get token?", validMartusAccessTokenString, jsonRetrievedInnter.get(MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_JSON_TAG));
+		assertEquals("didn't get token date?", tokendate, jsonRetrievedInnter.get(MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_CREATION_DATE_JSON_TAG));
+		
+		String expectedJsonInnerAsString = "{\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_CREATION_DATE_JSON_TAG+"\":\"Sat Feb 15 01:30:45 PST 2014\",\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_JSON_TAG+"\":\""+validMartusAccessTokenString+"\"}";
+		assertEquals("Json Inner object not correct?", expectedJsonInnerAsString, jsonInner.toString());
+		
+		assertEquals("Json Outer object not correct?", validMartusAccessJsonTokenString, jsonOutter.toString());
+		
+		EnhancedJsonArray innerAsAnArray = new EnhancedJsonArray();
+		innerAsAnArray.put(jsonInner);
+		EnhancedJsonObject bigObject = new EnhancedJsonObject();
+		bigObject.put(MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_RESPONSE_TAG, innerAsAnArray);
+		
+		EnhancedJsonArray gotArray = bigObject.getJsonArray(MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_RESPONSE_TAG);
+		EnhancedJsonObject gotInner = gotArray.getJson(0);
+		assertEquals(gotInner.get(MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_JSON_TAG), jsonInner.get(MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_JSON_TAG));
+		
+		String expectedJsonOuterArrayAsString = "{\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_RESPONSE_TAG+"\":[{\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_CREATION_DATE_JSON_TAG+"\":\"Sat Feb 15 01:30:45 PST 2014\",\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_JSON_TAG+"\":\""+validMartusAccessTokenString+"\"}]}";
+		assertEquals("Json Array Outer object not correct?", expectedJsonOuterArrayAsString, bigObject.toString());
+	}
+	
+	static final String validMartusAccessTokenString = "34482187";
+	static final String validMartusAccessJsonTokenString = "{\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_RESPONSE_TAG+"\":{\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_CREATION_DATE_JSON_TAG+"\":\"Sat Feb 15 01:30:45 PST 2014\",\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_JSON_TAG+"\":\""+validMartusAccessTokenString+"\"}}";
+	static final String invalidMartusAccessTokenString = "1111111";
+	static final String invalidMartusAccessJsonTokenString = "{\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_RESPONSE_TAG+"\":{\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_CREATION_DATE_JSON_TAG+"\":\"Sat Feb 15 01:30:45 PST 2014\",\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_JSON_TAG+"\":\""+invalidMartusAccessTokenString+"\"}}";
+	
 }
