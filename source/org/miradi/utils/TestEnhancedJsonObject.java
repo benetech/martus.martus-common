@@ -21,6 +21,9 @@ along with Miradi.  If not, see <http://www.gnu.org/licenses/>.
 
 package org.miradi.utils;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import org.martus.util.TestCaseEnhanced;
 import org.miradi.utils.EnhancedJsonArray;
 import org.miradi.utils.EnhancedJsonObject;
@@ -44,6 +47,45 @@ public class TestEnhancedJsonObject extends TestCaseEnhanced
 		assertEquals("didn't get four?", four, json.get("FOUR"));
 	}
 
+	public void testMartusAccessTokenResponse() throws Exception
+	{
+		String tokenTag = "Token";
+		String tokenDateTag = "DateCreated";
+
+		 Date date = new Date();
+		 Calendar cal = Calendar.getInstance();
+//		 cal.setTime(date);
+		 cal.set(2014,01,15);
+		 cal.set(Calendar.HOUR_OF_DAY, 1);
+		 cal.set(Calendar.MINUTE, 30);
+		 cal.set(Calendar.SECOND, 45);
+		 cal.set(Calendar.MILLISECOND, 0);
+		 date = cal.getTime();
+
+		String token = "111111";
+		String tokendate = date.toString();
+		EnhancedJsonObject jsonInner = new EnhancedJsonObject();
+		jsonInner.put(tokenTag, token);
+		jsonInner.put(tokenDateTag, tokendate);
+
+		String martusResponseTag = "MartusAccessTokenResponse";
+		EnhancedJsonObject jsonOutter = new EnhancedJsonObject();
+		jsonOutter.put(martusResponseTag, jsonInner);
+		EnhancedJsonObject jsonRetrievedInnter = (EnhancedJsonObject) jsonOutter.get(martusResponseTag);
+		
+		assertEquals("didn't get inner JSON response?", jsonInner, jsonRetrievedInnter);
+		
+		assertEquals("didn't get token?", token, jsonRetrievedInnter.get(tokenTag));
+		assertEquals("didn't get token date?", tokendate, jsonRetrievedInnter.get(tokenDateTag));
+		
+		String expectedJsonInnerAsString = "{\"DateCreated\":\"Sat Feb 15 01:30:45 PST 2014\",\"Token\":\"111111\"}";
+		assertEquals("Json Inner object not correct?", expectedJsonInnerAsString, jsonInner.toString());
+		
+		String expectedJsonOuterAsString = "{\"MartusAccessTokenResponse\":{\"DateCreated\":\"Sat Feb 15 01:30:45 PST 2014\",\"Token\":\"111111\"}}";
+		assertEquals("Json Inner object not correct?", expectedJsonOuterAsString, jsonOutter.toString());
+	}
+	
+	
 	public void testEnhancedJsonArray() throws Exception
 	{
 		EnhancedJsonObject small = new EnhancedJsonObject();

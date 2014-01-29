@@ -30,6 +30,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.ParseException;
+
+import org.miradi.utils.EnhancedJsonObject;
 
 
 public class MartusAccountAccessToken
@@ -52,9 +55,19 @@ public class MartusAccountAccessToken
 		return loadFromString(data);
 	}
 	
-	public static MartusAccountAccessToken loadFromString(String rawTokenData) throws TokenInvalidException
+	public static MartusAccountAccessToken loadFromString(String rawJsonTokenData) throws TokenInvalidException
 	{
-		return new MartusAccountAccessToken(rawTokenData);
+		try
+		{
+			EnhancedJsonObject jsonObject = new EnhancedJsonObject(rawJsonTokenData);
+			EnhancedJsonObject innerObject = jsonObject.getJson(MARTUS_ACCESS_TOKEN_RESPONSE_TAG);
+			return new MartusAccountAccessToken(innerObject.getString(MARTUS_ACCESS_TOKEN_JSON_TAG));
+		} 
+		catch (ParseException e)
+		{
+			MartusLogger.log("json Parse Exception in MartusAccountAccessToken loadFromString");
+			throw new TokenInvalidException();
+		}
 	}
 
 	public String getToken()
@@ -93,5 +106,9 @@ public class MartusAccountAccessToken
 		return validationCheck.validateToken(tokenToValidate);
 	}
 
+	public static final String MARTUS_ACCESS_TOKEN_JSON_TAG = "Token";
+	public static final String MARTUS_ACCESS_TOKEN_CREATION_DATE_JSON_TAG = "DateCreated";
+	public static final String MARTUS_ACCESS_TOKEN_RESPONSE_TAG = "MartusAccessTokenResponse";
+	
 	private String token;
 }
