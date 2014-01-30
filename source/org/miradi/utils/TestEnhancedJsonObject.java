@@ -54,7 +54,6 @@ public class TestEnhancedJsonObject extends TestCaseEnhanced
 
 		 Date date = new Date();
 		 Calendar cal = Calendar.getInstance();
-//		 cal.setTime(date);
 		 cal.set(2014,01,15);
 		 cal.set(Calendar.HOUR_OF_DAY, 1);
 		 cal.set(Calendar.MINUTE, 30);
