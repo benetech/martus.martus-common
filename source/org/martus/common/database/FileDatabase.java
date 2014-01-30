@@ -40,6 +40,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.martus.common.MartusAccountAccessToken;
 import org.martus.common.MartusLogger;
 import org.martus.common.MartusUtilities;
 import org.martus.common.MartusUtilities.FileVerificationException;
@@ -402,18 +403,18 @@ abstract public class FileDatabase extends Database
 		return new File(folder, "contactInfo.dat");
 	}
 	
-	public File getAccountAccessTokenFile(String accountId) throws
+	public File getAccountAccessTokenFile(String accountId, MartusAccountAccessToken token) throws
 	IOException
 	{
 		File folder = getAbsoluteAccountAccessTokenFolderForAccount(accountId);
-		return new File(folder, "tokens.dat");
+		return new File(folder, token.getTokenFileName());
 	}
 	
-	public File getAccountAccessTokenSignatureFile(String accountId) throws
+	public File getAccountAccessTokenSignatureFile(File tokenFile) throws
 	IOException
 	{
-		File folder = getAbsoluteAccountAccessTokenFolderForAccount(accountId);
-		return new File(folder, "tokens.sig");
+		String tokenFileName = tokenFile.getAbsolutePath() + ".sig";
+		return new File(tokenFileName);
 	}
 
 	public boolean isInQuarantine(DatabaseKey key) throws RecordHiddenException

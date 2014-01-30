@@ -40,6 +40,9 @@ public class MartusAccountAccessToken
 	public static class TokenInvalidException extends Exception 
 	{
 	}
+	public static class TokenNotFoundException extends Exception 
+	{
+	}
 	
 	public MartusAccountAccessToken(String newToken) throws TokenInvalidException
 	{
@@ -60,7 +63,7 @@ public class MartusAccountAccessToken
 		try
 		{
 			EnhancedJsonObject jsonObject = new EnhancedJsonObject(rawJsonTokenData);
-			EnhancedJsonObject innerObject = jsonObject.getJson(MARTUS_ACCESS_TOKEN_RESPONSE_TAG);
+			EnhancedJsonObject innerObject = jsonObject.getJson(MARTUS_ACCOUNT_ACCESS_TOKEN_JSON_TAG);
 			return new MartusAccountAccessToken(innerObject.getString(MARTUS_ACCESS_TOKEN_JSON_TAG));
 		} 
 		catch (ParseException e)
@@ -92,6 +95,10 @@ public class MartusAccountAccessToken
 		return getToken().hashCode();
 	}
 	
+	public String getTokenFileName()
+	{
+		return "token-" + getToken() + ".dat";
+	}
 	
 	private void setToken(String newToken) throws TokenInvalidException
 	{
@@ -106,9 +113,14 @@ public class MartusAccountAccessToken
 		return validationCheck.validateToken(tokenToValidate);
 	}
 
+	public static final String REQUEST_MARTUS_ACCOUNT_ACCESS_TOKEN_JSON_TAG = "RequestMartusAccessToken";
+	public static final String REQUEST_MARTUS_ACCOUNT_ACCESS_ACCOUTID_JSON_TAG = "RequestMartusAccessPublicKey";
+	
+	
+	public static final String MARTUS_ACCOUNT_ACCESS_TOKEN_JSON_TAG = "MartusAccountAccessToken";
 	public static final String MARTUS_ACCESS_TOKEN_JSON_TAG = "Token";
-	public static final String MARTUS_ACCESS_TOKEN_CREATION_DATE_JSON_TAG = "DateCreated";
-	public static final String MARTUS_ACCESS_TOKEN_RESPONSE_TAG = "MartusAccessTokenResponse";
+	public static final String MARTUS_ACCESS_TOKEN_CREATION_DATE_JSON_TAG = "TimeCreated";
+	public static final String MARTUS_ACCESS_ACCOUNT_ID_JSON_TAG = "PublicKey";
 	
 	private String token;
 }

@@ -78,6 +78,8 @@ public class TestMartusAccountAccessToken extends TestCaseEnhanced
 			assertEquals("Two different token objects with same token HashCodes should not also match", accessTokenValidData1.hashCode(), annotherAccessTokenValidData1.hashCode());
 			assertNotEquals("Two different token objects with different tokens HashCodes should not also match", accessTokenValidData1.hashCode(), tokenWithDifferentData.hashCode());
 			
+			assertEquals("FileName for token should contian token data in the name", "token-"+validToken2+".dat", tokenWithDifferentData.getTokenFileName());
+			
 		} 
 		catch (TokenInvalidException e)
 		{
@@ -151,8 +153,8 @@ public class TestMartusAccountAccessToken extends TestCaseEnhanced
 		jsonInner.put(MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_CREATION_DATE_JSON_TAG, tokendate);
 		
 		EnhancedJsonObject jsonOutter = new EnhancedJsonObject();
-		jsonOutter.put(MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_RESPONSE_TAG, jsonInner);
-		EnhancedJsonObject jsonRetrievedInnter = (EnhancedJsonObject) jsonOutter.get(MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_RESPONSE_TAG);
+		jsonOutter.put(MartusAccountAccessToken.MARTUS_ACCOUNT_ACCESS_TOKEN_JSON_TAG, jsonInner);
+		EnhancedJsonObject jsonRetrievedInnter = (EnhancedJsonObject) jsonOutter.get(MartusAccountAccessToken.MARTUS_ACCOUNT_ACCESS_TOKEN_JSON_TAG);
 		
 		assertEquals("didn't get inner JSON response?", jsonInner, jsonRetrievedInnter);
 		
@@ -167,19 +169,19 @@ public class TestMartusAccountAccessToken extends TestCaseEnhanced
 		EnhancedJsonArray innerAsAnArray = new EnhancedJsonArray();
 		innerAsAnArray.put(jsonInner);
 		EnhancedJsonObject bigObject = new EnhancedJsonObject();
-		bigObject.put(MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_RESPONSE_TAG, innerAsAnArray);
+		bigObject.put(MartusAccountAccessToken.MARTUS_ACCOUNT_ACCESS_TOKEN_JSON_TAG, innerAsAnArray);
 		
-		EnhancedJsonArray gotArray = bigObject.getJsonArray(MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_RESPONSE_TAG);
+		EnhancedJsonArray gotArray = bigObject.getJsonArray(MartusAccountAccessToken.MARTUS_ACCOUNT_ACCESS_TOKEN_JSON_TAG);
 		EnhancedJsonObject gotInner = gotArray.getJson(0);
 		assertEquals(gotInner.get(MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_JSON_TAG), jsonInner.get(MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_JSON_TAG));
 		
-		String expectedJsonOuterArrayAsString = "{\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_RESPONSE_TAG+"\":[{\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_CREATION_DATE_JSON_TAG+"\":\"Sat Feb 15 01:30:45 PST 2014\",\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_JSON_TAG+"\":\""+validMartusAccessTokenString+"\"}]}";
+		String expectedJsonOuterArrayAsString = "{\""+MartusAccountAccessToken.MARTUS_ACCOUNT_ACCESS_TOKEN_JSON_TAG+"\":[{\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_CREATION_DATE_JSON_TAG+"\":\"Sat Feb 15 01:30:45 PST 2014\",\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_JSON_TAG+"\":\""+validMartusAccessTokenString+"\"}]}";
 		assertEquals("Json Array Outer object not correct?", expectedJsonOuterArrayAsString, bigObject.toString());
 	}
 	
 	static final String validMartusAccessTokenString = "34482187";
-	static final String validMartusAccessJsonTokenString = "{\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_RESPONSE_TAG+"\":{\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_CREATION_DATE_JSON_TAG+"\":\"Sat Feb 15 01:30:45 PST 2014\",\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_JSON_TAG+"\":\""+validMartusAccessTokenString+"\"}}";
+	static final String validMartusAccessJsonTokenString = "{\""+MartusAccountAccessToken.MARTUS_ACCOUNT_ACCESS_TOKEN_JSON_TAG+"\":{\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_CREATION_DATE_JSON_TAG+"\":\"Sat Feb 15 01:30:45 PST 2014\",\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_JSON_TAG+"\":\""+validMartusAccessTokenString+"\"}}";
 	static final String invalidMartusAccessTokenString = "1111111";
-	static final String invalidMartusAccessJsonTokenString = "{\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_RESPONSE_TAG+"\":{\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_CREATION_DATE_JSON_TAG+"\":\"Sat Feb 15 01:30:45 PST 2014\",\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_JSON_TAG+"\":\""+invalidMartusAccessTokenString+"\"}}";
+	static final String invalidMartusAccessJsonTokenString = "{\""+MartusAccountAccessToken.MARTUS_ACCOUNT_ACCESS_TOKEN_JSON_TAG+"\":{\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_CREATION_DATE_JSON_TAG+"\":\"Sat Feb 15 01:30:45 PST 2014\",\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_JSON_TAG+"\":\""+invalidMartusAccessTokenString+"\"}}";
 	
 }
