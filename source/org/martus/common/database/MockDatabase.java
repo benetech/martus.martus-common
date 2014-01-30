@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.martus.common.MartusAccountAccessToken;
 import org.martus.common.MartusUtilities;
 import org.martus.common.MartusUtilities.FileVerificationException;
 import org.martus.common.crypto.MartusCrypto;
@@ -304,6 +305,13 @@ abstract public class MockDatabase extends Database
 		return file.getPath();
 	}
 
+	public File getAbsoluteAccountAccessTokenFolderForAccount(String accountString) throws
+	IOException
+	{
+		File tokensFolder = new File( getFolderForAccount(accountString), ACCESSTOKEN_FOLDER_NAME);
+		return tokensFolder;
+	}
+	
 	public File getIncomingInterimFile(UniversalId uid) throws RecordHiddenException
 	{
 		throwIfRecordIsHidden(uid);
@@ -351,24 +359,22 @@ abstract public class MockDatabase extends Database
 		return file;
 	}
 	
-	public File getAccountAccessTokenFile(String accountId) throws IOException
+	public File getAccountAccessTokenFile(String accountId, MartusAccountAccessToken token) throws IOException
 	{
-		File dir = new File(getFolderForAccount(accountId));
+		File dir = getAbsoluteAccountAccessTokenFolderForAccount(accountId);
 		dir.deleteOnExit();
 		dir.mkdirs();
-		File file = new File(dir, "$$$"+getClass().getSimpleName()+"AccessTokens.dat");
-		file.deleteOnExit();
-		return file;
+		File tokenFile = new File(dir, token.getTokenFileName());
+		tokenFile.deleteOnExit();
+		return tokenFile;
 	}
 
-	public File getAccountAccessTokenSignatureFile(String accountId) throws IOException
+	public File getAccountAccessTokenSignatureFile(File tokenFile) throws IOException
 	{
-		File dir = new File(getFolderForAccount(accountId));
-		dir.deleteOnExit();
-		dir.mkdirs();
-		File file = new File(dir, "$$$"+getClass().getSimpleName()+"AccessTokens.sig");
-		file.deleteOnExit();
-		return file;
+		String tokenFileName = tokenFile.getAbsolutePath() + ".sig";
+		File signatureFile = new File(tokenFileName);
+		signatureFile.deleteOnExit();
+		return signatureFile;
 	}
 
 	public synchronized boolean isInQuarantine(DatabaseKey key) throws RecordHiddenException
@@ -440,6 +446,8 @@ abstract public class MockDatabase extends Database
 	abstract Map getPacketMapFor(DatabaseKey key);
 	abstract Set internalGetAllKeys();
 	abstract void internalDiscardRecord(DatabaseKey key);
+
+	protected static final String ACCESSTOKEN_FOLDER_NAME = "accessTokens";
 
 	Map sealedQuarantine;
 	Map draftQuarantine;
