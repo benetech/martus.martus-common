@@ -28,6 +28,8 @@ import org.martus.util.TestCaseEnhanced;
 import org.miradi.utils.EnhancedJsonArray;
 import org.miradi.utils.EnhancedJsonObject;
 
+import com.ibm.icu.text.SimpleDateFormat;
+
 public class TestEnhancedJsonObject extends TestCaseEnhanced
 {
 	public TestEnhancedJsonObject(String name)
@@ -62,7 +64,8 @@ public class TestEnhancedJsonObject extends TestCaseEnhanced
 		 date = cal.getTime();
 
 		String token = "111111";
-		String tokendate = date.toString();
+		SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
+		String tokendate = formatter.format(date);
 		EnhancedJsonObject jsonInner = new EnhancedJsonObject();
 		jsonInner.put(tokenTag, token);
 		jsonInner.put(tokenDateTag, tokendate);
@@ -73,15 +76,8 @@ public class TestEnhancedJsonObject extends TestCaseEnhanced
 		EnhancedJsonObject jsonRetrievedInnter = (EnhancedJsonObject) jsonOutter.get(martusResponseTag);
 		
 		assertEquals("didn't get inner JSON response?", jsonInner, jsonRetrievedInnter);
-		
 		assertEquals("didn't get token?", token, jsonRetrievedInnter.get(tokenTag));
 		assertEquals("didn't get token date?", tokendate, jsonRetrievedInnter.get(tokenDateTag));
-		
-		String expectedJsonInnerAsString = "{\"DateCreated\":\"Sat Feb 15 01:30:45 PST 2014\",\"Token\":\"111111\"}";
-		assertEquals("Json Inner object not correct?", expectedJsonInnerAsString, jsonInner.toString());
-		
-		String expectedJsonOuterAsString = "{\"MartusAccessTokenResponse\":{\"DateCreated\":\"Sat Feb 15 01:30:45 PST 2014\",\"Token\":\"111111\"}}";
-		assertEquals("Json Inner object not correct?", expectedJsonOuterAsString, jsonOutter.toString());
 	}
 	
 	
