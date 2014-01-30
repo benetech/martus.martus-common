@@ -33,11 +33,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.Vector;
 
 import org.martus.common.MartusUtilities;
 import org.martus.common.MartusUtilities.FileVerificationException;
@@ -74,6 +74,7 @@ abstract public class MockDatabase extends Database
 		incomingInterimMap = new TreeMap();
 		outgoingInterimMap = new TreeMap();
 		mTimeMap = new TreeMap();
+		accounts = new HashSet<String>();
 	}
 
 	public void writeRecord(DatabaseKey key, String record) 
@@ -92,6 +93,7 @@ abstract public class MockDatabase extends Database
 	{
 		addKeyToMap(key, data);
 		mTimeMap.put(key.uid, new Long(System.currentTimeMillis()));
+		addAccount(key.getAccountId());
 	}
 
 	public void importFiles(HashMap fileMapping) throws 
@@ -246,25 +248,15 @@ abstract public class MockDatabase extends Database
 
 	public void visitAllAccounts(AccountVisitor visitor)
 	{
-		Vector visited = new Vector();
-
-		Set keys = getAllKeys();
-		Iterator iterator = keys.iterator();
-		while(iterator.hasNext())
+		for (String accountId : accounts)
 		{
-			DatabaseKey key = (DatabaseKey)iterator.next();
-			String accountString = key.getAccountId();
-			if(!visited.contains(accountString))
+			try
 			{
-				visited.add(accountString);
-				try
-				{
-					visitor.visit(accountString);
-				}
-				catch (RuntimeException nothingWeCanDoAboutIt)
-				{
-					// nothing we can do, so ignore it
-				}
+				visitor.visit(accountId);
+			}
+			catch (RuntimeException nothingWeCanDoAboutIt)
+			{
+				// nothing we can do, so ignore it
 			}
 		}
 	}
@@ -429,12 +421,18 @@ abstract public class MockDatabase extends Database
 			interimFile.deleteOnExit();
 			interimFile.delete();
 			map.put(uid, interimFile);
+			addAccount(uid.getAccountId());
 			return interimFile;
 		}
 		catch (IOException e)
 		{
 			return null;
 		}
+	}
+	
+	public void addAccount(String accountId)
+	{
+		accounts.add(accountId);
 	}
 
 	abstract byte[] readRawRecord(DatabaseKey key);
@@ -449,6 +447,8 @@ abstract public class MockDatabase extends Database
 	Map outgoingInterimMap;
 
 	HashMap streamsThatAreOpen = new HashMap();
+	
+	private HashSet<String> accounts;
 }
 
 class MockRecordInputStream extends ByteArrayInputStreamWithSeek
