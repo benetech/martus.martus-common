@@ -34,6 +34,7 @@ import java.util.Date;
 import org.martus.common.MartusAccountAccessToken;
 import org.martus.common.MartusAccountAccessToken.TokenInvalidException;
 import org.martus.util.TestCaseEnhanced;
+import org.martus.util.UnicodeWriter;
 import org.miradi.utils.EnhancedJsonArray;
 import org.miradi.utils.EnhancedJsonObject;
 
@@ -119,8 +120,8 @@ public class TestMartusAccountAccessToken extends TestCaseEnhanced
 		File tokenValidFile = createTempFile();
 		tokenValidFile.deleteOnExit();
 		FileOutputStream outputStream2 = new FileOutputStream(tokenValidFile);
-		DataOutputStream out2 = new DataOutputStream(outputStream2);
-		out2.writeUTF(validMartusAccessJsonTokenString);
+		UnicodeWriter out2 = new UnicodeWriter(outputStream2);
+		out2.write(validMartusAccessJsonTokenString);
 		out2.flush();
 		out2.close();
 		try

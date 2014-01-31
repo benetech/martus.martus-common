@@ -25,13 +25,13 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common;
 
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 
+import org.martus.util.UnicodeReader;
 import org.miradi.utils.EnhancedJsonObject;
 
 
@@ -52,8 +52,8 @@ public class MartusAccountAccessToken
 	public static MartusAccountAccessToken loadFromFile(File tokensFile) throws FileNotFoundException, IOException, TokenInvalidException
 	{
 		FileInputStream contactFileInputStream = new FileInputStream(tokensFile);
-		DataInputStream in = new DataInputStream(contactFileInputStream);
-		String data = in.readUTF();
+		UnicodeReader in = new UnicodeReader(contactFileInputStream);
+		String data = in.readLine();
 		in.close();
 		return loadFromString(data);
 	}

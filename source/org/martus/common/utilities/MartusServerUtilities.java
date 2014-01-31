@@ -401,8 +401,8 @@ public class MartusServerUtilities
 	{
 		accessTokenFile.getParentFile().mkdirs();
 		FileOutputStream accessTokenFileOutputStream = new FileOutputStream(accessTokenFile);
-		DataOutputStream out = new DataOutputStream(accessTokenFileOutputStream);
-		out.writeUTF(tokenData);
+		UnicodeWriter out = new UnicodeWriter(accessTokenFileOutputStream);
+		out.write(tokenData);
 		out.flush();
 		out.close();
 	}

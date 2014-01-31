@@ -39,6 +39,7 @@ import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.utilities.MartusServerUtilities;
 import org.martus.common.utilities.MartusServerUtilities.MartusSignatureFileDoesntExistsException;
 import org.martus.util.TestCaseEnhanced;
+import org.martus.util.UnicodeReader;
 import org.martus.util.UnicodeWriter;
 
 
@@ -237,9 +238,9 @@ public class TestMartusServerUtilities extends TestCaseEnhanced
 		assertTrue("File doesn't exist?", accessTokenFile.exists());
 
 		FileInputStream accessTokenFileInputStream = new FileInputStream(accessTokenFile);
-		DataInputStream in = new DataInputStream(accessTokenFileInputStream);
+		UnicodeReader in = new UnicodeReader(accessTokenFileInputStream);
 
-		String inputToken = in.readUTF();
+		String inputToken = in.readLine();
 		in.close();
 
 		assertEquals("Tokens doesn't match", tokenData, inputToken);
