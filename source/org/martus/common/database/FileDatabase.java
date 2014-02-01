@@ -362,7 +362,7 @@ abstract public class FileDatabase extends Database
 		return ContactFolder;
 	}
 
-	public File getAccountAccessTokenFolder(String accountString) throws
+	public File getAbsoluteAccountAccessTokenFolderForAccount(String accountString) throws
 	IOException
 	{
 		File accountFolder = new File(absoluteBaseDir, getFolderForAccount(accountString));
@@ -406,7 +406,7 @@ abstract public class FileDatabase extends Database
 	public File getAccountAccessTokenFile(String accountId, MartusAccountAccessToken token) throws
 	IOException
 	{
-		File folder = getAccountAccessTokenFolder(accountId);
+		File folder = getAbsoluteAccountAccessTokenFolderForAccount(accountId);
 		return new File(folder, token.getTokenFileName());
 	}
 	
