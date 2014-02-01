@@ -308,7 +308,7 @@ abstract public class MockDatabase extends Database
 	public File getAbsoluteAccountAccessTokenFolderForAccount(String accountString) throws
 	IOException
 	{
-		File tokensFolder = new File( getFolderForAccount(accountString), ACCESSTOKEN_FOLDER_NAME);
+		File tokensFolder = new File( getFolderForAccount(accountString), ACCESS_TOKEN_FOLDER_NAME);
 		return tokensFolder;
 	}
 	
@@ -447,7 +447,7 @@ abstract public class MockDatabase extends Database
 	abstract Set internalGetAllKeys();
 	abstract void internalDiscardRecord(DatabaseKey key);
 
-	protected static final String ACCESSTOKEN_FOLDER_NAME = "accessTokens";
+	protected static final String ACCESS_TOKEN_FOLDER_NAME = "accessTokens";
 
 	Map sealedQuarantine;
 	Map draftQuarantine;
