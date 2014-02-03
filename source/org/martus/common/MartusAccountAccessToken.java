@@ -62,15 +62,36 @@ public class MartusAccountAccessToken
 	{
 		try
 		{
-			EnhancedJsonObject jsonObject = new EnhancedJsonObject(rawJsonTokenData);
-			EnhancedJsonObject innerObject = jsonObject.getJson(MARTUS_ACCOUNT_ACCESS_TOKEN_JSON_TAG);
-			return new MartusAccountAccessToken(innerObject.getString(MARTUS_ACCESS_TOKEN_JSON_TAG));
+			return new MartusAccountAccessToken(getTokenFromJsonObject(rawJsonTokenData));
 		} 
 		catch (ParseException e)
 		{
 			MartusLogger.log("json Parse Exception in MartusAccountAccessToken loadFromString");
 			throw new TokenInvalidException();
 		}
+	}
+	
+	public static void validateTokenFromJsonObject(String rawJsonTokenData) throws TokenInvalidException
+	{
+		try
+		{
+			if(validToken(getTokenFromJsonObject(rawJsonTokenData)))
+				return;
+		} 
+		catch (ParseException e)
+		{
+			MartusLogger.log("json Parse Exception in MartusAccountAccessToken loadFromString");
+		}
+		throw new TokenInvalidException();
+	}
+
+	public static String getTokenFromJsonObject(String rawJsonTokenData)
+			throws ParseException
+	{
+		EnhancedJsonObject jsonObject = new EnhancedJsonObject(rawJsonTokenData);
+		EnhancedJsonObject innerObject = jsonObject.getJson(MARTUS_ACCOUNT_ACCESS_TOKEN_JSON_TAG);
+		String tokenToUse = innerObject.getString(MARTUS_ACCESS_TOKEN_JSON_TAG);
+		return tokenToUse;
 	}
 
 	public String getToken()
@@ -102,7 +123,7 @@ public class MartusAccountAccessToken
 		token = newToken;
 	}
 
-	private boolean validToken(String tokenToValidate)
+	private static boolean validToken(String tokenToValidate)
 	{
 		DammCheckDigitAlgorithm validationCheck = new DammCheckDigitAlgorithm();
 		return validationCheck.validateToken(tokenToValidate);
