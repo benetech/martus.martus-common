@@ -95,11 +95,6 @@ public class MartusAccountAccessToken
 		return getToken().hashCode();
 	}
 	
-	public String getTokenFileName()
-	{
-		return "token-" + getToken() + ".dat";
-	}
-	
 	private void setToken(String newToken) throws TokenInvalidException
 	{
 		if(!validToken(newToken))
