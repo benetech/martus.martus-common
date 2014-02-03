@@ -78,9 +78,6 @@ public class TestMartusAccountAccessToken extends TestCaseEnhanced
 			assertEquals("HashCodes should also match", validToken2.hashCode(), tokenWithDifferentData.hashCode());
 			assertEquals("Two different token objects with same token HashCodes should not also match", accessTokenValidData1.hashCode(), annotherAccessTokenValidData1.hashCode());
 			assertNotEquals("Two different token objects with different tokens HashCodes should not also match", accessTokenValidData1.hashCode(), tokenWithDifferentData.hashCode());
-			
-			assertEquals("FileName for token should contian token data in the name", "token-"+validToken2+".dat", tokenWithDifferentData.getTokenFileName());
-			
 		} 
 		catch (TokenInvalidException e)
 		{

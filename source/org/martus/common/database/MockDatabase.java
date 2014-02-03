@@ -364,7 +364,7 @@ abstract public class MockDatabase extends Database
 		File dir = getAbsoluteAccountAccessTokenFolderForAccount(accountId);
 		dir.deleteOnExit();
 		dir.mkdirs();
-		File tokenFile = new File(dir, token.getTokenFileName());
+		File tokenFile = new File(dir, "token-" + token.getToken() + ".dat");
 		tokenFile.deleteOnExit();
 		return tokenFile;
 	}
