@@ -366,8 +366,8 @@ abstract public class FileDatabase extends Database
 	IOException
 	{
 		File accountFolder = new File(absoluteBaseDir, getFolderForAccount(accountString));
-		File ContactFolder = new File(accountFolder, ACCESSTOKEN_FOLDER_NAME);
-		return ContactFolder;
+		File tokensFolder = new File(accountFolder, ACCESSTOKEN_FOLDER_NAME);
+		return tokensFolder;
 	}
 
 	public File getIncomingInterimFile(UniversalId uid) throws
@@ -410,13 +410,6 @@ abstract public class FileDatabase extends Database
 		return new File(folder, token.getTokenFileName());
 	}
 	
-	public File getAccountAccessTokenSignatureFile(File tokenFile) throws
-	IOException
-	{
-		String tokenFileName = tokenFile.getAbsolutePath() + ".sig";
-		return new File(tokenFileName);
-	}
-
 	public boolean isInQuarantine(DatabaseKey key) throws RecordHiddenException
 	{
 		throwIfRecordIsHidden(key.getUniversalId());

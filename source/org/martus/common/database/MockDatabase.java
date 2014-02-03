@@ -369,14 +369,6 @@ abstract public class MockDatabase extends Database
 		return tokenFile;
 	}
 
-	public File getAccountAccessTokenSignatureFile(File tokenFile) throws IOException
-	{
-		String tokenFileName = tokenFile.getAbsolutePath() + ".sig";
-		File signatureFile = new File(tokenFileName);
-		signatureFile.deleteOnExit();
-		return signatureFile;
-	}
-
 	public synchronized boolean isInQuarantine(DatabaseKey key) throws RecordHiddenException
 	{
 		throwIfRecordIsHidden(key);
