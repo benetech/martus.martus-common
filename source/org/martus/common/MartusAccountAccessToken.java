@@ -75,7 +75,7 @@ public class MartusAccountAccessToken
 	{
 		try
 		{
-			if(validToken(getTokenFromJsonObject(rawJsonTokenData)))
+			if(isTokenValid(getTokenFromJsonObject(rawJsonTokenData)))
 				return;
 		} 
 		catch (ParseException e)
@@ -118,15 +118,15 @@ public class MartusAccountAccessToken
 	
 	private void setToken(String newToken) throws TokenInvalidException
 	{
-		if(!validToken(newToken))
+		if(!isTokenValid(newToken))
 			throw new TokenInvalidException();
 		token = newToken;
 	}
 
-	private static boolean validToken(String tokenToValidate)
+	private static boolean isTokenValid(String tokenToValidate)
 	{
 		DammCheckDigitAlgorithm validationCheck = new DammCheckDigitAlgorithm();
-		return validationCheck.validateToken(tokenToValidate);
+		return validationCheck.isTokenValid(tokenToValidate);
 	}
 
 	public static final String REQUEST_MARTUS_ACCOUNT_ACCESS_TOKEN_JSON_TAG = "RequestMartusAccessToken";

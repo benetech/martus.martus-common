@@ -70,7 +70,7 @@ public class DammCheckDigitAlgorithm
 		return Integer.toString(checkDigit);
 	}
 	
-	public boolean validateToken(String token)
+	public boolean isTokenValid(String token)
 	{
 		int length = token.length();
 		if(length <= 1)
