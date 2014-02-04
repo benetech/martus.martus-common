@@ -366,7 +366,7 @@ abstract public class FileDatabase extends Database
 	IOException
 	{
 		File accountFolder = new File(absoluteBaseDir, getFolderForAccount(accountString));
-		File tokensFolder = new File(accountFolder, ACCESSTOKEN_FOLDER_NAME);
+		File tokensFolder = new File(accountFolder, ACCESS_TOKEN_FOLDER_NAME);
 		return tokensFolder;
 	}
 
@@ -831,7 +831,7 @@ abstract public class FileDatabase extends Database
 	protected static final String draftQuarantinePrefix = "qd-p";
 	protected static final String INTERIM_FOLDER_NAME = "interim";
 	protected static final String CONTACTINFO_FOLDER_NAME = "contactInfo";
-	protected static final String ACCESSTOKEN_FOLDER_NAME = "accessTokens";
+	protected static final String ACCESS_TOKEN_FOLDER_NAME = "accessTokens";
 	protected static final String ACCOUNTMAP_FILENAME = "acctmap.txt";
 	public static final String BUR_PREFIX = "BUR-";
 	public static final String DEL_PREFIX = "DEL-";
