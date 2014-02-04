@@ -44,33 +44,33 @@ public class TestDammCheckDigitAlgorithm  extends TestCaseEnhanced
 		String tokenData = "572";
 		String checkDigit = testDammCheckAlgorithm.getCheckDigit(tokenData);
 		assertEquals("For data 572 the check digit should be 4", "4", checkDigit);
-		assertTrue("For complete token data 5724 should be true", testDammCheckAlgorithm.validateToken("5724"));
+		assertTrue("For complete token data 5724 should be true", testDammCheckAlgorithm.isTokenValid("5724"));
 
 		tokenData = "3841590";
 		checkDigit = testDammCheckAlgorithm.getCheckDigit(tokenData);
 		assertEquals("For data 3841590 the check digit should be 0", "0", checkDigit);
 		String validCompleteToken = tokenData + checkDigit;
-		assertTrue("38415900 For complete token data 38415900 should be true", testDammCheckAlgorithm.validateToken(validCompleteToken));
-		assertTrue("3841590 Is also a valid token, But user may have forgotten one digit.  Length checking will need to happen in Client.", testDammCheckAlgorithm.validateToken(tokenData));
+		assertTrue("38415900 For complete token data 38415900 should be true", testDammCheckAlgorithm.isTokenValid(validCompleteToken));
+		assertTrue("3841590 Is also a valid token, But user may have forgotten one digit.  Length checking will need to happen in Client.", testDammCheckAlgorithm.isTokenValid(tokenData));
 		
 		String singleTransposedDigit = validCompleteToken;
 		singleTransposedDigit = singleTransposedDigit.replace('1', '7');
 		assertEquals("For a single transposed digit token should equal 38475900", "38475900", singleTransposedDigit);
-		assertFalse("For a single transposed digit token 38475900 should be false", testDammCheckAlgorithm.validateToken(singleTransposedDigit));
+		assertFalse("For a single transposed digit token 38475900 should be false", testDammCheckAlgorithm.isTokenValid(singleTransposedDigit));
 		
 		String doubleTransposedDigits = validCompleteToken;
 		doubleTransposedDigits = doubleTransposedDigits.replace('0', '1');
 		assertEquals("For a double transposed digits token should equal 38415911", "38415911", doubleTransposedDigits);
-		assertFalse("For a double transposed digits token 38415911 should be false", testDammCheckAlgorithm.validateToken(doubleTransposedDigits));
+		assertFalse("For a double transposed digits token 38415911 should be false", testDammCheckAlgorithm.isTokenValid(doubleTransposedDigits));
 
 		String singleDigitTokenIsInvalid = "0";
-		assertFalse("A 1 digit token can not be valid since we need a check digit.", testDammCheckAlgorithm.validateToken(singleDigitTokenIsInvalid));
+		assertFalse("A 1 digit token can not be valid since we need a check digit.", testDammCheckAlgorithm.isTokenValid(singleDigitTokenIsInvalid));
 		
 		String twoDigitTokenValid = "00";
-		assertTrue("A 2 digit valid token should be valid.", testDammCheckAlgorithm.validateToken(twoDigitTokenValid));
+		assertTrue("A 2 digit valid token should be valid.", testDammCheckAlgorithm.isTokenValid(twoDigitTokenValid));
 		
 		String nineDigitTokenValid = "000000000";
-		assertTrue("A 9 digit valid token should be valid.", testDammCheckAlgorithm.validateToken(nineDigitTokenValid));
+		assertTrue("A 9 digit valid token should be valid.", testDammCheckAlgorithm.isTokenValid(nineDigitTokenValid));
     }
 	
 	public void testTable() throws CheckDigitInvalidException
