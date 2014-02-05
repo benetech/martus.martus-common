@@ -133,6 +133,7 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestDammCheckDigitAlgorithm.class));
 		suite.addTest(new TestSuite(TestMartusAccountAccessToken.class));
 		suite.addTest(new TestSuite(TestEnhancedJsonObject.class));
+		suite.addTest(new TestSuite(TestContactKeys.class));		
 		return suite;
 	}
 }
