@@ -124,10 +124,10 @@ public class ContactKeys extends ExternalPublicKeys
 	
 	public String toStringWithLabel()
 	{
-		return getXMLRepresntation();
+		return getXMLRepresentation();
 	}
 	
-	private String getXMLRepresntation()
+	private String getXMLRepresentation()
 	{
 		String xmlRepresentation = MartusXml.getTagStartWithNewline(getTopLevelXmlElementName());
 		for(int i = 0; i < size(); ++i)
