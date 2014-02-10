@@ -51,6 +51,7 @@ public class TestFieldDeskKeys extends TestCaseEnhanced
 		keys.add(key);
 		assertEquals(1, keys.size());
 		assertTrue(keys.containsKey(publicKey1));
+		assertTrue(keys.contains(key));
 		FieldDeskKey retrieved = keys.get(0);
 		assertEquals(key.getPublicKey(), retrieved.getPublicKey());
 		assertEquals(key.getLabel(), retrieved.getLabel());
