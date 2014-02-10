@@ -52,6 +52,7 @@ public class TestHeadquartersKeys extends TestCaseEnhanced
 		hqKeys.add(key);
 		assertEquals(1, hqKeys.size());
 		assertTrue(hqKeys.containsKey(publicKey1));
+		assertTrue(hqKeys.contains(key));
 		HeadquartersKey retrieved = hqKeys.get(0);
 		assertEquals(key.getPublicKey(), retrieved.getPublicKey());
 		assertEquals(key.getLabel(), retrieved.getLabel());

@@ -71,9 +71,6 @@ public class ExternalPublicKey
 	
 	public boolean equals(Object rawOther)
 	{
-		if(! (rawOther instanceof HeadquartersKey))
-			return false;
-		
 		ExternalPublicKey other = (ExternalPublicKey)rawOther;
 		return publicKey.equals(other.publicKey) && label.equals(other.label);
 	}
