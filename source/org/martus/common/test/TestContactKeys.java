@@ -104,12 +104,18 @@ public class TestContactKeys extends TestCaseEnhanced
 		String label1 = "label 1";
 		String key2 = "key 2";
 		String label2 = "label 2 with <icky &xml stuff>";
+		String key3 = "key 2";
+		String label3 = "label 3";
 		ContactKey contactKey1 = new ContactKey(key1, label1);
 		contactKey1.setCanReceiveFrom(true);
 		keys.add(contactKey1);
 		ContactKey contactKey2 = new ContactKey(key2, label2);
 		contactKey2.setCanSendTo(true);
 		keys.add(contactKey2);
+		ContactKey contactKey3 = new ContactKey(key3, label3);
+		contactKey3.setCanSendTo(true);
+		contactKey3.setCanSendToDefault(true);
+		keys.add(contactKey3);
 		ContactKeys contactKeys = new ContactKeys(keys);
 		String xmlExpected = MartusXml.getTagStartWithNewline(ContactKeys.CONTACT_KEYS_TAG) +
 		 MartusXml.getTagStart(ContactKeys.CONTACT_KEY_TAG) + 
@@ -122,10 +128,14 @@ public class TestContactKeys extends TestCaseEnhanced
 		 MartusXml.getTagStart(ContactKeys.CAN_SEND_TO_TAG) + 
 		 XmlUtilities.getXmlEncoded(ContactKeys.NO_DATA) +
 		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_SEND_TO_TAG) +
+		 MartusXml.getTagStart(ContactKeys.CAN_SEND_TO_DEFAULT_TAG) + 
+		 XmlUtilities.getXmlEncoded(ContactKeys.NO_DATA) +
+		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_SEND_TO_DEFAULT_TAG) +
 		 MartusXml.getTagStart(ContactKeys.CAN_RECEIVE_FROM_TAG) + 
 		 XmlUtilities.getXmlEncoded(ContactKeys.YES_DATA) +
 		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_RECEIVE_FROM_TAG) +
 		 MartusXml.getTagEnd(ContactKeys.CONTACT_KEY_TAG) +
+
 		 MartusXml.getTagStart(ContactKeys.CONTACT_KEY_TAG) + 
 		 MartusXml.getTagStart(ExternalPublicKeys.PUBLIC_KEY_TAG) + 
 		 XmlUtilities.getXmlEncoded(key2) +
@@ -136,10 +146,32 @@ public class TestContactKeys extends TestCaseEnhanced
 		 MartusXml.getTagStart(ContactKeys.CAN_SEND_TO_TAG) + 
 		 XmlUtilities.getXmlEncoded(ContactKeys.YES_DATA) +
 		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_SEND_TO_TAG) +
+		 MartusXml.getTagStart(ContactKeys.CAN_SEND_TO_DEFAULT_TAG) + 
+		 XmlUtilities.getXmlEncoded(ContactKeys.NO_DATA) +
+		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_SEND_TO_DEFAULT_TAG) +
 		 MartusXml.getTagStart(ContactKeys.CAN_RECEIVE_FROM_TAG) + 
 		 XmlUtilities.getXmlEncoded(ContactKeys.NO_DATA) +
 		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_RECEIVE_FROM_TAG) +
 		 MartusXml.getTagEnd(ContactKeys.CONTACT_KEY_TAG) +
+
+		 MartusXml.getTagStart(ContactKeys.CONTACT_KEY_TAG) + 
+		 MartusXml.getTagStart(ExternalPublicKeys.PUBLIC_KEY_TAG) + 
+		 XmlUtilities.getXmlEncoded(key3) +
+		 MartusXml.getTagEndWithoutNewline(ExternalPublicKeys.PUBLIC_KEY_TAG) +
+		 MartusXml.getTagStart(ExternalPublicKeys.LABEL_TAG) + 
+		 XmlUtilities.getXmlEncoded(label3) +
+		 MartusXml.getTagEndWithoutNewline(ExternalPublicKeys.LABEL_TAG) +
+		 MartusXml.getTagStart(ContactKeys.CAN_SEND_TO_TAG) + 
+		 XmlUtilities.getXmlEncoded(ContactKeys.YES_DATA) +
+		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_SEND_TO_TAG) +
+		 MartusXml.getTagStart(ContactKeys.CAN_SEND_TO_DEFAULT_TAG) + 
+		 XmlUtilities.getXmlEncoded(ContactKeys.YES_DATA) +
+		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_SEND_TO_DEFAULT_TAG) +
+		 MartusXml.getTagStart(ContactKeys.CAN_RECEIVE_FROM_TAG) + 
+		 XmlUtilities.getXmlEncoded(ContactKeys.NO_DATA) +
+		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_RECEIVE_FROM_TAG) +
+		 MartusXml.getTagEnd(ContactKeys.CONTACT_KEY_TAG) +
+		 
 		 MartusXml.getTagEnd(ContactKeys.CONTACT_KEYS_TAG);
 		
 		assertEquals(xmlExpected, contactKeys.toString());

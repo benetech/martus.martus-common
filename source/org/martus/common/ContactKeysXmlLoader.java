@@ -58,6 +58,12 @@ public class ContactKeysXmlLoader extends SimpleXmlDefaultLoader
 		String data = loader.get(ContactKeys.CAN_SEND_TO_TAG);
 		if(data.equals(ContactKeys.YES_DATA))
 			canSendTo = true;
+		
+		boolean canSendToDefault = false;
+		data = loader.get(ContactKeys.CAN_SEND_TO_DEFAULT_TAG);
+		if(data.equals(ContactKeys.YES_DATA))
+			canSendToDefault = true;
+
 		boolean canReceiveFrom = false;
 		data = loader.get(ContactKeys.CAN_RECEIVE_FROM_TAG);
 		if(data.equals(ContactKeys.YES_DATA))
@@ -66,6 +72,7 @@ public class ContactKeysXmlLoader extends SimpleXmlDefaultLoader
 		ContactKey key = new ContactKey(publicCode, label);
 		key.setCanReceiveFrom(canReceiveFrom);
 		key.setCanSendTo(canSendTo);
+		key.setCanSendToDefault(canSendToDefault);
 		keys.add(key);
 	}
 
