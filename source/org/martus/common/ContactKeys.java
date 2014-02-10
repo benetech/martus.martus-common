@@ -139,12 +139,20 @@ public class ContactKeys extends ExternalPublicKeys
 			xmlRepresentation += MartusXml.getTagStart(LABEL_TAG);
 			xmlRepresentation += XmlUtilities.getXmlEncoded(rawGet(i).getLabel());
 			xmlRepresentation += MartusXml.getTagEndWithoutNewline(LABEL_TAG);
+
 			xmlRepresentation += MartusXml.getTagStart(CAN_SEND_TO_TAG);
 			if(((ContactKey)rawGet(i)).getCanSendTo())
 				xmlRepresentation += XmlUtilities.getXmlEncoded(YES_DATA);
 			else
 				xmlRepresentation += XmlUtilities.getXmlEncoded(NO_DATA);
 			xmlRepresentation += MartusXml.getTagEndWithoutNewline(CAN_SEND_TO_TAG);
+
+			xmlRepresentation += MartusXml.getTagStart(CAN_SEND_TO_DEFAULT_TAG);
+			if(((ContactKey)rawGet(i)).getCanSendToDefault())
+				xmlRepresentation += XmlUtilities.getXmlEncoded(YES_DATA);
+			else
+				xmlRepresentation += XmlUtilities.getXmlEncoded(NO_DATA);
+			xmlRepresentation += MartusXml.getTagEndWithoutNewline(CAN_SEND_TO_DEFAULT_TAG);
 
 			xmlRepresentation += MartusXml.getTagStart(CAN_RECEIVE_FROM_TAG);
 			if(((ContactKey)rawGet(i)).getCanReceiveFrom())
@@ -164,6 +172,7 @@ public class ContactKeys extends ExternalPublicKeys
 	public static final String CONTACT_KEYS_TAG = "Contacts";
 	public static final String CONTACT_KEY_TAG = "Contact";
 	public static final String CAN_SEND_TO_TAG = "CanSendTo";
+	public static final String CAN_SEND_TO_DEFAULT_TAG = "CanSendToDefault";
 	public static final String CAN_RECEIVE_FROM_TAG = "CanReceiveFrom";
 	public static final String YES_DATA = "YES";
 	public static final String NO_DATA = "NO";
