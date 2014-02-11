@@ -44,6 +44,8 @@ public interface NetworkInterfaceXmlRpcConstants
 	public static final String cmdGetPartialUploadStatus = "getPartialUploadStatus";
 	public static final String cmdGetMartusAccountAccessToken = "getMartusAccountAccessToken";
 	public static final String cmdGetMartusAccountIdFromAccessToken = "getMartusAccountIdFromAccessToken";
+	public static final String cmdGetListOfFormTemplates = "getListOfFormTemplates";
+	public static final String cmdPutFormTemplate = "putFormTemplate";
 
 	public static final String CMD_PING = "ping";
 	public static final String CMD_SERVER_INFO = "getServerInformation";
