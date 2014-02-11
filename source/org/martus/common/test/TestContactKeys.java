@@ -114,7 +114,7 @@ public class TestContactKeys extends TestCaseEnhanced
 		keys.add(contactKey2);
 		ContactKey contactKey3 = new ContactKey(key3, label3);
 		contactKey3.setCanSendTo(true);
-		contactKey3.setCanSendToDefault(true);
+		contactKey3.setSendToByDefault(true);
 		keys.add(contactKey3);
 		ContactKeys contactKeys = new ContactKeys(keys);
 		String xmlExpected = MartusXml.getTagStartWithNewline(ContactKeys.CONTACT_KEYS_TAG) +
@@ -128,9 +128,9 @@ public class TestContactKeys extends TestCaseEnhanced
 		 MartusXml.getTagStart(ContactKeys.CAN_SEND_TO_TAG) + 
 		 XmlUtilities.getXmlEncoded(ContactKeys.NO_DATA) +
 		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_SEND_TO_TAG) +
-		 MartusXml.getTagStart(ContactKeys.CAN_SEND_TO_DEFAULT_TAG) + 
+		 MartusXml.getTagStart(ContactKeys.SEND_TO_BY_DEFAULT_TAG) + 
 		 XmlUtilities.getXmlEncoded(ContactKeys.NO_DATA) +
-		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_SEND_TO_DEFAULT_TAG) +
+		 MartusXml.getTagEndWithoutNewline(ContactKeys.SEND_TO_BY_DEFAULT_TAG) +
 		 MartusXml.getTagStart(ContactKeys.CAN_RECEIVE_FROM_TAG) + 
 		 XmlUtilities.getXmlEncoded(ContactKeys.YES_DATA) +
 		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_RECEIVE_FROM_TAG) +
@@ -146,9 +146,9 @@ public class TestContactKeys extends TestCaseEnhanced
 		 MartusXml.getTagStart(ContactKeys.CAN_SEND_TO_TAG) + 
 		 XmlUtilities.getXmlEncoded(ContactKeys.YES_DATA) +
 		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_SEND_TO_TAG) +
-		 MartusXml.getTagStart(ContactKeys.CAN_SEND_TO_DEFAULT_TAG) + 
+		 MartusXml.getTagStart(ContactKeys.SEND_TO_BY_DEFAULT_TAG) + 
 		 XmlUtilities.getXmlEncoded(ContactKeys.NO_DATA) +
-		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_SEND_TO_DEFAULT_TAG) +
+		 MartusXml.getTagEndWithoutNewline(ContactKeys.SEND_TO_BY_DEFAULT_TAG) +
 		 MartusXml.getTagStart(ContactKeys.CAN_RECEIVE_FROM_TAG) + 
 		 XmlUtilities.getXmlEncoded(ContactKeys.NO_DATA) +
 		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_RECEIVE_FROM_TAG) +
@@ -164,9 +164,9 @@ public class TestContactKeys extends TestCaseEnhanced
 		 MartusXml.getTagStart(ContactKeys.CAN_SEND_TO_TAG) + 
 		 XmlUtilities.getXmlEncoded(ContactKeys.YES_DATA) +
 		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_SEND_TO_TAG) +
-		 MartusXml.getTagStart(ContactKeys.CAN_SEND_TO_DEFAULT_TAG) + 
+		 MartusXml.getTagStart(ContactKeys.SEND_TO_BY_DEFAULT_TAG) + 
 		 XmlUtilities.getXmlEncoded(ContactKeys.YES_DATA) +
-		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_SEND_TO_DEFAULT_TAG) +
+		 MartusXml.getTagEndWithoutNewline(ContactKeys.SEND_TO_BY_DEFAULT_TAG) +
 		 MartusXml.getTagStart(ContactKeys.CAN_RECEIVE_FROM_TAG) + 
 		 XmlUtilities.getXmlEncoded(ContactKeys.NO_DATA) +
 		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_RECEIVE_FROM_TAG) +

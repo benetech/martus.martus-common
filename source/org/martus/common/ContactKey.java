@@ -56,17 +56,17 @@ public class ContactKey extends ExternalPublicKey
 		this.canReceiveFrom = canReceiveFrom;
 	}
 
-	public boolean getCanSendToDefault()
+	public boolean getSendToByDefault()
 	{
-		return canSendToDefault;
+		return sendToByDefault;
 	}
 
-	public void setCanSendToDefault(boolean canSendToDefault)
+	public void setSendToByDefault(boolean sendToByDefault)
 	{
-		this.canSendToDefault = canSendToDefault;
+		this.sendToByDefault = sendToByDefault;
 	}
 
 	private boolean canSendTo;
-	private boolean canSendToDefault;
+	private boolean sendToByDefault;
 	private boolean canReceiveFrom;
 }
