@@ -55,6 +55,8 @@ public class CustomFieldTemplate
 		errors = new Vector();
 		xmlImportedTopSectionText = "";
 		xmlImportedBottomSectionText = "";
+		title = "";
+		description = "";
 	}
 	
 	public class FutureVersionException extends Exception
@@ -91,14 +93,24 @@ public class CustomFieldTemplate
 					throw new FutureVersionException();
 				int topSectionBundleLength = bundleIn.readInt();
 				int bottomSectionBundleLength = bundleIn.readInt();
+				int titleLength = bundleIn.readInt();
+				int descriptionLength = bundleIn.readInt();
 				dataBundleTopSection = new byte[topSectionBundleLength];
 				byte[] dataBundleBottomSection = new byte[bottomSectionBundleLength];
+				byte[] dataTitle = new byte[titleLength];
+				byte[] dataDescription = new byte[descriptionLength];
 				bundleIn.read(dataBundleTopSection,0, topSectionBundleLength);
 				bundleIn.read(dataBundleBottomSection,0, bottomSectionBundleLength);
+				bundleIn.read(dataTitle,0, titleLength);
+				bundleIn.read(dataDescription,0, descriptionLength);
 				
 				Vector authorizedKeys = getSignedByAsVector(dataBundleBottomSection, security);
 				byte[] xmlBytesBottomSection = security.extractFromSignedBundle(dataBundleBottomSection, authorizedKeys);
 				templateXMLToImportBottomSection = new String(xmlBytesBottomSection, "UTF-8");
+				byte[] bytesTitleOnly = security.extractFromSignedBundle(dataTitle, authorizedKeys);
+				title = new String(bytesTitleOnly, "UTF-8");
+				byte[] bytesDescruotionOnly = security.extractFromSignedBundle(dataDescription, authorizedKeys);
+				description = new String(bytesDescruotionOnly, "UTF-8");
 			}
 
 			Vector authorizedKeys = getSignedByAsVector(dataBundleTopSection, security);
@@ -150,7 +162,7 @@ public class CustomFieldTemplate
 		return !versionHeaderInString.equals(versionHeader);
 	}
 	
-	public boolean ExportTemplate(MartusCrypto security, File fileToExportXml, String xmlToExportTopSection, String xmlToExportBottomSection)
+	public boolean ExportTemplate(MartusCrypto security, File fileToExportXml, String xmlToExportTopSection, String xmlToExportBottomSection, String toExportTitle, String toExportDescription)
 	{
 		clearData();
 		if(!isvalidTemplateXml(xmlToExportTopSection, xmlToExportBottomSection))
@@ -163,10 +175,16 @@ public class CustomFieldTemplate
 			dataOut.writeInt(exportVersionNumber);
 			byte[] signedBundleTopSection = security.createSignedBundle(xmlToExportTopSection.getBytes("UTF-8"));
 			byte[] signedBundleBottomSection = security.createSignedBundle(xmlToExportBottomSection.getBytes("UTF-8"));
+			byte[] signedBundleTitle = security.createSignedBundle(toExportTitle.getBytes("UTF-8"));
+			byte[] signedBundleDescription = security.createSignedBundle(toExportDescription.getBytes("UTF-8"));
 			dataOut.writeInt(signedBundleTopSection.length);
 			dataOut.writeInt(signedBundleBottomSection.length);
+			dataOut.writeInt(signedBundleTitle.length);
+			dataOut.writeInt(signedBundleDescription.length);
 			dataOut.write(signedBundleTopSection);
 			dataOut.write(signedBundleBottomSection);
+			dataOut.write(signedBundleTitle);
+			dataOut.write(signedBundleDescription);
 			dataOut.flush();
 			dataOut.close();
 			out.flush();
@@ -226,10 +244,23 @@ public class CustomFieldTemplate
 		return signedByPublicKey;
 	} 
 	
+	public String getTitle()
+	{
+		return title;
+	}
+
+	public String getDescription()
+	{
+		return description;
+	}
+
+	public static final String versionHeader = "Export Version Number:";
+	public static final int exportVersionNumber = 3;
 	private Vector errors;
 	private String xmlImportedTopSectionText;
 	private String xmlImportedBottomSectionText;
 	private String signedByPublicKey;
-	public static final String versionHeader = "Export Version Number:";
-	public static final int exportVersionNumber = 2;
+	//Version 3
+	private String title;
+	private String description;
 }
