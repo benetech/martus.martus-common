@@ -59,6 +59,11 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		super.tearDown();
 	}
 	
+	public void testBasics()
+	{
+		assertEquals("Version number not correct?", 3, CustomFieldTemplate.exportVersionNumber);
+	}
+	
 	public void testValidateXml() throws Exception
 	{
 		FieldCollection defaultTopSectionFields = new FieldCollection(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray());
@@ -87,10 +92,11 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		File exportFile = createTempFileFromName("$$$testExportXml");
 		exportFile.delete();
 		assertFalse(exportFile.exists());
-
+		String formTemplateTitle = "New Form Title";
+		String formTemplateDescription = "New Form Description";
 		FieldCollection defaultFieldsTopSection = new FieldCollection(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray());
 		FieldCollection defaultFieldsBottomSection = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
-		assertTrue(template.ExportTemplate(security, exportFile, defaultFieldsTopSection.toString(), defaultFieldsBottomSection.toString()));
+		assertTrue(template.ExportTemplate(security, exportFile, defaultFieldsTopSection.toString(), defaultFieldsBottomSection.toString(), formTemplateTitle, formTemplateDescription));
 		assertTrue(exportFile.exists());
 		exportFile.delete();
 
@@ -98,7 +104,7 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		FieldCollection withInvalid = FieldCollectionForTesting.extendFields(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray(), invalidField);
 		FieldCollection bottomSectionFields = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
 		assertFalse(exportFile.exists());
-		assertFalse(template.ExportTemplate(security, exportFile, withInvalid.toString(), bottomSectionFields.toString()));
+		assertFalse(template.ExportTemplate(security, exportFile, withInvalid.toString(), bottomSectionFields.toString(), formTemplateTitle, formTemplateDescription));
 		assertFalse(exportFile.exists());
 		exportFile.delete();
 	}
@@ -188,12 +194,16 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		
 		CustomFieldTemplate template = new CustomFieldTemplate();
 		File exportFile = createTempFileFromName("$$$testImportXml");
+		String formTemplateTitle = "Form Title";
+		String formTemplateDescription = "Form Description";
 		exportFile.delete();
-		template.ExportTemplate(security, exportFile, fieldsTopSection.toString(), fieldsBottomSection.toString());
+		template.ExportTemplate(security, exportFile, fieldsTopSection.toString(), fieldsBottomSection.toString(), formTemplateTitle, formTemplateDescription);
 		assertEquals("", template.getImportedTopSectionText());
 		assertTrue(template.importTemplate(security, exportFile));
 		assertEquals(fieldsTopSection.toString(), template.getImportedTopSectionText());
 		assertEquals(fieldsBottomSection.toString(), template.getImportedBottomSectionText());
+		assertEquals(formTemplateTitle, template.getTitle());
+		assertEquals(formTemplateDescription, template.getDescription());
 		assertEquals(0, template.getErrors().size());
 		
 		UnicodeWriter writer = new UnicodeWriter(exportFile,UnicodeWriter.APPEND);
@@ -203,6 +213,8 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		assertTrue(template.importTemplate(security, exportFile));
 		assertEquals(fieldsTopSection.toString(), template.getImportedTopSectionText());
 		assertEquals(fieldsBottomSection.toString(), template.getImportedBottomSectionText());
+		assertEquals(formTemplateTitle, template.getTitle());
+		assertEquals(formTemplateDescription, template.getDescription());
 		assertEquals(0, template.getErrors().size());
 
 		exportFile.delete();
@@ -216,6 +228,8 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		assertFalse(template.importTemplate(security, exportFile));
 		assertEquals("", template.getImportedTopSectionText());
 		assertEquals("", template.getImportedBottomSectionText());
+		assertEquals("", template.getTitle());
+		assertEquals("", template.getDescription());
 		assertEquals(1, template.getErrors().size());
 		assertEquals(CustomFieldError.CODE_SIGNATURE_ERROR, ((CustomFieldError)template.getErrors().get(0)).getCode());
 		
@@ -223,6 +237,8 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		assertFalse(template.importTemplate(security, exportFile));
 		assertEquals("", template.getImportedTopSectionText());
 		assertEquals("", template.getImportedBottomSectionText());
+		assertEquals("", template.getTitle());
+		assertEquals("", template.getDescription());
 		assertEquals(1, template.getErrors().size());
 		assertEquals(CustomFieldError.CODE_IO_ERROR, ((CustomFieldError)template.getErrors().get(0)).getCode());
 	}
