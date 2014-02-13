@@ -304,6 +304,8 @@ public class CustomFieldTemplate
 
 	public static final String versionHeader = "Export Version Number:";
 	public static final int exportVersionNumber = 3;
+	public static final String CUSTOMIZATION_TEMPLATE_EXTENSION = ".mct";
+	
 	private Vector errors;
 	private String xmlTopSectionText;
 	private String xmlBottomSectionText;
