@@ -129,8 +129,10 @@ public class CustomFieldTemplate
 				Vector authorizedKeys = getSignedByAsVector(dataBundleBottomSection, security);
 				byte[] xmlBytesBottomSection = security.extractFromSignedBundle(dataBundleBottomSection, authorizedKeys);
 				templateXMLToImportBottomSection = new String(xmlBytesBottomSection, "UTF-8");
+				//Overkill Kevin??  authorizedKeys = getSignedByAsVector(dataTitle, security);
 				byte[] bytesTitleOnly = security.extractFromSignedBundle(dataTitle, authorizedKeys);
 				title = new String(bytesTitleOnly, "UTF-8");
+				//OverKill Kevin??  authorizedKeys = getSignedByAsVector(dataDescription, security);
 				byte[] bytesDescruotionOnly = security.extractFromSignedBundle(dataDescription, authorizedKeys);
 				description = new String(bytesDescruotionOnly, "UTF-8");
 			}
