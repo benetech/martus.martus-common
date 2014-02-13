@@ -63,6 +63,34 @@ public class TestContactKeys extends TestCaseEnhanced
 		ContactKey key2 = new ContactKey(publicKey2, label2);
 		contactKeys.add(key2);
 		assertEquals(label2, contactKeys.getLabelIfPresent(key2));
+		
+		key2.setCanSendTo(true);
+		key2.setSendToByDefault(true);
+		assertTrue(key2.getCanSendTo());
+		assertTrue(key2.getSendToByDefault());
+		assertFalse(key2.getCanReceiveFrom());
+
+		key2.setSendToByDefault(false);
+		assertFalse(key2.getSendToByDefault());
+		assertTrue(key2.getCanSendTo());
+		assertFalse(key2.getCanReceiveFrom());
+		
+		key2.setSendToByDefault(true);
+		assertTrue(key2.getCanSendTo());
+		assertTrue(key2.getSendToByDefault());
+		assertFalse(key2.getCanReceiveFrom());
+
+		key2.setCanSendTo(false);
+		assertFalse(key2.getCanSendTo());
+		assertFalse("Setting this HQ to CanSendTo also must not be able to sendToByDefault", key2.getSendToByDefault());
+		assertFalse(key2.getCanReceiveFrom());
+		
+		key2.setCanReceiveFrom(true);
+		assertFalse(key2.getCanSendTo());
+		assertFalse(key2.getSendToByDefault());
+		assertTrue(key2.getCanReceiveFrom());
+		
+		
 	}
 	
 	public void testAddKeys()
