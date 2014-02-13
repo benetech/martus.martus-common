@@ -96,7 +96,6 @@ public class CustomFieldTemplate
 			String templateXMLToImportBottomSection = "";
 			FileInputStream in = new FileInputStream(fileToImport);
 			byte[] dataBundle = new byte[(int)fileToImport.length()];
-			int len = dataBundle.length;
 			in.read(dataBundle);
 			in.close();
 			byte[] dataBundleTopSection;
@@ -224,14 +223,10 @@ public class CustomFieldTemplate
 			byte[] signedBundleBottomSection = security.createSignedBundle(xmlBottomSectionText.getBytes("UTF-8"));
 			byte[] signedBundleTitle = security.createSignedBundle(title.getBytes("UTF-8"));
 			byte[] signedBundleDescription = security.createSignedBundle(description.getBytes("UTF-8"));
-			int lengthTop = signedBundleTopSection.length;
-			dataOut.writeInt(lengthTop);
-			int lengthBottom = signedBundleBottomSection.length;
-			dataOut.writeInt(lengthBottom);
-			int lengthTitle = signedBundleTitle.length;
-			dataOut.writeInt(lengthTitle);
-			int lengthDesc = signedBundleDescription.length;
-			dataOut.writeInt(lengthDesc);
+			dataOut.writeInt(signedBundleTopSection.length);
+			dataOut.writeInt(signedBundleBottomSection.length);
+			dataOut.writeInt(signedBundleTitle.length);
+			dataOut.writeInt(signedBundleDescription.length);
 			dataOut.write(signedBundleTopSection);
 			dataOut.write(signedBundleBottomSection);
 			dataOut.write(signedBundleTitle);

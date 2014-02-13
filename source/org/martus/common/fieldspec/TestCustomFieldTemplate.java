@@ -25,7 +25,6 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.fieldspec;
 
-import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -121,15 +120,14 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		CustomFieldTemplate template = new CustomFieldTemplate(formTemplateTitle, formTemplateDescription, defaultFieldsTopSection, defaultFieldsBottomSection);
 		
 		String exportedTemplateAsStringBase64= template.getExportedTemplateAsBase64String(security);
-		String exportedTemplateAsString = new String(StreamableBase64.decode(exportedTemplateAsStringBase64), "UTF8");
-		assertNotEquals("", exportedTemplateAsString);
+		byte[] decodedBytes = StreamableBase64.decode(exportedTemplateAsStringBase64);
+		assertNotEquals(0, decodedBytes.length);
 		
 		File exportFile = createTempFileFromName("$$$testExportedTemplateAsString");
 		exportFile.delete();
 		assertFalse(exportFile.exists());
 		FileOutputStream output = new FileOutputStream(exportFile);
-		byte[] bytesExportedTemplate = exportedTemplateAsString.getBytes();
-		output.write(bytesExportedTemplate);
+		output.write(decodedBytes);
 		output.flush();
 		output.close();
 		
