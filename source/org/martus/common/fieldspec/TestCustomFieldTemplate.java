@@ -25,6 +25,7 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.fieldspec;
 
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,6 +35,7 @@ import org.martus.common.FieldCollectionForTesting;
 import org.martus.common.FieldSpecCollection;
 import org.martus.common.LegacyCustomFields;
 import org.martus.common.crypto.MockMartusSecurity;
+import org.martus.util.StreamableBase64;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.UnicodeWriter;
 
@@ -109,6 +111,36 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		exportFile.delete();
 	}
 	
+
+	public void testGetExportedTemplateAsString() throws Exception
+	{
+		String formTemplateTitle = "New Form Title";
+		String formTemplateDescription = "New Form Description";
+		FieldCollection defaultFieldsTopSection = new FieldCollection(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray());
+		FieldCollection defaultFieldsBottomSection = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
+		CustomFieldTemplate template = new CustomFieldTemplate(formTemplateTitle, formTemplateDescription, defaultFieldsTopSection, defaultFieldsBottomSection);
+		
+		String exportedTemplateAsStringBase64= template.getExportedTemplateAsBase64String(security);
+		String exportedTemplateAsString = new String(StreamableBase64.decode(exportedTemplateAsStringBase64), "UTF8");
+		assertNotEquals("", exportedTemplateAsString);
+		
+		File exportFile = createTempFileFromName("$$$testExportedTemplateAsString");
+		exportFile.delete();
+		assertFalse(exportFile.exists());
+		FileOutputStream output = new FileOutputStream(exportFile);
+		byte[] bytesExportedTemplate = exportedTemplateAsString.getBytes();
+		output.write(bytesExportedTemplate);
+		output.flush();
+		output.close();
+		
+		CustomFieldTemplate templateRetrieved = new CustomFieldTemplate();
+		assertTrue("Failed to import Template from exportedString?", templateRetrieved.importTemplate(security, exportFile));
+		assertEquals(formTemplateTitle, templateRetrieved.getTitle());
+		assertEquals(formTemplateDescription, templateRetrieved.getDescription());
+		assertEquals(defaultFieldsTopSection.toString(), templateRetrieved.getImportedTopSectionText());
+		assertEquals(defaultFieldsBottomSection.toString(), templateRetrieved.getImportedBottomSectionText());
+	}
+
 	public void testImportXmlLegacy() throws Exception
 	{
 		FieldCollection fieldsTopSection = new FieldCollection(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray());
