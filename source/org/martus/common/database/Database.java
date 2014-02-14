@@ -77,6 +77,8 @@ abstract public class Database extends ReadableDatabase
 	abstract public File getAbsoluteAccountAccessTokenFolderForAccount(String accountId) throws IOException;
 	abstract public File getAccountAccessTokenFile(String accountId, MartusAccountAccessToken token) throws IOException;
 
+	abstract public File getAbsoluteFormTemplatesFolderForAccount(String accountId) throws IOException;
+
 	abstract public void moveRecordToQuarantine(DatabaseKey key) throws RecordHiddenException;
 
 	abstract public void signAccountMap() throws IOException, MartusCrypto.MartusSignatureException;
