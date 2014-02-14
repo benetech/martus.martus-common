@@ -84,10 +84,8 @@ public class CustomFieldTemplate
 	
 	public class FutureVersionException extends Exception
 	{
-		
 	}
 
-	
 	public boolean importTemplate(MartusCrypto security, File fileToImport) throws FutureVersionException
 	{
 		try
@@ -127,19 +125,21 @@ public class CustomFieldTemplate
 				bundleIn.read(dataTitle,0, titleLength);
 				bundleIn.read(dataDescription,0, descriptionLength);
 				
-				Vector authorizedKeys = getSignedByAsVector(dataBundleBottomSection, security);
-				byte[] xmlBytesBottomSection = security.extractFromSignedBundle(dataBundleBottomSection, authorizedKeys);
+				Vector bottomSectionSignedByKeys = getSignedByAsVector(dataBundleBottomSection, security);
+				byte[] xmlBytesBottomSection = security.extractFromSignedBundle(dataBundleBottomSection, bottomSectionSignedByKeys);
 				templateXMLToImportBottomSection = UnicodeUtilities.toUnicodeString(xmlBytesBottomSection);
-				//Overkill Kevin??  authorizedKeys = getSignedByAsVector(dataTitle, security);
-				byte[] bytesTitleOnly = security.extractFromSignedBundle(dataTitle, authorizedKeys);
+
+				Vector titleSignedByKeys = getSignedByAsVector(dataTitle, security);
+				byte[] bytesTitleOnly = security.extractFromSignedBundle(dataTitle, titleSignedByKeys);
 				title = UnicodeUtilities.toUnicodeString(bytesTitleOnly);
-				//OverKill Kevin??  authorizedKeys = getSignedByAsVector(dataDescription, security);
-				byte[] bytesDescriptionOnly = security.extractFromSignedBundle(dataDescription, authorizedKeys);
+
+				Vector descriptionSignedByKeys = getSignedByAsVector(dataDescription, security);
+				byte[] bytesDescriptionOnly = security.extractFromSignedBundle(dataDescription, descriptionSignedByKeys);
 				description = UnicodeUtilities.toUnicodeString(bytesDescriptionOnly);
 			}
 
-			Vector authorizedKeys = getSignedByAsVector(dataBundleTopSection, security);
-			byte[] xmlBytesTopSection = security.extractFromSignedBundle(dataBundleTopSection, authorizedKeys);
+			Vector topSectionSignedByKeys = getSignedByAsVector(dataBundleTopSection, security);
+			byte[] xmlBytesTopSection = security.extractFromSignedBundle(dataBundleTopSection, topSectionSignedByKeys);
 			templateXMLToImportTopSection = UnicodeUtilities.toUnicodeString(xmlBytesTopSection);
 			
 			if(isvalidTemplateXml(templateXMLToImportTopSection, templateXMLToImportBottomSection))
@@ -164,9 +164,9 @@ public class CustomFieldTemplate
 		return false;
 	}
 
-	public Vector getSignedByAsVector(byte[] dataBundleBottomSection, MartusCrypto security) throws MartusSignatureException, IOException
+	public Vector getSignedByAsVector(byte[] dataBundleSection, MartusCrypto security) throws MartusSignatureException, IOException
 	{
-		String signedBy = security.getSignedBundleSigner(dataBundleBottomSection);
+		String signedBy = security.getSignedBundleSigner(dataBundleSection);
 		if(signedByPublicKey == null)
 			signedByPublicKey = signedBy;
 		else if(!signedByPublicKey.equals(signedBy))

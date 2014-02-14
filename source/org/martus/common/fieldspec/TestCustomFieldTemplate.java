@@ -36,6 +36,7 @@ import org.martus.common.LegacyCustomFields;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.util.StreamableBase64;
 import org.martus.util.TestCaseEnhanced;
+import org.martus.util.UnicodeUtilities;
 import org.martus.util.UnicodeWriter;
 
 public class TestCustomFieldTemplate extends TestCaseEnhanced
@@ -91,8 +92,7 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 	{
 		CustomFieldTemplate template = new CustomFieldTemplate();
 		File exportFile = createTempFileFromName("$$$testExportXml");
-		exportFile.delete();
-		assertFalse(exportFile.exists());
+		exportFile.deleteOnExit();
 		String formTemplateTitle = "New Form Title";
 		String formTemplateDescription = "New Form Description";
 		FieldCollection defaultFieldsTopSection = new FieldCollection(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray());
@@ -110,7 +110,45 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		exportFile.delete();
 	}
 	
+	public void testImportedTemplateWithDifferentSignedSections() throws Exception
+	{
+		String formTemplateTitle = "New Form Title";
+		String formTemplateDescription = "New Form Description";
+		FieldCollection defaultFieldsTopSection = new FieldCollection(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray());
+		FieldCollection defaultFieldsBottomSection = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
 
+		File exportMultipleSignersCFTFile = createTempFileFromName("$$$testExportMultipleSignersXml");
+		exportMultipleSignersCFTFile.deleteOnExit();
+		FileOutputStream out = new FileOutputStream(exportMultipleSignersCFTFile);		
+		DataOutputStream dataOut = new DataOutputStream(out);
+		dataOut.write(CustomFieldTemplate.versionHeader.getBytes());
+		dataOut.writeInt(CustomFieldTemplate.exportVersionNumber);
+		byte[] signedBundleTopSection = security.createSignedBundle(UnicodeUtilities.toUnicodeBytes(defaultFieldsTopSection.getSpecsXml()));
+		byte[] signedBundleBottomSection = security.createSignedBundle(UnicodeUtilities.toUnicodeBytes(defaultFieldsBottomSection.getSpecsXml()));
+		byte[] signedBundleTitle = security.createSignedBundle(UnicodeUtilities.toUnicodeBytes(formTemplateTitle));
+
+		MockMartusSecurity otherSecurity = new MockMartusSecurity();
+		otherSecurity.createKeyPair(512);
+
+		byte[] signedBundleDescription = otherSecurity.createSignedBundle(UnicodeUtilities.toUnicodeBytes(formTemplateDescription));
+		dataOut.writeInt(signedBundleTopSection.length);
+		dataOut.writeInt(signedBundleBottomSection.length);
+		dataOut.writeInt(signedBundleTitle.length);
+		dataOut.writeInt(signedBundleDescription.length);
+		dataOut.write(signedBundleTopSection);
+		dataOut.write(signedBundleBottomSection);
+		dataOut.write(signedBundleTitle);
+		dataOut.write(signedBundleDescription);
+		dataOut.flush();
+		dataOut.close();
+		out.flush();
+		out.close();
+		
+		CustomFieldTemplate template = new CustomFieldTemplate(formTemplateTitle, formTemplateDescription, defaultFieldsTopSection, defaultFieldsBottomSection);
+		assertFalse(template.importTemplate(security, exportMultipleSignersCFTFile));
+		assertEquals(CustomFieldError.CODE_SIGNATURE_ERROR, ((CustomFieldError)template.getErrors().get(0)).getCode());
+	}
+	
 	public void testGetExportedTemplateAsString() throws Exception
 	{
 		String formTemplateTitle = "New Form Title";
@@ -274,5 +312,4 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 	}
 	
 	static MockMartusSecurity security;
-	
 }
