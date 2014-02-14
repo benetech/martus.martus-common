@@ -133,8 +133,8 @@ public class CustomFieldTemplate
 				byte[] bytesTitleOnly = security.extractFromSignedBundle(dataTitle, authorizedKeys);
 				title = new String(bytesTitleOnly, "UTF-8");
 				//OverKill Kevin??  authorizedKeys = getSignedByAsVector(dataDescription, security);
-				byte[] bytesDescruotionOnly = security.extractFromSignedBundle(dataDescription, authorizedKeys);
-				description = new String(bytesDescruotionOnly, "UTF-8");
+				byte[] bytesDescriptionOnly = security.extractFromSignedBundle(dataDescription, authorizedKeys);
+				description = new String(bytesDescriptionOnly, "UTF-8");
 			}
 
 			Vector authorizedKeys = getSignedByAsVector(dataBundleTopSection, security);
