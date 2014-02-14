@@ -45,6 +45,7 @@ import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
 import org.martus.util.StreamableBase64;
+import org.martus.util.UnicodeUtilities;
 
 
 public class CustomFieldTemplate
@@ -128,18 +129,18 @@ public class CustomFieldTemplate
 				
 				Vector authorizedKeys = getSignedByAsVector(dataBundleBottomSection, security);
 				byte[] xmlBytesBottomSection = security.extractFromSignedBundle(dataBundleBottomSection, authorizedKeys);
-				templateXMLToImportBottomSection = new String(xmlBytesBottomSection, "UTF-8");
+				templateXMLToImportBottomSection = UnicodeUtilities.toUnicodeString(xmlBytesBottomSection);
 				//Overkill Kevin??  authorizedKeys = getSignedByAsVector(dataTitle, security);
 				byte[] bytesTitleOnly = security.extractFromSignedBundle(dataTitle, authorizedKeys);
-				title = new String(bytesTitleOnly, "UTF-8");
+				title = UnicodeUtilities.toUnicodeString(bytesTitleOnly);
 				//OverKill Kevin??  authorizedKeys = getSignedByAsVector(dataDescription, security);
 				byte[] bytesDescriptionOnly = security.extractFromSignedBundle(dataDescription, authorizedKeys);
-				description = new String(bytesDescriptionOnly, "UTF-8");
+				description = UnicodeUtilities.toUnicodeString(bytesDescriptionOnly);
 			}
 
 			Vector authorizedKeys = getSignedByAsVector(dataBundleTopSection, security);
 			byte[] xmlBytesTopSection = security.extractFromSignedBundle(dataBundleTopSection, authorizedKeys);
-			templateXMLToImportTopSection = new String(xmlBytesTopSection, "UTF-8");
+			templateXMLToImportTopSection = UnicodeUtilities.toUnicodeString(xmlBytesTopSection);
 			
 			if(isvalidTemplateXml(templateXMLToImportTopSection, templateXMLToImportBottomSection))
 			{
@@ -221,10 +222,10 @@ public class CustomFieldTemplate
 			DataOutputStream dataOut = new DataOutputStream(out);
 			dataOut.write(versionHeader.getBytes());
 			dataOut.writeInt(exportVersionNumber);
-			byte[] signedBundleTopSection = security.createSignedBundle(xmlTopSectionText.getBytes("UTF-8"));
-			byte[] signedBundleBottomSection = security.createSignedBundle(xmlBottomSectionText.getBytes("UTF-8"));
-			byte[] signedBundleTitle = security.createSignedBundle(title.getBytes("UTF-8"));
-			byte[] signedBundleDescription = security.createSignedBundle(description.getBytes("UTF-8"));
+			byte[] signedBundleTopSection = security.createSignedBundle(UnicodeUtilities.toUnicodeBytes(xmlTopSectionText));
+			byte[] signedBundleBottomSection = security.createSignedBundle(UnicodeUtilities.toUnicodeBytes(xmlBottomSectionText));
+			byte[] signedBundleTitle = security.createSignedBundle(UnicodeUtilities.toUnicodeBytes(title));
+			byte[] signedBundleDescription = security.createSignedBundle(UnicodeUtilities.toUnicodeBytes(description));
 			dataOut.writeInt(signedBundleTopSection.length);
 			dataOut.writeInt(signedBundleBottomSection.length);
 			dataOut.writeInt(signedBundleTitle.length);
