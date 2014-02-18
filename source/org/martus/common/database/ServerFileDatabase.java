@@ -65,12 +65,9 @@ public class ServerFileDatabase extends FileDatabase
 		super.loadAccountMap();
 		if(accountMapFile.exists())
 		{
-			File sigFile;
-
 			try
 			{
-				sigFile = MartusServerUtilities.getLatestSignatureFileFromFile(accountMapFile);
-				MartusServerUtilities.verifyFileAndSignatureOnServer(accountMapFile, sigFile, security, security.getPublicKeyString());
+				MartusServerUtilities.verifyFileAndLatestSignatureOnServer(accountMapFile, security);
 			}
 			catch (IOException e)
 			{

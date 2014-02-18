@@ -245,7 +245,14 @@ public class MartusServerUtilities
 		 
 		return numLines;
 		
-	}	
+	}
+	
+	public static void verifyFileAndLatestSignatureOnServer(File fileToVerify, MartusCrypto verifier)
+			throws FileVerificationException, IOException, ParseException, MartusSignatureFileDoesntExistsException
+	{
+		File signatureFile = getLatestSignatureFileFromFile(fileToVerify);
+		MartusServerUtilities.verifyFileAndSignatureOnServer(fileToVerify, signatureFile, verifier, verifier.getPublicKeyString());
+	}
 	
 	public static void verifyFileAndSignatureOnServer(File fileToVerify, File signatureFile, MartusCrypto verifier, String accountId)
 		throws FileVerificationException
