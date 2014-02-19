@@ -46,6 +46,7 @@ public interface NetworkInterfaceConstants
 	public static final String TRANSPORT_NOT_READY = "transport not ready";
 	public static final String NO_TOKEN_AVAILABLE = "no token available";
 	public static final String NO_FORM_TEMPLATES_AVAILABLE = "no form templates available";
+	public static final String FORM_TEMPLATE_DOES_NOT_EXIST = "form template does not exist";
 
 	public static final String VERSION = "MartusServer v0.30";
 	public static final String TAG_BULLETIN_SIZE = "bulletin size";
