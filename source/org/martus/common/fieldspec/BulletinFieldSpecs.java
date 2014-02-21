@@ -32,6 +32,8 @@ public class BulletinFieldSpecs
 {
 	public BulletinFieldSpecs()
 	{
+		titleOfSpecs = "";
+		descriptionOfSpecs = "";
 	}
 	
 	public FieldSpecCollection getTopSectionSpecs()
@@ -42,6 +44,16 @@ public class BulletinFieldSpecs
 	public FieldSpecCollection getBottomSectionSpecs()
 	{
 		return bottomSectionSpecs;
+	}
+	
+	public String getTitleOfSpecs()
+	{
+		return titleOfSpecs;
+	}
+	
+	public String getDescriptionOfSpecs()
+	{
+		return descriptionOfSpecs;
 	}
 	
 	public void setTopSectionSpecs(FieldSpec[] topSectionSpecsToUse)
@@ -63,7 +75,19 @@ public class BulletinFieldSpecs
 	{
 		bottomSectionSpecs = bottomSectionSpecsToUse;
 	}
+	
+	public void setTitleOfSpecs(String titleToUse)
+	{
+		titleOfSpecs = titleToUse;
+	}
+
+	public void setDescriptionOfSpecs(String descriptionToUse)
+	{
+		descriptionOfSpecs = descriptionToUse;
+	}
 
 	private FieldSpecCollection topSectionSpecs;
-	private FieldSpecCollection bottomSectionSpecs ;
+	private FieldSpecCollection bottomSectionSpecs;
+	private String titleOfSpecs;
+	private String descriptionOfSpecs;
 }
