@@ -34,7 +34,9 @@ import org.martus.common.FieldCollectionForTesting;
 import org.martus.common.FieldSpecCollection;
 import org.martus.common.LegacyCustomFields;
 import org.martus.common.crypto.MockMartusSecurity;
+import org.martus.util.StreamableBase64;
 import org.martus.util.TestCaseEnhanced;
+import org.martus.util.UnicodeUtilities;
 import org.martus.util.UnicodeWriter;
 
 public class TestCustomFieldTemplate extends TestCaseEnhanced
@@ -57,6 +59,11 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 	protected void tearDown() throws Exception
 	{
 		super.tearDown();
+	}
+	
+	public void testBasics()
+	{
+		assertEquals("Version number not correct?", 3, CustomFieldTemplate.exportVersionNumber);
 	}
 	
 	public void testValidateXml() throws Exception
@@ -85,12 +92,12 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 	{
 		CustomFieldTemplate template = new CustomFieldTemplate();
 		File exportFile = createTempFileFromName("$$$testExportXml");
-		exportFile.delete();
-		assertFalse(exportFile.exists());
-
+		exportFile.deleteOnExit();
+		String formTemplateTitle = "New Form Title";
+		String formTemplateDescription = "New Form Description";
 		FieldCollection defaultFieldsTopSection = new FieldCollection(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray());
 		FieldCollection defaultFieldsBottomSection = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
-		assertTrue(template.ExportTemplate(security, exportFile, defaultFieldsTopSection.toString(), defaultFieldsBottomSection.toString()));
+		assertTrue(template.ExportTemplate(security, exportFile, defaultFieldsTopSection.toString(), defaultFieldsBottomSection.toString(), formTemplateTitle, formTemplateDescription));
 		assertTrue(exportFile.exists());
 		exportFile.delete();
 
@@ -98,11 +105,78 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		FieldCollection withInvalid = FieldCollectionForTesting.extendFields(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray(), invalidField);
 		FieldCollection bottomSectionFields = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
 		assertFalse(exportFile.exists());
-		assertFalse(template.ExportTemplate(security, exportFile, withInvalid.toString(), bottomSectionFields.toString()));
+		assertFalse(template.ExportTemplate(security, exportFile, withInvalid.toString(), bottomSectionFields.toString(), formTemplateTitle, formTemplateDescription));
 		assertFalse(exportFile.exists());
 		exportFile.delete();
 	}
 	
+	public void testImportedTemplateWithDifferentSignedSections() throws Exception
+	{
+		String formTemplateTitle = "New Form Title";
+		String formTemplateDescription = "New Form Description";
+		FieldCollection defaultFieldsTopSection = new FieldCollection(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray());
+		FieldCollection defaultFieldsBottomSection = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
+
+		File exportMultipleSignersCFTFile = createTempFileFromName("$$$testExportMultipleSignersXml");
+		exportMultipleSignersCFTFile.deleteOnExit();
+		FileOutputStream out = new FileOutputStream(exportMultipleSignersCFTFile);		
+		DataOutputStream dataOut = new DataOutputStream(out);
+		dataOut.write(CustomFieldTemplate.versionHeader.getBytes());
+		dataOut.writeInt(CustomFieldTemplate.exportVersionNumber);
+		byte[] signedBundleTopSection = security.createSignedBundle(UnicodeUtilities.toUnicodeBytes(defaultFieldsTopSection.getSpecsXml()));
+		byte[] signedBundleBottomSection = security.createSignedBundle(UnicodeUtilities.toUnicodeBytes(defaultFieldsBottomSection.getSpecsXml()));
+		byte[] signedBundleTitle = security.createSignedBundle(UnicodeUtilities.toUnicodeBytes(formTemplateTitle));
+
+		MockMartusSecurity otherSecurity = new MockMartusSecurity();
+		otherSecurity.createKeyPair(512);
+
+		byte[] signedBundleDescription = otherSecurity.createSignedBundle(UnicodeUtilities.toUnicodeBytes(formTemplateDescription));
+		dataOut.writeInt(signedBundleTopSection.length);
+		dataOut.writeInt(signedBundleBottomSection.length);
+		dataOut.writeInt(signedBundleTitle.length);
+		dataOut.writeInt(signedBundleDescription.length);
+		dataOut.write(signedBundleTopSection);
+		dataOut.write(signedBundleBottomSection);
+		dataOut.write(signedBundleTitle);
+		dataOut.write(signedBundleDescription);
+		dataOut.flush();
+		dataOut.close();
+		out.flush();
+		out.close();
+		
+		CustomFieldTemplate template = new CustomFieldTemplate(formTemplateTitle, formTemplateDescription, defaultFieldsTopSection, defaultFieldsBottomSection);
+		assertFalse(template.importTemplate(security, exportMultipleSignersCFTFile));
+		assertEquals(CustomFieldError.CODE_SIGNATURE_ERROR, ((CustomFieldError)template.getErrors().get(0)).getCode());
+	}
+	
+	public void testGetExportedTemplateAsString() throws Exception
+	{
+		String formTemplateTitle = "New Form Title";
+		String formTemplateDescription = "New Form Description";
+		FieldCollection defaultFieldsTopSection = new FieldCollection(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray());
+		FieldCollection defaultFieldsBottomSection = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
+		CustomFieldTemplate template = new CustomFieldTemplate(formTemplateTitle, formTemplateDescription, defaultFieldsTopSection, defaultFieldsBottomSection);
+		
+		String exportedTemplateAsStringBase64= template.getExportedTemplateAsBase64String(security);
+		byte[] decodedBytes = StreamableBase64.decode(exportedTemplateAsStringBase64);
+		assertNotEquals(0, decodedBytes.length);
+		
+		File exportFile = createTempFileFromName("$$$testExportedTemplateAsString");
+		exportFile.delete();
+		assertFalse(exportFile.exists());
+		FileOutputStream output = new FileOutputStream(exportFile);
+		output.write(decodedBytes);
+		output.flush();
+		output.close();
+		
+		CustomFieldTemplate templateRetrieved = new CustomFieldTemplate();
+		assertTrue("Failed to import Template from exportedString?", templateRetrieved.importTemplate(security, exportFile));
+		assertEquals(formTemplateTitle, templateRetrieved.getTitle());
+		assertEquals(formTemplateDescription, templateRetrieved.getDescription());
+		assertEquals(defaultFieldsTopSection.toString(), templateRetrieved.getImportedTopSectionText());
+		assertEquals(defaultFieldsBottomSection.toString(), templateRetrieved.getImportedBottomSectionText());
+	}
+
 	public void testImportXmlLegacy() throws Exception
 	{
 		FieldCollection fieldsTopSection = new FieldCollection(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray());
@@ -188,12 +262,16 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		
 		CustomFieldTemplate template = new CustomFieldTemplate();
 		File exportFile = createTempFileFromName("$$$testImportXml");
+		String formTemplateTitle = "Form Title";
+		String formTemplateDescription = "Form Description";
 		exportFile.delete();
-		template.ExportTemplate(security, exportFile, fieldsTopSection.toString(), fieldsBottomSection.toString());
+		template.ExportTemplate(security, exportFile, fieldsTopSection.toString(), fieldsBottomSection.toString(), formTemplateTitle, formTemplateDescription);
 		assertEquals("", template.getImportedTopSectionText());
 		assertTrue(template.importTemplate(security, exportFile));
 		assertEquals(fieldsTopSection.toString(), template.getImportedTopSectionText());
 		assertEquals(fieldsBottomSection.toString(), template.getImportedBottomSectionText());
+		assertEquals(formTemplateTitle, template.getTitle());
+		assertEquals(formTemplateDescription, template.getDescription());
 		assertEquals(0, template.getErrors().size());
 		
 		UnicodeWriter writer = new UnicodeWriter(exportFile,UnicodeWriter.APPEND);
@@ -203,6 +281,8 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		assertTrue(template.importTemplate(security, exportFile));
 		assertEquals(fieldsTopSection.toString(), template.getImportedTopSectionText());
 		assertEquals(fieldsBottomSection.toString(), template.getImportedBottomSectionText());
+		assertEquals(formTemplateTitle, template.getTitle());
+		assertEquals(formTemplateDescription, template.getDescription());
 		assertEquals(0, template.getErrors().size());
 
 		exportFile.delete();
@@ -216,6 +296,8 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		assertFalse(template.importTemplate(security, exportFile));
 		assertEquals("", template.getImportedTopSectionText());
 		assertEquals("", template.getImportedBottomSectionText());
+		assertEquals("", template.getTitle());
+		assertEquals("", template.getDescription());
 		assertEquals(1, template.getErrors().size());
 		assertEquals(CustomFieldError.CODE_SIGNATURE_ERROR, ((CustomFieldError)template.getErrors().get(0)).getCode());
 		
@@ -223,10 +305,11 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		assertFalse(template.importTemplate(security, exportFile));
 		assertEquals("", template.getImportedTopSectionText());
 		assertEquals("", template.getImportedBottomSectionText());
+		assertEquals("", template.getTitle());
+		assertEquals("", template.getDescription());
 		assertEquals(1, template.getErrors().size());
 		assertEquals(CustomFieldError.CODE_IO_ERROR, ((CustomFieldError)template.getErrors().get(0)).getCode());
 	}
 	
 	static MockMartusSecurity security;
-	
 }

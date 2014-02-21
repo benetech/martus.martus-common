@@ -55,5 +55,9 @@ public class Exceptions
 	public static class ServerNotAvailableException extends Exception
 	{
 	}
+	
+	public static class NoFormsAvailableException extends Exception
+	{
+	}
 
 }
