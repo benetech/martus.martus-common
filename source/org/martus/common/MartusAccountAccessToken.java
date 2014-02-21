@@ -123,7 +123,7 @@ public class MartusAccountAccessToken
 		token = newToken;
 	}
 
-	private static boolean isTokenValid(String tokenToValidate)
+	public static boolean isTokenValid(String tokenToValidate)
 	{
 		DammCheckDigitAlgorithm validationCheck = new DammCheckDigitAlgorithm();
 		return validationCheck.isTokenValid(tokenToValidate);
