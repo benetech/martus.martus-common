@@ -373,7 +373,7 @@ abstract public class FileDatabase extends Database
 	public File getAbsoluteFormTemplatesFolderForAccount(String accountString) throws
 	IOException
 	{
-		File accountFolder = new File(absoluteBaseDir, getFolderForAccount(accountString));
+		File accountFolder = getAbsoluteAccountDirectory(accountString);
 		File formTemplatesFolder = new File(accountFolder, FORM_TEMPLATES_FOLDER_NAME);
 		return formTemplatesFolder;
 	}
