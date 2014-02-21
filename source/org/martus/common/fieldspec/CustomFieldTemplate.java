@@ -26,21 +26,27 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.fieldspec;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Vector;
 
 import org.martus.common.FieldCollection;
-import org.martus.common.FieldSpecCollection;
 import org.martus.common.FieldCollection.CustomFieldsParseException;
+import org.martus.common.FieldSpecCollection;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
+import org.martus.util.StreamableBase64;
+import org.martus.util.UnicodeUtilities;
+
 
 public class CustomFieldTemplate
 {
@@ -49,20 +55,37 @@ public class CustomFieldTemplate
 		super();
 		clearData();
 	}
+	
+	public CustomFieldTemplate(String title, String description, FieldCollection topSection, FieldCollection bottomSection) 
+	{
+		setData(title, description, topSection.toString(), bottomSection.toString());
+	}
+
+	private boolean setData(String title, String description, String xmlTopSection, String xmlBottomSection)
+	{
+		clearData();
+		if(!isvalidTemplateXml(xmlTopSection, xmlBottomSection))
+			return false;
+		this.title = title;
+		this.description = description;
+		this.xmlTopSectionText = xmlTopSection;
+		this.xmlBottomSectionText = xmlBottomSection;
+		return true;
+	}
 
 	private void clearData()
 	{
 		errors = new Vector();
-		xmlImportedTopSectionText = "";
-		xmlImportedBottomSectionText = "";
+		xmlTopSectionText = "";
+		xmlBottomSectionText = "";
+		title = "";
+		description = "";
 	}
 	
 	public class FutureVersionException extends Exception
 	{
-		
 	}
 
-	
 	public boolean importTemplate(MartusCrypto security, File fileToImport) throws FutureVersionException
 	{
 		try
@@ -91,24 +114,38 @@ public class CustomFieldTemplate
 					throw new FutureVersionException();
 				int topSectionBundleLength = bundleIn.readInt();
 				int bottomSectionBundleLength = bundleIn.readInt();
+				int titleLength = bundleIn.readInt();
+				int descriptionLength = bundleIn.readInt();
 				dataBundleTopSection = new byte[topSectionBundleLength];
 				byte[] dataBundleBottomSection = new byte[bottomSectionBundleLength];
+				byte[] dataTitle = new byte[titleLength];
+				byte[] dataDescription = new byte[descriptionLength];
 				bundleIn.read(dataBundleTopSection,0, topSectionBundleLength);
 				bundleIn.read(dataBundleBottomSection,0, bottomSectionBundleLength);
+				bundleIn.read(dataTitle,0, titleLength);
+				bundleIn.read(dataDescription,0, descriptionLength);
 				
-				Vector authorizedKeys = getSignedByAsVector(dataBundleBottomSection, security);
-				byte[] xmlBytesBottomSection = security.extractFromSignedBundle(dataBundleBottomSection, authorizedKeys);
-				templateXMLToImportBottomSection = new String(xmlBytesBottomSection, "UTF-8");
+				Vector bottomSectionSignedByKeys = getSignedByAsVector(dataBundleBottomSection, security);
+				byte[] xmlBytesBottomSection = security.extractFromSignedBundle(dataBundleBottomSection, bottomSectionSignedByKeys);
+				templateXMLToImportBottomSection = UnicodeUtilities.toUnicodeString(xmlBytesBottomSection);
+
+				Vector titleSignedByKeys = getSignedByAsVector(dataTitle, security);
+				byte[] bytesTitleOnly = security.extractFromSignedBundle(dataTitle, titleSignedByKeys);
+				title = UnicodeUtilities.toUnicodeString(bytesTitleOnly);
+
+				Vector descriptionSignedByKeys = getSignedByAsVector(dataDescription, security);
+				byte[] bytesDescriptionOnly = security.extractFromSignedBundle(dataDescription, descriptionSignedByKeys);
+				description = UnicodeUtilities.toUnicodeString(bytesDescriptionOnly);
 			}
 
-			Vector authorizedKeys = getSignedByAsVector(dataBundleTopSection, security);
-			byte[] xmlBytesTopSection = security.extractFromSignedBundle(dataBundleTopSection, authorizedKeys);
-			templateXMLToImportTopSection = new String(xmlBytesTopSection, "UTF-8");
+			Vector topSectionSignedByKeys = getSignedByAsVector(dataBundleTopSection, security);
+			byte[] xmlBytesTopSection = security.extractFromSignedBundle(dataBundleTopSection, topSectionSignedByKeys);
+			templateXMLToImportTopSection = UnicodeUtilities.toUnicodeString(xmlBytesTopSection);
 			
 			if(isvalidTemplateXml(templateXMLToImportTopSection, templateXMLToImportBottomSection))
 			{
-				xmlImportedTopSectionText = templateXMLToImportTopSection;
-				xmlImportedBottomSectionText = templateXMLToImportBottomSection;
+				xmlTopSectionText = templateXMLToImportTopSection;
+				xmlBottomSectionText = templateXMLToImportBottomSection;
 				return true;
 			}
 		}
@@ -127,9 +164,9 @@ public class CustomFieldTemplate
 		return false;
 	}
 
-	public Vector getSignedByAsVector(byte[] dataBundleBottomSection, MartusCrypto security) throws MartusSignatureException, IOException
+	public Vector getSignedByAsVector(byte[] dataBundleSection, MartusCrypto security) throws MartusSignatureException, IOException
 	{
-		String signedBy = security.getSignedBundleSigner(dataBundleBottomSection);
+		String signedBy = security.getSignedBundleSigner(dataBundleSection);
 		if(signedByPublicKey == null)
 			signedByPublicKey = signedBy;
 		else if(!signedByPublicKey.equals(signedBy))
@@ -150,23 +187,53 @@ public class CustomFieldTemplate
 		return !versionHeaderInString.equals(versionHeader);
 	}
 	
-	public boolean ExportTemplate(MartusCrypto security, File fileToExportXml, String xmlToExportTopSection, String xmlToExportBottomSection)
+	public boolean ExportTemplate(MartusCrypto security, File fileToExportXml, String xmlToExportTopSection, String xmlToExportBottomSection, String toExportTitle, String toExportDescription)
 	{
-		clearData();
-		if(!isvalidTemplateXml(xmlToExportTopSection, xmlToExportBottomSection))
+		if(!setData(toExportTitle, toExportDescription, xmlToExportTopSection, xmlToExportBottomSection))
 			return false;
+
+		FileOutputStream out = null;
+		boolean result = false;
 		try
 		{
-			FileOutputStream out = new FileOutputStream(fileToExportXml);
+			out = new FileOutputStream(fileToExportXml);
+			result = saveContentsToOutputStream(security, out);
+		} 
+		catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+		clearData();
+		return result;
+	}
+
+	public String getExportedTemplateAsBase64String(MartusCrypto security)
+	{
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		if(saveContentsToOutputStream(security, out))
+			return StreamableBase64.encode(out.toByteArray());
+		return "";
+	}
+
+	private boolean saveContentsToOutputStream(MartusCrypto security, OutputStream out)
+	{
+		try
+		{
 			DataOutputStream dataOut = new DataOutputStream(out);
 			dataOut.write(versionHeader.getBytes());
 			dataOut.writeInt(exportVersionNumber);
-			byte[] signedBundleTopSection = security.createSignedBundle(xmlToExportTopSection.getBytes("UTF-8"));
-			byte[] signedBundleBottomSection = security.createSignedBundle(xmlToExportBottomSection.getBytes("UTF-8"));
+			byte[] signedBundleTopSection = security.createSignedBundle(UnicodeUtilities.toUnicodeBytes(xmlTopSectionText));
+			byte[] signedBundleBottomSection = security.createSignedBundle(UnicodeUtilities.toUnicodeBytes(xmlBottomSectionText));
+			byte[] signedBundleTitle = security.createSignedBundle(UnicodeUtilities.toUnicodeBytes(title));
+			byte[] signedBundleDescription = security.createSignedBundle(UnicodeUtilities.toUnicodeBytes(description));
 			dataOut.writeInt(signedBundleTopSection.length);
 			dataOut.writeInt(signedBundleBottomSection.length);
+			dataOut.writeInt(signedBundleTitle.length);
+			dataOut.writeInt(signedBundleDescription.length);
 			dataOut.write(signedBundleTopSection);
 			dataOut.write(signedBundleBottomSection);
+			dataOut.write(signedBundleTitle);
+			dataOut.write(signedBundleDescription);
 			dataOut.flush();
 			dataOut.close();
 			out.flush();
@@ -213,12 +280,12 @@ public class CustomFieldTemplate
 	
 	public String getImportedTopSectionText()
 	{
-		return xmlImportedTopSectionText;
+		return xmlTopSectionText;
 	}
 	
 	public String getImportedBottomSectionText()
 	{
-		return xmlImportedBottomSectionText;
+		return xmlBottomSectionText;
 	}
 
 	public String getSignedBy()
@@ -226,10 +293,25 @@ public class CustomFieldTemplate
 		return signedByPublicKey;
 	} 
 	
-	private Vector errors;
-	private String xmlImportedTopSectionText;
-	private String xmlImportedBottomSectionText;
-	private String signedByPublicKey;
+	public String getTitle()
+	{
+		return title;
+	}
+
+	public String getDescription()
+	{
+		return description;
+	}
+
 	public static final String versionHeader = "Export Version Number:";
-	public static final int exportVersionNumber = 2;
+	public static final int exportVersionNumber = 3;
+	public static final String CUSTOMIZATION_TEMPLATE_EXTENSION = ".mct";
+	
+	private Vector errors;
+	private String xmlTopSectionText;
+	private String xmlBottomSectionText;
+	private String signedByPublicKey;
+	//Version 3
+	private String title;
+	private String description;
 }

@@ -368,6 +368,14 @@ abstract public class FileDatabase extends Database
 		File accountFolder = new File(absoluteBaseDir, getFolderForAccount(accountString));
 		File tokensFolder = new File(accountFolder, ACCESS_TOKEN_FOLDER_NAME);
 		return tokensFolder;
+	}	
+	
+	public File getAbsoluteFormTemplatesFolderForAccount(String accountString) throws
+	IOException
+	{
+		File accountFolder = getAbsoluteAccountDirectory(accountString);
+		File formTemplatesFolder = new File(accountFolder, FORM_TEMPLATES_FOLDER_NAME);
+		return formTemplatesFolder;
 	}
 
 	public File getIncomingInterimFile(UniversalId uid) throws
@@ -832,6 +840,7 @@ abstract public class FileDatabase extends Database
 	protected static final String INTERIM_FOLDER_NAME = "interim";
 	protected static final String CONTACTINFO_FOLDER_NAME = "contactInfo";
 	protected static final String ACCESS_TOKEN_FOLDER_NAME = "accessTokens";
+	protected static final String FORM_TEMPLATES_FOLDER_NAME = "formTemplates";
 	protected static final String ACCOUNTMAP_FILENAME = "acctmap.txt";
 	public static final String BUR_PREFIX = "BUR-";
 	public static final String DEL_PREFIX = "DEL-";

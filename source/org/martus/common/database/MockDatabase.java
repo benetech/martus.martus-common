@@ -308,10 +308,17 @@ abstract public class MockDatabase extends Database
 	public File getAbsoluteAccountAccessTokenFolderForAccount(String accountString) throws
 	IOException
 	{
-		File tokensFolder = new File( getFolderForAccount(accountString), ACCESS_TOKEN_FOLDER_NAME);
+		File tokensFolder = new File( getFolderForAccount(accountString), FileDatabase.ACCESS_TOKEN_FOLDER_NAME);
 		return tokensFolder;
 	}
 	
+	public File getAbsoluteFormTemplatesFolderForAccount(String accountString) throws
+	IOException
+	{
+		File formTemplatesFolder = new File( getFolderForAccount(accountString), FileDatabase.FORM_TEMPLATES_FOLDER_NAME);
+		return formTemplatesFolder;
+	}
+
 	public File getIncomingInterimFile(UniversalId uid) throws RecordHiddenException
 	{
 		throwIfRecordIsHidden(uid);
@@ -438,8 +445,6 @@ abstract public class MockDatabase extends Database
 	abstract Map getPacketMapFor(DatabaseKey key);
 	abstract Set internalGetAllKeys();
 	abstract void internalDiscardRecord(DatabaseKey key);
-
-	protected static final String ACCESS_TOKEN_FOLDER_NAME = "accessTokens";
 
 	Map sealedQuarantine;
 	Map draftQuarantine;

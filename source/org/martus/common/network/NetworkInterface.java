@@ -45,4 +45,7 @@ public interface NetworkInterface
 	public Vector getPartialUploadStatus(String publicKeyString, Vector parameters, String signature);
 	public Vector getMartusAccountAccessToken(String myAccountId, Vector parameters, String signature);
 	public Vector getMartusAccountIdFromAccessToken(String myAccountId, Vector parameters, String signature);
+	public Vector getListOfFormTemplates(String myAccountId, Vector parameters, String signature);
+	public Vector putFormTemplate(String myAccountId, Vector parameters, String signature);
+	public Vector getFormTemplate(String myAccountId, Vector parameters, String signature);
 }
