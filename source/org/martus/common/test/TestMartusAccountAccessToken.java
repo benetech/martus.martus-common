@@ -159,7 +159,7 @@ public class TestMartusAccountAccessToken extends TestCaseEnhanced
 		assertEquals("didn't get token?", validMartusAccessTokenString, jsonRetrievedInnter.get(MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_JSON_TAG));
 		assertEquals("didn't get token date?", tokendate, jsonRetrievedInnter.get(MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_CREATION_DATE_JSON_TAG));
 		
-		String expectedJsonInnerAsString = "{\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_CREATION_DATE_JSON_TAG+"\":\"Sat Feb 15 01:30:45 PST 2014\",\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_JSON_TAG+"\":\""+validMartusAccessTokenString+"\"}";
+		String expectedJsonInnerAsString = "{\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_CREATION_DATE_JSON_TAG+"\":\"" + tokendate + "\",\""+MartusAccountAccessToken.MARTUS_ACCESS_TOKEN_JSON_TAG+"\":\""+validMartusAccessTokenString+"\"}";
 		assertEquals("Json Inner object not correct?", expectedJsonInnerAsString, jsonInner.toString());
 		
 		assertEquals("Json Outer object not correct?", validMartusAccessJsonTokenString, jsonOutter.toString());
