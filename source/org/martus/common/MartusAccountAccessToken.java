@@ -66,7 +66,6 @@ public class MartusAccountAccessToken
 		} 
 		catch (ParseException e)
 		{
-			MartusLogger.log("json Parse Exception in MartusAccountAccessToken loadFromString");
 			throw new TokenInvalidException();
 		}
 	}
@@ -80,7 +79,7 @@ public class MartusAccountAccessToken
 		} 
 		catch (ParseException e)
 		{
-			MartusLogger.log("json Parse Exception in MartusAccountAccessToken loadFromString");
+			MartusLogger.logException(e);
 		}
 		throw new TokenInvalidException();
 	}
