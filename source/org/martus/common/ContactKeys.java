@@ -160,6 +160,9 @@ public class ContactKeys extends ExternalPublicKeys
 			else
 				xmlRepresentation += XmlUtilities.getXmlEncoded(NO_DATA);
 			xmlRepresentation += MartusXml.getTagEndWithoutNewline(CAN_RECEIVE_FROM_TAG);
+			xmlRepresentation += MartusXml.getTagStart(VERIFICATION_TAG);
+			xmlRepresentation += ((ContactKey)rawGet(i)).getVerification();
+			xmlRepresentation += MartusXml.getTagEndWithoutNewline(VERIFICATION_TAG);
 
 			xmlRepresentation += MartusXml.getTagEnd(getSingleEntryXmlElementName());
 		}
@@ -174,6 +177,7 @@ public class ContactKeys extends ExternalPublicKeys
 	public static final String CAN_SEND_TO_TAG = "CanSendTo";
 	public static final String SEND_TO_BY_DEFAULT_TAG = "SendToByDefault";
 	public static final String CAN_RECEIVE_FROM_TAG = "CanReceiveFrom";
+	public static final String VERIFICATION_TAG = "Verification";
 	public static final String YES_DATA = "YES";
 	public static final String NO_DATA = "NO";
 }

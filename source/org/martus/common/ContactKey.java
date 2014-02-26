@@ -68,9 +68,20 @@ public class ContactKey extends ExternalPublicKey
 		this.sendToByDefault = sendToByDefault;
 	}
 
+	public int getVerification()
+	{
+		return verification;
+	}
+
+	public void setVerification(int verification)
+	{
+		this.verification = verification;
+	}
+
 	private boolean canSendTo;
 	private boolean sendToByDefault;
 	private boolean canReceiveFrom;
+	private int	verification;
 	
 	final static public int NOT_VERIFIED = 0;
 	final static public int VERIFIED_VISUALLY = 1;
