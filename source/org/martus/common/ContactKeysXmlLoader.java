@@ -68,11 +68,16 @@ public class ContactKeysXmlLoader extends SimpleXmlDefaultLoader
 		data = loader.get(ContactKeys.CAN_RECEIVE_FROM_TAG);
 		if(data.equals(ContactKeys.YES_DATA))
 			canReceiveFrom = true;
+		int verification = ContactKey.NOT_VERIFIED;
+		data = loader.get(ContactKeys.VERIFICATION_TAG);
+		if(data != null && data.length()==1)
+			verification = Integer.parseInt(data);
 		
 		ContactKey key = new ContactKey(publicCode, label);
 		key.setCanReceiveFrom(canReceiveFrom);
 		key.setCanSendTo(canSendTo);
 		key.setSendToByDefault(sendToByDefault);
+		key.setVerification(verification);
 		keys.add(key);
 	}
 
