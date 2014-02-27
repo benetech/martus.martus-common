@@ -69,7 +69,7 @@ public class ContactKeysXmlLoader extends SimpleXmlDefaultLoader
 		if(data.equals(ContactKeys.YES_DATA))
 			canReceiveFrom = true;
 		int verification = ContactKey.NOT_VERIFIED;
-		data = loader.get(ContactKeys.VERIFICATION_TAG);
+		data = loader.get(ContactKeys.VERIFICATION_STATUS_TAG);
 		if(data != null && data.length()==1)
 			verification = Integer.parseInt(data);
 		
@@ -77,7 +77,7 @@ public class ContactKeysXmlLoader extends SimpleXmlDefaultLoader
 		key.setCanReceiveFrom(canReceiveFrom);
 		key.setCanSendTo(canSendTo);
 		key.setSendToByDefault(sendToByDefault);
-		key.setVerification(verification);
+		key.setVerificationStatus(verification);
 		keys.add(key);
 	}
 

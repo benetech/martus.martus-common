@@ -70,14 +70,14 @@ public class TestFieldDeskKeys extends TestCaseEnhanced
 		keys.add(key2);
 		assertEquals(label2, keys.getLabelIfPresent(key2));
 
-		key2.setVerification(ContactKey.VERIFIED_ENTERED_20_DIGITS);
+		key2.setVerificationStatus(ContactKey.VERIFIED_ENTERED_20_DIGITS);
 		FieldDeskKey duplicateKey = new FieldDeskKey(key2);
 		assertEquals(duplicateKey.getCanReceiveFrom(), key2.getCanReceiveFrom());
 		assertEquals(duplicateKey.getCanSendTo(), key2.getCanSendTo());
 		assertEquals(duplicateKey.getLabel(), key2.getLabel());
 		assertEquals(duplicateKey.getPublicCode(), key2.getPublicCode());
 		assertEquals(duplicateKey.getPublicKey(), key2.getPublicKey());
-		assertEquals(duplicateKey.getVerification(), key2.getVerification());
+		assertEquals(duplicateKey.getVerificationStatus(), key2.getVerificationStatus());
 	}
 	
 	public void testAddKeys()
