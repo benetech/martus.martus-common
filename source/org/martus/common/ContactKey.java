@@ -93,6 +93,6 @@ public class ContactKey extends ExternalPublicKey
 	
 	final static public int NOT_VERIFIED = 0;
 	final static public int VERIFIED_VISUALLY = 1;
-	final static public int VERIFIED_ENTERD_20_DIGITS = 2;
+	final static public int VERIFIED_ENTERED_20_DIGITS = 2;
 }
 
