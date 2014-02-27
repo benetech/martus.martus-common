@@ -70,10 +70,10 @@ public class TestContactKeys extends TestCaseEnhanced
 		assertTrue(key2.getCanSendTo());
 		assertTrue(key2.getSendToByDefault());
 		assertFalse(key2.getCanReceiveFrom());
-		assertEquals(ContactKey.NOT_VERIFIED, key2.getVerification());
+		assertEquals(ContactKey.NOT_VERIFIED, key2.getVerificationStatus());
 		
 		
-		key2.setVerification(ContactKey.VERIFIED_VISUALLY);
+		key2.setVerificationStatus(ContactKey.VERIFIED_VISUALLY);
 		key2.setSendToByDefault(false);
 		assertFalse(key2.getSendToByDefault());
 		assertTrue(key2.getCanSendTo());
@@ -84,7 +84,7 @@ public class TestContactKeys extends TestCaseEnhanced
 		assertEquals(key2.getLabel(), duplicateKey.getLabel());
 		assertEquals(key2.getCanReceiveFrom(), duplicateKey.getCanReceiveFrom());
 		assertEquals(key2.getCanSendTo(), duplicateKey.getCanSendTo());
-		assertEquals(key2.getVerification(), duplicateKey.getVerification());
+		assertEquals(key2.getVerificationStatus(), duplicateKey.getVerificationStatus());
 	
 		
 		key2.setSendToByDefault(true);
@@ -148,16 +148,16 @@ public class TestContactKeys extends TestCaseEnhanced
 		String label3 = "label 3";
 		ContactKey contactKey1 = new ContactKey(key1, label1);
 		contactKey1.setCanReceiveFrom(true);
-		contactKey1.setVerification(ContactKey.NOT_VERIFIED);
+		contactKey1.setVerificationStatus(ContactKey.NOT_VERIFIED);
 		keys.add(contactKey1);
 		ContactKey contactKey2 = new ContactKey(key2, label2);
 		contactKey2.setCanSendTo(true);
-		contactKey2.setVerification(ContactKey.VERIFIED_ENTERED_20_DIGITS);
+		contactKey2.setVerificationStatus(ContactKey.VERIFIED_ENTERED_20_DIGITS);
 		keys.add(contactKey2);
 		ContactKey contactKey3 = new ContactKey(key3, label3);
 		contactKey3.setCanSendTo(true);
 		contactKey3.setSendToByDefault(true);
-		contactKey3.setVerification(ContactKey.VERIFIED_VISUALLY);
+		contactKey3.setVerificationStatus(ContactKey.VERIFIED_VISUALLY);
 		keys.add(contactKey3);
 		ContactKeys contactKeys = new ContactKeys(keys);
 		String xmlExpected = MartusXml.getTagStartWithNewline(ContactKeys.CONTACT_KEYS_TAG) +
@@ -177,9 +177,9 @@ public class TestContactKeys extends TestCaseEnhanced
 		 MartusXml.getTagStart(ContactKeys.CAN_RECEIVE_FROM_TAG) + 
 		 XmlUtilities.getXmlEncoded(ContactKeys.YES_DATA) +
 		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_RECEIVE_FROM_TAG) +
-		 MartusXml.getTagStart(ContactKeys.VERIFICATION_TAG) + 
+		 MartusXml.getTagStart(ContactKeys.VERIFICATION_STATUS_TAG) + 
 		 XmlUtilities.getXmlEncoded(Integer.toString(ContactKey.NOT_VERIFIED)) +
-		 MartusXml.getTagEndWithoutNewline(ContactKeys.VERIFICATION_TAG) +
+		 MartusXml.getTagEndWithoutNewline(ContactKeys.VERIFICATION_STATUS_TAG) +
 		 MartusXml.getTagEnd(ContactKeys.CONTACT_KEY_TAG) +
 
 		 MartusXml.getTagStart(ContactKeys.CONTACT_KEY_TAG) + 
@@ -198,9 +198,9 @@ public class TestContactKeys extends TestCaseEnhanced
 		 MartusXml.getTagStart(ContactKeys.CAN_RECEIVE_FROM_TAG) + 
 		 XmlUtilities.getXmlEncoded(ContactKeys.NO_DATA) +
 		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_RECEIVE_FROM_TAG) +
-		 MartusXml.getTagStart(ContactKeys.VERIFICATION_TAG) + 
+		 MartusXml.getTagStart(ContactKeys.VERIFICATION_STATUS_TAG) + 
 		 XmlUtilities.getXmlEncoded(Integer.toString(ContactKey.VERIFIED_ENTERED_20_DIGITS)) +
-		 MartusXml.getTagEndWithoutNewline(ContactKeys.VERIFICATION_TAG) +
+		 MartusXml.getTagEndWithoutNewline(ContactKeys.VERIFICATION_STATUS_TAG) +
 		 MartusXml.getTagEnd(ContactKeys.CONTACT_KEY_TAG) +
 
 		 MartusXml.getTagStart(ContactKeys.CONTACT_KEY_TAG) + 
@@ -219,9 +219,9 @@ public class TestContactKeys extends TestCaseEnhanced
 		 MartusXml.getTagStart(ContactKeys.CAN_RECEIVE_FROM_TAG) + 
 		 XmlUtilities.getXmlEncoded(ContactKeys.NO_DATA) +
 		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_RECEIVE_FROM_TAG) +
-		 MartusXml.getTagStart(ContactKeys.VERIFICATION_TAG) + 
+		 MartusXml.getTagStart(ContactKeys.VERIFICATION_STATUS_TAG) + 
 		 XmlUtilities.getXmlEncoded(Integer.toString(ContactKey.VERIFIED_VISUALLY)) +
-		 MartusXml.getTagEndWithoutNewline(ContactKeys.VERIFICATION_TAG) +
+		 MartusXml.getTagEndWithoutNewline(ContactKeys.VERIFICATION_STATUS_TAG) +
 		 MartusXml.getTagEnd(ContactKeys.CONTACT_KEY_TAG) +
 		 
 		 MartusXml.getTagEnd(ContactKeys.CONTACT_KEYS_TAG);
@@ -242,10 +242,10 @@ public class TestContactKeys extends TestCaseEnhanced
 		ContactKey contactKey1 = new ContactKey(key1, label1);
 		contactKey1.setCanReceiveFrom(key1CanReceiveFrom);
 		contactKey1.setCanSendTo(key1CanSendTo);
-		contactKey1.setVerification(ContactKey.NOT_VERIFIED);
+		contactKey1.setVerificationStatus(ContactKey.NOT_VERIFIED);
 		assertEquals("Key1 CanSendTo not same?", key1CanSendTo, contactKey1.getCanSendTo());
 		assertEquals("Key1 CanReceiveFrom not same?", key1CanReceiveFrom, contactKey1.getCanReceiveFrom());
-		assertEquals("Key1 not verified?", ContactKey.NOT_VERIFIED, contactKey1.getVerification());
+		assertEquals("Key1 not verified?", ContactKey.NOT_VERIFIED, contactKey1.getVerificationStatus());
 		keys.add(contactKey1);
 		boolean key2CanSendTo = false;
 		boolean key2CanReceiveFrom = true;
@@ -253,11 +253,11 @@ public class TestContactKeys extends TestCaseEnhanced
 		ContactKey contactKey2 = new ContactKey(key2, label2);
 		contactKey2.setCanReceiveFrom(key2CanReceiveFrom);
 		contactKey2.setCanSendTo(key2CanSendTo);
-		contactKey2.setVerification(ContactKey.VERIFIED_VISUALLY);
+		contactKey2.setVerificationStatus(ContactKey.VERIFIED_VISUALLY);
 		keys.add(contactKey2);
 		assertEquals("Key2 CanSendTo not same?", key2CanSendTo, contactKey2.getCanSendTo());
 		assertEquals("Key2 CanReceiveFrom not same?", key2CanReceiveFrom, contactKey2.getCanReceiveFrom());
-		assertEquals("Key2 Verified not VERIFIED_VISUALLY?", ContactKey.VERIFIED_VISUALLY, contactKey2.getVerification());
+		assertEquals("Key2 Verified not VERIFIED_VISUALLY?", ContactKey.VERIFIED_VISUALLY, contactKey2.getVerificationStatus());
 		ContactKeys contactKeys = new ContactKeys(keys);
 
 		
@@ -270,12 +270,12 @@ public class TestContactKeys extends TestCaseEnhanced
 		assertEquals("retrieved Key1 label not same?", contactKey1.getLabel(), retrieved.getLabel());
 		assertEquals("retrieved Key1 CanSendTo not same?", key1CanSendTo, retrieved.getCanSendTo());
 		assertEquals("retrieved Key1 CanReceiveFrom not same?", key1CanReceiveFrom, retrieved.getCanReceiveFrom());
-		assertEquals("retrieved Key1 not verified?", ContactKey.NOT_VERIFIED, retrieved.getVerification());
+		assertEquals("retrieved Key1 not verified?", ContactKey.NOT_VERIFIED, retrieved.getVerificationStatus());
 		
 		ContactKey retrieved2 = contactKeys2.get(1);
 		assertEquals("retrieved Key2 label not same?", contactKey2.getLabel(), retrieved2.getLabel());
 		assertEquals("retrieved Key2 CanSendTo not same?", key2CanSendTo, retrieved2.getCanSendTo());
 		assertEquals("retrieved Key2 CanReceiveFrom not same?", key2CanReceiveFrom, retrieved2.getCanReceiveFrom());
-		assertEquals("retrieved Key2 Verified not VERIFIED_VISUALLY?", ContactKey.VERIFIED_VISUALLY, retrieved2.getVerification());
+		assertEquals("retrieved Key2 Verified not VERIFIED_VISUALLY?", ContactKey.VERIFIED_VISUALLY, retrieved2.getVerificationStatus());
 	}
 }

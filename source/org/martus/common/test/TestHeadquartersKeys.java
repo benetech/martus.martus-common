@@ -71,14 +71,14 @@ public class TestHeadquartersKeys extends TestCaseEnhanced
 		assertFalse("Should not be able to receive From HQ", key2.getCanReceiveFrom());
 		assertTrue("Should be able to Send to initially for HQ", key2.getCanSendTo());
 		
-		key2.setVerification(ContactKey.VERIFIED_ENTERED_20_DIGITS);
+		key2.setVerificationStatus(ContactKey.VERIFIED_ENTERED_20_DIGITS);
 		HeadquartersKey duplicateKey = new HeadquartersKey(key2);
 		assertEquals(duplicateKey.getCanReceiveFrom(), key2.getCanReceiveFrom());
 		assertEquals(duplicateKey.getCanSendTo(), key2.getCanSendTo());
 		assertEquals(duplicateKey.getLabel(), key2.getLabel());
 		assertEquals(duplicateKey.getPublicCode(), key2.getPublicCode());
 		assertEquals(duplicateKey.getPublicKey(), key2.getPublicKey());
-		assertEquals(duplicateKey.getVerification(), key2.getVerification());
+		assertEquals(duplicateKey.getVerificationStatus(), key2.getVerificationStatus());
 		
 	}
 	
