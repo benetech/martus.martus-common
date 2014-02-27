@@ -152,7 +152,7 @@ public class TestContactKeys extends TestCaseEnhanced
 		keys.add(contactKey1);
 		ContactKey contactKey2 = new ContactKey(key2, label2);
 		contactKey2.setCanSendTo(true);
-		contactKey2.setVerification(ContactKey.VERIFIED_ENTERD_20_DIGITS);
+		contactKey2.setVerification(ContactKey.VERIFIED_ENTERED_20_DIGITS);
 		keys.add(contactKey2);
 		ContactKey contactKey3 = new ContactKey(key3, label3);
 		contactKey3.setCanSendTo(true);
@@ -199,7 +199,7 @@ public class TestContactKeys extends TestCaseEnhanced
 		 XmlUtilities.getXmlEncoded(ContactKeys.NO_DATA) +
 		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_RECEIVE_FROM_TAG) +
 		 MartusXml.getTagStart(ContactKeys.VERIFICATION_TAG) + 
-		 XmlUtilities.getXmlEncoded(Integer.toString(ContactKey.VERIFIED_ENTERD_20_DIGITS)) +
+		 XmlUtilities.getXmlEncoded(Integer.toString(ContactKey.VERIFIED_ENTERED_20_DIGITS)) +
 		 MartusXml.getTagEndWithoutNewline(ContactKeys.VERIFICATION_TAG) +
 		 MartusXml.getTagEnd(ContactKeys.CONTACT_KEY_TAG) +
 
