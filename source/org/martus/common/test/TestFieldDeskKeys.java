@@ -27,10 +27,12 @@ package org.martus.common.test;
 
 import java.util.Vector;
 
+import org.martus.common.ContactKey;
 import org.martus.common.ExternalPublicKeys;
 import org.martus.common.FieldDeskKey;
 import org.martus.common.FieldDeskKeys;
 import org.martus.common.MartusXml;
+import org.martus.util.StreamableBase64.InvalidBase64Exception;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.xml.XmlUtilities;
 
@@ -41,13 +43,15 @@ public class TestFieldDeskKeys extends TestCaseEnhanced
 		super(name);
 	}
 	
-	public void testBasics()
+	public void testBasics() throws InvalidBase64Exception
 	{
 		FieldDeskKeys keys = new FieldDeskKeys();
 		assertTrue(keys.isEmpty());
 		assertEquals(0, keys.size());
 		String publicKey1 = "123";
 		FieldDeskKey key = new FieldDeskKey(publicKey1);
+		assertTrue("Should be able to receive From FD", key.getCanReceiveFrom());
+		assertFalse("Should not be able to Send to initially for FD", key.getCanSendTo());
 		keys.add(key);
 		assertEquals(1, keys.size());
 		assertTrue(keys.containsKey(publicKey1));
@@ -61,8 +65,19 @@ public class TestFieldDeskKeys extends TestCaseEnhanced
 		String publicKey2 = "123";
 		String label2 = "abc";
 		FieldDeskKey key2 = new FieldDeskKey(publicKey2, label2);
+		assertTrue("Should be able to receive From FD", key2.getCanReceiveFrom());
+		assertFalse("Should not be able to Send to initially for FD", key2.getCanSendTo());
 		keys.add(key2);
 		assertEquals(label2, keys.getLabelIfPresent(key2));
+
+		key2.setVerification(ContactKey.VERIFIED_ENTERD_20_DIGITS);
+		FieldDeskKey duplicateKey = new FieldDeskKey(key2);
+		assertEquals(duplicateKey.getCanReceiveFrom(), key2.getCanReceiveFrom());
+		assertEquals(duplicateKey.getCanSendTo(), key2.getCanSendTo());
+		assertEquals(duplicateKey.getLabel(), key2.getLabel());
+		assertEquals(duplicateKey.getPublicCode(), key2.getPublicCode());
+		assertEquals(duplicateKey.getPublicKey(), key2.getPublicKey());
+		assertEquals(duplicateKey.getVerification(), key2.getVerification());
 	}
 	
 	public void testAddKeys()

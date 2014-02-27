@@ -31,6 +31,7 @@ import org.martus.common.ContactKey;
 import org.martus.common.ContactKeys;
 import org.martus.common.ExternalPublicKeys;
 import org.martus.common.MartusXml;
+import org.martus.util.StreamableBase64.InvalidBase64Exception;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.xml.XmlUtilities;
 
@@ -41,7 +42,7 @@ public class TestContactKeys extends TestCaseEnhanced
 		super(name);
 	}
 	
-	public void testBasics()
+	public void testBasics() throws InvalidBase64Exception
 	{
 		
 		ContactKeys contactKeys = new ContactKeys();
@@ -69,11 +70,22 @@ public class TestContactKeys extends TestCaseEnhanced
 		assertTrue(key2.getCanSendTo());
 		assertTrue(key2.getSendToByDefault());
 		assertFalse(key2.getCanReceiveFrom());
-
+		assertEquals(ContactKey.NOT_VERIFIED, key2.getVerification());
+		
+		
+		key2.setVerification(ContactKey.VERIFIED_VISUALLY);
 		key2.setSendToByDefault(false);
 		assertFalse(key2.getSendToByDefault());
 		assertTrue(key2.getCanSendTo());
 		assertFalse(key2.getCanReceiveFrom());
+		
+		ContactKey duplicateKey = new ContactKey(key2);
+		assertEquals(key2.getPublicCode(), duplicateKey.getPublicCode());
+		assertEquals(key2.getLabel(), duplicateKey.getLabel());
+		assertEquals(key2.getCanReceiveFrom(), duplicateKey.getCanReceiveFrom());
+		assertEquals(key2.getCanSendTo(), duplicateKey.getCanSendTo());
+		assertEquals(key2.getVerification(), duplicateKey.getVerification());
+	
 		
 		key2.setSendToByDefault(true);
 		assertTrue(key2.getCanSendTo());

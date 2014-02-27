@@ -25,8 +25,14 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common;
 
-public class FieldDeskKey extends ExternalPublicKey
+public class FieldDeskKey extends ContactKey
 {
+	public FieldDeskKey(ContactKey key)
+	{
+		super(key);
+		setCanReceiveFrom(true);
+	}
+	
 	public FieldDeskKey(String publicKey)
 	{
 		this(publicKey, "");
@@ -35,5 +41,6 @@ public class FieldDeskKey extends ExternalPublicKey
 	public FieldDeskKey(String publicKey, String label)
 	{
 		super(publicKey, label);
+		setCanReceiveFrom(true);
 	}
 }

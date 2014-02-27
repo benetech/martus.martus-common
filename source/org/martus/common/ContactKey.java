@@ -26,6 +26,14 @@ Boston, MA 02111-1307, USA.
 package org.martus.common;
 public class ContactKey extends ExternalPublicKey
 {
+	public ContactKey(ContactKey keyToUse)
+	{
+		this(keyToUse.getPublicKey(), keyToUse.getLabel());
+		this.canReceiveFrom = keyToUse.getCanReceiveFrom();
+		this.canSendTo = keyToUse.getCanSendTo();
+		this.verification = keyToUse.getVerification();
+	}
+	
 	public ContactKey(String publicKey)
 	{
 		this(publicKey, "");
