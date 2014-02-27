@@ -27,10 +27,12 @@ package org.martus.common.test;
 
 import java.util.Vector;
 
+import org.martus.common.ContactKey;
 import org.martus.common.ExternalPublicKeys;
 import org.martus.common.HeadquartersKey;
 import org.martus.common.HeadquartersKeys;
 import org.martus.common.MartusXml;
+import org.martus.util.StreamableBase64.InvalidBase64Exception;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.xml.XmlUtilities;
 
@@ -42,13 +44,15 @@ public class TestHeadquartersKeys extends TestCaseEnhanced
 		super(name);
 	}
 	
-	public void testBasics()
+	public void testBasics() throws InvalidBase64Exception
 	{
 		HeadquartersKeys hqKeys = new HeadquartersKeys();
 		assertTrue(hqKeys.isEmpty());
 		assertEquals(0, hqKeys.size());
 		String publicKey1 = "123";
 		HeadquartersKey key = new HeadquartersKey(publicKey1);
+		assertFalse("Should not be able to receive From HQ", key.getCanReceiveFrom());
+		assertTrue("Should be able to Send to initially for HQ", key.getCanSendTo());
 		hqKeys.add(key);
 		assertEquals(1, hqKeys.size());
 		assertTrue(hqKeys.containsKey(publicKey1));
@@ -64,6 +68,18 @@ public class TestHeadquartersKeys extends TestCaseEnhanced
 		HeadquartersKey key2 = new HeadquartersKey(publicKey2, label2);
 		hqKeys.add(key2);
 		assertEquals(label2, hqKeys.getLabelIfPresent(key2));
+		assertFalse("Should not be able to receive From HQ", key2.getCanReceiveFrom());
+		assertTrue("Should be able to Send to initially for HQ", key2.getCanSendTo());
+		
+		key2.setVerification(ContactKey.VERIFIED_ENTERD_20_DIGITS);
+		HeadquartersKey duplicateKey = new HeadquartersKey(key2);
+		assertEquals(duplicateKey.getCanReceiveFrom(), key2.getCanReceiveFrom());
+		assertEquals(duplicateKey.getCanSendTo(), key2.getCanSendTo());
+		assertEquals(duplicateKey.getLabel(), key2.getLabel());
+		assertEquals(duplicateKey.getPublicCode(), key2.getPublicCode());
+		assertEquals(duplicateKey.getPublicKey(), key2.getPublicKey());
+		assertEquals(duplicateKey.getVerification(), key2.getVerification());
+		
 	}
 	
 	public void testAddKeys()
