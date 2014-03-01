@@ -191,7 +191,13 @@ public class CustomFieldTemplate
 	{
 		if(!setData(toExportTitle, toExportDescription, xmlToExportTopSection, xmlToExportBottomSection))
 			return false;
+		boolean result = exportTemplate(security, fileToExportXml);
+		clearData();
+		return result;
+	}
 
+	public boolean exportTemplate(MartusCrypto security, File fileToExportXml)
+	{
 		FileOutputStream out = null;
 		boolean result = false;
 		try
@@ -203,7 +209,6 @@ public class CustomFieldTemplate
 		{
 			e.printStackTrace();
 		}
-		clearData();
 		return result;
 	}
 
