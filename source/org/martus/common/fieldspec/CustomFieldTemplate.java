@@ -187,7 +187,7 @@ public class CustomFieldTemplate
 		return !versionHeaderInString.equals(versionHeader);
 	}
 	
-	public boolean ExportTemplate(MartusCrypto security, File fileToExportXml, String xmlToExportTopSection, String xmlToExportBottomSection, String toExportTitle, String toExportDescription)
+	public boolean exportTemplate(MartusCrypto security, File fileToExportXml, String xmlToExportTopSection, String xmlToExportBottomSection, String toExportTitle, String toExportDescription)
 	{
 		if(!setData(toExportTitle, toExportDescription, xmlToExportTopSection, xmlToExportBottomSection))
 			return false;
