@@ -97,7 +97,7 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		String formTemplateDescription = "New Form Description";
 		FieldCollection defaultFieldsTopSection = new FieldCollection(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray());
 		FieldCollection defaultFieldsBottomSection = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
-		assertTrue(template.ExportTemplate(security, exportFile, defaultFieldsTopSection.toString(), defaultFieldsBottomSection.toString(), formTemplateTitle, formTemplateDescription));
+		assertTrue(template.exportTemplate(security, exportFile, defaultFieldsTopSection.toString(), defaultFieldsBottomSection.toString(), formTemplateTitle, formTemplateDescription));
 		assertTrue(exportFile.exists());
 		exportFile.delete();
 
@@ -105,7 +105,7 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		FieldCollection withInvalid = FieldCollectionForTesting.extendFields(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray(), invalidField);
 		FieldCollection bottomSectionFields = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
 		assertFalse(exportFile.exists());
-		assertFalse(template.ExportTemplate(security, exportFile, withInvalid.toString(), bottomSectionFields.toString(), formTemplateTitle, formTemplateDescription));
+		assertFalse(template.exportTemplate(security, exportFile, withInvalid.toString(), bottomSectionFields.toString(), formTemplateTitle, formTemplateDescription));
 		assertFalse(exportFile.exists());
 		exportFile.delete();
 	}
@@ -265,7 +265,7 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		String formTemplateTitle = "Form Title";
 		String formTemplateDescription = "Form Description";
 		exportFile.delete();
-		template.ExportTemplate(security, exportFile, fieldsTopSection.toString(), fieldsBottomSection.toString(), formTemplateTitle, formTemplateDescription);
+		template.exportTemplate(security, exportFile, fieldsTopSection.toString(), fieldsBottomSection.toString(), formTemplateTitle, formTemplateDescription);
 		assertEquals("", template.getImportedTopSectionText());
 		assertTrue(template.importTemplate(security, exportFile));
 		assertEquals(fieldsTopSection.toString(), template.getImportedTopSectionText());
