@@ -99,7 +99,19 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		FieldCollection defaultFieldsBottomSection = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
 		assertTrue(template.exportTemplate(security, exportFile, defaultFieldsTopSection.toString(), defaultFieldsBottomSection.toString(), formTemplateTitle, formTemplateDescription));
 		assertTrue(exportFile.exists());
+		CustomFieldTemplate importedTemplate = new CustomFieldTemplate();
+		importedTemplate.importTemplate(security, exportFile);
+		File exportFile2 = createTempFileFromName("$$$testExportXml2");
+		exportFile2.deleteOnExit();
+		assertTrue(importedTemplate.exportTemplate(security, exportFile2));
+		CustomFieldTemplate importedTemplate2 = new CustomFieldTemplate();
+		importedTemplate2.importTemplate(security, exportFile2);
+		assertEquals("imported file 1 does not match imported file 2?", importedTemplate.getExportedTemplateAsBase64String(security), importedTemplate2.getExportedTemplateAsBase64String(security));
+		
 		exportFile.delete();
+		exportFile2.delete();
+		
+		
 
 		FieldSpec invalidField = FieldSpec.createCustomField("myTag", "", new FieldTypeNormal());
 		FieldCollection withInvalid = FieldCollectionForTesting.extendFields(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray(), invalidField);
