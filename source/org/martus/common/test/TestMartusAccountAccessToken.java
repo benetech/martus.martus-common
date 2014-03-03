@@ -35,7 +35,6 @@ import org.martus.common.MartusAccountAccessToken;
 import org.martus.common.MartusAccountAccessToken.TokenInvalidException;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.UnicodeWriter;
-import org.miradi.utils.EnhancedJsonArray;
 import org.miradi.utils.EnhancedJsonObject;
 
 public class TestMartusAccountAccessToken extends TestCaseEnhanced
