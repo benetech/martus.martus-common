@@ -335,7 +335,7 @@ public class BulletinZipUtilities
 			lastResponse = response.getResultCode();
 			if(lastResponse.equals(NetworkInterfaceConstants.NOTYOURBULLETIN))
 					throw new MartusUtilities.NotYourBulletinErrorException();
-			if(lastResponse.equals(NetworkInterfaceConstants.NOT_FOUND))
+			if(lastResponse.equals(NetworkInterfaceConstants.ITEM_NOT_FOUND))
 				throw new MartusUtilities.BulletinNotFoundException();
 			if(!lastResponse.equals(NetworkInterfaceConstants.OK) &&
 				!lastResponse.equals(NetworkInterfaceConstants.CHUNK_OK))
