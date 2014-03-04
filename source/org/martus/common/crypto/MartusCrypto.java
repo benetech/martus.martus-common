@@ -215,9 +215,9 @@ public abstract class MartusCrypto
 		orderedBytes = getOrderedBytesFromByteArray(byteOfDigest, startPositionInArray, numberOfBytesToRetrieve);
 		short last2BytesLittleEndian = orderedBytes.getShort(); 
 
-		String publicCodeWithoutDAMM = String.format("%017d%017d%05d", first7BytesLittleEndian,second7BytesLittleEndian,last2BytesLittleEndian);
+		String publicCodeWithoutDamm = String.format("%017d%017d%05d", first7BytesLittleEndian,second7BytesLittleEndian,last2BytesLittleEndian);
 		DammCheckDigitAlgorithm damm = new DammCheckDigitAlgorithm();
-		String publicCode = publicCodeWithoutDAMM + damm.getCheckDigit(publicCodeWithoutDAMM);
+		String publicCode = publicCodeWithoutDamm + damm.getCheckDigit(publicCodeWithoutDamm);
 		return publicCode;		
 	}
 	
