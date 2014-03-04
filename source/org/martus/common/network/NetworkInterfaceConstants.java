@@ -33,6 +33,7 @@ public interface NetworkInterfaceConstants
 	public static final String OK = "ok";
 	public static final String CHUNK_OK = "chunk ok";
 	public static final String ITEM_NOT_FOUND = "not found";
+	public static final String ACCOUNT_NOT_FOUND = "account not found";
 	public static final String REJECTED = "account rejected";
 	public static final String NOTYOURBULLETIN = "not your bulletin";
 	public static final String DUPLICATE = "duplicate";

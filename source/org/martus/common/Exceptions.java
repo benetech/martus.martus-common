@@ -56,6 +56,10 @@ public class Exceptions
 	{
 	}
 	
+	public static class AccountNotFoundException extends Exception
+	{
+	}
+
 	public static class NoFormsAvailableException extends Exception
 	{
 	}
