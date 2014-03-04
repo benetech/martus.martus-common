@@ -198,23 +198,35 @@ public abstract class MartusCrypto
 	public static String computePublicCode40(String publicKeyString) throws CheckDigitInvalidException, CreateDigestException
 	{
 		String digest = null;
-		digest = MartusCrypto.createDigestString(publicKeyString);
-	
+		digest = MartusCrypto.createDigestString(publicKeyString);	
 		byte[] byteOfDigest = digest.getBytes();
-		final byte[] tempDateBytes = new byte[8];
-		System.arraycopy(byteOfDigest, 0, tempDateBytes, 0, 7);
-		long first7BytesLittleEndian = ByteBuffer.wrap(tempDateBytes).order(ByteOrder.LITTLE_ENDIAN).getLong();
-		System.arraycopy(byteOfDigest, 7, tempDateBytes, 0, 7);
-		long second7BytesLittleEndian = ByteBuffer.wrap(tempDateBytes).order(ByteOrder.LITTLE_ENDIAN).getLong();
+
+		int startPositionInArray = 0;
+		int numberOfBytesToRetrieve = 7;
+		ByteBuffer orderedBytes = getOrderedBytesFromByteArray(byteOfDigest, startPositionInArray, numberOfBytesToRetrieve);
+		long first7BytesLittleEndian = orderedBytes.getLong();
+
+		startPositionInArray = 7;
+		orderedBytes = getOrderedBytesFromByteArray(byteOfDigest, startPositionInArray, numberOfBytesToRetrieve);
+		long second7BytesLittleEndian = orderedBytes.getLong();
 		
-		final byte[] tempDate2Bytes = new byte[3];
-		int last2BytesPosition = byteOfDigest.length - 2;
-		System.arraycopy(byteOfDigest, last2BytesPosition, tempDate2Bytes, 0, 2);
-		short last2BytesLittleEndian = ByteBuffer.wrap(tempDate2Bytes).order(ByteOrder.LITTLE_ENDIAN).getShort(); 
+		startPositionInArray = byteOfDigest.length - 2;
+		numberOfBytesToRetrieve = 2;
+		orderedBytes = getOrderedBytesFromByteArray(byteOfDigest, startPositionInArray, numberOfBytesToRetrieve);
+		short last2BytesLittleEndian = orderedBytes.getShort(); 
+
 		String publicCodeWithoutDAMM = String.format("%017d%017d%05d", first7BytesLittleEndian,second7BytesLittleEndian,last2BytesLittleEndian);
 		DammCheckDigitAlgorithm damm = new DammCheckDigitAlgorithm();
 		String publicCode = publicCodeWithoutDAMM + damm.getCheckDigit(publicCodeWithoutDAMM);
 		return publicCode;		
+	}
+	
+	private static ByteBuffer getOrderedBytesFromByteArray(byte[] byteOfDigest, int startPositionInArray, int numberOfBytesToRetrieve)
+	{
+		final byte[] tempDateBytes = new byte[numberOfBytesToRetrieve + 1];
+		System.arraycopy(byteOfDigest, startPositionInArray, tempDateBytes, 0, numberOfBytesToRetrieve);
+		ByteBuffer orderedBytes = ByteBuffer.wrap(tempDateBytes).order(ByteOrder.LITTLE_ENDIAN);
+		return orderedBytes;
 	}
 	
 	public static String computeFormattedPublicCode40(String publicKeyString) throws CheckDigitInvalidException, CreateDigestException
