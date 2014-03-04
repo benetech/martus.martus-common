@@ -35,10 +35,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Vector;
 
 import javax.net.ssl.KeyManager;
 
+import org.martus.common.DammCheckDigitAlgorithm;
+import org.martus.common.DammCheckDigitAlgorithm.CheckDigitInvalidException;
 import org.martus.common.MartusUtilities;
 import org.martus.util.StreamableBase64;
 import org.martus.util.StreamableBase64.InvalidBase64Exception;
@@ -189,6 +193,34 @@ public abstract class MartusCrypto
 			buf[dest++] = (char)('1' + low);
 		}
 		return new String(buf);
+	}
+
+	public static String computePublicCode40(String publicKeyString) throws CheckDigitInvalidException, CreateDigestException
+	{
+		String digest = null;
+		digest = MartusCrypto.createDigestString(publicKeyString);
+	
+		byte[] byteOfDigest = digest.getBytes();
+		final byte[] tempDateBytes = new byte[8];
+		System.arraycopy(byteOfDigest, 0, tempDateBytes, 0, 7);
+		long first7BytesLittleEndian = ByteBuffer.wrap(tempDateBytes).order(ByteOrder.LITTLE_ENDIAN).getLong();
+		System.arraycopy(byteOfDigest, 7, tempDateBytes, 0, 7);
+		long second7BytesLittleEndian = ByteBuffer.wrap(tempDateBytes).order(ByteOrder.LITTLE_ENDIAN).getLong();
+		
+		final byte[] tempDate2Bytes = new byte[3];
+		int last2BytesPosition = byteOfDigest.length - 2;
+		System.arraycopy(byteOfDigest, last2BytesPosition, tempDate2Bytes, 0, 2);
+		short last2BytesLittleEndian = ByteBuffer.wrap(tempDate2Bytes).order(ByteOrder.LITTLE_ENDIAN).getShort(); 
+		String publicCodeWithoutDAMM = String.format("%017d%017d%05d", first7BytesLittleEndian,second7BytesLittleEndian,last2BytesLittleEndian);
+		DammCheckDigitAlgorithm damm = new DammCheckDigitAlgorithm();
+		String publicCode = publicCodeWithoutDAMM + damm.getCheckDigit(publicCodeWithoutDAMM);
+		return publicCode;		
+	}
+	
+	public static String computeFormattedPublicCode40(String publicKeyString) throws CheckDigitInvalidException, CreateDigestException
+	{
+		String rawCode = computePublicCode40(publicKeyString);
+		return MartusCrypto.formatPublicCode(rawCode);
 	}
 
 	public static String computeFormattedPublicCode(String publicKeyString) throws
