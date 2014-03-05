@@ -87,14 +87,14 @@ public class CustomFieldTemplate
 	{
 	}
 
-	public boolean importTemplate(MartusCrypto security, File fileToImport) throws FutureVersionException
+	public boolean importTemplate(MartusCrypto security, File fileToImport) throws FutureVersionException, IOException
 	{
+		InputStreamWithSeek inputStreamWithSeek = new FileInputStreamWithSeek(fileToImport);
 		try
 		{
 			clearData();
 			String templateXMLToImportTopSection = "";
 			String templateXMLToImportBottomSection = "";
-			InputStreamWithSeek inputStreamWithSeek = new FileInputStreamWithSeek(fileToImport);
 			byte[] dataBundle = new byte[(int)fileToImport.length()];
 			inputStreamWithSeek.read(dataBundle);
 			inputStreamWithSeek.seek(0);
@@ -162,6 +162,10 @@ public class CustomFieldTemplate
 		catch(AuthorizationFailedException e)
 		{
 			errors.add(CustomFieldError.errorUnauthorizedKey());
+		}
+		finally
+		{
+			inputStreamWithSeek.close();
 		}
 		return false;
 	}
