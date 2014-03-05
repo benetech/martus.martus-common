@@ -46,6 +46,7 @@ import org.martus.common.DammCheckDigitAlgorithm.CheckDigitInvalidException;
 import org.martus.common.MartusUtilities;
 import org.martus.util.StreamableBase64;
 import org.martus.util.StreamableBase64.InvalidBase64Exception;
+import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 
 
@@ -127,8 +128,7 @@ public abstract class MartusCrypto
 	public abstract String getSignedBundleSigner(byte[] dataBundle) throws MartusSignatureException, IOException;
 	public abstract byte[] extractFromSignedBundle(byte[] dataBundle) throws IOException, MartusSignatureException, AuthorizationFailedException;
 	public abstract byte[] extractFromSignedBundle(byte[] dataBundle, Vector authorizedKeys) throws IOException, MartusSignatureException, AuthorizationFailedException;
-	
-
+	public abstract byte[] extractFromSignedBundle(ByteArrayInputStreamWithSeek bundleRawIn, Vector authorizedKeys) throws IOException, MartusSignatureException, AuthorizationFailedException;
 
 	public void readKeyPair(File keyPairFile, char[] combinedPassPhrase) throws
 	IOException, InvalidKeyPairFileVersionException, AuthorizationFailedException
