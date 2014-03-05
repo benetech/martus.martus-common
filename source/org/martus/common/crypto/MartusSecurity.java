@@ -466,7 +466,13 @@ public class MartusSecurity extends MartusCrypto
 
 	public String getSignedBundleSigner(byte[] dataBundle) throws IOException, MartusSignatureException
 	{
-		ByteArrayInputStream bundleRawIn = new ByteArrayInputStream(dataBundle);
+		ByteArrayInputStreamWithSeek bundleRawIn = new ByteArrayInputStreamWithSeek(dataBundle);
+		
+		return getSignedBundleSigner(bundleRawIn);
+	}
+
+	public String getSignedBundleSigner(InputStreamWithSeek bundleRawIn) throws IOException, MartusSignatureException
+	{
 		SignedBundleInputStream bundleIn = new SignedBundleInputStream(bundleRawIn, this);
 		try
 		{
