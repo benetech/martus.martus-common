@@ -203,17 +203,17 @@ public abstract class MartusCrypto
 
 		int startPositionInArray = 0;
 		int numberOfBytesToRetrieve = 7;
-		ByteBuffer orderedBytes = getOrderedBytesFromByteArray(byteOfDigest, startPositionInArray, numberOfBytesToRetrieve);
-		long first7BytesLittleEndian = orderedBytes.getLong();
+		byte[] subsetBytes = getSubByteArray(byteOfDigest, startPositionInArray, numberOfBytesToRetrieve);
+		long first7BytesLittleEndian = getLongFromBytesLittleEndian(subsetBytes);
 
 		startPositionInArray = 7;
-		orderedBytes = getOrderedBytesFromByteArray(byteOfDigest, startPositionInArray, numberOfBytesToRetrieve);
-		long second7BytesLittleEndian = orderedBytes.getLong();
+		subsetBytes = getSubByteArray(byteOfDigest, startPositionInArray, numberOfBytesToRetrieve);
+		long second7BytesLittleEndian = getLongFromBytesLittleEndian(subsetBytes);
 		
-		startPositionInArray = byteOfDigest.length - 2;
+		startPositionInArray = 14;
 		numberOfBytesToRetrieve = 2;
-		orderedBytes = getOrderedBytesFromByteArray(byteOfDigest, startPositionInArray, numberOfBytesToRetrieve);
-		short last2BytesLittleEndian = orderedBytes.getShort(); 
+		subsetBytes = getSubByteArray(byteOfDigest, startPositionInArray, numberOfBytesToRetrieve);
+		short last2BytesLittleEndian =getShortFromBytesLittleEndian(subsetBytes);
 
 		String publicCodeWithoutDamm = String.format("%017d%017d%05d", first7BytesLittleEndian,second7BytesLittleEndian,last2BytesLittleEndian);
 		DammCheckDigitAlgorithm damm = new DammCheckDigitAlgorithm();
@@ -221,12 +221,21 @@ public abstract class MartusCrypto
 		return publicCode;		
 	}
 	
-	private static ByteBuffer getOrderedBytesFromByteArray(byte[] byteOfDigest, int startPositionInArray, int numberOfBytesToRetrieve)
+	private static long getLongFromBytesLittleEndian(final byte[] dataBytes)
+	{
+		return ByteBuffer.wrap(dataBytes).order(ByteOrder.LITTLE_ENDIAN).getLong();
+	}
+
+	private static short getShortFromBytesLittleEndian(final byte[] dataBytes)
+	{
+		return ByteBuffer.wrap(dataBytes).order(ByteOrder.LITTLE_ENDIAN).getShort();
+	}
+	
+	private static byte[] getSubByteArray(final byte[] byteOfDigest, int startPositionInArray, int numberOfBytesToRetrieve)
 	{
 		final byte[] tempDateBytes = new byte[numberOfBytesToRetrieve + 1];
 		System.arraycopy(byteOfDigest, startPositionInArray, tempDateBytes, 0, numberOfBytesToRetrieve);
-		ByteBuffer orderedBytes = ByteBuffer.wrap(tempDateBytes).order(ByteOrder.LITTLE_ENDIAN);
-		return orderedBytes;
+		return tempDateBytes;
 	}
 	
 	public static String computeFormattedPublicCode40(String publicKeyString) throws CheckDigitInvalidException, CreateDigestException
