@@ -487,7 +487,12 @@ public class MartusSecurity extends MartusCrypto
 
 	public byte[] extractFromSignedBundle(byte[] dataBundle, Vector authorizedKeys) throws IOException, MartusSignatureException, AuthorizationFailedException
 	{
-		ByteArrayInputStream bundleRawIn = new ByteArrayInputStream(dataBundle);
+		ByteArrayInputStreamWithSeek bundleRawIn = new ByteArrayInputStreamWithSeek(dataBundle);
+		return extractFromSignedBundle(bundleRawIn, authorizedKeys);
+	}
+
+	public byte[] extractFromSignedBundle(ByteArrayInputStreamWithSeek bundleRawIn, Vector authorizedKeys) throws IOException, MartusSignatureException, AuthorizationFailedException
+	{
 		SignedBundleInputStream bundleIn = new SignedBundleInputStream(bundleRawIn, this);
 		try
 		{
