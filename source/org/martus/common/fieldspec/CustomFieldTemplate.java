@@ -101,14 +101,11 @@ public class CustomFieldTemplate
 			clearData();
 			String templateXMLToImportTopSection = "";
 			String templateXMLToImportBottomSection = "";
-			byte[] dataBundle = new byte[(int)fileToImport.length()];
-			inputStreamWithSeek.read(dataBundle);
-			inputStreamWithSeek.seek(0);
 			
-			byte[] dataBundleTopSection;
+			InputStreamWithSeek dataBundleTopSectionInputStream;
 			if(isLegacyTemplateFile(inputStreamWithSeek))
 			{
-				dataBundleTopSection = dataBundle;
+				dataBundleTopSectionInputStream = inputStreamWithSeek;
 				FieldSpecCollection defaultBottomFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
 				templateXMLToImportBottomSection = defaultBottomFields.toXml();
 			}
@@ -123,11 +120,14 @@ public class CustomFieldTemplate
 				int bottomSectionBundleLength = bundleIn.readInt();
 				int titleLength = bundleIn.readInt();
 				int descriptionLength = bundleIn.readInt();
-				dataBundleTopSection = new byte[topSectionBundleLength];
+				byte[] dataBundleTopSection = new byte[topSectionBundleLength];
 				byte[] dataBundleBottomSection = new byte[bottomSectionBundleLength];
 				byte[] dataTitle = new byte[titleLength];
 				byte[] dataDescription = new byte[descriptionLength];
 				bundleIn.read(dataBundleTopSection,0, topSectionBundleLength);
+				dataBundleTopSectionInputStream = new ByteArrayInputStreamWithSeek(dataBundleTopSection);
+				dataBundleTopSectionInputStream.seek(0);
+				
 				bundleIn.read(dataBundleBottomSection,0, bottomSectionBundleLength);
 				bundleIn.read(dataTitle,0, titleLength);
 				bundleIn.read(dataDescription,0, descriptionLength);
@@ -145,8 +145,8 @@ public class CustomFieldTemplate
 				description = UnicodeUtilities.toUnicodeString(bytesDescriptionOnly);
 			}
 
-			Vector topSectionSignedByKeys = getSignedByAsVector(dataBundleTopSection, security);
-			byte[] xmlBytesTopSection = security.extractFromSignedBundle(dataBundleTopSection, topSectionSignedByKeys);
+			Vector topSectionSignedByKeys = getSignedByAsVector(dataBundleTopSectionInputStream, security);
+			byte[] xmlBytesTopSection = security.extractFromSignedBundle(dataBundleTopSectionInputStream, topSectionSignedByKeys);
 			templateXMLToImportTopSection = UnicodeUtilities.toUnicodeString(xmlBytesTopSection);
 			
 			if(isvalidTemplateXml(templateXMLToImportTopSection, templateXMLToImportBottomSection))
