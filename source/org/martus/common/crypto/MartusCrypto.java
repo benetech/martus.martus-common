@@ -125,6 +125,7 @@ public abstract class MartusCrypto
 	
 	public abstract byte[] createSignedBundle(byte[] dataBytes) throws MartusSignatureException, IOException;
 	public abstract String getSignedBundleSigner(byte[] dataBundle) throws MartusSignatureException, IOException;
+	public abstract String getSignedBundleSigner(InputStreamWithSeek dataBundle) throws MartusSignatureException, IOException;
 	public abstract byte[] extractFromSignedBundle(byte[] dataBundle) throws IOException, MartusSignatureException, AuthorizationFailedException;
 	public abstract byte[] extractFromSignedBundle(byte[] dataBundle, Vector authorizedKeys) throws IOException, MartusSignatureException, AuthorizationFailedException;
 	public abstract byte[] extractFromSignedBundle(InputStreamWithSeek bundleRawIn, Vector authorizedKeys) throws IOException, MartusSignatureException, AuthorizationFailedException;
