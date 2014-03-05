@@ -510,6 +510,7 @@ public class MartusSecurity extends MartusCrypto
 		finally
 		{
 			bundleIn.close();
+			bundleRawIn.seek(0);
 		}
 	}
 
