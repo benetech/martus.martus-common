@@ -30,7 +30,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -46,6 +45,8 @@ import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
 import org.martus.util.StreamableBase64;
 import org.martus.util.UnicodeUtilities;
+import org.martus.util.inputstreamwithseek.FileInputStreamWithSeek;
+import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 
 
 public class CustomFieldTemplate
@@ -93,12 +94,13 @@ public class CustomFieldTemplate
 			clearData();
 			String templateXMLToImportTopSection = "";
 			String templateXMLToImportBottomSection = "";
-			FileInputStream in = new FileInputStream(fileToImport);
+			InputStreamWithSeek inputStreamWithSeek = new FileInputStreamWithSeek(fileToImport);
 			byte[] dataBundle = new byte[(int)fileToImport.length()];
-			in.read(dataBundle);
-			in.close();
+			inputStreamWithSeek.read(dataBundle);
+			inputStreamWithSeek.seek(0);
+			
 			byte[] dataBundleTopSection;
-			if(isLegacyTemplateFile(fileToImport))
+			if(isLegacyTemplateFile(inputStreamWithSeek))
 			{
 				dataBundleTopSection = dataBundle;
 				FieldSpecCollection defaultBottomFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
@@ -177,12 +179,11 @@ public class CustomFieldTemplate
 		return authorizedKeysVector;
 	}
 	
-	public boolean isLegacyTemplateFile(File fileToImport) throws IOException
+	public boolean isLegacyTemplateFile(InputStreamWithSeek in) throws IOException
 	{
-		FileInputStream in = new FileInputStream(fileToImport);
 		byte[] versionHeaderInBytes = new byte[versionHeader.length()];
 		in.read(versionHeaderInBytes);
-		in.close();
+		in.seek(0);
 		String versionHeaderInString = new String(versionHeaderInBytes);
 		return !versionHeaderInString.equals(versionHeader);
 	}
