@@ -25,7 +25,6 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.fieldspec;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -115,8 +114,7 @@ public class CustomFieldTemplate
 			}
 			else
 			{
-				ByteArrayInputStream bIn = new ByteArrayInputStream(dataBundle);
-				DataInputStream bundleIn = new DataInputStream(bIn);
+				DataInputStream bundleIn = new DataInputStream(inputStreamWithSeek);
 				bundleIn.skip(versionHeader.length()); //ignore header
 				int templateVersion = bundleIn.readInt();
 				if(templateVersion > exportVersionNumber)
