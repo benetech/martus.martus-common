@@ -199,7 +199,7 @@ public class BulletinHtmlGenerator
 			{
 				try 
 				{
-					label = keys.get(i).getPublicCode();
+					label = keys.get(i).getFormattedPublicCode();
 				} 
 				catch (InvalidBase64Exception e) 
 				{
