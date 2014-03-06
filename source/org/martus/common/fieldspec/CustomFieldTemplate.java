@@ -96,6 +96,11 @@ public class CustomFieldTemplate
 		else 
 			inputStreamWithSeek = new ByteArrayInputStreamWithSeek(new byte[0]);
 		
+		return importTemplate(security, inputStreamWithSeek);
+	}
+
+	public boolean importTemplate(MartusCrypto security, InputStreamWithSeek inputStreamWithSeek) throws FutureVersionException, IOException
+	{
 		try
 		{
 			clearData();
