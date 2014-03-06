@@ -87,18 +87,6 @@ public class CustomFieldTemplate
 	{
 	}
 
-	public boolean importTemplate(MartusCrypto security, File fileToImport) throws FutureVersionException, IOException
-	{
-		//FIXME these tests are temporarily here so tests passing in deleted files pass
-		InputStreamWithSeek inputStreamWithSeek;
-		if (fileToImport.exists())
-			inputStreamWithSeek = new FileInputStreamWithSeek(fileToImport);
-		else 
-			inputStreamWithSeek = new ByteArrayInputStreamWithSeek(new byte[0]);
-		
-		return importTemplate(security, inputStreamWithSeek);
-	}
-
 	public boolean importTemplate(MartusCrypto security, InputStreamWithSeek inputStreamWithSeek) throws FutureVersionException, IOException
 	{
 		try
