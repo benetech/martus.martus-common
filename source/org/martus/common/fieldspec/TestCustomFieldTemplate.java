@@ -40,6 +40,9 @@ import org.martus.util.StreamableBase64;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.UnicodeUtilities;
 import org.martus.util.UnicodeWriter;
+import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
+import org.martus.util.inputstreamwithseek.FileInputStreamWithSeek;
+import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 
 public class TestCustomFieldTemplate extends TestCaseEnhanced
 {
@@ -327,7 +330,14 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 
 	private boolean importTemplate(CustomFieldTemplate template, File exportFile) throws FutureVersionException, IOException
 	{
-		return template.importTemplate(security, exportFile);
+		//FIXME these tests are temporarily here so tests passing in deleted files pass
+		InputStreamWithSeek inputStreamWithSeek;
+		if (exportFile.exists())
+			inputStreamWithSeek = new FileInputStreamWithSeek(exportFile);
+		else 
+			inputStreamWithSeek = new ByteArrayInputStreamWithSeek(new byte[0]);
+		
+		return template.importTemplate(security, inputStreamWithSeek);
 	}
 	
 	static MockMartusSecurity security;
