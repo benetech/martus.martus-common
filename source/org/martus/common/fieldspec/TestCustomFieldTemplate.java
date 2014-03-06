@@ -27,6 +27,7 @@ package org.martus.common.fieldspec;
 
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -40,7 +41,6 @@ import org.martus.util.StreamableBase64;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.UnicodeUtilities;
 import org.martus.util.UnicodeWriter;
-import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
 import org.martus.util.inputstreamwithseek.FileInputStreamWithSeek;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 
@@ -236,10 +236,14 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		assertEquals(CustomFieldError.CODE_SIGNATURE_ERROR, ((CustomFieldError)template.getErrors().get(0)).getCode());
 		
 		exportFile.delete();
-		assertFalse(importTemplate(template, exportFile));
-		assertEquals("", template.getImportedTopSectionText());
-		assertEquals(1, template.getErrors().size());
-		assertEquals(CustomFieldError.CODE_IO_ERROR, ((CustomFieldError)template.getErrors().get(0)).getCode());
+		try
+		{
+			assertFalse(importTemplate(template, exportFile));
+			fail("expected FNF exception");
+		}
+		catch(FileNotFoundException ignoreExpected)
+		{
+		}
 	}
 
 	public void testImportXmlFuture() throws Exception
@@ -319,24 +323,27 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		assertEquals(CustomFieldError.CODE_SIGNATURE_ERROR, ((CustomFieldError)template.getErrors().get(0)).getCode());
 		
 		exportFile.delete();
-		assertFalse(importTemplate(template, exportFile));
-		assertEquals("", template.getImportedTopSectionText());
-		assertEquals("", template.getImportedBottomSectionText());
-		assertEquals("", template.getTitle());
-		assertEquals("", template.getDescription());
-		assertEquals(1, template.getErrors().size());
-		assertEquals(CustomFieldError.CODE_IO_ERROR, ((CustomFieldError)template.getErrors().get(0)).getCode());
+		try
+		{
+			assertFalse(importTemplate(template, exportFile));
+			fail("expected FNF exception");
+		}
+		catch(FileNotFoundException ignoreExpected)
+		{
+		}
 	}
 
 	private boolean importTemplate(CustomFieldTemplate template, File exportFile) throws FutureVersionException, IOException
 	{
-		InputStreamWithSeek inputStreamWithSeek;
-		if (exportFile.exists())
-			inputStreamWithSeek = new FileInputStreamWithSeek(exportFile);
-		else 
-			inputStreamWithSeek = new ByteArrayInputStreamWithSeek(new byte[0]);
-		
-		return template.importTemplate(security, inputStreamWithSeek);
+		InputStreamWithSeek inputStreamWithSeek = new FileInputStreamWithSeek(exportFile);
+		try
+		{
+			return template.importTemplate(security, inputStreamWithSeek);
+		}
+		finally
+		{
+			inputStreamWithSeek.close();
+		}
 	}
 	
 	static MockMartusSecurity security;
