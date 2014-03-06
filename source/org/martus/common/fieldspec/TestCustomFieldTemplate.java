@@ -330,7 +330,6 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 
 	private boolean importTemplate(CustomFieldTemplate template, File exportFile) throws FutureVersionException, IOException
 	{
-		//FIXME these tests are temporarily here so tests passing in deleted files pass
 		InputStreamWithSeek inputStreamWithSeek;
 		if (exportFile.exists())
 			inputStreamWithSeek = new FileInputStreamWithSeek(exportFile);
