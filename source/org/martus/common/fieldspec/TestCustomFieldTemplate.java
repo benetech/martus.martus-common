@@ -28,12 +28,14 @@ package org.martus.common.fieldspec;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 import org.martus.common.FieldCollection;
 import org.martus.common.FieldCollectionForTesting;
 import org.martus.common.FieldSpecCollection;
 import org.martus.common.LegacyCustomFields;
 import org.martus.common.crypto.MockMartusSecurity;
+import org.martus.common.fieldspec.CustomFieldTemplate.FutureVersionException;
 import org.martus.util.StreamableBase64;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.UnicodeUtilities;
@@ -100,12 +102,12 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		assertTrue(template.exportTemplate(security, exportFile, defaultFieldsTopSection.toString(), defaultFieldsBottomSection.toString(), formTemplateTitle, formTemplateDescription));
 		assertTrue(exportFile.exists());
 		CustomFieldTemplate importedTemplate = new CustomFieldTemplate();
-		importedTemplate.importTemplate(security, exportFile);
+		importTemplate(importedTemplate, exportFile);
 		File exportFile2 = createTempFileFromName("$$$testExportXml2");
 		exportFile2.deleteOnExit();
 		assertTrue(importedTemplate.exportTemplate(security, exportFile2));
 		CustomFieldTemplate importedTemplate2 = new CustomFieldTemplate();
-		importedTemplate2.importTemplate(security, exportFile2);
+		importTemplate(importedTemplate2, exportFile2);
 		assertEquals("imported file 1 does not match imported file 2?", importedTemplate.getExportedTemplateAsBase64String(security), importedTemplate2.getExportedTemplateAsBase64String(security));
 		
 		exportFile.delete();
@@ -157,7 +159,7 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		out.close();
 		
 		CustomFieldTemplate template = new CustomFieldTemplate(formTemplateTitle, formTemplateDescription, defaultFieldsTopSection, defaultFieldsBottomSection);
-		assertFalse(template.importTemplate(security, exportMultipleSignersCFTFile));
+		assertFalse(importTemplate(template, exportMultipleSignersCFTFile));
 		assertEquals(CustomFieldError.CODE_SIGNATURE_ERROR, ((CustomFieldError)template.getErrors().get(0)).getCode());
 	}
 	
@@ -182,7 +184,7 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		output.close();
 		
 		CustomFieldTemplate templateRetrieved = new CustomFieldTemplate();
-		assertTrue("Failed to import Template from exportedString?", templateRetrieved.importTemplate(security, exportFile));
+		assertTrue("Failed to import Template from exportedString?", importTemplate(templateRetrieved, exportFile));
 		assertEquals(formTemplateTitle, templateRetrieved.getTitle());
 		assertEquals(formTemplateDescription, templateRetrieved.getDescription());
 		assertEquals(defaultFieldsTopSection.toString(), templateRetrieved.getImportedTopSectionText());
@@ -203,7 +205,7 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 
 		CustomFieldTemplate template = new CustomFieldTemplate();
 		assertEquals("", template.getImportedTopSectionText());
-		assertTrue(template.importTemplate(security, exportFile));
+		assertTrue(importTemplate(template, exportFile));
 		FieldCollection defaultBottomSectionFields = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
 		assertEquals(fieldsTopSection.toString(), template.getImportedTopSectionText());
 		assertEquals(defaultBottomSectionFields.toString(), template.getImportedBottomSectionText());
@@ -213,7 +215,7 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		writer.write("unauthorizedTextAppended Should not be read.");
 		writer.close();
 		
-		assertTrue(template.importTemplate(security, exportFile));
+		assertTrue(importTemplate(template, exportFile));
 		assertEquals(fieldsTopSection.toString(), template.getImportedTopSectionText());
 		assertEquals(0, template.getErrors().size());
 
@@ -225,13 +227,13 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		out.flush();
 		out.close();
 		
-		assertFalse(template.importTemplate(security, exportFile));
+		assertFalse(importTemplate(template, exportFile));
 		assertEquals("", template.getImportedTopSectionText());
 		assertEquals(1, template.getErrors().size());
 		assertEquals(CustomFieldError.CODE_SIGNATURE_ERROR, ((CustomFieldError)template.getErrors().get(0)).getCode());
 		
 		exportFile.delete();
-		assertFalse(template.importTemplate(security, exportFile));
+		assertFalse(importTemplate(template, exportFile));
 		assertEquals("", template.getImportedTopSectionText());
 		assertEquals(1, template.getErrors().size());
 		assertEquals(CustomFieldError.CODE_IO_ERROR, ((CustomFieldError)template.getErrors().get(0)).getCode());
@@ -255,7 +257,7 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		CustomFieldTemplate template = new CustomFieldTemplate();
 		try
 		{
-			template.importTemplate(security, exportFile);
+			importTemplate(template, exportFile);
 			fail("Should have thrown future version Exception");
 		}
 		catch(CustomFieldTemplate.FutureVersionException expected)
@@ -279,7 +281,7 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		exportFile.delete();
 		template.exportTemplate(security, exportFile, fieldsTopSection.toString(), fieldsBottomSection.toString(), formTemplateTitle, formTemplateDescription);
 		assertEquals("", template.getImportedTopSectionText());
-		assertTrue(template.importTemplate(security, exportFile));
+		assertTrue(importTemplate(template, exportFile));
 		assertEquals(fieldsTopSection.toString(), template.getImportedTopSectionText());
 		assertEquals(fieldsBottomSection.toString(), template.getImportedBottomSectionText());
 		assertEquals(formTemplateTitle, template.getTitle());
@@ -290,7 +292,7 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		writer.write("unauthorizedTextAppended Should not be read.");
 		writer.close();
 		
-		assertTrue(template.importTemplate(security, exportFile));
+		assertTrue(importTemplate(template, exportFile));
 		assertEquals(fieldsTopSection.toString(), template.getImportedTopSectionText());
 		assertEquals(fieldsBottomSection.toString(), template.getImportedBottomSectionText());
 		assertEquals(formTemplateTitle, template.getTitle());
@@ -305,7 +307,7 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		out.flush();
 		out.close();
 		
-		assertFalse(template.importTemplate(security, exportFile));
+		assertFalse(importTemplate(template, exportFile));
 		assertEquals("", template.getImportedTopSectionText());
 		assertEquals("", template.getImportedBottomSectionText());
 		assertEquals("", template.getTitle());
@@ -314,13 +316,18 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		assertEquals(CustomFieldError.CODE_SIGNATURE_ERROR, ((CustomFieldError)template.getErrors().get(0)).getCode());
 		
 		exportFile.delete();
-		assertFalse(template.importTemplate(security, exportFile));
+		assertFalse(importTemplate(template, exportFile));
 		assertEquals("", template.getImportedTopSectionText());
 		assertEquals("", template.getImportedBottomSectionText());
 		assertEquals("", template.getTitle());
 		assertEquals("", template.getDescription());
 		assertEquals(1, template.getErrors().size());
 		assertEquals(CustomFieldError.CODE_IO_ERROR, ((CustomFieldError)template.getErrors().get(0)).getCode());
+	}
+
+	private boolean importTemplate(CustomFieldTemplate template, File exportFile) throws FutureVersionException, IOException
+	{
+		return template.importTemplate(security, exportFile);
 	}
 	
 	static MockMartusSecurity security;
