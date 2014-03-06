@@ -76,7 +76,7 @@ public class TestHeadquartersKeys extends TestCaseEnhanced
 		assertEquals(duplicateKey.getCanReceiveFrom(), key2.getCanReceiveFrom());
 		assertEquals(duplicateKey.getCanSendTo(), key2.getCanSendTo());
 		assertEquals(duplicateKey.getLabel(), key2.getLabel());
-		assertEquals(duplicateKey.getPublicCode(), key2.getPublicCode());
+		assertEquals(duplicateKey.getFormattedPublicCode(), key2.getFormattedPublicCode());
 		assertEquals(duplicateKey.getPublicKey(), key2.getPublicKey());
 		assertEquals(duplicateKey.getVerificationStatus(), key2.getVerificationStatus());
 		

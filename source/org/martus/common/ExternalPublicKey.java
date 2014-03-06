@@ -59,7 +59,7 @@ public class ExternalPublicKey
 		return MartusCrypto.computePublicCode(publicKey);
 	}
 	
-	public String getPublicCode() throws InvalidBase64Exception
+	public String getFormattedPublicCode() throws InvalidBase64Exception
 	{
 		return MartusCrypto.computeFormattedPublicCode(publicKey);
 	}

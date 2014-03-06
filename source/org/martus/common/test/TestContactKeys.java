@@ -80,7 +80,7 @@ public class TestContactKeys extends TestCaseEnhanced
 		assertFalse(key2.getCanReceiveFrom());
 		
 		ContactKey duplicateKey = new ContactKey(key2);
-		assertEquals(key2.getPublicCode(), duplicateKey.getPublicCode());
+		assertEquals(key2.getFormattedPublicCode(), duplicateKey.getFormattedPublicCode());
 		assertEquals(key2.getLabel(), duplicateKey.getLabel());
 		assertEquals(key2.getCanReceiveFrom(), duplicateKey.getCanReceiveFrom());
 		assertEquals(key2.getCanSendTo(), duplicateKey.getCanSendTo());
