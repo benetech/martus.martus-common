@@ -178,8 +178,7 @@ public class CustomFieldTemplate
 	
 	public Vector getSignedByAsVector(byte[] dataBundleSection, MartusCrypto security) throws MartusSignatureException, IOException
 	{
-		String signedBy = security.getSignedBundleSigner(dataBundleSection);
-		return getSignedByAsVector(signedBy);
+		return getSignedByAsVector(new ByteArrayInputStreamWithSeek(dataBundleSection), security);
 	}
 
 	private Vector getSignedByAsVector(String signedBy)	throws MartusSignatureException
