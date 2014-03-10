@@ -45,7 +45,6 @@ import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
 import org.martus.util.StreamableBase64;
 import org.martus.util.UnicodeUtilities;
 import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
-import org.martus.util.inputstreamwithseek.FileInputStreamWithSeek;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 
 
