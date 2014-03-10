@@ -25,7 +25,9 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common;
 
+import org.martus.common.DammCheckDigitAlgorithm.CheckDigitInvalidException;
 import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.crypto.MartusCrypto.CreateDigestException;
 import org.martus.util.StreamableBase64.InvalidBase64Exception;
 
 public class ExternalPublicKey
@@ -64,6 +66,11 @@ public class ExternalPublicKey
 		return MartusCrypto.computeFormattedPublicCode(publicKey);
 	}
 	
+	public String getFormattedPublicCode40() throws InvalidBase64Exception, CreateDigestException, CheckDigitInvalidException
+	{
+		return MartusCrypto.computeFormattedPublicCode40(publicKey);
+	}
+
 	public int hashCode()
 	{
 		return publicKey.hashCode();
