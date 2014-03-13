@@ -27,5 +27,7 @@ package org.martus.common.network;
 
 public interface ClientSideNetworkInterface extends NetworkInterface
 {
-	void setTimeoutGetServerInfo(int torGetServerInfoTimeoutSeconds);
+	public void setTimeoutGetServerInfo(int torGetServerInfoTimeoutSeconds);
+	public int getTimeoutSecondsForGetServerInfo();
+	public int getTimeoutSecondsForOtherCalls();
 }
