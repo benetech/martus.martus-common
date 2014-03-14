@@ -124,6 +124,7 @@ public class TorTransportWrapper
 			if(isTorReady)
 			{
 				progressMeter.setStatusMessage("TorStatusActive");
+				progressMeter.updateProgressMeter(100, 100);		
 				progressMeter.hideProgressMeter();
 			}
 			else
@@ -134,6 +135,7 @@ public class TorTransportWrapper
 		else
 		{
 			progressMeter.setStatusMessage("TorStatusDisabled");
+			progressMeter.updateProgressMeter(100, 100);		
 			progressMeter.hideProgressMeter();
 		}
 	}
@@ -164,6 +166,8 @@ public class TorTransportWrapper
 	{
 		MartusLogger.log("Tor initialization complete");
 		isTorReady = true;
+		if(progressMeter != null)
+			progressMeter.updateProgressMeter(100, 100);		
 		updateStatus();
 	}
 
