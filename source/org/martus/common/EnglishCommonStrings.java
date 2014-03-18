@@ -85,8 +85,8 @@ public class EnglishCommonStrings
 		"language:vi=Vietnamese",
 		"language:bur=Burmese",
 
-		"field:BulletinUnverifiedFieldDesk=Created by an UNVERIFIED Field Desk",
-		"field:BulletinNotYours=Field Desk Bulletin",
+		"field:BulletinUnverifiedFieldDesk=Created by an UNVERIFIED Contact",
+		"field:BulletinNotYours=Contact Bulletin",
 		"field:publicsection=Public Information",
 		"field:privatesection=Private Information",
 		"field:allprivate=Keep ALL Information Private",
@@ -110,9 +110,9 @@ public class EnglishCommonStrings
 		"field:privateinfo=Private",
 		"field:summary=Summary",
 		"field:attachments=Attachments",
-		"field:HQSummaryLabel=Headquarters",
+		"field:HQSummaryLabel=Contacts",
 		"field:HQNotConfigured=(not currently configured)",
-		"field:NoHQsConfigured=No Headquarters accounts selected for this bulletin.",
+		"field:NoHQsConfigured=No Contact accounts selected for this bulletin.",
 
 		"field:DateRangeTemplatebegin=#FieldLabel# (beginning)",
 		"field:DateRangeTemplateend=#FieldLabel# (end)",
