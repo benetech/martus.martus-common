@@ -129,8 +129,8 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 			"<tr><td align='right' valign='top'>Private</td><td align='left' valign='top'><p></p></td></tr>\n"+
 			"<tr><td align='right' valign='top'>Attachments</td><td align='left' valign='top'></td></tr>\n"+
 			"<tr></tr>\n" + 
-			"<tr><td colspan='2' align='left'><u><b>Headquarters</b></u></td></tr>\n"+
-			"<tr><td align='right' valign='top'></td><td align='left' valign='top'>No Headquarters accounts selected for this bulletin.</td></tr>\n"+
+			"<tr><td colspan='2' align='left'><u><b>Contacts</b></u></td></tr>\n"+
+			"<tr><td align='right' valign='top'></td><td align='left' valign='top'>No Contact accounts selected for this bulletin.</td></tr>\n"+
 			"<tr></tr>\n" + 
 			"<tr><td align='right' valign='top'>Bulletin Id:</td><td align='left' valign='top'>"+b.getLocalId()+"</td></tr>\n"+
 			"</table></html>";
@@ -155,7 +155,7 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 			"<tr><td align='right' valign='top'>Version</td><td align='left' valign='top'>1</td></tr>\n"+
 			"<tr><td align='right' valign='top'>Bulletin Status:</td><td align='left' valign='top'>Draft</td></tr>\n"+
 			"<tr></tr>\n" + 
-			"<tr><td align='right' valign='top'>Field Desk Bulletin</td><td align='left' valign='top'></td></tr>\n"+
+			"<tr><td align='right' valign='top'>Contact Bulletin</td><td align='left' valign='top'></td></tr>\n"+
 			"<tr></tr>\n" + 
 			"<tr><td colspan='2' align='left'><u><b>Public Information</b></u></td></tr>\n"+
 			"<tr><td align='right' valign='top'>Keep ALL Information Private</td><td align='left' valign='top'>No</td></tr>\n"+
@@ -171,8 +171,8 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 			"<tr><td align='right' valign='top'>Details</td><td align='left' valign='top'><p></p></td></tr>\n"+
 			"<tr><td align='right' valign='top'>Attachments</td><td align='left' valign='top'></td></tr>\n"+
 			"<tr></tr>\n" + 
-			"<tr><td colspan='2' align='left'><u><b>Headquarters</b></u></td></tr>\n"+
-			"<tr><td align='right' valign='top'></td><td align='left' valign='top'>No Headquarters accounts selected for this bulletin.</td></tr>\n"+
+			"<tr><td colspan='2' align='left'><u><b>Contacts</b></u></td></tr>\n"+
+			"<tr><td align='right' valign='top'></td><td align='left' valign='top'>No Contact accounts selected for this bulletin.</td></tr>\n"+
 			"<tr></tr>\n" + 
 			"<tr><td align='right' valign='top'>Bulletin Id:</td><td align='left' valign='top'>"+b.getLocalId()+"</td></tr>\n"+
 			"</table></html>";
@@ -263,7 +263,7 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 			String html = generator.getHtmlString(b, store.getDatabase(), true, true);
 			assertStartsWith("column widths not reversed?", "<html><table width='80'>\n<tr><td width='85%'></td><td width='15%'></td></tr>\n", html);
 			assertContains("column values not reversed?", "<tr><td align='right' valign='top'>Bradbury</td><td align='left' valign='top'>Author</td></tr>\n", html);
-			assertContains("heading not aligned right?", "<tr><td colspan='2' align='right'><u><b>Headquarters</b></u></td></tr>\n", html);
+			assertContains("heading not aligned right?", "<tr><td colspan='2' align='right'><u><b>Contacts</b></u></td></tr>\n", html);
 		}
 		finally
 		{
