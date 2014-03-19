@@ -28,7 +28,6 @@ package org.martus.common.bulletin;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.Arrays;
 
 import org.martus.common.crypto.MartusSecurity;
 import org.martus.common.crypto.MockMartusSecurity;
