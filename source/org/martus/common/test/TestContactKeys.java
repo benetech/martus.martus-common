@@ -64,9 +64,13 @@ public class TestContactKeys extends TestCaseEnhanced
 		ContactKey key2 = new ContactKey(publicKey2, label2);
 		contactKeys.add(key2);
 		assertEquals(label2, contactKeys.getLabelIfPresent(key2));
+		assertTrue("New contacts by default now can send to anyone.", key2.getCanSendTo());
+		assertTrue("New contacts by default now can receive from anyone.", key2.getCanReceiveFrom());
+		assertFalse("User must select if they want sendToByDefault, so this should be false by default", key2.getSendToByDefault());
 		
 		key2.setCanSendTo(true);
 		key2.setSendToByDefault(true);
+		key2.setCanReceiveFrom(false);
 		assertTrue(key2.getCanSendTo());
 		assertTrue(key2.getSendToByDefault());
 		assertFalse(key2.getCanReceiveFrom());
@@ -84,6 +88,7 @@ public class TestContactKeys extends TestCaseEnhanced
 		assertEquals(key2.getLabel(), duplicateKey.getLabel());
 		assertEquals(key2.getCanReceiveFrom(), duplicateKey.getCanReceiveFrom());
 		assertEquals(key2.getCanSendTo(), duplicateKey.getCanSendTo());
+		assertEquals(key2.getSendToByDefault(), duplicateKey.getSendToByDefault());
 		assertEquals(key2.getVerificationStatus(), duplicateKey.getVerificationStatus());
 	
 		
@@ -94,13 +99,31 @@ public class TestContactKeys extends TestCaseEnhanced
 
 		key2.setCanSendTo(false);
 		assertFalse(key2.getCanSendTo());
-		assertFalse("Setting this HQ to CanSendTo also must not be able to sendToByDefault", key2.getSendToByDefault());
+		assertTrue("Setting this HQ to CanSendTo now does not affect sendToByDefault, CanSendTo and CanReceive From will go away at some point.", key2.getSendToByDefault());
 		assertFalse(key2.getCanReceiveFrom());
 		
 		key2.setCanReceiveFrom(true);
 		assertFalse(key2.getCanSendTo());
-		assertFalse(key2.getSendToByDefault());
+		assertTrue(key2.getSendToByDefault());
 		assertTrue(key2.getCanReceiveFrom());
+		
+		key2.setCanReceiveFrom(true);
+		key2.setCanSendTo(true);
+		key2.setSendToByDefault(true);
+		
+		ContactKey dupKey2 = new ContactKey(key2);
+		assertTrue(dupKey2.getCanSendTo());
+		assertTrue(dupKey2.getSendToByDefault());
+		assertTrue(dupKey2.getCanReceiveFrom());
+		
+		key2.setCanReceiveFrom(false);
+		key2.setCanSendTo(false);
+		key2.setSendToByDefault(false);
+		
+		ContactKey dupKey3 = new ContactKey(key2);
+		assertFalse(dupKey3.getCanSendTo());
+		assertFalse(dupKey3.getSendToByDefault());
+		assertFalse(dupKey3.getCanReceiveFrom());
 		
 		
 	}
@@ -147,15 +170,12 @@ public class TestContactKeys extends TestCaseEnhanced
 		String key3 = "key 2";
 		String label3 = "label 3";
 		ContactKey contactKey1 = new ContactKey(key1, label1);
-		contactKey1.setCanReceiveFrom(true);
 		contactKey1.setVerificationStatus(ContactKey.NOT_VERIFIED);
 		keys.add(contactKey1);
 		ContactKey contactKey2 = new ContactKey(key2, label2);
-		contactKey2.setCanSendTo(true);
 		contactKey2.setVerificationStatus(ContactKey.VERIFIED_ENTERED_20_DIGITS);
 		keys.add(contactKey2);
 		ContactKey contactKey3 = new ContactKey(key3, label3);
-		contactKey3.setCanSendTo(true);
 		contactKey3.setSendToByDefault(true);
 		contactKey3.setVerificationStatus(ContactKey.VERIFIED_VISUALLY);
 		keys.add(contactKey3);
@@ -169,7 +189,7 @@ public class TestContactKeys extends TestCaseEnhanced
 		 XmlUtilities.getXmlEncoded(label1) +
 		 MartusXml.getTagEndWithoutNewline(ExternalPublicKeys.LABEL_TAG) +
 		 MartusXml.getTagStart(ContactKeys.CAN_SEND_TO_TAG) + 
-		 XmlUtilities.getXmlEncoded(ContactKeys.NO_DATA) +
+		 XmlUtilities.getXmlEncoded(ContactKeys.YES_DATA) +
 		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_SEND_TO_TAG) +
 		 MartusXml.getTagStart(ContactKeys.SEND_TO_BY_DEFAULT_TAG) + 
 		 XmlUtilities.getXmlEncoded(ContactKeys.NO_DATA) +
@@ -196,7 +216,7 @@ public class TestContactKeys extends TestCaseEnhanced
 		 XmlUtilities.getXmlEncoded(ContactKeys.NO_DATA) +
 		 MartusXml.getTagEndWithoutNewline(ContactKeys.SEND_TO_BY_DEFAULT_TAG) +
 		 MartusXml.getTagStart(ContactKeys.CAN_RECEIVE_FROM_TAG) + 
-		 XmlUtilities.getXmlEncoded(ContactKeys.NO_DATA) +
+		 XmlUtilities.getXmlEncoded(ContactKeys.YES_DATA) +
 		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_RECEIVE_FROM_TAG) +
 		 MartusXml.getTagStart(ContactKeys.VERIFICATION_STATUS_TAG) + 
 		 XmlUtilities.getXmlEncoded(Integer.toString(ContactKey.VERIFIED_ENTERED_20_DIGITS)) +
@@ -217,7 +237,7 @@ public class TestContactKeys extends TestCaseEnhanced
 		 XmlUtilities.getXmlEncoded(ContactKeys.YES_DATA) +
 		 MartusXml.getTagEndWithoutNewline(ContactKeys.SEND_TO_BY_DEFAULT_TAG) +
 		 MartusXml.getTagStart(ContactKeys.CAN_RECEIVE_FROM_TAG) + 
-		 XmlUtilities.getXmlEncoded(ContactKeys.NO_DATA) +
+		 XmlUtilities.getXmlEncoded(ContactKeys.YES_DATA) +
 		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_RECEIVE_FROM_TAG) +
 		 MartusXml.getTagStart(ContactKeys.VERIFICATION_STATUS_TAG) + 
 		 XmlUtilities.getXmlEncoded(Integer.toString(ContactKey.VERIFIED_VISUALLY)) +
