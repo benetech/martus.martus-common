@@ -30,7 +30,6 @@ public class HeadquartersKey extends ContactKey
 	public HeadquartersKey(ContactKey keyToUse)
 	{
 		super(keyToUse);
-		setCanReceiveFrom(false);
 	}
 
 	public HeadquartersKey(String publicKey)
@@ -41,6 +40,5 @@ public class HeadquartersKey extends ContactKey
 	public HeadquartersKey(String publicKey, String label)
 	{
 		super(publicKey, label);
-		setCanReceiveFrom(false);
 	}
 }

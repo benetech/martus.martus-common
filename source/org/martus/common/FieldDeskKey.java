@@ -30,7 +30,6 @@ public class FieldDeskKey extends ContactKey
 	public FieldDeskKey(ContactKey key)
 	{
 		super(key);
-		setCanSendTo(false);
 	}
 	
 	public FieldDeskKey(String publicKey)
@@ -41,6 +40,5 @@ public class FieldDeskKey extends ContactKey
 	public FieldDeskKey(String publicKey, String label)
 	{
 		super(publicKey, label);
-		setCanSendTo(false);
 	}
 }
