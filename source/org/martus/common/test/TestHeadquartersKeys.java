@@ -51,7 +51,7 @@ public class TestHeadquartersKeys extends TestCaseEnhanced
 		assertEquals(0, hqKeys.size());
 		String publicKey1 = "123";
 		HeadquartersKey key = new HeadquartersKey(publicKey1);
-		assertFalse("Should not be able to receive From HQ", key.getCanReceiveFrom());
+		assertTrue("Should be able to receive From HQ", key.getCanReceiveFrom());
 		assertTrue("Should be able to Send to initially for HQ", key.getCanSendTo());
 		hqKeys.add(key);
 		assertEquals(1, hqKeys.size());
@@ -68,7 +68,7 @@ public class TestHeadquartersKeys extends TestCaseEnhanced
 		HeadquartersKey key2 = new HeadquartersKey(publicKey2, label2);
 		hqKeys.add(key2);
 		assertEquals(label2, hqKeys.getLabelIfPresent(key2));
-		assertFalse("Should not be able to receive From HQ", key2.getCanReceiveFrom());
+		assertTrue("Should be able to receive From HQ", key2.getCanReceiveFrom());
 		assertTrue("Should be able to Send to initially for HQ", key2.getCanSendTo());
 		
 		key2.setVerificationStatus(ContactKey.VERIFIED_ENTERED_20_DIGITS);

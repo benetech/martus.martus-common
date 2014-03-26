@@ -51,7 +51,7 @@ public class TestFieldDeskKeys extends TestCaseEnhanced
 		String publicKey1 = "123";
 		FieldDeskKey key = new FieldDeskKey(publicKey1);
 		assertTrue("Should be able to receive From FD", key.getCanReceiveFrom());
-		assertFalse("Should not be able to Send to initially for FD", key.getCanSendTo());
+		assertTrue("Should be able to Send to initially for FD", key.getCanSendTo());
 		keys.add(key);
 		assertEquals(1, keys.size());
 		assertTrue(keys.containsKey(publicKey1));
@@ -66,7 +66,7 @@ public class TestFieldDeskKeys extends TestCaseEnhanced
 		String label2 = "abc";
 		FieldDeskKey key2 = new FieldDeskKey(publicKey2, label2);
 		assertTrue("Should be able to receive From FD", key2.getCanReceiveFrom());
-		assertFalse("Should not be able to Send to initially for FD", key2.getCanSendTo());
+		assertTrue("Should be able to Send to initially for FD", key2.getCanSendTo());
 		keys.add(key2);
 		assertEquals(label2, keys.getLabelIfPresent(key2));
 

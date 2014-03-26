@@ -29,8 +29,6 @@ public class ContactKey extends ExternalPublicKey
 	public ContactKey(ContactKey keyToUse)
 	{
 		this(keyToUse.getPublicKey(), keyToUse.getLabel());
-		this.canReceiveFrom = keyToUse.getCanReceiveFrom();
-		this.canSendTo = keyToUse.getCanSendTo();
 		this.sendToByDefault = keyToUse.getSendToByDefault();
 		this.verificationStatus = keyToUse.getVerificationStatus();
 	}
@@ -43,28 +41,16 @@ public class ContactKey extends ExternalPublicKey
 	public ContactKey(String publicKey, String label)
 	{
 		super(publicKey, label);
-		canSendTo = true;
-		canReceiveFrom = true;
 	}
 	
 	public boolean getCanSendTo()
 	{
-		return canSendTo;
-	}
-
-	public void setCanSendTo(boolean canSendTo)
-	{
-		this.canSendTo = canSendTo;
+		return true;
 	}
 
 	public boolean getCanReceiveFrom()
 	{
-		return canReceiveFrom;
-	}
-
-	public void setCanReceiveFrom(boolean canReceiveFrom)
-	{
-		this.canReceiveFrom = canReceiveFrom;
+		return true;
 	}
 
 	public boolean getSendToByDefault()
@@ -87,9 +73,7 @@ public class ContactKey extends ExternalPublicKey
 		this.verificationStatus = verificationStatus;
 	}
 
-	private boolean canSendTo;
 	private boolean sendToByDefault;
-	private boolean canReceiveFrom;
 	private int	verificationStatus;
 	
 	final static public int NOT_VERIFIED = 0;

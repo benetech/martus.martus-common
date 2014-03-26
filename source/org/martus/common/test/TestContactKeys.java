@@ -68,12 +68,10 @@ public class TestContactKeys extends TestCaseEnhanced
 		assertTrue("New contacts by default now can receive from anyone.", key2.getCanReceiveFrom());
 		assertFalse("User must select if they want sendToByDefault, so this should be false by default", key2.getSendToByDefault());
 		
-		key2.setCanSendTo(true);
 		key2.setSendToByDefault(true);
-		key2.setCanReceiveFrom(false);
 		assertTrue(key2.getCanSendTo());
 		assertTrue(key2.getSendToByDefault());
-		assertFalse(key2.getCanReceiveFrom());
+		assertTrue(key2.getCanReceiveFrom());
 		assertEquals(ContactKey.NOT_VERIFIED, key2.getVerificationStatus());
 		
 		
@@ -81,7 +79,7 @@ public class TestContactKeys extends TestCaseEnhanced
 		key2.setSendToByDefault(false);
 		assertFalse(key2.getSendToByDefault());
 		assertTrue(key2.getCanSendTo());
-		assertFalse(key2.getCanReceiveFrom());
+		assertTrue(key2.getCanReceiveFrom());
 		
 		ContactKey duplicateKey = new ContactKey(key2);
 		assertEquals(key2.getFormattedPublicCode(), duplicateKey.getFormattedPublicCode());
@@ -93,37 +91,19 @@ public class TestContactKeys extends TestCaseEnhanced
 	
 		
 		key2.setSendToByDefault(true);
-		assertTrue(key2.getCanSendTo());
-		assertTrue(key2.getSendToByDefault());
-		assertFalse(key2.getCanReceiveFrom());
-
-		key2.setCanSendTo(false);
-		assertFalse(key2.getCanSendTo());
 		assertTrue("Setting this HQ to CanSendTo now does not affect sendToByDefault, CanSendTo and CanReceive From will go away at some point.", key2.getSendToByDefault());
-		assertFalse(key2.getCanReceiveFrom());
-		
-		key2.setCanReceiveFrom(true);
-		assertFalse(key2.getCanSendTo());
-		assertTrue(key2.getSendToByDefault());
-		assertTrue(key2.getCanReceiveFrom());
-		
-		key2.setCanReceiveFrom(true);
-		key2.setCanSendTo(true);
-		key2.setSendToByDefault(true);
 		
 		ContactKey dupKey2 = new ContactKey(key2);
 		assertTrue(dupKey2.getCanSendTo());
 		assertTrue(dupKey2.getSendToByDefault());
 		assertTrue(dupKey2.getCanReceiveFrom());
 		
-		key2.setCanReceiveFrom(false);
-		key2.setCanSendTo(false);
 		key2.setSendToByDefault(false);
 		
 		ContactKey dupKey3 = new ContactKey(key2);
-		assertFalse(dupKey3.getCanSendTo());
+		assertTrue(dupKey3.getCanSendTo());
 		assertFalse(dupKey3.getSendToByDefault());
-		assertFalse(dupKey3.getCanReceiveFrom());
+		assertTrue(dupKey3.getCanReceiveFrom());
 		
 		
 	}
@@ -188,15 +168,9 @@ public class TestContactKeys extends TestCaseEnhanced
 		 MartusXml.getTagStart(ExternalPublicKeys.LABEL_TAG) + 
 		 XmlUtilities.getXmlEncoded(label1) +
 		 MartusXml.getTagEndWithoutNewline(ExternalPublicKeys.LABEL_TAG) +
-		 MartusXml.getTagStart(ContactKeys.CAN_SEND_TO_TAG) + 
-		 XmlUtilities.getXmlEncoded(ContactKeys.YES_DATA) +
-		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_SEND_TO_TAG) +
 		 MartusXml.getTagStart(ContactKeys.SEND_TO_BY_DEFAULT_TAG) + 
 		 XmlUtilities.getXmlEncoded(ContactKeys.NO_DATA) +
 		 MartusXml.getTagEndWithoutNewline(ContactKeys.SEND_TO_BY_DEFAULT_TAG) +
-		 MartusXml.getTagStart(ContactKeys.CAN_RECEIVE_FROM_TAG) + 
-		 XmlUtilities.getXmlEncoded(ContactKeys.YES_DATA) +
-		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_RECEIVE_FROM_TAG) +
 		 MartusXml.getTagStart(ContactKeys.VERIFICATION_STATUS_TAG) + 
 		 XmlUtilities.getXmlEncoded(Integer.toString(ContactKey.NOT_VERIFIED)) +
 		 MartusXml.getTagEndWithoutNewline(ContactKeys.VERIFICATION_STATUS_TAG) +
@@ -209,15 +183,9 @@ public class TestContactKeys extends TestCaseEnhanced
 		 MartusXml.getTagStart(ExternalPublicKeys.LABEL_TAG) + 
 		 XmlUtilities.getXmlEncoded(label2) +
 		 MartusXml.getTagEndWithoutNewline(ExternalPublicKeys.LABEL_TAG) +
-		 MartusXml.getTagStart(ContactKeys.CAN_SEND_TO_TAG) + 
-		 XmlUtilities.getXmlEncoded(ContactKeys.YES_DATA) +
-		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_SEND_TO_TAG) +
 		 MartusXml.getTagStart(ContactKeys.SEND_TO_BY_DEFAULT_TAG) + 
 		 XmlUtilities.getXmlEncoded(ContactKeys.NO_DATA) +
 		 MartusXml.getTagEndWithoutNewline(ContactKeys.SEND_TO_BY_DEFAULT_TAG) +
-		 MartusXml.getTagStart(ContactKeys.CAN_RECEIVE_FROM_TAG) + 
-		 XmlUtilities.getXmlEncoded(ContactKeys.YES_DATA) +
-		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_RECEIVE_FROM_TAG) +
 		 MartusXml.getTagStart(ContactKeys.VERIFICATION_STATUS_TAG) + 
 		 XmlUtilities.getXmlEncoded(Integer.toString(ContactKey.VERIFIED_ENTERED_20_DIGITS)) +
 		 MartusXml.getTagEndWithoutNewline(ContactKeys.VERIFICATION_STATUS_TAG) +
@@ -230,15 +198,9 @@ public class TestContactKeys extends TestCaseEnhanced
 		 MartusXml.getTagStart(ExternalPublicKeys.LABEL_TAG) + 
 		 XmlUtilities.getXmlEncoded(label3) +
 		 MartusXml.getTagEndWithoutNewline(ExternalPublicKeys.LABEL_TAG) +
-		 MartusXml.getTagStart(ContactKeys.CAN_SEND_TO_TAG) + 
-		 XmlUtilities.getXmlEncoded(ContactKeys.YES_DATA) +
-		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_SEND_TO_TAG) +
 		 MartusXml.getTagStart(ContactKeys.SEND_TO_BY_DEFAULT_TAG) + 
 		 XmlUtilities.getXmlEncoded(ContactKeys.YES_DATA) +
 		 MartusXml.getTagEndWithoutNewline(ContactKeys.SEND_TO_BY_DEFAULT_TAG) +
-		 MartusXml.getTagStart(ContactKeys.CAN_RECEIVE_FROM_TAG) + 
-		 XmlUtilities.getXmlEncoded(ContactKeys.YES_DATA) +
-		 MartusXml.getTagEndWithoutNewline(ContactKeys.CAN_RECEIVE_FROM_TAG) +
 		 MartusXml.getTagStart(ContactKeys.VERIFICATION_STATUS_TAG) + 
 		 XmlUtilities.getXmlEncoded(Integer.toString(ContactKey.VERIFIED_VISUALLY)) +
 		 MartusXml.getTagEndWithoutNewline(ContactKeys.VERIFICATION_STATUS_TAG) +
@@ -257,26 +219,18 @@ public class TestContactKeys extends TestCaseEnhanced
 		String label1 = "label 1";
 		String key2 = "key 2";
 		String label2 = "label 2";
-		boolean key1CanSendTo = true;
-		boolean key1CanReceiveFrom = false;
 		ContactKey contactKey1 = new ContactKey(key1, label1);
-		contactKey1.setCanReceiveFrom(key1CanReceiveFrom);
-		contactKey1.setCanSendTo(key1CanSendTo);
 		contactKey1.setVerificationStatus(ContactKey.NOT_VERIFIED);
-		assertEquals("Key1 CanSendTo not same?", key1CanSendTo, contactKey1.getCanSendTo());
-		assertEquals("Key1 CanReceiveFrom not same?", key1CanReceiveFrom, contactKey1.getCanReceiveFrom());
+		assertTrue("Key1 CanSendTo not True?", contactKey1.getCanSendTo());
+		assertTrue("Key1 CanReceiveFrom not True?", contactKey1.getCanReceiveFrom());
 		assertEquals("Key1 not verified?", ContactKey.NOT_VERIFIED, contactKey1.getVerificationStatus());
 		keys.add(contactKey1);
-		boolean key2CanSendTo = false;
-		boolean key2CanReceiveFrom = true;
-		
+
 		ContactKey contactKey2 = new ContactKey(key2, label2);
-		contactKey2.setCanReceiveFrom(key2CanReceiveFrom);
-		contactKey2.setCanSendTo(key2CanSendTo);
 		contactKey2.setVerificationStatus(ContactKey.VERIFIED_VISUALLY);
 		keys.add(contactKey2);
-		assertEquals("Key2 CanSendTo not same?", key2CanSendTo, contactKey2.getCanSendTo());
-		assertEquals("Key2 CanReceiveFrom not same?", key2CanReceiveFrom, contactKey2.getCanReceiveFrom());
+		assertTrue("Key2 CanSendTo not same?", contactKey2.getCanSendTo());
+		assertTrue("Key2 CanReceiveFrom not same?", contactKey2.getCanReceiveFrom());
 		assertEquals("Key2 Verified not VERIFIED_VISUALLY?", ContactKey.VERIFIED_VISUALLY, contactKey2.getVerificationStatus());
 		ContactKeys contactKeys = new ContactKeys(keys);
 
@@ -288,14 +242,14 @@ public class TestContactKeys extends TestCaseEnhanced
 		
 		ContactKey retrieved = contactKeys2.get(0);
 		assertEquals("retrieved Key1 label not same?", contactKey1.getLabel(), retrieved.getLabel());
-		assertEquals("retrieved Key1 CanSendTo not same?", key1CanSendTo, retrieved.getCanSendTo());
-		assertEquals("retrieved Key1 CanReceiveFrom not same?", key1CanReceiveFrom, retrieved.getCanReceiveFrom());
+		assertEquals("retrieved Key1 CanSendTo not same?", contactKey1.getCanSendTo(), retrieved.getCanSendTo());
+		assertEquals("retrieved Key1 CanReceiveFrom not same?", contactKey1.getCanReceiveFrom(), retrieved.getCanReceiveFrom());
 		assertEquals("retrieved Key1 not verified?", ContactKey.NOT_VERIFIED, retrieved.getVerificationStatus());
 		
 		ContactKey retrieved2 = contactKeys2.get(1);
 		assertEquals("retrieved Key2 label not same?", contactKey2.getLabel(), retrieved2.getLabel());
-		assertEquals("retrieved Key2 CanSendTo not same?", key2CanSendTo, retrieved2.getCanSendTo());
-		assertEquals("retrieved Key2 CanReceiveFrom not same?", key2CanReceiveFrom, retrieved2.getCanReceiveFrom());
+		assertEquals("retrieved Key2 CanSendTo not same?", contactKey2.getCanSendTo(), retrieved2.getCanSendTo());
+		assertEquals("retrieved Key2 CanReceiveFrom not same?", contactKey2.getCanReceiveFrom(), retrieved2.getCanReceiveFrom());
 		assertEquals("retrieved Key2 Verified not VERIFIED_VISUALLY?", ContactKey.VERIFIED_VISUALLY, retrieved2.getVerificationStatus());
 	}
 }

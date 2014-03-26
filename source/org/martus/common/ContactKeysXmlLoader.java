@@ -54,28 +54,18 @@ public class ContactKeysXmlLoader extends SimpleXmlDefaultLoader
 		SimpleXmlMapLoader loader = (SimpleXmlMapLoader)ended;
 		String publicCode = loader.get(ExternalPublicKeys.PUBLIC_KEY_TAG);
 		String label = loader.get(ExternalPublicKeys.LABEL_TAG);
-		boolean canSendTo = false;
-		String data = loader.get(ContactKeys.CAN_SEND_TO_TAG);
-		if(data.equals(ContactKeys.YES_DATA))
-			canSendTo = true;
 		
 		boolean sendToByDefault = false;
-		data = loader.get(ContactKeys.SEND_TO_BY_DEFAULT_TAG);
+		String data = loader.get(ContactKeys.SEND_TO_BY_DEFAULT_TAG);
 		if(data.equals(ContactKeys.YES_DATA))
 			sendToByDefault = true;
 
-		boolean canReceiveFrom = false;
-		data = loader.get(ContactKeys.CAN_RECEIVE_FROM_TAG);
-		if(data.equals(ContactKeys.YES_DATA))
-			canReceiveFrom = true;
 		int verification = ContactKey.NOT_VERIFIED;
 		data = loader.get(ContactKeys.VERIFICATION_STATUS_TAG);
 		if(data != null && data.length()==1)
 			verification = Integer.parseInt(data);
 		
 		ContactKey key = new ContactKey(publicCode, label);
-		key.setCanReceiveFrom(canReceiveFrom);
-		key.setCanSendTo(canSendTo);
 		key.setSendToByDefault(sendToByDefault);
 		key.setVerificationStatus(verification);
 		keys.add(key);
