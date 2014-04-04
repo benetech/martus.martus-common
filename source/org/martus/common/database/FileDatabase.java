@@ -421,6 +421,11 @@ abstract public class FileDatabase extends Database
 	public static String buildTokenFilename(MartusAccountAccessToken token)
 	{
 		String tokenString = token.getToken();
+		return buildTokenFilename(tokenString);
+	}
+
+	public static String buildTokenFilename(String tokenString)
+	{
 		return "token-" + tokenString + ".dat";
 	}
 	
