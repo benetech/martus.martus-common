@@ -418,7 +418,7 @@ abstract public class FileDatabase extends Database
 		return new File(folder, buildTokenFilename(token));
 	}
 
-	public String buildTokenFilename(MartusAccountAccessToken token)
+	public static String buildTokenFilename(MartusAccountAccessToken token)
 	{
 		return "token-" + token.getToken() + ".dat";
 	}
