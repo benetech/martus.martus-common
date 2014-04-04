@@ -420,7 +420,8 @@ abstract public class FileDatabase extends Database
 
 	public static String buildTokenFilename(MartusAccountAccessToken token)
 	{
-		return "token-" + token.getToken() + ".dat";
+		String tokenString = token.getToken();
+		return "token-" + tokenString + ".dat";
 	}
 	
 	public boolean isInQuarantine(DatabaseKey key) throws RecordHiddenException
