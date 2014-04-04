@@ -415,7 +415,12 @@ abstract public class FileDatabase extends Database
 	IOException
 	{
 		File folder = getAbsoluteAccountAccessTokenFolderForAccount(accountId);
-		return new File(folder, "token-" + token.getToken() + ".dat");
+		return new File(folder, buildTokenFilename(token));
+	}
+
+	public String buildTokenFilename(MartusAccountAccessToken token)
+	{
+		return "token-" + token.getToken() + ".dat";
 	}
 	
 	public boolean isInQuarantine(DatabaseKey key) throws RecordHiddenException
