@@ -370,6 +370,14 @@ public abstract class MartusCrypto
 
 	public static class CryptoInitializationException extends CryptoException
 	{
+		public CryptoInitializationException()
+		{
+		}
+
+		public CryptoInitializationException(Exception e)
+		{
+			super(e);
+		}
 	}
 
 	public static class InvalidKeyPairFileVersionException extends CryptoException 
