@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
@@ -108,6 +109,15 @@ public class MartusSecurity extends MartusCrypto
 
 	synchronized void initialize() throws CryptoInitializationException
 	{
+		try
+		{
+			disableCryptoRestrictions();
+		}
+		catch(Exception e)
+		{
+			throw new CryptoInitializationException(e);
+		}
+		
 		insertHighestPriorityProvider(securityContext.createSecurityProvider());
 
 		if(rand == null)
@@ -132,6 +142,29 @@ public class MartusSecurity extends MartusCrypto
 		}
 
 		decryptedSessionKeys = Collections.synchronizedMap(new HashMap());
+	}
+
+	private static void disableCryptoRestrictions() throws Exception
+	{
+		Field gate = Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted");
+		gate.setAccessible(true);
+		gate.setBoolean(null, false);
+		
+		// NOTE: The following was mentioned in a web article, 
+		// but it's not clear if/why it is needed
+		// http://stackoverflow.com/questions/14156522/using-encryption-that-would-need-java-policy-files-in-openjre
+//		Field allPerm = Class.forName("javax.crypto.CryptoAllPermission").getDeclaredField("INSTANCE");
+//		allPerm.setAccessible(true);
+//		Object accessAllAreasCard = allPerm.get(null);
+//		final Constructor<?> constructor = Class.forName("javax.crypto.CryptoPermissions").getDeclaredConstructor();
+//		constructor.setAccessible(true);
+//		Object coll = constructor.newInstance();
+//		Method addPerm = Class.forName("javax.crypto.CryptoPermissions").getDeclaredMethod("add", java.security.Permission.class);
+//		addPerm.setAccessible(true);
+//		addPerm.invoke(coll, accessAllAreasCard);
+//		Field defaultPolicy = Class.forName("javax.crypto.JceSecurity").getDeclaredField("defaultPolicy");
+//		defaultPolicy.setAccessible(true);
+//		defaultPolicy.set(null, coll);
 	}
 
 	// begin MartusCrypto interface
