@@ -45,6 +45,8 @@ import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.Permission;
+import java.security.PermissionCollection;
 import java.security.PrivateKey;
 import java.security.Provider;
 import java.security.SecureRandom;
@@ -146,25 +148,49 @@ public class MartusSecurity extends MartusCrypto
 
 	private static void disableCryptoRestrictions() throws Exception
 	{
-		Field gate = Class.forName("javax.crypto.JceSecurity").getDeclaredField("isRestricted");
-		gate.setAccessible(true);
-		gate.setBoolean(null, false);
+		if(Cipher.getMaxAllowedKeyLength("AES") >= 256)
+		{
+			MartusLogger.log("Unlimited crypto already available");
+			return;
+		}
 		
-		// NOTE: The following was mentioned in a web article, 
-		// but it's not clear if/why it is needed
+		// The following code was adapted from a code fragment posted here:
+		// http://stackoverflow.com/questions/1179672/unlimited-strength-jce-policy-files
+		// Similar code is also found here:
 		// http://stackoverflow.com/questions/14156522/using-encryption-that-would-need-java-policy-files-in-openjre
-//		Field allPerm = Class.forName("javax.crypto.CryptoAllPermission").getDeclaredField("INSTANCE");
-//		allPerm.setAccessible(true);
-//		Object accessAllAreasCard = allPerm.get(null);
-//		final Constructor<?> constructor = Class.forName("javax.crypto.CryptoPermissions").getDeclaredConstructor();
-//		constructor.setAccessible(true);
-//		Object coll = constructor.newInstance();
-//		Method addPerm = Class.forName("javax.crypto.CryptoPermissions").getDeclaredMethod("add", java.security.Permission.class);
-//		addPerm.setAccessible(true);
-//		addPerm.invoke(coll, accessAllAreasCard);
-//		Field defaultPolicy = Class.forName("javax.crypto.JceSecurity").getDeclaredField("defaultPolicy");
-//		defaultPolicy.setAccessible(true);
-//		defaultPolicy.set(null, coll);
+		
+        /*
+         * Do the following, but with reflection to bypass access checks:
+         *
+         * JceSecurity.isRestricted = false;
+         * JceSecurity.defaultPolicy.perms.clear();
+         * JceSecurity.defaultPolicy.add(CryptoAllPermission.INSTANCE);
+         */
+        final Class<?> jceSecurity = Class.forName("javax.crypto.JceSecurity");
+        final Class<?> cryptoPermissions = Class.forName("javax.crypto.CryptoPermissions");
+        final Class<?> cryptoAllPermission = Class.forName("javax.crypto.CryptoAllPermission");
+
+        // NOTE: This removes limits, but doesn't adjust Cipher.getMaxAllowedKeyLength 
+        final Field isRestrictedField = jceSecurity.getDeclaredField("isRestricted");
+        isRestrictedField.setAccessible(true);
+        isRestrictedField.set(null, false);
+
+        // NOTE: Gain access to the policy
+        final Field defaultPolicyField = jceSecurity.getDeclaredField("defaultPolicy");
+        defaultPolicyField.setAccessible(true);
+        final PermissionCollection defaultPolicy = (PermissionCollection) defaultPolicyField.get(null);
+
+        // NOTE: Gain access to the current "crypto permissions", and clear them
+        final Field perms = cryptoPermissions.getDeclaredField("perms");
+        perms.setAccessible(true);
+        ((Map<?, ?>) perms.get(defaultPolicy)).clear();
+
+        // NOTE: Add the "allow all crypto" policy
+        final Field allowAllCrypto = cryptoAllPermission.getDeclaredField("INSTANCE");
+        allowAllCrypto.setAccessible(true);
+        defaultPolicy.add((Permission) allowAllCrypto.get(null));
+
+        MartusLogger.log("Successfully removed cryptography restrictions");
 	}
 
 	// begin MartusCrypto interface
