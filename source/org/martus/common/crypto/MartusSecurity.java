@@ -148,7 +148,7 @@ public class MartusSecurity extends MartusCrypto
 
 	private static void disableCryptoRestrictions() throws Exception
 	{
-		if(Cipher.getMaxAllowedKeyLength("AES") >= 256)
+		if(isUnlimitedCryptoAvailable())
 		{
 			MartusLogger.log("Unlimited crypto already available");
 			return;
@@ -191,6 +191,12 @@ public class MartusSecurity extends MartusCrypto
         defaultPolicy.add((Permission) allowAllCrypto.get(null));
 
         MartusLogger.log("Successfully removed cryptography restrictions");
+	}
+
+	public static boolean isUnlimitedCryptoAvailable()
+			throws NoSuchAlgorithmException
+	{
+		return Cipher.getMaxAllowedKeyLength("AES") >= 256;
 	}
 
 	// begin MartusCrypto interface
