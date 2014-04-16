@@ -149,10 +149,7 @@ public class MartusSecurity extends MartusCrypto
 	private static void disableCryptoRestrictions() throws Exception
 	{
 		if(isUnlimitedCryptoAvailable())
-		{
-			MartusLogger.log("Unlimited crypto already available");
 			return;
-		}
 		
 		// The following code was adapted from a code fragment posted here:
 		// http://stackoverflow.com/questions/1179672/unlimited-strength-jce-policy-files
