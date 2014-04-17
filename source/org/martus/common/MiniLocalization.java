@@ -134,9 +134,9 @@ public class MiniLocalization
 
 	protected String formatAsUntranslated(String value)
 	{
-		if(value.startsWith("<"))
+		if(value.startsWith(NotTranslatedBeginCharacter))
 			return value;
-		return "<" + value + ">";
+		return NotTranslatedBeginCharacter + value + NotTranslatedEndCharacter;
 	}
 	
 	protected Map getAvailableTranslations(String key)
@@ -592,6 +592,9 @@ public class MiniLocalization
 	public static final String AFGHAN_SYSTEM = "Afghan";
 	public static final String[] ALL_CALENDAR_SYSTEMS = {GREGORIAN_SYSTEM, THAI_SYSTEM, PERSIAN_SYSTEM, AFGHAN_SYSTEM, };
 
+	public static final String NotTranslatedBeginCharacter = "<";
+	public static final String NotTranslatedEndCharacter = ">";
+	
 	protected Map textResources;
 	protected Vector rightToLeftLanguages;
 	private String currentLanguageCode;
