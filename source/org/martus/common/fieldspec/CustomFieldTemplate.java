@@ -87,12 +87,12 @@ public class CustomFieldTemplate
 	{
 	}
 
-	public static boolean importTemplate(File tempFormTemplateFile, CustomFieldTemplate template, MartusCrypto security) throws Exception 
+	public boolean importTemplate(File tempFormTemplateFile, MartusCrypto security) throws Exception 
 	{
 		FileInputStreamWithSeek inputStream = new FileInputStreamWithSeek(tempFormTemplateFile);
 		try
 		{
-			return template.importTemplate(security, inputStream);
+			return importTemplate(security, inputStream);
 		}
 		finally
 		{
