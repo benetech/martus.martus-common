@@ -45,6 +45,7 @@ import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
 import org.martus.util.StreamableBase64;
 import org.martus.util.UnicodeUtilities;
 import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
+import org.martus.util.inputstreamwithseek.FileInputStreamWithSeek;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 
 
@@ -84,6 +85,19 @@ public class CustomFieldTemplate
 	
 	public class FutureVersionException extends Exception
 	{
+	}
+
+	public static boolean importTemplate(File tempFormTemplateFile, CustomFieldTemplate template, MartusCrypto security) throws Exception 
+	{
+		FileInputStreamWithSeek inputStream = new FileInputStreamWithSeek(tempFormTemplateFile);
+		try
+		{
+			return template.importTemplate(security, inputStream);
+		}
+		finally
+		{
+			inputStream.close();
+		}
 	}
 
 	public boolean importTemplate(MartusCrypto security, InputStreamWithSeek inputStreamWithSeek) throws FutureVersionException, IOException
