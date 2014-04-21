@@ -248,7 +248,7 @@ public class CustomFieldTemplate
 		return "";
 	}
 
-	private boolean saveContentsToOutputStream(MartusCrypto security, OutputStream out)
+	public boolean saveContentsToOutputStream(MartusCrypto security, OutputStream out)
 	{
 		try
 		{
