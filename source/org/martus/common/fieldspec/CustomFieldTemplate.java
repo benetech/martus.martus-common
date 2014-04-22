@@ -37,6 +37,7 @@ import java.util.Arrays;
 import java.util.Vector;
 
 import org.martus.common.FieldCollection;
+import org.martus.common.MartusLogger;
 import org.martus.common.FieldCollection.CustomFieldsParseException;
 import org.martus.common.FieldSpecCollection;
 import org.martus.common.crypto.MartusCrypto;
@@ -293,14 +294,12 @@ public class CustomFieldTemplate
 		}
 		catch (InvalidIsoDateException e)
 		{
-			System.out.println("isValidTemplateXml");
-			e.printStackTrace();
+			MartusLogger.logException(e);
 			errors.add(CustomFieldError.errorInvalidIsoDate(e.getTag(), e.getLabel(), e.getType()));
 		}
 		catch (CustomFieldsParseException e)
 		{
-			System.out.println("isValidTemplateXml");
-			e.printStackTrace();
+			MartusLogger.logException(e);
 			errors.add(CustomFieldError.errorParseXml(e.getMessage()));
 		}
 		return false;
