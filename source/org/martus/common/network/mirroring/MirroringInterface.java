@@ -44,6 +44,8 @@ public interface MirroringInterface
 	public final static String CMD_MIRRORING_GET_BULLETIN_CHUNK = "mirroringGetBulletinChunk";
 	public final static String CMD_MIRRORING_GET_BULLETIN_CHUNK_TYPO = "mirrorintGetBulletinChunk";
 	public final static String CMD_MIRRORING_LIST_AVAILABLE_IDS = "mirroringListAvailableIds";
+	public final static String CMD_MIRRORING_GET_LIST_OF_FORM_TEMPLATES = "mirroringGetListOfFormTemplates";
+	public final static String CMD_MIRRORING_GET_FORM_TEMPLATE = "mirroringGetFormTemplate";
 
 
 	public Vector request(String callerAccountId, Vector parameters, String signature);

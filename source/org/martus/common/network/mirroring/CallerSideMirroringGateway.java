@@ -75,6 +75,20 @@ public class CallerSideMirroringGateway implements CallerSideMirroringGatewayInt
 		return getNetworkResponse(signer, MirroringInterface.CMD_MIRRORING_GET_BULLETIN_CHUNK_TYPO, authorAccountId, extraParameters);
 	}
 
+	@Override
+	public NetworkResponse getListOfFormTemplateInfos(MartusCrypto signer, String templateOwnerAccountId) throws MartusSignatureException
+	{
+		Object[] extraParameters = new Object[0];
+		return getNetworkResponse(signer, MirroringInterface.CMD_MIRRORING_GET_LIST_OF_FORM_TEMPLATES, templateOwnerAccountId, extraParameters);
+	}
+
+	@Override
+	public NetworkResponse getFormTemplate(MartusCrypto signer, String templateOwnerAccountId, String templateName)  throws MartusSignatureException
+	{
+		Object[] extraParameters = new Object[] { templateName };
+		return getNetworkResponse(signer, MirroringInterface.CMD_MIRRORING_GET_FORM_TEMPLATE, templateOwnerAccountId, extraParameters);
+	}
+	
 	private NetworkResponse getNetworkResponse(MartusCrypto signer, String command, String authorAccountId, Object[] extraParameters) throws MartusSignatureException
 	{
 		Vector parameters = new Vector();
@@ -94,5 +108,6 @@ public class CallerSideMirroringGateway implements CallerSideMirroringGatewayInt
 	}
 					
 	private CallerSideMirroringInterface handler;
+
 }
 
