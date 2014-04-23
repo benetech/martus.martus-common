@@ -561,9 +561,12 @@ abstract public class FileDatabase extends Database
 		return false;
 	}
 
-	public File getAbsoluteAccountDirectory(String accountString)
+	public File getAbsoluteAccountDirectory(String accountString) throws FileNotFoundException
 	{
-		return new File(absoluteBaseDir, (String)getAccountMap().get(accountString));
+		String accountDirectoryName = (String)getAccountMap().get(accountString);
+		if(accountDirectoryName == null)
+			throw new FileNotFoundException("Account does not exist");
+		return new File(absoluteBaseDir, accountDirectoryName);
 	}
 	
 	private File getExistingFileForRecord(UniversalId uid) throws IOException, TooManyAccountsException
