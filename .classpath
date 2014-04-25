@@ -16,6 +16,6 @@
 	<classpathentry kind="lib" path="/martus-thirdparty/common/XMLRPC/bin/commons-logging-1.1.jar"/>
 	<classpathentry kind="lib" path="/martus-thirdparty/common/XMLRPC/bin/ws-commons-util-1.0.2.jar"/>
 	<classpathentry kind="lib" path="/martus-thirdparty/libext/BouncyCastle/bin/bcpkix-jdk15on-148.jar"/>
-	<classpathentry kind="lib" path="/martus-thirdparty/common/orchid/bin/orchid-0.9.1.b4a87ff.jar" sourcepath="/martus-thirdparty/common/orchid/source/orchid-0.9.1.b4a87ff-src.zip"/>
+	<classpathentry kind="lib" path="/martus-thirdparty/common/orchid/bin/orchid-1.0.0.25f1ae1.jar" sourcepath="/martus-thirdparty/common/orchid/source/orchid-1.0.0.25f1ae1-src.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
