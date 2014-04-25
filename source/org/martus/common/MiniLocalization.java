@@ -191,7 +191,16 @@ public class MiniLocalization
 
 	public void setCurrentDateFormatCode(String code)
 	{
-		currentDateFormat.setDateTemplate(code);
+		try
+		{
+			currentDateFormat.setDateTemplate(code);
+		} 
+		catch (Exception e)
+		{
+			MartusLogger.logException(e);
+			currentDateFormat.setMdyOrder(DatePreference.DEFAULT_DATE_MDY_ORDER);
+			currentDateFormat.setDelimiter(DatePreference.DEFAULT_DATE_DELIMITER);
+		}
 	}
 	
 	public String getCurrentDateTemplate()
