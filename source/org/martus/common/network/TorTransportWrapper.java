@@ -42,17 +42,22 @@ import com.subgraph.orchid.xmlrpc.OrchidXmlRpcTransportFactory;
 
 public class TorTransportWrapper
 {
-	public static TorTransportWrapper create()
+	public static TorTransportWrapper createWithoutPersistentStore() throws Exception
 	{
-		return new TorTransportWrapper();
+		return create(new MartusOrchidDirectoryStore());
 	}
 	
-	private TorTransportWrapper()
+	public static TorTransportWrapper create(MartusOrchidDirectoryStore storeToUse) throws Exception
+	{
+		return new TorTransportWrapper(storeToUse);
+	}
+	
+	private TorTransportWrapper(MartusOrchidDirectoryStore storeToUse) throws Exception
 	{
 		isTorActive = false;
 		isTorReady = false;
 
-		createRealTorClient();
+		createRealTorClient(storeToUse);
 	}
 	
 	public void setTorDataDirectory(File directory)
@@ -164,9 +169,9 @@ public class TorTransportWrapper
 		updateStatus();
 	}
 
-	private void createRealTorClient()
+	private void createRealTorClient(MartusOrchidDirectoryStore storeToUse) throws Exception
 	{
-		tor = new TorClient();
+		tor = new TorClient(storeToUse);
 
 		class TorInitializationHandler implements TorInitializationListener
 		{
