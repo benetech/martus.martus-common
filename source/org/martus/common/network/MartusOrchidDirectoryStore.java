@@ -36,6 +36,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.martus.common.MartusLogger;
+import org.martus.common.MartusUtilities;
+import org.martus.common.crypto.MartusCrypto;
 
 import com.subgraph.orchid.DirectoryStore;
 import com.subgraph.orchid.Document;
@@ -47,7 +49,7 @@ public class MartusOrchidDirectoryStore implements DirectoryStore
 		contentsByFile = new HashMap<String, byte[]>();
 	}
 	
-	public void saveStore(File martusOrchidCacheFile) throws IOException
+	public void saveStore(File martusOrchidCacheFile, MartusCrypto security) throws Exception
 	{
 		MartusLogger.logBeginProcess("Saving Orchid cache");
 		FileOutputStream fileOut = new FileOutputStream(martusOrchidCacheFile);
@@ -67,6 +69,7 @@ public class MartusOrchidDirectoryStore implements DirectoryStore
 		{
 			fileOut.close();
 		}
+		MartusUtilities.createSignatureFileFromFile(martusOrchidCacheFile, security);
 		MartusLogger.logEndProcess("Saving Orchid cache");
 	}
 
@@ -84,11 +87,22 @@ public class MartusOrchidDirectoryStore implements DirectoryStore
 		}
 	}
 
-	public void loadStore(File martusOrchidCacheFile) throws IOException
+	public void loadStore(File martusOrchidCacheFile, MartusCrypto security) throws Exception
 	{
 		if(!martusOrchidCacheFile.exists())
 			return;
 		
+		try
+		{
+			File sigFile = MartusUtilities.getSignatureFileFromFile(martusOrchidCacheFile);
+			MartusUtilities.verifyFileAndSignature(martusOrchidCacheFile, sigFile, security, security.getPublicKeyString());
+		} 
+		catch (Exception e)
+		{
+			MartusLogger.log("Orchid file signature failed.");
+			return;
+		}
+
 		MartusLogger.logBeginProcess("Loading Orchid cache");
 		FileInputStream fileIn = new FileInputStream(martusOrchidCacheFile);
 		try
@@ -232,7 +246,7 @@ public class MartusOrchidDirectoryStore implements DirectoryStore
 	}
 
 	private final static String FILE_TYPE_IDENTIFIER = "Martus Orchid Cache";
-	private final static int FILE_VERSION = 1;
+	private final static int FILE_VERSION = 3;
 	
 	private HashMap<String, byte[]> contentsByFile;
 }
