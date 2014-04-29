@@ -56,16 +56,7 @@ public class MartusOrchidDirectoryStore implements DirectoryStore
 			DataOutputStream out = new DataOutputStream(fileOut);
 			try
 			{
-				out.writeUTF(FILE_TYPE_IDENTIFIER);
-				out.writeInt(FILE_VERSION);
-				out.writeInt(contentsByFile.size());
-				for (String cacheFilename : contentsByFile.keySet())
-				{
-					byte[] fileContents = contentsByFile.get(cacheFilename);
-					out.writeUTF(cacheFilename);
-					out.writeInt(fileContents.length);
-					out.write(fileContents);
-				}
+				writeStoreToStream(out);
 			}
 			finally
 			{
@@ -77,6 +68,20 @@ public class MartusOrchidDirectoryStore implements DirectoryStore
 			fileOut.close();
 		}
 		MartusLogger.logEndProcess("Saving Orchid cache");
+	}
+
+	public void writeStoreToStream(DataOutputStream out) throws IOException
+	{
+		out.writeUTF(FILE_TYPE_IDENTIFIER);
+		out.writeInt(FILE_VERSION);
+		out.writeInt(contentsByFile.size());
+		for (String cacheFilename : contentsByFile.keySet())
+		{
+			byte[] fileContents = contentsByFile.get(cacheFilename);
+			out.writeUTF(cacheFilename);
+			out.writeInt(fileContents.length);
+			out.write(fileContents);
+		}
 	}
 
 	public void loadStore(File martusOrchidCacheFile) throws IOException
@@ -91,29 +96,7 @@ public class MartusOrchidDirectoryStore implements DirectoryStore
 			DataInputStream in = new DataInputStream(fileIn);
 			try
 			{
-				String fileTypeIdentifier = in.readUTF();
-				if(!fileTypeIdentifier.equals(FILE_TYPE_IDENTIFIER))
-					throw new IOException("File not valid type");
-				int version = in.readInt();
-				if(version < FILE_VERSION)
-				{
-					MartusLogger.log("Ignoring older orchid cache file");
-					return;
-				}
-				if(version > FILE_VERSION)
-				{
-					MartusLogger.log("Ignoring newer orchid cache file");
-					return;
-				}
-				int fileCount = in.readInt();
-				for(int i = 0; i < fileCount; ++i)
-				{
-					String cacheFilename = in.readUTF();
-					int length = in.readInt();
-					byte[] bytes = new byte[length];
-					in.read(bytes);
-					contentsByFile.put(cacheFilename, bytes);
-				}
+				readStoreFromStream(in);
 			}
 			finally
 			{
@@ -125,6 +108,33 @@ public class MartusOrchidDirectoryStore implements DirectoryStore
 			fileIn.close();
 		}
 		MartusLogger.logEndProcess("Loading Orchid cache");
+	}
+
+	private void readStoreFromStream(DataInputStream in) throws IOException
+	{
+		String fileTypeIdentifier = in.readUTF();
+		if(!fileTypeIdentifier.equals(FILE_TYPE_IDENTIFIER))
+			throw new IOException("File not valid type");
+		int version = in.readInt();
+		if(version < FILE_VERSION)
+		{
+			MartusLogger.log("Ignoring older orchid cache file");
+			return;
+		}
+		if(version > FILE_VERSION)
+		{
+			MartusLogger.log("Ignoring newer orchid cache file");
+			return;
+		}
+		int fileCount = in.readInt();
+		for(int i = 0; i < fileCount; ++i)
+		{
+			String cacheFilename = in.readUTF();
+			int length = in.readInt();
+			byte[] bytes = new byte[length];
+			in.read(bytes);
+			contentsByFile.put(cacheFilename, bytes);
+		}
 	}
 
 	@Override
