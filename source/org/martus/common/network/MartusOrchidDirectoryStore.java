@@ -87,7 +87,7 @@ public class MartusOrchidDirectoryStore implements DirectoryStore
 		}
 	}
 
-	public void loadStore(File martusOrchidCacheFile, MartusCrypto security) throws Exception
+	public synchronized void loadStore(File martusOrchidCacheFile, MartusCrypto security) throws Exception
 	{
 		if(!martusOrchidCacheFile.exists())
 			return;
@@ -124,7 +124,7 @@ public class MartusOrchidDirectoryStore implements DirectoryStore
 		MartusLogger.logEndProcess("Loading Orchid cache");
 	}
 
-	private void readStoreFromStream(DataInputStream in) throws IOException
+	private synchronized void readStoreFromStream(DataInputStream in) throws IOException
 	{
 		String fileTypeIdentifier = in.readUTF();
 		if(!fileTypeIdentifier.equals(FILE_TYPE_IDENTIFIER))
@@ -214,13 +214,13 @@ public class MartusOrchidDirectoryStore implements DirectoryStore
 	}
 
 	@Override
-	public void removeAllCacheFiles()
+	public synchronized void removeAllCacheFiles()
 	{
 		MartusLogger.log("MODS.removeAllCacheFiles()");
 		contentsByFile.clear();
 	}
 
-	private void rawRemoveCacheFile(CacheFile cacheFile)
+	private synchronized void rawRemoveCacheFile(CacheFile cacheFile)
 	{
 		contentsByFile.remove(cacheFile);
 	}
@@ -231,7 +231,7 @@ public class MartusOrchidDirectoryStore implements DirectoryStore
 		rawAppendData(cacheFile, rawDocumentBytes);
 	}
 
-	private void rawAppendData(CacheFile cacheFile, ByteBuffer rawDocumentBytes)
+	private synchronized void rawAppendData(CacheFile cacheFile, ByteBuffer rawDocumentBytes)
 	{
 		byte[] existingBytes = contentsByFile.get(cacheFile.getFilename());
 		if(existingBytes == null)
