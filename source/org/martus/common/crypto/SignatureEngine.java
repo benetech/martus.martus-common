@@ -59,6 +59,11 @@ public class SignatureEngine
 		engine.update(bytes);
 	}
 	
+	public void digest(byte[] buffer, int off, int len) throws Exception
+	{
+		engine.update(buffer, off, len);
+	}
+
 	public void digest(InputStream in) throws Exception
 	{
 		int got;
