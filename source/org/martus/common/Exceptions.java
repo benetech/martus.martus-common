@@ -56,6 +56,10 @@ public class Exceptions
 	{
 	}
 	
+	public static class ServerNotCompatibleException extends Exception
+	{
+	}
+	
 	public static class AccountNotFoundException extends Exception
 	{
 	}
