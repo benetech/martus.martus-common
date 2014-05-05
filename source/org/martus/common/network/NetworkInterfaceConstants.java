@@ -42,6 +42,7 @@ public interface NetworkInterfaceConstants
 	public static final String NO_SERVER = "no server";
 	public static final String SERVER_DOWN = "server is down";
 	public static final String SERVER_ERROR = "server error";
+	public static final String SERVER_NOT_COMPATIBLE = "server not compatible";
 	public static final String SIG_ERROR = "signature error";
 	public static final String INCOMPLETE = "incomplete result";
 	public static final String TRANSPORT_NOT_READY = "transport not ready";
