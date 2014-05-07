@@ -126,8 +126,12 @@ public class CustomFieldTemplate
 				
 				int topSectionBundleLength = bundleIn.readInt();
 				int bottomSectionBundleLength = bundleIn.readInt();
-				int titleLength = bundleIn.readInt();
-				int descriptionLength = bundleIn.readInt();
+				int titleLength = 0;
+				if(templateVersion >= 3)
+					titleLength = bundleIn.readInt();
+				int descriptionLength = 0;
+				if(templateVersion >= 3)
+					descriptionLength = bundleIn.readInt();
 				
 				byte[] dataBundleTopSection = new byte[topSectionBundleLength];
 				byte[] dataBundleBottomSection = new byte[bottomSectionBundleLength];
@@ -145,13 +149,19 @@ public class CustomFieldTemplate
 				byte[] xmlBytesBottomSection = security.extractFromSignedBundle(dataBundleBottomSection, bottomSectionSignedByKeys);
 				templateXMLToImportBottomSection = UnicodeUtilities.toUnicodeString(xmlBytesBottomSection);
 
-				Vector titleSignedByKeys = getSignedByAsVector(dataTitle, security);
-				byte[] bytesTitleOnly = security.extractFromSignedBundle(dataTitle, titleSignedByKeys);
-				title = UnicodeUtilities.toUnicodeString(bytesTitleOnly);
+				if(templateVersion >= 3)
+				{
+					Vector titleSignedByKeys = getSignedByAsVector(dataTitle, security);
+					byte[] bytesTitleOnly = security.extractFromSignedBundle(dataTitle, titleSignedByKeys);
+					title = UnicodeUtilities.toUnicodeString(bytesTitleOnly);
+				}
 
-				Vector descriptionSignedByKeys = getSignedByAsVector(dataDescription, security);
-				byte[] bytesDescriptionOnly = security.extractFromSignedBundle(dataDescription, descriptionSignedByKeys);
-				description = UnicodeUtilities.toUnicodeString(bytesDescriptionOnly);
+				if(templateVersion >= 3)
+				{
+					Vector descriptionSignedByKeys = getSignedByAsVector(dataDescription, security);
+					byte[] bytesDescriptionOnly = security.extractFromSignedBundle(dataDescription, descriptionSignedByKeys);
+					description = UnicodeUtilities.toUnicodeString(bytesDescriptionOnly);
+				}
 			}
 
 			Vector topSectionSignedByKeys = getSignedByAsVector(dataBundleTopSectionInputStream, security);
