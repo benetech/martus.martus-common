@@ -26,6 +26,8 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common;
 
+import java.io.File;
+
 public class MartusConstants
 {
 	// Somewhat surprisingly, a 32k buffer didn't seem to be any
@@ -37,5 +39,25 @@ public class MartusConstants
 	public final static int numberOfFilesInShare = 5;
 	public final static String NEWLINE = System.getProperty("line.separator");
 	public static final String deprecatedCustomFieldSpecs = "Error,Config written by a newer version of Martus, upgrade";
-
+	
+	public static File determineMartusDataRootDirectory()
+	{
+		String dir;
+		if(Version.isRunningUnderWindows())
+		{
+			dir = "C:/Martus/";
+		}
+		else
+		{
+			String userHomeDir = System.getProperty("user.home");
+			dir = userHomeDir + "/.Martus/";
+		}
+		File file = new File(dir);
+		if(!file.exists())
+		{
+			file.mkdirs();
+		}
+	
+		return file;
+	}
 }
