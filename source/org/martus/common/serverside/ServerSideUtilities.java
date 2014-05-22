@@ -75,6 +75,8 @@ public class ServerSideUtilities
 	public static final int EXIT_UNEXPECTED_FILE_STARTUP = 4;
 	public static final int EXIT_STARTUP_DIRECTORY_NOT_EMPTY = 5;
 	public static final int EXIT_MISSING_DATA_DIRECTORY = 6;
+	public static final int ALREADY_IN_USE = 7;
+	public static final int EXIT_INVALID_COMMAND_LINE = 8;
 	public static final int EXIT_NO_LISTENERS = 20;
 	public static final int EXIT_INVALID_IPADDRESS = 23;
 	public static final int EXIT_INVALID_PASSWORD = 73;	
