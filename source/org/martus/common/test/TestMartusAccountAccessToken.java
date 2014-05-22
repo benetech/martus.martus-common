@@ -83,6 +83,16 @@ public class TestMartusAccountAccessToken extends TestCaseEnhanced
 			fail("Should not have thrown for a valid Token");
 		}
 	}
+	
+	public void testTokenLength()
+	{
+		String validButTooShort = "13";
+		assertEquals("Valid token that is too short is considered valid?", false, MartusAccountAccessToken.isTokenValid(validButTooShort));
+		
+		// TODO: As soon as we have real tokens, beta tokens need to become invalid
+		String betaToken = "192497";
+		assertEquals("Beta token is invalid?", true, MartusAccountAccessToken.isTokenValid(betaToken));
+	}
 
 	public void testLoadFromFile() throws Exception
 	{
