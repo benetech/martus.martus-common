@@ -117,9 +117,14 @@ public class MartusAccountAccessToken
 	
 	private void setToken(String newToken) throws TokenInvalidException
 	{
-		if(!isTokenValid(newToken))
+		if(!isValid(newToken))
 			throw new TokenInvalidException();
 		token = newToken;
+	}
+	
+	public boolean isValid(String tokenToValidate)
+	{
+		return MartusAccountAccessToken.isTokenValid(tokenToValidate);
 	}
 
 	public static boolean isTokenValid(String tokenToValidate)
