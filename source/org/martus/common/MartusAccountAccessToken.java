@@ -131,7 +131,7 @@ public class MartusAccountAccessToken
 		return validationCheck.isTokenValid(tokenToValidate);
 	}
 
-	public static int MINIMUM_TOKEN_LENGTH = 6;
+	public static int MINIMUM_TOKEN_LENGTH = 7;
 	
 	public static final String REQUEST_MARTUS_ACCOUNT_ACCESS_TOKEN_JSON_TAG = "RequestMartusAccessToken";
 	public static final String REQUEST_MARTUS_ACCOUNT_ACCESS_ACCOUTID_JSON_TAG = "RequestMartusAccessPublicKey";
