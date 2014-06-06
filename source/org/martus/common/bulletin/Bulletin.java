@@ -80,6 +80,11 @@ public class Bulletin implements BulletinConstants
 		this(securityToUse, StandardFieldSpecs.getDefaultTopSetionFieldSpecs(), StandardFieldSpecs.getDefaultBottomSectionFieldSpecs());
 	}
 	
+	public Bulletin(MartusCrypto securityToUse, UniversalId headerUid, FieldSpecCollection publicFieldSpecs, FieldSpecCollection privateFieldSpecs) throws Exception
+	{
+		this(securityToUse, headerUid, FieldDataPacket.createUniversalId(securityToUse), FieldDataPacket.createUniversalId(securityToUse), publicFieldSpecs, privateFieldSpecs);
+	}
+
 	public Bulletin(MartusCrypto securityToUse, FieldSpecCollection publicFieldSpecs, FieldSpecCollection privateFieldSpecs) throws Exception
 	{
 		this(securityToUse, BulletinHeaderPacket.createUniversalId(securityToUse), FieldDataPacket.createUniversalId(securityToUse), FieldDataPacket.createUniversalId(securityToUse), publicFieldSpecs, privateFieldSpecs);
@@ -699,6 +704,7 @@ public class Bulletin implements BulletinConstants
 	public static final String PSEUDOFIELD_WAS_SENT = "_wasSent";
 	public static final String TOP_SECTION = "TopSection";
 	public static final String BOTTOM_SECTION = "BottomSection";
+	public enum BulletinType {LEGACY_BULLETIN, RECORD, NOTE};
 	
 	private boolean isNonAttachmentDataValidFlag;
 	private MartusCrypto security;
