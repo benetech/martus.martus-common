@@ -44,7 +44,8 @@ public class UniversalIdForTesting extends UniversalId
 		
 		byte[] randomBytes = new byte[UniversalId.LOCALID_RANDOM_BYTE_COUNT];
 		insecureRandom.nextBytes(randomBytes);
-		String localId = UniversalId.createLocalIdFromByteArray(prefix, randomBytes);
+		String noSuffix = "";
+		String localId = UniversalId.createLocalIdFromByteArray(prefix, randomBytes, noSuffix);
 		return createFromAccountAndLocalId(accountId, localId);
 	}
 

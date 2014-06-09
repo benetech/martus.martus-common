@@ -103,9 +103,16 @@ public class Packet
 	
 	static public String createLocalId(MartusCrypto crypto, String prefix)
 	{
+		String noSuffix = "";
+		return createLocalIdWithPrefixAndSuffix(crypto, prefix, noSuffix);
+	}
+
+	static public String createLocalIdWithPrefixAndSuffix(MartusCrypto crypto,
+			String prefix, String suffix)
+	{
 		SessionKey sessionKey = crypto.createSessionKey();
 		byte[] originalBytes = sessionKey.getBytes();
-		return UniversalId.createLocalIdFromByteArray(prefix, originalBytes);
+		return UniversalId.createLocalIdFromByteArray(prefix, originalBytes, suffix);
 	}
 
 	public UniversalId getUniversalId()

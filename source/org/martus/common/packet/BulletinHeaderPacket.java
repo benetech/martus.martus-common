@@ -96,30 +96,30 @@ public class BulletinHeaderPacket extends Packet
 	
 	public static UniversalId createUniversalId(MartusCrypto accountSecurity, BulletinType bulletinType)
 	{
-		String fullPrefix = prefixAllTypes;
+		String suffix = "";
 		switch(bulletinType)
 		{
 			case NOTE:
-				fullPrefix = prefixNote;
+				suffix = suffixNote;
 				break;
 			case RECORD:
-				fullPrefix = prefixRecord;
+				suffix = suffixRecord;
 				break;
 		}
-		return UniversalId.createFromAccountAndLocalId(accountSecurity.getPublicKeyString(), createLocalId(accountSecurity, fullPrefix));
+		return UniversalId.createFromAccountAndLocalId(accountSecurity.getPublicKeyString(), createLocalIdWithPrefixAndSuffix(accountSecurity, prefix, suffix));
 	}
 
 	public static boolean isValidLocalId(String localId)
 	{
-		return localId.startsWith(prefixAllTypes);
+		return localId.startsWith(prefix);
 	}
 	
 	public BulletinType getBulletinType()
 	{
 		String localId = getUniversalId().getLocalId();
-		if(localId.startsWith(prefixNote))
+		if(localId.endsWith(suffixNote))
 			return Bulletin.BulletinType.NOTE;
-		if(localId.startsWith(prefixRecord))
+		if(localId.endsWith(suffixRecord))
 			return Bulletin.BulletinType.RECORD;
 		return Bulletin.BulletinType.LEGACY_BULLETIN;
 	}
@@ -532,9 +532,9 @@ public class BulletinHeaderPacket extends Packet
 	private byte[] privateFieldDataPacketSig;
 	private Vector publicAttachments;
 	private Vector privateAttachments;
-	private static final String prefixAllTypes = "B-";
-	private static final String prefixNote = prefixAllTypes +"N-";
-	private static final String prefixRecord = prefixAllTypes + "R-";
+	private static final String prefix = "B-";
+	private static final String suffixNote = "_N";
+	private static final String suffixRecord = "_R";
 	private HeadquartersKeys authorizedToReadKeys;
 	private boolean allHQsCanProxyUpload;
 	private BulletinHistory history;
