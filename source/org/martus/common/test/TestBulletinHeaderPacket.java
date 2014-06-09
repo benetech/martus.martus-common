@@ -98,6 +98,8 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		hp = new BulletinHeaderPacket(security, Bulletin.BulletinType.RECORD);		
 		assertEquals(hp.getBulletinType(), Bulletin.BulletinType.RECORD);
 		
+		hp = new BulletinHeaderPacket(security, Bulletin.BulletinType.LEGACY_BULLETIN);		
+		assertEquals(hp.getBulletinType(), Bulletin.BulletinType.LEGACY_BULLETIN);
 	}
 
 	public void testConstructorWithId()

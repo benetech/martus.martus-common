@@ -51,6 +51,7 @@ import org.martus.common.bulletin.BulletinLoader;
 import org.martus.common.bulletin.BulletinZipUtilities;
 import org.martus.common.bulletinstore.BulletinStore;
 import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.crypto.MartusCrypto.EncryptionException;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
@@ -286,109 +287,30 @@ public class TestMartusUtilities extends TestCaseEnhanced
 
 	public void testValidateIntegrityOfZipFilePackets() throws Exception
 	{
-		BulletinStore store = new MockBulletinStore(this);
-		ReadableDatabase db = store.getDatabase();
-
-		File sampleAttachment = createTempFileFromName("$$$Martus_This is some data");
-		AttachmentProxy ap = new AttachmentProxy(sampleAttachment);
-
 		Bulletin b = new Bulletin(security);
-		b.addPublicAttachment(ap);
-		store.saveEncryptedBulletinForTesting(b);
-		String accountId = b.getAccount();
-		DatabaseKey key = DatabaseKey.createKey(b.getUniversalId(), b.getStatus());
-
-		File originalZipFile = createTempFile();
-		BulletinZipUtilities.exportBulletinPacketsFromDatabaseToZipFile(db, key, originalZipFile, security);
-		validateZipFile(accountId, originalZipFile);
-
-		File copiedZipFile = createCopyOfZipFile(originalZipFile, null, null);
-		validateZipFile(accountId, copiedZipFile);
-
-		File zipWithoutHeaderPacket = createCopyOfZipFile(originalZipFile, "B-", null);
-		try
-		{
-			validateZipFile(accountId, zipWithoutHeaderPacket);
-			fail("Should have thrown for missing header");
-		}
-		catch (IOException ignoreExpectedException)
-		{
-		}
-
-		File zipWithoutDataPackets = createCopyOfZipFile(originalZipFile, "F-", null);
-		try
-		{
-			validateZipFile(accountId, zipWithoutDataPackets);
-			fail("Should have thrown for missing data packets");
-		}
-		catch (IOException ignoreExpectedException)
-		{
-		}
-
-		File zipWithoutAttachmentPackets = createCopyOfZipFile(originalZipFile, "A-", null);
-		try
-		{
-			validateZipFile(accountId, zipWithoutAttachmentPackets);
-			fail("Should have thrown for missing attachment");
-		}
-		catch (IOException ignoreExpectedException)
-		{
-		}
-
-		File zipWithExtraEntry = createCopyOfZipFile(originalZipFile, null, "unexpected");
-		try
-		{
-			validateZipFile(accountId, zipWithExtraEntry);
-			fail("Should have thrown for extra entry");
-		}
-		catch (IOException ignoreExpectedException)
-		{
-		}
-
-		File zipWithRelativePathInformation = createCopyOfZipFile(originalZipFile, null, "../../../acctmap.txt");
-		try
-		{
-			validateZipFile(accountId, zipWithRelativePathInformation);
-			fail("Should have thrown for relative path in name");
-		}
-		catch(InvalidPacketException ignoreExpectedException)
-		{
-		}
-
-		File zipWithAbsolutePathInformation = createCopyOfZipFile(originalZipFile, null, "c:/MartusServer/packets/acctmap.txt");
-		try
-		{
-			validateZipFile(accountId, zipWithAbsolutePathInformation);
-			fail("Should have thrown for absolute path in name");
-		}
-		catch(InvalidPacketException ignoreExpectedException)
-		{
-		}
-		
-		sampleAttachment.delete();
-		originalZipFile.delete();
-		copiedZipFile.delete();
-		zipWithoutHeaderPacket.delete();
-		zipWithoutDataPackets.delete();
-		zipWithoutAttachmentPackets.delete();
-		zipWithExtraEntry.delete();
-		zipWithRelativePathInformation.delete();
-		zipWithAbsolutePathInformation.delete();
+		testValidateIntegrityOfZipFilePackets(b);
 	}
 
 	public void testValidateIntegrityOfZipFilePacketsNewNoteType() throws Exception
 	{
-		BulletinStore store = new MockBulletinStore(this);
-		ReadableDatabase db = store.getDatabase();
-
-		File sampleAttachment = createTempFileFromName("$$$Martus_This is some data");
-		AttachmentProxy ap = new AttachmentProxy(sampleAttachment);
 		FieldSpecCollection publicSpec = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
 		FieldSpecCollection privateSpec = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
 		UniversalId noteHeaderId = BulletinHeaderPacket.createUniversalId(security, Bulletin.BulletinType.NOTE);
 		
 		Bulletin b = new Bulletin(security, noteHeaderId, publicSpec, privateSpec);
 		assertEquals("Not a Note?", b.getBulletinHeaderPacket().getBulletinType(), Bulletin.BulletinType.NOTE);
+
+		testValidateIntegrityOfZipFilePackets(b);
+	}
+
+	private void testValidateIntegrityOfZipFilePackets(Bulletin b) throws Exception, IOException,
+			EncryptionException, FileNotFoundException, ZipException
+	{
+		BulletinStore store = new MockBulletinStore(this);
+		ReadableDatabase db = store.getDatabase();
+
+		File sampleAttachment = createTempFileFromName("$$$Martus_This is some data");
+		AttachmentProxy ap = new AttachmentProxy(sampleAttachment);
 		b.addPublicAttachment(ap);
 		store.saveEncryptedBulletinForTesting(b);
 		String accountId = b.getAccount();
