@@ -327,6 +327,11 @@ public class Bulletin implements BulletinConstants
 		
 		return field.getType();
 	}
+	
+	public BulletinType getBulletinType()
+	{
+		return getBulletinHeaderPacket().getBulletinType();
+	}
 
 	public void addPublicAttachment(AttachmentProxy a) throws
 		IOException,

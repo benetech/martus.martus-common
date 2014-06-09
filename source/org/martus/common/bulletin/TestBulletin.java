@@ -118,7 +118,8 @@ public class TestBulletin extends TestCaseEnhanced
 
 		assertEquals("account not initialized correctly?", security.getPublicKeyString(), b.getAccount());
 		assertEquals("field data account?", security.getPublicKeyString(), b.getFieldDataPacket().getAccountId());
-
+		
+		assertEquals("Not a Legacy Bulletin", b.getBulletinType(), Bulletin.BulletinType.LEGACY_BULLETIN);
 	}
     
     public void testPseudoFields() throws Exception

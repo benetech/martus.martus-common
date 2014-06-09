@@ -298,7 +298,7 @@ public class TestMartusUtilities extends TestCaseEnhanced
 		UniversalId noteHeaderId = BulletinHeaderPacket.createUniversalId(security, Bulletin.BulletinType.NOTE);
 		
 		Bulletin b = new Bulletin(security, noteHeaderId, publicSpec, privateSpec);
-		assertEquals("Not a Note?", b.getBulletinHeaderPacket().getBulletinType(), Bulletin.BulletinType.NOTE);
+		assertEquals("Not a Note?", b.getBulletinType(), Bulletin.BulletinType.NOTE);
 
 		testValidateIntegrityOfZipFilePackets(b);
 	}
