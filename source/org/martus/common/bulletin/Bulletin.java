@@ -80,9 +80,9 @@ public class Bulletin implements BulletinConstants
 		this(securityToUse, StandardFieldSpecs.getDefaultTopSetionFieldSpecs(), StandardFieldSpecs.getDefaultBottomSectionFieldSpecs());
 	}
 	
-	public Bulletin(MartusCrypto securityToUse, UniversalId headerUid, FieldSpecCollection publicFieldSpecs, FieldSpecCollection privateFieldSpecs) throws Exception
+	public Bulletin(MartusCrypto securityToUse, BulletinType bulletinType, FieldSpecCollection publicFieldSpecs, FieldSpecCollection privateFieldSpecs) throws Exception
 	{
-		this(securityToUse, headerUid, FieldDataPacket.createUniversalId(securityToUse), FieldDataPacket.createUniversalId(securityToUse), publicFieldSpecs, privateFieldSpecs);
+		this(securityToUse, BulletinHeaderPacket.createUniversalId(securityToUse, bulletinType), FieldDataPacket.createUniversalId(securityToUse), FieldDataPacket.createUniversalId(securityToUse), publicFieldSpecs, privateFieldSpecs);
 	}
 
 	public Bulletin(MartusCrypto securityToUse, FieldSpecCollection publicFieldSpecs, FieldSpecCollection privateFieldSpecs) throws Exception
