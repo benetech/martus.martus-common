@@ -122,6 +122,18 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals("Not a Legacy Bulletin", b.getBulletinType(), Bulletin.BulletinType.LEGACY_BULLETIN);
 	}
     
+    public void testCreateRecordBulletin() throws Exception
+    {
+    		Bulletin b = new Bulletin(security, Bulletin.BulletinType.RECORD, StandardFieldSpecs.getDefaultTopSetionFieldSpecs(), StandardFieldSpecs.getDefaultBottomSectionFieldSpecs());
+    		assertEquals("Bulletin created should be of type RECORD", b.getBulletinType(), Bulletin.BulletinType.RECORD);
+    }
+    
+    public void testCreateNoteBulletin() throws Exception
+    {
+    		Bulletin b = new Bulletin(security, Bulletin.BulletinType.NOTE, StandardFieldSpecs.getDefaultTopSetionFieldSpecs(), StandardFieldSpecs.getDefaultBottomSectionFieldSpecs());
+    		assertEquals("Bulletin created should be of type NOTE", b.getBulletinType(), Bulletin.BulletinType.NOTE);
+    }
+
     public void testPseudoFields() throws Exception
     {
     	Bulletin b = new Bulletin(security);

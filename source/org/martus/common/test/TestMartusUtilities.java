@@ -295,9 +295,8 @@ public class TestMartusUtilities extends TestCaseEnhanced
 	{
 		FieldSpecCollection publicSpec = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
 		FieldSpecCollection privateSpec = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
-		UniversalId noteHeaderId = BulletinHeaderPacket.createUniversalId(security, Bulletin.BulletinType.NOTE);
 		
-		Bulletin b = new Bulletin(security, noteHeaderId, publicSpec, privateSpec);
+		Bulletin b = new Bulletin(security, Bulletin.BulletinType.NOTE, publicSpec, privateSpec);
 		assertEquals("Not a Note?", b.getBulletinType(), Bulletin.BulletinType.NOTE);
 
 		testValidateIntegrityOfZipFilePackets(b);
