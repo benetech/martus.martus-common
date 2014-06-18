@@ -22,8 +22,7 @@ License along with this program; if not, write to the Free
 Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.
 
- */
-
+*/
 package org.martus.common.network;
 
 import javax.net.ssl.TrustManager;
@@ -31,9 +30,21 @@ import javax.net.ssl.TrustManager;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcTransportFactory;
 
-abstract public class TransportWrapper
+public class PassThroughTransportWrapper extends TransportWrapper
 {
-	abstract public boolean isEnabled();
-	abstract public boolean isReady();
-	abstract public XmlRpcTransportFactory createTransport(XmlRpcClient client,	TrustManager tm) throws Exception;
+	public boolean isEnabled()
+	{
+		return false;
+	}
+	
+	public boolean isReady()
+	{
+		return true;
+	}
+	
+	public XmlRpcTransportFactory createTransport(XmlRpcClient client,	TrustManager tm) throws Exception
+	{
+		return null;
+	}
+
 }
