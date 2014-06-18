@@ -32,6 +32,7 @@ import java.util.Arrays;
 import org.martus.common.HeadquartersKey;
 import org.martus.common.HeadquartersKeys;
 import org.martus.common.MartusXml;
+import org.martus.common.bulletin.Bulletin;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.packet.BulletinHeaderPacket;
@@ -73,6 +74,32 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 	{
 		assertEquals("not legal?", true, BulletinHeaderPacket.isValidLocalId("B-12345"));
 		assertEquals("was legal?", false, BulletinHeaderPacket.isValidLocalId("F-12345"));
+	}
+	
+	public void testBulletinType()
+	{
+		BulletinHeaderPacket hp = new BulletinHeaderPacket();
+		assertEquals("Default type?", hp.getBulletinType(), Bulletin.BulletinType.LEGACY_BULLETIN);
+		
+		hp = new BulletinHeaderPacket(security);
+		assertEquals("Default type passing in just a security?", hp.getBulletinType(), Bulletin.BulletinType.LEGACY_BULLETIN);
+
+		UniversalId newNoteUniversalId = BulletinHeaderPacket.createUniversalId(security, Bulletin.BulletinType.NOTE);
+		hp = new BulletinHeaderPacket(newNoteUniversalId);		
+		assertEquals(hp.getBulletinType(), Bulletin.BulletinType.NOTE);
+		
+		UniversalId newRecordUniversalId = BulletinHeaderPacket.createUniversalId(security, Bulletin.BulletinType.RECORD);
+		hp = new BulletinHeaderPacket(newRecordUniversalId);		
+		assertEquals(hp.getBulletinType(), Bulletin.BulletinType.RECORD);
+		
+		hp = new BulletinHeaderPacket(security, Bulletin.BulletinType.NOTE);
+		assertEquals(hp.getBulletinType(), Bulletin.BulletinType.NOTE);
+
+		hp = new BulletinHeaderPacket(security, Bulletin.BulletinType.RECORD);		
+		assertEquals(hp.getBulletinType(), Bulletin.BulletinType.RECORD);
+		
+		hp = new BulletinHeaderPacket(security, Bulletin.BulletinType.LEGACY_BULLETIN);		
+		assertEquals(hp.getBulletinType(), Bulletin.BulletinType.LEGACY_BULLETIN);
 	}
 
 	public void testConstructorWithId()

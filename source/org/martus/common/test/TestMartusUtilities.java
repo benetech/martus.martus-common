@@ -40,6 +40,7 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+import org.martus.common.FieldSpecCollection;
 import org.martus.common.MartusUtilities;
 import org.martus.common.MartusUtilities.FileVerificationException;
 import org.martus.common.MartusUtilities.InvalidPublicKeyFileException;
@@ -50,11 +51,13 @@ import org.martus.common.bulletin.BulletinLoader;
 import org.martus.common.bulletin.BulletinZipUtilities;
 import org.martus.common.bulletinstore.BulletinStore;
 import org.martus.common.crypto.MartusCrypto;
+import org.martus.common.crypto.MartusCrypto.EncryptionException;
 import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.MockServerDatabase;
 import org.martus.common.database.ReadableDatabase;
+import org.martus.common.fieldspec.StandardFieldSpecs;
 import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.BulletinHeaderPacket;
 import org.martus.common.packet.FieldDataPacket;
@@ -284,13 +287,29 @@ public class TestMartusUtilities extends TestCaseEnhanced
 
 	public void testValidateIntegrityOfZipFilePackets() throws Exception
 	{
+		Bulletin b = new Bulletin(security);
+		testValidateIntegrityOfZipFilePackets(b);
+	}
+
+	public void testValidateIntegrityOfZipFilePacketsNewNoteType() throws Exception
+	{
+		FieldSpecCollection publicSpec = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
+		FieldSpecCollection privateSpec = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
+		
+		Bulletin b = new Bulletin(security, Bulletin.BulletinType.NOTE, publicSpec, privateSpec);
+		assertEquals("Not a Note?", b.getBulletinType(), Bulletin.BulletinType.NOTE);
+
+		testValidateIntegrityOfZipFilePackets(b);
+	}
+
+	private void testValidateIntegrityOfZipFilePackets(Bulletin b) throws Exception, IOException,
+			EncryptionException, FileNotFoundException, ZipException
+	{
 		BulletinStore store = new MockBulletinStore(this);
 		ReadableDatabase db = store.getDatabase();
 
 		File sampleAttachment = createTempFileFromName("$$$Martus_This is some data");
 		AttachmentProxy ap = new AttachmentProxy(sampleAttachment);
-
-		Bulletin b = new Bulletin(security);
 		b.addPublicAttachment(ap);
 		store.saveEncryptedBulletinForTesting(b);
 		String accountId = b.getAccount();

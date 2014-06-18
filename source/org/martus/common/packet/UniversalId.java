@@ -117,14 +117,14 @@ public class UniversalId implements Comparable
 		localId = newLocalId.replace(':', '-');
 	}
 	
-	public static String createLocalIdFromByteArray(String prefix, byte[] originalBytes)
+	public static String createLocalIdFromByteArray(String prefix, byte[] originalBytes, String suffix)
 	{
 		byte[] wantedBytes = new byte[UniversalId.LOCALID_RANDOM_BYTE_COUNT];
 		System.arraycopy(originalBytes, 0, wantedBytes, 0, wantedBytes.length);
 		String base64SessionKey = StreamableBase64.encode(wantedBytes);
 		String normalizedKey = base64SessionKey.replaceAll("/",".");
 		normalizedKey = normalizedKey.replaceAll("=", "-");
-		String localId = prefix + normalizedKey;
+		String localId = prefix + normalizedKey + suffix;
 		return localId;
 	}
 
