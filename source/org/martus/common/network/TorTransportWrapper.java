@@ -40,7 +40,7 @@ import com.subgraph.orchid.TorInitializationListener;
 import com.subgraph.orchid.xmlrpc.OrchidXmlRpcTransportFactory;
 
 
-public class TorTransportWrapper
+public class TorTransportWrapper extends TransportWrapper
 {
 	public static TorTransportWrapper createWithoutPersistentStore() throws Exception
 	{
