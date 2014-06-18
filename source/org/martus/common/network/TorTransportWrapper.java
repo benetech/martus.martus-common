@@ -78,6 +78,13 @@ public class TorTransportWrapper
 			new TorInitializer().start();
 	}
 
+	public void startInSameThread()
+	{
+		isTorActive = true;
+		if(!isTorReady)
+			getTor().start();
+	}
+	
 	public void stop()
 	{
 		isTorActive = false;
