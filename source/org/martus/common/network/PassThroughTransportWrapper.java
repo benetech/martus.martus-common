@@ -32,7 +32,7 @@ import org.apache.xmlrpc.client.XmlRpcTransportFactory;
 
 public class PassThroughTransportWrapper extends TransportWrapper
 {
-	public boolean isEnabled()
+	public boolean isTorEnabled()
 	{
 		return false;
 	}

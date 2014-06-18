@@ -106,7 +106,7 @@ public class TorTransportWrapper extends TransportWrapper
 		return tor;
 	}
 
-	public boolean isEnabled()
+	public boolean isTorEnabled()
 	{
 		return isTorActive;
 	}
