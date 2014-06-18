@@ -35,6 +35,7 @@ import java.security.PublicKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Random;
 import java.util.Vector;
 
@@ -94,6 +95,34 @@ public class TestMartusSecurity extends TestCaseEnhanced
 		assertTrue("setup: KeyPair returned NULL", security.hasKeyPair());
 		assertNotNull("setup: Key returned NULL", security.getKeyPair().getPrivateKey());
 		TRACE_END();
+	}
+	
+	public void testPublicCode40WithLocale() throws Exception
+	{
+		
+		String idOfLocaleThatUsesNonAsciiDigits = "th-TH-u-nu-thai";
+		Locale localeWithNonAsciiDigits = Locale.forLanguageTag(idOfLocaleThatUsesNonAsciiDigits);
+		String nonAscii = String.format(localeWithNonAsciiDigits, "%d", 1);
+		assertNotEquals("Locale isn't testing non-ascii?", "1", nonAscii);
+
+		Locale originalLocale = Locale.getDefault();
+		try
+		{
+			String fakePublicKeyString = "This string can be anything";
+
+			Locale localeWithAsciiDigits = Locale.forLanguageTag("en");
+			Locale.setDefault(localeWithAsciiDigits);
+			String expectedPublicCode40 = MartusCrypto.computeFormattedPublicCode40(fakePublicKeyString);
+
+			Locale.setDefault(localeWithNonAsciiDigits);
+			String gotPublicCode40 = MartusCrypto.computeFormattedPublicCode40(fakePublicKeyString);
+			assertEquals(expectedPublicCode40, gotPublicCode40);
+		}
+		finally
+		{
+			Locale.setDefault(originalLocale);
+		}
+		
 	}
 	
 	public void testCreateDigest() throws Exception
