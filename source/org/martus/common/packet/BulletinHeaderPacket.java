@@ -32,9 +32,12 @@ import java.util.Enumeration;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
 import org.martus.common.HeadquartersKeys;
 import org.martus.common.MartusXml;
 import org.martus.common.XmlWriterFilter;
+import org.martus.common.bulletin.Bulletin;
+import org.martus.common.bulletin.Bulletin.BulletinType;
 import org.martus.common.bulletin.BulletinConstants;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.database.DatabaseKey;
@@ -50,6 +53,12 @@ public class BulletinHeaderPacket extends Packet
 	public BulletinHeaderPacket(MartusCrypto accountSecurity)
 	{
 		super(createUniversalId(accountSecurity));
+		initialize();
+	}
+
+	public BulletinHeaderPacket(MartusCrypto accountSecurity, Bulletin.BulletinType bulletinType)
+	{
+		super(createUniversalId(accountSecurity, bulletinType));
 		initialize();
 	}
 
@@ -82,7 +91,22 @@ public class BulletinHeaderPacket extends Packet
 
 	public static UniversalId createUniversalId(MartusCrypto accountSecurity)
 	{
-		return UniversalId.createFromAccountAndLocalId(accountSecurity.getPublicKeyString(), createLocalId(accountSecurity, prefix));
+		return createUniversalId(accountSecurity, BulletinType.LEGACY_BULLETIN);
+	}
+	
+	public static UniversalId createUniversalId(MartusCrypto accountSecurity, BulletinType bulletinType)
+	{
+		String suffix = "";
+		switch(bulletinType)
+		{
+			case NOTE:
+				suffix = suffixNote;
+				break;
+			case RECORD:
+				suffix = suffixRecord;
+				break;
+		}
+		return UniversalId.createFromAccountAndLocalId(accountSecurity.getPublicKeyString(), createLocalIdWithPrefixAndSuffix(accountSecurity, prefix, suffix));
 	}
 
 	public static boolean isValidLocalId(String localId)
@@ -90,6 +114,16 @@ public class BulletinHeaderPacket extends Packet
 		return localId.startsWith(prefix);
 	}
 	
+	public BulletinType getBulletinType()
+	{
+		String localId = getUniversalId().getLocalId();
+		if(localId.endsWith(suffixNote))
+			return Bulletin.BulletinType.NOTE;
+		if(localId.endsWith(suffixRecord))
+			return Bulletin.BulletinType.RECORD;
+		return Bulletin.BulletinType.LEGACY_BULLETIN;
+	}
+
 	public void clearAllUserData()
 	{
 		clearAttachments();
@@ -499,6 +533,8 @@ public class BulletinHeaderPacket extends Packet
 	private Vector publicAttachments;
 	private Vector privateAttachments;
 	private static final String prefix = "B-";
+	private static final String suffixNote = "_N";
+	private static final String suffixRecord = "_R";
 	private HeadquartersKeys authorizedToReadKeys;
 	private boolean allHQsCanProxyUpload;
 	private BulletinHistory history;

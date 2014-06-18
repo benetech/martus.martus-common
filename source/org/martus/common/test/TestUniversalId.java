@@ -26,6 +26,9 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.test;
 
+import javax.print.DocFlavor.BYTE_ARRAY;
+
+import org.bouncycastle.util.Arrays;
 import org.martus.common.packet.UniversalId;
 import org.martus.util.TestCaseEnhanced;
 
@@ -73,6 +76,14 @@ public class TestUniversalId extends TestCaseEnhanced
 
 		uid.setLocalId("This:That");
 		assertEquals("setter didn't strip colons?", "This-That", uid.getLocalId());
+		
+		String prefix = "B-";
+		String suffix = "_R";
+		byte[] bytes = new byte[UniversalId.LOCALID_RANDOM_BYTE_COUNT];
+		Arrays.fill(bytes, (byte) 0x65);
+		String localId = UniversalId.createLocalIdFromByteArray( prefix, bytes, suffix);
+		assertTrue(localId.startsWith(prefix));
+		assertTrue(localId.endsWith(suffix));
 	}
 
 	public void testToString()
