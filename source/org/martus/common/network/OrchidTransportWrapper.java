@@ -40,19 +40,19 @@ import com.subgraph.orchid.TorInitializationListener;
 import com.subgraph.orchid.xmlrpc.OrchidXmlRpcTransportFactory;
 
 
-public class TorTransportWrapper extends TransportWrapper
+public class OrchidTransportWrapper extends TransportWrapper
 {
-	public static TorTransportWrapper createWithoutPersistentStore() throws Exception
+	public static OrchidTransportWrapper createWithoutPersistentStore() throws Exception
 	{
 		return create(new MartusOrchidDirectoryStore());
 	}
 	
-	public static TorTransportWrapper create(MartusOrchidDirectoryStore storeToUse) throws Exception
+	public static OrchidTransportWrapper create(MartusOrchidDirectoryStore storeToUse) throws Exception
 	{
-		return new TorTransportWrapper(storeToUse);
+		return new OrchidTransportWrapper(storeToUse);
 	}
 	
-	private TorTransportWrapper(MartusOrchidDirectoryStore storeToUse) throws Exception
+	private OrchidTransportWrapper(MartusOrchidDirectoryStore storeToUse) throws Exception
 	{
 		isTorActive = false;
 		isTorReady = false;
