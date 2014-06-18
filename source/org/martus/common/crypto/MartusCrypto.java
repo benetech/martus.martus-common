@@ -37,6 +37,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Locale;
 import java.util.Vector;
 
 import javax.net.ssl.KeyManager;
@@ -214,7 +215,8 @@ public abstract class MartusCrypto
 		subsetBytes = getSubByteArray(byteOfDigest, startPositionInArray, numberOfBytesToRetrieve);
 		short last2BytesLittleEndian =getShortFromBytesLittleEndian(subsetBytes);
 
-		String publicCodeWithoutDamm = String.format("%017d%017d%05d", first7BytesLittleEndian,second7BytesLittleEndian,last2BytesLittleEndian);
+		Locale localeWithAsciiDigits = Locale.forLanguageTag("en");
+		String publicCodeWithoutDamm = String.format(localeWithAsciiDigits, "%017d%017d%05d", first7BytesLittleEndian,second7BytesLittleEndian,last2BytesLittleEndian);
 		DammCheckDigitAlgorithm damm = new DammCheckDigitAlgorithm();
 		String publicCode = publicCodeWithoutDamm + damm.getCheckDigit(publicCodeWithoutDamm);
 		return publicCode;		
