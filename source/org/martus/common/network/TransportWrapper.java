@@ -26,6 +26,25 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.network;
 
-public class TransportWrapper
+import javax.net.ssl.TrustManager;
+
+import org.apache.xmlrpc.client.XmlRpcClient;
+import org.apache.xmlrpc.client.XmlRpcTransportFactory;
+
+abstract public class TransportWrapper
 {
+	public boolean isEnabled()
+	{
+		return false;
+	}
+	
+	public boolean isReady()
+	{
+		return true;
+	}
+	
+	public XmlRpcTransportFactory createTransport(XmlRpcClient client,	TrustManager tm) throws Exception
+	{
+		return null;
+	}
 }
