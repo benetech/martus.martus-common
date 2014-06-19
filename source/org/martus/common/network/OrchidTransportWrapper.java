@@ -70,7 +70,7 @@ public class OrchidTransportWrapper extends TransportWrapper
 		progressMeter = initializationProgressMeterToUse;
 	}
 
-	public void start()
+	public void startTor()
 	{
 		isTorActive = true;
 		updateStatus();
@@ -78,14 +78,14 @@ public class OrchidTransportWrapper extends TransportWrapper
 			new TorInitializer().start();
 	}
 
-	public void startInSameThread()
+	public void startTorInSameThread()
 	{
 		isTorActive = true;
 		if(!isTorReady)
 			getTor().start();
 	}
 	
-	public void stop()
+	public void stopTor()
 	{
 		isTorActive = false;
 		updateStatus();
