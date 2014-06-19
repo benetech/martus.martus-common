@@ -105,12 +105,20 @@ public class OrchidTransportWrapper extends TransportWrapper
 	{
 		return tor;
 	}
+	
+	@Override
+	public boolean isOnline()
+	{
+		return true;
+	}
 
+	@Override
 	public boolean isTorEnabled()
 	{
 		return isTorActive;
 	}
 	
+	@Override
 	public boolean isReady()
 	{
 		if(!isTorActive)
@@ -145,6 +153,7 @@ public class OrchidTransportWrapper extends TransportWrapper
 		}
 	}
 	
+	@Override
 	public XmlRpcTransportFactory createTransport(XmlRpcClient client, TrustManager tm)	throws Exception 
 	{
 		if(!isTorActive)
@@ -182,11 +191,13 @@ public class OrchidTransportWrapper extends TransportWrapper
 
 		class TorInitializationHandler implements TorInitializationListener
 		{
+			@Override
 			public void initializationProgress(String message, int percent)
 			{
 				updateProgress(message, percent);
 			}
 			
+			@Override
 			public void initializationCompleted()
 			{
 				updateProgressComplete();

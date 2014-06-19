@@ -33,6 +33,7 @@ import org.apache.xmlrpc.client.XmlRpcTransportFactory;
 
 abstract public class TransportWrapper
 {
+	abstract public boolean isOnline();
 	abstract public boolean isTorEnabled();
 	abstract public boolean isReady();
 	abstract public XmlRpcTransportFactory createTransport(XmlRpcClient client,	TrustManager tm) throws Exception;

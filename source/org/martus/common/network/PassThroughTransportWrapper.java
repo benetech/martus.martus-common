@@ -32,16 +32,25 @@ import org.apache.xmlrpc.client.XmlRpcTransportFactory;
 
 public class PassThroughTransportWrapper extends TransportWrapper
 {
+	@Override
+	public boolean isOnline()
+	{
+		return true;
+	}
+
+	@Override
 	public boolean isTorEnabled()
 	{
 		return false;
 	}
 	
+	@Override
 	public boolean isReady()
 	{
 		return true;
 	}
 	
+	@Override
 	public XmlRpcTransportFactory createTransport(XmlRpcClient client,	TrustManager tm) throws Exception
 	{
 		return null;
