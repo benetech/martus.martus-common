@@ -215,8 +215,7 @@ public abstract class MartusCrypto
 		subsetBytes = getSubByteArray(byteOfDigest, startPositionInArray, numberOfBytesToRetrieve);
 		short last2BytesLittleEndian =getShortFromBytesLittleEndian(subsetBytes);
 
-		Locale localeWithAsciiDigits = Locale.forLanguageTag("en");
-		String publicCodeWithoutDamm = String.format(localeWithAsciiDigits, "%017d%017d%05d", first7BytesLittleEndian,second7BytesLittleEndian,last2BytesLittleEndian);
+		String publicCodeWithoutDamm = String.format(Locale.ENGLISH, "%017d%017d%05d", first7BytesLittleEndian,second7BytesLittleEndian,last2BytesLittleEndian);
 		DammCheckDigitAlgorithm damm = new DammCheckDigitAlgorithm();
 		String publicCode = publicCodeWithoutDamm + damm.getCheckDigit(publicCodeWithoutDamm);
 		return publicCode;		
