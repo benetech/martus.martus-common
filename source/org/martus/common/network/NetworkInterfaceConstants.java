@@ -46,6 +46,7 @@ public interface NetworkInterfaceConstants
 	public static final String SIG_ERROR = "signature error";
 	public static final String INCOMPLETE = "incomplete result";
 	public static final String TRANSPORT_NOT_READY = "transport not ready";
+	public static final String TRANSPORT_OFFLINE = "transport offline";
 	public static final String NO_TOKEN_AVAILABLE = "no token available";
 	public static final String FORM_TEMPLATE_DOES_NOT_EXIST = "form template does not exist";
 

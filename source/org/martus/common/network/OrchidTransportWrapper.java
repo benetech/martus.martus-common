@@ -40,7 +40,7 @@ import com.subgraph.orchid.TorInitializationListener;
 import com.subgraph.orchid.xmlrpc.OrchidXmlRpcTransportFactory;
 
 
-public class OrchidTransportWrapper extends TransportWrapper
+public class OrchidTransportWrapper extends TransportWrapperWithOfflineMode
 {
 	public static OrchidTransportWrapper createWithoutPersistentStore() throws Exception
 	{
@@ -107,12 +107,6 @@ public class OrchidTransportWrapper extends TransportWrapper
 	}
 	
 	@Override
-	public boolean isOnline()
-	{
-		return true;
-	}
-
-	@Override
 	public boolean isTorEnabled()
 	{
 		return isTorActive;
@@ -121,6 +115,9 @@ public class OrchidTransportWrapper extends TransportWrapper
 	@Override
 	public boolean isReady()
 	{
+		if(!super.isReady())
+			return false;
+		
 		if(!isTorActive)
 			return true;
 		
