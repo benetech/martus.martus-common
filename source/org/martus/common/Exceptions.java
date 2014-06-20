@@ -60,6 +60,10 @@ public class Exceptions
 	{
 	}
 	
+	public static class NetworkOfflineException extends Exception
+	{
+	}
+	
 	public static class AccountNotFoundException extends Exception
 	{
 	}
