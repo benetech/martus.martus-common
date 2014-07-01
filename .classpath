@@ -6,7 +6,6 @@
 	<classpathentry kind="src" path="/martus-logi"/>
 	<classpathentry kind="src" path="/martus-utils"/>
 	<classpathentry kind="lib" path="/martus-thirdparty/common/InfiniteMonkey/bin/InfiniteMonkey.jar"/>
-	<classpathentry kind="var" path="JUNIT_HOME/junit.jar"/>
 	<classpathentry kind="lib" path="/martus-thirdparty/common/PersianCalendar/bin/icu4j_3_2_calendar.jar"/>
 	<classpathentry kind="lib" path="/martus-thirdparty/common/PersianCalendar/bin/persiancalendar.jar"/>
 	<classpathentry kind="lib" path="/martus-thirdparty/libext/BouncyCastle/bin/bcprov-jdk15on-148.jar"/>
@@ -17,5 +16,6 @@
 	<classpathentry kind="lib" path="/martus-thirdparty/common/XMLRPC/bin/ws-commons-util-1.0.2.jar"/>
 	<classpathentry kind="lib" path="/martus-thirdparty/libext/BouncyCastle/bin/bcpkix-jdk15on-148.jar"/>
 	<classpathentry kind="lib" path="/martus-thirdparty/common/orchid/bin/orchid-1.0.0.25f1ae1.jar" sourcepath="/martus-thirdparty/common/orchid/source/orchid-1.0.0.25f1ae1-src.zip"/>
+	<classpathentry kind="lib" path="/martus-thirdparty/libext/JUnit/bin/junit-4.11.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
