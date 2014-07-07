@@ -56,13 +56,26 @@ public class MartusXml
 	{
 		return getTagStart(tagName) + "\n";
 	}
-	
-	
+		
 	public static String getTagStart(String tagName, String attrName, String attrValue)
 	{
-		return "<" + tagName + " " + attrName + "='" + attrValue + "'>";
+		String[] attrNames = {attrName};
+		String[] attrValues = {attrValue};
+		return getTagStart(tagName, attrNames, attrValues);
 	}
 	
+	public static String getTagStart(String tagName, String[] attrNames, String[] attrValues)
+	{
+		String xmlStartTag = "<" + tagName;
+		int numAttributes = attrNames.length;
+		for(int i = 0; i < numAttributes; ++i)
+		{
+			xmlStartTag += " " + attrNames[i] + "='" + attrValues[i] + "'";
+		}
+		xmlStartTag += ">";
+		return xmlStartTag;
+	}
+
 	public static String getTagWithData(String tag, String data)
 	{
 		return getTagStart(tag) + data + getTagEnd(tag);
