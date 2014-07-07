@@ -187,7 +187,7 @@ public class MartusSecurity extends MartusCrypto
         allowAllCrypto.setAccessible(true);
         defaultPolicy.add((Permission) allowAllCrypto.get(null));
 
-        MartusLogger.log("Successfully removed cryptography restrictions");
+        MartusLogger.log("Successfully removed limitations on strong cryptography");
 	}
 
 	public static boolean isUnlimitedCryptoAvailable()
