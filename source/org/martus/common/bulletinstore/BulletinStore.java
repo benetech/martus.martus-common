@@ -338,12 +338,10 @@ public class BulletinStore
 			{
 				if(BulletinHeaderPacket.isValidLocalId(key.getLocalId()))
 				{
-					++count;
 					visitor.visit(key);
 				}
 			}
 			ReadableDatabase.PacketVisitor visitor;
-			int count;
 		}
 	
 		new BulletinKeyFilter(getDatabase(), visitorToUse);
@@ -363,12 +361,10 @@ public class BulletinStore
 			{
 				if(BulletinHeaderPacket.isValidLocalId(key.getLocalId()))
 				{
-					++count;
 					visitor.visit(key);
 				}
 			}
 			ReadableDatabase.PacketVisitor visitor;
-			int count;
 		}
 	
 		new BulletinKeyFilter(getDatabase(), visitorToUse, publicKeyString);
