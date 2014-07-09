@@ -87,6 +87,12 @@ public class BulletinStore
 		database = db;
 		database.initialize();
 	}
+	
+	public void close()
+	{
+		dir = null;
+		database = null;
+	}
 
 	public void setSignatureGenerator(MartusCrypto securityToUse)
 	{
