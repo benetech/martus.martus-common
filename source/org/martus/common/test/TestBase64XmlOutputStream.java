@@ -81,11 +81,18 @@ public class TestBase64XmlOutputStream extends TestCaseEnhanced
 		Writer writer = new StringWriter();
 		XmlWriterFilter wf = new XmlWriterFilter(writer);
 		Base64XmlOutputStream out = new Base64XmlOutputStream(wf);
-		out.write(data, 0, data.length);
-		out.flush();
-		String result = writer.toString();
-		String expected = getExpectedResult(data);
-		assertEquals("wrong result?", expected, result);
+		try
+		{
+			out.write(data, 0, data.length);
+			out.flush();
+			String result = writer.toString();
+			String expected = getExpectedResult(data);
+			assertEquals("wrong result?", expected, result);
+		}
+		finally
+		{
+			out.close();
+		}
 	}
 
 	public void testBigChunkThenBytes() throws Exception
@@ -96,12 +103,19 @@ public class TestBase64XmlOutputStream extends TestCaseEnhanced
 		Writer writer = new StringWriter();
 		XmlWriterFilter wf = new XmlWriterFilter(writer);
 		Base64XmlOutputStream out = new Base64XmlOutputStream(wf);
-		out.write(data, 0, data.length-1);
-		out.write(data, data.length-1, 1);
-		out.flush();
-		String result = writer.toString();
-		String expected = getExpectedResult(data);
-		assertEquals("wrong result?", expected, result);
+		try
+		{
+			out.write(data, 0, data.length-1);
+			out.write(data, data.length-1, 1);
+			out.flush();
+			String result = writer.toString();
+			String expected = getExpectedResult(data);
+			assertEquals("wrong result?", expected, result);
+		}
+		finally
+		{
+			out.close();
+		}
 	}
 
 	public void testBytesThenBigChunk() throws Exception
@@ -112,12 +126,19 @@ public class TestBase64XmlOutputStream extends TestCaseEnhanced
 		Writer writer = new StringWriter();
 		XmlWriterFilter wf = new XmlWriterFilter(writer);
 		Base64XmlOutputStream out = new Base64XmlOutputStream(wf);
-		out.write(data, 0, 1);
-		out.write(data, 1, data.length-1);
-		out.flush();
-		String result = writer.toString();
-		String expected = getExpectedResult(data);
-		assertEquals("wrong result?", expected, result);
+		try
+		{
+			out.write(data, 0, 1);
+			out.write(data, 1, data.length-1);
+			out.flush();
+			String result = writer.toString();
+			String expected = getExpectedResult(data);
+			assertEquals("wrong result?", expected, result);
+		}
+		finally
+		{
+			out.close();
+		}
 	}
 
 	String getExpectedResult(byte[] data)

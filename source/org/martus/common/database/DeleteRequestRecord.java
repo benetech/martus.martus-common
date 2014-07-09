@@ -49,17 +49,23 @@ public class DeleteRequestRecord
 	{
 		String retrievedRecordString = db.readRecord(getDelKey(uid), security);
 		UnicodeStringReader reader = new UnicodeStringReader(retrievedRecordString);
-		reader.readLine(); //header
-		timeStamp = reader.readLine();
-		accountId = reader.readLine();
-		int originalClientRequestSize = new Integer(reader.readLine()).intValue();
-		originalClientRequest = new Vector();
-		for(int i = 0; i < originalClientRequestSize; ++i)
+		try
 		{
-			originalClientRequest.add(reader.readLine());
+			reader.readLine(); //header
+			timeStamp = reader.readLine();
+			accountId = reader.readLine();
+			int originalClientRequestSize = new Integer(reader.readLine()).intValue();
+			originalClientRequest = new Vector();
+			for(int i = 0; i < originalClientRequestSize; ++i)
+			{
+				originalClientRequest.add(reader.readLine());
+			}
+			signature = reader.readLine();
 		}
-		signature = reader.readLine();
-		
+		finally
+		{
+			reader.close();
+		}
 	}
 	
 	public String getDelData() 
