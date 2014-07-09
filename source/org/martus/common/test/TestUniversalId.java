@@ -26,8 +26,6 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.test;
 
-import javax.print.DocFlavor.BYTE_ARRAY;
-
 import org.bouncycastle.util.Arrays;
 import org.martus.common.packet.UniversalId;
 import org.martus.util.TestCaseEnhanced;
