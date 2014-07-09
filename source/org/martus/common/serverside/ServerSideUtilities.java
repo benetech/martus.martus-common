@@ -55,10 +55,17 @@ public class ServerSideUtilities
 
 			String passphrase = null;
 			BufferedReader reader = new BufferedReader(new UnicodeReader(System.in));
-			//TODO security issue here password is a string
-			passphrase = reader.readLine();
-			//TODO (add this back once verified it is harmless) reader.close();
-			return passphrase.toCharArray();
+			try
+			{
+				//TODO security issue here password is a string
+				passphrase = reader.readLine();
+				//TODO (add this back once verified it is harmless) reader.close();
+				return passphrase.toCharArray();
+			}
+			finally
+			{
+				reader.close();
+			}
 		} 
 		catch (Exception e)
 		{

@@ -379,24 +379,17 @@ public class MartusUtilities
 
 		final String encryptedTag = MartusXml.getTagStart(MartusXml.EncryptedFlagElementName);
 		BufferedReader reader = new BufferedReader(new UnicodeReader(fdpInputStream));
-		try
+		String thisLine = null;
+		while( (thisLine = reader.readLine()) != null)
 		{
-			String thisLine = null;
-			while( (thisLine = reader.readLine()) != null)
+			if(thisLine.indexOf(encryptedTag) >= 0)
 			{
-				if(thisLine.indexOf(encryptedTag) >= 0)
-				{
-					fdpInputStream.seek(0);
-					return false;
-				}
+				fdpInputStream.seek(0);
+				return false;
 			}
-			fdpInputStream.seek(0);
-			return true;
 		}
-		finally
-		{
-			reader.close();
-		}
+		fdpInputStream.seek(0);
+		return true;
 	}
 
 	public static boolean isStringInArray(String[] array, String lookFor)

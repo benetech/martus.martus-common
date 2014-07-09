@@ -53,19 +53,29 @@ class KeyShareBundle
 	public KeyShareBundle(String bundleString) throws IOException, KeyShareException
 	{
 		InputStream in = new StringInputStreamWithSeek(bundleString);
-		UnicodeReader reader = new UnicodeReader(in);
-
-		id = reader.readLine();
-		if(!id.equals(MartusConstants.martusSecretShareFileID))
-			throw new KeyShareException();
-
-		timeStamp = reader.readLine();
-		publicKey = reader.readLine();
-		sharePiece = reader.readLine();
-		payload = reader.readLine();
-
-		in.close();
-		reader.close();
+		try
+		{
+			UnicodeReader reader = new UnicodeReader(in);
+			try
+			{
+				id = reader.readLine();
+				if(!id.equals(MartusConstants.martusSecretShareFileID))
+					throw new KeyShareException();
+		
+				timeStamp = reader.readLine();
+				publicKey = reader.readLine();
+				sharePiece = reader.readLine();
+				payload = reader.readLine();
+			}
+			finally
+			{
+				reader.close();
+			}
+		}
+		finally
+		{
+			in.close();
+		}
 	}
 	
 	public String createBundleString(String sharePieceToWrite) throws IOException

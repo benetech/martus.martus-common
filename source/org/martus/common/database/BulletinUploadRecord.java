@@ -79,11 +79,18 @@ public class BulletinUploadRecord
 	public static long getTimeStamp(String retrievedRecordString) throws IOException, ParseException
 	{
 		UnicodeStringReader reader = new UnicodeStringReader(retrievedRecordString);
-		reader.readLine(); //header
-		reader.readLine(); //localId
-		String timeStamp = reader.readLine();
-		//TODO (add this back once verified it is harmless) reader.close();
-		return MartusServerUtilities.getDateFromFormattedTimeStamp(timeStamp).getTime();
+		try
+		{
+			reader.readLine(); //header
+			reader.readLine(); //localId
+			String timeStamp = reader.readLine();
+			//TODO (add this back once verified it is harmless) reader.close();
+			return MartusServerUtilities.getDateFromFormattedTimeStamp(timeStamp).getTime();
+		}
+		finally
+		{
+			reader.close();
+		}
 	}
 	
 	public static boolean wasBurCreatedByThisCrypto(String burToTest, MartusCrypto security)
