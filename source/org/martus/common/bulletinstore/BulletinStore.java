@@ -40,7 +40,6 @@ import java.util.zip.ZipFile;
 
 import org.martus.common.LoggerInterface;
 import org.martus.common.MartusUtilities;
-import org.martus.common.MartusUtilities.FileVerificationException;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinZipUtilities;
@@ -52,8 +51,6 @@ import org.martus.common.crypto.MartusCrypto.NoKeyPairException;
 import org.martus.common.crypto.StreamEncryptor;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
-import org.martus.common.database.FileDatabase.MissingAccountMapException;
-import org.martus.common.database.FileDatabase.MissingAccountMapSignatureException;
 import org.martus.common.database.PacketStreamOpener;
 import org.martus.common.database.ReadableDatabase;
 import org.martus.common.database.ReadableDatabase.PacketVisitor;
@@ -84,7 +81,7 @@ public class BulletinStore
 		addCache(bulletinHistoryAndHqCache);
 	}
 
-	public void doAfterSigninInitialization(File dataRootDirectory, Database db) throws FileVerificationException, MissingAccountMapException, MissingAccountMapSignatureException
+	public void doAfterSigninInitialization(File dataRootDirectory, Database db) throws Exception
 	{
 		dir = dataRootDirectory;
 		database = db;
