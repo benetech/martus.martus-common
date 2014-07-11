@@ -173,7 +173,7 @@ abstract public class FileDatabase extends Database
 		}
 		catch (Exception e)
 		{
-			throw new IOException(e.getMessage());
+			throw new IOException(e);
 		}
 	}
 
