@@ -75,7 +75,8 @@ public class TestServerFileDatabase extends TestCaseEnhanced
 		}
 		catch (Exception expected)
 		{
-			assertStartsWith("ServerFileDatabase.getmTime: No Bur or Del Packet: ", expected.getMessage());
+			String expectedStart = "ServerFileDatabase.getmTime: No Bur or Del Packet: ";
+			assertContains(expectedStart, expected.getMessage());
 			assertContains(MartusCrypto.formatAccountIdForLog(uid.getAccountId()), expected.getMessage());
 			assertContains(burKey.getLocalId(), expected.getMessage());
 		}
