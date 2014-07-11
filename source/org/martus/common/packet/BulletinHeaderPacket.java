@@ -106,7 +106,9 @@ public class BulletinHeaderPacket extends Packet
 				suffix = suffixRecord;
 				break;
 		}
-		return UniversalId.createFromAccountAndLocalId(accountSecurity.getPublicKeyString(), createLocalIdWithPrefixAndSuffix(accountSecurity, prefix, suffix));
+		String authorId = accountSecurity.getPublicKeyString();
+		String localId = createLocalIdWithPrefixAndSuffix(accountSecurity, prefix, suffix);
+		return UniversalId.createFromAccountAndLocalId(authorId, localId);
 	}
 
 	public static boolean isValidLocalId(String localId)
