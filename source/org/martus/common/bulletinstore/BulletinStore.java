@@ -29,7 +29,6 @@ package org.martus.common.bulletinstore;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -47,7 +46,6 @@ import org.martus.common.bulletin.PendingAttachmentList;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusCrypto.CryptoException;
 import org.martus.common.crypto.MartusCrypto.DecryptionException;
-import org.martus.common.crypto.MartusCrypto.NoKeyPairException;
 import org.martus.common.crypto.StreamEncryptor;
 import org.martus.common.database.Database;
 import org.martus.common.database.DatabaseKey;
@@ -65,7 +63,6 @@ import org.martus.common.packet.Packet.WrongPacketTypeException;
 import org.martus.common.packet.UniversalId;
 import org.martus.util.StreamCopier;
 import org.martus.util.StreamFilter;
-import org.martus.util.StreamableBase64.InvalidBase64Exception;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 import org.martus.util.inputstreamwithseek.ZipEntryInputStreamWithSeek;
 
@@ -280,17 +277,12 @@ public class BulletinStore
 		cacheManager.clearCache();
 	}
 
-	public void revisionWasSaved(UniversalId uid) throws Exception
+	public void revisionWasSaved(BulletinHeaderPacket bhp) throws Exception
 	{
-		cacheManager.revisionWasSaved(uid);
+		cacheManager.revisionWasSaved(bhp.getUniversalId());
 	}
 	
-	public void revisionWasSaved(Bulletin b) throws Exception
-	{
-		cacheManager.revisionWasSaved(b);
-	}
-	
-	public void revisionWasRemoved(UniversalId uid)
+	public void revisionWasRemoved(UniversalId uid) throws Exception
 	{
 		cacheManager.revisionWasRemoved(uid);
 	}
@@ -397,22 +389,13 @@ public class BulletinStore
 		}
 	}
 
-	public void deleteBulletinRevision(DatabaseKey keyToDelete) throws IOException, CryptoException, InvalidPacketException, WrongPacketTypeException, SignatureVerificationException, DecryptionException, UnsupportedEncodingException, NoKeyPairException
+	public void deleteBulletinRevision(DatabaseKey keyToDelete) throws Exception
 	{
 		BulletinHeaderPacket bhp = loadBulletinHeaderPacket(getDatabase(), keyToDelete, getSignatureVerifier());
 		deleteBulletinRevisionFromDatabase(bhp);
 	}
 
-	public void deleteBulletinRevisionFromDatabase(BulletinHeaderPacket bhp)
-		throws
-			IOException,
-			MartusCrypto.CryptoException,
-			UnsupportedEncodingException,
-			Packet.InvalidPacketException,
-			Packet.WrongPacketTypeException,
-			Packet.SignatureVerificationException,
-			MartusCrypto.DecryptionException,
-			MartusCrypto.NoKeyPairException
+	public void deleteBulletinRevisionFromDatabase(BulletinHeaderPacket bhp) throws Exception
 	{
 		DatabaseKey[] keys = BulletinZipUtilities.getAllPacketKeys(bhp);
 		for (int i = 0; i < keys.length; i++)
@@ -444,7 +427,7 @@ public class BulletinStore
 		}
 	}
 
-	public void hidePackets(Vector packetsIdsToHide, LoggerInterface logger) throws InvalidBase64Exception
+	public void hidePackets(Vector packetsIdsToHide, LoggerInterface logger) throws Exception
 	{
 		Database db = getWriteableDatabase();
 		for(int i = 0; i < packetsIdsToHide.size(); ++i)
@@ -467,12 +450,12 @@ public class BulletinStore
 	public UniversalId importBulletinZipFile(ZipFile zip, String accountIdIfKnown, long mTime) 
 		throws Exception
 	{
-		UniversalId uid = importBulletinPacketsFromZipFileToDatabase(accountIdIfKnown, zip, mTime);
-		revisionWasSaved(uid);
-		return uid;
+		BulletinHeaderPacket bhp = importBulletinPacketsFromZipFileToDatabase(accountIdIfKnown, zip, mTime);
+		revisionWasSaved(bhp);
+		return bhp.getUniversalId();
 	}
 
-	private UniversalId importBulletinPacketsFromZipFileToDatabase(String authorAccountId, ZipFile zip, long mTime)
+	private BulletinHeaderPacket importBulletinPacketsFromZipFileToDatabase(String authorAccountId, ZipFile zip, long mTime)
 		throws Exception
 	{
 		BulletinHeaderPacket header = BulletinHeaderPacket.loadFromZipFile(zip, security);
@@ -521,7 +504,7 @@ public class BulletinStore
 			zipEntries.put(key,file);
 		}
 		db.importFiles(zipEntries);
-		return headerUid;
+		return header;
 	}
 
 	private static void deleteDraftBulletinPackets(Database db, UniversalId bulletinUid, MartusCrypto security) throws
@@ -590,7 +573,7 @@ public class BulletinStore
 	protected void saveBulletin(Bulletin b, boolean mustEncryptPublicData) throws Exception
 	{
 		saveToClientDatabase(b, getWriteableDatabase(), mustEncryptPublicData, b.getSignatureGenerator());
-		revisionWasSaved(b);
+		revisionWasSaved(b.getBulletinHeaderPacket());
 	}
 	
 	protected BulletinHistoryAndHqCache getHistoryAndHqCache()
@@ -644,13 +627,18 @@ public class BulletinStore
 		return true;
 	}
 
-	private static void saveToClientDatabase(Bulletin b, Database db, boolean mustEncryptPublicData, MartusCrypto signer) throws
-			IOException,
-			MartusCrypto.CryptoException
+	private static void saveToClientDatabase(Bulletin b, Database db, boolean mustEncryptPublicData, MartusCrypto signer) throws Exception
+	{
+		UniversalId uid = b.getUniversalId();
+		DatabaseKey key = DatabaseKey.createLegacyKey(uid);
+
+		saveBulletinToDatabase(db, b, mustEncryptPublicData, signer, key);
+	}
+
+	public static void saveBulletinToDatabase(Database db, Bulletin b, boolean mustEncryptPublicData, MartusCrypto signer, DatabaseKey key) throws Exception
 	{
 		UniversalId uid = b.getUniversalId();
 		BulletinHeaderPacket oldBhp = new BulletinHeaderPacket(uid);
-		DatabaseKey key = DatabaseKey.createLegacyKey(uid);
 		boolean bulletinAlreadyExisted = false;
 		try
 		{
