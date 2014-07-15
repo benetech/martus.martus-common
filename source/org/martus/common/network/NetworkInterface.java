@@ -48,4 +48,5 @@ public interface NetworkInterface
 	public Vector getListOfFormTemplates(String myAccountId, Vector parameters, String signature);
 	public Vector putFormTemplate(String myAccountId, Vector parameters, String signature);
 	public Vector getFormTemplate(String myAccountId, Vector parameters, String signature);
+	public Vector listAvailableRevisionsSince(String myAccountId, Vector parameters, String signature);
 }
