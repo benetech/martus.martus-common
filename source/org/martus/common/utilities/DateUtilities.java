@@ -26,7 +26,11 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.utilities;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import org.martus.common.MiniLocalization;
 import org.martus.util.MultiCalendar;
@@ -55,5 +59,24 @@ public class DateUtilities
 		MultiCalendar mc = new MultiCalendar(realTodayInOurTimeZone);
 		String result = MartusFlexidate.toStoredDateFormat(mc);
 		return result;
+	}
+	
+	public static String formatIsoDateTime(Date dateTime) throws Exception
+	{
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		df.setTimeZone(TimeZone.getTimeZone("UTC"));
+		String isoDateTime = df.format(dateTime);
+		return isoDateTime;
+	}
+	
+	public static Date parseIsoDateTime(String isoDateTime) throws Exception
+	{
+		if(isoDateTime.length() == 0)
+			return new Date(0L);
+					
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		df.setTimeZone(TimeZone.getTimeZone("UTC"));
+		Date date = df.parse(isoDateTime);
+		return date;
 	}
 }
