@@ -25,8 +25,6 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.network;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,6 +33,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.martus.common.packet.UniversalId;
+import org.martus.common.utilities.DateUtilities;
 import org.miradi.utils.EnhancedJsonArray;
 import org.miradi.utils.EnhancedJsonObject;
 
@@ -79,11 +78,11 @@ public class SummaryOfAvailableBulletins
 		if(highestServerTimestamp.length() == 0)
 			return "";
 		
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-		Date highest = df.parse(highestServerTimestamp);
+		Date highest = DateUtilities.parseIsoDateTime(highestServerTimestamp);
 		long highestMillisSinceEpoch = highest.getTime();
 		long nextMillisSinceEpoch = highestMillisSinceEpoch + 1;
-		String nextServerTimestamp = df.format(new Date(nextMillisSinceEpoch));
+		Date nextAsDateTime = new Date(nextMillisSinceEpoch);
+		String nextServerTimestamp = DateUtilities.formatIsoDateTime(nextAsDateTime);
 		return nextServerTimestamp;
 	}
 	
