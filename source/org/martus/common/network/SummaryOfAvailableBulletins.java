@@ -41,12 +41,46 @@ public class SummaryOfAvailableBulletins
 {
 	public SummaryOfAvailableBulletins(String lowestTimestampIso)
 	{
-		accountsMap = new HashMap<String, Set<ShortServerBulletinSummary>>();
+		this();
+		
 		lowestTimestamp = lowestTimestampIso;
+	}
+	
+	public SummaryOfAvailableBulletins(EnhancedJsonObject json)
+	{
+		this();
+		
+		countOfSummaries = json.optInt(JSON_KEY_COUNT);
+		lowestTimestamp = json.optString(JSON_KEY_EARLIEST_SERVER_TIMESTAMP);
+		highestServerTimestamp = json.optString(JSON_KEY_NEXT_SERVER_TIMESTAMP);
+		EnhancedJsonArray accounts = json.optJsonArray(JSON_KEY_ACCOUNTS);
+		for(int accountIndex = 0; accountIndex < accounts.length(); ++accountIndex)
+		{
+			EnhancedJsonObject accountJson = accounts.getJson(accountIndex);
+			String authorAccountId = accountJson.getString(JSON_KEY_AUTHOR_ACCOUNT_ID);
+			EnhancedJsonArray bulletins = accountJson.optJsonArray(JSON_KEY_BULLETINS);
+			
+			Set<ShortServerBulletinSummary> summaries = new HashSet<ShortServerBulletinSummary>();
+			for(int bulletinIndex = 0; bulletinIndex < bulletins.length(); ++bulletinIndex)
+			{
+				EnhancedJsonObject bulletinJson = bulletins.getJson(bulletinIndex);
+				String localId = bulletinJson.optString(JSON_KEY_LOCAL_ID);
+				String lastModified = bulletinJson.optString(JSON_KEY_LAST_MODIFIED);
+				ShortServerBulletinSummary summary = new ShortServerBulletinSummary(localId, lastModified, "");
+				summaries.add(summary);
+			}
+
+			accountsMap.put(authorAccountId, summaries);
+		}
+	}
+	
+	private SummaryOfAvailableBulletins()
+	{
+		accountsMap = new HashMap<String, Set<ShortServerBulletinSummary>>();
 		highestServerTimestamp = "";
 		countOfSummaries = 0;
 	}
-	
+
 	public void addBulletin(ServerBulletinSummary summary) throws Exception
 	{
 		String serverTimestamp = summary.getServerTimestamp();
@@ -107,6 +141,8 @@ public class SummaryOfAvailableBulletins
 		
 		json.put(JSON_KEY_COUNT, size());
 		
+		json.put(JSON_KEY_EARLIEST_SERVER_TIMESTAMP, lowestTimestamp);
+
 		String nextServerTimestamp = getNextServerTimestamp();
 		json.put(JSON_KEY_NEXT_SERVER_TIMESTAMP, nextServerTimestamp);
 
