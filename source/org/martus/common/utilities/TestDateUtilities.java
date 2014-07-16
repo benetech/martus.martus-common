@@ -26,6 +26,10 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.utilities;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
 import org.martus.util.TestCaseEnhanced;
 
 public class TestDateUtilities extends TestCaseEnhanced
@@ -36,9 +40,24 @@ public class TestDateUtilities extends TestCaseEnhanced
 		super(name);
 	}
 
-	public void testBasics()
+	public void testFormatAndParseIso() throws Exception
 	{
-		// TODO: Add some tests
-	}
+		int year = 2014;
+		int JULY = 6;
+		int month = JULY;
+		int day = 16;
+		int hourOfDay = 10;
+		int minute = 19;
+		int second = 53;
+		int millis = 263;
 
+		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		cal.set(year, month, day, hourOfDay, minute, second);
+		cal.set(Calendar.MILLISECOND, millis);
+		Date dateTime = cal.getTime();
+		String isoDateTime = DateUtilities.formatIsoDateTime(dateTime);
+		assertEquals("2014-07-16T10:19:53.263Z", isoDateTime);
+		assertEquals(dateTime, DateUtilities.parseIsoDateTime(isoDateTime));
+	}
+	
 }
