@@ -39,9 +39,10 @@ import org.miradi.utils.EnhancedJsonObject;
 
 public class SummaryOfAvailableBulletins
 {
-	public SummaryOfAvailableBulletins()
+	public SummaryOfAvailableBulletins(String lowestTimestampIso)
 	{
 		accountsMap = new HashMap<String, Set<ShortServerBulletinSummary>>();
+		lowestTimestamp = lowestTimestampIso;
 		highestServerTimestamp = "";
 		countOfSummaries = 0;
 	}
@@ -76,7 +77,7 @@ public class SummaryOfAvailableBulletins
 	public String getNextServerTimestamp() throws Exception
 	{
 		if(highestServerTimestamp.length() == 0)
-			return "";
+			return lowestTimestamp;
 		
 		Date highest = DateUtilities.parseIsoDateTime(highestServerTimestamp);
 		long highestMillisSinceEpoch = highest.getTime();
@@ -153,6 +154,7 @@ public class SummaryOfAvailableBulletins
 	public static final String JSON_KEY_EARLIEST_SERVER_TIMESTAMP = "EarliestServerTimestamp";
 	
 	private Map<String, Set<ShortServerBulletinSummary>> accountsMap;
+	private String lowestTimestamp;
 	private String highestServerTimestamp;
 	private int countOfSummaries;
 }
