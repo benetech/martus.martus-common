@@ -66,7 +66,8 @@ public class SummaryOfAvailableBulletins
 				EnhancedJsonObject bulletinJson = bulletins.getJson(bulletinIndex);
 				String localId = bulletinJson.optString(JSON_KEY_LOCAL_ID);
 				String lastModified = bulletinJson.optString(JSON_KEY_LAST_MODIFIED);
-				ShortServerBulletinSummary summary = new ShortServerBulletinSummary(localId, lastModified, "");
+				String serverTimestamp = bulletinJson.optString(JSON_KEY_SERVER_TIMESTAMP);
+				ShortServerBulletinSummary summary = new ShortServerBulletinSummary(localId, lastModified, serverTimestamp);
 				summaries.add(summary);
 			}
 
@@ -168,12 +169,14 @@ public class SummaryOfAvailableBulletins
 				ShortServerBulletinSummary summary = bulletinIterator.next();
 				String localId = summary.getLocalId();
 				String lastModifiedIso = summary.getLastModified();
+				String serverTimestamp = summary.getServerTimestamp();
 
 				EnhancedJsonObject bulletinInfo = new EnhancedJsonObject();
 				bulletins.put(bulletinInfo);
 
 				bulletinInfo.put(JSON_KEY_LOCAL_ID, localId);
 				bulletinInfo.put(JSON_KEY_LAST_MODIFIED, lastModifiedIso);
+				bulletinInfo.put(JSON_KEY_SERVER_TIMESTAMP, serverTimestamp);
 			}
 		}
 		
@@ -187,6 +190,7 @@ public class SummaryOfAvailableBulletins
 	public final static String JSON_KEY_AUTHOR_ACCOUNT_ID = "AuthorAccountId";
 	public final static String JSON_KEY_LOCAL_ID = "LocalId";
 	public final static String JSON_KEY_LAST_MODIFIED = "LastModified";
+	public final static String JSON_KEY_SERVER_TIMESTAMP = "ServerTimestamp";
 	public static final String JSON_KEY_EARLIEST_SERVER_TIMESTAMP = "EarliestServerTimestamp";
 	
 	private Map<String, Set<ShortServerBulletinSummary>> accountsMap;
