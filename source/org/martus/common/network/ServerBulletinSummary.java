@@ -35,6 +35,11 @@ public class ServerBulletinSummary extends ShortServerBulletinSummary
 		accountId = uidToUse.getAccountId();
 	}
 	
+	public ServerBulletinSummary(UniversalId uid, ShortServerBulletinSummary shortSummary)
+	{
+		this(uid, shortSummary.getLastModified(), shortSummary.getServerTimestamp());
+	}
+
 	public UniversalId getUniversalId()
 	{
 		return UniversalId.createFromAccountAndLocalId(accountId, getLocalId());
