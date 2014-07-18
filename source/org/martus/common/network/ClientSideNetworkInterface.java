@@ -30,4 +30,6 @@ public interface ClientSideNetworkInterface extends NetworkInterface
 	public void setTimeoutGetServerInfo(int torGetServerInfoTimeoutSeconds);
 	public int getTimeoutSecondsForGetServerInfo();
 	public int getTimeoutSecondsForOtherCalls();
+	
+	public String getServerIpAddress();
 }
