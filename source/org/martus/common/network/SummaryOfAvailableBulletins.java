@@ -39,20 +39,20 @@ import org.miradi.utils.EnhancedJsonObject;
 
 public class SummaryOfAvailableBulletins
 {
-	public SummaryOfAvailableBulletins(String lowestTimestampIso)
+	public SummaryOfAvailableBulletins(String lowestTimestampIso) throws Exception
 	{
 		this();
 		
-		lowestTimestamp = lowestTimestampIso;
+		setLowestTimestamp(lowestTimestampIso);
 	}
-	
-	public SummaryOfAvailableBulletins(EnhancedJsonObject json)
+
+	public SummaryOfAvailableBulletins(EnhancedJsonObject json) throws Exception
 	{
 		this();
 		
 		countOfSummaries = json.optInt(JSON_KEY_COUNT);
-		lowestTimestamp = json.optString(JSON_KEY_EARLIEST_SERVER_TIMESTAMP);
-		highestServerTimestamp = json.optString(JSON_KEY_NEXT_SERVER_TIMESTAMP);
+		setLowestTimestamp(json.optString(JSON_KEY_EARLIEST_SERVER_TIMESTAMP));
+		highestServerTimestamp = json.optString(JSON_KEY_HIGHEST_SERVER_TIMESTAMP);
 		EnhancedJsonArray accounts = json.optJsonArray(JSON_KEY_ACCOUNTS);
 		for(int accountIndex = 0; accountIndex < accounts.length(); ++accountIndex)
 		{
@@ -141,11 +141,8 @@ public class SummaryOfAvailableBulletins
 		EnhancedJsonObject json = new EnhancedJsonObject();
 		
 		json.put(JSON_KEY_COUNT, size());
-		
 		json.put(JSON_KEY_EARLIEST_SERVER_TIMESTAMP, lowestTimestamp);
-
-		String nextServerTimestamp = getNextServerTimestamp();
-		json.put(JSON_KEY_NEXT_SERVER_TIMESTAMP, nextServerTimestamp);
+		json.put(JSON_KEY_HIGHEST_SERVER_TIMESTAMP, highestServerTimestamp);
 
 		EnhancedJsonArray accounts = new EnhancedJsonArray();
 		json.put(JSON_KEY_ACCOUNTS, accounts);
@@ -183,8 +180,17 @@ public class SummaryOfAvailableBulletins
 		return json;
 	}
 	
+	private String setLowestTimestamp(String lowestTimestampIso) throws Exception
+	{
+		Date requestedStart = DateUtilities.parseIsoDateTime(lowestTimestampIso);
+		Date now = new Date();
+		if(requestedStart.after(now))
+			lowestTimestampIso = DateUtilities.formatIsoDateTime(now);
+		return lowestTimestamp = lowestTimestampIso;
+	}
+	
 	public final static String JSON_KEY_COUNT = "Count";
-	public final static String JSON_KEY_NEXT_SERVER_TIMESTAMP = "NextServerTimestamp";
+	public final static String JSON_KEY_HIGHEST_SERVER_TIMESTAMP = "HighestServerTimestamp";
 	public final static String JSON_KEY_ACCOUNTS = "Accounts";
 	public final static String JSON_KEY_BULLETINS = "Bulletins";
 	public final static String JSON_KEY_AUTHOR_ACCOUNT_ID = "AuthorAccountId";
