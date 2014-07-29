@@ -59,7 +59,6 @@ public class ServerSideUtilities
 			{
 				//TODO security issue here password is a string
 				passphrase = reader.readLine();
-				//TODO (add this back once verified it is harmless) reader.close();
 				return passphrase.toCharArray();
 			}
 			finally
