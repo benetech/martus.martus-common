@@ -49,6 +49,8 @@ import org.martus.common.fieldspec.TestDateRangeFieldSpec;
 import org.martus.common.fieldspec.TestDropDownFieldSpec;
 import org.martus.common.fieldspec.TestFieldSpec;
 import org.martus.common.fieldspec.TestMiniFieldSpec;
+import org.martus.common.network.TestServerBulletinSummary;
+import org.martus.common.network.TestShortServerBulletinSummary;
 import org.martus.common.utilities.TestDateUtilities;
 import org.martus.common.utilities.TestMartusFlexidate;
 import org.miradi.utils.TestEnhancedJsonObject;
@@ -124,7 +126,9 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestMiniFieldSpec.class));
 		suite.addTest(new TestSuite(TestMiniLocalization.class));
 		suite.addTest(new TestSuite(TestPacket.class));
+		suite.addTest(new TestSuite(TestServerBulletinSummary.class));
 		suite.addTest(new TestSuite(TestServerFileDatabase.class));
+		suite.addTest(new TestSuite(TestShortServerBulletinSummary.class));
 		suite.addTest(new TestSuite(TestUnicodeFileReader.class));
 		suite.addTest(new TestSuite(TestUnicodeFileWriter.class));
 		suite.addTest(new TestSuite(TestUniversalId.class));
