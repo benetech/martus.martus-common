@@ -118,32 +118,44 @@ public class FormTemplate
 			}
 			else
 			{
+				int templateVersion;
+				byte[] dataBundleBottomSection;
+				byte[] dataTitle;
+				byte[] dataDescription;
+
 				DataInputStream bundleIn = new DataInputStream(inputStreamWithSeek);
-				bundleIn.skip(versionHeader.length()); //ignore header
-				int templateVersion = bundleIn.readInt();
-				if(templateVersion > exportVersionNumber)
-					throw new FutureVersionException();
-				
-				int topSectionBundleLength = bundleIn.readInt();
-				int bottomSectionBundleLength = bundleIn.readInt();
-				int titleLength = 0;
-				if(templateVersion >= 3)
-					titleLength = bundleIn.readInt();
-				int descriptionLength = 0;
-				if(templateVersion >= 3)
-					descriptionLength = bundleIn.readInt();
-				
-				byte[] dataBundleTopSection = new byte[topSectionBundleLength];
-				byte[] dataBundleBottomSection = new byte[bottomSectionBundleLength];
-				byte[] dataTitle = new byte[titleLength];
-				byte[] dataDescription = new byte[descriptionLength];
-				
-				bundleIn.read(dataBundleTopSection,0, topSectionBundleLength);
-				dataBundleTopSectionInputStream = new ByteArrayInputStreamWithSeek(dataBundleTopSection);
-				dataBundleTopSectionInputStream.seek(0);
-				bundleIn.read(dataBundleBottomSection,0, bottomSectionBundleLength);
-				bundleIn.read(dataTitle,0, titleLength);
-				bundleIn.read(dataDescription,0, descriptionLength);
+				try
+				{
+					bundleIn.skip(versionHeader.length()); //ignore header
+					templateVersion = bundleIn.readInt();
+					if(templateVersion > exportVersionNumber)
+						throw new FutureVersionException();
+					
+					int topSectionBundleLength = bundleIn.readInt();
+					int bottomSectionBundleLength = bundleIn.readInt();
+					int titleLength = 0;
+					if(templateVersion >= 3)
+						titleLength = bundleIn.readInt();
+					int descriptionLength = 0;
+					if(templateVersion >= 3)
+						descriptionLength = bundleIn.readInt();
+					
+					byte[] dataBundleTopSection = new byte[topSectionBundleLength];
+					dataBundleBottomSection = new byte[bottomSectionBundleLength];
+					dataTitle = new byte[titleLength];
+					dataDescription = new byte[descriptionLength];
+					
+					bundleIn.read(dataBundleTopSection,0, topSectionBundleLength);
+					dataBundleTopSectionInputStream = new ByteArrayInputStreamWithSeek(dataBundleTopSection);
+					dataBundleTopSectionInputStream.seek(0);
+					bundleIn.read(dataBundleBottomSection,0, bottomSectionBundleLength);
+					bundleIn.read(dataTitle,0, titleLength);
+					bundleIn.read(dataDescription,0, descriptionLength);
+				} 
+				finally
+				{
+					bundleIn.close();
+				}
 				
 				Vector bottomSectionSignedByKeys = getSignedByAsVector(dataBundleBottomSection, security);
 				byte[] xmlBytesBottomSection = security.extractFromSignedBundle(dataBundleBottomSection, bottomSectionSignedByKeys);
