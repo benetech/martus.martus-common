@@ -37,9 +37,9 @@ import java.util.Arrays;
 import java.util.Vector;
 
 import org.martus.common.FieldCollection;
-import org.martus.common.MartusLogger;
 import org.martus.common.FieldCollection.CustomFieldsParseException;
 import org.martus.common.FieldSpecCollection;
+import org.martus.common.MartusLogger;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
@@ -60,7 +60,12 @@ public class FormTemplate
 	
 	public FormTemplate(String title, String description, FieldCollection topSection, FieldCollection bottomSection) 
 	{
-		setData(title, description, topSection.toString(), bottomSection.toString());
+		this(title, description, topSection.getSpecs(), bottomSection.getSpecs());
+	}
+
+	public FormTemplate(String title, String description, FieldSpecCollection topSection, FieldSpecCollection bottomSection) 
+	{
+		setData(title, description, topSection.toXml(), bottomSection.toXml());
 	}
 
 	private boolean setData(String title, String description, String xmlTopSection, String xmlBottomSection)
