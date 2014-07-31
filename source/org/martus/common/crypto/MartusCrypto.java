@@ -27,6 +27,7 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.crypto;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -45,8 +46,10 @@ import javax.net.ssl.KeyManager;
 import org.martus.common.DammCheckDigitAlgorithm;
 import org.martus.common.DammCheckDigitAlgorithm.CheckDigitInvalidException;
 import org.martus.common.MartusUtilities;
+import org.martus.common.packet.Packet.SignatureVerificationException;
 import org.martus.util.StreamableBase64;
 import org.martus.util.StreamableBase64.InvalidBase64Exception;
+import org.martus.util.inputstreamwithseek.FileInputStreamWithSeek;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 
 
@@ -183,6 +186,42 @@ public abstract class MartusCrypto
 		out.close();
 	}
 
+	public static byte[] verifySignatureAndDecryptFile(File dataFile, File sigFile, MartusCrypto security) throws Exception
+	{
+		String accountId = security.getPublicKeyString();
+		if(!isSignatureFileValid(dataFile, sigFile, accountId, security))
+			throw new SignatureVerificationException();
+	
+		InputStreamWithSeek encryptedInputStream = new FileInputStreamWithSeek(dataFile);
+		ByteArrayOutputStream plainTextStream = new ByteArrayOutputStream();
+		security.decrypt(encryptedInputStream, plainTextStream);
+	
+		byte[] plainText = plainTextStream.toByteArray();
+	
+		plainTextStream.close();
+		encryptedInputStream.close();
+		return plainText;
+	}
+	
+	public static boolean isSignatureFileValid(File dataFile, File sigFile, String accountId, MartusCrypto security) throws Exception
+	{
+		byte[] signature =	new byte[(int)sigFile.length()];
+		FileInputStream inSignature = new FileInputStream(sigFile);
+		inSignature.read(signature);
+		inSignature.close();
+	
+		FileInputStream inData = new FileInputStream(dataFile);
+		try
+		{
+			boolean verified = security.isValidSignatureOfStream(accountId, inData, signature);
+			return verified;
+		}
+		finally
+		{
+			inData.close();
+		}
+	}
+	
 	// public codes
 	public static String computePublicCode(String publicKeyString) throws
 		StreamableBase64.InvalidBase64Exception
