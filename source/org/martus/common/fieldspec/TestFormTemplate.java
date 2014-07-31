@@ -44,9 +44,9 @@ import org.martus.util.UnicodeWriter;
 import org.martus.util.inputstreamwithseek.FileInputStreamWithSeek;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 
-public class TestCustomFieldTemplate extends TestCaseEnhanced
+public class TestFormTemplate extends TestCaseEnhanced
 {
-	public TestCustomFieldTemplate(String name)
+	public TestFormTemplate(String name)
 	{
 		super(name);
 	}
