@@ -50,15 +50,15 @@ import org.martus.util.inputstreamwithseek.FileInputStreamWithSeek;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 
 
-public class CustomFieldTemplate
+public class FormTemplate
 {
-	public CustomFieldTemplate()
+	public FormTemplate()
 	{
 		super();
 		clearData();
 	}
 	
-	public CustomFieldTemplate(String title, String description, FieldCollection topSection, FieldCollection bottomSection) 
+	public FormTemplate(String title, String description, FieldCollection topSection, FieldCollection bottomSection) 
 	{
 		setData(title, description, topSection.toString(), bottomSection.toString());
 	}
