@@ -36,7 +36,7 @@ import org.martus.common.FieldCollectionForTesting;
 import org.martus.common.FieldSpecCollection;
 import org.martus.common.LegacyCustomFields;
 import org.martus.common.crypto.MockMartusSecurity;
-import org.martus.common.fieldspec.CustomFieldTemplate.FutureVersionException;
+import org.martus.common.fieldspec.FormTemplate.FutureVersionException;
 import org.martus.util.StreamableBase64;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.UnicodeUtilities;
@@ -68,14 +68,14 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 	
 	public void testBasics()
 	{
-		assertEquals("Version number not correct?", 3, CustomFieldTemplate.exportVersionNumber);
+		assertEquals("Version number not correct?", 3, FormTemplate.exportVersionNumber);
 	}
 	
 	public void testValidateXml() throws Exception
 	{
 		FieldCollection defaultTopSectionFields = new FieldCollection(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray());
 		FieldCollection defaultBottomSectionFields = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
-		CustomFieldTemplate template = new CustomFieldTemplate();
+		FormTemplate template = new FormTemplate();
 		assertTrue("not valid?", template.isvalidTemplateXml(defaultTopSectionFields.toString(), defaultBottomSectionFields.toString()));
 		assertEquals(0, template.getErrors().size());
 		
@@ -85,7 +85,7 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		assertEquals(1, template.getErrors().size());
 		assertEquals(CustomFieldError.CODE_MISSING_LABEL,((CustomFieldError)template.getErrors().get(0)).getCode());
 
-		CustomFieldTemplate template2 = new CustomFieldTemplate();
+		FormTemplate template2 = new FormTemplate();
 		FieldSpec invalidBottomSectionField = FieldSpec.createCustomField("myTag", "", new FieldTypeNormal());
 		fields = FieldCollectionForTesting.extendFields(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray(), invalidBottomSectionField);
 		assertFalse("Should not be a valid template", template2.isvalidTemplateXml(defaultTopSectionFields.toString(), fields.toString()));
@@ -95,7 +95,7 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 	
 	public void testExportXml() throws Exception
 	{
-		CustomFieldTemplate template = new CustomFieldTemplate();
+		FormTemplate template = new FormTemplate();
 		File exportFile = createTempFileFromName("$$$testExportXml");
 		exportFile.deleteOnExit();
 		String formTemplateTitle = "New Form Title";
@@ -104,12 +104,12 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		FieldCollection defaultFieldsBottomSection = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
 		assertTrue(template.exportTemplate(security, exportFile, defaultFieldsTopSection.toString(), defaultFieldsBottomSection.toString(), formTemplateTitle, formTemplateDescription));
 		assertTrue(exportFile.exists());
-		CustomFieldTemplate importedTemplate = new CustomFieldTemplate();
+		FormTemplate importedTemplate = new FormTemplate();
 		importTemplate(importedTemplate, exportFile);
 		File exportFile2 = createTempFileFromName("$$$testExportXml2");
 		exportFile2.deleteOnExit();
 		assertTrue(importedTemplate.exportTemplate(security, exportFile2));
-		CustomFieldTemplate importedTemplate2 = new CustomFieldTemplate();
+		FormTemplate importedTemplate2 = new FormTemplate();
 		importTemplate(importedTemplate2, exportFile2);
 		assertEquals("imported file 1 does not match imported file 2?", importedTemplate.getExportedTemplateAsBase64String(security), importedTemplate2.getExportedTemplateAsBase64String(security));
 		
@@ -138,8 +138,8 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		exportMultipleSignersCFTFile.deleteOnExit();
 		FileOutputStream out = new FileOutputStream(exportMultipleSignersCFTFile);		
 		DataOutputStream dataOut = new DataOutputStream(out);
-		dataOut.write(CustomFieldTemplate.versionHeader.getBytes());
-		dataOut.writeInt(CustomFieldTemplate.exportVersionNumber);
+		dataOut.write(FormTemplate.versionHeader.getBytes());
+		dataOut.writeInt(FormTemplate.exportVersionNumber);
 		byte[] signedBundleTopSection = security.createSignedBundle(UnicodeUtilities.toUnicodeBytes(defaultFieldsTopSection.getSpecsXml()));
 		byte[] signedBundleBottomSection = security.createSignedBundle(UnicodeUtilities.toUnicodeBytes(defaultFieldsBottomSection.getSpecsXml()));
 		byte[] signedBundleTitle = security.createSignedBundle(UnicodeUtilities.toUnicodeBytes(formTemplateTitle));
@@ -161,7 +161,7 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		out.flush();
 		out.close();
 		
-		CustomFieldTemplate template = new CustomFieldTemplate(formTemplateTitle, formTemplateDescription, defaultFieldsTopSection, defaultFieldsBottomSection);
+		FormTemplate template = new FormTemplate(formTemplateTitle, formTemplateDescription, defaultFieldsTopSection, defaultFieldsBottomSection);
 		assertFalse(importTemplate(template, exportMultipleSignersCFTFile));
 		assertEquals(CustomFieldError.CODE_SIGNATURE_ERROR, ((CustomFieldError)template.getErrors().get(0)).getCode());
 	}
@@ -172,7 +172,7 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		String formTemplateDescription = "New Form Description";
 		FieldCollection defaultFieldsTopSection = new FieldCollection(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray());
 		FieldCollection defaultFieldsBottomSection = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
-		CustomFieldTemplate template = new CustomFieldTemplate(formTemplateTitle, formTemplateDescription, defaultFieldsTopSection, defaultFieldsBottomSection);
+		FormTemplate template = new FormTemplate(formTemplateTitle, formTemplateDescription, defaultFieldsTopSection, defaultFieldsBottomSection);
 		
 		String exportedTemplateAsStringBase64= template.getExportedTemplateAsBase64String(security);
 		byte[] decodedBytes = StreamableBase64.decode(exportedTemplateAsStringBase64);
@@ -186,7 +186,7 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		output.flush();
 		output.close();
 		
-		CustomFieldTemplate templateRetrieved = new CustomFieldTemplate();
+		FormTemplate templateRetrieved = new FormTemplate();
 		assertTrue("Failed to import Template from exportedString?", importTemplate(templateRetrieved, exportFile));
 		assertEquals(formTemplateTitle, templateRetrieved.getTitle());
 		assertEquals(formTemplateDescription, templateRetrieved.getDescription());
@@ -206,7 +206,7 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		out.flush();
 		out.close();
 
-		CustomFieldTemplate template = new CustomFieldTemplate();
+		FormTemplate template = new FormTemplate();
 		assertEquals("", template.getImportedTopSectionText());
 		assertTrue(importTemplate(template, exportFile));
 		FieldCollection defaultBottomSectionFields = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
@@ -253,21 +253,21 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		
 		FileOutputStream out = new FileOutputStream(exportFile);
 		DataOutputStream dataOut = new DataOutputStream(out);
-		dataOut.write(CustomFieldTemplate.versionHeader.getBytes());
-		dataOut.writeInt(CustomFieldTemplate.exportVersionNumber + 1);
+		dataOut.write(FormTemplate.versionHeader.getBytes());
+		dataOut.writeInt(FormTemplate.exportVersionNumber + 1);
 		dataOut.writeInt(16);
 		dataOut.writeInt(0);
 		dataOut.write("Some future data".getBytes());
 		dataOut.flush();
 		dataOut.close();
 
-		CustomFieldTemplate template = new CustomFieldTemplate();
+		FormTemplate template = new FormTemplate();
 		try
 		{
 			importTemplate(template, exportFile);
 			fail("Should have thrown future version Exception");
 		}
-		catch(CustomFieldTemplate.FutureVersionException expected)
+		catch(FormTemplate.FutureVersionException expected)
 		{
 		}
 	}
@@ -281,7 +281,7 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		fieldSpecsBottomSection = TestCustomFieldSpecValidator.addFieldSpec(fieldSpecsBottomSection, LegacyCustomFields.createFromLegacy(privateTag+","+privateLabel));
 		FieldCollection fieldsBottomSection = new FieldCollection(fieldSpecsBottomSection);
 		
-		CustomFieldTemplate template = new CustomFieldTemplate();
+		FormTemplate template = new FormTemplate();
 		File exportFile = createTempFileFromName("$$$testImportXml");
 		String formTemplateTitle = "Form Title";
 		String formTemplateDescription = "Form Description";
@@ -333,7 +333,7 @@ public class TestCustomFieldTemplate extends TestCaseEnhanced
 		}
 	}
 
-	private boolean importTemplate(CustomFieldTemplate template, File exportFile) throws FutureVersionException, IOException
+	private boolean importTemplate(FormTemplate template, File exportFile) throws FutureVersionException, IOException
 	{
 		InputStreamWithSeek inputStreamWithSeek = new FileInputStreamWithSeek(exportFile);
 		try
