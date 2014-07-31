@@ -32,9 +32,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -1073,24 +1070,6 @@ public class MartusSecurity extends MartusCrypto
         this.shouldWriteAuthorDecryptableData = shouldWriteAuthorDecryptableData;
     }
 	
-	public static void encryptAndWriteFileAndSignatureFile(File file, File signatureFile, byte[] plainText, MartusCrypto security) throws Exception
-	{
-		ByteArrayInputStream encryptedInputStream = new ByteArrayInputStream(plainText);
-		FileOutputStream fileOutputStream = new FileOutputStream(file);
-		security.encrypt(encryptedInputStream, fileOutputStream);
-	
-		fileOutputStream.close();
-		encryptedInputStream.close();
-	
-		FileInputStream in = new FileInputStream(file);
-		byte[] signature = security.createSignatureOfStream(in);
-		in.close();
-	
-		FileOutputStream out = new FileOutputStream(signatureFile);
-		out.write(signature);
-		out.close();
-	}
-
 	private static final String SESSION_ALGORITHM_NAME = "AES";
 	private static final String SESSION_ALGORITHM = "AES/CBC/PKCS5Padding";
 	private static final String PBE_ALGORITHM = "PBEWithSHAAndTwofish-CBC";

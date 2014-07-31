@@ -165,6 +165,24 @@ public abstract class MartusCrypto
 		return new String(bytes, "UTF-8");
 	}
 	
+	public void encryptAndWriteFileAndSignatureFile(File file, File signatureFile, byte[] plainText) throws Exception
+	{
+		ByteArrayInputStream encryptedInputStream = new ByteArrayInputStream(plainText);
+		FileOutputStream fileOutputStream = new FileOutputStream(file);
+		encrypt(encryptedInputStream, fileOutputStream);
+	
+		fileOutputStream.close();
+		encryptedInputStream.close();
+	
+		FileInputStream in = new FileInputStream(file);
+		byte[] signature = createSignatureOfStream(in);
+		in.close();
+	
+		FileOutputStream out = new FileOutputStream(signatureFile);
+		out.write(signature);
+		out.close();
+	}
+
 	// public codes
 	public static String computePublicCode(String publicKeyString) throws
 		StreamableBase64.InvalidBase64Exception
