@@ -331,7 +331,7 @@ public class FieldDataPacket extends Packet
 
 		String xmlSpecs = fields.getSpecsXml();
 		
-		if(hasCustomFieldTemplate())
+		if(hasCustomFieldSpecs())
 		{
 			writeElement(dest, MartusXml.FieldListElementName, MartusConstants.deprecatedCustomFieldSpecs);
 			dest.writeDirect(xmlSpecs);
@@ -372,7 +372,7 @@ public class FieldDataPacket extends Packet
 		return LegacyCustomFields.buildFieldListString(getFieldSpecs());
 	}
 
-	public boolean hasCustomFieldTemplate()
+	public boolean hasCustomFieldSpecs()
 	{
 		return !fields.toString().equals(DEFAULT_LEGACY_SPECS_AS_XML);
 	}
