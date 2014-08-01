@@ -69,7 +69,7 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
     
 	public void testGetSectionHtmlString() throws Exception
 	{
-		FieldSpecCollection standardPublicFields = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
+		FieldSpecCollection standardPublicFields = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
 		FieldSpecCollection standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
 		
 		Bulletin b = new Bulletin(security, standardPublicFields, standardPrivateFields);
@@ -94,7 +94,7 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 
 	public void testGetHtmlString() throws Exception
 	{
-		FieldSpecCollection standardPublicFields = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
+		FieldSpecCollection standardPublicFields = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
 		FieldSpecCollection standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
 		
 		Bulletin b = new Bulletin(security, standardPublicFields, standardPrivateFields);
@@ -140,7 +140,7 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 	public void testGetPublicOnlyHtmlString() throws Exception
 	{
 
-		FieldSpecCollection standardPublicFields = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
+		FieldSpecCollection standardPublicFields = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
 		FieldSpecCollection standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
 		
 		Bulletin b = new Bulletin(security, standardPublicFields, standardPrivateFields);
@@ -249,7 +249,7 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 	
 	public void testRightToLeft() throws Exception
 	{
-		FieldSpecCollection standardPublicFields = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
+		FieldSpecCollection standardPublicFields = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
 		FieldSpecCollection standardPrivateFields = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
 
 		Bulletin b = new Bulletin(security, standardPublicFields, standardPrivateFields);

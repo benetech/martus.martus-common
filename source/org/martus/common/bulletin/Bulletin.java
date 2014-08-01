@@ -77,7 +77,7 @@ public class Bulletin implements BulletinConstants
 
 	public Bulletin(MartusCrypto securityToUse) throws Exception
 	{
-		this(securityToUse, StandardFieldSpecs.getDefaultTopSetionFieldSpecs(), StandardFieldSpecs.getDefaultBottomSectionFieldSpecs());
+		this(securityToUse, StandardFieldSpecs.getDefaultTopSectionFieldSpecs(), StandardFieldSpecs.getDefaultBottomSectionFieldSpecs());
 	}
 	
 	public Bulletin(MartusCrypto securityToUse, BulletinType bulletinType, FieldSpecCollection publicFieldSpecs, FieldSpecCollection privateFieldSpecs) throws Exception

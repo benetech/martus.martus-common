@@ -46,7 +46,7 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 	{
 		super.setUp();
 
-		specsTopSection = new FieldSpecCollection(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray());
+		specsTopSection = new FieldSpecCollection(StandardFieldSpecs.getDefaultTopSectionFieldSpecs().asArray());
 		specsBottomSection = new FieldSpecCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
 	}
 	
@@ -191,7 +191,7 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		verifyExpectedError("Reserved Fields", CustomFieldError.CODE_RESERVED_TAG, tagSaved, labelSaved, null, (CustomFieldError)errors.get(2));
 		
 		
-		specsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
+		specsTopSection = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
 		specsBottomSection = addFieldSpec(specsBottomSection, LegacyCustomFields.createFromLegacy(tagStatus+","+labelStatus));
 		specsBottomSection = addFieldSpec(specsBottomSection, LegacyCustomFields.createFromLegacy(tagSent+","+labelSent));
 		specsBottomSection = addFieldSpec(specsBottomSection, LegacyCustomFields.createFromLegacy(tagSaved+","+labelSaved));
@@ -386,7 +386,7 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
 		assertTrue("invalid?", checker.isValid());
 		
-		specsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
+		specsTopSection = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
 		specsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
 
 		ChoiceItem[] choicesWithDuplicate = {new ChoiceItem("duplicate", "duplicate"), new ChoiceItem("duplicate", "duplicate")};
@@ -438,7 +438,7 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSection, specsBottomSection);
 		assertTrue("invalid?", checker.isValid());
 		
-		specsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
+		specsTopSection = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
 		ChoiceItem[] choicesWithDuplicate = {new ChoiceItem("duplicate", "duplicate"), new ChoiceItem("duplicate", "duplicate")};
 		DropDownFieldSpec dropDownSpecWithDuplicates = new DropDownFieldSpec(choicesWithDuplicate);
 		dropDownSpecWithDuplicates.setLabel("dropdown column label with dups");

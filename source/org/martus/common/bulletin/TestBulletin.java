@@ -124,13 +124,13 @@ public class TestBulletin extends TestCaseEnhanced
     
     public void testCreateRecordBulletin() throws Exception
     {
-    		Bulletin b = new Bulletin(security, Bulletin.BulletinType.RECORD, StandardFieldSpecs.getDefaultTopSetionFieldSpecs(), StandardFieldSpecs.getDefaultBottomSectionFieldSpecs());
+    		Bulletin b = new Bulletin(security, Bulletin.BulletinType.RECORD, StandardFieldSpecs.getDefaultTopSectionFieldSpecs(), StandardFieldSpecs.getDefaultBottomSectionFieldSpecs());
     		assertEquals("Bulletin created should be of type RECORD", b.getBulletinType(), Bulletin.BulletinType.RECORD);
     }
     
     public void testCreateNoteBulletin() throws Exception
     {
-    		Bulletin b = new Bulletin(security, Bulletin.BulletinType.NOTE, StandardFieldSpecs.getDefaultTopSetionFieldSpecs(), StandardFieldSpecs.getDefaultBottomSectionFieldSpecs());
+    		Bulletin b = new Bulletin(security, Bulletin.BulletinType.NOTE, StandardFieldSpecs.getDefaultTopSectionFieldSpecs(), StandardFieldSpecs.getDefaultBottomSectionFieldSpecs());
     		assertEquals("Bulletin created should be of type NOTE", b.getBulletinType(), Bulletin.BulletinType.NOTE);
     }
 
@@ -319,7 +319,7 @@ public class TestBulletin extends TestCaseEnhanced
 
 	public void testGetStandardFieldTypes()
 	{
-		FieldSpec[] standardPublicFields = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
+		FieldSpec[] standardPublicFields = StandardFieldSpecs.getDefaultTopSectionFieldSpecs().asArray();
 		for (int i = 0; i < standardPublicFields.length; i++)
 		{
 			FieldSpec spec = standardPublicFields[i];
