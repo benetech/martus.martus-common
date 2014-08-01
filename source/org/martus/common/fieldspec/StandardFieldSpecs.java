@@ -34,7 +34,7 @@ import org.martus.util.xml.XmlUtilities;
 
 public class StandardFieldSpecs
 {
-	public static FieldSpecCollection getDefaultTopSetionFieldSpecs()
+	public static FieldSpecCollection getDefaultTopSectionFieldSpecs()
 	{
 		return new FieldSpecCollection(new FieldSpec[] 
 			{
@@ -84,7 +84,7 @@ public class StandardFieldSpecs
 	
 	public static FieldSpec findStandardFieldSpec(String tag)
 	{
-		FieldSpec[] publicSpecs = StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray();
+		FieldSpec[] publicSpecs = StandardFieldSpecs.getDefaultTopSectionFieldSpecs().asArray();
 		for(int i=0; i < publicSpecs.length; ++i)
 			if(publicSpecs[i].getTag().equals(tag))
 			{
