@@ -212,7 +212,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 			"</FieldDataPacket>\n";
 		//System.out.println("{" + simpleFieldDataPacket + "}");
 
-		FieldSpecCollection tagsThatWillBeIgnored = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
+		FieldSpecCollection tagsThatWillBeIgnored = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
 		FieldDataPacket loaded = new FieldDataPacket(UniversalIdForTesting.createDummyUniversalId(), tagsThatWillBeIgnored);
 
 		byte[] bytes = simpleFieldDataPacket.getBytes("UTF-8");
@@ -255,7 +255,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 			"</FieldDataPacket>\n";
 		//System.out.println("{" + simpleFieldDataPacket + "}");
 
-		FieldSpecCollection specsThatWillBeIgnored = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
+		FieldSpecCollection specsThatWillBeIgnored = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
 		FieldDataPacket loaded = new FieldDataPacket(UniversalIdForTesting.createDummyUniversalId(), specsThatWillBeIgnored);
 
 		byte[] bytes = simpleFieldDataPacket.getBytes("UTF-8");
@@ -352,7 +352,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 				MartusXml.getTagEnd(MartusXml.FieldElementPrefix + "custom1") + 
 			"</FieldDataPacket>\n";
 
-		FieldSpecCollection specsThatWillBeIgnored = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
+		FieldSpecCollection specsThatWillBeIgnored = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
 		FieldDataPacket loaded = new FieldDataPacket(UniversalIdForTesting.createDummyUniversalId(), specsThatWillBeIgnored);
 
 		byte[] bytes = simpleFieldDataPacket.getBytes("UTF-8");
@@ -508,7 +508,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 
 	public void testWriteXmlNoCustomFields() throws Exception
 	{
-		FieldSpecCollection specs = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
+		FieldSpecCollection specs = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
 		FieldDataPacket fdpCustom = new FieldDataPacket(UniversalIdForTesting.createDummyUniversalId(), specs);
 		assertFalse("Should only have the default fields", fdpCustom.hasCustomFieldSpecs());
 		

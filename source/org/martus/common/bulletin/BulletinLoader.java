@@ -59,7 +59,7 @@ public class BulletinLoader
 	public static Bulletin loadFromDatabase(ReadableDatabase db, DatabaseKey key, MartusCrypto verifier) throws
 			Exception
 	{
-		FieldSpecCollection standardFieldNames = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
+		FieldSpecCollection standardFieldNames = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
 		FieldSpecCollection privateFieldNames = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
 		Bulletin b = new Bulletin(verifier, standardFieldNames, privateFieldNames);
 		b.clearAllUserData();

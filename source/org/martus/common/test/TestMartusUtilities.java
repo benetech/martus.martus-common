@@ -293,7 +293,7 @@ public class TestMartusUtilities extends TestCaseEnhanced
 
 	public void testValidateIntegrityOfZipFilePacketsNewNoteType() throws Exception
 	{
-		FieldSpecCollection publicSpec = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
+		FieldSpecCollection publicSpec = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
 		FieldSpecCollection privateSpec = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
 		
 		Bulletin b = new Bulletin(security, Bulletin.BulletinType.NOTE, publicSpec, privateSpec);

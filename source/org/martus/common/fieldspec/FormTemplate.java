@@ -58,14 +58,11 @@ public class FormTemplate
 		clearData();
 	}
 	
-	public FormTemplate(String title, String description, FieldCollection topSection, FieldCollection bottomSection) 
-	{
-		this(title, description, topSection.getSpecs(), bottomSection.getSpecs());
-	}
 
-	public FormTemplate(String title, String description, FieldSpecCollection topSection, FieldSpecCollection bottomSection) 
+	public FormTemplate(String title, String description, FieldSpecCollection topSection, FieldSpecCollection bottomSection) throws Exception 
 	{
-		setData(title, description, topSection.toXml(), bottomSection.toXml());
+		if(!setData(title, description, topSection.toXml(), bottomSection.toXml()))
+			throw new CustomFieldsParseException();
 	}
 
 	private boolean setData(String title, String description, String xmlTopSection, String xmlBottomSection)
@@ -337,12 +334,12 @@ public class FormTemplate
 		return errors;
 	}
 	
-	public String getImportedTopSectionText()
+	public String getTopSectionXml()
 	{
 		return xmlTopSectionText;
 	}
 	
-	public String getImportedBottomSectionText()
+	public String getBottomSectionXml()
 	{
 		return xmlBottomSectionText;
 	}
