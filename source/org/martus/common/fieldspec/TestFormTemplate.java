@@ -190,8 +190,8 @@ public class TestFormTemplate extends TestCaseEnhanced
 		assertTrue("Failed to import Template from exportedString?", importTemplate(templateRetrieved, exportFile));
 		assertEquals(formTemplateTitle, templateRetrieved.getTitle());
 		assertEquals(formTemplateDescription, templateRetrieved.getDescription());
-		assertEquals(defaultFieldsTopSection.toXml(), templateRetrieved.getImportedTopSectionText());
-		assertEquals(defaultFieldsBottomSection.toXml(), templateRetrieved.getImportedBottomSectionText());
+		assertEquals(defaultFieldsTopSection.toXml(), templateRetrieved.getTopSectionXml());
+		assertEquals(defaultFieldsBottomSection.toXml(), templateRetrieved.getBottomSectionXml());
 	}
 
 	public void testImportXmlLegacy() throws Exception
@@ -207,11 +207,11 @@ public class TestFormTemplate extends TestCaseEnhanced
 		out.close();
 
 		FormTemplate template = new FormTemplate();
-		assertEquals("", template.getImportedTopSectionText());
+		assertEquals("", template.getTopSectionXml());
 		assertTrue(importTemplate(template, exportFile));
 		FieldCollection defaultBottomSectionFields = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
-		assertEquals(fieldsTopSection.toString(), template.getImportedTopSectionText());
-		assertEquals(defaultBottomSectionFields.toString(), template.getImportedBottomSectionText());
+		assertEquals(fieldsTopSection.toString(), template.getTopSectionXml());
+		assertEquals(defaultBottomSectionFields.toString(), template.getBottomSectionXml());
 		assertEquals(0, template.getErrors().size());
 		
 		UnicodeWriter writer = new UnicodeWriter(exportFile,UnicodeWriter.APPEND);
@@ -219,7 +219,7 @@ public class TestFormTemplate extends TestCaseEnhanced
 		writer.close();
 		
 		assertTrue(importTemplate(template, exportFile));
-		assertEquals(fieldsTopSection.toString(), template.getImportedTopSectionText());
+		assertEquals(fieldsTopSection.toString(), template.getTopSectionXml());
 		assertEquals(0, template.getErrors().size());
 
 		exportFile.delete();
@@ -231,7 +231,7 @@ public class TestFormTemplate extends TestCaseEnhanced
 		out.close();
 		
 		assertFalse(importTemplate(template, exportFile));
-		assertEquals("", template.getImportedTopSectionText());
+		assertEquals("", template.getTopSectionXml());
 		assertEquals(1, template.getErrors().size());
 		assertEquals(CustomFieldError.CODE_SIGNATURE_ERROR, ((CustomFieldError)template.getErrors().get(0)).getCode());
 		
@@ -287,10 +287,10 @@ public class TestFormTemplate extends TestCaseEnhanced
 		String formTemplateDescription = "Form Description";
 		exportFile.delete();
 		template.exportTemplate(security, exportFile, fieldsTopSection.toString(), fieldsBottomSection.toString(), formTemplateTitle, formTemplateDescription);
-		assertEquals("", template.getImportedTopSectionText());
+		assertEquals("", template.getTopSectionXml());
 		assertTrue(importTemplate(template, exportFile));
-		assertEquals(fieldsTopSection.toString(), template.getImportedTopSectionText());
-		assertEquals(fieldsBottomSection.toString(), template.getImportedBottomSectionText());
+		assertEquals(fieldsTopSection.toString(), template.getTopSectionXml());
+		assertEquals(fieldsBottomSection.toString(), template.getBottomSectionXml());
 		assertEquals(formTemplateTitle, template.getTitle());
 		assertEquals(formTemplateDescription, template.getDescription());
 		assertEquals(0, template.getErrors().size());
@@ -300,8 +300,8 @@ public class TestFormTemplate extends TestCaseEnhanced
 		writer.close();
 		
 		assertTrue(importTemplate(template, exportFile));
-		assertEquals(fieldsTopSection.toString(), template.getImportedTopSectionText());
-		assertEquals(fieldsBottomSection.toString(), template.getImportedBottomSectionText());
+		assertEquals(fieldsTopSection.toString(), template.getTopSectionXml());
+		assertEquals(fieldsBottomSection.toString(), template.getBottomSectionXml());
 		assertEquals(formTemplateTitle, template.getTitle());
 		assertEquals(formTemplateDescription, template.getDescription());
 		assertEquals(0, template.getErrors().size());
@@ -315,8 +315,8 @@ public class TestFormTemplate extends TestCaseEnhanced
 		out.close();
 		
 		assertFalse(importTemplate(template, exportFile));
-		assertEquals("", template.getImportedTopSectionText());
-		assertEquals("", template.getImportedBottomSectionText());
+		assertEquals("", template.getTopSectionXml());
+		assertEquals("", template.getBottomSectionXml());
 		assertEquals("", template.getTitle());
 		assertEquals("", template.getDescription());
 		assertEquals(1, template.getErrors().size());

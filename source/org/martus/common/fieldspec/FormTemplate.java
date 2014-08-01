@@ -334,12 +334,12 @@ public class FormTemplate
 		return errors;
 	}
 	
-	public String getImportedTopSectionText()
+	public String getTopSectionXml()
 	{
 		return xmlTopSectionText;
 	}
 	
-	public String getImportedBottomSectionText()
+	public String getBottomSectionXml()
 	{
 		return xmlBottomSectionText;
 	}
