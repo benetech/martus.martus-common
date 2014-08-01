@@ -27,6 +27,9 @@ package org.martus.common.network;
 
 import java.io.File;
 
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleBooleanProperty;
+
 import javax.net.ssl.TrustManager;
 
 import org.apache.xmlrpc.client.XmlRpcClient;
@@ -54,7 +57,7 @@ public class OrchidTransportWrapper extends TransportWrapperWithOfflineMode
 	
 	private OrchidTransportWrapper(MartusOrchidDirectoryStore storeToUse) throws Exception
 	{
-		isTorActive = false;
+		isTorActive = new SimpleBooleanProperty();
 		isTorReady = false;
 
 		createRealTorClient(storeToUse);
@@ -72,7 +75,7 @@ public class OrchidTransportWrapper extends TransportWrapperWithOfflineMode
 
 	public void startTor()
 	{
-		isTorActive = true;
+		isTorActive.setValue(true);
 		updateStatus();
 		if(!isTorReady)
 			new TorInitializer().start();
@@ -80,14 +83,14 @@ public class OrchidTransportWrapper extends TransportWrapperWithOfflineMode
 
 	public void startTorInSameThread()
 	{
-		isTorActive = true;
+		isTorActive.setValue(true);
 		if(!isTorReady)
 			getTor().start();
 	}
 	
 	public void stopTor()
 	{
-		isTorActive = false;
+		isTorActive.setValue(false);
 		updateStatus();
 	}
 	
@@ -106,10 +109,15 @@ public class OrchidTransportWrapper extends TransportWrapperWithOfflineMode
 		return tor;
 	}
 	
+	public Property <Boolean> getIsTorActiveProperty()
+	{
+		return isTorActive;
+	}
+	
 	@Override
 	public boolean isTorEnabled()
 	{
-		return isTorActive;
+		return isTorActive.getValue();
 	}
 	
 	@Override
@@ -118,7 +126,7 @@ public class OrchidTransportWrapper extends TransportWrapperWithOfflineMode
 		if(!super.isReady())
 			return false;
 		
-		if(!isTorActive)
+		if(!isTorActive.getValue())
 			return true;
 		
 		return isTorReady;
@@ -129,7 +137,7 @@ public class OrchidTransportWrapper extends TransportWrapperWithOfflineMode
 		if(progressMeter == null)
 			return;
 		
-		if(isTorActive)
+		if(isTorActive.getValue())
 		{
 			if(isTorReady)
 			{
@@ -153,7 +161,7 @@ public class OrchidTransportWrapper extends TransportWrapperWithOfflineMode
 	@Override
 	public XmlRpcTransportFactory createTransport(XmlRpcClient client, TrustManager tm)	throws Exception 
 	{
-		if(!isTorActive)
+		if(!isTorActive.getValue())
 			return null;
 		
 		if(!isReady())
@@ -211,10 +219,11 @@ public class OrchidTransportWrapper extends TransportWrapperWithOfflineMode
 		factory = new OrchidXmlRpcTransportFactory(client, tor, MartusUtilities.createSSLContext(tm));
 		return factory;
 	}
+	
 
 	private TorClient tor;
 	private ProgressMeterInterface progressMeter;
 
-	private boolean isTorActive;
+	private Property <Boolean> isTorActive;
 	private boolean isTorReady;
 }
