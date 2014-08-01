@@ -58,9 +58,11 @@ public class FormTemplate
 		clearData();
 	}
 	
-	public FormTemplate(String title, String description, FieldSpecCollection topSection, FieldSpecCollection bottomSection) 
+
+	public FormTemplate(String title, String description, FieldSpecCollection topSection, FieldSpecCollection bottomSection) throws Exception 
 	{
-		setData(title, description, topSection.toXml(), bottomSection.toXml());
+		if(!setData(title, description, topSection.toXml(), bottomSection.toXml()))
+			throw new CustomFieldsParseException();
 	}
 
 	private boolean setData(String title, String description, String xmlTopSection, String xmlBottomSection)
