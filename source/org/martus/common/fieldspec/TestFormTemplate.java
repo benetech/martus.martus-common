@@ -131,8 +131,8 @@ public class TestFormTemplate extends TestCaseEnhanced
 	{
 		String formTemplateTitle = "New Form Title";
 		String formTemplateDescription = "New Form Description";
-		FieldCollection defaultFieldsTopSection = new FieldCollection(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray());
-		FieldCollection defaultFieldsBottomSection = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
+		FieldSpecCollection defaultFieldsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
+		FieldSpecCollection defaultFieldsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
 
 		File exportMultipleSignersCFTFile = createTempFileFromName("$$$testExportMultipleSignersXml");
 		exportMultipleSignersCFTFile.deleteOnExit();
@@ -140,8 +140,8 @@ public class TestFormTemplate extends TestCaseEnhanced
 		DataOutputStream dataOut = new DataOutputStream(out);
 		dataOut.write(FormTemplate.versionHeader.getBytes());
 		dataOut.writeInt(FormTemplate.exportVersionNumber);
-		byte[] signedBundleTopSection = security.createSignedBundle(UnicodeUtilities.toUnicodeBytes(defaultFieldsTopSection.getSpecsXml()));
-		byte[] signedBundleBottomSection = security.createSignedBundle(UnicodeUtilities.toUnicodeBytes(defaultFieldsBottomSection.getSpecsXml()));
+		byte[] signedBundleTopSection = security.createSignedBundle(UnicodeUtilities.toUnicodeBytes(defaultFieldsTopSection.toXml()));
+		byte[] signedBundleBottomSection = security.createSignedBundle(UnicodeUtilities.toUnicodeBytes(defaultFieldsBottomSection.toXml()));
 		byte[] signedBundleTitle = security.createSignedBundle(UnicodeUtilities.toUnicodeBytes(formTemplateTitle));
 
 		MockMartusSecurity otherSecurity = new MockMartusSecurity();
@@ -170,8 +170,8 @@ public class TestFormTemplate extends TestCaseEnhanced
 	{
 		String formTemplateTitle = "New Form Title";
 		String formTemplateDescription = "New Form Description";
-		FieldCollection defaultFieldsTopSection = new FieldCollection(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray());
-		FieldCollection defaultFieldsBottomSection = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
+		FieldSpecCollection defaultFieldsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
+		FieldSpecCollection defaultFieldsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
 		FormTemplate template = new FormTemplate(formTemplateTitle, formTemplateDescription, defaultFieldsTopSection, defaultFieldsBottomSection);
 		
 		String exportedTemplateAsStringBase64= template.getExportedTemplateAsBase64String(security);
@@ -190,8 +190,8 @@ public class TestFormTemplate extends TestCaseEnhanced
 		assertTrue("Failed to import Template from exportedString?", importTemplate(templateRetrieved, exportFile));
 		assertEquals(formTemplateTitle, templateRetrieved.getTitle());
 		assertEquals(formTemplateDescription, templateRetrieved.getDescription());
-		assertEquals(defaultFieldsTopSection.toString(), templateRetrieved.getImportedTopSectionText());
-		assertEquals(defaultFieldsBottomSection.toString(), templateRetrieved.getImportedBottomSectionText());
+		assertEquals(defaultFieldsTopSection.toXml(), templateRetrieved.getImportedTopSectionText());
+		assertEquals(defaultFieldsBottomSection.toXml(), templateRetrieved.getImportedBottomSectionText());
 	}
 
 	public void testImportXmlLegacy() throws Exception

@@ -58,11 +58,6 @@ public class FormTemplate
 		clearData();
 	}
 	
-	public FormTemplate(String title, String description, FieldCollection topSection, FieldCollection bottomSection) 
-	{
-		this(title, description, topSection.getSpecs(), bottomSection.getSpecs());
-	}
-
 	public FormTemplate(String title, String description, FieldSpecCollection topSection, FieldSpecCollection bottomSection) 
 	{
 		setData(title, description, topSection.toXml(), bottomSection.toXml());
