@@ -189,7 +189,7 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 
 		ZipEntry dataEntry = (ZipEntry)entries.nextElement();
 		assertStartsWith("data id wrong?", "F", dataEntry.getName());
-		FieldDataPacket fdp = new FieldDataPacket(dummyUid, StandardFieldSpecs.getDefaultTopSetionFieldSpecs());
+		FieldDataPacket fdp = new FieldDataPacket(dummyUid, StandardFieldSpecs.getDefaultTopSectionFieldSpecs());
 		fdp.loadFromXml(new ZipEntryInputStreamWithSeek(zip, dataEntry), security);
 		assertEquals("fdp id?", original.getFieldDataPacket().getUniversalId(), fdp.getUniversalId());
 
@@ -255,7 +255,7 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 		ZipEntry dataEntry = (ZipEntry)entries.nextElement();
 		assertNotNull("null data?", dataEntry);
 		InputStreamWithSeek dataIn = new ZipEntryInputStreamWithSeek(zip, dataEntry);
-		FieldDataPacket data = new FieldDataPacket(uid, StandardFieldSpecs.getDefaultTopSetionFieldSpecs());
+		FieldDataPacket data = new FieldDataPacket(uid, StandardFieldSpecs.getDefaultTopSectionFieldSpecs());
 		data.loadFromXml(dataIn, security);
 		assertEquals("data wrong?", b.get(Bulletin.TAGPUBLICINFO), data.get(Bulletin.TAGPUBLICINFO));
 

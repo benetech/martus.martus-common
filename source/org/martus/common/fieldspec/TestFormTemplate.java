@@ -73,14 +73,14 @@ public class TestFormTemplate extends TestCaseEnhanced
 	
 	public void testValidateXml() throws Exception
 	{
-		FieldCollection defaultTopSectionFields = new FieldCollection(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray());
+		FieldCollection defaultTopSectionFields = new FieldCollection(StandardFieldSpecs.getDefaultTopSectionFieldSpecs().asArray());
 		FieldCollection defaultBottomSectionFields = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
 		FormTemplate template = new FormTemplate();
 		assertTrue("not valid?", template.isvalidTemplateXml(defaultTopSectionFields.toString(), defaultBottomSectionFields.toString()));
 		assertEquals(0, template.getErrors().size());
 		
 		FieldSpec invalidTopSectionField = FieldSpec.createCustomField("myTag", "", new FieldTypeNormal());
-		FieldCollection fields = FieldCollectionForTesting.extendFields(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray(), invalidTopSectionField);
+		FieldCollection fields = FieldCollectionForTesting.extendFields(StandardFieldSpecs.getDefaultTopSectionFieldSpecs().asArray(), invalidTopSectionField);
 		assertFalse("Should not be a valid template", template.isvalidTemplateXml(fields.toString(), defaultBottomSectionFields.toString()));
 		assertEquals(1, template.getErrors().size());
 		assertEquals(CustomFieldError.CODE_MISSING_LABEL,((CustomFieldError)template.getErrors().get(0)).getCode());
@@ -100,7 +100,7 @@ public class TestFormTemplate extends TestCaseEnhanced
 		exportFile.deleteOnExit();
 		String formTemplateTitle = "New Form Title";
 		String formTemplateDescription = "New Form Description";
-		FieldCollection defaultFieldsTopSection = new FieldCollection(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray());
+		FieldCollection defaultFieldsTopSection = new FieldCollection(StandardFieldSpecs.getDefaultTopSectionFieldSpecs().asArray());
 		FieldCollection defaultFieldsBottomSection = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
 		assertTrue(template.exportTemplate(security, exportFile, defaultFieldsTopSection.toString(), defaultFieldsBottomSection.toString(), formTemplateTitle, formTemplateDescription));
 		assertTrue(exportFile.exists());
@@ -119,7 +119,7 @@ public class TestFormTemplate extends TestCaseEnhanced
 		
 
 		FieldSpec invalidField = FieldSpec.createCustomField("myTag", "", new FieldTypeNormal());
-		FieldCollection withInvalid = FieldCollectionForTesting.extendFields(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray(), invalidField);
+		FieldCollection withInvalid = FieldCollectionForTesting.extendFields(StandardFieldSpecs.getDefaultTopSectionFieldSpecs().asArray(), invalidField);
 		FieldCollection bottomSectionFields = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
 		assertFalse(exportFile.exists());
 		assertFalse(template.exportTemplate(security, exportFile, withInvalid.toString(), bottomSectionFields.toString(), formTemplateTitle, formTemplateDescription));
@@ -131,7 +131,7 @@ public class TestFormTemplate extends TestCaseEnhanced
 	{
 		String formTemplateTitle = "New Form Title";
 		String formTemplateDescription = "New Form Description";
-		FieldSpecCollection defaultFieldsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
+		FieldSpecCollection defaultFieldsTopSection = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
 		FieldSpecCollection defaultFieldsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
 
 		File exportMultipleSignersCFTFile = createTempFileFromName("$$$testExportMultipleSignersXml");
@@ -170,7 +170,7 @@ public class TestFormTemplate extends TestCaseEnhanced
 	{
 		String formTemplateTitle = "New Form Title";
 		String formTemplateDescription = "New Form Description";
-		FieldSpecCollection defaultFieldsTopSection = StandardFieldSpecs.getDefaultTopSetionFieldSpecs();
+		FieldSpecCollection defaultFieldsTopSection = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
 		FieldSpecCollection defaultFieldsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
 		FormTemplate template = new FormTemplate(formTemplateTitle, formTemplateDescription, defaultFieldsTopSection, defaultFieldsBottomSection);
 		
@@ -196,7 +196,7 @@ public class TestFormTemplate extends TestCaseEnhanced
 
 	public void testImportXmlLegacy() throws Exception
 	{
-		FieldCollection fieldsTopSection = new FieldCollection(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray());
+		FieldCollection fieldsTopSection = new FieldCollection(StandardFieldSpecs.getDefaultTopSectionFieldSpecs().asArray());
 		File exportFile = createTempFileFromName("$$$testImportXmlLegacy");
 		exportFile.delete();
 		
@@ -274,7 +274,7 @@ public class TestFormTemplate extends TestCaseEnhanced
 
 	public void testImportXml() throws Exception
 	{
-		FieldCollection fieldsTopSection = new FieldCollection(StandardFieldSpecs.getDefaultTopSetionFieldSpecs().asArray());
+		FieldCollection fieldsTopSection = new FieldCollection(StandardFieldSpecs.getDefaultTopSectionFieldSpecs().asArray());
 		FieldSpecCollection fieldSpecsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
 		String privateTag = "a2";
 		String privateLabel ="b2";
