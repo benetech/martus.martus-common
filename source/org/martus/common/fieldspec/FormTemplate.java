@@ -362,7 +362,13 @@ public class FormTemplate
 
 	public static String calculateFileNameFromString(String inputText) throws CreateDigestException  
 	{
-		return MartusCrypto.getHexDigest(inputText) + CUSTOMIZATION_TEMPLATE_EXTENSION;
+		String extension = CUSTOMIZATION_TEMPLATE_EXTENSION;
+		return calculateFileNameFromString(inputText, extension);
+	}
+
+	public static String calculateFileNameFromString(String inputText, String extension)
+	{
+		return MartusCrypto.getHexDigest(inputText) + extension;
 	}
 
 	public static final String versionHeader = "Export Version Number:";
