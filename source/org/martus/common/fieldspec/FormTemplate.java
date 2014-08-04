@@ -42,6 +42,7 @@ import org.martus.common.FieldSpecCollection;
 import org.martus.common.MartusLogger;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
+import org.martus.common.crypto.MartusCrypto.CreateDigestException;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
 import org.martus.util.StreamableBase64;
 import org.martus.util.UnicodeUtilities;
@@ -357,6 +358,11 @@ public class FormTemplate
 	public String getDescription()
 	{
 		return description;
+	}
+
+	public static String calculateFileNameFromString(String inputText) throws CreateDigestException  
+	{
+		return MartusCrypto.getHexDigest(inputText) + CUSTOMIZATION_TEMPLATE_EXTENSION;
 	}
 
 	public static final String versionHeader = "Export Version Number:";
