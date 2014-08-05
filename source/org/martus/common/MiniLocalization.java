@@ -67,7 +67,6 @@ public class MiniLocalization
 		textResources = new TreeMap();
 		rightToLeftLanguages = new Vector();
 		currentDateFormat = new DatePreference();
-//		currentCalendarSystem = GREGORIAN_SYSTEM;
 		languageSettings = new DefaultLanguageSettingsProvider();
 	}
 	
@@ -75,11 +74,9 @@ public class MiniLocalization
 	{
 		languageSettings = providerToUse;
 		
-		//Not sure if this is needed yet.
+		//TODO: Not sure if this is needed yet.
 		setCurrentDateFormatCode(languageSettings.getCurrentDateFormat());
 		setCurrentCalendarSystem(languageSettings.getCurrentCalendarSystem());
-		//setAdjustThaiLegacyDates(languageSettings.getAdjustThaiLegacyDates());
-		//setAdjustPersianLegacyDates(languageSettings.getAdjustPersianLegacyDates());
 	}
 	
 	public void addEnglishTranslations(String[] translations)
@@ -159,7 +156,6 @@ public class MiniLocalization
 
 	public String getCurrentLanguageCode()
 	{
-		//return currentLanguageCode;
 		String currentLanguage = languageSettings.getCurrentLanguage();
 		if(currentLanguage.isEmpty())
 			return null;
@@ -168,7 +164,6 @@ public class MiniLocalization
 
 	public void setCurrentLanguageCode(String newLanguageCode)
 	{
-		//currentLanguageCode = newLanguageCode;
 		languageSettings.setCurrentLanguage(newLanguageCode);
 		if(isRightToLeftLanguage())
 			LanguageOptions.setDirectionRightToLeft();
@@ -209,7 +204,6 @@ public class MiniLocalization
 	public String getCurrentDateFormatCode()
 	{
 		return languageSettings.getCurrentDateFormat();
-		//return currentDateFormat.getRawDateTemplate();
 	}
 
 	public void setCurrentDateFormatCode(String code)
@@ -342,7 +336,6 @@ public class MiniLocalization
 	public String getCurrentCalendarSystem()
 	{
 		return languageSettings.getCurrentCalendarSystem();
-		//return currentCalendarSystem;
 	}
 	
 	public void setCurrentCalendarSystem(String newSystem)
@@ -352,7 +345,6 @@ public class MiniLocalization
 		{
 			if(ALL_CALENDAR_SYSTEMS[i].equals(newSystem))
 			{
-				//currentCalendarSystem = newSystem;
 				languageSettings.setCurrentCalendarSystem(newSystem);
 				return;
 			}
@@ -531,27 +523,23 @@ public class MiniLocalization
 
 	public boolean getAdjustThaiLegacyDates()
 	{
-		//return adjustThaiLegacyDates;
 		return languageSettings.getAdjustThaiLegacyDates();
 	}
 	
 	public void setAdjustThaiLegacyDates(boolean newAdjustThai)
 	{
 		//TODO remove this CALL use CurrentUiState to set this
-		//adjustThaiLegacyDates = newAdjustThai;
 		languageSettings.setCurrentAdjustThaiLegacyDates(newAdjustThai);
 	}
 	
 	public boolean getAdjustPersianLegacyDates()
 	{
-		//return adjustPersianLegacyDates;
 		return languageSettings.getAdjustPersianLegacyDates();
 	}
 	
 	public void setAdjustPersianLegacyDates(boolean newAdjustPersian)
 	{
 		//TODO remove this CALL use CurrentUiState to set this
-		//adjustPersianLegacyDates = newAdjustPersian;
 		languageSettings.setCurrentAdjustPersianLegacyDates(newAdjustPersian);
 	}
 	
@@ -645,10 +633,6 @@ public class MiniLocalization
 	
 	protected Map textResources;
 	protected Vector rightToLeftLanguages;
-	//private String currentLanguageCode;
 	private DatePreference currentDateFormat;
-	//private String currentCalendarSystem;
-	//private boolean adjustThaiLegacyDates;
-	//private boolean adjustPersianLegacyDates;
 	private LanguageSettingsProvider languageSettings;
 }
