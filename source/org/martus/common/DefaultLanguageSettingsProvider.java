@@ -34,6 +34,11 @@ public class DefaultLanguageSettingsProvider implements LanguageSettingsProvider
 	{
 		return new DatePreference().getRawDateTemplate();
 	}
+	
+	@Override
+	public void setCurrentDateFormat(String currentDateFormat)
+	{
+	}
 
 	@Override
 	public String getCurrentLanguage()
@@ -42,9 +47,19 @@ public class DefaultLanguageSettingsProvider implements LanguageSettingsProvider
 	}
 
 	@Override
+	public void setCurrentLanguage(String currentLanguage)
+	{
+	}
+
+	@Override
 	public String getCurrentCalendarSystem()
 	{
 		return MiniLocalization.GREGORIAN_SYSTEM;
+	}
+	
+	@Override
+	public void setCurrentCalendarSystem(String calendarSystem)
+	{
 	}
 
 	@Override
@@ -54,9 +69,18 @@ public class DefaultLanguageSettingsProvider implements LanguageSettingsProvider
 	}
 
 	@Override
+	public void setCurrentAdjustThaiLegacyDates(boolean newAdjustThai)
+	{
+	}
+
+	@Override
 	public boolean getAdjustPersianLegacyDates()
 	{
 		return false;
 	}
-
+	
+	@Override
+	public void setCurrentAdjustPersianLegacyDates(boolean newAdjustPersian)
+	{
+	}
 }

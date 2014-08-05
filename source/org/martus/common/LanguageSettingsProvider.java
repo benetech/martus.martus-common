@@ -28,8 +28,14 @@ package org.martus.common;
 public interface LanguageSettingsProvider
 {
 	public String getCurrentDateFormat();
+	public void setCurrentDateFormat(String currentDateFormat);
 	public String getCurrentLanguage();
+	public void setCurrentLanguage(String currentLanguage);
 	public String getCurrentCalendarSystem();
+	public void setCurrentCalendarSystem(String calendarSystem);
 	public boolean getAdjustThaiLegacyDates();
 	public boolean getAdjustPersianLegacyDates();
+	public void setCurrentAdjustThaiLegacyDates(boolean newAdjustThai);
+	public void setCurrentAdjustPersianLegacyDates(boolean newPersianAdjust);
+
 }

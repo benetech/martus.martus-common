@@ -43,10 +43,26 @@ public class TestDefaultLanguageSettingsProvider extends TestCaseEnhanced
 	{
 		DefaultLanguageSettingsProvider defaultLanguageProvider = new DefaultLanguageSettingsProvider();
 		assertEquals(defaultLanguageProvider.getCurrentLanguage(), MiniLocalization.ENGLISH);
+		defaultLanguageProvider.setCurrentLanguage("fr");
+		assertEquals("Default Language Provider is immutable, should still be English", defaultLanguageProvider.getCurrentLanguage(), MiniLocalization.ENGLISH);
+
 		assertEquals(defaultLanguageProvider.getCurrentCalendarSystem(), MiniLocalization.GREGORIAN_SYSTEM);
-		assertEquals(defaultLanguageProvider.getCurrentDateFormat(), "MM/dd/yyyy");
+		defaultLanguageProvider.setCurrentCalendarSystem(MiniLocalization.PERSIAN_SYSTEM);
+		assertEquals("Default Language Provider is immutable, should still be Gregorian.",defaultLanguageProvider.getCurrentCalendarSystem(), MiniLocalization.GREGORIAN_SYSTEM);
+		
+		String defaultDateFormat = "MM/dd/yyyy";
+		assertEquals(defaultLanguageProvider.getCurrentDateFormat(), defaultDateFormat);
+		defaultLanguageProvider.setCurrentDateFormat("dd-MM-yyyy");
+		assertEquals("Default Language Provider is immutable, should still be default calendar", defaultLanguageProvider.getCurrentDateFormat(), defaultDateFormat);
+		
 		assertFalse(defaultLanguageProvider.getAdjustPersianLegacyDates());
+		defaultLanguageProvider.setCurrentAdjustPersianLegacyDates(true);
+		assertFalse("Default Language Provider is immutable, should still be false for Persian Dates", defaultLanguageProvider.getAdjustPersianLegacyDates());
+		
+		
 		assertFalse(defaultLanguageProvider.getAdjustThaiLegacyDates());	
+		defaultLanguageProvider.setCurrentAdjustThaiLegacyDates(true);
+		assertFalse("Default Language Provider is immutable, should still be false for Thai Dates", defaultLanguageProvider.getAdjustThaiLegacyDates());	
 	}
 	
 }
