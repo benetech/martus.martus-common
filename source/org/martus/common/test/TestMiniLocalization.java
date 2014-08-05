@@ -31,6 +31,7 @@ import java.util.GregorianCalendar;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
+import org.martus.common.LanguageSettingsProvider;
 import org.martus.common.MiniLocalization;
 import org.martus.common.utilities.MartusFlexidate;
 import org.martus.util.MultiCalendar;
@@ -49,6 +50,7 @@ public class TestMiniLocalization extends TestCaseEnhanced
 	{
 		super.setUp();
 		localization = new MiniLocalization();
+		localization.setLanguageSettingsProvider(new MutableLanguageSettingsProvider());
 	}
 	
 	public void tearDown() throws Exception
@@ -218,6 +220,7 @@ public class TestMiniLocalization extends TestCaseEnhanced
     public void testFormatDateTimeRightToLeft() throws Exception
 	{
     	MiniLocalization loc = new MiniLocalization();
+    	loc.setLanguageSettingsProvider(new MutableLanguageSettingsProvider());
     	String rightToLeftLanguageCode = "cc";
     	loc.addRightToLeftLanguage(rightToLeftLanguageCode);
 		loc.setCurrentLanguageCode(rightToLeftLanguageCode);
@@ -250,6 +253,7 @@ public class TestMiniLocalization extends TestCaseEnhanced
 	public void testSetDateFormatFromLanguage()
 	{
 		MiniLocalization loc = new MiniLocalization();
+		loc.setLanguageSettingsProvider(new MutableLanguageSettingsProvider());
 		assertEquals("wrong default mdy?", "mdy", loc.getMdyOrder());
 		loc.setCurrentLanguageCode(MiniLocalization.RUSSIAN);
 		loc.setDateFormatFromLanguage();
@@ -374,6 +378,83 @@ public class TestMiniLocalization extends TestCaseEnhanced
 		}
 	}
 
+	class MutableLanguageSettingsProvider implements LanguageSettingsProvider
+	{
+		
+		public MutableLanguageSettingsProvider()
+		{
+			currentDateFormat = "MM/dd/yyyy";
+			calendarSystem = MiniLocalization.GREGORIAN_SYSTEM;
+			currentLanguage = "en";
+		}
+
+		@Override
+		public String getCurrentDateFormat()
+		{
+			return currentDateFormat;
+		}
+
+		@Override
+		public void setCurrentDateFormat(String currentDateFormat)
+		{
+			this.currentDateFormat = currentDateFormat;
+			
+		}
+
+		@Override
+		public String getCurrentLanguage()
+		{
+			return currentLanguage;
+		}
+
+		@Override
+		public void setCurrentLanguage(String currentLanguage)
+		{
+			this.currentLanguage = currentLanguage;
+		}
+
+		@Override
+		public String getCurrentCalendarSystem()
+		{
+			return calendarSystem;
+		}
+
+		@Override
+		public void setCurrentCalendarSystem(String calendarSystem)
+		{
+			this.calendarSystem = calendarSystem;
+		}
+
+		@Override
+		public boolean getAdjustThaiLegacyDates()
+		{
+			return thaiLegacyDates;
+		}
+
+		@Override
+		public boolean getAdjustPersianLegacyDates()
+		{
+			return persianLegacyDates;
+		}
+
+		@Override
+		public void setCurrentAdjustThaiLegacyDates(boolean newAdjustThai)
+		{
+			thaiLegacyDates = newAdjustThai;			
+		}
+
+		@Override
+		public void setCurrentAdjustPersianLegacyDates(boolean newPersianAdjust)
+		{
+			persianLegacyDates = newPersianAdjust;
+		}
+		
+		private boolean persianLegacyDates;
+		private boolean thaiLegacyDates;
+		private String calendarSystem;
+		private String currentLanguage;
+		private String currentDateFormat;		
+	}
 
 	MiniLocalization localization;
 }

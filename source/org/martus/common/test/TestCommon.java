@@ -99,6 +99,7 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestDateFieldSpec.class));
 		suite.addTest(new TestSuite(TestDateRangeFieldSpec.class));
 		suite.addTest(new TestSuite(TestDateUtilities.class));
+		suite.addTest(new TestSuite(TestDefaultLanguageSettingsProvider.class));
 		suite.addTest(new TestSuite(TestDropDownFieldSpec.class));
 		suite.addTest(new TestSuite(TestFieldDataPacket.class));
 		suite.addTest(new TestSuite(TestFieldDeskKeys.class));
