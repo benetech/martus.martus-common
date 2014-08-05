@@ -355,6 +355,11 @@ public class FormTemplate
 		return title;
 	}
 
+	public void setTitle(String newTitle)
+	{
+		title = newTitle;
+	}
+
 	public String getDescription()
 	{
 		return description;
