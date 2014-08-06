@@ -35,7 +35,5 @@ public interface LanguageSettingsProvider
 	public void setCurrentCalendarSystem(String calendarSystem);
 	public boolean getAdjustThaiLegacyDates();
 	public boolean getAdjustPersianLegacyDates();
-	public void setCurrentAdjustThaiLegacyDates(boolean newAdjustThai);
-	public void setCurrentAdjustPersianLegacyDates(boolean newPersianAdjust);
 
 }

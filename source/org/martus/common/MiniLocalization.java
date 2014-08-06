@@ -526,21 +526,9 @@ public class MiniLocalization
 		return languageSettings.getAdjustThaiLegacyDates();
 	}
 	
-	public void setAdjustThaiLegacyDates(boolean newAdjustThai)
-	{
-		//TODO remove this CALL use CurrentUiState to set this
-		languageSettings.setCurrentAdjustThaiLegacyDates(newAdjustThai);
-	}
-	
 	public boolean getAdjustPersianLegacyDates()
 	{
 		return languageSettings.getAdjustPersianLegacyDates();
-	}
-	
-	public void setAdjustPersianLegacyDates(boolean newAdjustPersian)
-	{
-		//TODO remove this CALL use CurrentUiState to set this
-		languageSettings.setCurrentAdjustPersianLegacyDates(newAdjustPersian);
 	}
 	
 	private boolean isRightToLeftLanguage()
