@@ -61,27 +61,27 @@ public class FormTemplate
 
 	public FormTemplate(String title, String description, FieldSpecCollection topSection, FieldSpecCollection bottomSection) throws Exception 
 	{
-		if(!setData(title, description, topSection.toXml(), bottomSection.toXml()))
+		if(!setData(title, description, topSection, bottomSection))
 			throw new CustomFieldsParseException();
 	}
 
-	private boolean setData(String title, String description, String xmlTopSection, String xmlBottomSection)
+	private boolean setData(String title, String description, FieldSpecCollection topSection, FieldSpecCollection bottomSection)
 	{
 		clearData();
-		if(!isvalidTemplateXml(xmlTopSection, xmlBottomSection))
+		if(!isvalidTemplateXml(topSection.toXml(), bottomSection.toXml()))
 			return false;
 		this.title = title;
 		this.description = description;
-		this.xmlTopSectionText = xmlTopSection;
-		this.xmlBottomSectionText = xmlBottomSection;
+		this.topFields = topSection;
+		this.bottomFields = bottomSection;
 		return true;
 	}
 
 	private void clearData()
 	{
 		errors = new Vector();
-		xmlTopSectionText = "";
-		xmlBottomSectionText = "";
+		topFields = null;
+		bottomFields = null;
 		title = "";
 		description = "";
 	}
@@ -184,8 +184,8 @@ public class FormTemplate
 			
 			if(isvalidTemplateXml(templateXMLToImportTopSection, templateXMLToImportBottomSection))
 			{
-				xmlTopSectionText = templateXMLToImportTopSection;
-				xmlBottomSectionText = templateXMLToImportBottomSection;
+				topFields = FieldCollection.parseXml(templateXMLToImportTopSection);
+				bottomFields = FieldCollection.parseXml(templateXMLToImportBottomSection);
 				return true;
 			}
 		}
@@ -200,6 +200,10 @@ public class FormTemplate
 		catch(AuthorizationFailedException e)
 		{
 			errors.add(CustomFieldError.errorUnauthorizedKey());
+		}
+		catch(CustomFieldsParseException e)
+		{
+			errors.add(CustomFieldError.errorParseXml(e.getMessage()));
 		}
 		finally
 		{
@@ -268,8 +272,8 @@ public class FormTemplate
 			DataOutputStream dataOut = new DataOutputStream(out);
 			dataOut.write(versionHeader.getBytes());
 			dataOut.writeInt(exportVersionNumber);
-			byte[] signedBundleTopSection = security.createSignedBundle(UnicodeUtilities.toUnicodeBytes(xmlTopSectionText));
-			byte[] signedBundleBottomSection = security.createSignedBundle(UnicodeUtilities.toUnicodeBytes(xmlBottomSectionText));
+			byte[] signedBundleTopSection = security.createSignedBundle(UnicodeUtilities.toUnicodeBytes(getTopSectionXml()));
+			byte[] signedBundleBottomSection = security.createSignedBundle(UnicodeUtilities.toUnicodeBytes(getBottomSectionXml()));
 			byte[] signedBundleTitle = security.createSignedBundle(UnicodeUtilities.toUnicodeBytes(title));
 			byte[] signedBundleDescription = security.createSignedBundle(UnicodeUtilities.toUnicodeBytes(description));
 			dataOut.writeInt(signedBundleTopSection.length);
@@ -324,12 +328,18 @@ public class FormTemplate
 	
 	public String getTopSectionXml()
 	{
-		return xmlTopSectionText;
+		if(topFields == null)
+			return "";
+		
+		return topFields.toXml();
 	}
 	
 	public String getBottomSectionXml()
 	{
-		return xmlBottomSectionText;
+		if(bottomFields == null)
+			return "";
+		
+		return bottomFields.toXml();
 	}
 
 	public String getSignedBy()
@@ -368,8 +378,8 @@ public class FormTemplate
 	public static final String CUSTOMIZATION_TEMPLATE_EXTENSION = ".mct";
 	
 	private Vector errors;
-	private String xmlTopSectionText;
-	private String xmlBottomSectionText;
+	private FieldSpecCollection topFields;
+	private FieldSpecCollection bottomFields;
 	private String signedByPublicKey;
 	//Version 3
 	private String title;
