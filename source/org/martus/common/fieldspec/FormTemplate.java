@@ -326,6 +326,11 @@ public class FormTemplate
 		return errors;
 	}
 	
+	public FieldSpecCollection getTopFields()
+	{
+		return topFields;
+	}
+
 	public String getTopSectionXml()
 	{
 		if(topFields == null)
@@ -334,6 +339,16 @@ public class FormTemplate
 		return topFields.toXml();
 	}
 	
+	public void setTopFields(FieldSpecCollection newTopFields)
+	{
+		topFields = newTopFields;
+	}
+
+	public FieldSpecCollection getBottomFields()
+	{
+		return bottomFields;
+	}
+
 	public String getBottomSectionXml()
 	{
 		if(bottomFields == null)
