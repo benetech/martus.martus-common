@@ -153,6 +153,11 @@ public class FieldCollection
 		{
 			super(message);
 		}
+		
+		public CustomFieldsParseException(Exception causedBy)
+		{
+			super(causedBy);
+		}
 	}
 	
 	public static FieldSpecCollection parseXml(String xml) throws CustomFieldsParseException
@@ -165,11 +170,7 @@ public class FieldCollection
 		}
 		catch(SAXParseException e)
 		{
-			System.out.println("Parse error line " + e.getLineNumber() + ", column " + e.getColumnNumber());
-			System.out.println("   Public Id: " + e.getPublicId());
-			System.out.println("   System Id: " + e.getSystemId());
-			e.printStackTrace();
-			throw new CustomFieldsParseException(e.getMessage());
+			throw new CustomFieldsParseException(e);
 		}
 		catch (InvalidIsoDateException e)
 		{
