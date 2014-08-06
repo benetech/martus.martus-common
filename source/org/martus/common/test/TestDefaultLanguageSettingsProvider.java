@@ -55,14 +55,10 @@ public class TestDefaultLanguageSettingsProvider extends TestCaseEnhanced
 		defaultLanguageProvider.setCurrentDateFormat("dd-MM-yyyy");
 		assertEquals("Default Language Provider is immutable, should still be default calendar", defaultLanguageProvider.getCurrentDateFormat(), defaultDateFormat);
 		
-		assertFalse(defaultLanguageProvider.getAdjustPersianLegacyDates());
-		defaultLanguageProvider.setCurrentAdjustPersianLegacyDates(true);
-		assertFalse("Default Language Provider is immutable, should still be false for Persian Dates", defaultLanguageProvider.getAdjustPersianLegacyDates());
+		assertTrue(defaultLanguageProvider.getAdjustPersianLegacyDates());
 		
 		
-		assertFalse(defaultLanguageProvider.getAdjustThaiLegacyDates());	
-		defaultLanguageProvider.setCurrentAdjustThaiLegacyDates(true);
-		assertFalse("Default Language Provider is immutable, should still be false for Thai Dates", defaultLanguageProvider.getAdjustThaiLegacyDates());	
+		assertTrue(defaultLanguageProvider.getAdjustThaiLegacyDates());	
 	}
 	
 }

@@ -65,22 +65,13 @@ public class DefaultLanguageSettingsProvider implements LanguageSettingsProvider
 	@Override
 	public boolean getAdjustThaiLegacyDates()
 	{
-		return false;
-	}
-
-	@Override
-	public void setCurrentAdjustThaiLegacyDates(boolean newAdjustThai)
-	{
+		return true;
 	}
 
 	@Override
 	public boolean getAdjustPersianLegacyDates()
 	{
-		return false;
-	}
-	
-	@Override
-	public void setCurrentAdjustPersianLegacyDates(boolean newAdjustPersian)
-	{
+		return true;
 	}
 }
+
