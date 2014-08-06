@@ -29,7 +29,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -241,29 +240,17 @@ public class FormTemplate
 		return !versionHeaderInString.equals(versionHeader);
 	}
 	
-	public boolean exportTemplate(MartusCrypto security, File fileToExportXml, String xmlToExportTopSection, String xmlToExportBottomSection, String toExportTitle, String toExportDescription)
+	public void exportTemplate(MartusCrypto security, File fileToExportXml) throws Exception
 	{
-		if(!setData(toExportTitle, toExportDescription, xmlToExportTopSection, xmlToExportBottomSection))
-			return false;
-		boolean result = exportTemplate(security, fileToExportXml);
-		clearData();
-		return result;
-	}
-
-	public boolean exportTemplate(MartusCrypto security, File fileToExportXml)
-	{
-		FileOutputStream out = null;
-		boolean result = false;
+		FileOutputStream out = new FileOutputStream(fileToExportXml);
 		try
 		{
-			out = new FileOutputStream(fileToExportXml);
-			result = saveContentsToOutputStream(security, out);
+			saveContentsToOutputStream(security, out);
 		} 
-		catch (FileNotFoundException e)
+		finally
 		{
-			e.printStackTrace();
+			out.close();
 		}
-		return result;
 	}
 
 	public String getExportedTemplateAsBase64String(MartusCrypto security)
