@@ -95,36 +95,26 @@ public class TestFormTemplate extends TestCaseEnhanced
 	
 	public void testExportXml() throws Exception
 	{
-		FormTemplate template = new FormTemplate();
 		File exportFile = createTempFileFromName("$$$testExportXml");
 		exportFile.deleteOnExit();
 		String formTemplateTitle = "New Form Title";
 		String formTemplateDescription = "New Form Description";
-		FieldCollection defaultFieldsTopSection = new FieldCollection(StandardFieldSpecs.getDefaultTopSectionFieldSpecs().asArray());
-		FieldCollection defaultFieldsBottomSection = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
-		assertTrue(template.exportTemplate(security, exportFile, defaultFieldsTopSection.toString(), defaultFieldsBottomSection.toString(), formTemplateTitle, formTemplateDescription));
+		FieldSpecCollection defaultFieldsTopSection = new FieldSpecCollection(StandardFieldSpecs.getDefaultTopSectionFieldSpecs().asArray());
+		FieldSpecCollection defaultFieldsBottomSection = new FieldSpecCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
+		FormTemplate template = new FormTemplate(formTemplateTitle, formTemplateDescription, defaultFieldsTopSection, defaultFieldsBottomSection);
+		template.exportTemplate(security, exportFile);
 		assertTrue(exportFile.exists());
 		FormTemplate importedTemplate = new FormTemplate();
 		importTemplate(importedTemplate, exportFile);
 		File exportFile2 = createTempFileFromName("$$$testExportXml2");
 		exportFile2.deleteOnExit();
-		assertTrue(importedTemplate.exportTemplate(security, exportFile2));
+		importedTemplate.exportTemplate(security, exportFile2);
 		FormTemplate importedTemplate2 = new FormTemplate();
 		importTemplate(importedTemplate2, exportFile2);
 		assertEquals("imported file 1 does not match imported file 2?", importedTemplate.getExportedTemplateAsBase64String(security), importedTemplate2.getExportedTemplateAsBase64String(security));
 		
 		exportFile.delete();
 		exportFile2.delete();
-		
-		
-
-		FieldSpec invalidField = FieldSpec.createCustomField("myTag", "", new FieldTypeNormal());
-		FieldCollection withInvalid = FieldCollectionForTesting.extendFields(StandardFieldSpecs.getDefaultTopSectionFieldSpecs().asArray(), invalidField);
-		FieldCollection bottomSectionFields = new FieldCollection(StandardFieldSpecs.getDefaultBottomSectionFieldSpecs().asArray());
-		assertFalse(exportFile.exists());
-		assertFalse(template.exportTemplate(security, exportFile, withInvalid.toString(), bottomSectionFields.toString(), formTemplateTitle, formTemplateDescription));
-		assertFalse(exportFile.exists());
-		exportFile.delete();
 	}
 	
 	public void testImportedTemplateWithDifferentSignedSections() throws Exception
@@ -281,31 +271,37 @@ public class TestFormTemplate extends TestCaseEnhanced
 		fieldSpecsBottomSection = TestCustomFieldSpecValidator.addFieldSpec(fieldSpecsBottomSection, LegacyCustomFields.createFromLegacy(privateTag+","+privateLabel));
 		FieldCollection fieldsBottomSection = new FieldCollection(fieldSpecsBottomSection);
 		
-		FormTemplate template = new FormTemplate();
 		File exportFile = createTempFileFromName("$$$testImportXml");
 		String formTemplateTitle = "Form Title";
 		String formTemplateDescription = "Form Description";
+		FormTemplate template = new FormTemplate(formTemplateTitle, formTemplateDescription, fieldsTopSection.getSpecs(), fieldsBottomSection.getSpecs());
 		exportFile.delete();
-		template.exportTemplate(security, exportFile, fieldsTopSection.toString(), fieldsBottomSection.toString(), formTemplateTitle, formTemplateDescription);
-		assertEquals("", template.getTopSectionXml());
-		assertTrue(importTemplate(template, exportFile));
-		assertEquals(fieldsTopSection.toString(), template.getTopSectionXml());
-		assertEquals(fieldsBottomSection.toString(), template.getBottomSectionXml());
-		assertEquals(formTemplateTitle, template.getTitle());
-		assertEquals(formTemplateDescription, template.getDescription());
-		assertEquals(0, template.getErrors().size());
-		
-		UnicodeWriter writer = new UnicodeWriter(exportFile,UnicodeWriter.APPEND);
-		writer.write("unauthorizedTextAppended Should not be read.");
-		writer.close();
-		
-		assertTrue(importTemplate(template, exportFile));
-		assertEquals(fieldsTopSection.toString(), template.getTopSectionXml());
-		assertEquals(fieldsBottomSection.toString(), template.getBottomSectionXml());
-		assertEquals(formTemplateTitle, template.getTitle());
-		assertEquals(formTemplateDescription, template.getDescription());
-		assertEquals(0, template.getErrors().size());
+		template.exportTemplate(security, exportFile);
 
+		{
+			FormTemplate importedTemplate = new FormTemplate();
+			assertTrue(importTemplate(importedTemplate, exportFile));
+			assertEquals(fieldsTopSection.toString(), importedTemplate.getTopSectionXml());
+			assertEquals(fieldsBottomSection.toString(), importedTemplate.getBottomSectionXml());
+			assertEquals(formTemplateTitle, importedTemplate.getTitle());
+			assertEquals(formTemplateDescription, importedTemplate.getDescription());
+			assertEquals(0, importedTemplate.getErrors().size());
+			
+			UnicodeWriter writer = new UnicodeWriter(exportFile,UnicodeWriter.APPEND);
+			writer.write("unauthorizedTextAppended Should not be read.");
+			writer.close();
+		}
+
+		{
+			FormTemplate importedTemplate = new FormTemplate();
+			assertTrue(importTemplate(importedTemplate, exportFile));
+			assertEquals(fieldsTopSection.toString(), importedTemplate.getTopSectionXml());
+			assertEquals(fieldsBottomSection.toString(), importedTemplate.getBottomSectionXml());
+			assertEquals(formTemplateTitle, importedTemplate.getTitle());
+			assertEquals(formTemplateDescription, importedTemplate.getDescription());
+			assertEquals(0, importedTemplate.getErrors().size());
+		}
+		
 		exportFile.delete();
 		FileOutputStream out = new FileOutputStream(exportFile);
 		byte[] tamperedBundle = security.createSignedBundle(fieldsTopSection.toString().getBytes("UTF-8"));
