@@ -42,13 +42,19 @@ import org.martus.common.crypto.MartusCrypto;
 import com.subgraph.orchid.DirectoryStore;
 import com.subgraph.orchid.Document;
 
-public class MartusOrchidDirectoryStore implements DirectoryStore
+public class MartusOrchidDirectoryStore
 {
 	public MartusOrchidDirectoryStore()
 	{
 		contentsByFile = new HashMap<String, byte[]>();
+		actualStore = new ActualDirectoryStore();
 	}
 	
+	public DirectoryStore getActualStore()
+	{
+		return actualStore;
+	}
+
 	public void saveStore(File martusOrchidCacheFile, MartusCrypto security) throws Exception
 	{
 		MartusLogger.logBeginProcess("Saving Orchid cache");
@@ -151,102 +157,106 @@ public class MartusOrchidDirectoryStore implements DirectoryStore
 		}
 	}
 
-	@Override
-	public ByteBuffer loadCacheFile(CacheFile cacheFile)
+	class ActualDirectoryStore implements DirectoryStore
 	{
-		byte[] fileContents = contentsByFile.get(cacheFile.getFilename());
-		if(fileContents == null)
-			fileContents = new byte[0];
-		byte[] result = new byte[fileContents.length];
-		System.arraycopy(fileContents, 0, result, 0, result.length);
-		MartusLogger.log("MODS.loadCacheFile(" + cacheFile.getFilename() + ") -> " + result.length);
-		return ByteBuffer.wrap(result);
-	}
-
-	@Override
-	public void writeData(CacheFile cacheFile, ByteBuffer data)
-	{
-		MartusLogger.log("MODS.writeData(" + cacheFile.getFilename() + ") -> " + data.remaining());
-		rawRemoveCacheFile(cacheFile);
-		rawAppendData(cacheFile, data);
-	}
-
-	@Override
-	public void writeDocument(CacheFile cacheFile, Document document)
-	{
-		ByteBuffer rawDocumentBytes = document.getRawDocumentBytes();
-		MartusLogger.log("MODS.writeDocument(" + cacheFile.getFilename() + ") -> " + rawDocumentBytes.remaining());
-		rawRemoveCacheFile(cacheFile);
-		rawAppendDocument(cacheFile, document);
-	}
-
-	@Override
-	public void writeDocumentList(CacheFile cacheFile,
-			List<? extends Document> documents)
-	{
-		MartusLogger.log("MODS.writeDocumentList(" + cacheFile.getFilename() + ") -> " + documents.size());
-		rawRemoveCacheFile(cacheFile);
-		rawAppendDocumentList(cacheFile, documents);
-	}
-
-	@Override
-	public void appendDocumentList(CacheFile cacheFile,
-			List<? extends Document> documents)
-	{
-		MartusLogger.log("MODS.appendDocumentList(" + cacheFile.getFilename() + ") -> " + documents.size());
-		rawAppendDocumentList(cacheFile, documents);
-	}
-
-	public void rawAppendDocumentList(CacheFile cacheFile,
-			List<? extends Document> documents)
-	{
-		for (Document document : documents)
+		@Override
+		public ByteBuffer loadCacheFile(CacheFile cacheFile)
 		{
+			byte[] fileContents = contentsByFile.get(cacheFile.getFilename());
+			if(fileContents == null)
+				fileContents = new byte[0];
+			byte[] result = new byte[fileContents.length];
+			System.arraycopy(fileContents, 0, result, 0, result.length);
+			MartusLogger.log("MODS.loadCacheFile(" + cacheFile.getFilename() + ") -> " + result.length);
+			return ByteBuffer.wrap(result);
+		}
+	
+		@Override
+		public void writeData(CacheFile cacheFile, ByteBuffer data)
+		{
+			MartusLogger.log("MODS.writeData(" + cacheFile.getFilename() + ") -> " + data.remaining());
+			rawRemoveCacheFile(cacheFile);
+			rawAppendData(cacheFile, data);
+		}
+	
+		@Override
+		public void writeDocument(CacheFile cacheFile, Document document)
+		{
+			ByteBuffer rawDocumentBytes = document.getRawDocumentBytes();
+			MartusLogger.log("MODS.writeDocument(" + cacheFile.getFilename() + ") -> " + rawDocumentBytes.remaining());
+			rawRemoveCacheFile(cacheFile);
 			rawAppendDocument(cacheFile, document);
 		}
+	
+		@Override
+		public void writeDocumentList(CacheFile cacheFile,
+				List<? extends Document> documents)
+		{
+			MartusLogger.log("MODS.writeDocumentList(" + cacheFile.getFilename() + ") -> " + documents.size());
+			rawRemoveCacheFile(cacheFile);
+			rawAppendDocumentList(cacheFile, documents);
+		}
+	
+		@Override
+		public void appendDocumentList(CacheFile cacheFile,
+				List<? extends Document> documents)
+		{
+			MartusLogger.log("MODS.appendDocumentList(" + cacheFile.getFilename() + ") -> " + documents.size());
+			rawAppendDocumentList(cacheFile, documents);
+		}
+	
+		public void rawAppendDocumentList(CacheFile cacheFile,
+				List<? extends Document> documents)
+		{
+			for (Document document : documents)
+			{
+				rawAppendDocument(cacheFile, document);
+			}
+		}
+	
+		@Override
+		public void removeCacheFile(CacheFile cacheFile)
+		{
+			MartusLogger.log("MODS.removeCacheFile(" + cacheFile.getFilename() + ")");
+			rawRemoveCacheFile(cacheFile);
+		}
+	
+		@Override
+		public synchronized void removeAllCacheFiles()
+		{
+			MartusLogger.log("MODS.removeAllCacheFiles()");
+			contentsByFile.clear();
+		}
+	
+		private synchronized void rawRemoveCacheFile(CacheFile cacheFile)
+		{
+			contentsByFile.remove(cacheFile);
+		}
+	
+		private void rawAppendDocument(CacheFile cacheFile, Document document)
+		{
+			ByteBuffer rawDocumentBytes = document.getRawDocumentBytes();
+			rawAppendData(cacheFile, rawDocumentBytes);
+		}
+	
+		private synchronized void rawAppendData(CacheFile cacheFile, ByteBuffer rawDocumentBytes)
+		{
+			byte[] existingBytes = contentsByFile.get(cacheFile.getFilename());
+			if(existingBytes == null)
+				existingBytes = new byte[0];
+			ByteBuffer existing = ByteBuffer.wrap(existingBytes);
+			int newByteCount = rawDocumentBytes.remaining();
+			ByteBuffer combined = ByteBuffer.allocate(existingBytes.length + newByteCount);
+			combined.put(existing);
+			combined.put(rawDocumentBytes);
+			byte[] combinedBytes = combined.array();
+			contentsByFile.put(cacheFile.getFilename(), combinedBytes);
+		}
 	}
-
-	@Override
-	public void removeCacheFile(CacheFile cacheFile)
-	{
-		MartusLogger.log("MODS.removeCacheFile(" + cacheFile.getFilename() + ")");
-		rawRemoveCacheFile(cacheFile);
-	}
-
-	@Override
-	public synchronized void removeAllCacheFiles()
-	{
-		MartusLogger.log("MODS.removeAllCacheFiles()");
-		contentsByFile.clear();
-	}
-
-	private synchronized void rawRemoveCacheFile(CacheFile cacheFile)
-	{
-		contentsByFile.remove(cacheFile);
-	}
-
-	private void rawAppendDocument(CacheFile cacheFile, Document document)
-	{
-		ByteBuffer rawDocumentBytes = document.getRawDocumentBytes();
-		rawAppendData(cacheFile, rawDocumentBytes);
-	}
-
-	private synchronized void rawAppendData(CacheFile cacheFile, ByteBuffer rawDocumentBytes)
-	{
-		byte[] existingBytes = contentsByFile.get(cacheFile.getFilename());
-		if(existingBytes == null)
-			existingBytes = new byte[0];
-		ByteBuffer existing = ByteBuffer.wrap(existingBytes);
-		int newByteCount = rawDocumentBytes.remaining();
-		ByteBuffer combined = ByteBuffer.allocate(existingBytes.length + newByteCount);
-		combined.put(existing);
-		combined.put(rawDocumentBytes);
-		byte[] combinedBytes = combined.array();
-		contentsByFile.put(cacheFile.getFilename(), combinedBytes);
-	}
-
+	
 	private final static String FILE_TYPE_IDENTIFIER = "Martus Orchid Cache";
 	private final static int FILE_VERSION = 3;
 	
-	private HashMap<String, byte[]> contentsByFile;
+	protected HashMap<String, byte[]> contentsByFile;
+	private ActualDirectoryStore actualStore;
 }
