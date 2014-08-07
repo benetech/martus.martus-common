@@ -34,53 +34,13 @@ public class BulletinFieldSpecs extends FormTemplate
 	{
 	}
 	
-	public FieldSpecCollection getTopSectionSpecs()
-	{
-		return getTopFields();
-	}
-
-	public FieldSpecCollection getBottomSectionSpecs()
-	{
-		return getBottomFields();
-	}
-	
-	public String getTitleOfSpecs()
-	{
-		return getTitle();
-	}
-	
-	public String getDescriptionOfSpecs()
-	{
-		return getDescription();
-	}
-	
 	public void setTopSectionSpecs(FieldSpec[] topSectionSpecsToUse)
 	{
-		setTopSectionSpecs(new FieldSpecCollection(topSectionSpecsToUse));
+		setTopFields(new FieldSpecCollection(topSectionSpecsToUse));
 	}
 	
-	public void setTopSectionSpecs(FieldSpecCollection topSectionSpecsToUse)
-	{
-		setTopFields(topSectionSpecsToUse);
-	}
-
 	public void setBottomSectionSpecs(FieldSpec[] bottomSectionSpecsToUse)
 	{
-		setBottomSectionSpecs(new FieldSpecCollection(bottomSectionSpecsToUse));
-	}
-	
-	public void setBottomSectionSpecs(FieldSpecCollection bottomSectionSpecsToUse)
-	{
-		setBottomFields(bottomSectionSpecsToUse);
-	}
-	
-	public void setTitleOfSpecs(String titleToUse)
-	{
-		setTitle(titleToUse);
-	}
-
-	public void setDescriptionOfSpecs(String descriptionToUse)
-	{
-		setDescriptionOfSpecs(descriptionToUse);
+		setBottomFields(new FieldSpecCollection(bottomSectionSpecsToUse));
 	}
 }
