@@ -349,6 +349,11 @@ public class FormTemplate
 		return bottomFields;
 	}
 
+	public void setBottomFields(FieldSpecCollection newBottomFields)
+	{
+		bottomFields = newBottomFields;
+	}
+
 	public String getBottomSectionXml()
 	{
 		if(bottomFields == null)
