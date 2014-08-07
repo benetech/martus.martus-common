@@ -33,7 +33,7 @@ import org.martus.util.UnicodeWriter;
 
 public class Po2Mtf
 {
-	public static void convertToMtf(File poFile) throws Exception
+	public static void convertToMtf(File poFile, String languageCode) throws Exception
 	{
 		UnicodeReader reader = new UnicodeReader(poFile);
 		try
@@ -41,7 +41,7 @@ public class Po2Mtf
 			UnicodeWriter writer = new UnicodeWriter(System.out);
 			try
 			{
-				convertToMtf(reader, writer);
+				convertToMtf(reader, writer, languageCode);
 			}
 			finally
 			{
@@ -54,10 +54,9 @@ public class Po2Mtf
 		}
 	}
 
-	public static void convertToMtf(UnicodeReader reader, UnicodeWriter writer)
+	public static void convertToMtf(UnicodeReader reader, UnicodeWriter writer, String languageCode)
 			throws IOException
 	{
-		String languageCode = "es";
 		TranslationFileContents contents = PoLoader.read(reader, languageCode);
 		MtfSaver.save(writer, contents);
 		writer.flush();
@@ -66,8 +65,9 @@ public class Po2Mtf
 	public static void main(String[] args) throws Exception
 	{
 		File poFile = new File(args[0]);
+		String languageCode = args[1];
 		UnicodeReader reader = new UnicodeReader(poFile);
 		UnicodeWriter writer = new UnicodeWriter(System.out);
-		convertToMtf(reader, writer);
+		convertToMtf(reader, writer, languageCode);
 	}
 }
