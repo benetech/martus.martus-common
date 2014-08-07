@@ -28,32 +28,30 @@ package org.martus.common.fieldspec;
 
 import org.martus.common.FieldSpecCollection;
 
-public class BulletinFieldSpecs
+public class BulletinFieldSpecs extends FormTemplate
 {
 	public BulletinFieldSpecs()
 	{
-		titleOfSpecs = "";
-		descriptionOfSpecs = "";
 	}
 	
 	public FieldSpecCollection getTopSectionSpecs()
 	{
-		return topSectionSpecs;
+		return getTopFields();
 	}
 
 	public FieldSpecCollection getBottomSectionSpecs()
 	{
-		return bottomSectionSpecs;
+		return getBottomFields();
 	}
 	
 	public String getTitleOfSpecs()
 	{
-		return titleOfSpecs;
+		return getTitle();
 	}
 	
 	public String getDescriptionOfSpecs()
 	{
-		return descriptionOfSpecs;
+		return getDescription();
 	}
 	
 	public void setTopSectionSpecs(FieldSpec[] topSectionSpecsToUse)
@@ -63,7 +61,7 @@ public class BulletinFieldSpecs
 	
 	public void setTopSectionSpecs(FieldSpecCollection topSectionSpecsToUse)
 	{
-		topSectionSpecs = topSectionSpecsToUse;
+		setTopFields(topSectionSpecsToUse);
 	}
 
 	public void setBottomSectionSpecs(FieldSpec[] bottomSectionSpecsToUse)
@@ -73,21 +71,16 @@ public class BulletinFieldSpecs
 	
 	public void setBottomSectionSpecs(FieldSpecCollection bottomSectionSpecsToUse)
 	{
-		bottomSectionSpecs = bottomSectionSpecsToUse;
+		setBottomFields(bottomSectionSpecsToUse);
 	}
 	
 	public void setTitleOfSpecs(String titleToUse)
 	{
-		titleOfSpecs = titleToUse;
+		setTitle(titleToUse);
 	}
 
 	public void setDescriptionOfSpecs(String descriptionToUse)
 	{
-		descriptionOfSpecs = descriptionToUse;
+		setDescriptionOfSpecs(descriptionToUse);
 	}
-
-	private FieldSpecCollection topSectionSpecs;
-	private FieldSpecCollection bottomSectionSpecs;
-	private String titleOfSpecs;
-	private String descriptionOfSpecs;
 }
