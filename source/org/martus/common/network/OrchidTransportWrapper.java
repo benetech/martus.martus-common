@@ -192,7 +192,7 @@ public class OrchidTransportWrapper extends TransportWrapperWithOfflineMode
 
 	private void createRealTorClient(MartusOrchidDirectoryStore storeToUse) throws Exception
 	{
-		tor = new TorClient(storeToUse);
+		tor = new TorClient(storeToUse.getActualStore());
 
 		class TorInitializationHandler implements TorInitializationListener
 		{
