@@ -61,20 +61,14 @@ public class FormTemplate
 
 	public FormTemplate(String title, String description, FieldSpecCollection topSection, FieldSpecCollection bottomSection) throws Exception 
 	{
-		if(!setData(title, description, topSection, bottomSection))
-			throw new CustomFieldsParseException();
-	}
-
-	private boolean setData(String title, String description, FieldSpecCollection topSection, FieldSpecCollection bottomSection)
-	{
 		clearData();
 		if(!isvalidTemplateXml(topSection.toXml(), bottomSection.toXml()))
-			return false;
+			throw new CustomFieldsParseException();
+		
 		this.title = title;
 		this.description = description;
 		this.topFields = topSection;
 		this.bottomFields = bottomSection;
-		return true;
 	}
 
 	private void clearData()
