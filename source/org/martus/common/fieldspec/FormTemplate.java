@@ -381,6 +381,11 @@ public class FormTemplate
 		description = newDescription;
 	}
 
+	public FormTemplate createCopy() throws Exception
+	{
+		return new FormTemplate(getTitle(), getDescription(), getTopFields(), getBottomFields());
+	}
+
 	public static String calculateFileNameFromString(String inputText) throws CreateDigestException  
 	{
 		String extension = CUSTOMIZATION_TEMPLATE_EXTENSION;
