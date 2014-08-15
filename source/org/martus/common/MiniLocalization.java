@@ -74,7 +74,6 @@ public class MiniLocalization
 	{
 		languageSettings = providerToUse;
 		
-		//TODO: Not sure if this is needed yet.
 		setCurrentDateFormatCode(languageSettings.getCurrentDateFormat());
 		setCurrentCalendarSystem(languageSettings.getCurrentCalendarSystem());
 	}

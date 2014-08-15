@@ -31,9 +31,11 @@ import java.util.GregorianCalendar;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
+import org.martus.common.DefaultLanguageSettingsProvider;
 import org.martus.common.LanguageSettingsProvider;
 import org.martus.common.MiniLocalization;
 import org.martus.common.utilities.MartusFlexidate;
+import org.martus.util.DatePreference;
 import org.martus.util.MultiCalendar;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.language.LanguageOptions;
@@ -248,6 +250,48 @@ public class TestMiniLocalization extends TestCaseEnhanced
 	{
 		MiniLocalization loc = new MiniLocalization();
 		assertEquals("mdy", loc.getMdyOrder());
+	}
+	
+	public void testGetDateDelimiter()
+	{
+		MiniLocalization loc = new MiniLocalization();
+		assertEquals("mdy", loc.getMdyOrder());
+		assertEquals('/', loc.getDateDelimiter());
+		TestLanguageSettingsProvider myProvider = new TestLanguageSettingsProvider();
+		myProvider.setCurrentDateFormat("dmy.");
+		assertEquals("dd.MM.yyyy", myProvider.getCurrentDateFormat());
+		loc.setLanguageSettingsProvider(myProvider);
+		assertEquals("dmy", loc.getMdyOrder());
+		assertEquals('.', loc.getDateDelimiter());
+	}
+	
+	private class TestLanguageSettingsProvider extends DefaultLanguageSettingsProvider
+	{
+		public TestLanguageSettingsProvider()
+		{
+			datePref = new DatePreference();
+		}
+
+		@Override
+		public String getCurrentDateFormat()
+		{
+			return datePref.getDateTemplate();
+		}
+
+		@Override
+		public void setCurrentDateFormat(String currentDateFormat)
+		{
+			try
+			{
+				datePref.setDateTemplate(currentDateFormat);
+			} 
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+
+		DatePreference datePref;
 	}
 	
 	public void testSetDateFormatFromLanguage()
