@@ -66,9 +66,19 @@ public class TestFormTemplate extends TestCaseEnhanced
 		super.tearDown();
 	}
 	
-	public void testBasics()
+	public void testBasics() throws Exception
 	{
 		assertEquals("Version number not correct?", 3, FormTemplate.exportVersionNumber);
+		
+		String formTemplateTitle = "New Form Title";
+		String formTemplateDescription = "New Form Description";
+		FieldSpecCollection defaultFieldsTopSection = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
+		FieldSpecCollection defaultFieldsBottomSection = StandardFieldSpecs.getDefaultBottomSectionFieldSpecs();
+		FormTemplate template = new FormTemplate(formTemplateTitle, formTemplateDescription, defaultFieldsTopSection, defaultFieldsBottomSection);
+		
+		assertEquals(formTemplateTitle, template.getTitle());
+		assertEquals(formTemplateTitle, template.toString());
+		assertEquals(formTemplateDescription, template.getDescription());
 	}
 	
 	public void testValidateXml() throws Exception

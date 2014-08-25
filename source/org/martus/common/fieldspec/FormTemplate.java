@@ -57,7 +57,6 @@ public class FormTemplate
 		super();
 		clearData();
 	}
-	
 
 	public FormTemplate(String title, String description, FieldSpecCollection topSection, FieldSpecCollection bottomSection) throws Exception 
 	{
@@ -69,6 +68,12 @@ public class FormTemplate
 		this.description = description;
 		this.topFields = topSection;
 		this.bottomFields = bottomSection;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return getTitle();
 	}
 
 	private void clearData()
