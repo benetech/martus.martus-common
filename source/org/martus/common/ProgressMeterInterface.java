@@ -32,4 +32,5 @@ public interface ProgressMeterInterface
 	public void updateProgressMeter(int currentValue, int maxValue);
 	public boolean shouldExit();
 	public void hideProgressMeter();
+	public void finished();
 }
