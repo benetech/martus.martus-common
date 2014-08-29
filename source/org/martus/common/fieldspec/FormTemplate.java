@@ -39,6 +39,7 @@ import org.martus.common.FieldCollection;
 import org.martus.common.FieldCollection.CustomFieldsParseException;
 import org.martus.common.FieldSpecCollection;
 import org.martus.common.MartusLogger;
+import org.martus.common.MiniLocalization;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
 import org.martus.common.crypto.MartusCrypto.CreateDigestException;
@@ -401,6 +402,16 @@ public class FormTemplate
 	{
 		return MartusCrypto.getHexDigest(inputText) + extension;
 	}
+	
+	public static String getDisplayableTemplateName(String rawName, MiniLocalization localization)
+	{
+		String displayableName = rawName;
+		if(displayableName.equals(MARTUS_DEFAULT_FORM_TEMPLATE_NAME))
+			displayableName = localization.getFieldLabel("DisplayableDefaultFormTemplateName");
+		return displayableName;
+	}
+
+	public static final String MARTUS_DEFAULT_FORM_TEMPLATE_NAME = "";
 
 	public static final String versionHeader = "Export Version Number:";
 	public static final int exportVersionNumber = 3;
