@@ -30,7 +30,11 @@ import org.martus.common.bulletin.Bulletin;
 
 public class EnglishCommonStrings
 {
-	public static String strings[] = {
+	final public static String OK = "ok";
+	final public static String CANCEL = "cancel";
+	final public static String YES = "yes";
+	final public static String NO = "no";
+	final public static String strings[] = {
 		"language:?=-Other-",
 		"language:en=English",
 		"language:ar=Arabic",
@@ -119,16 +123,12 @@ public class EnglishCommonStrings
 
 		"field:DateNotSpecified=Unknown",
 
-		"button:ok=OK",
-		"button:cancel=Cancel",
-		"button:yes=Yes",
-		"button:no=No",
+		"button:" + OK + "=OK",
+		"button:" + CANCEL + "=Cancel",
+		"button:" + YES + "=Yes",
+		"button:" + NO + "=No",
 		
 		"status:draft=Draft",
 		"status:sealed=Sealed",
 	};
-	final static public String OK = "ok";
-	final static public String CANCEL = "cancel";
-	final static public String YES = "yes";
-	final static public String NO = "no";
 }
