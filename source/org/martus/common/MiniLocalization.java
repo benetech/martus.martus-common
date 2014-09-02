@@ -294,7 +294,7 @@ public class MiniLocalization
 	
 	public String getCancelButtonLabel()
 	{
-		return getButtonLabel("cancel");
+		return getButtonLabel(EnglishCommonStrings.CANCEL);
 	}
 
 	public String getButtonLabel(String code)

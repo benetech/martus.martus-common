@@ -119,13 +119,14 @@ public class EnglishCommonStrings
 
 		"field:DateNotSpecified=Unknown",
 
+		"button:cancel=Cancel",
 		"button:yes=Yes",
 		"button:no=No",
 		
 		"status:draft=Draft",
 		"status:sealed=Sealed",
 	};
-	
+	final static public String CANCEL = "cancel";
 	final static public String YES = "yes";
 	final static public String NO = "no";
 }
