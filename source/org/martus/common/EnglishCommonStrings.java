@@ -119,6 +119,7 @@ public class EnglishCommonStrings
 
 		"field:DateNotSpecified=Unknown",
 
+		"button:ok=OK",
 		"button:cancel=Cancel",
 		"button:yes=Yes",
 		"button:no=No",
@@ -126,6 +127,7 @@ public class EnglishCommonStrings
 		"status:draft=Draft",
 		"status:sealed=Sealed",
 	};
+	final static public String OK = "ok";
 	final static public String CANCEL = "cancel";
 	final static public String YES = "yes";
 	final static public String NO = "no";
