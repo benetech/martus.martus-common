@@ -124,5 +124,7 @@ public class EnglishCommonStrings
 		
 		"status:draft=Draft",
 		"status:sealed=Sealed",
-	};	
+	};
+	
+	final static public String NO = "no";
 }

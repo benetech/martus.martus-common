@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Vector;
 
+import org.martus.common.EnglishCommonStrings;
 import org.martus.common.FieldCollection;
 import org.martus.common.FieldSpecCollection;
 import org.martus.common.GridData;
@@ -290,7 +291,7 @@ public class BulletinHtmlGenerator
 		if(value.equals(FieldSpec.TRUESTRING))
 			value = getHTMLEscaped(localization.getButtonLabel("yes"));
 		else
-			value = getHTMLEscaped(localization.getButtonLabel("no"));
+			value = getHTMLEscaped(localization.getButtonLabel(EnglishCommonStrings.NO));
 		return value;
 	}
 
