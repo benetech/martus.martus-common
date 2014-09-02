@@ -26,6 +26,7 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.field;
 
+import org.martus.common.EnglishCommonStrings;
 import org.martus.common.GridData;
 import org.martus.common.MiniLocalization;
 import org.martus.common.PoolOfReusableChoicesLists;
@@ -116,7 +117,7 @@ public class TestMartusField extends TestCaseEnhanced
 		
 		MartusField booleanField = new MartusField(createFieldSpec(new FieldTypeBoolean()), noReusableChoices);
 		booleanField.setData(FieldSpec.TRUESTRING);
-		assertEquals("Didn't htmlize?", localization.getButtonLabel("yes"), booleanField.html(localization));
+		assertEquals("Didn't htmlize?", localization.getButtonLabel(EnglishCommonStrings.YES), booleanField.html(localization));
 		
 		MartusField blankField = new MartusField(createFieldSpec(new FieldTypeNormal()), noReusableChoices);
 		blankField.setData("");
@@ -188,7 +189,7 @@ public class TestMartusField extends TestCaseEnhanced
 
 	public void testGetSearchableDataForBooleanFields()
 	{
-		verifySearchableData(new FieldTypeBoolean(), FieldSpec.TRUESTRING, localization.getButtonLabel("yes"));
+		verifySearchableData(new FieldTypeBoolean(), FieldSpec.TRUESTRING, localization.getButtonLabel(EnglishCommonStrings.YES));
 	}
 
 	public void testGetSearchableDataForLanguageFields()

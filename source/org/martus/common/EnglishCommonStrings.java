@@ -126,5 +126,6 @@ public class EnglishCommonStrings
 		"status:sealed=Sealed",
 	};
 	
+	final static public String YES = "yes";
 	final static public String NO = "no";
 }

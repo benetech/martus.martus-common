@@ -289,7 +289,7 @@ public class BulletinHtmlGenerator
 	private String getPrintableBooleanValue(String value)
 	{
 		if(value.equals(FieldSpec.TRUESTRING))
-			value = getHTMLEscaped(localization.getButtonLabel("yes"));
+			value = getHTMLEscaped(localization.getButtonLabel(EnglishCommonStrings.YES));
 		else
 			value = getHTMLEscaped(localization.getButtonLabel(EnglishCommonStrings.NO));
 		return value;
