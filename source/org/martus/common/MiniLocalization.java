@@ -155,10 +155,7 @@ public class MiniLocalization
 
 	public String getCurrentLanguageCode()
 	{
-		String currentLanguage = languageSettings.getCurrentLanguage();
-		if(currentLanguage.isEmpty())
-			return null;
-		return currentLanguage;
+		return languageSettings.getCurrentLanguage();
 	}
 
 	public void setCurrentLanguageCode(String newLanguageCode)
