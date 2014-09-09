@@ -461,6 +461,12 @@ public class TestMiniLocalization extends TestCaseEnhanced
 			return true;
 		}
 
+		@Override
+		public void setDateFormatFromLanguage()
+		{
+			DatePreference preference = MiniLocalization.getDefaultDatePreferenceForLanguage(getCurrentLanguage());
+			setCurrentDateFormat(preference.getDateTemplate());
+		}
 		
 		private String calendarSystem;
 		private String currentLanguage;

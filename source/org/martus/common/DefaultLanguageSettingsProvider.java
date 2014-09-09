@@ -73,5 +73,12 @@ public class DefaultLanguageSettingsProvider implements LanguageSettingsProvider
 	{
 		return true;
 	}
+
+	@Override
+	public void setDateFormatFromLanguage()
+	{
+		DatePreference preference = MiniLocalization.getDefaultDatePreferenceForLanguage(getCurrentLanguage());
+		setCurrentDateFormat(preference.getDateTemplate());
+	}
 }
 
