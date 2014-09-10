@@ -34,6 +34,8 @@ public class EnglishCommonStrings
 	final public static String CANCEL = "cancel";
 	final public static String YES = "yes";
 	final public static String NO = "no";
+	final public static String CONTINUE = "continue";
+	
 	final public static String strings[] = {
 		"language:?=-Other-",
 		"language:en=English",
@@ -127,6 +129,7 @@ public class EnglishCommonStrings
 		"button:" + CANCEL + "=Cancel",
 		"button:" + YES + "=Yes",
 		"button:" + NO + "=No",
+		"button:" + CONTINUE + "=Continue",
 		
 		"status:draft=Draft",
 		"status:sealed=Sealed",
