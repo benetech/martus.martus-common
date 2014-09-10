@@ -514,11 +514,6 @@ public class Bulletin implements BulletinConstants
 		return getPrivateFieldDataPacket().fieldExists(fieldName);
 	}
 
-	public int getFieldCount()
-	{
-		return fieldData.getFieldCount();
-	}
-
 	public boolean isAllPrivate()
 	{
 
