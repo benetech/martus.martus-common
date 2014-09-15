@@ -90,6 +90,11 @@ public class HeadquartersKeys extends ExternalPublicKeys
 		rawAdd(keys);
 	}
 	
+	public Vector getAllKeys()
+	{
+		return super.getAllKeys();
+	}
+	
 	public static final String HQ_KEYS_TAG = "HQs";
 	public static final String HQ_KEY_TAG = "HQ";
 }

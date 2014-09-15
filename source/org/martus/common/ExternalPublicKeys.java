@@ -183,6 +183,11 @@ abstract public class ExternalPublicKeys
 			throw new Exception(e);
 		}
 	}
+	
+	public Vector getAllKeys()
+	{
+		return externalPublicKeys;
+	}
 
 	abstract ExternalPublicKeysXmlLoader createXmlLoader(Vector xmlKeys);
 	
