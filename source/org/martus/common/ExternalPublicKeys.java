@@ -184,11 +184,6 @@ abstract public class ExternalPublicKeys
 		}
 	}
 	
-	public Vector getAllKeys()
-	{
-		return externalPublicKeys;
-	}
-
 	abstract ExternalPublicKeysXmlLoader createXmlLoader(Vector xmlKeys);
 	
 	public static final String PUBLIC_KEY_TAG = "PublicKey";
