@@ -117,7 +117,7 @@ public class EnglishCommonStrings
 		"field:summary=Summary",
 		"field:attachments=Attachments",
 		"field:HQSummaryLabel=Contacts",
-		"field:HQNotConfigured=(not currently in Contacts)",
+		"field:HQNotConfigured=(not currently configured)",
 		"field:NoHQsConfigured=No Contact accounts selected for this bulletin.",
 
 		"field:DateRangeTemplatebegin=#FieldLabel# (beginning)",
