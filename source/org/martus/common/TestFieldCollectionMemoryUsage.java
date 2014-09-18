@@ -27,8 +27,12 @@ package org.martus.common;
 
 import java.util.Arrays;
 
+import org.martus.common.bulletin.Bulletin;
+import org.martus.common.bulletin.BulletinForTesting;
+import org.martus.common.crypto.MockMartusSecurity;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldTypeMessage;
+import org.martus.common.fieldspec.StandardFieldSpecs;
 import org.martus.util.TestCaseEnhanced;
 
 public class TestFieldCollectionMemoryUsage extends TestCaseEnhanced
@@ -49,6 +53,17 @@ public class TestFieldCollectionMemoryUsage extends TestCaseEnhanced
 		assertFalse("collections are identical object?", c1 == c2);
 		assertTrue("underlying FieldSpecs not shared?", c1.getSpecs().get(0) == c2.getSpecs().get(0));
 		assertTrue("returned FieldSpecCollection not identical?", c1.getSpecs() == c2.getSpecs());
+	}
+	
+	public void testBugInRequiredFieldCacheing() throws Exception
+	{
+		MockMartusSecurity security = MockMartusSecurity.createClient();
+		Bulletin b = new BulletinForTesting(security);
+		b.getField(Bulletin.TAGAUTHOR).getFieldSpec().setRequired();
+
+		FieldSpecCollection topSpecs = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
+		FieldCollection fields = new FieldCollection(topSpecs);
+		assertFalse(fields.findByTag(Bulletin.TAGAUTHOR).getFieldSpec().isRequiredField());
 	}
 	
 	public void testMemoryUsage() throws Exception
