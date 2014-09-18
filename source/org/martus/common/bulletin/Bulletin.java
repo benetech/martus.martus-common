@@ -571,7 +571,7 @@ public class Bulletin implements BulletinConstants
 		}
 
 		setDraft();
-		setAllPrivate(other.isAllPrivate());
+		setAllPrivate(true);
 
 		pullFields(other, getFieldDataPacket().getFieldSpecs());
 		pullFields(other, getPrivateFieldDataPacket().getFieldSpecs());
