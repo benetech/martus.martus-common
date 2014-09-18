@@ -58,14 +58,13 @@ public class FieldCollection
 		for(int i = 0; i < specsToUse.size(); ++i)
 			key.append(specsToUse.get(i).getId());
 		key.append(specsToUse.getAllReusableChoiceLists().toXml());
-		String keyString = key.toString();
-		if(existingFieldSpecTemplates.containsKey(keyString))
+		if(existingFieldSpecTemplates.containsKey(specsToUse))
 		{
-			specsToUse = (FieldSpecCollection)existingFieldSpecTemplates.get(keyString);
+			specsToUse = (FieldSpecCollection)existingFieldSpecTemplates.get(specsToUse);
 		}
 		else
 		{
-			existingFieldSpecTemplates.put(keyString, specsToUse);
+			existingFieldSpecTemplates.put(specsToUse, specsToUse);
 		}
 		return specsToUse;
 	}
