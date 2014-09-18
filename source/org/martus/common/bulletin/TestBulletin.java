@@ -480,7 +480,7 @@ public class TestBulletin extends TestCaseEnhanced
 
 		b1.setAllPrivate(false);
 		b2.createDraftCopyOf(b1, getDb());
-		assertEquals("didn't pull private false?", b1.isAllPrivate(), b2.isAllPrivate());
+		assertTrue("didn't set private back to true?", b2.isAllPrivate());
 
 		b1.setAllPrivate(true);
 		b2.createDraftCopyOf(b1, getDb());
