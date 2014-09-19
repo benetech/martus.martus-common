@@ -51,13 +51,13 @@ public class ServerFileDatabase extends FileDatabase
 	protected String getBucketPrefix(DatabaseKey key) 
 	{
 		if(key.isMutable())
-			return draftBucketPrefix;
+			return mutableBucketPrefix;
 		return defaultBucketPrefix;
 	}
 
-	public boolean isDraftPacketBucket(String folderName)
+	private boolean isMutablePacketBucket(String folderName)
 	{
-		return folderName.startsWith(draftBucketPrefix);
+		return folderName.startsWith(mutableBucketPrefix);
 	}
 
 	public synchronized void loadAccountMap() throws FileVerificationException, MissingAccountMapSignatureException
@@ -131,7 +131,7 @@ public class ServerFileDatabase extends FileDatabase
 	protected DatabaseKey getDatabaseKey(File accountDir, String bucketName, UniversalId uid)
 	{
 		DatabaseKey key = null;
-		if(isDraftPacketBucket(bucketName))
+		if(isMutablePacketBucket(bucketName))
 			key = DatabaseKey.createMutableKey(uid);
 		else
 			key = DatabaseKey.createImmutableKey(uid);
