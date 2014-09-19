@@ -230,7 +230,7 @@ public class Bulletin implements BulletinConstants
 		setStatus(STATUSMUTABLE);
 	}
 
-	public void setSealed()
+	public void setImmutable()
 	{
 		setStatus(STATUSIMMUTABLE);
 	}

@@ -101,7 +101,7 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 		String title = "My New Title";
 		b.setAllPrivate(true);
 		b.set(Bulletin.TAGTITLE,title);
-		b.setSealed();
+		b.setImmutable();
 		
 		BulletinHtmlGenerator generator = new BulletinHtmlGenerator(loc);
 

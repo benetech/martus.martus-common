@@ -151,7 +151,7 @@ public class TestBulletinStore extends TestCaseEnhanced
 		b1.addPrivateAttachment(a2);
 		assertEquals("Should have 1 public attachment", 1, b1.getPublicAttachments().length);
 		assertEquals("Should have 1 private attachment", 1, b1.getPrivateAttachments().length);
-		b1.setSealed();
+		b1.setImmutable();
 		store.saveEncryptedBulletinForTesting(b1);
 
 		Bulletin loaded = BulletinLoader.loadFromDatabase(getDatabase(), DatabaseKey.createLegacyKey(b1.getUniversalId()), security1);
@@ -200,7 +200,7 @@ public class TestBulletinStore extends TestCaseEnhanced
 		AttachmentProxy a2 = new AttachmentProxy(tempFile2);
 		b1.addPublicAttachment(a1);
 		b1.addPrivateAttachment(a2);
-		b1.setSealed();
+		b1.setImmutable();
 		assertTrue("Pending attachments not valid?", store.areAttachmentsValid(b1));
 		store.saveEncryptedBulletinForTesting(b1);
 	}
@@ -289,10 +289,10 @@ public class TestBulletinStore extends TestCaseEnhanced
 		Bulletin other = createAndSaveBulletin(security1);
 		
 		Bulletin one = new Bulletin(security1);
-		one.setSealed();
+		one.setImmutable();
 
 		Bulletin two = new Bulletin(security1);
-		two.setSealed();
+		two.setImmutable();
 		
 		verifyCloneIsLeaf("Test1", one, two, other.getUniversalId());
 		store.deleteAllBulletins();
@@ -365,7 +365,7 @@ public class TestBulletinStore extends TestCaseEnhanced
 		BulletinStore fromStore = new MockBulletinStore(this);
 		Bulletin b = new Bulletin(authorSecurity);
 		b.setAllPrivate(false);
-		b.setSealed();
+		b.setImmutable();
 		fromStore.saveBulletinForTesting(b);
 		
 		File destFile = createTempFile();

@@ -159,13 +159,13 @@ public class TestBulletinStoreSaveBulletin extends TestCaseEnhanced
 
 		Bulletin somePublicSealed = new Bulletin(security);
 		somePublicSealed.setAllPrivate(false);
-		somePublicSealed.setSealed();
+		somePublicSealed.setImmutable();
 		store.saveEncryptedBulletinForTesting(somePublicSealed);
 		assertEquals("public sealed was encrypted?", false, somePublicSealed.getFieldDataPacket().isEncrypted());
 
 		Bulletin allPrivateSealed = new Bulletin(security);
 		allPrivateSealed.setAllPrivate(true);
-		allPrivateSealed.setSealed();
+		allPrivateSealed.setImmutable();
 		store.saveEncryptedBulletinForTesting(somePublicSealed);
 		assertEquals("private sealed was encrypted?", true, allPrivateSealed.getFieldDataPacket().isEncrypted());
 	}
