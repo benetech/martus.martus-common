@@ -657,7 +657,7 @@ public class BulletinStore
 		BulletinHeaderPacket bhp = b.getBulletinHeaderPacket();
 	
 		FieldDataPacket publicDataPacket = b.getFieldDataPacket();
-		boolean shouldEncryptPublicData = (b.isDraft() || b.isAllPrivate());
+		boolean shouldEncryptPublicData = (b.isMutable() || b.isAllPrivate());
 		publicDataPacket.setEncrypted(shouldEncryptPublicData);
 		
 		Packet packet1 = publicDataPacket;

@@ -205,7 +205,7 @@ public class Bulletin implements BulletinConstants
 		return getBulletinHeaderPacket().getVersionNumber();
 	}
 
-	public boolean isDraft()
+	public boolean isMutable()
 	{
 		return isMutable(getStatus());	
 	}
