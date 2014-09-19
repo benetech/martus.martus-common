@@ -38,7 +38,6 @@ import org.martus.common.MartusXml;
 import org.martus.common.XmlWriterFilter;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.Bulletin.BulletinType;
-import org.martus.common.bulletin.BulletinConstants;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.database.DatabaseKey;
 import org.martus.util.StreamableBase64;

@@ -27,7 +27,6 @@ Boston, MA 02111-1307, USA.
 package org.martus.common.database;
 
 import org.martus.common.bulletin.Bulletin;
-import org.martus.common.bulletin.BulletinConstants;
 import org.martus.common.packet.UniversalId;
 
 
