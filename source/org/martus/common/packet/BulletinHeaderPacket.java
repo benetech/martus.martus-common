@@ -431,7 +431,7 @@ public class BulletinHeaderPacket extends Packet
 	public DatabaseKey createKeyWithHeaderStatus(UniversalId uidToUse)
 	{
 		if(Bulletin.isMutable(getStatus()))
-			return DatabaseKey.createDraftKey(uidToUse);
+			return DatabaseKey.createMutableKey(uidToUse);
 		return DatabaseKey.createSealedKey(uidToUse);
 	}
 

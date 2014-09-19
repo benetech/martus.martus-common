@@ -48,7 +48,7 @@ public class TestDatabaseKey extends TestCaseEnhanced
 	public void testConstructors() throws Exception
 	{
 		UniversalId uid1 = UniversalIdForTesting.createDummyUniversalId();
-		DatabaseKey key1 = DatabaseKey.createDraftKey(uid1);
+		DatabaseKey key1 = DatabaseKey.createMutableKey(uid1);
 		assertEquals("bad uid1?", uid1, key1.getUniversalId());
 		assertEquals("not draft?", true, key1.isDraft());
 
