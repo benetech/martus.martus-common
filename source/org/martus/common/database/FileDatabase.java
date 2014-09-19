@@ -575,7 +575,7 @@ abstract public class FileDatabase extends Database
 		if(sealed.exists())
 			return sealed;
 		
-		File draft = getFileForRecordWithPrefix(uid, draftBucketPrefix);
+		File draft = getFileForRecordWithPrefix(uid, mutableBucketPrefix);
 		if(draft.exists())
 			return draft;
 		
@@ -848,7 +848,7 @@ abstract public class FileDatabase extends Database
 	}
 
 	protected static final String defaultBucketPrefix = "p";
-	protected static final String draftBucketPrefix = "d" + defaultBucketPrefix;
+	protected static final String mutableBucketPrefix = "d" + defaultBucketPrefix;
 	protected static final String sealedQuarantinePrefix = "qs-p";
 	protected static final String draftQuarantinePrefix = "qd-p";
 	protected static final String INTERIM_FOLDER_NAME = "interim";
