@@ -237,10 +237,10 @@ public class TestBulletin extends TestCaseEnhanced
 	public void testStatus() throws Exception
 	{
 		Bulletin b = new Bulletin(security);
-		assertEquals(Bulletin.STATUSDRAFT, b.getStatus());
+		assertEquals(Bulletin.STATUSMUTABLE, b.getStatus());
 		assertEquals("Should start as draft", true, b.isDraft());
 		b.setDraft();
-		assertEquals(Bulletin.STATUSDRAFT, b.getStatus());
+		assertEquals(Bulletin.STATUSMUTABLE, b.getStatus());
 		assertEquals("Should be draft", true, b.isDraft());
 		assertEquals("Not yet sealed", false, b.isSealed());
 		b.setSealed();
@@ -257,7 +257,7 @@ public class TestBulletin extends TestCaseEnhanced
 
 		assertEquals(MartusFlexidate.toStoredDateFormat(MultiCalendar.UNKNOWN), b.get("eventdate"));
 
-		assertEquals(Bulletin.STATUSDRAFT, b.getStatus());
+		assertEquals(Bulletin.STATUSMUTABLE, b.getStatus());
 	}
 
 	public void testGetSet() throws Exception
@@ -379,7 +379,7 @@ public class TestBulletin extends TestCaseEnhanced
 		b1.setSealed();
 		assertEquals("Not Sealed Status?", BulletinConstants.STATUSSEALED, b1.getStatus());
 		b1.setDraft();
-		assertEquals("Not Draft Status?", BulletinConstants.STATUSDRAFT, b1.getStatus());
+		assertEquals("Not Mutable Status?", BulletinConstants.STATUSMUTABLE, b1.getStatus());
 	}
 
 	public void testCreateDraftCopyOfFromDifferentAccount() throws Exception
@@ -440,12 +440,12 @@ public class TestBulletin extends TestCaseEnhanced
 		
 		Bulletin b2 = new Bulletin(security);
 		b2.createDraftCopyOf(b1, getDb());
-		assertEquals("Not a draft?", Bulletin.STATUSDRAFT, b2.getStatus());
+		assertEquals("Not Mutable?", Bulletin.STATUSMUTABLE, b2.getStatus());
 		assertEquals("signer", b1.getSignatureGenerator(), b2.getSignatureGenerator());
 		assertEquals("id unchanged", false, b2.getLocalId().equals(b1.getLocalId()));
 		assertEquals("public info", b1.get(Bulletin.TAGPUBLICINFO), b2.get(Bulletin.TAGPUBLICINFO));
 		assertEquals("private info", b1.get(Bulletin.TAGPRIVATEINFO), b2.get(Bulletin.TAGPRIVATEINFO));
-		assertEquals("wrong status?", Bulletin.STATUSDRAFT, b2.getStatus());
+		assertEquals("wrong status?", Bulletin.STATUSMUTABLE, b2.getStatus());
 		assertEquals("wrong private?", b1.isAllPrivate(), b2.isAllPrivate());
 		assertEquals("didn't add to local history?", b1.getHistory().size()+1, b2.getHistory().size());
 		assertEquals("wrong newest local id?", b1.getLocalId(), b2.getHistory().get(b2.getHistory().size()-1));

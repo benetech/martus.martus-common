@@ -207,7 +207,12 @@ public class Bulletin implements BulletinConstants
 
 	public boolean isDraft()
 	{
-		return getStatus().equals(STATUSDRAFT);
+		return isMutable(getStatus());	
+	}
+	
+	public static boolean isMutable(String status)
+	{
+		return status.equals(STATUSMUTABLE);	
 	}
 
 	public boolean isSealed()
@@ -217,7 +222,7 @@ public class Bulletin implements BulletinConstants
 
 	public void setDraft()
 	{
-		setStatus(STATUSDRAFT);
+		setStatus(STATUSMUTABLE);
 	}
 
 	public void setSealed()
@@ -582,7 +587,7 @@ public class Bulletin implements BulletinConstants
 		for(int aIndex = 0; aIndex < attachmentPublicProxies.length; ++aIndex)
 		{
 			AttachmentProxy ap = attachmentPublicProxies[aIndex];
-			ap = getAsFileProxy(ap, otherDatabase, Bulletin.STATUSDRAFT);
+			ap = getAsFileProxy(ap, otherDatabase, Bulletin.STATUSMUTABLE);
 			addPublicAttachment(ap);
 		}
 
@@ -590,7 +595,7 @@ public class Bulletin implements BulletinConstants
 		for(int aIndex = 0; aIndex < attachmentPrivateProxies.length; ++aIndex)
 		{
 			AttachmentProxy ap = attachmentPrivateProxies[aIndex];
-			ap = getAsFileProxy(ap, otherDatabase, Bulletin.STATUSDRAFT);
+			ap = getAsFileProxy(ap, otherDatabase, Bulletin.STATUSMUTABLE);
 			addPrivateAttachment(ap);
 		}
 
