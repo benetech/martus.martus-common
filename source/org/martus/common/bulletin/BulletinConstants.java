@@ -29,7 +29,7 @@ package org.martus.common.bulletin;
 public interface BulletinConstants
 {
 	public static final String STATUSMUTABLE = "draft"; //Must stay as "draft" for legacy reasons
-	public static final String STATUSSEALED = "sealed";
+	public static final String STATUSIMMUTABLE = "sealed"; //Must stay as "sealed" for legacy reasons
 
 	public static final String TAGSTATUS = "status";
 	public static final String TAGWASSENT = "BulletinWasSent";

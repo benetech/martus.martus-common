@@ -61,7 +61,7 @@ public class TestDatabaseKey extends TestCaseEnhanced
 		assertEquals("draft?", false, key3.isDraft());
 		assertEquals("not sealed?", true, key3.isSealed());
 
-		DatabaseKey keySealed = DatabaseKey.createKey(uid1, BulletinConstants.STATUSSEALED);
+		DatabaseKey keySealed = DatabaseKey.createKey(uid1, BulletinConstants.STATUSIMMUTABLE);
 		assertEquals("bad keySealed?", uid1, keySealed.getUniversalId());
 		assertEquals("draft?", false, keySealed.isDraft());
 		assertEquals("not sealed?", true, keySealed.isSealed());
