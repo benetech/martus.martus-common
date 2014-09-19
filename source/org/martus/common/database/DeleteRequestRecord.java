@@ -105,7 +105,7 @@ public class DeleteRequestRecord
 	public static DatabaseKey getDelKey(UniversalId uid)
 	{
 		UniversalId burUid = UniversalId.createFromAccountAndLocalId(uid.getAccountId(), FileDatabase.DEL_PREFIX + uid.getLocalId());
-		return DatabaseKey.createDraftKey(burUid);
+		return DatabaseKey.createMutableKey(burUid);
 	}
 	
 	public boolean isBefore(long timeToCompare)

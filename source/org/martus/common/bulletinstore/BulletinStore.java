@@ -465,9 +465,9 @@ public class BulletinStore
 		BulletinZipUtilities.validateIntegrityOfZipFilePackets(authorAccountId, zip, security);
 		Database db = getWriteableDatabase();
 		UniversalId headerUid = header.getUniversalId();
-		DatabaseKey draftKey = DatabaseKey.createDraftKey(headerUid);
+		DatabaseKey mutableKey = DatabaseKey.createMutableKey(headerUid);
 		DatabaseKey legacyKey = DatabaseKey.createLegacyKey(headerUid);
-		if(db.doesRecordExist(draftKey) || db.doesRecordExist(legacyKey))
+		if(db.doesRecordExist(mutableKey) || db.doesRecordExist(legacyKey))
 		{
 			deleteDraftBulletinPackets(db, headerUid, security);
 			revisionWasRemoved(headerUid);
@@ -510,7 +510,7 @@ public class BulletinStore
 	private static void deleteDraftBulletinPackets(Database db, UniversalId bulletinUid, MartusCrypto security) throws
 	IOException
 	{
-		DatabaseKey headerKey = DatabaseKey.createDraftKey(bulletinUid);
+		DatabaseKey headerKey = DatabaseKey.createMutableKey(bulletinUid);
 		if(!db.doesRecordExist(headerKey))
 			return;
 		try
@@ -543,7 +543,7 @@ public class BulletinStore
 	private static void deleteDraftPacket(Database db, String accountId, String localId)
 	{
 		UniversalId uid = UniversalId.createFromAccountAndLocalId(accountId, localId);
-		DatabaseKey key = DatabaseKey.createDraftKey(uid);
+		DatabaseKey key = DatabaseKey.createMutableKey(uid);
 		db.discardRecord(key);
 	}
 	

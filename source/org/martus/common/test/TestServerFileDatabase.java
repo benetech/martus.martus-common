@@ -67,7 +67,7 @@ public class TestServerFileDatabase extends TestCaseEnhanced
 	public void testGetmTimeNoKeyInDatabase() throws Exception
 	{
 		UniversalId uid = UniversalIdForTesting.createDummyUniversalId();
-		DatabaseKey burKey = BulletinUploadRecord.getBurKey(DatabaseKey.createDraftKey(uid));
+		DatabaseKey burKey = BulletinUploadRecord.getBurKey(DatabaseKey.createMutableKey(uid));
 		try
 		{
 			db.getmTime(burKey);
@@ -85,24 +85,24 @@ public class TestServerFileDatabase extends TestCaseEnhanced
 	public void testGetmTimeWithBurInDatabase() throws Exception
 	{
 		UniversalId uid = UniversalIdForTesting.createDummyUniversalId();
-		DatabaseKey draftKey = DatabaseKey.createDraftKey(uid);
+		DatabaseKey mutableKey = DatabaseKey.createMutableKey(uid);
 		String timeStamp = MartusServerUtilities.createTimeStamp();
 		String burRecord = BulletinUploadRecord.createBulletinUploadRecordWithSpecificTimeStamp(uid.getLocalId(), timeStamp, security);
-		DatabaseKey burKey = BulletinUploadRecord.getBurKey(draftKey);
+		DatabaseKey burKey = BulletinUploadRecord.getBurKey(mutableKey);
 		db.writeRecord(burKey, burRecord);
-		long timeFromRecord = db.getmTime(draftKey);
+		long timeFromRecord = db.getmTime(mutableKey);
 		assertEquals(timeStamp, MartusServerUtilities.getFormattedTimeStamp(timeFromRecord));
 	}
 	
 	public void testGetmTimeWithDelInDatabase() throws Exception
 	{
 		UniversalId uid = UniversalIdForTesting.createDummyUniversalId();
-		DatabaseKey draftKey = DatabaseKey.createDraftKey(uid);
+		DatabaseKey mutableKey = DatabaseKey.createMutableKey(uid);
 		DeleteRequestRecord delRecord = new DeleteRequestRecord(uid.getAccountId(), new Vector(), "signature");
 		String timeStamp = delRecord.timeStamp;
-		DatabaseKey delKey = DeleteRequestRecord.getDelKey(draftKey.getUniversalId());
+		DatabaseKey delKey = DeleteRequestRecord.getDelKey(mutableKey.getUniversalId());
 		db.writeRecord(delKey, delRecord.getDelData());
-		long timeFromRecord = db.getmTime(draftKey);
+		long timeFromRecord = db.getmTime(mutableKey);
 		assertEquals(timeStamp, MartusServerUtilities.getFormattedTimeStamp(timeFromRecord));
 	}
 	

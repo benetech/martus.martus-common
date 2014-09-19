@@ -33,7 +33,7 @@ import org.martus.common.packet.UniversalId;
 
 public class DatabaseKey implements Comparable
 {
-	public static DatabaseKey createDraftKey(UniversalId uidToUse)
+	public static DatabaseKey createMutableKey(UniversalId uidToUse)
 	{
 		DatabaseKey key = new DatabaseKey(uidToUse);
 		key.setDraft();
@@ -57,7 +57,7 @@ public class DatabaseKey implements Comparable
 	public static DatabaseKey createKey(UniversalId uidToUse, String status)
 	{
 		if(Bulletin.isMutable(status))
-			return createDraftKey(uidToUse);
+			return createMutableKey(uidToUse);
 		return createSealedKey(uidToUse);
 	}
 

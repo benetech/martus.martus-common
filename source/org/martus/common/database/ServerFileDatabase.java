@@ -132,7 +132,7 @@ public class ServerFileDatabase extends FileDatabase
 	{
 		DatabaseKey key = null;
 		if(isDraftPacketBucket(bucketName))
-			key = DatabaseKey.createDraftKey(uid);
+			key = DatabaseKey.createMutableKey(uid);
 		else
 			key = DatabaseKey.createSealedKey(uid);
 		return key;
