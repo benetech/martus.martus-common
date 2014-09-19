@@ -242,11 +242,11 @@ public class TestBulletin extends TestCaseEnhanced
 		b.setDraft();
 		assertEquals(Bulletin.STATUSMUTABLE, b.getStatus());
 		assertEquals("Should be draft", true, b.isDraft());
-		assertEquals("Not yet sealed", false, b.isSealed());
+		assertEquals("Not yet Immutable", false, b.isImmutable());
 		b.setSealed();
 		assertEquals(Bulletin.STATUSIMMUTABLE, b.getStatus());
 		assertEquals("No longer draft", false, b.isDraft());
-		assertEquals("Now sealed", true, b.isSealed());
+		assertEquals("Now Imutable", true, b.isImmutable());
 	}
 
 	public void testEmpty() throws Exception

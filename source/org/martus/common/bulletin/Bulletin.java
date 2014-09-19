@@ -215,7 +215,7 @@ public class Bulletin implements BulletinConstants
 		return status.equals(STATUSMUTABLE);	
 	}
 
-	public boolean isSealed()
+	public boolean isImmutable()
 	{
 		return isImmutable(getStatus());
 	}
@@ -552,7 +552,7 @@ public class Bulletin implements BulletinConstants
 		clearAllUserData();
 		
 		boolean originalIsMine = other.getAccount().equals(getAccount());
-		if(originalIsMine && other.isSealed())
+		if(originalIsMine && other.isImmutable())
 		{
 			BulletinHistory history = new BulletinHistory(other.getHistory());
 			history.add(other.getLocalId());
