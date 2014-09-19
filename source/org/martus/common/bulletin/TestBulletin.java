@@ -377,7 +377,7 @@ public class TestBulletin extends TestCaseEnhanced
 		b1.set(Bulletin.TAGPUBLICINFO, "public info");
 		b1.set(Bulletin.TAGPRIVATEINFO, "private info");
 		b1.setSealed();
-		assertEquals("Not Sealed Status?", BulletinConstants.STATUSIMMUTABLE, b1.getStatus());
+		assertEquals("Not Immutable Status?", BulletinConstants.STATUSIMMUTABLE, b1.getStatus());
 		b1.setDraft();
 		assertEquals("Not Mutable Status?", BulletinConstants.STATUSMUTABLE, b1.getStatus());
 	}
