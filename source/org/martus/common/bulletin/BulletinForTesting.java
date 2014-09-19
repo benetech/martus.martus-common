@@ -103,7 +103,7 @@ public class BulletinForTesting extends Bulletin
 		BulletinHeaderPacket header = b.getBulletinHeaderPacket();
 
 		FieldDataPacket publicDataPacket = b.getFieldDataPacket();
-		boolean shouldEncryptPublicData = (b.isDraft() || b.isAllPrivate());
+		boolean shouldEncryptPublicData = (b.isMutable() || b.isAllPrivate());
 		publicDataPacket.setEncrypted(shouldEncryptPublicData);
 
 		OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destFile));
