@@ -217,7 +217,12 @@ public class Bulletin implements BulletinConstants
 
 	public boolean isSealed()
 	{
-		return getStatus().equals(STATUSSEALED);
+		return isImmutable(getStatus());
+	}
+
+	public static boolean isImmutable(String status)
+	{
+		return status.equals(STATUSIMMUTABLE);	
 	}
 
 	public void setDraft()
@@ -227,7 +232,7 @@ public class Bulletin implements BulletinConstants
 
 	public void setSealed()
 	{
-		setStatus(STATUSSEALED);
+		setStatus(STATUSIMMUTABLE);
 	}
 
 	public void setStatus(String newStatus)

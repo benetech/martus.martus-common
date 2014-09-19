@@ -244,7 +244,7 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals("Should be draft", true, b.isDraft());
 		assertEquals("Not yet sealed", false, b.isSealed());
 		b.setSealed();
-		assertEquals(Bulletin.STATUSSEALED, b.getStatus());
+		assertEquals(Bulletin.STATUSIMMUTABLE, b.getStatus());
 		assertEquals("No longer draft", false, b.isDraft());
 		assertEquals("Now sealed", true, b.isSealed());
 	}
@@ -377,7 +377,7 @@ public class TestBulletin extends TestCaseEnhanced
 		b1.set(Bulletin.TAGPUBLICINFO, "public info");
 		b1.set(Bulletin.TAGPRIVATEINFO, "private info");
 		b1.setSealed();
-		assertEquals("Not Sealed Status?", BulletinConstants.STATUSSEALED, b1.getStatus());
+		assertEquals("Not Sealed Status?", BulletinConstants.STATUSIMMUTABLE, b1.getStatus());
 		b1.setDraft();
 		assertEquals("Not Mutable Status?", BulletinConstants.STATUSMUTABLE, b1.getStatus());
 	}
