@@ -36,7 +36,7 @@ public class DatabaseKey implements Comparable
 	public static DatabaseKey createMutableKey(UniversalId uidToUse)
 	{
 		DatabaseKey key = new DatabaseKey(uidToUse);
-		key.setDraft();
+		key.setMutable();
 		return key;
 	}
 
@@ -87,14 +87,14 @@ public class DatabaseKey implements Comparable
 		return (status == statusSealed);
 	}
 
-	public boolean isDraft()
+	public boolean isMutable()
 	{
-		return (status == statusDraft);
+		return (status == statusMutable);
 	}
 
-	public void setDraft()
+	public void setMutable()
 	{
-		status = statusDraft;
+		status = statusMutable;
 	}
 
 	public void setSealed()
@@ -129,7 +129,7 @@ public class DatabaseKey implements Comparable
 	private String getString()
 	{
 		String statusCode = "?";
-		if(isDraft())
+		if(isMutable())
 			statusCode = "D";
 		else if(isSealed())
 			statusCode = "S";
@@ -142,7 +142,7 @@ public class DatabaseKey implements Comparable
 	}
 
 	private static final int statusSealed = 1;
-	private static final int statusDraft = 2;
+	private static final int statusMutable = 2;
 
 	UniversalId uid;
 	int status;

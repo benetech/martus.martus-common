@@ -398,7 +398,7 @@ abstract public class MockDatabase extends Database
 	Map getQuarantineFor(DatabaseKey key)
 	{
 		Map map = sealedQuarantine;
-		if(key.isDraft())
+		if(key.isMutable())
 			map = draftQuarantine;
 		return map;
 	}
