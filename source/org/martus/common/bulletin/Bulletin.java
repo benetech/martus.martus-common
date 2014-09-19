@@ -225,7 +225,7 @@ public class Bulletin implements BulletinConstants
 		return status.equals(STATUSIMMUTABLE);	
 	}
 
-	public void setDraft()
+	public void setMutable()
 	{
 		setStatus(STATUSMUTABLE);
 	}
@@ -433,7 +433,7 @@ public class Bulletin implements BulletinConstants
 		set(TAGENTRYDATE, DateUtilities.getTodayInStoredFormat());
 		set(TAGEVENTDATE, MartusFlexidate.toStoredDateFormat(MultiCalendar.UNKNOWN));
 		
-		setDraft();
+		setMutable();
 	}
 
 	private void clearUserDataInSection(FieldSpecCollection specs) 
@@ -580,7 +580,7 @@ public class Bulletin implements BulletinConstants
 			setHistory(new BulletinHistory());
 		}
 
-		setDraft();
+		setMutable();
 		setAllPrivate(true);
 
 		pullFields(other, getFieldDataPacket().getFieldSpecs());

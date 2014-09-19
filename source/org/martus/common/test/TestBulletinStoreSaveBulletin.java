@@ -145,17 +145,17 @@ public class TestBulletinStoreSaveBulletin extends TestCaseEnhanced
 
 	public void testSaveToDatabaseAllPrivate() throws Exception
 	{
-		Bulletin somePublicDraft = new Bulletin(security);
-		somePublicDraft.setAllPrivate(false);
-		somePublicDraft.setDraft();
-		store.saveEncryptedBulletinForTesting(somePublicDraft);
-		assertEquals("public draft was not encrypted?", true, somePublicDraft.getFieldDataPacket().isEncrypted());
+		Bulletin somePublicMutable = new Bulletin(security);
+		somePublicMutable.setAllPrivate(false);
+		somePublicMutable.setMutable();
+		store.saveEncryptedBulletinForTesting(somePublicMutable);
+		assertEquals("public mutable was not encrypted?", true, somePublicMutable.getFieldDataPacket().isEncrypted());
 
-		Bulletin allPrivateDraft = new Bulletin(security);
-		allPrivateDraft.setAllPrivate(true);
-		allPrivateDraft.setDraft();
-		store.saveEncryptedBulletinForTesting(allPrivateDraft);
-		assertEquals("private draft was not encrypted?", true, allPrivateDraft.getFieldDataPacket().isEncrypted());
+		Bulletin allPrivateMutable = new Bulletin(security);
+		allPrivateMutable.setAllPrivate(true);
+		allPrivateMutable.setMutable();
+		store.saveEncryptedBulletinForTesting(allPrivateMutable);
+		assertEquals("private mutable was not encrypted?", true, allPrivateMutable.getFieldDataPacket().isEncrypted());
 
 		Bulletin somePublicSealed = new Bulletin(security);
 		somePublicSealed.setAllPrivate(false);

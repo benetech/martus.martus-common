@@ -293,7 +293,7 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 
 		MartusCrypto otherSecurity = MockMartusSecurity.createOtherClient();
 
-		original.setDraft();
+		original.setMutable();
 		original.setAllPrivate(true);
 		BulletinForTesting.saveToFile(db, original, tempFile, security);
 		Bulletin loaded2 = new Bulletin(security);
@@ -301,7 +301,7 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 		assertEquals("draft private could get public?", "", loaded2.get(Bulletin.TAGPUBLICINFO));
 		assertEquals("draft private could get private?", "", loaded2.get(Bulletin.TAGPRIVATEINFO));
 
-		original.setDraft();
+		original.setMutable();
 		original.setAllPrivate(false);
 		BulletinForTesting.saveToFile(db,original, tempFile, security);
 		BulletinZipImporter.loadFromFile(loaded2, tempFile, otherSecurity);
