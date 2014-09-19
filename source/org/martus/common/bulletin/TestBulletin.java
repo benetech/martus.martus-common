@@ -238,8 +238,8 @@ public class TestBulletin extends TestCaseEnhanced
 	{
 		Bulletin b = new Bulletin(security);
 		assertEquals(Bulletin.STATUSMUTABLE, b.getStatus());
-		assertEquals("Should start as draft", true, b.isMutable());
-		b.setDraft();
+		assertEquals("Should start as Mutable", true, b.isMutable());
+		b.setMutable();
 		assertEquals(Bulletin.STATUSMUTABLE, b.getStatus());
 		assertEquals("Should be Mutable", true, b.isMutable());
 		assertEquals("Not yet Immutable", false, b.isImmutable());
@@ -378,7 +378,7 @@ public class TestBulletin extends TestCaseEnhanced
 		b1.set(Bulletin.TAGPRIVATEINFO, "private info");
 		b1.setSealed();
 		assertEquals("Not Immutable Status?", BulletinConstants.STATUSIMMUTABLE, b1.getStatus());
-		b1.setDraft();
+		b1.setMutable();
 		assertEquals("Not Mutable Status?", BulletinConstants.STATUSMUTABLE, b1.getStatus());
 	}
 

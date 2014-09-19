@@ -147,7 +147,7 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 		String title = "My Title";
 		b.setAllPrivate(false);
 		b.set(Bulletin.TAGTITLE,title);
-		b.setDraft();
+		b.setMutable();
 		
 		BulletinHtmlGenerator generator = new BulletinHtmlGenerator(loc);
 		String expectedHtml = "<html><table width='80'>\n<tr><td width='15%'></td><td width='85%'></td></tr>\n" +
