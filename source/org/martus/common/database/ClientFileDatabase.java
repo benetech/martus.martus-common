@@ -65,7 +65,7 @@ public class ClientFileDatabase extends FileDatabase
 	
 	protected DatabaseKey getDatabaseKey(File accountDir, String bucketName, UniversalId uid)
 	{
-		return DatabaseKey.createSealedKey(uid);
+		return DatabaseKey.createImmutableKey(uid);
 	}
 	
 	protected String getBucketPrefix(DatabaseKey key)

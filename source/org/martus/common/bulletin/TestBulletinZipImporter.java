@@ -169,15 +169,15 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 		store.saveBulletinForTesting(original);
 		UniversalId uid = original.getUniversalId();
 
-		original = BulletinLoader.loadFromDatabase(dbWithAttachments, DatabaseKey.createSealedKey(uid), security);
+		original = BulletinLoader.loadFromDatabase(dbWithAttachments, DatabaseKey.createImmutableKey(uid), security);
 		AttachmentProxy[] originalAttachments = original.getPublicAttachments();
 		assertEquals("not one attachment?", 1, originalAttachments.length);
-		DatabaseKey key2 = DatabaseKey.createSealedKey(originalAttachments[0].getUniversalId());
+		DatabaseKey key2 = DatabaseKey.createImmutableKey(originalAttachments[0].getUniversalId());
 		assertEquals("public attachment wasn't saved?", true,  dbWithAttachments.doesRecordExist(key2));
 
 		AttachmentProxy[] originalPrivateAttachments = original.getPrivateAttachments();
 		assertEquals("not one attachment in private?", 1, originalPrivateAttachments.length);
-		DatabaseKey keyPrivate = DatabaseKey.createSealedKey(originalPrivateAttachments[0].getUniversalId());
+		DatabaseKey keyPrivate = DatabaseKey.createImmutableKey(originalPrivateAttachments[0].getUniversalId());
 		assertEquals("private attachment wasn't saved?", true,  dbWithAttachments.doesRecordExist(keyPrivate));
 
 		File tmpFile = createTempFileFromName("$$$MartusTestBullSaveFileAtta1");

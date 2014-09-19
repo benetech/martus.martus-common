@@ -461,7 +461,7 @@ public class TestMartusUtilities extends TestCaseEnhanced
 		b1.addPublicAttachment(new AttachmentProxy(attachment));
 		b1.addPrivateAttachment(new AttachmentProxy(attachment));
 		store.saveEncryptedBulletinForTesting(b1);
-		b1 = BulletinLoader.loadFromDatabase(db, DatabaseKey.createSealedKey(b1.getUniversalId()), security);
+		b1 = BulletinLoader.loadFromDatabase(db, DatabaseKey.createImmutableKey(b1.getUniversalId()), security);
 
 		int size = MartusUtilities.getBulletinSize(db, bhp);
 		b1.set(Bulletin.TAGTITLE, "This is an very long title and should change the size of the result if things are working correctly");
@@ -565,7 +565,7 @@ public class TestMartusUtilities extends TestCaseEnhanced
 		BulletinHeaderPacket bhp1 = new BulletinHeaderPacket(realUid);
 
 		Database db = new MockServerDatabase();
-		DatabaseKey wrongKey = DatabaseKey.createSealedKey(wrongUid);
+		DatabaseKey wrongKey = DatabaseKey.createImmutableKey(wrongUid);
 		bhp1.writeXmlToDatabase(db, wrongKey, false, client1);
 
 		File tempFile = createTempFile();

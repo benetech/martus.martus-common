@@ -134,7 +134,7 @@ public class ServerFileDatabase extends FileDatabase
 		if(isDraftPacketBucket(bucketName))
 			key = DatabaseKey.createMutableKey(uid);
 		else
-			key = DatabaseKey.createSealedKey(uid);
+			key = DatabaseKey.createImmutableKey(uid);
 		return key;
 	}
 }

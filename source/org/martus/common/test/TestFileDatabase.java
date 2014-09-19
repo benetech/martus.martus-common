@@ -360,7 +360,7 @@ public class TestFileDatabase extends TestCaseEnhanced
 		{
 			String a1 = "account" + i;
 			UniversalId uid1 = UniversalIdForTesting.createFromAccountAndPrefix(a1, "x");
-			DatabaseKey key1 = DatabaseKey.createSealedKey(uid1);
+			DatabaseKey key1 = DatabaseKey.createImmutableKey(uid1);
 			int accountHash1 = FileDatabase.getHashValue(uid1.getAccountId()) & 0xFF;
 			String accountHashString1 = Integer.toHexString(accountHash1 + 0xb00);
 			String expectedAccountBucket = baseDir + "/a" + accountHashString1;
@@ -427,7 +427,7 @@ public class TestFileDatabase extends TestCaseEnhanced
 		File mapFile = db.accountMapFile;
 		String accountId = "accountForTesting";
 		UniversalId uid = UniversalIdForTesting.createFromAccountAndPrefix(accountId, "x");
-		DatabaseKey key = DatabaseKey.createSealedKey(uid);
+		DatabaseKey key = DatabaseKey.createImmutableKey(uid);
 
 		db.writeRecord(key, "Some record text");
 		long lastLength = mapFile.length();
@@ -524,11 +524,11 @@ public class TestFileDatabase extends TestCaseEnhanced
 
 		db.writeRecord(shortKey, sampleString1);
 		db.writeRecord(shortKey2, sampleString2);
-		DatabaseKey shortKey3 = DatabaseKey.createSealedKey(UniversalIdForTesting.createFromAccountAndPrefix(accountString1 , "x"));
+		DatabaseKey shortKey3 = DatabaseKey.createImmutableKey(UniversalIdForTesting.createFromAccountAndPrefix(accountString1 , "x"));
 		db.writeRecord(shortKey3, sampleString2);
 		db.hide(shortKey3.getUniversalId());
 
-		DatabaseKey burKey = BulletinUploadRecord.getBurKey(DatabaseKey.createSealedKey(UniversalIdForTesting.createFromAccountAndPrefix(accountString1 , "dx2")));
+		DatabaseKey burKey = BulletinUploadRecord.getBurKey(DatabaseKey.createImmutableKey(UniversalIdForTesting.createFromAccountAndPrefix(accountString1 , "dx2")));
 		DatabaseKey delKey = DeleteRequestRecord.getDelKey(UniversalIdForTesting.createFromAccountAndPrefix(accountString1 , "dx3"));
 		db.writeRecord(burKey, sampleString2);
 		db.writeRecord(delKey, sampleString2);
@@ -584,7 +584,7 @@ public class TestFileDatabase extends TestCaseEnhanced
 		
 		protected DatabaseKey getDatabaseKey(File accountDir, String bucketName, UniversalId uid)
 		{
-			return DatabaseKey.createSealedKey(uid);
+			return DatabaseKey.createImmutableKey(uid);
 		}
 
 		protected String getBucketPrefix(DatabaseKey key)
@@ -598,9 +598,9 @@ public class TestFileDatabase extends TestCaseEnhanced
 	MyFileDatabase db;
 	File dir;
 	String accountString1 = "acct1";
-	DatabaseKey shortKey = DatabaseKey.createSealedKey(UniversalIdForTesting.createFromAccountAndPrefix(accountString1 , "x"));
-	DatabaseKey shortKey2 = DatabaseKey.createSealedKey(UniversalIdForTesting.createFromAccountAndPrefix(accountString1 , "x"));
-	DatabaseKey otherKey = DatabaseKey.createSealedKey(UniversalIdForTesting.createFromAccountAndPrefix("acct2", "x"));
+	DatabaseKey shortKey = DatabaseKey.createImmutableKey(UniversalIdForTesting.createFromAccountAndPrefix(accountString1 , "x"));
+	DatabaseKey shortKey2 = DatabaseKey.createImmutableKey(UniversalIdForTesting.createFromAccountAndPrefix(accountString1 , "x"));
+	DatabaseKey otherKey = DatabaseKey.createImmutableKey(UniversalIdForTesting.createFromAccountAndPrefix("acct2", "x"));
 	String sampleString1 = "This is just a little bit of data as a sample";
 	String sampleString2 = "Here is a somewhat different sample string";
 	byte[] sampleBytes1 = {127,44,17,0,27,99};

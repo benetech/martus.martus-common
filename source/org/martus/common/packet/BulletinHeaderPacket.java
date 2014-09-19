@@ -432,7 +432,7 @@ public class BulletinHeaderPacket extends Packet
 	{
 		if(Bulletin.isMutable(getStatus()))
 			return DatabaseKey.createMutableKey(uidToUse);
-		return DatabaseKey.createSealedKey(uidToUse);
+		return DatabaseKey.createImmutableKey(uidToUse);
 	}
 
 	static ZipEntry getBulletinHeaderEntry(ZipFile zip) throws IOException

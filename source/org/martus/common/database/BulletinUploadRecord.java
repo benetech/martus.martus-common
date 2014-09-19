@@ -130,7 +130,7 @@ public class BulletinUploadRecord
 		
 		if(key.isMutable())
 			return DatabaseKey.createMutableKey(burUid);
-		return DatabaseKey.createSealedKey(burUid);
+		return DatabaseKey.createImmutableKey(burUid);
 	}
 
 	public static void writeSpecificBurToDatabase(Database db, BulletinHeaderPacket bhp, String bur)

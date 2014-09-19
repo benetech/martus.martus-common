@@ -40,7 +40,7 @@ public class DatabaseKey implements Comparable
 		return key;
 	}
 
-	public static DatabaseKey createSealedKey(UniversalId uidToUse)
+	public static DatabaseKey createImmutableKey(UniversalId uidToUse)
 	{
 		DatabaseKey key = new DatabaseKey(uidToUse);
 		key.setImmutable();
@@ -58,7 +58,7 @@ public class DatabaseKey implements Comparable
 	{
 		if(Bulletin.isMutable(status))
 			return createMutableKey(uidToUse);
-		return createSealedKey(uidToUse);
+		return createImmutableKey(uidToUse);
 	}
 
 	private DatabaseKey(UniversalId uidToUse)
