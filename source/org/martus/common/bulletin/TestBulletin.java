@@ -243,7 +243,7 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals(Bulletin.STATUSMUTABLE, b.getStatus());
 		assertEquals("Should be Mutable", true, b.isMutable());
 		assertEquals("Not yet Immutable", false, b.isImmutable());
-		b.setSealed();
+		b.setImmutable();
 		assertEquals(Bulletin.STATUSIMMUTABLE, b.getStatus());
 		assertEquals("No longer Mutable", false, b.isMutable());
 		assertEquals("Now Imutable", true, b.isImmutable());
@@ -365,7 +365,7 @@ public class TestBulletin extends TestCaseEnhanced
 		MyMockDatabase db = new MyMockDatabase();
 		testStore.doAfterSigninInitialization(tempDir, db);
 		Bulletin b = new Bulletin(security);
-		b.setSealed();
+		b.setImmutable();
 		b.setAllPrivate(false);
 		testStore.saveEncryptedBulletinForTesting(b);
 		assertEquals("Didn't Encrypt or Encyrpted too many packets.", 1, db.encryptWasCalled);
@@ -376,7 +376,7 @@ public class TestBulletin extends TestCaseEnhanced
 		Bulletin b1 = new Bulletin(security);
 		b1.set(Bulletin.TAGPUBLICINFO, "public info");
 		b1.set(Bulletin.TAGPRIVATEINFO, "private info");
-		b1.setSealed();
+		b1.setImmutable();
 		assertEquals("Not Immutable Status?", BulletinConstants.STATUSIMMUTABLE, b1.getStatus());
 		b1.setMutable();
 		assertEquals("Not Mutable Status?", BulletinConstants.STATUSMUTABLE, b1.getStatus());
@@ -389,7 +389,7 @@ public class TestBulletin extends TestCaseEnhanced
 		b1.set(Bulletin.TAGPRIVATEINFO, "private info");
 		HeadquartersKey hq = new HeadquartersKey(security.getPublicKeyString());
 		b1.setAuthorizedToReadKeys(new HeadquartersKeys(hq));
-		b1.setSealed();
+		b1.setImmutable();
 		BulletinHistory localHistory = b1.getHistory();
 		localHistory.add("history1");
 		localHistory.add("history2");
@@ -423,7 +423,7 @@ public class TestBulletin extends TestCaseEnhanced
 		b1.set(Bulletin.TAGPRIVATEINFO, "private info");
 		HeadquartersKey hq = new HeadquartersKey(security.getPublicKeyString());
 		b1.setAuthorizedToReadKeys(new HeadquartersKeys(hq));
-		b1.setSealed();
+		b1.setImmutable();
 		BulletinHistory localHistory = b1.getHistory();
 		localHistory.add("history1");
 		localHistory.add("history2");

@@ -77,7 +77,7 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 		Bulletin b = new Bulletin(security);
 		b.set(Bulletin.TAGPUBLICINFO, "public info");
 		b.set(Bulletin.TAGPRIVATEINFO, "private info");
-		b.setSealed();
+		b.setImmutable();
 
 		File tempFile = createTempFileFromName("$$$MartusTest");
 		BulletinForTesting.saveToFile(db, b, tempFile, security);
@@ -165,7 +165,7 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 		AttachmentProxy aPrivate = new AttachmentProxy(tempFile2);
 		original.addPublicAttachment(a);
 		original.addPrivateAttachment(aPrivate);
-		original.setSealed();
+		original.setImmutable();
 		store.saveBulletinForTesting(original);
 		UniversalId uid = original.getUniversalId();
 
@@ -308,14 +308,14 @@ public class TestBulletinZipImporter extends TestCaseEnhanced
 		assertEquals("draft public could get encrypted public?", "", loaded2.get(Bulletin.TAGPUBLICINFO));
 		assertEquals("draft public could get private?", "", loaded2.get(Bulletin.TAGPRIVATEINFO));
 
-		original.setSealed();
+		original.setImmutable();
 		original.setAllPrivate(true);
 		BulletinForTesting.saveToFile(db,original, tempFile, security);
 		BulletinZipImporter.loadFromFile(loaded2, tempFile, otherSecurity);
 		assertEquals("sealed private could get encrypted public?", "", loaded2.get(Bulletin.TAGPUBLICINFO));
 		assertEquals("sealed private could get private?", "", loaded2.get(Bulletin.TAGPRIVATEINFO));
 
-		original.setSealed();
+		original.setImmutable();
 		original.setAllPrivate(false);
 		BulletinForTesting.saveToFile(db,original, tempFile, security);
 		BulletinZipImporter.loadFromFile(loaded2, tempFile, otherSecurity);

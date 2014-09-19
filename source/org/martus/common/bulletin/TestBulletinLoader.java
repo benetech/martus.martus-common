@@ -65,7 +65,7 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		Bulletin original = new Bulletin(security);
 		original.set(Bulletin.TAGPUBLICINFO, "public info");
 		original.set(Bulletin.TAGPRIVATEINFO, "private info");
-		original.setSealed();
+		original.setImmutable();
 		store.saveEncryptedBulletinForTesting(original);
 
 		Bulletin loaded = BulletinLoader.loadFromDatabase(getDatabase(), DatabaseKey.createLegacyKey(original.getUniversalId()), security);
@@ -86,7 +86,7 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		Bulletin original = new Bulletin(security);
 		original.set(Bulletin.TAGPUBLICINFO, "public info");
 		original.set(Bulletin.TAGPRIVATEINFO, "private info");
-		original.setSealed();
+		original.setImmutable();
 		store.saveEncryptedBulletinForTesting(original);
 
 		Bulletin loaded = BulletinLoader.loadFromDatabase(getDatabase(), DatabaseKey.createLegacyKey(original.getUniversalId()), security);
@@ -109,7 +109,7 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		Bulletin b = new Bulletin(security);
 		b.set(Bulletin.TAGPUBLICINFO, "public info");
 		b.set(Bulletin.TAGPRIVATEINFO, "private info");
-		b.setSealed();
+		b.setImmutable();
 		store.saveEncryptedBulletinForTesting(b);
 		assertEquals("saved 1", 3, getDatabase().getAllKeys().size());
 
