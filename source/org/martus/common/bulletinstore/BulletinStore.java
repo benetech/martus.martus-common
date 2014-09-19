@@ -374,7 +374,7 @@ public class BulletinStore
 			{
 				String localIdOfAncestor = history.get(i);
 				UniversalId uidOfAncestor = UniversalId.createFromAccountAndLocalId(b.getAccount(), localIdOfAncestor);
-				DatabaseKey key = DatabaseKey.createSealedKey(uidOfAncestor);
+				DatabaseKey key = DatabaseKey.createImmutableKey(uidOfAncestor);
 				if(doesBulletinRevisionExist(key))
 					deleteBulletinRevision(key);
 			}
@@ -591,7 +591,7 @@ public class BulletinStore
 				continue;
 			
 			UniversalId id = attachmentProxies[i].getUniversalId();
-			DatabaseKey key = DatabaseKey.createSealedKey(id);
+			DatabaseKey key = DatabaseKey.createImmutableKey(id);
 			InputStreamWithSeek in = null;
 			try
 			{

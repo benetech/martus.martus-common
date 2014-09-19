@@ -220,7 +220,7 @@ public class TestLeafNodeCache extends TestCaseEnhanced
 		for(int i = 0; i < 500; ++i)
 		{
 			UniversalId uid = UniversalIdForTesting.createDummyUniversalId();
-			DatabaseKey key = DatabaseKey.createSealedKey(uid);
+			DatabaseKey key = DatabaseKey.createImmutableKey(uid);
 			cache.addToCachedLeafInformation(key, history);
 		}
 		long millisFor500 = watch.elapsed();
@@ -228,7 +228,7 @@ public class TestLeafNodeCache extends TestCaseEnhanced
 		for(int i = 0; i < 1000; ++i)
 		{
 			UniversalId uid = UniversalIdForTesting.createDummyUniversalId();
-			DatabaseKey key = DatabaseKey.createSealedKey(uid);
+			DatabaseKey key = DatabaseKey.createImmutableKey(uid);
 			cache.addToCachedLeafInformation(key, history);
 		}
 		long millisFor1000 = watch.elapsed();

@@ -78,8 +78,8 @@ public class TestClientFileDatabase extends TestCaseEnhanced
 		assertNotNull("draft not found?", inDraft);
 		inDraft.close();
 
-		DatabaseKey sealedKey = DatabaseKey.createSealedKey(uid);
-		InputStream inSealed = db.openInputStream(sealedKey, security);
+		DatabaseKey immutableKey = DatabaseKey.createImmutableKey(uid);
+		InputStream inSealed = db.openInputStream(immutableKey, security);
 		assertNotNull("sealed not found?", inSealed);
 		inSealed.close();
 

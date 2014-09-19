@@ -160,7 +160,7 @@ public class TestBulletinStore extends TestCaseEnhanced
 
 		AttachmentProxy[] privateProxy = loaded.getPrivateAttachments();
 		UniversalId id = privateProxy[0].getUniversalId();
-		DatabaseKey key = DatabaseKey.createSealedKey(id);
+		DatabaseKey key = DatabaseKey.createImmutableKey(id);
 		
 		assertTrue("Attachment should exist",getDatabase().doesRecordExist(key));
 
@@ -183,7 +183,7 @@ public class TestBulletinStore extends TestCaseEnhanced
 
 		AttachmentProxy[] publicProxy = loaded.getPublicAttachments();
 		id = publicProxy[0].getUniversalId();
-		key = DatabaseKey.createSealedKey(id);
+		key = DatabaseKey.createImmutableKey(id);
 		getDatabase().writeRecordEncrypted(key,sampleBytes2.toString(), security1);
 		
 		loaded = BulletinLoader.loadFromDatabase(getDatabase(), DatabaseKey.createLegacyKey(b1.getUniversalId()), security1);
@@ -369,7 +369,7 @@ public class TestBulletinStore extends TestCaseEnhanced
 		fromStore.saveBulletinForTesting(b);
 		
 		File destFile = createTempFile();
-		DatabaseKey key = DatabaseKey.createSealedKey(b.getUniversalId());
+		DatabaseKey key = DatabaseKey.createImmutableKey(b.getUniversalId());
 		BulletinZipUtilities.exportBulletinPacketsFromDatabaseToZipFile(fromStore.getDatabase(), key, destFile, authorSecurity);
 		ZipFile zip = new ZipFile(destFile);
 		

@@ -52,7 +52,7 @@ public class TestDatabaseKey extends TestCaseEnhanced
 		assertEquals("bad uid1?", uid1, key1.getUniversalId());
 		assertEquals("not Mutable?", true, key1.isMutable());
 
-		DatabaseKey key2 = DatabaseKey.createSealedKey(uid1);
+		DatabaseKey key2 = DatabaseKey.createImmutableKey(uid1);
 		assertEquals("bad uid2?", uid1, key2.getUniversalId());
 		assertEquals("not Immutable?", true, key2.isImmutable());
 
@@ -77,10 +77,10 @@ public class TestDatabaseKey extends TestCaseEnhanced
 		UniversalId uid1 = UniversalIdForTesting.createDummyUniversalId();
 		UniversalId uid2 = UniversalIdForTesting.createDummyUniversalId();
 
-		DatabaseKey key1 = DatabaseKey.createSealedKey(uid1);
-		DatabaseKey key2 = DatabaseKey.createSealedKey(UniversalId.createFromAccountAndLocalId(uid1.getAccountId(), uid1.getLocalId()));
-		DatabaseKey key3 = DatabaseKey.createSealedKey(uid2);
-		DatabaseKey key4 = DatabaseKey.createSealedKey(uid1);
+		DatabaseKey key1 = DatabaseKey.createImmutableKey(uid1);
+		DatabaseKey key2 = DatabaseKey.createImmutableKey(UniversalId.createFromAccountAndLocalId(uid1.getAccountId(), uid1.getLocalId()));
+		DatabaseKey key3 = DatabaseKey.createImmutableKey(uid2);
+		DatabaseKey key4 = DatabaseKey.createImmutableKey(uid1);
 		key4.setMutable();
 		assertEquals("self should match", key1, key1);
 		assertEquals("never match null", false, key1.equals(null));
@@ -100,9 +100,9 @@ public class TestDatabaseKey extends TestCaseEnhanced
 	{
 		UniversalId uid = UniversalIdForTesting.createDummyUniversalId();
 
-		DatabaseKey key1 = DatabaseKey.createSealedKey(uid);
-		DatabaseKey key2 = DatabaseKey.createSealedKey(uid);
-		DatabaseKey key3 = DatabaseKey.createSealedKey(UniversalIdForTesting.createDummyUniversalId());
+		DatabaseKey key1 = DatabaseKey.createImmutableKey(uid);
+		DatabaseKey key2 = DatabaseKey.createImmutableKey(uid);
+		DatabaseKey key3 = DatabaseKey.createImmutableKey(UniversalIdForTesting.createDummyUniversalId());
 		assertEquals("self should match", key1, key1);
 		assertEquals("never match null", false, key1.equals(null));
 		assertEquals("never match string", false, key1.equals(uid));
@@ -118,14 +118,14 @@ public class TestDatabaseKey extends TestCaseEnhanced
 	public void testGetAccount() throws Exception
 	{
 		UniversalId uid = UniversalIdForTesting.createDummyUniversalId();
-		DatabaseKey key = DatabaseKey.createSealedKey(uid);
+		DatabaseKey key = DatabaseKey.createImmutableKey(uid);
 		assertEquals("wrong account?", uid.getAccountId(), key.getAccountId());
 	}
 
 	public void testStatus() throws Exception
 	{
 		UniversalId uid = UniversalIdForTesting.createDummyUniversalId();
-		DatabaseKey key = DatabaseKey.createSealedKey(uid);
+		DatabaseKey key = DatabaseKey.createImmutableKey(uid);
 		assertEquals("Default not Immutable?", true, key.isImmutable());
 		assertEquals("Default was Mutable?", false, key.isMutable());
 		key.setMutable();
