@@ -26,6 +26,7 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.database;
 
+import org.martus.common.bulletin.Bulletin;
 import org.martus.common.bulletin.BulletinConstants;
 import org.martus.common.packet.UniversalId;
 
@@ -56,7 +57,7 @@ public class DatabaseKey implements Comparable
 
 	public static DatabaseKey createKey(UniversalId uidToUse, String status)
 	{
-		if(status.equals(BulletinConstants.STATUSDRAFT))
+		if(Bulletin.isMutable(status))
 			return createDraftKey(uidToUse);
 		return createSealedKey(uidToUse);
 	}

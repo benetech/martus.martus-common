@@ -28,7 +28,7 @@ package org.martus.common.bulletin;
 
 public interface BulletinConstants
 {
-	public static final String STATUSDRAFT = "draft";
+	public static final String STATUSMUTABLE = "draft"; //Must stay as "draft" for legacy reasons
 	public static final String STATUSSEALED = "sealed";
 
 	public static final String TAGSTATUS = "status";
@@ -45,5 +45,4 @@ public interface BulletinConstants
 	public static final String TAGPUBLICINFO = "publicinfo";
 	public static final String TAGPRIVATEINFO = "privateinfo";
 	public static final String TAGLASTSAVED = "BulletinLastSaved";
-
 }
