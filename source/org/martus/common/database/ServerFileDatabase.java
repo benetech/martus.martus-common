@@ -50,7 +50,7 @@ public class ServerFileDatabase extends FileDatabase
 
 	protected String getBucketPrefix(DatabaseKey key) 
 	{
-		if(key.isDraft())
+		if(key.isMutable())
 			return draftBucketPrefix;
 		return defaultBucketPrefix;
 	}

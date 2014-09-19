@@ -50,7 +50,7 @@ public class TestDatabaseKey extends TestCaseEnhanced
 		UniversalId uid1 = UniversalIdForTesting.createDummyUniversalId();
 		DatabaseKey key1 = DatabaseKey.createMutableKey(uid1);
 		assertEquals("bad uid1?", uid1, key1.getUniversalId());
-		assertEquals("not draft?", true, key1.isDraft());
+		assertEquals("not Mutable?", true, key1.isMutable());
 
 		DatabaseKey key2 = DatabaseKey.createSealedKey(uid1);
 		assertEquals("bad uid2?", uid1, key2.getUniversalId());
@@ -58,17 +58,17 @@ public class TestDatabaseKey extends TestCaseEnhanced
 
 		DatabaseKey key3 = DatabaseKey.createLegacyKey(uid1);
 		assertEquals("bad uid3?", uid1, key3.getUniversalId());
-		assertEquals("draft?", false, key3.isDraft());
+		assertEquals("Mutable?", false, key3.isMutable());
 		assertEquals("not sealed?", true, key3.isSealed());
 
 		DatabaseKey keySealed = DatabaseKey.createKey(uid1, BulletinConstants.STATUSIMMUTABLE);
 		assertEquals("bad keySealed?", uid1, keySealed.getUniversalId());
-		assertEquals("draft?", false, keySealed.isDraft());
+		assertEquals("Mutable?", false, keySealed.isMutable());
 		assertEquals("not sealed?", true, keySealed.isSealed());
 
 		DatabaseKey keyDraft = DatabaseKey.createKey(uid1, BulletinConstants.STATUSMUTABLE);
-		assertEquals("bad keyDraft?", uid1, keyDraft.getUniversalId());
-		assertEquals("not draft?", true, keyDraft.isDraft());
+		assertEquals("bad keyMutable?", uid1, keyDraft.getUniversalId());
+		assertEquals("not Mutable?", true, keyDraft.isMutable());
 		assertEquals("sealed?", false, keyDraft.isSealed());
 	}
 
@@ -81,7 +81,7 @@ public class TestDatabaseKey extends TestCaseEnhanced
 		DatabaseKey key2 = DatabaseKey.createSealedKey(UniversalId.createFromAccountAndLocalId(uid1.getAccountId(), uid1.getLocalId()));
 		DatabaseKey key3 = DatabaseKey.createSealedKey(uid2);
 		DatabaseKey key4 = DatabaseKey.createSealedKey(uid1);
-		key4.setDraft();
+		key4.setMutable();
 		assertEquals("self should match", key1, key1);
 		assertEquals("never match null", false, key1.equals(null));
 		assertEquals("never match uid", false, key1.equals(uid1));
@@ -127,13 +127,13 @@ public class TestDatabaseKey extends TestCaseEnhanced
 		UniversalId uid = UniversalIdForTesting.createDummyUniversalId();
 		DatabaseKey key = DatabaseKey.createSealedKey(uid);
 		assertEquals("Default not sealed?", true, key.isSealed());
-		assertEquals("Default was draft?", false, key.isDraft());
-		key.setDraft();
+		assertEquals("Default was Mutable?", false, key.isMutable());
+		key.setMutable();
 		assertEquals("Sealed still set?", false, key.isSealed());
-		assertEquals("Draft not set?", true, key.isDraft());
+		assertEquals("Mutable not set?", true, key.isMutable());
 		key.setSealed();
 		assertEquals("Sealed not set?", true, key.isSealed());
-		assertEquals("Draft still set?", false, key.isDraft());
+		assertEquals("Mutable still set?", false, key.isMutable());
 
 	}
 }

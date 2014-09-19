@@ -128,7 +128,7 @@ public class BulletinUploadRecord
 	{
 		UniversalId burUid = UniversalId.createFromAccountAndLocalId(key.getAccountId(), FileDatabase.BUR_PREFIX + key.getLocalId());
 		
-		if(key.isDraft())
+		if(key.isMutable())
 			return DatabaseKey.createMutableKey(burUid);
 		return DatabaseKey.createSealedKey(burUid);
 	}

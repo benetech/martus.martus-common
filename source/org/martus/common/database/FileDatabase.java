@@ -617,7 +617,7 @@ abstract public class FileDatabase extends Database
 
 	private String getQuarantinePrefix(DatabaseKey key)
 	{
-		if(key.isDraft())
+		if(key.isMutable())
 			return draftQuarantinePrefix;
 		return sealedQuarantinePrefix;
 	}

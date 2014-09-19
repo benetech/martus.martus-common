@@ -98,7 +98,7 @@ public class MockServerDatabase extends MockDatabase
 	Map getPacketMapFor(DatabaseKey key)
 	{
 		Map map = sealedPacketMap;
-		if(key.isDraft())
+		if(key.isMutable())
 			map = draftPacketMap;
 		return map;
 	}
