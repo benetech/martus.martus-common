@@ -43,14 +43,14 @@ public class DatabaseKey implements Comparable
 	public static DatabaseKey createSealedKey(UniversalId uidToUse)
 	{
 		DatabaseKey key = new DatabaseKey(uidToUse);
-		key.setSealed();
+		key.setImmutable();
 		return key;
 	}
 
 	public static DatabaseKey createLegacyKey(UniversalId uidToUse)
 	{
 		DatabaseKey key = new DatabaseKey(uidToUse);
-		key.setSealed();
+		key.setImmutable();
 		return key;
 	}
 
@@ -64,7 +64,7 @@ public class DatabaseKey implements Comparable
 	private DatabaseKey(UniversalId uidToUse)
 	{
 		uid = uidToUse;
-		status = statusSealed;
+		status = statusImmutable;
 	}
 
 	public UniversalId getUniversalId()
@@ -82,9 +82,9 @@ public class DatabaseKey implements Comparable
 		return getUniversalId().getLocalId();
 	}
 
-	public boolean isSealed()
+	public boolean isImmutable()
 	{
-		return (status == statusSealed);
+		return (status == statusImmutable);
 	}
 
 	public boolean isMutable()
@@ -97,9 +97,9 @@ public class DatabaseKey implements Comparable
 		status = statusMutable;
 	}
 
-	public void setSealed()
+	public void setImmutable()
 	{
-		status = statusSealed;
+		status = statusImmutable;
 	}
 
 	public boolean equals(Object otherObject)
@@ -131,7 +131,7 @@ public class DatabaseKey implements Comparable
 		String statusCode = "?";
 		if(isMutable())
 			statusCode = "D";
-		else if(isSealed())
+		else if(isImmutable())
 			statusCode = "S";
 		return statusCode + "-" + uid.toString();
 	}
@@ -141,7 +141,7 @@ public class DatabaseKey implements Comparable
 		return getString();
 	}
 
-	private static final int statusSealed = 1;
+	private static final int statusImmutable = 1;
 	private static final int statusMutable = 2;
 
 	UniversalId uid;

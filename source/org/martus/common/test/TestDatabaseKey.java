@@ -54,22 +54,22 @@ public class TestDatabaseKey extends TestCaseEnhanced
 
 		DatabaseKey key2 = DatabaseKey.createSealedKey(uid1);
 		assertEquals("bad uid2?", uid1, key2.getUniversalId());
-		assertEquals("not sealed?", true, key2.isSealed());
+		assertEquals("not Immutable?", true, key2.isImmutable());
 
 		DatabaseKey key3 = DatabaseKey.createLegacyKey(uid1);
 		assertEquals("bad uid3?", uid1, key3.getUniversalId());
 		assertEquals("Mutable?", false, key3.isMutable());
-		assertEquals("not sealed?", true, key3.isSealed());
+		assertEquals("not Immutable?", true, key3.isImmutable());
 
 		DatabaseKey keySealed = DatabaseKey.createKey(uid1, BulletinConstants.STATUSIMMUTABLE);
-		assertEquals("bad keySealed?", uid1, keySealed.getUniversalId());
+		assertEquals("bad keyImmutable?", uid1, keySealed.getUniversalId());
 		assertEquals("Mutable?", false, keySealed.isMutable());
-		assertEquals("not sealed?", true, keySealed.isSealed());
+		assertEquals("not Immutable?", true, keySealed.isImmutable());
 
 		DatabaseKey keyDraft = DatabaseKey.createKey(uid1, BulletinConstants.STATUSMUTABLE);
 		assertEquals("bad keyMutable?", uid1, keyDraft.getUniversalId());
 		assertEquals("not Mutable?", true, keyDraft.isMutable());
-		assertEquals("sealed?", false, keyDraft.isSealed());
+		assertEquals("sealed?", false, keyDraft.isImmutable());
 	}
 
 	public void testEqualsStrings() throws Exception
@@ -126,13 +126,13 @@ public class TestDatabaseKey extends TestCaseEnhanced
 	{
 		UniversalId uid = UniversalIdForTesting.createDummyUniversalId();
 		DatabaseKey key = DatabaseKey.createSealedKey(uid);
-		assertEquals("Default not sealed?", true, key.isSealed());
+		assertEquals("Default not Immutable?", true, key.isImmutable());
 		assertEquals("Default was Mutable?", false, key.isMutable());
 		key.setMutable();
-		assertEquals("Sealed still set?", false, key.isSealed());
+		assertEquals("Immutable still set?", false, key.isImmutable());
 		assertEquals("Mutable not set?", true, key.isMutable());
-		key.setSealed();
-		assertEquals("Sealed not set?", true, key.isSealed());
+		key.setImmutable();
+		assertEquals("Immutable not set?", true, key.isImmutable());
 		assertEquals("Mutable still set?", false, key.isMutable());
 
 	}
