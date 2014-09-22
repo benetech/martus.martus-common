@@ -292,6 +292,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		assertNotContains(MartusXml.getTagStart(MartusXml.HQPublicKeyElementName), result);
 		
 		assertNotContains(MartusXml.getTagStart(MartusXml.AccountsAuthorizedToReadElementName), result);
+		assertNotContains(MartusXml.getTagStart(MartusXml.AccountsAuthorizedToReadPendingElementName), result);
 		
 		assertNotContains(MartusXml.getTagStart(MartusXml.HistoryElementName), result);
 
@@ -532,6 +533,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 
 	public void testLoadXmlWithMultipleAuthorizedToReadKeys() throws Exception
 	{
+		bhp.clearAllUserData();
 		String hqKey1 = "Key 1";
 		String hqKey2 = "Key 2";
 		HeadquartersKeys hqKeys = new HeadquartersKeys();
@@ -556,6 +558,33 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		assertEquals("Key 2 not allowed to upload?", hqKey2, (loaded.getAuthorizedToUploadKeys().get(1)).getPublicKey());
 	}
 	
+	public void testLoadXmlWithMultipleAuthorizedToReadKeysPending() throws Exception
+	{
+		bhp.clearAllUserData();
+		String hqKey1 = "Key 1";
+		String hqKey2 = "Key 2";
+		HeadquartersKeys hqKeys = new HeadquartersKeys();
+		HeadquartersKey key1 = new HeadquartersKey(hqKey1);
+		HeadquartersKey key2 = new HeadquartersKey(hqKey2);
+		hqKeys.add(key1);
+		hqKeys.add(key2);
+		bhp.setAuthorizedToReadKeysPending(hqKeys);
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		bhp.writeXml(out, security);
+		String result = new String(out.toByteArray(), "UTF-8");
+
+		BulletinHeaderPacket loaded = new BulletinHeaderPacket(security);
+		byte[] bytes = result.getBytes("UTF-8");
+		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
+		loaded.loadFromXml(in, security);
+		assertEquals("The # of authorized accounts not 0?", 0, loaded.getAuthorizedToReadKeys().size());
+		assertEquals("The # of pending accounts not set?", hqKeys.size(), loaded.getAuthorizedToReadKeysPending().size());
+		assertEquals("Key 1 not present?", hqKey1, (loaded.getAuthorizedToReadKeysPending().get(0)).getPublicKey());
+		assertEquals("Key 2 not present?", hqKey2, (loaded.getAuthorizedToReadKeysPending().get(1)).getPublicKey());
+		assertEquals("The original hqKey should be blank", "", loaded.getLegacyHQPublicKey());
+		assertEquals("Should not have any HQ's that can Proxy Upload?", 0, loaded.getAuthorizedToUploadKeys().size());
+	}
+
 	public void testBackwardHQCompatibility() throws Exception
 	{
 		String authorAccountId = "MIIBIDANBgkqhkiG9w0BAQEFAAOCAQ0AMIIBCAKCAQEAlBOc0WjiSlX6ejv6+QNfMWbVA/fZ8fQEXtvjT/hdpox6Nf02GV+t/PeMM5vf2/uvW1QBKfCzcIHbdObIOZAAwjXhoFqba6eLmaMGAvmSnPD6h2i6mL0/DkZ2QURYU+PDrSzlugIJm6rgaZxyGKdCscxf0Sb6JQPUswfl42TV8e87LlXIqAOY5UnN5DpwmgSNDE1RqVn68Z++Ez3dfFCDMe36BSkyzNXM0D+hTgjTRm0A+opUIa0f6vrUnzsUYoFeGqRMcO5SMuYkdsONrMAgGX57fOFPVEvxlwAlMq/uAPRhdFDTH77th7nIC4vitQxvifFPDJCblZ1DN46hxpQwtwIBEQ==";
