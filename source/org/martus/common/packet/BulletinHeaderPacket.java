@@ -86,6 +86,7 @@ public class BulletinHeaderPacket extends Packet
 		legacyHqPublicKey = "";
 		lastSavedTime = TIME_UNKNOWN;
 		authorizedToReadKeys = new HeadquartersKeys();
+		authorizedToReadKeysPending = new HeadquartersKeys();
 		history = new BulletinHistory();
 		extendedHistory = new ExtendedHistoryList();
 	}
@@ -131,6 +132,7 @@ public class BulletinHeaderPacket extends Packet
 	{
 		clearAttachments();
 		clearAuthorizedToRead();
+		clearAuthorizedToReadPending();
 	}
 
 	private void clearAttachments()
@@ -143,6 +145,11 @@ public class BulletinHeaderPacket extends Packet
 	{
 		authorizedToReadKeys = new HeadquartersKeys();
 		legacyHqPublicKey = "";
+	}
+	
+	private void clearAuthorizedToReadPending()
+	{
+		authorizedToReadKeysPending = new HeadquartersKeys();
 	}
 
 	public boolean hasAllPrivateFlag()
@@ -252,6 +259,11 @@ public class BulletinHeaderPacket extends Packet
 		return authorizedToReadKeys;
 	}
 	
+	public HeadquartersKeys getAuthorizedToReadKeysPending()
+	{
+		return authorizedToReadKeysPending;
+	}
+	
 	public boolean canAllHQsProxyUpload()
 	{
 		return allHQsCanProxyUpload;
@@ -281,6 +293,11 @@ public class BulletinHeaderPacket extends Packet
 			legacyHqPublicKey = accountsKeys.get(0).getPublicKey();
 	}
 	
+	public void setAuthorizedToReadKeysPending(HeadquartersKeys accountsKeys)
+	{
+		authorizedToReadKeysPending = accountsKeys;
+	}
+
 	public boolean isHQAuthorizedToRead(String publicKey)
 	{
 		return authorizedToReadKeys.containsKey(publicKey);
@@ -528,6 +545,12 @@ public class BulletinHeaderPacket extends Packet
 		else
 			writeElement(dest, MartusXml.StatusVersionedName, STATUS_NOTVERSIONED);
 			
+		if(!authorizedToReadKeysPending.isEmpty())
+		{
+			String value = authorizedToReadKeysPending.toString();
+			writeNonEncodedElement(dest, MartusXml.AccountsAuthorizedToReadPendingElementName, value);			
+		}
+
 		if(history.size() > 0)
 			history.internalWriteXml(dest);
 		
@@ -570,4 +593,5 @@ public class BulletinHeaderPacket extends Packet
 	private BulletinHistory history;
 	private ExtendedHistoryList extendedHistory;
 	private boolean versioned;
+	private HeadquartersKeys authorizedToReadKeysPending;
 }

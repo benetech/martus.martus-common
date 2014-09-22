@@ -149,5 +149,6 @@ public class MartusXml
 	public final static String AttachmentKeyElementName = "AttachmentSessionKey";
 	public final static String CustomFieldSpecsElementName = "CustomFields";
 	public final static String StatusVersionedName = "Versioned";
+	public final static String AccountsAuthorizedToReadPendingElementName = "AuthorizedToReadKeyPending";
 
 }

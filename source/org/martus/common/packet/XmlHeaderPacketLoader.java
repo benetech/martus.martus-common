@@ -53,6 +53,8 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 			return new SimpleXmlStringLoader(tag);
 		else if(tag.equals(MartusXml.AccountsAuthorizedToReadElementName))
 			return new AuthorizedToReadLoader();
+		else if(tag.equals(MartusXml.AccountsAuthorizedToReadPendingElementName))
+			return new AuthorizedToReadPendingLoader();
 		else if(tag.equals(MartusXml.HistoryElementName))
 			return new SimpleXmlVectorLoader(tag, MartusXml.AncestorElementName);
 		else if(tag.equals(MartusXml.ExtendedHistorySectionName))
@@ -72,6 +74,8 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 			endStringElement(ended);
 		else if(tag.equals(MartusXml.AccountsAuthorizedToReadElementName))
 			bhp.setAuthorizedToReadKeys(new HeadquartersKeys(((AuthorizedToReadLoader)ended).authorizedKeys));
+		else if(tag.equals(MartusXml.AccountsAuthorizedToReadPendingElementName))
+			bhp.setAuthorizedToReadKeysPending(new HeadquartersKeys(((AuthorizedToReadPendingLoader)ended).authorizedKeysPending));
 		else if(tag.equals(MartusXml.HistoryElementName))
 		{
 			SimpleXmlVectorLoader loader = (SimpleXmlVectorLoader)ended;
@@ -141,6 +145,23 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 			return super.startElement(tag);
 		}
 		Vector authorizedKeys = new Vector();
+	}
+	
+	class AuthorizedToReadPendingLoader extends SimpleXmlDefaultLoader
+	{
+		public AuthorizedToReadPendingLoader()
+		{
+			super(MartusXml.AccountsAuthorizedToReadPendingElementName);
+		}
+
+		public SimpleXmlDefaultLoader startElement(String tag)
+			throws SAXParseException
+		{
+			if(tag.equals(HeadquartersKeys.HQ_KEYS_TAG))
+				return HeadquartersKeys.createLoader(authorizedKeysPending);
+			return super.startElement(tag);
+		}
+		Vector authorizedKeysPending = new Vector();
 	}
 	
 	class ExtendedHistoryLoader extends SimpleXmlDefaultLoader
