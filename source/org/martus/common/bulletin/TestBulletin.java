@@ -35,10 +35,12 @@ import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 import java.util.Vector;
 
+import org.martus.common.Exceptions.InvalidBulletinStateException;
 import org.martus.common.HeadquartersKey;
 import org.martus.common.HeadquartersKeys;
 import org.martus.common.MartusUtilities;
 import org.martus.common.MiniLocalization;
+import org.martus.common.bulletin.Bulletin.BulletinState;
 import org.martus.common.bulletinstore.BulletinStore;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MockMartusSecurity;
@@ -619,6 +621,74 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals("Should now only have 1 key?", 1, original.getAuthorizedToReadKeys().size());
 		
 		assertTrue(original.getAuthorizedToReadKeys().containsKey(key2.getPublicKey()));
+	}
+	
+	public void testSetStateBasics() throws Exception
+	{
+		Bulletin versionedBulletin = new Bulletin(security);
+		assertFalse(versionedBulletin.isVersioned());
+		versionedBulletin.setState(BulletinState.STATE_SAVE);
+		assertFalse(versionedBulletin.isVersioned());
+		versionedBulletin.setState(BulletinState.STATE_SAVE);
+		assertFalse(versionedBulletin.isVersioned());
+		versionedBulletin.setState(BulletinState.STATE_VERSION);
+		assertTrue(versionedBulletin.isVersioned());
+		try
+		{
+			versionedBulletin.setState(BulletinState.STATE_SAVE);
+			fail("Once state is Versioned, you can't change its State to Save without creating a new Version copy.");
+		} 
+		catch (InvalidBulletinStateException expectedException)
+		{
+		}
+		try
+		{
+			versionedBulletin.setState(BulletinState.STATE_VERSION);
+			fail("Once state is Versioned, you can't change its State to Version without creating a new Version copy.");
+		} 
+		catch (InvalidBulletinStateException expectedException)
+		{
+		}
+		try
+		{
+			versionedBulletin.setState(BulletinState.STATE_SEND);
+			fail("Once state is Versioned, you can't change its State to Send without creating a new Version copy.");
+		} 
+		catch (InvalidBulletinStateException expectedException)
+		{
+		}
+		
+		Bulletin sentBulletin = new Bulletin(security);
+		sentBulletin.setState(BulletinState.STATE_SAVE);
+		assertFalse(sentBulletin.isVersioned());
+		sentBulletin.setState(BulletinState.STATE_SAVE);
+		assertFalse(sentBulletin.isVersioned());
+		sentBulletin.setState(BulletinState.STATE_SEND);
+		assertTrue(sentBulletin.isVersioned());
+		try
+		{
+			sentBulletin.setState(BulletinState.STATE_SAVE);
+			fail("Once state is SEND, you can't change its State to Save without creating a new Version copy.");
+		} 
+		catch (InvalidBulletinStateException expectedException)
+		{
+		}
+		try
+		{
+			sentBulletin.setState(BulletinState.STATE_VERSION);
+			fail("Once state is SEND, you can't change its State to Version without creating a new Version copy.");
+		} 
+		catch (InvalidBulletinStateException expectedException)
+		{
+		}
+		try
+		{
+			sentBulletin.setState(BulletinState.STATE_SEND);
+			fail("Once state is SEND, you can't change its State to Send without creating a new Version copy.");
+		} 
+		catch (InvalidBulletinStateException expectedException)
+		{
+		}
 	}
 	
 	

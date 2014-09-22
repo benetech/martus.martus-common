@@ -72,4 +72,7 @@ public class Exceptions
 	{
 	}
 
+	public static class InvalidBulletinStateException extends Exception
+	{
+	}
 }

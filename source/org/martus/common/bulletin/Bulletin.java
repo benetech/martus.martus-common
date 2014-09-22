@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import org.martus.common.Exceptions.InvalidBulletinStateException;
 import org.martus.common.FieldSpecCollection;
 import org.martus.common.HeadquartersKey;
 import org.martus.common.HeadquartersKeys;
@@ -39,8 +40,8 @@ import org.martus.common.MartusUtilities;
 import org.martus.common.MiniLocalization;
 import org.martus.common.PoolOfReusableChoicesLists;
 import org.martus.common.crypto.MartusCrypto;
-import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.CryptoException;
+import org.martus.common.crypto.SessionKey;
 import org.martus.common.database.DatabaseKey;
 import org.martus.common.database.ReadableDatabase;
 import org.martus.common.field.MartusField;
@@ -58,10 +59,10 @@ import org.martus.common.packet.BulletinHistory;
 import org.martus.common.packet.ExtendedHistoryEntry;
 import org.martus.common.packet.ExtendedHistoryList;
 import org.martus.common.packet.FieldDataPacket;
-import org.martus.common.packet.UniversalId;
 import org.martus.common.packet.Packet.InvalidPacketException;
 import org.martus.common.packet.Packet.SignatureVerificationException;
 import org.martus.common.packet.Packet.WrongPacketTypeException;
+import org.martus.common.packet.UniversalId;
 import org.martus.common.utilities.DateUtilities;
 import org.martus.common.utilities.MartusFlexidate;
 import org.martus.util.MultiCalendar;
@@ -243,6 +244,16 @@ public class Bulletin implements BulletinConstants
 	public String getStatus()
 	{
 		return getBulletinHeaderPacket().getStatus();
+	}
+	
+	public void setState(BulletinState state) throws InvalidBulletinStateException
+	{
+		getBulletinHeaderPacket().setState(state);
+	}
+	
+	public boolean isVersioned()
+	{
+		return getBulletinHeaderPacket().isVersioned();
 	}
 	
 	public FieldSpecCollection getTopSectionFieldSpecs()
@@ -707,6 +718,8 @@ public class Bulletin implements BulletinConstants
 		return new FieldDataPacket(dataUid, publicFieldSpecs);
 	}
 
+	public enum BulletinState {STATE_SAVE, STATE_VERSION, STATE_SEND};
+	
 	public static final String PSEUDOFIELD_LOCAL_ID = "_localId";
 	public static final String PSEUDOFIELD_LAST_SAVED_DATE = "_lastSavedDate";
 	public static final String PSEUDOFIELD_LAST_SAVED_TIMESTAMP = "_lastSavedTimestamp";

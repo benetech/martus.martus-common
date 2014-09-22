@@ -36,7 +36,9 @@ import java.util.zip.ZipFile;
 import org.martus.common.HeadquartersKeys;
 import org.martus.common.MartusXml;
 import org.martus.common.XmlWriterFilter;
+import org.martus.common.Exceptions.InvalidBulletinStateException;
 import org.martus.common.bulletin.Bulletin;
+import org.martus.common.bulletin.Bulletin.BulletinState;
 import org.martus.common.bulletin.Bulletin.BulletinType;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.database.DatabaseKey;
@@ -158,6 +160,20 @@ public class BulletinHeaderPacket extends Packet
 		return status;
 	}
 
+	public void setState(BulletinState state) throws InvalidBulletinStateException
+	{
+		if(versioned)
+			throw new InvalidBulletinStateException();
+		if(state.equals(BulletinState.STATE_VERSION) || 
+				state.equals(BulletinState.STATE_SEND))
+			versioned = true;
+	}
+	
+	public boolean isVersioned()
+	{
+		return versioned;
+	}
+	
 	public long getLastSavedTime()
 	{
 		return lastSavedTime;
@@ -245,6 +261,12 @@ public class BulletinHeaderPacket extends Packet
 	{
 		if(data.equals(ALL_HQS_PROXY_UPLOAD))
 			allHQsCanProxyUpload = true;
+	}
+	
+	void setStatusVersionedFromXmlTextValue(String data)
+	{
+		if(data.equals(STATUS_VERSIONED))
+			versioned = true;
 	}
 
 	public HeadquartersKeys getAuthorizedToUploadKeys()
@@ -501,7 +523,11 @@ public class BulletinHeaderPacket extends Packet
 			writeNonEncodedElement(dest, MartusXml.AccountsAuthorizedToReadElementName, value);			
 		}
 		writeElement(dest, MartusXml.AllHQSProxyUploadName, ALL_HQS_PROXY_UPLOAD);
-		
+		if(versioned)
+			writeElement(dest, MartusXml.StatusVersionedName, STATUS_VERSIONED);
+		else
+			writeElement(dest, MartusXml.StatusVersionedName, STATUS_NOTVERSIONED);
+			
 		if(history.size() > 0)
 			history.internalWriteXml(dest);
 		
@@ -520,6 +546,9 @@ public class BulletinHeaderPacket extends Packet
 	private final static String ALL_PRIVATE = "1";
 	private final static String NOT_ALL_PRIVATE = "0";
 	private final static String ALL_HQS_PROXY_UPLOAD = "1";
+	private final static String STATUS_VERSIONED = "1";
+	private final static String STATUS_NOTVERSIONED = "0";
+	
 	public static final long TIME_UNKNOWN = 0;
 
 	boolean knowsWhetherAllPrivate;
@@ -540,4 +569,5 @@ public class BulletinHeaderPacket extends Packet
 	private boolean allHQsCanProxyUpload;
 	private BulletinHistory history;
 	private ExtendedHistoryList extendedHistory;
+	private boolean versioned;
 }

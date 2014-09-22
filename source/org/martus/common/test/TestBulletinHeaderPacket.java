@@ -298,6 +298,9 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		assertNotContains(MartusXml.getTagStart(MartusXml.ExtendedHistorySectionName), result);
 		assertNotContains(MartusXml.getTagStart(MartusXml.ExtendedHistoryEntryName), result);
 		assertNotContains(MartusXml.getTagStart(MartusXml.ExtendedHistoryClonedFromAccountName), result);
+		
+		assertContains(MartusXml.getTagStart(MartusXml.StatusVersionedName), result);
+		assertContains(MartusXml.getTagEnd(MartusXml.StatusVersionedName), result);
 	}
 	
 	public void testWriteXmlWithHistory() throws Exception
