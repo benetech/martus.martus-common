@@ -260,9 +260,9 @@ public class Bulletin implements BulletinConstants
 			bulletinHeaderPacket.setAuthorizedToReadKeysPending(keys);
 	}
 	
-	public boolean isVersioned()
+	public boolean isSnapshot()
 	{
-		return getBulletinHeaderPacket().isASnapshot();
+		return getBulletinHeaderPacket().isSnapshot();
 	}
 	
 	public FieldSpecCollection getTopSectionFieldSpecs()
