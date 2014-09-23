@@ -177,7 +177,7 @@ public class BulletinHeaderPacket extends Packet
 		if(versioned)
 			throw new InvalidBulletinStateException();
 		if(state.equals(BulletinState.STATE_VERSION) || 
-				state.equals(BulletinState.STATE_SEND))
+				state.equals(BulletinState.STATE_SHARED))
 			versioned = true;
 	}
 	

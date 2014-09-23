@@ -544,7 +544,7 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals(3, b1copy.getAuthorizedToReadKeys().size());
 		assertEquals(3, b1copy.getAuthorizedToReadKeysIncludingPending().size());
 		
-		b1copy.setState(BulletinState.STATE_SEND);
+		b1copy.setState(BulletinState.STATE_SHARED);
 		assertEquals(0, b1copy.getBulletinHeaderPacket().getAuthorizedToReadKeysPending().size());
 		assertEquals(3, b1copy.getAuthorizedToReadKeysIncludingPending().size());
 		assertEquals(3, b1copy.getAuthorizedToReadKeys().size());
@@ -710,8 +710,8 @@ public class TestBulletin extends TestCaseEnhanced
 		}
 		try
 		{
-			versionedBulletin.setState(BulletinState.STATE_SEND);
-			fail("Once state is Versioned, you can't change its State to Send without creating a new Version copy.");
+			versionedBulletin.setState(BulletinState.STATE_SHARED);
+			fail("Once state is SHARED, you can't change its State to SHARED without creating a new Version copy.");
 		} 
 		catch (InvalidBulletinStateException expectedException)
 		{
@@ -722,12 +722,12 @@ public class TestBulletin extends TestCaseEnhanced
 		assertFalse(sentBulletin.isVersioned());
 		sentBulletin.setState(BulletinState.STATE_SAVE);
 		assertFalse(sentBulletin.isVersioned());
-		sentBulletin.setState(BulletinState.STATE_SEND);
+		sentBulletin.setState(BulletinState.STATE_SHARED);
 		assertTrue(sentBulletin.isVersioned());
 		try
 		{
 			sentBulletin.setState(BulletinState.STATE_SAVE);
-			fail("Once state is SEND, you can't change its State to Save without creating a new Version copy.");
+			fail("Once state is SHARED, you can't change its State to SAVE without creating a new Version copy.");
 		} 
 		catch (InvalidBulletinStateException expectedException)
 		{
@@ -735,15 +735,15 @@ public class TestBulletin extends TestCaseEnhanced
 		try
 		{
 			sentBulletin.setState(BulletinState.STATE_VERSION);
-			fail("Once state is SEND, you can't change its State to Version without creating a new Version copy.");
+			fail("Once state is SHARED, you can't change its State to VERSION without creating a new Version copy.");
 		} 
 		catch (InvalidBulletinStateException expectedException)
 		{
 		}
 		try
 		{
-			sentBulletin.setState(BulletinState.STATE_SEND);
-			fail("Once state is SEND, you can't change its State to Send without creating a new Version copy.");
+			sentBulletin.setState(BulletinState.STATE_SHARED);
+			fail("Once state is SHARED, you can't change its State to SHARED without creating a new Version copy.");
 		} 
 		catch (InvalidBulletinStateException expectedException)
 		{
