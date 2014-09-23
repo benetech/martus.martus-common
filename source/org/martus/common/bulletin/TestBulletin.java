@@ -408,6 +408,7 @@ public class TestBulletin extends TestCaseEnhanced
 		ExtendedHistoryEntry copiedHistory = newHistory.getHistory(0);
 		assertEquals("Didn't copy whole old history?", localHistory.size()+1, copiedHistory.getClonedHistory().size());
 		assertEquals("Didn't add most recent id?", b1.getLocalId(), copiedHistory.getClonedHistory().get(2));
+		assertEquals("Should not include any Authorized to Read Keys from bulletins copied that are not ours.", 0, b2.getAuthorizedToReadKeysIncludingPending().size());
 		
 		Bulletin b3 = new Bulletin(security);
 		b3.createDraftCopyOf(b2, hqStore.getDatabase());
@@ -416,6 +417,7 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals("Didn't copy history to third bulletin?", 2, thirdHistory.size());
 		assertEquals("Wrong first history?", 3, thirdHistory.getHistory(0).getClonedHistory().size());
 		assertEquals("Wrong second history?", 1, thirdHistory.getHistory(1).getClonedHistory().size());
+		assertEquals("Should not include any Authorized to Read Keys from bulletins copied that are not ours.", 0, b3.getAuthorizedToReadKeysIncludingPending().size());
 	}
 	
 	public void testCreateDraftCopyOf() throws Exception
