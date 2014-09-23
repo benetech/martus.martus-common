@@ -131,6 +131,11 @@ public class BulletinHeaderPacket extends Packet
 	public void clearAllUserData()
 	{
 		clearAttachments();
+		clearAllAuthorizedToRead();
+	}
+
+	public void clearAllAuthorizedToRead()
+	{
 		clearAuthorizedToRead();
 		clearAuthorizedToReadPending();
 	}

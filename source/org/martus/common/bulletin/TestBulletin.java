@@ -452,8 +452,10 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals("didn't add to local history?", b1.getHistory().size()+1, b2.getHistory().size());
 		assertEquals("wrong newest local id?", b1.getLocalId(), b2.getHistory().get(b2.getHistory().size()-1));
 		assertEquals("wrong version?", b1.getVersion()+1, b2.getVersion());
-		assertEquals("changed HQ keys?", b1.getAuthorizedToReadKeys().size(), b2.getAuthorizedToReadKeys().size());
-		assertEquals("HQKeys doesn't match?", b1.getBulletinHeaderPacket().getLegacyHQPublicKey(), b2.getBulletinHeaderPacket().getLegacyHQPublicKey());
+		assertEquals("Authorized keys should be 0?", b1.getAuthorizedToReadKeysIncludingPending().size(), b2.getAuthorizedToReadKeysIncludingPending().size());
+		assertEquals("Any HQ Key should still be perserved?", b1.getAuthorizedToReadKeysIncludingPending().size(), b2.getAuthorizedToReadKeysIncludingPending().size());
+		assertEquals("Pending HQ Keys for copy should match originals HQ Authorized Keys?", b1.getAuthorizedToReadKeys().size(), b2.getBulletinHeaderPacket().getAuthorizedToReadKeysPending().size());
+		assertEquals("Legacy HQ Key now empty since Key is now Pending.", "", b2.getBulletinHeaderPacket().getLegacyHQPublicKey());
 
 		ExtendedHistoryList oldHistory = b1.getBulletinHeaderPacket().getExtendedHistory();
 		ExtendedHistoryList newHistory = b2.getBulletinHeaderPacket().getExtendedHistory();
@@ -497,6 +499,61 @@ public class TestBulletin extends TestCaseEnhanced
 		assertNotEquals("didn't clone the private attachment?", a2.getUniversalId().getLocalId(), clonedPrivateAttachment.getUniversalId().getLocalId());
 		assertEquals("Public attachment label not the same?", a1.getLabel(), clonedPublicAttachment.getLabel());
 		assertEquals("Private attachment label not the same?", a2.getLabel(), clonedPrivateAttachment.getLabel());
+	}
+
+	public void testAuthorizedToReadDependantOnStatus() throws Exception
+	{
+		Bulletin b1 = new Bulletin(security);
+		b1.set(Bulletin.TAGPUBLICINFO, "public info");
+		b1.set(Bulletin.TAGPRIVATEINFO, "private info");
+		HeadquartersKey hq = new HeadquartersKey(security.getPublicKeyString());
+		b1.setAuthorizedToReadKeys(new HeadquartersKeys(hq));
+		b1.setState(BulletinState.STATE_SAVE);
+		assertEquals("before save", 0, b1.getAuthorizedToReadKeys().size());
+		assertEquals("before save", 1, b1.getBulletinHeaderPacket().getAuthorizedToReadKeysPending().size());
+		assertEquals("before save", 1, b1.getAuthorizedToReadKeysIncludingPending().size());
+		assertEquals("before save", "", b1.getBulletinHeaderPacket().getLegacyHQPublicKey());
+		store.saveEncryptedBulletinForTesting(b1);
+		assertEquals("after save", 0, b1.getAuthorizedToReadKeys().size());
+		assertEquals("after save", 1, b1.getBulletinHeaderPacket().getAuthorizedToReadKeysPending().size());
+		assertEquals("after save", 1, b1.getAuthorizedToReadKeysIncludingPending().size());
+		assertEquals("after save", "", b1.getBulletinHeaderPacket().getLegacyHQPublicKey());
+		
+		MartusCrypto other = MockMartusSecurity.createHQ();
+		HeadquartersKey hq2 = new HeadquartersKey(other.getPublicKeyString());
+		HeadquartersKeys newHQs = b1.getAuthorizedToReadKeysIncludingPending();
+		newHQs.add(hq2);
+		b1.setAuthorizedToReadKeys(new HeadquartersKeys(newHQs));
+		b1.setState(BulletinState.STATE_VERSION);
+		assertEquals(0, b1.getAuthorizedToReadKeys().size());
+		assertEquals(2, b1.getBulletinHeaderPacket().getAuthorizedToReadKeysPending().size());
+		assertEquals(2, b1.getAuthorizedToReadKeysIncludingPending().size());
+		assertEquals("", b1.getBulletinHeaderPacket().getLegacyHQPublicKey());
+
+		Bulletin b1copy = new Bulletin(security);
+		b1copy.createDraftCopyOf(b1, getDb());
+		MartusCrypto other2 = MockMartusSecurity.createOtherClient();
+		HeadquartersKey hq3 = new HeadquartersKey(other2.getPublicKeyString());
+		HeadquartersKeys newHQs2 = b1copy.getAuthorizedToReadKeysIncludingPending();
+		assertEquals(2, newHQs2.size());
+		newHQs2.add(hq3);
+		assertEquals(3, newHQs2.size());
+		b1copy.setAuthorizedToReadKeys(new HeadquartersKeys(newHQs2));
+		assertEquals(3, b1copy.getAuthorizedToReadKeys().size());
+		assertEquals(3, b1copy.getAuthorizedToReadKeysIncludingPending().size());
+		
+		b1copy.setState(BulletinState.STATE_SEND);
+		assertEquals(0, b1copy.getBulletinHeaderPacket().getAuthorizedToReadKeysPending().size());
+		assertEquals(3, b1copy.getAuthorizedToReadKeysIncludingPending().size());
+		assertEquals(3, b1copy.getAuthorizedToReadKeys().size());
+		assertEquals(hq.getPublicKey(), b1copy.getBulletinHeaderPacket().getLegacyHQPublicKey());
+
+		Bulletin b2 = new Bulletin(security);
+		b2.createDraftCopyOf(b1copy, getDb());
+		assertEquals("B2's HQ's should be empty", 0, b2.getAuthorizedToReadKeys().size());
+		assertEquals("B2's HQ's should now be pending?", 3, b2.getAuthorizedToReadKeysIncludingPending().size());
+		assertEquals("B2's HQ's should now be pending?", 3, b2.getBulletinHeaderPacket().getAuthorizedToReadKeysPending().size());
+		assertEquals("Legacy HQKey should be empty", "", b2.getBulletinHeaderPacket().getLegacyHQPublicKey());
 	}
 
 	public void testIsStringInArray()
