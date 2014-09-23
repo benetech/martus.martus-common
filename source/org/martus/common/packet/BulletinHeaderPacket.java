@@ -280,9 +280,9 @@ public class BulletinHeaderPacket extends Packet
 			allHQsCanProxyUpload = true;
 	}
 	
-	void setStatusVersionedFromXmlTextValue(String data)
+	void setStatusSnapshotFromXmlTextValue(String data)
 	{
-		if(data.equals(STATUS_VERSIONED))
+		if(data.equals(STATUS_SNAPSHOT))
 			snapshot = true;
 	}
 
@@ -546,9 +546,9 @@ public class BulletinHeaderPacket extends Packet
 		}
 		writeElement(dest, MartusXml.AllHQSProxyUploadName, ALL_HQS_PROXY_UPLOAD);
 		if(snapshot)
-			writeElement(dest, MartusXml.StatusVersionedName, STATUS_VERSIONED);
+			writeElement(dest, MartusXml.StatusSnapshotName, STATUS_SNAPSHOT);
 		else
-			writeElement(dest, MartusXml.StatusVersionedName, STATUS_NOTVERSIONED);
+			writeElement(dest, MartusXml.StatusSnapshotName, STATUS_NOT_A_SNAPSHOT);
 			
 		if(!authorizedToReadKeysPending.isEmpty())
 		{
@@ -574,8 +574,8 @@ public class BulletinHeaderPacket extends Packet
 	private final static String ALL_PRIVATE = "1";
 	private final static String NOT_ALL_PRIVATE = "0";
 	private final static String ALL_HQS_PROXY_UPLOAD = "1";
-	private final static String STATUS_VERSIONED = "1";
-	private final static String STATUS_NOTVERSIONED = "0";
+	private final static String STATUS_SNAPSHOT = "1";
+	private final static String STATUS_NOT_A_SNAPSHOT = "0";
 	
 	public static final long TIME_UNKNOWN = 0;
 
