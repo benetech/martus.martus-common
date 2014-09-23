@@ -608,7 +608,11 @@ public class Bulletin implements BulletinConstants
 			getBulletinHeaderPacket().setExtendedHistory(new ExtendedHistoryList(extendedHistory));
 		}
 		
-		if(!originalIsMine)
+		if(originalIsMine)
+		{
+			getBulletinHeaderPacket().setAuthorizedToReadKeysPending(other.getAuthorizedToReadKeysIncludingPending());
+		}
+		else
 		{
 			ExtendedHistoryList historyList = new ExtendedHistoryList();
 			ExtendedHistoryList extendedHistory = other.getBulletinHeaderPacket().getExtendedHistory();
@@ -631,8 +635,6 @@ public class Bulletin implements BulletinConstants
 
 		pullFields(other, getFieldDataPacket().getFieldSpecs());
 		pullFields(other, getPrivateFieldDataPacket().getFieldSpecs());
-
-		getBulletinHeaderPacket().setAuthorizedToReadKeysPending(other.getAuthorizedToReadKeysIncludingPending());
 		
 		AttachmentProxy[] attachmentPublicProxies = other.getPublicAttachments();
 		for(int aIndex = 0; aIndex < attachmentPublicProxies.length; ++aIndex)
