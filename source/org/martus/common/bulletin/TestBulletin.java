@@ -454,7 +454,7 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals("didn't add to local history?", b1.getHistory().size()+1, b2.getHistory().size());
 		assertEquals("wrong newest local id?", b1.getLocalId(), b2.getHistory().get(b2.getHistory().size()-1));
 		assertEquals("wrong version?", b1.getVersion()+1, b2.getVersion());
-		assertEquals("Authorized keys should be 0?", b1.getAuthorizedToReadKeysIncludingPending().size(), b2.getAuthorizedToReadKeysIncludingPending().size());
+		assertEquals("AuthorizedToReadKeysIncludingPending sizes don't match?", b1.getAuthorizedToReadKeysIncludingPending().size(), b2.getAuthorizedToReadKeysIncludingPending().size());
 		assertEquals("Any HQ Key should still be perserved?", b1.getAuthorizedToReadKeysIncludingPending().size(), b2.getAuthorizedToReadKeysIncludingPending().size());
 		assertEquals("Pending HQ Keys for copy should match originals HQ Authorized Keys?", b1.getAuthorizedToReadKeys().size(), b2.getBulletinHeaderPacket().getAuthorizedToReadKeysPending().size());
 		assertEquals("Legacy HQ Key now empty since Key is now Pending.", "", b2.getBulletinHeaderPacket().getLegacyHQPublicKey());
