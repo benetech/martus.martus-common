@@ -526,11 +526,11 @@ public class Bulletin implements BulletinConstants
 	public HeadquartersKeys getAuthorizedToReadKeysIncludingPending()
 	{
 		HeadquartersKeys pendingOnlyReadKeys = getBulletinHeaderPacket().getAuthorizedToReadKeysPending();
-		HeadquartersKeys authorizedAndPendingReadKeys = addUniqueKeysOnly(getAuthorizedToReadKeys(), pendingOnlyReadKeys);
+		HeadquartersKeys authorizedAndPendingReadKeys = getUniqueKeysOnly(getAuthorizedToReadKeys(), pendingOnlyReadKeys);
 		return authorizedAndPendingReadKeys;
 	}
 
-	private HeadquartersKeys addUniqueKeysOnly(HeadquartersKeys authorizedKeys, HeadquartersKeys pendingKeys)
+	private HeadquartersKeys getUniqueKeysOnly(HeadquartersKeys authorizedKeys, HeadquartersKeys pendingKeys)
 	{
 		HeadquartersKeys authorizedAndPendingReadKeys = new HeadquartersKeys(authorizedKeys);
 		for(int i = 0; i < pendingKeys.size(); ++i)
