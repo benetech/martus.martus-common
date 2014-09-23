@@ -686,13 +686,13 @@ public class TestBulletin extends TestCaseEnhanced
 	public void testSetStateBasics() throws Exception
 	{
 		Bulletin versionedBulletin = new Bulletin(security);
-		assertFalse(versionedBulletin.isVersioned());
+		assertFalse(versionedBulletin.isSnapshot());
 		versionedBulletin.setState(BulletinState.STATE_SAVE);
-		assertFalse(versionedBulletin.isVersioned());
+		assertFalse(versionedBulletin.isSnapshot());
 		versionedBulletin.setState(BulletinState.STATE_SAVE);
-		assertFalse(versionedBulletin.isVersioned());
+		assertFalse(versionedBulletin.isSnapshot());
 		versionedBulletin.setState(BulletinState.STATE_SNAPSHOT);
-		assertTrue(versionedBulletin.isVersioned());
+		assertTrue(versionedBulletin.isSnapshot());
 		try
 		{
 			versionedBulletin.setState(BulletinState.STATE_SAVE);
@@ -720,11 +720,11 @@ public class TestBulletin extends TestCaseEnhanced
 		
 		Bulletin sentBulletin = new Bulletin(security);
 		sentBulletin.setState(BulletinState.STATE_SAVE);
-		assertFalse(sentBulletin.isVersioned());
+		assertFalse(sentBulletin.isSnapshot());
 		sentBulletin.setState(BulletinState.STATE_SAVE);
-		assertFalse(sentBulletin.isVersioned());
+		assertFalse(sentBulletin.isSnapshot());
 		sentBulletin.setState(BulletinState.STATE_SHARED);
-		assertTrue(sentBulletin.isVersioned());
+		assertTrue(sentBulletin.isSnapshot());
 		try
 		{
 			sentBulletin.setState(BulletinState.STATE_SAVE);

@@ -181,7 +181,7 @@ public class BulletinHeaderPacket extends Packet
 			snapshot = true;
 	}
 	
-	public boolean isASnapshot()
+	public boolean isSnapshot()
 	{
 		return snapshot;
 	}
