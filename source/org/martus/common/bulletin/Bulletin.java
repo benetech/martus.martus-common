@@ -755,7 +755,7 @@ public class Bulletin implements BulletinConstants
 		return new FieldDataPacket(dataUid, publicFieldSpecs);
 	}
 
-	public enum BulletinState {STATE_SAVE, STATE_VERSION, STATE_SHARED};
+	public enum BulletinState {STATE_SAVE, STATE_SNAPSHOT, STATE_SHARED};
 	
 	public static final String PSEUDOFIELD_LOCAL_ID = "_localId";
 	public static final String PSEUDOFIELD_LAST_SAVED_DATE = "_lastSavedDate";

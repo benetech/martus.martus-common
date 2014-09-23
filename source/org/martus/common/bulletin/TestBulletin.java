@@ -526,7 +526,7 @@ public class TestBulletin extends TestCaseEnhanced
 		HeadquartersKeys newHQs = b1.getAuthorizedToReadKeysIncludingPending();
 		newHQs.add(hq2);
 		b1.setAuthorizedToReadKeys(new HeadquartersKeys(newHQs));
-		b1.setState(BulletinState.STATE_VERSION);
+		b1.setState(BulletinState.STATE_SNAPSHOT);
 		assertEquals(0, b1.getAuthorizedToReadKeys().size());
 		assertEquals(2, b1.getBulletinHeaderPacket().getAuthorizedToReadKeysPending().size());
 		assertEquals(2, b1.getAuthorizedToReadKeysIncludingPending().size());
@@ -690,20 +690,20 @@ public class TestBulletin extends TestCaseEnhanced
 		assertFalse(versionedBulletin.isVersioned());
 		versionedBulletin.setState(BulletinState.STATE_SAVE);
 		assertFalse(versionedBulletin.isVersioned());
-		versionedBulletin.setState(BulletinState.STATE_VERSION);
+		versionedBulletin.setState(BulletinState.STATE_SNAPSHOT);
 		assertTrue(versionedBulletin.isVersioned());
 		try
 		{
 			versionedBulletin.setState(BulletinState.STATE_SAVE);
-			fail("Once state is Versioned, you can't change its State to Save without creating a new Version copy.");
+			fail("Once state is SNAPSHOT, you can't change its State to Save without creating a new copy.");
 		} 
 		catch (InvalidBulletinStateException expectedException)
 		{
 		}
 		try
 		{
-			versionedBulletin.setState(BulletinState.STATE_VERSION);
-			fail("Once state is Versioned, you can't change its State to Version without creating a new Version copy.");
+			versionedBulletin.setState(BulletinState.STATE_SNAPSHOT);
+			fail("Once state is SNAPSHOT, you can't change its State to SNAPSHOT without creating a new copy.");
 		} 
 		catch (InvalidBulletinStateException expectedException)
 		{
@@ -711,7 +711,7 @@ public class TestBulletin extends TestCaseEnhanced
 		try
 		{
 			versionedBulletin.setState(BulletinState.STATE_SHARED);
-			fail("Once state is SHARED, you can't change its State to SHARED without creating a new Version copy.");
+			fail("Once state is SNAPSHOT, you can't change its State to SHARED without creating a new copy.");
 		} 
 		catch (InvalidBulletinStateException expectedException)
 		{
@@ -727,15 +727,15 @@ public class TestBulletin extends TestCaseEnhanced
 		try
 		{
 			sentBulletin.setState(BulletinState.STATE_SAVE);
-			fail("Once state is SHARED, you can't change its State to SAVE without creating a new Version copy.");
+			fail("Once state is SHARED, you can't change its State to SAVE without creating a new copy.");
 		} 
 		catch (InvalidBulletinStateException expectedException)
 		{
 		}
 		try
 		{
-			sentBulletin.setState(BulletinState.STATE_VERSION);
-			fail("Once state is SHARED, you can't change its State to VERSION without creating a new Version copy.");
+			sentBulletin.setState(BulletinState.STATE_SNAPSHOT);
+			fail("Once state is SHARED, you can't change its State to SNAPSHOT without creating a new copy.");
 		} 
 		catch (InvalidBulletinStateException expectedException)
 		{
@@ -743,7 +743,7 @@ public class TestBulletin extends TestCaseEnhanced
 		try
 		{
 			sentBulletin.setState(BulletinState.STATE_SHARED);
-			fail("Once state is SHARED, you can't change its State to SHARED without creating a new Version copy.");
+			fail("Once state is SHARED, you can't change its State to SHARED without creating a new copy.");
 		} 
 		catch (InvalidBulletinStateException expectedException)
 		{
