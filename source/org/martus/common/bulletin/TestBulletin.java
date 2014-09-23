@@ -510,6 +510,7 @@ public class TestBulletin extends TestCaseEnhanced
 		b1.set(Bulletin.TAGPRIVATEINFO, "private info");
 		HeadquartersKey hq = new HeadquartersKey(security.getPublicKeyString());
 		b1.setAuthorizedToReadKeys(new HeadquartersKeys(hq));
+
 		b1.setState(BulletinState.STATE_SAVE);
 		assertEquals("before save", 0, b1.getAuthorizedToReadKeys().size());
 		assertEquals("before save", 1, b1.getBulletinHeaderPacket().getAuthorizedToReadKeysPending().size());
