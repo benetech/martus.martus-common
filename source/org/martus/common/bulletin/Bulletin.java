@@ -262,7 +262,7 @@ public class Bulletin implements BulletinConstants
 	
 	public boolean isVersioned()
 	{
-		return getBulletinHeaderPacket().isVersioned();
+		return getBulletinHeaderPacket().isASnapshot();
 	}
 	
 	public FieldSpecCollection getTopSectionFieldSpecs()

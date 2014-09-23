@@ -174,16 +174,16 @@ public class BulletinHeaderPacket extends Packet
 
 	public void setState(BulletinState state) throws InvalidBulletinStateException
 	{
-		if(versioned)
+		if(snapshot)
 			throw new InvalidBulletinStateException();
 		if(state.equals(BulletinState.STATE_SNAPSHOT) || 
 				state.equals(BulletinState.STATE_SHARED))
-			versioned = true;
+			snapshot = true;
 	}
 	
-	public boolean isVersioned()
+	public boolean isASnapshot()
 	{
-		return versioned;
+		return snapshot;
 	}
 	
 	public long getLastSavedTime()
@@ -283,7 +283,7 @@ public class BulletinHeaderPacket extends Packet
 	void setStatusVersionedFromXmlTextValue(String data)
 	{
 		if(data.equals(STATUS_VERSIONED))
-			versioned = true;
+			snapshot = true;
 	}
 
 	public HeadquartersKeys getAuthorizedToUploadKeys()
@@ -545,7 +545,7 @@ public class BulletinHeaderPacket extends Packet
 			writeNonEncodedElement(dest, MartusXml.AccountsAuthorizedToReadElementName, value);			
 		}
 		writeElement(dest, MartusXml.AllHQSProxyUploadName, ALL_HQS_PROXY_UPLOAD);
-		if(versioned)
+		if(snapshot)
 			writeElement(dest, MartusXml.StatusVersionedName, STATUS_VERSIONED);
 		else
 			writeElement(dest, MartusXml.StatusVersionedName, STATUS_NOTVERSIONED);
@@ -597,6 +597,6 @@ public class BulletinHeaderPacket extends Packet
 	private boolean allHQsCanProxyUpload;
 	private BulletinHistory history;
 	private ExtendedHistoryList extendedHistory;
-	private boolean versioned;
+	private boolean snapshot;
 	private HeadquartersKeys authorizedToReadKeysPending;
 }
