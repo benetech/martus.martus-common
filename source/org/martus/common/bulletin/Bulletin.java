@@ -248,7 +248,16 @@ public class Bulletin implements BulletinConstants
 	
 	public void setState(BulletinState state) throws InvalidBulletinStateException
 	{
-		getBulletinHeaderPacket().setState(state);
+		BulletinHeaderPacket bulletinHeaderPacket = getBulletinHeaderPacket();
+		bulletinHeaderPacket.setState(state);
+		
+		HeadquartersKeys keys = new HeadquartersKeys(getAuthorizedToReadKeysIncludingPending());
+		clearAuthorizedToReadKeys();
+
+		if(state.equals(BulletinState.STATE_SEND))
+			setAuthorizedToReadKeys(keys);
+		else
+			bulletinHeaderPacket.setAuthorizedToReadKeysPending(keys);
 	}
 	
 	public boolean isVersioned()
@@ -446,6 +455,13 @@ public class Bulletin implements BulletinConstants
 		
 		setMutable();
 	}
+	
+	public void clearAuthorizedToReadKeys()
+	{
+		getBulletinHeaderPacket().clearAllAuthorizedToRead();
+		getFieldDataPacket().clearAuthorizedToRead();
+		getPrivateFieldDataPacket().clearAuthorizedToRead();
+	}
 
 	private void clearUserDataInSection(FieldSpecCollection specs) 
 	{
@@ -505,6 +521,25 @@ public class Bulletin implements BulletinConstants
 	public HeadquartersKeys getAuthorizedToReadKeys()
 	{
 		return getBulletinHeaderPacket().getAuthorizedToReadKeys();
+	}
+	
+	public HeadquartersKeys getAuthorizedToReadKeysIncludingPending()
+	{
+		HeadquartersKeys pendingOnlyReadKeys = getBulletinHeaderPacket().getAuthorizedToReadKeysPending();
+		HeadquartersKeys authorizedAndPendingReadKeys = addUniqueKeysOnly(getAuthorizedToReadKeys(), pendingOnlyReadKeys);
+		return authorizedAndPendingReadKeys;
+	}
+
+	private HeadquartersKeys addUniqueKeysOnly(HeadquartersKeys authorizedKeys, HeadquartersKeys pendingKeys)
+	{
+		HeadquartersKeys authorizedAndPendingReadKeys = new HeadquartersKeys(authorizedKeys);
+		for(int i = 0; i < pendingKeys.size(); ++i)
+		{
+			HeadquartersKey pendingKey = pendingKeys.get(i);
+			if(!authorizedAndPendingReadKeys.contains(pendingKey))
+				authorizedAndPendingReadKeys.add(pendingKey);
+		}
+		return authorizedAndPendingReadKeys;
 	}
 
 	public void setAuthorizedToReadKeys(HeadquartersKeys authorizedKeys)
@@ -597,7 +632,7 @@ public class Bulletin implements BulletinConstants
 		pullFields(other, getFieldDataPacket().getFieldSpecs());
 		pullFields(other, getPrivateFieldDataPacket().getFieldSpecs());
 
-		setAuthorizedToReadKeys(other.getAuthorizedToReadKeys());
+		getBulletinHeaderPacket().setAuthorizedToReadKeysPending(other.getAuthorizedToReadKeysIncludingPending());
 		
 		AttachmentProxy[] attachmentPublicProxies = other.getPublicAttachments();
 		for(int aIndex = 0; aIndex < attachmentPublicProxies.length; ++aIndex)

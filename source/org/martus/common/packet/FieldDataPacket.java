@@ -195,6 +195,11 @@ public class FieldDataPacket extends Packet
 	{
 		fields.clearAllData();
 		clearAttachments();
+		clearAuthorizedToRead();
+	}
+
+	public void clearAuthorizedToRead()
+	{
 		authorizedToReadKeys.clear();
 	}
 
