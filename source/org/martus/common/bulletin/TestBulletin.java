@@ -77,16 +77,16 @@ public class TestBulletin extends TestCaseEnhanced
 
     public void setUp() throws Exception
     {
-    	super.setUp();
-    	if(tempFile1 == null)
-    	{
+	    	super.setUp();
+	    	if(tempFile1 == null)
+	    	{
 			tempFile1 = createTempFileWithData(sampleBytes1);
 			tempFile2 = createTempFileWithData(sampleBytes2);
 			tempFile3 = createTempFileWithData(sampleBytes3);
 			tempFile4 = createTempFileWithData(sampleBytes4);
 			tempFile5 = createTempFileWithData(sampleBytes5);
 			tempFile6 = createTempFileWithData(sampleBytes6);
-    	}
+	    	}
 		proxy1 = new AttachmentProxy(tempFile1);
 		proxy2 = new AttachmentProxy(tempFile2);
 		proxy3 = new AttachmentProxy(tempFile3);
@@ -145,37 +145,37 @@ public class TestBulletin extends TestCaseEnhanced
     
     public void testGetFieldType()throws Exception
     {
-    	Bulletin b = new Bulletin(security);
-    	assertEquals(new FieldTypeUnknown(), b.getFieldType("Not a real field tag"));
-    	assertEquals(new FieldTypeDate(), b.getFieldType(BulletinConstants.TAGENTRYDATE));
-    	assertEquals(new FieldTypeDateRange(), b.getFieldType(BulletinConstants.TAGEVENTDATE));
-    	assertEquals(new FieldTypeMultiline(), b.getFieldType(BulletinConstants.TAGPRIVATEINFO));
+	    	Bulletin b = new Bulletin(security);
+	    	assertEquals(new FieldTypeUnknown(), b.getFieldType("Not a real field tag"));
+	    	assertEquals(new FieldTypeDate(), b.getFieldType(BulletinConstants.TAGENTRYDATE));
+	    	assertEquals(new FieldTypeDateRange(), b.getFieldType(BulletinConstants.TAGEVENTDATE));
+	    	assertEquals(new FieldTypeMultiline(), b.getFieldType(BulletinConstants.TAGPRIVATEINFO));
     }
     
     public void testGetLastSavedDate() throws Exception
 	{
-    	Bulletin b = new Bulletin(security);
-    	b.getBulletinHeaderPacket().updateLastSavedTime();
-    	assertEquals(DateUtilities.getTodayInStoredFormat(), b.getLastSavedDate());
+	    	Bulletin b = new Bulletin(security);
+	    	b.getBulletinHeaderPacket().updateLastSavedTime();
+	    	assertEquals(DateUtilities.getTodayInStoredFormat(), b.getLastSavedDate());
 	}
     
     public void testContains() throws Exception
     {
-    	MiniLocalization localization = new MiniLocalization();
-    	
-    	Bulletin b = new Bulletin(security);
-    	final String sampleAuthor = "Daphne Moon";
-    	b.set(Bulletin.TAGAUTHOR, sampleAuthor);
-    	assertTrue("didn't find author?", b.contains(sampleAuthor, localization));
-    	
-    	b.set(Bulletin.TAGPRIVATEINFO, samplePrivate);
-    	assertTrue("didn't find private?", b.contains(samplePrivate, localization));
+	    	MiniLocalization localization = new MiniLocalization();
+	    	
+	    	Bulletin b = new Bulletin(security);
+	    	final String sampleAuthor = "Daphne Moon";
+	    	b.set(Bulletin.TAGAUTHOR, sampleAuthor);
+	    	assertTrue("didn't find author?", b.contains(sampleAuthor, localization));
+	    	
+	    	b.set(Bulletin.TAGPRIVATEINFO, samplePrivate);
+	    	assertTrue("didn't find private?", b.contains(samplePrivate, localization));
 
 		b.addPublicAttachment(proxy1);
-    	assertTrue("didn't find public attachment?", b.contains(proxy1.getLabel(), localization));
+		assertTrue("didn't find public attachment?", b.contains(proxy1.getLabel(), localization));
     
 		b.addPrivateAttachment(proxy2);
-    	assertTrue("didn't find private attachment?", b.contains(proxy2.getLabel(), localization));
+		assertTrue("didn't find private attachment?", b.contains(proxy2.getLabel(), localization));
     }
 	
 	public void testUnknownTags() throws Exception
@@ -512,15 +512,11 @@ public class TestBulletin extends TestCaseEnhanced
 		b1.setAuthorizedToReadKeys(new HeadquartersKeys(hq));
 
 		b1.setState(BulletinState.STATE_SAVE);
-		assertEquals("before save", 0, b1.getAuthorizedToReadKeys().size());
-		assertEquals("before save", 1, b1.getBulletinHeaderPacket().getAuthorizedToReadKeysPending().size());
-		assertEquals("before save", 1, b1.getAuthorizedToReadKeysIncludingPending().size());
-		assertEquals("before save", "", b1.getBulletinHeaderPacket().getLegacyHQPublicKey());
 		store.saveEncryptedBulletinForTesting(b1);
-		assertEquals("after save", 0, b1.getAuthorizedToReadKeys().size());
-		assertEquals("after save", 1, b1.getBulletinHeaderPacket().getAuthorizedToReadKeysPending().size());
-		assertEquals("after save", 1, b1.getAuthorizedToReadKeysIncludingPending().size());
-		assertEquals("after save", "", b1.getBulletinHeaderPacket().getLegacyHQPublicKey());
+		assertEquals(0, b1.getAuthorizedToReadKeys().size());
+		assertEquals(1, b1.getBulletinHeaderPacket().getAuthorizedToReadKeysPending().size());
+		assertEquals(1, b1.getAuthorizedToReadKeysIncludingPending().size());
+		assertEquals("", b1.getBulletinHeaderPacket().getLegacyHQPublicKey());
 		
 		MartusCrypto other = MockMartusSecurity.createHQ();
 		HeadquartersKey hq2 = new HeadquartersKey(other.getPublicKeyString());
@@ -528,6 +524,7 @@ public class TestBulletin extends TestCaseEnhanced
 		newHQs.add(hq2);
 		b1.setAuthorizedToReadKeys(new HeadquartersKeys(newHQs));
 		b1.setState(BulletinState.STATE_SNAPSHOT);
+		store.saveEncryptedBulletinForTesting(b1);
 		assertEquals(0, b1.getAuthorizedToReadKeys().size());
 		assertEquals(2, b1.getBulletinHeaderPacket().getAuthorizedToReadKeysPending().size());
 		assertEquals(2, b1.getAuthorizedToReadKeysIncludingPending().size());
@@ -546,6 +543,7 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals(3, b1copy.getAuthorizedToReadKeysIncludingPending().size());
 		
 		b1copy.setState(BulletinState.STATE_SHARED);
+		store.saveEncryptedBulletinForTesting(b1copy);
 		assertEquals(0, b1copy.getBulletinHeaderPacket().getAuthorizedToReadKeysPending().size());
 		assertEquals(3, b1copy.getAuthorizedToReadKeysIncludingPending().size());
 		assertEquals(3, b1copy.getAuthorizedToReadKeys().size());
