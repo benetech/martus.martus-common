@@ -285,6 +285,13 @@ public class Bulletin implements BulletinConstants
 		return getBulletinHeaderPacket().isSnapshot();
 	}
 	
+	public boolean requiresNewCopyToEdit()
+	{
+		if(isImmutable() || isSnapshot())
+			return true;
+		return false;
+	}
+	
 	public FieldSpecCollection getTopSectionFieldSpecs()
 	{
 		return fieldData.getFieldSpecs();
