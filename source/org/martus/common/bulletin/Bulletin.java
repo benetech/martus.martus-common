@@ -626,7 +626,7 @@ public class Bulletin implements BulletinConstants
 		clearAllUserData();
 		
 		boolean originalIsMine = other.getAccount().equals(getAccount());
-		if(originalIsMine && other.isImmutable())
+		if(originalIsMine && other.requiresNewCopyToEdit())
 		{
 			BulletinHistory history = new BulletinHistory(other.getHistory());
 			history.add(other.getLocalId());
