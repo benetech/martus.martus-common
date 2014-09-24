@@ -501,6 +501,21 @@ public class TestBulletin extends TestCaseEnhanced
 		assertNotEquals("didn't clone the private attachment?", a2.getUniversalId().getLocalId(), clonedPrivateAttachment.getUniversalId().getLocalId());
 		assertEquals("Public attachment label not the same?", a1.getLabel(), clonedPublicAttachment.getLabel());
 		assertEquals("Private attachment label not the same?", a2.getLabel(), clonedPrivateAttachment.getLabel());
+
+		
+		b1.setState(BulletinState.STATE_SAVE);
+		b1.setMutable();
+		Bulletin b3 = new Bulletin(security);
+		b3.createDraftCopyOf(b1, getDb());
+		assertEquals(2, b1.getHistory().size());
+		assertEquals(0, b3.getHistory().size());
+		
+		Bulletin b4 = new Bulletin(security);
+		b1.setState(BulletinState.STATE_SNAPSHOT);
+		b4.createDraftCopyOf(b1, getDb());
+		assertEquals(2, b1.getHistory().size());
+		assertEquals(3, b4.getHistory().size());
+		assertTrue( b4.getHistory().contains(b1.getLocalId()));
 	}
 
 	public void testAuthorizedToReadDependantOnStatus() throws Exception
