@@ -304,8 +304,8 @@ public class TestBulletin extends TestCaseEnhanced
 		history.add("some local Id for version 1");
 		b.setHistory(history);
 		assertEquals("legacy key not set?", key1.getPublicKey(), bhp.getLegacyHQPublicKey());
-		assertEquals("authorized to read not set?",keys, b.getAuthorizedToReadKeys());
-		assertEquals("authorized to upload not set?",keys, bhp.getAuthorizedToUploadKeys());
+		assertEquals("authorized to read not set?",keys.size(), b.getAuthorizedToReadKeys().size());
+		assertEquals("authorized to upload not set?",keys.size(), bhp.getAuthorizedToUploadKeys().size());
 		assertEquals("public info not set?", publicInfo, b.get(Bulletin.TAGPUBLICINFO));
 		assertEquals("private info not set?", privateInfo, b.get(Bulletin.TAGPRIVATEINFO));
 		assertEquals("Version not 2?", 2, b.getVersion());
@@ -681,7 +681,7 @@ public class TestBulletin extends TestCaseEnhanced
 		assertTrue(original.getAuthorizedToReadKeys().containsKey(key2.getPublicKey()));
 	}
 	
-	public void testSetStateBasics() throws Exception
+	public void testSetState() throws Exception
 	{
 		Bulletin versionedBulletin = new Bulletin(security);
 		assertFalse(versionedBulletin.isSnapshot());
@@ -747,9 +747,54 @@ public class TestBulletin extends TestCaseEnhanced
 		catch (InvalidBulletinStateException expectedException)
 		{
 		}
+		
+		Bulletin legacyDraft = new Bulletin(security);
+		try
+		{
+			legacyDraft.setState(BulletinState.STATE_LEGACY_DRAFT);
+			fail("You can not set the state to LEGACY");
+		} 
+		catch (InvalidBulletinStateException expectedException)
+		{
+		}
+		
+		Bulletin legacySealed = new Bulletin(security);
+		try
+		{
+			legacySealed.setState(BulletinState.STATE_LEGACY_SEALED);
+			fail("You can not set the state to LEGACY");
+		} 
+		catch (InvalidBulletinStateException expectedException)
+		{
+		}
 	}
 	
-	
+	public void testGetState() throws Exception
+	{
+		Bulletin b1 = new Bulletin(security);
+		assertEquals(Bulletin.BulletinState.STATE_SAVE, b1.getState());
+		MartusCrypto hq = MockMartusSecurity.createHQ();
+
+		HeadquartersKeys hqKeys = new HeadquartersKeys(new HeadquartersKey(hq.getPublicKeyString()));
+		b1.setAuthorizedToReadKeys(hqKeys);
+		assertEquals(Bulletin.BulletinState.STATE_LEGACY_DRAFT, b1.getState());
+
+		b1.setImmutable();
+		assertEquals(Bulletin.BulletinState.STATE_LEGACY_SEALED, b1.getState());
+		
+		b1.setState(BulletinState.STATE_SNAPSHOT);
+		assertEquals(Bulletin.BulletinState.STATE_SNAPSHOT, b1.getState());
+
+		Bulletin b2 = new Bulletin(security);
+		b2.setAuthorizedToReadKeys(hqKeys);
+		b2.setState(BulletinState.STATE_SHARED);
+		assertEquals(Bulletin.BulletinState.STATE_SHARED, b2.getState());
+		
+		Bulletin b3 = new Bulletin(security);
+		b3.setAuthorizedToReadKeys(hqKeys);
+		b3.setState(BulletinState.STATE_SAVE);
+		assertEquals(Bulletin.BulletinState.STATE_SAVE, b3.getState());
+	}
 
 	static MockDatabase getDb()
 	{

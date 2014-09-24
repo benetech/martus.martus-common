@@ -246,6 +246,26 @@ public class Bulletin implements BulletinConstants
 		return getBulletinHeaderPacket().getStatus();
 	}
 	
+	//NOTE: getState() used in unit tests and for Documentation purposes only.
+	public BulletinState getState()
+	{
+		int numberOfAuthorizedHQs = getAuthorizedToReadKeys().size();
+		if(isSnapshot())
+		{
+			if(numberOfAuthorizedHQs > 0)
+				return BulletinState.STATE_SHARED;
+			return BulletinState.STATE_SNAPSHOT;
+
+		}
+		if(isMutable())
+		{
+			if(numberOfAuthorizedHQs > 0)
+				return BulletinState.STATE_LEGACY_DRAFT;
+			return BulletinState.STATE_SAVE;
+		}
+		return BulletinState.STATE_LEGACY_SEALED;
+	}
+	
 	public void setState(BulletinState state) throws InvalidBulletinStateException
 	{
 		BulletinHeaderPacket bulletinHeaderPacket = getBulletinHeaderPacket();
@@ -544,9 +564,10 @@ public class Bulletin implements BulletinConstants
 
 	public void setAuthorizedToReadKeys(HeadquartersKeys authorizedKeys)
 	{
-		getBulletinHeaderPacket().setAuthorizedToReadKeys(authorizedKeys);
-		getFieldDataPacket().setAuthorizedToReadKeys(authorizedKeys);
-		getPrivateFieldDataPacket().setAuthorizedToReadKeys(authorizedKeys);
+		HeadquartersKeys ourCopyKeys = new HeadquartersKeys(authorizedKeys);
+		getBulletinHeaderPacket().setAuthorizedToReadKeys(ourCopyKeys);
+		getFieldDataPacket().setAuthorizedToReadKeys(ourCopyKeys);
+		getPrivateFieldDataPacket().setAuthorizedToReadKeys(ourCopyKeys);
 	}
 
 	public DatabaseKey getDatabaseKey()
@@ -755,7 +776,7 @@ public class Bulletin implements BulletinConstants
 		return new FieldDataPacket(dataUid, publicFieldSpecs);
 	}
 
-	public enum BulletinState {STATE_SAVE, STATE_SNAPSHOT, STATE_SHARED};
+	public enum BulletinState {STATE_SAVE, STATE_SNAPSHOT, STATE_SHARED, STATE_LEGACY_DRAFT, STATE_LEGACY_SEALED};
 	
 	public static final String PSEUDOFIELD_LOCAL_ID = "_localId";
 	public static final String PSEUDOFIELD_LAST_SAVED_DATE = "_lastSavedDate";
