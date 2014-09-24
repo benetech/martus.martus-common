@@ -174,8 +174,13 @@ public class BulletinHeaderPacket extends Packet
 
 	public void setState(BulletinState state) throws InvalidBulletinStateException
 	{
+		if( state.equals(BulletinState.STATE_LEGACY_DRAFT) ||
+			state.equals(BulletinState.STATE_LEGACY_SEALED))
+				throw new InvalidBulletinStateException();
+			
 		if(snapshot)
 			throw new InvalidBulletinStateException();
+
 		if(state.equals(BulletinState.STATE_SNAPSHOT) || 
 				state.equals(BulletinState.STATE_SHARED))
 			snapshot = true;
