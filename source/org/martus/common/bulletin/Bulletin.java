@@ -444,7 +444,7 @@ public class Bulletin implements BulletinConstants
 	
 	public void allowOnlyTheseAuthorizedKeysToRead(HeadquartersKeys authorizedKeys)
 	{
-		HeadquartersKeys keys = getAuthorizedToReadKeys();
+		HeadquartersKeys keys = getAuthorizedToReadKeysIncludingPending();
 		for(int i = 0; i < keys.size(); ++i)
 		{
 			HeadquartersKey oldKey = keys.get(i);
@@ -485,7 +485,7 @@ public class Bulletin implements BulletinConstants
 	
 	public void clearAuthorizedToReadKeys()
 	{
-		getBulletinHeaderPacket().clearAllAuthorizedToRead();
+		getBulletinHeaderPacket().clearAllAuthorizedToReadIncludingPending();
 		getFieldDataPacket().clearAuthorizedToRead();
 		getPrivateFieldDataPacket().clearAuthorizedToRead();
 	}
@@ -571,6 +571,8 @@ public class Bulletin implements BulletinConstants
 
 	public void setAuthorizedToReadKeys(HeadquartersKeys authorizedKeys)
 	{
+		if(!authorizedKeys.isEmpty())
+			getBulletinHeaderPacket().clearAllAuthorizedToReadIncludingPending();
 		HeadquartersKeys ourCopyKeys = new HeadquartersKeys(authorizedKeys);
 		getBulletinHeaderPacket().setAuthorizedToReadKeys(ourCopyKeys);
 		getFieldDataPacket().setAuthorizedToReadKeys(ourCopyKeys);

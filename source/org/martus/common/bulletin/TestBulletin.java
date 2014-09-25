@@ -549,11 +549,11 @@ public class TestBulletin extends TestCaseEnhanced
 		b1copy.createDraftCopyOf(b1, getDb());
 		MartusCrypto other2 = MockMartusSecurity.createOtherClient();
 		HeadquartersKey hq3 = new HeadquartersKey(other2.getPublicKeyString());
-		HeadquartersKeys newHQs2 = b1copy.getAuthorizedToReadKeysIncludingPending();
-		assertEquals(2, newHQs2.size());
-		newHQs2.add(hq3);
-		assertEquals(3, newHQs2.size());
-		b1copy.setAuthorizedToReadKeys(new HeadquartersKeys(newHQs2));
+		HeadquartersKeys with3HQs = b1copy.getAuthorizedToReadKeysIncludingPending();
+		assertEquals(2, with3HQs.size());
+		with3HQs.add(hq3);
+		assertEquals(3, with3HQs.size());
+		b1copy.setAuthorizedToReadKeys(new HeadquartersKeys(with3HQs));
 		assertEquals(3, b1copy.getAuthorizedToReadKeys().size());
 		assertEquals(3, b1copy.getAuthorizedToReadKeysIncludingPending().size());
 		
@@ -570,6 +570,21 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals("B2's HQ's should now be pending?", 3, b2.getAuthorizedToReadKeysIncludingPending().size());
 		assertEquals("B2's HQ's should now be pending?", 3, b2.getBulletinHeaderPacket().getAuthorizedToReadKeysPending().size());
 		assertEquals("Legacy HQKey should be empty", "", b2.getBulletinHeaderPacket().getLegacyHQPublicKey());
+		
+		
+		Bulletin bulletinWith3HQsInitially = new Bulletin(security);
+		bulletinWith3HQsInitially.addAuthorizedToReadKeys(with3HQs);
+		bulletinWith3HQsInitially.setState(BulletinState.STATE_SAVE);
+		assertEquals(3, bulletinWith3HQsInitially.getAuthorizedToReadKeysIncludingPending().size());
+
+		MartusCrypto otherServer = MockMartusSecurity.createOtherServer();
+		HeadquartersKey hq4 = new HeadquartersKey(otherServer.getPublicKeyString());
+		HeadquartersKeys oneHQ = new HeadquartersKeys(hq4);
+		bulletinWith3HQsInitially.setAuthorizedToReadKeys(oneHQ);
+		bulletinWith3HQsInitially.setState(BulletinState.STATE_SAVE);
+		assertEquals(1, bulletinWith3HQsInitially.getAuthorizedToReadKeysIncludingPending().size());
+
+	
 	}
 
 	public void testIsStringInArray()
@@ -686,10 +701,20 @@ public class TestBulletin extends TestCaseEnhanced
 		keys.add(key2);
 		
 		original.setAuthorizedToReadKeys(keys);
-		assertEquals("both keys not set?", 2, original.getAuthorizedToReadKeys().size());
+		original.setState(BulletinState.STATE_SAVE);
+		assertEquals("both keys not set?", 2, original.getAuthorizedToReadKeysIncludingPending().size());
 
 		HeadquartersKeys only1Key = new HeadquartersKeys();
 		only1Key.add(key2);
+		original.allowOnlyTheseAuthorizedKeysToRead(only1Key);
+		assertEquals("Should now only have 1 key Pending?", 1, original.getAuthorizedToReadKeysIncludingPending().size());
+		
+		assertTrue(original.getAuthorizedToReadKeysIncludingPending().containsKey(key2.getPublicKey()));
+		
+		original.setAuthorizedToReadKeys(keys);
+		original.setState(BulletinState.STATE_SHARED);
+		assertEquals("both keys not set?", 2, original.getAuthorizedToReadKeys().size());
+
 		original.allowOnlyTheseAuthorizedKeysToRead(only1Key);
 		assertEquals("Should now only have 1 key?", 1, original.getAuthorizedToReadKeys().size());
 		

@@ -31,6 +31,7 @@ import java.io.File;
 import org.martus.common.HeadquartersKey;
 import org.martus.common.HeadquartersKeys;
 import org.martus.common.MartusXml;
+import org.martus.common.bulletin.Bulletin.BulletinState;
 import org.martus.common.bulletin.Bulletin.DamagedBulletinException;
 import org.martus.common.bulletinstore.BulletinStore;
 import org.martus.common.crypto.MartusCrypto;
@@ -131,11 +132,21 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		HeadquartersKey key1 = new HeadquartersKey(key);
 		keys.add(key1);
 		original.setAuthorizedToReadKeys(keys);
+		original.setState(BulletinState.STATE_SAVE);
 		store.saveEncryptedBulletinForTesting(original);
 
 		DatabaseKey dbKey = DatabaseKey.createLegacyKey(original.getUniversalId());
 		Bulletin loaded = BulletinLoader.loadFromDatabase(getDatabase(), dbKey, security);
-		assertEquals("Keys not the same?", (original.getFieldDataPacket().getAuthorizedToReadKeys().get(0)).getPublicKey(), (loaded.getFieldDataPacket().getAuthorizedToReadKeys().get(0)).getPublicKey());
+		assertEquals("Saved Bulletin has Authorized Keys?", 0, loaded.getAuthorizedToReadKeys().size());
+		assertEquals("Saved Bulletin has no Pending Keys?", original.getAuthorizedToReadKeysIncludingPending().size(), loaded.getAuthorizedToReadKeysIncludingPending().size());
+		
+		original.setState(BulletinState.STATE_SHARED);
+		store.saveEncryptedBulletinForTesting(original);
+
+		Bulletin loadedShared = BulletinLoader.loadFromDatabase(getDatabase(), dbKey, security);
+		assertEquals("Shared Bulletin has no Authorized Keys?", original.getAuthorizedToReadKeys().size(), loadedShared.getAuthorizedToReadKeys().size());
+		assertEquals("Shared Bulletin should have 1 AuthorizedIncludingPending Keys?", 1, loadedShared.getAuthorizedToReadKeysIncludingPending().size());
+		assertEquals("Keys not the same?", (original.getFieldDataPacket().getAuthorizedToReadKeys().get(0)).getPublicKey(), (loadedShared.getFieldDataPacket().getAuthorizedToReadKeys().get(0)).getPublicKey());
 
 		File tempFile = createTempFile();
 		BulletinForTesting.saveToFile(getDatabase(), original, tempFile, security);
