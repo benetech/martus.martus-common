@@ -271,7 +271,7 @@ public class Bulletin implements BulletinConstants
 		return getAuthorizedToReadKeys().size() > 0;
 	}
 	
-	public void setState(BulletinState state) throws InvalidBulletinStateException
+	public void changeState(BulletinState state) throws InvalidBulletinStateException
 	{
 		BulletinHeaderPacket bulletinHeaderPacket = getBulletinHeaderPacket();
 		

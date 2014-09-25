@@ -132,7 +132,7 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		HeadquartersKey key1 = new HeadquartersKey(key);
 		keys.add(key1);
 		original.setAuthorizedToReadKeys(keys);
-		original.setState(BulletinState.STATE_SAVE);
+		original.changeState(BulletinState.STATE_SAVE);
 		store.saveEncryptedBulletinForTesting(original);
 
 		DatabaseKey dbKey = DatabaseKey.createLegacyKey(original.getUniversalId());
@@ -140,7 +140,7 @@ public class TestBulletinLoader extends TestCaseEnhanced
 		assertEquals("Saved Bulletin has Authorized Keys?", 0, loaded.getAuthorizedToReadKeys().size());
 		assertEquals("Saved Bulletin has no Pending Keys?", original.getAuthorizedToReadKeysIncludingPending().size(), loaded.getAuthorizedToReadKeysIncludingPending().size());
 		
-		original.setState(BulletinState.STATE_SHARED);
+		original.changeState(BulletinState.STATE_SHARED);
 		store.saveEncryptedBulletinForTesting(original);
 
 		Bulletin loadedShared = BulletinLoader.loadFromDatabase(getDatabase(), dbKey, security);
