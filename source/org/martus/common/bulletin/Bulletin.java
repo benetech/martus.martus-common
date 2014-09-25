@@ -249,21 +249,26 @@ public class Bulletin implements BulletinConstants
 	//NOTE: getState() used in unit tests and for Documentation purposes only.
 	public BulletinState getState()
 	{
-		int numberOfAuthorizedHQs = getAuthorizedToReadKeys().size();
+		boolean hasAuthorizedHQs = hasAuthorizedHQs();
 		if(isSnapshot())
 		{
-			if(numberOfAuthorizedHQs > 0)
+			if(hasAuthorizedHQs)
 				return BulletinState.STATE_SHARED;
 			return BulletinState.STATE_SNAPSHOT;
 
 		}
 		if(isMutable())
 		{
-			if(numberOfAuthorizedHQs > 0)
+			if(hasAuthorizedHQs)
 				return BulletinState.STATE_LEGACY_DRAFT;
 			return BulletinState.STATE_SAVE;
 		}
 		return BulletinState.STATE_LEGACY_SEALED;
+	}
+
+	private boolean hasAuthorizedHQs()
+	{
+		return getAuthorizedToReadKeys().size() > 0;
 	}
 	
 	public void setState(BulletinState state) throws InvalidBulletinStateException
