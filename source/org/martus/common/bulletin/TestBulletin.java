@@ -577,8 +577,8 @@ public class TestBulletin extends TestCaseEnhanced
 		bulletinWith3HQsInitially.changeState(BulletinState.STATE_SAVE);
 		assertEquals(3, bulletinWith3HQsInitially.getAuthorizedToReadKeysIncludingPending().size());
 
-		MartusCrypto otherServer = MockMartusSecurity.createOtherServer();
-		HeadquartersKey hq4 = new HeadquartersKey(otherServer.getPublicKeyString());
+		MartusCrypto yetAnotherClient = MockMartusSecurity.createClient();
+		HeadquartersKey hq4 = new HeadquartersKey(yetAnotherClient.getPublicKeyString());
 		HeadquartersKeys oneHQ = new HeadquartersKeys(hq4);
 		bulletinWith3HQsInitially.setAuthorizedToReadKeys(oneHQ);
 		bulletinWith3HQsInitially.changeState(BulletinState.STATE_SAVE);
