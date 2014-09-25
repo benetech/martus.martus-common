@@ -36,9 +36,7 @@ import java.util.zip.ZipFile;
 import org.martus.common.HeadquartersKeys;
 import org.martus.common.MartusXml;
 import org.martus.common.XmlWriterFilter;
-import org.martus.common.Exceptions.InvalidBulletinStateException;
 import org.martus.common.bulletin.Bulletin;
-import org.martus.common.bulletin.Bulletin.BulletinState;
 import org.martus.common.bulletin.Bulletin.BulletinType;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.database.DatabaseKey;
@@ -172,18 +170,9 @@ public class BulletinHeaderPacket extends Packet
 		return status;
 	}
 
-	public void setState(BulletinState state) throws InvalidBulletinStateException
+	public void setSnapshot(boolean isSnapshot)
 	{
-		if( state.equals(BulletinState.STATE_LEGACY_DRAFT) ||
-			state.equals(BulletinState.STATE_LEGACY_SEALED))
-				throw new InvalidBulletinStateException();
-			
-		if(snapshot)
-			throw new InvalidBulletinStateException();
-
-		if(state.equals(BulletinState.STATE_SNAPSHOT) || 
-				state.equals(BulletinState.STATE_SHARED))
-			snapshot = true;
+		snapshot = isSnapshot;
 	}
 	
 	public boolean isSnapshot()

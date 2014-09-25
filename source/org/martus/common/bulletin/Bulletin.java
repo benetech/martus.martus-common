@@ -274,7 +274,17 @@ public class Bulletin implements BulletinConstants
 	public void setState(BulletinState state) throws InvalidBulletinStateException
 	{
 		BulletinHeaderPacket bulletinHeaderPacket = getBulletinHeaderPacket();
-		bulletinHeaderPacket.setState(state);
+		
+		if( state.equals(BulletinState.STATE_LEGACY_DRAFT) ||
+			state.equals(BulletinState.STATE_LEGACY_SEALED))
+				throw new InvalidBulletinStateException();
+			
+		if(bulletinHeaderPacket.isSnapshot())
+			throw new InvalidBulletinStateException();
+		
+		if(state.equals(BulletinState.STATE_SNAPSHOT) || 
+				state.equals(BulletinState.STATE_SHARED))
+			bulletinHeaderPacket.setSnapshot(true);
 		
 		HeadquartersKeys keys = new HeadquartersKeys(getAuthorizedToReadKeysIncludingPending());
 		clearAuthorizedToReadKeys();
