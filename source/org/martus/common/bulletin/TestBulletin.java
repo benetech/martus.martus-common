@@ -503,7 +503,7 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals("Private attachment label not the same?", a2.getLabel(), clonedPrivateAttachment.getLabel());
 
 		
-		b1.setState(BulletinState.STATE_SAVE);
+		b1.changeState(BulletinState.STATE_SAVE);
 		b1.setMutable();
 		Bulletin b3 = new Bulletin(security);
 		b3.createDraftCopyOf(b1, getDb());
@@ -511,7 +511,7 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals(0, b3.getHistory().size());
 		
 		Bulletin b4 = new Bulletin(security);
-		b1.setState(BulletinState.STATE_SNAPSHOT);
+		b1.changeState(BulletinState.STATE_SNAPSHOT);
 		b4.createDraftCopyOf(b1, getDb());
 		assertEquals(2, b1.getHistory().size());
 		assertEquals(3, b4.getHistory().size());
@@ -526,7 +526,7 @@ public class TestBulletin extends TestCaseEnhanced
 		HeadquartersKey hq = new HeadquartersKey(security.getPublicKeyString());
 		b1.setAuthorizedToReadKeys(new HeadquartersKeys(hq));
 
-		b1.setState(BulletinState.STATE_SAVE);
+		b1.changeState(BulletinState.STATE_SAVE);
 		store.saveEncryptedBulletinForTesting(b1);
 		assertEquals(0, b1.getAuthorizedToReadKeys().size());
 		assertEquals(1, b1.getBulletinHeaderPacket().getAuthorizedToReadKeysPending().size());
@@ -538,7 +538,7 @@ public class TestBulletin extends TestCaseEnhanced
 		HeadquartersKeys newHQs = b1.getAuthorizedToReadKeysIncludingPending();
 		newHQs.add(hq2);
 		b1.setAuthorizedToReadKeys(new HeadquartersKeys(newHQs));
-		b1.setState(BulletinState.STATE_SNAPSHOT);
+		b1.changeState(BulletinState.STATE_SNAPSHOT);
 		store.saveEncryptedBulletinForTesting(b1);
 		assertEquals(0, b1.getAuthorizedToReadKeys().size());
 		assertEquals(2, b1.getBulletinHeaderPacket().getAuthorizedToReadKeysPending().size());
@@ -557,7 +557,7 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals(3, b1copy.getAuthorizedToReadKeys().size());
 		assertEquals(3, b1copy.getAuthorizedToReadKeysIncludingPending().size());
 		
-		b1copy.setState(BulletinState.STATE_SHARED);
+		b1copy.changeState(BulletinState.STATE_SHARED);
 		store.saveEncryptedBulletinForTesting(b1copy);
 		assertEquals(0, b1copy.getBulletinHeaderPacket().getAuthorizedToReadKeysPending().size());
 		assertEquals(3, b1copy.getAuthorizedToReadKeysIncludingPending().size());
@@ -574,14 +574,14 @@ public class TestBulletin extends TestCaseEnhanced
 		
 		Bulletin bulletinWith3HQsInitially = new Bulletin(security);
 		bulletinWith3HQsInitially.addAuthorizedToReadKeys(with3HQs);
-		bulletinWith3HQsInitially.setState(BulletinState.STATE_SAVE);
+		bulletinWith3HQsInitially.changeState(BulletinState.STATE_SAVE);
 		assertEquals(3, bulletinWith3HQsInitially.getAuthorizedToReadKeysIncludingPending().size());
 
 		MartusCrypto otherServer = MockMartusSecurity.createOtherServer();
 		HeadquartersKey hq4 = new HeadquartersKey(otherServer.getPublicKeyString());
 		HeadquartersKeys oneHQ = new HeadquartersKeys(hq4);
 		bulletinWith3HQsInitially.setAuthorizedToReadKeys(oneHQ);
-		bulletinWith3HQsInitially.setState(BulletinState.STATE_SAVE);
+		bulletinWith3HQsInitially.changeState(BulletinState.STATE_SAVE);
 		assertEquals(1, bulletinWith3HQsInitially.getAuthorizedToReadKeysIncludingPending().size());
 
 	
@@ -701,7 +701,7 @@ public class TestBulletin extends TestCaseEnhanced
 		keys.add(key2);
 		
 		original.setAuthorizedToReadKeys(keys);
-		original.setState(BulletinState.STATE_SAVE);
+		original.changeState(BulletinState.STATE_SAVE);
 		assertEquals("both keys not set?", 2, original.getAuthorizedToReadKeysIncludingPending().size());
 
 		HeadquartersKeys only1Key = new HeadquartersKeys();
@@ -712,7 +712,7 @@ public class TestBulletin extends TestCaseEnhanced
 		assertTrue(original.getAuthorizedToReadKeysIncludingPending().containsKey(key2.getPublicKey()));
 		
 		original.setAuthorizedToReadKeys(keys);
-		original.setState(BulletinState.STATE_SHARED);
+		original.changeState(BulletinState.STATE_SHARED);
 		assertEquals("both keys not set?", 2, original.getAuthorizedToReadKeys().size());
 
 		original.allowOnlyTheseAuthorizedKeysToRead(only1Key);
@@ -724,22 +724,22 @@ public class TestBulletin extends TestCaseEnhanced
 	public void testSetState() throws Exception
 	{
 		Bulletin savedBulletin = new Bulletin(security);
-		savedBulletin.setState(BulletinState.STATE_SAVE);
+		savedBulletin.changeState(BulletinState.STATE_SAVE);
 		assertFalse(savedBulletin.isSnapshot());
 		assertFalse(savedBulletin.requiresNewCopyToEdit());
 
-		savedBulletin.setState(BulletinState.STATE_SAVE);
+		savedBulletin.changeState(BulletinState.STATE_SAVE);
 		assertFalse("Allowed to set state to Save multiple times", savedBulletin.isSnapshot());
 		assertFalse(savedBulletin.requiresNewCopyToEdit());
 		
 		Bulletin versionedBulletin = new Bulletin(security);
-		versionedBulletin.setState(BulletinState.STATE_SNAPSHOT);
+		versionedBulletin.changeState(BulletinState.STATE_SNAPSHOT);
 		assertTrue(versionedBulletin.isSnapshot());
 		assertTrue(versionedBulletin.requiresNewCopyToEdit());
 
 		try
 		{
-			versionedBulletin.setState(BulletinState.STATE_SAVE);
+			versionedBulletin.changeState(BulletinState.STATE_SAVE);
 			fail("Once state is SNAPSHOT, you can't change its State to Save without creating a new copy.");
 		} 
 		catch (InvalidBulletinStateException expectedException)
@@ -747,7 +747,7 @@ public class TestBulletin extends TestCaseEnhanced
 		}
 		try
 		{
-			versionedBulletin.setState(BulletinState.STATE_SNAPSHOT);
+			versionedBulletin.changeState(BulletinState.STATE_SNAPSHOT);
 			fail("Once state is SNAPSHOT, you can't change its State to SNAPSHOT without creating a new copy.");
 		} 
 		catch (InvalidBulletinStateException expectedException)
@@ -755,7 +755,7 @@ public class TestBulletin extends TestCaseEnhanced
 		}
 		try
 		{
-			versionedBulletin.setState(BulletinState.STATE_SHARED);
+			versionedBulletin.changeState(BulletinState.STATE_SHARED);
 			fail("Once state is SNAPSHOT, you can't change its State to SHARED without creating a new copy.");
 		} 
 		catch (InvalidBulletinStateException expectedException)
@@ -763,17 +763,17 @@ public class TestBulletin extends TestCaseEnhanced
 		}
 		
 		Bulletin sharedBulletin = new Bulletin(security);
-		sharedBulletin.setState(BulletinState.STATE_SAVE);
+		sharedBulletin.changeState(BulletinState.STATE_SAVE);
 		assertFalse(sharedBulletin.isSnapshot());
-		sharedBulletin.setState(BulletinState.STATE_SAVE);
+		sharedBulletin.changeState(BulletinState.STATE_SAVE);
 		assertFalse(sharedBulletin.isSnapshot());
-		sharedBulletin.setState(BulletinState.STATE_SHARED);
+		sharedBulletin.changeState(BulletinState.STATE_SHARED);
 		assertTrue(sharedBulletin.isSnapshot());
 		assertTrue(sharedBulletin.requiresNewCopyToEdit());
 		
 		try
 		{
-			sharedBulletin.setState(BulletinState.STATE_SAVE);
+			sharedBulletin.changeState(BulletinState.STATE_SAVE);
 			fail("Once state is SHARED, you can't change its State to SAVE without creating a new copy.");
 		} 
 		catch (InvalidBulletinStateException expectedException)
@@ -781,7 +781,7 @@ public class TestBulletin extends TestCaseEnhanced
 		}
 		try
 		{
-			sharedBulletin.setState(BulletinState.STATE_SNAPSHOT);
+			sharedBulletin.changeState(BulletinState.STATE_SNAPSHOT);
 			fail("Once state is SHARED, you can't change its State to SNAPSHOT without creating a new copy.");
 		} 
 		catch (InvalidBulletinStateException expectedException)
@@ -789,7 +789,7 @@ public class TestBulletin extends TestCaseEnhanced
 		}
 		try
 		{
-			sharedBulletin.setState(BulletinState.STATE_SHARED);
+			sharedBulletin.changeState(BulletinState.STATE_SHARED);
 			fail("Once state is SHARED, you can't change its State to SHARED without creating a new copy.");
 		} 
 		catch (InvalidBulletinStateException expectedException)
@@ -802,7 +802,7 @@ public class TestBulletin extends TestCaseEnhanced
 		
 		try
 		{
-			legacyDraft.setState(BulletinState.STATE_LEGACY_DRAFT);
+			legacyDraft.changeState(BulletinState.STATE_LEGACY_DRAFT);
 			fail("You can not set the state to LEGACY");
 		} 
 		catch (InvalidBulletinStateException expectedException)
@@ -814,7 +814,7 @@ public class TestBulletin extends TestCaseEnhanced
 		assertTrue(legacySealed.requiresNewCopyToEdit());
 		try
 		{
-			legacySealed.setState(BulletinState.STATE_LEGACY_SEALED);
+			legacySealed.changeState(BulletinState.STATE_LEGACY_SEALED);
 			fail("You can not set the state to LEGACY");
 		} 
 		catch (InvalidBulletinStateException expectedException)
@@ -835,17 +835,17 @@ public class TestBulletin extends TestCaseEnhanced
 		b1.setImmutable();
 		assertEquals(Bulletin.BulletinState.STATE_LEGACY_SEALED, b1.getState());
 		
-		b1.setState(BulletinState.STATE_SNAPSHOT);
+		b1.changeState(BulletinState.STATE_SNAPSHOT);
 		assertEquals(Bulletin.BulletinState.STATE_SNAPSHOT, b1.getState());
 
 		Bulletin b2 = new Bulletin(security);
 		b2.setAuthorizedToReadKeys(hqKeys);
-		b2.setState(BulletinState.STATE_SHARED);
+		b2.changeState(BulletinState.STATE_SHARED);
 		assertEquals(Bulletin.BulletinState.STATE_SHARED, b2.getState());
 		
 		Bulletin b3 = new Bulletin(security);
 		b3.setAuthorizedToReadKeys(hqKeys);
-		b3.setState(BulletinState.STATE_SAVE);
+		b3.changeState(BulletinState.STATE_SAVE);
 		assertEquals(Bulletin.BulletinState.STATE_SAVE, b3.getState());
 	}
 
