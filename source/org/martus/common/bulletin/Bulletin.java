@@ -633,20 +633,20 @@ public class Bulletin implements BulletinConstants
 		clearAllUserData();
 		
 		boolean originalIsMine = other.getAccount().equals(getAccount());
-		if(originalIsMine && other.requiresNewCopyToEdit())
-		{
-			BulletinHistory history = new BulletinHistory(other.getHistory());
-			history.add(other.getLocalId());
-			setHistory(history);
-
-			ExtendedHistoryList extendedHistory = other.getBulletinHeaderPacket().getExtendedHistory();
-			getBulletinHeaderPacket().setExtendedHistory(new ExtendedHistoryList(extendedHistory));
-		}
-		
 		if(originalIsMine)
 		{
+			if(other.requiresNewCopyToEdit())
+			{
+				BulletinHistory history = new BulletinHistory(other.getHistory());
+				history.add(other.getLocalId());
+				setHistory(history);
+	
+				ExtendedHistoryList extendedHistory = other.getBulletinHeaderPacket().getExtendedHistory();
+				getBulletinHeaderPacket().setExtendedHistory(new ExtendedHistoryList(extendedHistory));
+			}
+			
 			getBulletinHeaderPacket().setAuthorizedToReadKeysPending(other.getAuthorizedToReadKeysIncludingPending());
-		}
+		}		
 		else
 		{
 			ExtendedHistoryList historyList = new ExtendedHistoryList();
