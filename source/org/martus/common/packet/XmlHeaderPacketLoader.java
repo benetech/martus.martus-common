@@ -122,7 +122,7 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 				bhp.setAuthorizedToReadKeys(new HeadquartersKeys(new HeadquartersKey(value)));
 			else if(tag.equals(MartusXml.StatusSnapshotName))
 				bhp.setStatusSnapshotFromXmlTextValue(value);
-			else if(tag.equals(MartusXml.NeverDeleteSnapshotFromServerName))
+			else if(tag.equals(MartusXml.ImmutableOnServerName))
 				bhp.setImmutableOnServerFromXmlTextValue(value);
 		}
 		catch (Exception e)
@@ -261,7 +261,7 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 			stringTags.add(MartusXml.HQPublicKeyElementName);
 			stringTags.add(MartusXml.AllHQSProxyUploadName);
 			stringTags.add(MartusXml.StatusSnapshotName);
-			stringTags.add(MartusXml.NeverDeleteSnapshotFromServerName);
+			stringTags.add(MartusXml.ImmutableOnServerName);
 		}
 		return stringTags;
 	}

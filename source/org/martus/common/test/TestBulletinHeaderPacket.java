@@ -304,8 +304,8 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		assertContains(MartusXml.getTagStart(MartusXml.StatusSnapshotName), result);
 		assertContains(MartusXml.getTagEnd(MartusXml.StatusSnapshotName), result);
 
-		assertContains(MartusXml.getTagStart(MartusXml.NeverDeleteSnapshotFromServerName), result);
-		assertContains(MartusXml.getTagEnd(MartusXml.NeverDeleteSnapshotFromServerName), result);
+		assertContains(MartusXml.getTagStart(MartusXml.ImmutableOnServerName), result);
+		assertContains(MartusXml.getTagEnd(MartusXml.ImmutableOnServerName), result);
 	}
 	
 	public void testWriteXmlWithHistory() throws Exception
