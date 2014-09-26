@@ -848,6 +848,14 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals(Bulletin.BulletinState.STATE_SAVE, b3.getState());
 	}
 
+	public void testSetNeverDeleteSnapshotFromServer() throws Exception
+	{
+		Bulletin b1 = new Bulletin(security);
+		assertFalse(b1.getNeverDeleteSnapshotFromServer());
+		b1.setNeverDeleteSnapshotFromServer();
+		assertTrue(b1.getNeverDeleteSnapshotFromServer());
+	}	
+	
 	static MockDatabase getDb()
 	{
 		return (MockDatabase)store.getDatabase();
