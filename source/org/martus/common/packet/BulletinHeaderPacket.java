@@ -560,7 +560,7 @@ public class BulletinHeaderPacket extends Packet
 			writeElement(dest, MartusXml.StatusSnapshotName, STATUS_NOT_A_SNAPSHOT);
 
 		if(immutableOnServer)
-			writeElement(dest, MartusXml.NeverDeleteSnapshotFromServerName, IMMUTABLE_ON_SERVER);
+			writeElement(dest, MartusXml.ImmutableOnServerName, IMMUTABLE_ON_SERVER);
 			
 		if(!authorizedToReadKeysPending.isEmpty())
 		{
