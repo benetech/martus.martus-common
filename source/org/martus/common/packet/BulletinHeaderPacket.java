@@ -180,14 +180,14 @@ public class BulletinHeaderPacket extends Packet
 		return snapshot;
 	}
 	
-	public void setNeverDeleteSnapshotFromServer()
+	public void setImmutableOnServer()
 	{
-		neverDeleteSnapshotFromServer = true;
+		immutableOnServer = true;
 	}
 	
-	public boolean getNeverDeleteSnapshotFromServer()
+	public boolean getImmutableOnServer()
 	{
-		return neverDeleteSnapshotFromServer;
+		return immutableOnServer;
 	}
 	
 	public long getLastSavedTime()
@@ -292,7 +292,7 @@ public class BulletinHeaderPacket extends Packet
 	
 	void setNeverDeleteSnapshotFromServerFromXmlTextValue(String data)
 	{
-		neverDeleteSnapshotFromServer = true;
+		immutableOnServer = true;
 	}
 
 	public HeadquartersKeys getAuthorizedToUploadKeys()
@@ -559,7 +559,7 @@ public class BulletinHeaderPacket extends Packet
 		else
 			writeElement(dest, MartusXml.StatusSnapshotName, STATUS_NOT_A_SNAPSHOT);
 
-		if(neverDeleteSnapshotFromServer)
+		if(immutableOnServer)
 			writeElement(dest, MartusXml.NeverDeleteSnapshotFromServerName, NEVER_DELETE_SNAPSHOT_FROM_SERVER);
 			
 		if(!authorizedToReadKeysPending.isEmpty())
@@ -612,5 +612,5 @@ public class BulletinHeaderPacket extends Packet
 	private ExtendedHistoryList extendedHistory;
 	private boolean snapshot;
 	private HeadquartersKeys authorizedToReadKeysPending;
-	private boolean neverDeleteSnapshotFromServer;
+	private boolean immutableOnServer;
 }

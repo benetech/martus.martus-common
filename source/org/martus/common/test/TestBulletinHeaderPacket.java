@@ -241,7 +241,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		String dataId = "this data id";
 		String privateId = "this data id";
 		bhp.clearAllUserData();
-		bhp.setNeverDeleteSnapshotFromServer();
+		bhp.setImmutableOnServer();
 		bhp.updateLastSavedTime();
 		bhp.setFieldDataPacketId(dataId);
 		bhp.setPrivateFieldDataPacketId(privateId);

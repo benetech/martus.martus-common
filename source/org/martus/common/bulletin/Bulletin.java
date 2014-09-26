@@ -309,12 +309,12 @@ public class Bulletin implements BulletinConstants
 	
 	public void setImmutableOnServer()
 	{
-		getBulletinHeaderPacket().setNeverDeleteSnapshotFromServer();
+		getBulletinHeaderPacket().setImmutableOnServer();
 	}
 	
 	public boolean getImmutableOnServer()
 	{
-		return getBulletinHeaderPacket().getNeverDeleteSnapshotFromServer();
+		return getBulletinHeaderPacket().getImmutableOnServer();
 	}
 	
 	public FieldSpecCollection getTopSectionFieldSpecs()
