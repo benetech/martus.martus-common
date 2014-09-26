@@ -307,12 +307,12 @@ public class Bulletin implements BulletinConstants
 		return false;
 	}
 	
-	public void setNeverDeleteSnapshotFromServer()
+	public void setImmutableOnServer()
 	{
 		getBulletinHeaderPacket().setNeverDeleteSnapshotFromServer();
 	}
 	
-	public boolean getNeverDeleteSnapshotFromServer()
+	public boolean getImmutableOnServer()
 	{
 		return getBulletinHeaderPacket().getNeverDeleteSnapshotFromServer();
 	}
@@ -687,8 +687,8 @@ public class Bulletin implements BulletinConstants
 
 		setMutable();
 		setAllPrivate(true);
-		if(other.getNeverDeleteSnapshotFromServer())
-			setNeverDeleteSnapshotFromServer();
+		if(other.getImmutableOnServer())
+			setImmutableOnServer();
 
 		pullFields(other, getFieldDataPacket().getFieldSpecs());
 		pullFields(other, getPrivateFieldDataPacket().getFieldSpecs());
