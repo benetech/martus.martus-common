@@ -307,6 +307,16 @@ public class Bulletin implements BulletinConstants
 		return false;
 	}
 	
+	public void setNeverDeleteSnapshotFromServer()
+	{
+		getBulletinHeaderPacket().setNeverDeleteSnapshotFromServer();
+	}
+	
+	public boolean getNeverDeleteSnapshotFromServer()
+	{
+		return getBulletinHeaderPacket().getNeverDeleteSnapshotFromServer();
+	}
+	
 	public FieldSpecCollection getTopSectionFieldSpecs()
 	{
 		return fieldData.getFieldSpecs();
