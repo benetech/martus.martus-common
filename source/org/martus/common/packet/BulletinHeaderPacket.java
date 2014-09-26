@@ -290,7 +290,7 @@ public class BulletinHeaderPacket extends Packet
 			snapshot = true;
 	}
 	
-	void setNeverDeleteSnapshotFromServerFromXmlTextValue(String data)
+	void setImmutableOnServerFromXmlTextValue(String data)
 	{
 		immutableOnServer = true;
 	}
@@ -560,7 +560,7 @@ public class BulletinHeaderPacket extends Packet
 			writeElement(dest, MartusXml.StatusSnapshotName, STATUS_NOT_A_SNAPSHOT);
 
 		if(immutableOnServer)
-			writeElement(dest, MartusXml.NeverDeleteSnapshotFromServerName, NEVER_DELETE_SNAPSHOT_FROM_SERVER);
+			writeElement(dest, MartusXml.NeverDeleteSnapshotFromServerName, IMMUTABLE_ON_SERVER);
 			
 		if(!authorizedToReadKeysPending.isEmpty())
 		{
@@ -588,7 +588,7 @@ public class BulletinHeaderPacket extends Packet
 	private final static String ALL_HQS_PROXY_UPLOAD = "1";
 	private final static String STATUS_SNAPSHOT = "1";
 	private final static String STATUS_NOT_A_SNAPSHOT = "0";
-	private final static String NEVER_DELETE_SNAPSHOT_FROM_SERVER = "1";
+	private final static String IMMUTABLE_ON_SERVER = "1";
 	
 	public static final long TIME_UNKNOWN = 0;
 

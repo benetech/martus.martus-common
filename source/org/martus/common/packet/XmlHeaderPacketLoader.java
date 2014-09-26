@@ -123,7 +123,7 @@ public class XmlHeaderPacketLoader extends XmlPacketLoader
 			else if(tag.equals(MartusXml.StatusSnapshotName))
 				bhp.setStatusSnapshotFromXmlTextValue(value);
 			else if(tag.equals(MartusXml.NeverDeleteSnapshotFromServerName))
-				bhp.setNeverDeleteSnapshotFromServerFromXmlTextValue(value);
+				bhp.setImmutableOnServerFromXmlTextValue(value);
 		}
 		catch (Exception e)
 		{
