@@ -241,6 +241,7 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		String dataId = "this data id";
 		String privateId = "this data id";
 		bhp.clearAllUserData();
+		bhp.setNeverDeleteSnapshotFromServer();
 		bhp.updateLastSavedTime();
 		bhp.setFieldDataPacketId(dataId);
 		bhp.setPrivateFieldDataPacketId(privateId);
@@ -302,6 +303,9 @@ public class TestBulletinHeaderPacket extends TestCaseEnhanced
 		
 		assertContains(MartusXml.getTagStart(MartusXml.StatusSnapshotName), result);
 		assertContains(MartusXml.getTagEnd(MartusXml.StatusSnapshotName), result);
+
+		assertContains(MartusXml.getTagStart(MartusXml.NeverDeleteSnapshotFromServerName), result);
+		assertContains(MartusXml.getTagEnd(MartusXml.NeverDeleteSnapshotFromServerName), result);
 	}
 	
 	public void testWriteXmlWithHistory() throws Exception
