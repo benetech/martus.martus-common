@@ -851,13 +851,13 @@ public class TestBulletin extends TestCaseEnhanced
 	public void testSetNeverDeleteSnapshotFromServer() throws Exception
 	{
 		Bulletin b1 = new Bulletin(security);
-		assertFalse(b1.getNeverDeleteSnapshotFromServer());
-		b1.setNeverDeleteSnapshotFromServer();
-		assertTrue(b1.getNeverDeleteSnapshotFromServer());
+		assertFalse(b1.getImmutableOnServer());
+		b1.setImmutableOnServer();
+		assertTrue(b1.getImmutableOnServer());
 		
 		Bulletin b2 = new Bulletin(security);
 		b2.createDraftCopyOf(b1, getDb());
-		assertTrue(b2.getNeverDeleteSnapshotFromServer());
+		assertTrue(b2.getImmutableOnServer());
 	}	
 	
 	static MockDatabase getDb()
