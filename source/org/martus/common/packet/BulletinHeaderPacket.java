@@ -180,6 +180,16 @@ public class BulletinHeaderPacket extends Packet
 		return snapshot;
 	}
 	
+	public void setNeverDeleteSnapshotFromServer()
+	{
+		neverDeleteSnapshotFromServer = true;
+	}
+	
+	public boolean getNeverDeleteSnapshotFromServer()
+	{
+		return neverDeleteSnapshotFromServer;
+	}
+	
 	public long getLastSavedTime()
 	{
 		return lastSavedTime;
@@ -278,6 +288,11 @@ public class BulletinHeaderPacket extends Packet
 	{
 		if(data.equals(STATUS_SNAPSHOT))
 			snapshot = true;
+	}
+	
+	void setNeverDeleteSnapshotFromServerFromXmlTextValue(String data)
+	{
+		neverDeleteSnapshotFromServer = true;
 	}
 
 	public HeadquartersKeys getAuthorizedToUploadKeys()
@@ -543,6 +558,9 @@ public class BulletinHeaderPacket extends Packet
 			writeElement(dest, MartusXml.StatusSnapshotName, STATUS_SNAPSHOT);
 		else
 			writeElement(dest, MartusXml.StatusSnapshotName, STATUS_NOT_A_SNAPSHOT);
+
+		if(neverDeleteSnapshotFromServer)
+			writeElement(dest, MartusXml.NeverDeleteSnapshotFromServerName, NEVER_DELETE_SNAPSHOT_FROM_SERVER);
 			
 		if(!authorizedToReadKeysPending.isEmpty())
 		{
@@ -570,6 +588,7 @@ public class BulletinHeaderPacket extends Packet
 	private final static String ALL_HQS_PROXY_UPLOAD = "1";
 	private final static String STATUS_SNAPSHOT = "1";
 	private final static String STATUS_NOT_A_SNAPSHOT = "0";
+	private final static String NEVER_DELETE_SNAPSHOT_FROM_SERVER = "1";
 	
 	public static final long TIME_UNKNOWN = 0;
 
@@ -593,4 +612,5 @@ public class BulletinHeaderPacket extends Packet
 	private ExtendedHistoryList extendedHistory;
 	private boolean snapshot;
 	private HeadquartersKeys authorizedToReadKeysPending;
+	private boolean neverDeleteSnapshotFromServer;
 }

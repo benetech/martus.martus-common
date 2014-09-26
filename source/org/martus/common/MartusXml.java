@@ -149,6 +149,7 @@ public class MartusXml
 	public final static String AttachmentKeyElementName = "AttachmentSessionKey";
 	public final static String CustomFieldSpecsElementName = "CustomFields";
 	public final static String StatusSnapshotName = "Snapshot";
+	public final static String NeverDeleteSnapshotFromServerName = "NeverDeleteSnapshotFromServer";
 	public final static String AccountsAuthorizedToReadPendingElementName = "AuthorizedToReadKeyPending";
 
 }
