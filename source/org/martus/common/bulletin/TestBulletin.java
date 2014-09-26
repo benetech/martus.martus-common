@@ -848,7 +848,7 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals(Bulletin.BulletinState.STATE_SAVE, b3.getState());
 	}
 
-	public void testSetNeverDeleteSnapshotFromServer() throws Exception
+	public void testSetImmutableOnServer() throws Exception
 	{
 		Bulletin b1 = new Bulletin(security);
 		assertFalse(b1.getImmutableOnServer());
