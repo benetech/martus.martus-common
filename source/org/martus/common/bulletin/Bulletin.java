@@ -687,6 +687,8 @@ public class Bulletin implements BulletinConstants
 
 		setMutable();
 		setAllPrivate(true);
+		if(other.getNeverDeleteSnapshotFromServer())
+			setNeverDeleteSnapshotFromServer();
 
 		pullFields(other, getFieldDataPacket().getFieldSpecs());
 		pullFields(other, getPrivateFieldDataPacket().getFieldSpecs());

@@ -854,6 +854,10 @@ public class TestBulletin extends TestCaseEnhanced
 		assertFalse(b1.getNeverDeleteSnapshotFromServer());
 		b1.setNeverDeleteSnapshotFromServer();
 		assertTrue(b1.getNeverDeleteSnapshotFromServer());
+		
+		Bulletin b2 = new Bulletin(security);
+		b2.createDraftCopyOf(b1, getDb());
+		assertTrue(b2.getNeverDeleteSnapshotFromServer());
 	}	
 	
 	static MockDatabase getDb()
