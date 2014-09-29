@@ -852,7 +852,7 @@ public class TestBulletin extends TestCaseEnhanced
 	{
 		Bulletin b1 = new Bulletin(security);
 		assertFalse(b1.getImmutableOnServer());
-		b1.setImmutableOnServer();
+		b1.setImmutableOnServer(true);
 		assertTrue(b1.getImmutableOnServer());
 		
 		Bulletin b2 = new Bulletin(security);

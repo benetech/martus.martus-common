@@ -180,9 +180,9 @@ public class BulletinHeaderPacket extends Packet
 		return snapshot;
 	}
 	
-	public void setImmutableOnServer()
+	public void setImmutableOnServer(boolean immutable)
 	{
-		immutableOnServer = true;
+		immutableOnServer = immutable;
 	}
 	
 	public boolean getImmutableOnServer()

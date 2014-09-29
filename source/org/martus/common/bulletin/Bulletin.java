@@ -307,9 +307,9 @@ public class Bulletin implements BulletinConstants
 		return false;
 	}
 	
-	public void setImmutableOnServer()
+	public void setImmutableOnServer(boolean immutable)
 	{
-		getBulletinHeaderPacket().setImmutableOnServer();
+		getBulletinHeaderPacket().setImmutableOnServer(immutable);
 	}
 	
 	public boolean getImmutableOnServer()
@@ -687,8 +687,7 @@ public class Bulletin implements BulletinConstants
 
 		setMutable();
 		setAllPrivate(true);
-		if(other.getImmutableOnServer())
-			setImmutableOnServer();
+		setImmutableOnServer(other.getImmutableOnServer());
 
 		pullFields(other, getFieldDataPacket().getFieldSpecs());
 		pullFields(other, getPrivateFieldDataPacket().getFieldSpecs());
