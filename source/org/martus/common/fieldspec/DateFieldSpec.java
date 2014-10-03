@@ -39,6 +39,9 @@ public class DateFieldSpec extends AbstractDateOrientedFieldSpec
 	public void validate(String fullFieldLabel, String candidateValue,
 			MiniLocalization localization) throws DataInvalidException
 	{
+		if(candidateValue.isEmpty())
+			return;
+		
 		validateDate(fullFieldLabel, MultiCalendar.createFromIsoDateString(candidateValue));
 		
 		super.validate(fullFieldLabel, candidateValue, localization);

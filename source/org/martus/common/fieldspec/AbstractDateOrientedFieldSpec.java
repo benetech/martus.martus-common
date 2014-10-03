@@ -50,7 +50,7 @@ public class AbstractDateOrientedFieldSpec extends FieldSpec
 		return MultiCalendar.UNKNOWN.toIsoDateString();
 	}
 
-	void setMinimumDate(String newMinimumDate)
+	public void setMinimumDate(String newMinimumDate)
 	{
 		minimumDate = newMinimumDate;
 	}
@@ -60,7 +60,7 @@ public class AbstractDateOrientedFieldSpec extends FieldSpec
 		return minimumDate;
 	}
 	
-	void setMaximumDate(String newMaximumDate)
+	public void setMaximumDate(String newMaximumDate)
 	{
 		maximumDate = newMaximumDate;
 	}
