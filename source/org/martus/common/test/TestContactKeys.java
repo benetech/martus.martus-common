@@ -72,7 +72,7 @@ public class TestContactKeys extends TestCaseEnhanced
 		assertTrue(key2.getCanSendTo());
 		assertTrue(key2.getSendToByDefault());
 		assertTrue(key2.getCanReceiveFrom());
-		assertEquals(ContactKey.NOT_VERIFIED, key2.getVerificationStatus());
+		assertEquals(ContactKey.NOT_VERIFIED_UNKNOWN, key2.getVerificationStatus());
 		
 		
 		key2.setVerificationStatus(ContactKey.VERIFIED_VISUALLY);

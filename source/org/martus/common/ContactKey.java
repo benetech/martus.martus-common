@@ -41,6 +41,7 @@ public class ContactKey extends ExternalPublicKey
 	public ContactKey(String publicKey, String label)
 	{
 		super(publicKey, label);
+		verificationStatus = NOT_VERIFIED_UNKNOWN;
 	}
 	
 	public boolean getCanSendTo()
@@ -63,28 +64,24 @@ public class ContactKey extends ExternalPublicKey
 		this.sendToByDefault = sendToByDefault;
 	}
 
-	public int getVerificationStatus()
+	public Integer getVerificationStatus()
 	{
 		return verificationStatus;
 	}
 
-	public void setVerificationStatus(int verificationStatus)
+	public void setVerificationStatus(Integer verificationStatus)
 	{
 		this.verificationStatus = verificationStatus;
 	}
 
 	private boolean sendToByDefault;
-	private int	verificationStatus;
+	private Integer	verificationStatus;
 	
 
-    public static final Integer NOT_VERIFIED_UNKNOWN = 0;
-    public static final Integer NOT_VERIFIED_CONTACT = 1;
-    public static final Integer VERIFIED_ACCOUNT_OWNER = 2;
-    public static final Integer VERIFIED_CONTACT_VISUALLY = 3;
-    public static final Integer VERIFIED_CONTACT_ENTERED_20_DIGITS = 4;
-	
-	final static public int NOT_VERIFIED = 0;
-	final static public int VERIFIED_VISUALLY = 1;
-	final static public int VERIFIED_ENTERED_20_DIGITS = 2;
+    public static final Integer NOT_VERIFIED = 0;
+    public static final Integer VERIFIED_VISUALLY = 1;
+    public static final Integer VERIFIED_ENTERED_20_DIGITS = 2;
+    public static final Integer VERIFIED_ACCOUNT_OWNER = 3;
+    public static final Integer NOT_VERIFIED_UNKNOWN = 4;
 }
 
