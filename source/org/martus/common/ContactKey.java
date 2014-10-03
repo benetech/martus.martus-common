@@ -76,6 +76,12 @@ public class ContactKey extends ExternalPublicKey
 	private boolean sendToByDefault;
 	private int	verificationStatus;
 	
+
+    public static final Integer NOT_VERIFIED_UNKNOWN_CONTACT = 0;
+    public static final Integer NOT_VERIFIED_CONTACT = 1;
+    public static final Integer VERIFIED_ACCOUNT_OWNER = 2;
+    public static final Integer VERIFIED_CONTACT = 3;
+	
 	final static public int NOT_VERIFIED = 0;
 	final static public int VERIFIED_VISUALLY = 1;
 	final static public int VERIFIED_ENTERED_20_DIGITS = 2;
