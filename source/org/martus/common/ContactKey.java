@@ -77,7 +77,7 @@ public class ContactKey extends ExternalPublicKey
 	private int	verificationStatus;
 	
 
-    public static final Integer NOT_VERIFIED_UNKNOWN_CONTACT = 0;
+    public static final Integer NOT_VERIFIED_UNKNOWN = 0;
     public static final Integer NOT_VERIFIED_CONTACT = 1;
     public static final Integer VERIFIED_ACCOUNT_OWNER = 2;
     public static final Integer VERIFIED_CONTACT_VISUALLY = 3;
