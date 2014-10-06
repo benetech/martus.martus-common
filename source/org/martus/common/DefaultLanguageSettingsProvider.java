@@ -29,6 +29,11 @@ import org.martus.util.DatePreference;
 
 public class DefaultLanguageSettingsProvider implements LanguageSettingsProvider
 {
+	public DefaultLanguageSettingsProvider()
+	{
+		calendarSystem = MiniLocalization.GREGORIAN_SYSTEM;
+	}
+
 	@Override
 	public String getCurrentDateFormat()
 	{
@@ -54,12 +59,13 @@ public class DefaultLanguageSettingsProvider implements LanguageSettingsProvider
 	@Override
 	public String getCurrentCalendarSystem()
 	{
-		return MiniLocalization.GREGORIAN_SYSTEM;
+		return calendarSystem;
 	}
 	
 	@Override
-	public void setCurrentCalendarSystem(String calendarSystem)
+	public void setCurrentCalendarSystem(String newCalendarSystem)
 	{
+		calendarSystem = newCalendarSystem;
 	}
 
 	@Override
@@ -80,5 +86,7 @@ public class DefaultLanguageSettingsProvider implements LanguageSettingsProvider
 		DatePreference preference = MiniLocalization.getDefaultDatePreferenceForLanguage(getCurrentLanguage());
 		setCurrentDateFormat(preference.getDateTemplate());
 	}
+	
+	private String calendarSystem;
 }
 
