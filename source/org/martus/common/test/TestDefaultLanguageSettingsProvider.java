@@ -48,7 +48,7 @@ public class TestDefaultLanguageSettingsProvider extends TestCaseEnhanced
 
 		assertEquals(defaultLanguageProvider.getCurrentCalendarSystem(), MiniLocalization.GREGORIAN_SYSTEM);
 		defaultLanguageProvider.setCurrentCalendarSystem(MiniLocalization.PERSIAN_SYSTEM);
-		assertEquals("Default Language Provider is immutable, should still be Gregorian.",defaultLanguageProvider.getCurrentCalendarSystem(), MiniLocalization.GREGORIAN_SYSTEM);
+		assertEquals(MiniLocalization.PERSIAN_SYSTEM, defaultLanguageProvider.getCurrentCalendarSystem());
 		
 		String defaultDateFormat = "MM/dd/yyyy";
 		assertEquals(defaultLanguageProvider.getCurrentDateFormat(), defaultDateFormat);
