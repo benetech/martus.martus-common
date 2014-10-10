@@ -88,7 +88,7 @@ public class GridData
 		return reusableChoicesLists;
 	}
 
-	private GridRow getRow(int row)
+	public GridRow getRow(int row)
 	{
 		return (GridRow)rows.get(row);
 	}
