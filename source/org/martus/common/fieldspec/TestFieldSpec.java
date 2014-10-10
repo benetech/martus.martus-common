@@ -90,7 +90,7 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertEquals(MultiCalendar.UNKNOWN.toIsoDateString(), spec.getDefaultValue());
 
 		spec = FieldSpec.createFieldSpec(new FieldTypeDateRange());
-		assertEquals(MultiCalendar.UNKNOWN.toIsoDateString(), spec.getDefaultValue());
+		assertEquals(emptyString, spec.getDefaultValue());
 
 		spec = new GridFieldSpec();
 		assertEquals(emptyString, spec.getDefaultValue());
