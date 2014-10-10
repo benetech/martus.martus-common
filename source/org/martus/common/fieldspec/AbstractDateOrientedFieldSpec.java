@@ -47,7 +47,7 @@ public class AbstractDateOrientedFieldSpec extends FieldSpec
 
 	protected String getSystemDefaultValue()
 	{
-		return MultiCalendar.UNKNOWN.toIsoDateString();
+		return "";
 	}
 
 	public void setMinimumDate(String newMinimumDate)
