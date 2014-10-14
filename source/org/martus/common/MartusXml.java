@@ -45,7 +45,9 @@ public class MartusXml
 		return getTagEnd(tagAttachment);
 	}
 
-
+	public static String getXmlSchemaElement() {
+		return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+	}
 
 	public static String getTagStart(String tagName)
 	{
@@ -151,5 +153,6 @@ public class MartusXml
 	public final static String StatusSnapshotName = "Snapshot";
 	public final static String ImmutableOnServerName = "ImmutableOnServer";
 	public final static String AccountsAuthorizedToReadPendingElementName = "AuthorizedToReadKeyPending";
-
+	public final static String FormTemplateElementName = "FormTemplate";
+	public final static String TitleElementName = "Title";
 }

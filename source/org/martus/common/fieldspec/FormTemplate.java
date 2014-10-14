@@ -39,6 +39,7 @@ import org.martus.common.FieldCollection;
 import org.martus.common.FieldCollection.CustomFieldsParseException;
 import org.martus.common.FieldSpecCollection;
 import org.martus.common.MartusLogger;
+import org.martus.common.MartusXml;
 import org.martus.common.MiniLocalization;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusCrypto.AuthorizationFailedException;
@@ -46,6 +47,7 @@ import org.martus.common.crypto.MartusCrypto.CreateDigestException;
 import org.martus.common.crypto.MartusCrypto.MartusSignatureException;
 import org.martus.util.StreamableBase64;
 import org.martus.util.UnicodeUtilities;
+import org.martus.util.UnicodeWriter;
 import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
 import org.martus.util.inputstreamwithseek.FileInputStreamWithSeek;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
@@ -254,6 +256,27 @@ public class FormTemplate
 		finally
 		{
 			out.close();
+		}
+	}
+	
+	public void exportTopSection(File fileToExportIntoXml) throws Exception 
+	{
+		UnicodeWriter writer = new UnicodeWriter(fileToExportIntoXml);
+		try
+		{
+			StringBuffer xmlToExport = new StringBuffer();
+			xmlToExport.append(MartusXml.getXmlSchemaElement());
+			xmlToExport.append(MartusXml.getTagStartWithNewline(MartusXml.FormTemplateElementName));
+			xmlToExport.append(MartusXml.getTagWithData(MartusXml.TitleElementName, getTitle()));
+			xmlToExport.append(getTopSectionXml());
+			xmlToExport.append(MartusXml.getTagEnd(MartusXml.FormTemplateElementName));
+			
+			writer.append(xmlToExport.toString());
+		} 
+		finally
+		{
+			writer.flush();
+			writer.close();
 		}
 	}
 
