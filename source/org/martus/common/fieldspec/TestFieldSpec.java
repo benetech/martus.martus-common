@@ -32,7 +32,6 @@ import org.martus.common.LegacyCustomFields;
 import org.martus.common.MiniLocalization;
 import org.martus.common.bulletin.Bulletin;
 import org.martus.common.test.UnicodeConstants;
-import org.martus.util.MultiCalendar;
 import org.martus.util.TestCaseEnhanced;
 
 
@@ -87,7 +86,7 @@ public class TestFieldSpec extends TestCaseEnhanced
 		assertEquals(FieldSpec.FALSESTRING, spec.getDefaultValue());
 		
 		spec = FieldSpec.createFieldSpec(new FieldTypeDate());
-		assertEquals(MultiCalendar.UNKNOWN.toIsoDateString(), spec.getDefaultValue());
+		assertEquals("", spec.getDefaultValue());
 
 		spec = FieldSpec.createFieldSpec(new FieldTypeDateRange());
 		assertEquals(emptyString, spec.getDefaultValue());
