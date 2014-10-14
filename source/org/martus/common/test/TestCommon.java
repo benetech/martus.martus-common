@@ -91,6 +91,7 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestBulletinZipUtilities.class));
 		suite.addTest(new TestSuite(TestChoiceItem.class));
 		suite.addTest(new TestSuite(TestClientFileDatabase.class));
+		suite.addTest(new TestSuite(TestContactKey.class));		
 		suite.addTest(new TestSuite(TestContactKeys.class));		
 		suite.addTest(new TestSuite(TestCustomDropDownFieldSpec.class));
 		suite.addTest(new TestSuite(TestCustomFields.class));

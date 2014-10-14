@@ -73,10 +73,17 @@ public class ContactKey extends ExternalPublicKey
 	{
 		this.verificationStatus = verificationStatus;
 	}
+	
+	public static boolean isVerified(Integer status)
+	{
+		if(status.equals(VERIFIED_ACCOUNT_OWNER) || status.equals(VERIFIED_ENTERED_20_DIGITS) ||
+			status.equals(VERIFIED_VISUALLY))
+				return true;
+		return false;
+	}
 
 	private boolean sendToByDefault;
 	private Integer	verificationStatus;
-	
 
     public static final Integer NOT_VERIFIED = 0;
     public static final Integer VERIFIED_VISUALLY = 1;
