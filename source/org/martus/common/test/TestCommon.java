@@ -91,16 +91,19 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestBulletinZipUtilities.class));
 		suite.addTest(new TestSuite(TestChoiceItem.class));
 		suite.addTest(new TestSuite(TestClientFileDatabase.class));
+		suite.addTest(new TestSuite(TestContactKeys.class));		
 		suite.addTest(new TestSuite(TestCustomDropDownFieldSpec.class));
 		suite.addTest(new TestSuite(TestCustomFields.class));
 		suite.addTest(new TestSuite(TestCustomFieldSpecValidator.class));
 		suite.addTest(new TestSuite(TestFormTemplate.class));
+		suite.addTest(new TestSuite(TestDammCheckDigitAlgorithm.class));
 		suite.addTest(new TestSuite(TestDatabaseKey.class));
 		suite.addTest(new TestSuite(TestDateFieldSpec.class));
 		suite.addTest(new TestSuite(TestDateRangeFieldSpec.class));
 		suite.addTest(new TestSuite(TestDateUtilities.class));
 		suite.addTest(new TestSuite(TestDefaultLanguageSettingsProvider.class));
 		suite.addTest(new TestSuite(TestDropDownFieldSpec.class));
+		suite.addTest(new TestSuite(TestEnhancedJsonObject.class));
 		suite.addTest(new TestSuite(TestFieldDataPacket.class));
 		suite.addTest(new TestSuite(TestFieldDeskKeys.class));
 		suite.addTest(new TestSuite(TestFieldSpec.class));
@@ -115,6 +118,7 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestKeyShareSaveRestore.class));
 		suite.addTest(new TestSuite(TestMagicWordEntry.class));
 		suite.addTest(new TestSuite(TestMagicWords.class));
+		suite.addTest(new TestSuite(TestMartusAccountAccessToken.class));
 		suite.addTest(new TestSuite(TestMartusDropdownField.class));
 		suite.addTest(new TestSuite(TestMartusField.class));
 		suite.addTest(new TestSuite(TestMartusFlexidate.class));
@@ -135,10 +139,6 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestUniversalId.class));
 		suite.addTest(new TestSuite(TestXmlWriterFilter.class));
 		suite.addTest(new TestSuite(TestZipEntryInputStream.class));
-		suite.addTest(new TestSuite(TestDammCheckDigitAlgorithm.class));
-		suite.addTest(new TestSuite(TestMartusAccountAccessToken.class));
-		suite.addTest(new TestSuite(TestEnhancedJsonObject.class));
-		suite.addTest(new TestSuite(TestContactKeys.class));		
 		return suite;
 	}
 }
