@@ -69,23 +69,6 @@ public class TestAttachmentProxy extends TestCaseEnhanced
 		file.delete();
 	}
 	
-	public void testGetFileExtensionIfPresent()
-	{
-		final String jpegExtension = ".jpg";
-		final String htmlExtension = ".html";
-		
-		String fileName = "Test" + jpegExtension;
-		assertEquals(jpegExtension, AttachmentProxy.getFileExtensionIfPresent(fileName));
-		
-		String fileName2 = "Test2" + htmlExtension;
-		assertEquals(htmlExtension, AttachmentProxy.getFileExtensionIfPresent(fileName2));
-		
-		String fileNameWithoutExtension = "NoExtension";
-		assertNull(AttachmentProxy.getFileExtensionIfPresent(fileNameWithoutExtension));
-		
-		String jpegFileNameWithMultipleDots = "This.Is.A.Test" + jpegExtension;
-		assertEquals(jpegExtension, AttachmentProxy.getFileExtensionIfPresent(jpegFileNameWithMultipleDots));
-	}
 	
 	public void testSetPending() throws Exception
 	{

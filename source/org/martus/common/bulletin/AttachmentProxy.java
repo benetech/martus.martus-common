@@ -35,6 +35,7 @@ import org.martus.common.crypto.SessionKey;
 import org.martus.common.packet.AttachmentPacket;
 import org.martus.common.packet.Packet;
 import org.martus.common.packet.UniversalId;
+import org.martus.util.FileUtils;
 import org.martus.util.StreamableBase64;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 
@@ -67,7 +68,7 @@ public class AttachmentProxy
 			StreamableBase64.InvalidBase64Exception
 	{
 		SessionKey sessionKey = oldProxy.getSessionKey();
-		String extension = getFileExtensionIfPresent(oldProxy.label);
+		String extension = FileUtils.getFileExtensionIncludingPeriodIfPresent(oldProxy.getLabel());
 		File tempFile = File.createTempFile("$$$MartusImportAttachment", extension);
 		tempFile.deleteOnExit();
 		FileOutputStream out = new FileOutputStream(tempFile);
@@ -76,14 +77,6 @@ public class AttachmentProxy
 		AttachmentProxy ap = new AttachmentProxy(tempFile);
 		ap.setLabel(oldProxy.getLabel());
 		return ap;
-	}
-
-	public static String getFileExtensionIfPresent(String fileName)
-	{
-		String[] fileWithExtension = fileName.split("\\.(?=[^\\.]+$)");
-		if(fileWithExtension.length == 2)
-			return "." + fileWithExtension[1];
-		return null;
 	}
 
 	public String getLabel()
