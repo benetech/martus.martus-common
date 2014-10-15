@@ -67,7 +67,8 @@ public class AttachmentProxy
 			StreamableBase64.InvalidBase64Exception
 	{
 		SessionKey sessionKey = oldProxy.getSessionKey();
-		File tempFile = File.createTempFile("$$$MartusImportAttachment", null);
+		String extension = getFileExtensionIfPresent(oldProxy.label);
+		File tempFile = File.createTempFile("$$$MartusImportAttachment", extension);
 		tempFile.deleteOnExit();
 		FileOutputStream out = new FileOutputStream(tempFile);
 		AttachmentPacket.exportRawFileFromXml(attachmentIn, sessionKey, verifier, out);
@@ -75,6 +76,14 @@ public class AttachmentProxy
 		AttachmentProxy ap = new AttachmentProxy(tempFile);
 		ap.setLabel(oldProxy.getLabel());
 		return ap;
+	}
+
+	public static String getFileExtensionIfPresent(String fileName)
+	{
+		String[] fileWithExtension = fileName.split("\\.(?=[^\\.]+$)");
+		if(fileWithExtension.length == 2)
+			return "." + fileWithExtension[1];
+		return null;
 	}
 
 	public String getLabel()
