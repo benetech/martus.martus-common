@@ -320,6 +320,11 @@ public class FormTemplate
 		return false;
 	}
 	
+	public boolean isvalidTemplateXml()
+	{
+		return isvalidTemplateXml(getTopSectionXml(), getBottomSectionXml());
+	}
+	
 	public boolean isvalidTemplateXml(String xmlToValidateTopSection, String xmlToValidateBottomSection)
 	{
 		try
