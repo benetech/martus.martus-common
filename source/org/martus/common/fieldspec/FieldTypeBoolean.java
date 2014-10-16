@@ -68,7 +68,7 @@ public class FieldTypeBoolean extends FieldType
 		return getViewableData(storedData, localization);
 	}
 
-	private String getViewableData(String storedData, MiniLocalization localization)
+	static public String getViewableData(String storedData, MiniLocalization localization)
 	{
 		String tag = "no";
 		if(storedData.equals(FieldSpec.TRUESTRING))
