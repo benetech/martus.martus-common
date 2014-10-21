@@ -239,11 +239,9 @@ public class TestCustomFieldSpecValidator extends TestCaseEnhanced
 		specsTopSectionRequirePlusPrivate.add(FieldSpec.createStandardField(BulletinConstants.TAGPRIVATEINFO, new FieldTypeMultiline()));
 
 		CustomFieldSpecValidator checker = new CustomFieldSpecValidator(specsTopSectionRequirePlusPrivate, specsEmptyBottomSection);
-		assertFalse("Valid?", checker.isValid());
+		assertTrue("Valid?", checker.isValid());
 		Vector errors = checker.getAllErrors();
-		assertEquals(1, errors.size());
-		assertEquals("Incorrect Error code required ", CustomFieldError.CODE_PRIVATE_FIELD_IN_TOP_SECTION, ((CustomFieldError)errors.get(0)).getCode());
-		assertEquals(BulletinConstants.TAGPRIVATEINFO, ((CustomFieldError)errors.get(0)).getTag());
+		assertEquals(0, errors.size());
 	}
 
 	public void testMissingTag() throws Exception
