@@ -248,7 +248,7 @@ public class TestBulletin extends TestCaseEnhanced
 		b.setImmutable();
 		assertEquals(Bulletin.STATUSIMMUTABLE, b.getStatus());
 		assertEquals("No longer Mutable", false, b.isMutable());
-		assertEquals("Now Imutable", true, b.isImmutable());
+		assertEquals("Now Immutable", true, b.isImmutable());
 	}
 
 	public void testEmpty() throws Exception
