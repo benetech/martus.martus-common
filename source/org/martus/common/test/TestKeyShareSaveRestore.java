@@ -76,8 +76,8 @@ public class TestKeyShareSaveRestore extends TestCaseEnhanced
 		assertTrue("Secret didn't match with first and second share?", Arrays.equals(secret,recoveredSecret));
 
 		Vector lastTwoShares = new Vector();
-		lastTwoShares.add(allShares.get(3));
-		lastTwoShares.add(allShares.get(4));
+		lastTwoShares.add(allShares.get(1));
+		lastTwoShares.add(allShares.get(2));
 		recoveredSecret = MartusSecretShare.recoverShares(lastTwoShares);
 		assertTrue("Secret didn't match with last two shares?", Arrays.equals(secret,recoveredSecret));
 
