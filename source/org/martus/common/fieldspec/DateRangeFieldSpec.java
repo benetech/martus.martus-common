@@ -39,11 +39,19 @@ public class DateRangeFieldSpec extends AbstractDateOrientedFieldSpec
 			MiniLocalization localization) throws DataInvalidException
 	{
 		MartusFlexidate mfd = localization.createFlexidateFromStoredData(candidateValue);
+		vaidateBeginEndDate(fullFieldLabel, candidateValue);
 		validateDate(fullFieldLabel, mfd.getBeginDate());
 		validateDate(fullFieldLabel, mfd.getEndDate());
-		
+
 		super.validate(fullFieldLabel, candidateValue, localization);
 	}
 
-
+	private void vaidateBeginEndDate(String label, String candidateValue) throws DateRangeInvertedException
+	{
+		if(candidateValue.isEmpty())
+			return;
+		String isoDate = MartusFlexidate.extractIsoDateFromStoredDate(candidateValue);	
+		if(!candidateValue.startsWith(isoDate))
+			throw new DateRangeInvertedException(label);
+	}
 }
