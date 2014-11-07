@@ -155,7 +155,7 @@ public class BulletinZipImporter
 	{
 		Bulletin original = new Bulletin(security);
 		BulletinZipImporter.loadFromFile(original, inputFile, security);
-		Bulletin imported = new Bulletin(security);
+		Bulletin imported = new Bulletin(security, original.getTopSectionFieldSpecs(), original.getBottomSectionFieldSpecs());
 		imported.createDraftCopyOf(original, null);
 		return imported;
 	}
