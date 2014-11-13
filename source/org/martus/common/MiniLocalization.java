@@ -300,6 +300,11 @@ public class MiniLocalization
 		return getLabel(getCurrentLanguageCode(), "button", code);
 	}
 
+	public String getTooltipLabel(String code)
+	{
+		return getLabel(getCurrentLanguageCode(), "tooltip", code);
+	}
+
 	public String getStatusLabel(String code)
 	{
 		return getLabel(getCurrentLanguageCode(), "status", code);
