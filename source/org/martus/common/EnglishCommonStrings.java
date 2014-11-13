@@ -113,7 +113,7 @@ public class EnglishCommonStrings
 		"field:entrydate=Date Created",
 		"field:keywords=Keywords",
 		"field:publicinfo=Details",
-		"field:privateinfo=Private",
+		"field:privateinfo=Additional Information",
 		"field:summary=Summary",
 		"field:attachments=Attachments",
 		"field:HQSummaryLabel=Contacts",
