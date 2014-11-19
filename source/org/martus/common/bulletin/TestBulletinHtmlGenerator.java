@@ -88,7 +88,7 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 		"<tr><td align='right' valign='top'>Summary</td><td align='left' valign='top'><p></p></td></tr>\n" +
 		"<tr><td align='right' valign='top'>Details</td><td align='left' valign='top'><p></p></td></tr>\n";
 		assertEquals("Public Section HTML not correct?", expectedHtml, generator.getSectionHtmlString(b.getFieldDataPacket()));
-		expectedHtml = "<tr><td align='right' valign='top'>Private</td><td align='left' valign='top'><p></p></td></tr>\n";
+		expectedHtml = "<tr><td align='right' valign='top'>Additional Information</td><td align='left' valign='top'><p></p></td></tr>\n";
 		assertEquals("Private Section HTML not correct?",expectedHtml, generator.getSectionHtmlString(b.getPrivateFieldDataPacket()));
 	}
 
@@ -126,7 +126,7 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 			"<tr><td align='right' valign='top'>Attachments</td><td align='left' valign='top'></td></tr>\n"+
 			"<tr></tr>\n" + 
 			"<tr><td colspan='2' align='left'><u><b>Private Information</b></u></td></tr>\n"+
-			"<tr><td align='right' valign='top'>Private</td><td align='left' valign='top'><p></p></td></tr>\n"+
+			"<tr><td align='right' valign='top'>Additional Information</td><td align='left' valign='top'><p></p></td></tr>\n"+
 			"<tr><td align='right' valign='top'>Attachments</td><td align='left' valign='top'></td></tr>\n"+
 			"<tr></tr>\n" + 
 			"<tr><td colspan='2' align='left'><u><b>Contacts</b></u></td></tr>\n"+
