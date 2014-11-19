@@ -174,6 +174,8 @@ public class MiniLocalization
 	
 	public boolean doesLanguageRequirePadding(String languageCode)
 	{	
+		if(languageCode == null)
+			return false;
 		boolean paddingRequired = languageCode.equals(ARABIC) || languageCode.equals(FARSI) || languageCode.equals(BURMESE);
 		return paddingRequired;
 	}
