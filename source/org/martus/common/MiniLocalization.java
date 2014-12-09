@@ -183,21 +183,21 @@ public class MiniLocalization
 	public void setDateFormatFromLanguage()
 	{
 		currentDateFormat.fillFrom(getDefaultDatePreferenceForLanguage(getCurrentLanguageCode()));
-		updateDateFormateInLanguageProvider();
+		updateDateFormatInLanguageProvider();
 	}
 	
 	public void setMdyOrder(String mdyOrder)
 	{
 		//TODO remove this and set this directly from CurrentUiState
 		currentDateFormat.setMdyOrder(mdyOrder);
-		updateDateFormateInLanguageProvider();
+		updateDateFormatInLanguageProvider();
 	}
 	
 	public void setDateDelimiter(char delimiter)
 	{
 		//TODO remove this and set this directly from CurrentUiState
 		currentDateFormat.setDelimiter(delimiter);
-		updateDateFormateInLanguageProvider();
+		updateDateFormatInLanguageProvider();
 	}
 	
 	public String getCurrentDateFormatCode()
@@ -218,10 +218,10 @@ public class MiniLocalization
 			currentDateFormat.setDelimiter(DatePreference.DEFAULT_DATE_DELIMITER);
 		}
 		
-		updateDateFormateInLanguageProvider();
+		updateDateFormatInLanguageProvider();
 	}
 
-	private void updateDateFormateInLanguageProvider()
+	private void updateDateFormatInLanguageProvider()
 	{
 		languageSettings.setCurrentDateFormat(currentDateFormat.getRawDateTemplate());
 	}
