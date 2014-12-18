@@ -134,7 +134,7 @@ public class MiniLocalization
 		return value;
 	}
 
-	protected SortedSet getAllKeysSorted()
+	public SortedSet getAllKeysSorted()
 	{
 		Set allKeys = textResources.keySet();
 		SortedSet sorted = new TreeSet(allKeys);
