@@ -70,6 +70,7 @@ public class MartusLogger
 		Date now = new Date();
 		DateFormat df = new SimpleDateFormat("EEE MM/dd HH:mm:ss zzz");
 		destination.println(df.format(now) + " " + text);
+		destination.flush();
 	}
 
 	private static boolean canLog()
