@@ -52,6 +52,7 @@ import org.martus.common.fieldspec.TestMiniFieldSpec;
 import org.martus.common.network.TestServerBulletinSummary;
 import org.martus.common.network.TestShortServerBulletinSummary;
 import org.martus.common.utilities.TestDateUtilities;
+import org.martus.common.utilities.TestJpegGeoTagReader;
 import org.martus.common.utilities.TestMartusFlexidate;
 import org.miradi.utils.TestEnhancedJsonObject;
 
@@ -115,6 +116,7 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestGridFieldSpec.class));
 		suite.addTest(new TestSuite(TestGridRow.class));
 		suite.addTest(new TestSuite(TestHeadquartersKeys.class));
+		suite.addTest(new TestSuite(TestJpegGeoTagReader.class));
 		suite.addTest(new TestSuite(TestLeafNodeCache.class));
 		suite.addTest(new TestSuite(TestKeyShareSaveRestore.class));
 		suite.addTest(new TestSuite(TestMagicWordEntry.class));
