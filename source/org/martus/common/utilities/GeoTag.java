@@ -21,6 +21,7 @@
  * 
  * Changes made by Benetech:
  * 1. Added package declaration of org.martus.common.utilities
+ * 2. Added hasData member and getter
  */
 
 package org.martus.common.utilities;
@@ -39,6 +40,7 @@ public final class GeoTag {
     private double              altitude, latitude, longitude;
     private GregorianCalendar   calendar;
     private String              latitudeRef, longitudeRef;
+    private boolean				hasData;
     
     /**
      * Default constructor with no parameters.  Information is added through
@@ -133,6 +135,7 @@ public final class GeoTag {
      */
     public void setAltitude(double altitude) {
         this.altitude = altitude;
+        this.hasData = true;
     }
     
     /**
@@ -148,6 +151,7 @@ public final class GeoTag {
             calendar.set(Calendar.MONTH,        Integer.parseInt(st.nextToken()) - 1);
             calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(st.nextToken()));
         }
+        this.hasData = true;
     }    
     
     /**
@@ -165,6 +169,7 @@ public final class GeoTag {
             if (this.latitude > 0)
                 this.latitude *= -1;            
         }        
+        this.hasData = true;
     }    
     
     /**
@@ -182,6 +187,7 @@ public final class GeoTag {
             if (latitude > 0)
                 latitude *= -1;            
         }
+        this.hasData = true;
     }  
     
     /**
@@ -199,6 +205,7 @@ public final class GeoTag {
             if (this.longitude > 0)
                 this.longitude *= -1;            
         }         
+        this.hasData = true;
     }    
     
     /**
@@ -216,6 +223,7 @@ public final class GeoTag {
             if (longitude > 0)
                 longitude *= -1;            
         }        
+        this.hasData = true;
     }     
     
     /**
@@ -229,6 +237,7 @@ public final class GeoTag {
         calendar.set(Calendar.HOUR_OF_DAY, (int) hour);
         calendar.set(Calendar.MINUTE,      (int) min);
         calendar.set(Calendar.SECOND,      (int) sec);
+        this.hasData = true;
     }
     
     /**
@@ -238,5 +247,15 @@ public final class GeoTag {
     public String toString() {
         return latitude + ", " + longitude + ", " + altitude + " " + getTimestamp();
     }
+
+    /**
+     * Added by Benetech
+     * 
+     * @return true if geo data was set; otherwise false
+     */
+	public boolean hasData()
+	{
+		return hasData;
+	}
 
 }
