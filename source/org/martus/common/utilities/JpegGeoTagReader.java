@@ -27,6 +27,7 @@
  *    c. Commented out unused local variable: segmentIdentifier
  *    d. Commented out 2 unnecessary casts to long
  * 3. Refactored to expose readMetadata(inputStream)
+ * 4. Throw specific exception class for non-JPEG file
  */
 
 package org.martus.common.utilities;
@@ -232,6 +233,14 @@ public class JpegGeoTagReader {
 
         return geoLocation;
 	}
+	
+	public static class NotJpegException extends IOException
+	{
+		public NotJpegException()
+		{
+			super("This file is not a jpeg file.");
+		}
+	}
     
 	private void readSegments(BufferedInputStream inputStream) throws IOException
 	{
@@ -246,7 +255,7 @@ public class JpegGeoTagReader {
 						&& (headerBytes[1] & 0xFF) == 0xD8;
 			}
 			if (!hasValidHeader)
-				throw new IOException("This file is not a jpeg file.");
+				throw new NotJpegException();
 //			offset += 2;
 			do {
 				/*byte segmentIdentifier = (byte) (*/inputStream.read() /*& 0xFF)*/;
@@ -274,6 +283,8 @@ public class JpegGeoTagReader {
 				}
 			} while (true);
 			inputStream.close();
+		} catch (NotJpegException e) {
+			throw e;
 		} catch (IOException ioe) {
 			throw new IOException("Exception processing Jpeg file: " + ioe.getMessage(), ioe);
 		}
