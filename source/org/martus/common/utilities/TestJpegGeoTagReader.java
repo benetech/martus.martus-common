@@ -40,7 +40,7 @@ public class TestJpegGeoTagReader extends TestCaseEnhanced
 	@Test
 	public void test() throws Exception
 	{
-		InputStream rawIn = getClass().getResourceAsStream("sample.jpg");
+		InputStream rawIn = getClass().getResourceAsStream("SampleWithGeoTag.jpg");
 		JpegGeoTagReader reader = new JpegGeoTagReader();
 		GeoTag geoTag = reader.readMetadata(rawIn);
 		assertEquals(45.50888888888889, geoTag.getLatitude(), 0.00001);
