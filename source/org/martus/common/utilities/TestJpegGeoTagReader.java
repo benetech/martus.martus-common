@@ -38,13 +38,23 @@ public class TestJpegGeoTagReader extends TestCaseEnhanced
 	}
 
 	@Test
-	public void test() throws Exception
+	public void testWithGeoTag() throws Exception
 	{
 		InputStream rawIn = getClass().getResourceAsStream("SampleWithGeoTag.jpg");
 		JpegGeoTagReader reader = new JpegGeoTagReader();
 		GeoTag geoTag = reader.readMetadata(rawIn);
+		assertTrue(geoTag.hasData());
 		assertEquals(45.50888888888889, geoTag.getLatitude(), 0.00001);
 		assertEquals(-122.67361111111111, geoTag.getLongitude(), 0.00001);
 		assertEquals(26.0, geoTag.getAltitude(), 0.1);
+	}
+
+	@Test
+	public void testWithoutGeoTag() throws Exception
+	{
+		InputStream rawIn = getClass().getResourceAsStream("SampleWithoutGeoTag.jpg");
+		JpegGeoTagReader reader = new JpegGeoTagReader();
+		GeoTag geoTag = reader.readMetadata(rawIn);
+		assertFalse(geoTag.hasData());
 	}
 }
