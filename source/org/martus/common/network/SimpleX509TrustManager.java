@@ -60,7 +60,7 @@ public class SimpleX509TrustManager implements X509TrustManager
 		throws CertificateException
 	{
 		calledCheckServerTrusted = true;
-		if(!authType.equals("RSA"))
+		if(!authType.equals("RSA") && !authType.equals("DHE_RSA"))
 			throw new CertificateException("Only RSA supported, not " + authType);
 		if(chain.length != 3)
 			throw new CertificateException("Need three certificates");
