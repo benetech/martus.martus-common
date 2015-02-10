@@ -93,6 +93,16 @@ public class FieldDataPacket extends Packet
 	{
 		return localId.startsWith(prefix);
 	}
+	
+	public String getxForms()
+	{
+		return xForms;
+	}
+	
+	public void setXForms(String xFormsToUse)
+	{
+		xForms = xFormsToUse;
+	}
 
 	public boolean isEncrypted()
 	{
@@ -193,6 +203,7 @@ public class FieldDataPacket extends Packet
 
 	public void clearAll()
 	{
+		xForms = null;
 		fields.clearAllData();
 		clearAttachments();
 		clearAuthorizedToRead();
@@ -441,6 +452,7 @@ public class FieldDataPacket extends Packet
 	private boolean encryptedFlag;
 	private FieldCollection fields;
 	private Vector attachments;
+	private String xForms;
 
 	private static final String prefix = "F-";
 	private HeadquartersKeys authorizedToReadKeys;

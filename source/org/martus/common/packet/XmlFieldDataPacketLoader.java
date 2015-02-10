@@ -73,6 +73,8 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 			return new SimpleXmlStringLoader(tag);
 		else if(tag.equals(AuthorizedSessionKeys.AUTHORIZED_SESSION_KEYS_TAG))
 			return new AuthorizedSessionKeys.XmlAuthorizedLoader(authorizedEncryptedHQSessionKeyStrings);
+		else if(tag.equals(MartusXml.XFormsElementName))
+			return new SimpleXmlStringLoader(tag);
 		else
 			return super.startElement(tag);
 	}
@@ -109,6 +111,8 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 					encryptedData = value;
 				else if(tag.equals(MartusXml.HQSessionKeyElementName))
 					encryptedHQSessionKey = new SessionKey(StreamableBase64.decode(value));
+				else if(tag.equals(MartusXml.XFormsElementName))
+					fdp.setXForms(value);
 			}
 			else if(tag.equals(AuthorizedSessionKeys.AUTHORIZED_SESSION_KEYS_TAG))
 			{
@@ -151,6 +155,7 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 			stringTags.add(MartusXml.FieldListElementName);
 			stringTags.add(MartusXml.HQSessionKeyElementName);
 			stringTags.add(MartusXml.EncryptedDataElementName);
+			stringTags.add(MartusXml.XFormsElementName);
 		}
 		return stringTags;
 	}
