@@ -778,6 +778,28 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		}
 		assertNotEquals("Set the uid?", fdp.getUniversalId(), loadedBad.getUniversalId());
 	}
+	
+	public void testXForms() throws Exception
+	{
+		String expectedXForms = "<xforms><xforms_model>should have model elements</xforms_model><xforms_instance>should contain instance elements</xforms_instance></xforms>";
+		fdp.setXForms(expectedXForms);
+		
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		fdp.writeXml(out, security);
+		String result = new String(out.toByteArray(), "UTF-8");
+		out.close();
+
+		assertContains(MartusXml.getTagStart(MartusXml.XFormsElementName), result);
+
+		UniversalId uid = UniversalIdForTesting.createFromAccountAndPrefix("other acct", "");
+		FieldDataPacket got = new FieldDataPacket(uid, fdp.getFieldSpecs());
+		byte[] bytes = result.getBytes("UTF-8");
+		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
+		got.loadFromXml(in, security);
+
+		assertFalse("Did not load xforms?", got.getxForms().isEmpty());
+		assertEquals("incorrect ", expectedXForms, got.getxForms());
+	}
 
 	void verifyLoadException(byte[] input, Class expectedExceptionClass)
 	{
