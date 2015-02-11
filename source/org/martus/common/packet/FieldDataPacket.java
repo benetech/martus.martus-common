@@ -345,6 +345,8 @@ public class FieldDataPacket extends Packet
 		if(isEncrypted() && !isEmpty())
 			writeElement(dest, MartusXml.EncryptedFlagElementName, "");
 
+		writeElement(dest, MartusXml.XFormsElementName, getxForms());
+		
 		String xmlSpecs = fields.getSpecsXml();
 		
 		if(hasCustomFieldSpecs())
