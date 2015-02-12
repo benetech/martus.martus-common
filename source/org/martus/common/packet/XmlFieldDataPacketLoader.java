@@ -37,6 +37,7 @@ import org.martus.common.FieldCollection;
 import org.martus.common.GridData;
 import org.martus.common.MartusXml;
 import org.martus.common.XmlCustomFieldsLoader;
+import org.martus.common.XmlXFormsLoader;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.crypto.SessionKey;
 import org.martus.common.field.MartusField;
@@ -69,12 +70,12 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 			return new XmlAttachmentLoader(tag);
 		else if(tag.equals(MartusXml.CustomFieldSpecsElementName))
 			return new XmlCustomFieldsLoader();
+		else if(tag.equals(MartusXml.XFormsElementName))
+			return new XmlXFormsLoader();
 		else if(getTagsContainingStrings().contains(tag))
 			return new SimpleXmlStringLoader(tag);
 		else if(tag.equals(AuthorizedSessionKeys.AUTHORIZED_SESSION_KEYS_TAG))
 			return new AuthorizedSessionKeys.XmlAuthorizedLoader(authorizedEncryptedHQSessionKeyStrings);
-		else if(tag.equals(MartusXml.XFormsElementName))
-			return new SimpleXmlStringLoader(tag);
 		else
 			return super.startElement(tag);
 	}
@@ -99,6 +100,11 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 				XmlCustomFieldsLoader loader = (XmlCustomFieldsLoader)ended;
 				fdp.setCustomFields(new FieldCollection(loader.getFieldSpecs()));
 				foundModernFieldSpecs = true;
+			}
+			else if (tag.equals(MartusXml.XFormsElementName))
+			{
+				XmlXFormsLoader loader = (XmlXFormsLoader)ended;
+				fdp.setXForms(loader.getText());
 			}
 			else if(getTagsContainingStrings().contains(tag))
 			{
