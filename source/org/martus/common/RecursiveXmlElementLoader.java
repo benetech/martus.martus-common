@@ -85,7 +85,7 @@ public class RecursiveXmlElementLoader extends AttributesOnlyXmlLoader
 		if (elementAttributesKeyToValueMap.isEmpty())
 			return "";
 		
-		attributesBuilder.append(" ");	
+		attributesBuilder.append(SINGLE_SPACE);	
 		Set<String> attributeKeys = elementAttributesKeyToValueMap.keySet();
 		for (String attributeKey : attributeKeys)
 		{
@@ -93,7 +93,7 @@ public class RecursiveXmlElementLoader extends AttributesOnlyXmlLoader
 			attributesBuilder.append("=");
 			String attributeValue = elementAttributesKeyToValueMap.get(attributeKey).toString();
 			attributesBuilder.append("\"" + attributeValue + "\"");
-			attributesBuilder.append(" ");
+			attributesBuilder.append(SINGLE_SPACE);
 		}
 		
 		return attributesBuilder.toString();
@@ -105,4 +105,6 @@ public class RecursiveXmlElementLoader extends AttributesOnlyXmlLoader
 	}
 	
 	private StringBuilder elementValue;
+	
+	private static final String SINGLE_SPACE = " ";
 }
