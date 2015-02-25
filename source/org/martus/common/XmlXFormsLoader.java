@@ -28,7 +28,6 @@ package org.martus.common;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.xml.sax.SAXParseException;
 
-//FIXME this is simple string loader and needs to use JavaRosa to load the data into a xforms model/instance
 public class XmlXFormsLoader extends SimpleXmlDefaultLoader
 {
 	public XmlXFormsLoader()
