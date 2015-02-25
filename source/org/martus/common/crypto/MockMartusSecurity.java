@@ -113,18 +113,23 @@ public class MockMartusSecurity extends MartusSecurity
 
 	public void createKeyPairForServer() throws Exception
 	{
-		setKeyPairFromData(StreamableBase64.decode(nonEncryptedSampleServerKeyPair));
+		// NOTE: We should use a hard-coded keypair like we do for clients,
+		// for speed, but Java 7 requires SSL keys to be at least 1024 bits
+		createKeyPair(SMALLEST_LEGAL_KEY_FOR_TESTING);
 	}
 
 	public void createKeyPairForOtherServer() throws Exception
 	{
-		setKeyPairFromData(StreamableBase64.decode(nonEncryptedSampleOtherServerKeyPair));
+		// NOTE: We should use a hard-coded keypair like we do for clients,
+		// for speed, but Java 7 requires SSL keys to be at least 1024 bits
+		createKeyPair(SMALLEST_LEGAL_KEY_FOR_TESTING);
 	}
 
 	public void createKeyPairForAmplifier() throws Exception
 	{
-		//TODO:This should create a unique keypair for the amplifier not reuse the HQKeyPair
-		setKeyPairFromData(StreamableBase64.decode(nonEncryptedSampleHQKeyPair));
+		// NOTE: We should use a hard-coded keypair like we do for clients,
+		// for speed, but Java 7 requires SSL keys to be at least 1024 bits
+		createKeyPair(SMALLEST_LEGAL_KEY_FOR_TESTING);
 	}
 
 	public void createKeyPair()
@@ -158,13 +163,13 @@ public class MockMartusSecurity extends MartusSecurity
 		return super.createSignatureVerifier(signedByPublicKey);
 	}
 	
-	static final int SMALLEST_LEGAL_KEY_FOR_TESTING = 512;
+	static final int SMALLEST_LEGAL_KEY_FOR_TESTING = 1024;
 
 	public boolean fakeSigVerifyFailure;
 	public boolean fakeAuthorizationFailure;
 	public boolean fakeKeyPairVersionFailure;
 
-	final static String nonEncryptedSampleKeyPair = 
+	private final static String nonEncryptedSampleKeyPair = 
 		"rO0ABXNyABVqYXZhLnNlY3VyaXR5LktleVBhaXKXAww60s0SkwIAAkwACnByaX" + 
 		"ZhdGVLZXl0ABpMamF2YS9zZWN1cml0eS9Qcml2YXRlS2V5O0wACXB1YmxpY0tl" +
 		"eXQAGUxqYXZhL3NlY3VyaXR5L1B1YmxpY0tleTt4cHNyADFvcmcuYm91bmN5Y2" +
@@ -207,7 +212,7 @@ public class MockMartusSecurity extends MartusSecurity
 		"VyLkpDRVJTQVB1YmxpY0tleSUiag5b+myEAgACTAAHbW9kdWx1c3EAfgAFTAAO" +
 		"cHVibGljRXhwb25lbnRxAH4ABXhwcQB+AA1xAH4AIw==";
 
-	final static String nonEncryptedSampleOtherClientKeyPair = 
+	private final static String nonEncryptedSampleOtherClientKeyPair = 
 		"rO0ABXNyABVqYXZhLnNlY3VyaXR5LktleVBhaXKXAww60s0SkwIAAkwACnByaX" +
 		"ZhdGVLZXl0ABpMamF2YS9zZWN1cml0eS9Qcml2YXRlS2V5O0wACXB1YmxpY0tl" +
 		"eXQAGUxqYXZhL3NlY3VyaXR5L1B1YmxpY0tleTt4cHNyADFvcmcuYm91bmN5Y2" +
@@ -244,7 +249,7 @@ public class MockMartusSecurity extends MartusSecurity
 		"B1YmxpY0tleSUiag5b+myEAgACTAAHbW9kdWx1c3EAfgAFTAAOcHVibGljRXhw" +
 		"b25lbnRxAH4ABXhwcQB+AA1xAH4AIw==";
 
-	final static String nonEncryptedSampleHQKeyPair = 
+	private final static String nonEncryptedSampleHQKeyPair = 
 		"rO0ABXNyABVqYXZhLnNlY3VyaXR5LktleVBhaXKXAww60s0SkwIAAkwACnByaX" +
 		"ZhdGVLZXl0ABpMamF2YS9zZWN1cml0eS9Qcml2YXRlS2V5O0wACXB1YmxpY0tl" +
 		"eXQAGUxqYXZhL3NlY3VyaXR5L1B1YmxpY0tleTt4cHNyADFvcmcuYm91bmN5Y2" +
@@ -281,78 +286,4 @@ public class MockMartusSecurity extends MartusSecurity
 		"B1YmxpY0tleSUiag5b+myEAgACTAAHbW9kdWx1c3EAfgAFTAAOcHVibGljRXhw" +
 		"b25lbnRxAH4ABXhwcQB+AA1xAH4AIw==";
 			
-	final static String nonEncryptedSampleServerKeyPair = 
-		"rO0ABXNyABVqYXZhLnNlY3VyaXR5LktleVBhaXKXAww60s0SkwIAAkwACnByaX" +
-		"ZhdGVLZXl0ABpMamF2YS9zZWN1cml0eS9Qcml2YXRlS2V5O0wACXB1YmxpY0tl" +
-		"eXQAGUxqYXZhL3NlY3VyaXR5L1B1YmxpY0tleTt4cHNyADFvcmcuYm91bmN5Y2" +
-		"FzdGxlLmpjZS5wcm92aWRlci5KQ0VSU0FQcml2YXRlQ3J0S2V5bLqHzgJzVS4C" +
-		"AAZMAA5jcnRDb2VmZmljaWVudHQAFkxqYXZhL21hdGgvQmlnSW50ZWdlcjtMAA" +
-		"5wcmltZUV4cG9uZW50UHEAfgAFTAAOcHJpbWVFeHBvbmVudFFxAH4ABUwABnBy" +
-		"aW1lUHEAfgAFTAAGcHJpbWVRcQB+AAVMAA5wdWJsaWNFeHBvbmVudHEAfgAFeH" +
-		"IALm9yZy5ib3VuY3ljYXN0bGUuamNlLnByb3ZpZGVyLkpDRVJTQVByaXZhdGVL" +
-		"ZXmyNYtAHTGFVgIABEwAB21vZHVsdXNxAH4ABUwAEHBrY3MxMkF0dHJpYnV0ZX" +
-		"N0ABVMamF2YS91dGlsL0hhc2h0YWJsZTtMAA5wa2NzMTJPcmRlcmluZ3QAEkxq" +
-		"YXZhL3V0aWwvVmVjdG9yO0wAD3ByaXZhdGVFeHBvbmVudHEAfgAFeHBzcgAUam" +
-		"F2YS5tYXRoLkJpZ0ludGVnZXKM/J8fqTv7HQMABkkACGJpdENvdW50SQAJYml0" +
-		"TGVuZ3RoSQATZmlyc3ROb256ZXJvQnl0ZU51bUkADGxvd2VzdFNldEJpdEkABn" +
-		"NpZ251bVsACW1hZ25pdHVkZXQAAltCeHIAEGphdmEubGFuZy5OdW1iZXKGrJUd" +
-		"C5TgiwIAAHhw///////////////+/////gAAAAF1cgACW0Ks8xf4BghU4AIAAH" +
-		"hwAAAAQI72k2MOk5pqKoiXgWADfbe+SdHPoJww3nvImFTaKMUFnuuILAJ6at9C" +
-		"XXjLnbiOFzMfnhsJQJDkc92D1bWN+1N4c3IAE2phdmEudXRpbC5IYXNodGFibG" +
-		"UTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAAAAAI" +
-		"dwgAAAALAAAAAHhzcgAQamF2YS51dGlsLlZlY3RvctmXfVuAO68BAgADSQARY2" +
-		"FwYWNpdHlJbmNyZW1lbnRJAAxlbGVtZW50Q291bnRbAAtlbGVtZW50RGF0YXQA" +
-		"E1tMamF2YS9sYW5nL09iamVjdDt4cAAAAAAAAAAAdXIAE1tMamF2YS5sYW5nLk" +
-		"9iamVjdDuQzlifEHMpbAIAAHhwAAAACnBwcHBwcHBwcHBzcQB+AAr/////////" +
-		"//////7////+AAAAAXVxAH4ADgAAAEA63gB0FQ+Z73rs8xcniPeH5PE4Rm9PX2" +
-		"qrcLcx/3ozAbJ/8Gmqt3dsVCvhP6cUSpnPITyK4coxwBoPKN2DY6E5eHNxAH4A" +
-		"Cv///////////////v////4AAAABdXEAfgAOAAAAIKuCz9V1BAo/fF3o2pGQkg" +
-		"4d5LtBO1jBeqIUZlWRzQEqeHNxAH4ACv///////////////v////4AAAABdXEA" +
-		"fgAOAAAAIJIW3SbfqRjyv7//ghwAjYURLpDNgKlniedqhVzI7yEFeHNxAH4ACv" +
-		"///////////////v////4AAAABdXEAfgAOAAAAIGEWjIfi06zDWhGA13tFzBE/" +
-		"o0KZ6kQ3bC9lV5EL682ReHNxAH4ACv///////////////v////4AAAABdXEAfg" +
-		"AOAAAAILFk5/hYuwwCMfttHf1uYrPeAa/U96kiTAa4NDnPa4OHeHNxAH4ACv//" +
-		"/////////////v////4AAAABdXEAfgAOAAAAIM5P6qDCAc8fH2UxyeX0UaSnOu" +
-		"2HEdD1xeS3WhQ5VRTVeHNxAH4ACv///////////////v////4AAAABdXEAfgAO" +
-		"AAAAARF4c3IALW9yZy5ib3VuY3ljYXN0bGUuamNlLnByb3ZpZGVyLkpDRVJTQV" +
-		"B1YmxpY0tleSUiag5b+myEAgACTAAHbW9kdWx1c3EAfgAFTAAOcHVibGljRXhw" +
-		"b25lbnRxAH4ABXhwcQB+AA1xAH4AIw==";
-
-	final static String nonEncryptedSampleOtherServerKeyPair = 
-		"rO0ABXNyABVqYXZhLnNlY3VyaXR5LktleVBhaXKXAww60s0SkwIAAkwACnByaX" +
-		"ZhdGVLZXl0ABpMamF2YS9zZWN1cml0eS9Qcml2YXRlS2V5O0wACXB1YmxpY0tl" +
-		"eXQAGUxqYXZhL3NlY3VyaXR5L1B1YmxpY0tleTt4cHNyADFvcmcuYm91bmN5Y2" +
-		"FzdGxlLmpjZS5wcm92aWRlci5KQ0VSU0FQcml2YXRlQ3J0S2V5bLqHzgJzVS4C" +
-		"AAZMAA5jcnRDb2VmZmljaWVudHQAFkxqYXZhL21hdGgvQmlnSW50ZWdlcjtMAA" +
-		"5wcmltZUV4cG9uZW50UHEAfgAFTAAOcHJpbWVFeHBvbmVudFFxAH4ABUwABnBy" +
-		"aW1lUHEAfgAFTAAGcHJpbWVRcQB+AAVMAA5wdWJsaWNFeHBvbmVudHEAfgAFeH" +
-		"IALm9yZy5ib3VuY3ljYXN0bGUuamNlLnByb3ZpZGVyLkpDRVJTQVByaXZhdGVL" +
-		"ZXmyNYtAHTGFVgIABEwAB21vZHVsdXNxAH4ABUwAEHBrY3MxMkF0dHJpYnV0ZX" +
-		"N0ABVMamF2YS91dGlsL0hhc2h0YWJsZTtMAA5wa2NzMTJPcmRlcmluZ3QAEkxq" +
-		"YXZhL3V0aWwvVmVjdG9yO0wAD3ByaXZhdGVFeHBvbmVudHEAfgAFeHBzcgAUam" +
-		"F2YS5tYXRoLkJpZ0ludGVnZXKM/J8fqTv7HQMABkkACGJpdENvdW50SQAJYml0" +
-		"TGVuZ3RoSQATZmlyc3ROb256ZXJvQnl0ZU51bUkADGxvd2VzdFNldEJpdEkABn" +
-		"NpZ251bVsACW1hZ25pdHVkZXQAAltCeHIAEGphdmEubGFuZy5OdW1iZXKGrJUd" +
-		"C5TgiwIAAHhw///////////////+/////gAAAAF1cgACW0Ks8xf4BghU4AIAAH" +
-		"hwAAAAQKb09RsmwiykebU90yRF0nt9SvEnEzp/dgI0Gy9qUtp4hUAsdmzRvuOe" +
-		"HxiJjbPGibPY3bREMx5vB5Gh2i1E6pN4c3IAE2phdmEudXRpbC5IYXNodGFibG" +
-		"UTuw8lIUrkuAMAAkYACmxvYWRGYWN0b3JJAAl0aHJlc2hvbGR4cD9AAAAAAAAI" +
-		"dwgAAAALAAAAAHhzcgAQamF2YS51dGlsLlZlY3RvctmXfVuAO68BAgADSQARY2" +
-		"FwYWNpdHlJbmNyZW1lbnRJAAxlbGVtZW50Q291bnRbAAtlbGVtZW50RGF0YXQA" +
-		"E1tMamF2YS9sYW5nL09iamVjdDt4cAAAAAAAAAAAdXIAE1tMamF2YS5sYW5nLk" +
-		"9iamVjdDuQzlifEHMpbAIAAHhwAAAACnBwcHBwcHBwcHBzcQB+AAr/////////" +
-		"//////7////+AAAAAXVxAH4ADgAAAEBOkWRJAy4zIDlGOzYvL+qUdzJTXa6yHd" +
-		"0uNqNhm3JIsGqKnkpGRkrJFeD13RB+Xcxq2ekB8wt9P8GPdxVWk5bxeHNxAH4A" +
-		"Cv///////////////v////4AAAABdXEAfgAOAAAAIG2V3RPSNpr9he0kCpAMZo" +
-		"3IyMb1+3x+yz6K4i7I2xReeHNxAH4ACv///////////////v////4AAAABdXEA" +
-		"fgAOAAAAIJtJGcMNCv4f01Dt3KKdF5S1XPzcfw9WErW67nbHCimReHNxAH4ACv" +
-		"///////////////v////4AAAABdXEAfgAOAAAAIDkkunhsdrGvbfY2VFyqIrAm" +
-		"6YLB96dWuocgp2/lA/Y5eHNxAH4ACv///////////////v////4AAAABdXEAfg" +
-		"AOAAAAIK/9g5jKg+zOvEqnLUDUK8qraWLXwzODrs31/TFH+nNheHNxAH4ACv//" +
-		"/////////////v////4AAAABdXEAfgAOAAAAIPLcGH/M+HMpk1Zm5onTE2ylYG" +
-		"u4XIcwmL5Kx5uNUNZzeHNxAH4ACv///////////////v////4AAAABdXEAfgAO" +
-		"AAAAARF4c3IALW9yZy5ib3VuY3ljYXN0bGUuamNlLnByb3ZpZGVyLkpDRVJTQV" +
-		"B1YmxpY0tleSUiag5b+myEAgACTAAHbW9kdWx1c3EAfgAFTAAOcHVibGljRXhw" +
-		"b25lbnRxAH4ABXhwcQB+AA1xAH4AIw==";
-		
 }
