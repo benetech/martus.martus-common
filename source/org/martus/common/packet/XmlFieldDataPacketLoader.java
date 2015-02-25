@@ -104,7 +104,8 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 			else if (tag.equals(MartusXml.XFormsElementName))
 			{
 				XmlXFormsLoader loader = (XmlXFormsLoader)ended;
-				fdp.setXForms(loader.getText());
+				fdp.setXFormsModelAsString(loader.getXFormsModelAsString());
+				fdp.setXFormsInstanceAsString(loader.getXFormsInstanceAsString());
 			}
 			else if(getTagsContainingStrings().contains(tag))
 			{
@@ -117,8 +118,6 @@ public class XmlFieldDataPacketLoader extends XmlPacketLoader
 					encryptedData = value;
 				else if(tag.equals(MartusXml.HQSessionKeyElementName))
 					encryptedHQSessionKey = new SessionKey(StreamableBase64.decode(value));
-				else if(tag.equals(MartusXml.XFormsElementName))
-					fdp.setXForms(value);
 			}
 			else if(tag.equals(AuthorizedSessionKeys.AUTHORIZED_SESSION_KEYS_TAG))
 			{
