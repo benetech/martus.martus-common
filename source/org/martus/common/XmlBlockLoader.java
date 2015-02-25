@@ -28,54 +28,32 @@ package org.martus.common;
 import org.martus.util.xml.SimpleXmlDefaultLoader;
 import org.xml.sax.SAXParseException;
 
-//FIXME this is simple string loader and needs to use JavaRosa to load the data into a xforms model/instance
-public class XmlXFormsLoader extends SimpleXmlDefaultLoader
+public class XmlBlockLoader extends SimpleXmlDefaultLoader
 {
-	public XmlXFormsLoader()
+	public XmlBlockLoader(String tag)
 	{
-		super(MartusXml.XFormsElementName);
+		super(tag);
+		
+		stringBuilder = new StringBuilder();
 	}
 	
 	@Override
 	public SimpleXmlDefaultLoader startElement(String tag) throws SAXParseException
 	{
-		if (tag.equals(MartusXml.XFormsModelElementName))
-			return new XmlBlockLoader(tag);
-
-		if (tag.equals(MartusXml.XFormsInstanceElementName))
-			return new XmlBlockLoader(tag);
-		
-		return super.startElement(tag);
+		return new RecursiveXmlElementLoader(tag);
 	}
 	
 	@Override
 	public void endElement(String tag, SimpleXmlDefaultLoader ended) throws SAXParseException
 	{
-		if (tag.equals(MartusXml.XFormsModelElementName)) 
-		{
-			XmlBlockLoader xformsModelLoader = (XmlBlockLoader) ended;
-			xFormsModelAsString = xformsModelLoader.getLoadedValue();
-		}
-		
-		if (tag.equals(MartusXml.XFormsInstanceElementName))
-		{
-			XmlBlockLoader xformsInstanceLoader = (XmlBlockLoader) ended;
-			xFormsInstanceAsString =  xformsInstanceLoader.getLoadedValue();
-		}
-
-		super.endElement(tag, ended);
+		RecursiveXmlElementLoader loader = (RecursiveXmlElementLoader)ended;
+		stringBuilder.append(loader.getBuiltElement());
 	}
 	
-	public String getXFormsModelAsString()
+	public String getLoadedValue()
 	{
-		return xFormsModelAsString;
+		return stringBuilder.toString();
 	}
 	
-	public String getXFormsInstanceAsString()
-	{
-		return xFormsInstanceAsString;
-	}
-
-	private String xFormsModelAsString;
-	private String xFormsInstanceAsString;
+	private StringBuilder stringBuilder;
 }

@@ -156,4 +156,6 @@ public class MartusXml
 	public final static String FormTemplateElementName = "FormTemplate";
 	public final static String TitleElementName = "Title";
 	public final static String XFormsElementName = "XForms";
+	public final static String XFormsModelElementName = "xforms_model";
+	public final static String XFormsInstanceElementName = "xforms_instance";
 }

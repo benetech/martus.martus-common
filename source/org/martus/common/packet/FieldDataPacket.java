@@ -43,15 +43,15 @@ import org.martus.common.MartusXml;
 import org.martus.common.XmlWriterFilter;
 import org.martus.common.bulletin.AttachmentProxy;
 import org.martus.common.crypto.MartusCrypto;
-import org.martus.common.crypto.SessionKey;
 import org.martus.common.crypto.MartusCrypto.DecryptionException;
+import org.martus.common.crypto.SessionKey;
 import org.martus.common.field.MartusField;
 import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.FieldType;
 import org.martus.common.fieldspec.FieldTypeUnknown;
 import org.martus.util.StreamableBase64;
-import org.martus.util.UnicodeReader;
 import org.martus.util.StreamableBase64.InvalidBase64Exception;
+import org.martus.util.UnicodeReader;
 import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
 import org.martus.util.inputstreamwithseek.InputStreamWithSeek;
 import org.martus.util.xml.SimpleXmlParser;
@@ -94,14 +94,24 @@ public class FieldDataPacket extends Packet
 		return localId.startsWith(prefix);
 	}
 	
-	public String getxForms()
+	public String getXFormsModelAString()
 	{
-		return xForms;
+		return xFormsModelAsString;
 	}
 	
-	public void setXForms(String xFormsToUse)
+	public String getXFormsInstanceAsString()
 	{
-		xForms = xFormsToUse;
+		return xFormsInstanceAsString;
+	}
+	
+	public void setXFormsModelAsString(String xFormsModelAsStringToUse)
+	{
+		xFormsModelAsString = xFormsModelAsStringToUse;
+	}
+	
+	public void setXFormsInstanceAsString(String xFormsInstanceAsStringToUse)
+	{
+		xFormsInstanceAsString = xFormsInstanceAsStringToUse;
 	}
 
 	public boolean isEncrypted()
@@ -203,7 +213,8 @@ public class FieldDataPacket extends Packet
 
 	public void clearAll()
 	{
-		xForms = null;
+		xFormsModelAsString = null;
+		xFormsInstanceAsString = null;
 		fields.clearAllData();
 		clearAttachments();
 		clearAuthorizedToRead();
@@ -345,8 +356,7 @@ public class FieldDataPacket extends Packet
 		if(isEncrypted() && !isEmpty())
 			writeElement(dest, MartusXml.EncryptedFlagElementName, "");
 
-		if (getxForms() != null && !getxForms().isEmpty())
-			writeElement(dest, MartusXml.XFormsElementName, getxForms());
+		writeXFormsElement(dest);
 		
 		String xmlSpecs = fields.getSpecsXml();
 		
@@ -384,6 +394,20 @@ public class FieldDataPacket extends Packet
 			writeElement(dest, MartusXml.AttachmentLabelElementName, a.getLabel());
 			dest.writeEndTag(MartusXml.AttachmentElementName);
 		}
+	}
+
+	private void writeXFormsElement(XmlWriterFilter dest) throws IOException
+	{
+		if (getXFormsModelAString() == null || getXFormsModelAString().isEmpty())
+			return;
+		
+		if (getXFormsInstanceAsString() == null || getXFormsInstanceAsString().isEmpty())
+			return;
+
+		dest.writeStartTag(MartusXml.XFormsElementName);
+		writeNonEncodedElement(dest, MartusXml.XFormsModelElementName, getXFormsModelAString());
+		writeNonEncodedElement(dest, MartusXml.XFormsInstanceElementName, getXFormsInstanceAsString());
+		dest.writeEndTag(MartusXml.XFormsElementName);
 	}
 
 	protected String getFieldListString()
@@ -455,7 +479,8 @@ public class FieldDataPacket extends Packet
 	private boolean encryptedFlag;
 	private FieldCollection fields;
 	private Vector attachments;
-	private String xForms;
+	private String xFormsModelAsString;
+	private String xFormsInstanceAsString;
 
 	private static final String prefix = "F-";
 	private HeadquartersKeys authorizedToReadKeys;

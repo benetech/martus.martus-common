@@ -29,8 +29,12 @@ package org.martus.common.test;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Arrays;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.martus.common.AuthorizedSessionKeys;
 import org.martus.common.FieldCollection;
@@ -49,11 +53,13 @@ import org.martus.common.fieldspec.FieldSpec;
 import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.common.fieldspec.StandardFieldSpecs;
 import org.martus.common.packet.FieldDataPacket;
-import org.martus.common.packet.UniversalId;
 import org.martus.common.packet.Packet.SignatureVerificationException;
+import org.martus.common.packet.UniversalId;
 import org.martus.util.TestCaseEnhanced;
 import org.martus.util.inputstreamwithseek.ByteArrayInputStreamWithSeek;
 import org.martus.util.xml.XmlUtilities;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
 
 
@@ -781,8 +787,13 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 	
 	public void testXForms() throws Exception
 	{
-		String expectedXForms = "<xforms><xforms_model>should have model elements</xforms_model><xforms_instance>should contain instance elements</xforms_instance></xforms>";
-		fdp.setXForms(expectedXForms);
+		String rawXFormsModelXmlAsString = getXFormsModelAsXmlString();
+		Document expectedXFormsModelDocument = convertXmlToDocument(rawXFormsModelXmlAsString);
+		fdp.setXFormsModelAsString(rawXFormsModelXmlAsString);
+		
+		String rawXFormsInstanceAsString = getXFormsInstanceAsXmlString();
+		Document expectedXFormsInstanceDocument = convertXmlToDocument(rawXFormsInstanceAsString);
+		fdp.setXFormsInstanceAsString(rawXFormsInstanceAsString);
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		fdp.writeXml(out, security);
@@ -790,6 +801,8 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		out.close();
 
 		assertContains(MartusXml.getTagStart(MartusXml.XFormsElementName), result);
+		assertContains(MartusXml.getTagStart(MartusXml.XFormsModelElementName), result);
+		assertContains(MartusXml.getTagStart(MartusXml.XFormsInstanceElementName), result);
 
 		UniversalId uid = UniversalIdForTesting.createFromAccountAndPrefix("other acct", "");
 		FieldDataPacket got = new FieldDataPacket(uid, fdp.getFieldSpecs());
@@ -797,8 +810,35 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
 		got.loadFromXml(in, security);
 
-		assertFalse("Did not load xforms?", got.getxForms().isEmpty());
-		assertEquals("incorrect ", expectedXForms, got.getxForms());
+		String actualXFormsModelXmlAsString = got.getXFormsModelAString();
+		verifyNonEmptyXFormsValue(actualXFormsModelXmlAsString);
+		
+		String actualXFormsInstanceAsString = got.getXFormsInstanceAsString();
+		verifyNonEmptyXFormsValue(actualXFormsInstanceAsString);
+		
+		verifyEqualDocuments(expectedXFormsModelDocument, actualXFormsModelXmlAsString);
+		verifyEqualDocuments(expectedXFormsInstanceDocument, actualXFormsInstanceAsString);
+	}
+	
+	private void verifyNonEmptyXFormsValue(String valueToAssrt)
+	{
+		assertFalse("Did not load xforms?", valueToAssrt.isEmpty());
+	}
+	
+	private void verifyEqualDocuments(Document expectedXFormsDocument, String actualXmlAsString) throws Exception
+	{
+		Document actualXFormsDocument = convertXmlToDocument(actualXmlAsString);
+		assertTrue("XForms documents are not equal?", expectedXFormsDocument.isEqualNode(actualXFormsDocument));
+	}
+
+	private Document convertXmlToDocument(String xmlAsString) throws Exception
+	{
+		StringReader stringReader = new StringReader(xmlAsString);
+		InputSource inputStream = new InputSource(stringReader);
+		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+		
+		return  documentBuilder.parse(inputStream);
 	}
 
 	void verifyLoadException(byte[] input, Class expectedExceptionClass)
@@ -815,6 +855,53 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		{
 			assertEquals("Wrong exception type?", expectedExceptionClass, e.getClass());
 		}
+	}
+	
+	//FIXME need to include regex to remove <?xml...> from both sample values
+	private String getXFormsModelAsXmlString()
+	{
+		return 
+				"<xforms_model>" +
+				//"<?xml version=\"1.0\"?>" +
+				"<h:html " +
+				"xmlns=\"http://www.w3.org/2002/xforms\" " +
+			    "xmlns:h=\"http://www.w3.org/1999/xhtml\" " +
+			    "xmlns:ev=\"http://www.w3.org/2001/xml-events\" " +
+			    "xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" " +
+			    "xmlns:jr=\"http://openrosa.org/javarosa\" "
+			    + ">" +
+			    "<h:head>" +
+			        "<h:title>Vital Voices Secure App</h:title>" +
+			        "<model>" +
+			            "<instance>" +
+			                "<nm id=\"VitalVoices\">" +
+			                    "<incidentCount/>" +
+			                "</nm>" +
+			            "</instance>" +
+			            "<bind nodeset=\"/nm/incidentCount\" type=\"string\" />" +
+			        "</model>" +
+			    "</h:head>" +
+			    "<h:body>" +
+			        "<group appearance=\"field-list\">" +
+			        	"<label>Group</label>" +
+			        		"<input ref=\"incidentCount\">" +
+			        		"<label>How many times?</label>" +
+			        	"</input>" +
+			        "</group>" +
+			    "</h:body>" +
+			"</h:html>" +
+			"</xforms_model>";	
+	}
+	
+	//FIXME need to include regex to remove <?xml...> from both sample values
+	private String getXFormsInstanceAsXmlString()
+	{
+		return "<xforms_instance> " +
+				//"<?xml version='1.0' ?> " +
+				"<nm id=\"VitalVoices\"> " +
+				"<incidentCount>5</incidentCount> " +
+				"</nm>" +
+				"</xforms_instance> ";
 	}
 
 	String line1 = "This";
