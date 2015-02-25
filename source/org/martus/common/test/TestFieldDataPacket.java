@@ -857,12 +857,10 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		}
 	}
 	
-	//FIXME need to include regex to remove <?xml...> from both sample values
 	private String getXFormsModelAsXmlString()
 	{
 		return 
 				"<xforms_model>" +
-				//"<?xml version=\"1.0\"?>" +
 				"<h:html " +
 				"xmlns=\"http://www.w3.org/2002/xforms\" " +
 			    "xmlns:h=\"http://www.w3.org/1999/xhtml\" " +
@@ -893,11 +891,9 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 			"</xforms_model>";	
 	}
 	
-	//FIXME need to include regex to remove <?xml...> from both sample values
 	private String getXFormsInstanceAsXmlString()
 	{
 		return "<xforms_instance> " +
-				//"<?xml version='1.0' ?> " +
 				"<nm id=\"VitalVoices\"> " +
 				"<incidentCount>5</incidentCount> " +
 				"</nm>" +
