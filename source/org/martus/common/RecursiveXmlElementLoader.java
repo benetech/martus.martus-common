@@ -92,7 +92,8 @@ public class RecursiveXmlElementLoader extends AttributesOnlyXmlLoader
 			attributesBuilder.append(attributeKey);
 			attributesBuilder.append("=");
 			String attributeValue = elementAttributesKeyToValueMap.get(attributeKey).toString();
-			attributesBuilder.append("\"" + attributeValue + "\" ");
+			attributesBuilder.append("\"" + attributeValue + "\"");
+			attributesBuilder.append(" ");
 		}
 		
 		return attributesBuilder.toString();
