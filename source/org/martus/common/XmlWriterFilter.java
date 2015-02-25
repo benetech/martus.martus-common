@@ -45,7 +45,7 @@ public class XmlWriterFilter
 		writeDirect(createStartElement(text));
 	}
 
-	public String createStartElement(String text)
+	public static String createStartElement(String text)
 	{
 		return "<" + text + ">";
 	}
