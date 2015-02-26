@@ -769,15 +769,15 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 	
 	public void testInvalidXFormsChildrenValues() throws Exception
 	{
-		verifyXForms(null, null);
-		verifyXForms("", "");
-		verifyXForms(getXFormsModelAsXmlString(), null);
-		verifyXForms(getXFormsModelAsXmlString(), "");
-		verifyXForms(null, getXFormsInstanceAsXmlString());
-		verifyXForms("", getXFormsInstanceAsXmlString());
+		verifyInvalidXForms(null, null);
+		verifyInvalidXForms("", "");
+		verifyInvalidXForms(getXFormsModelAsXmlString(), null);
+		verifyInvalidXForms(getXFormsModelAsXmlString(), "");
+		verifyInvalidXForms(null, getXFormsInstanceAsXmlString());
+		verifyInvalidXForms("", getXFormsInstanceAsXmlString());
 	}
 	
-	private void verifyXForms(String rawXFormsModelXmlAsString, String rawXFormsInstanceAsString) throws Exception
+	private void verifyInvalidXForms(String rawXFormsModelXmlAsString, String rawXFormsInstanceAsString) throws Exception
 	{
 		fdp.setXFormsModelAsString(rawXFormsModelXmlAsString);
 		fdp.setXFormsInstanceAsString(rawXFormsInstanceAsString);
