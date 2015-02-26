@@ -820,9 +820,9 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		verifyEqualDocuments(expectedXFormsInstanceDocument, actualXFormsInstanceAsString);
 	}
 	
-	private void verifyNonEmptyXFormsValue(String valueToAssrt)
+	private void verifyNonEmptyXFormsValue(String valueToAssert)
 	{
-		assertFalse("Did not load xforms?", valueToAssrt.isEmpty());
+		assertFalse("Did not load xforms?", valueToAssert.isEmpty());
 	}
 	
 	private void verifyEqualDocuments(Document expectedXFormsDocument, String actualXmlAsString) throws Exception
