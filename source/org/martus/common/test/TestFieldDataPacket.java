@@ -472,10 +472,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		fdp.set(aTag, data1);
 		fdp.set(bTag, data2base + "&<>");
 
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		fdp.writeXml(out, security);
-		String result = new String(out.toByteArray(), "UTF-8");
-		out.close();
+		String result = writeFieldDataPacketAsXml();
 
 		assertContains(MartusXml.getTagStart(MartusXml.FieldDataPacketElementName), result);
 		assertContains(MartusXml.getTagEnd(MartusXml.FieldDataPacketElementName), result);
@@ -569,10 +566,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		fdp.addAttachment(attach1);
 		fdp.addAttachment(attach2);
 
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		fdp.writeXml(out, security);
-		String result = new String(out.toByteArray(), "UTF-8");
-		out.close();
+		String result = writeFieldDataPacketAsXml();
 
 		int attachmentUidAt = result.indexOf(MartusXml.AttachmentLocalIdElementName);
 		int attachmentKeyAt = result.indexOf(MartusXml.AttachmentKeyElementName);
@@ -618,10 +612,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		fdp.set(aTag, data1);
 		fdp.set(bTag, data2base + "&<>");
 
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		fdp.writeXml(out, security);
-		String result = new String(out.toByteArray(), "UTF-8");
-		out.close();
+		String result = writeFieldDataPacketAsXml();
 
 		assertContains(MartusXml.getTagStart(MartusXml.FieldDataPacketElementName), result);
 		assertContains(MartusXml.getTagEnd(MartusXml.FieldDataPacketElementName), result);
@@ -634,11 +625,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		assertNotContains("encrypted data visible3?", data1, result);
 		assertNotContains("encrypted data visible4?", data2base + xmlAmp + xmlLt + xmlGt, result);
 
-		UniversalId uid = UniversalIdForTesting.createFromAccountAndPrefix("other acct", "");
-		FieldDataPacket got = new FieldDataPacket(uid, fdp.getFieldSpecs());
-		byte[] bytes = result.getBytes("UTF-8");
-		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
-		got.loadFromXml(in, security);
+		FieldDataPacket got = loadFieldDataPacketFromXml(result);
 
 		assertEquals("account", fdp.getAccountId(), got.getAccountId());
 		assertEquals("id", fdp.getLocalId(), got.getLocalId());
@@ -663,10 +650,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		fdp.set(aTag, data1);
 		fdp.set(bTag, data2base + "&<>");
 
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		fdp.writeXml(out, security);
-		String result = new String(out.toByteArray(), "UTF-8");
-		out.close();
+		String result = writeFieldDataPacketAsXml();
 
 		assertContains(MartusXml.getTagStart(MartusXml.HQSessionKeyElementName), result);
 		assertContains(MartusXml.getTagStart(AuthorizedSessionKeys.AUTHORIZED_SESSION_KEYS_TAG), result);
@@ -717,10 +701,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		fdp.set(aTag, data1);
 		fdp.set(bTag, data2base + "&<>");
 
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		fdp.writeXml(out, security);
-		String result = new String(out.toByteArray(), "UTF-8");
-		out.close();
+		String result = writeFieldDataPacketAsXml();
 
 		assertContains(MartusXml.getTagStart(MartusXml.HQSessionKeyElementName), result);
 		assertContains(MartusXml.getTagStart(AuthorizedSessionKeys.AUTHORIZED_SESSION_KEYS_TAG), result);
@@ -785,30 +766,42 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		assertNotEquals("Set the uid?", fdp.getUniversalId(), loadedBad.getUniversalId());
 	}
 	
+	
+	public void testInvalidXFormsChildrenValues() throws Exception
+	{
+		verifyInvalidXForms(null, null);
+		verifyInvalidXForms("", "");
+		verifyInvalidXForms(getXFormsModelAsXmlString(), null);
+		verifyInvalidXForms(getXFormsModelAsXmlString(), "");
+		verifyInvalidXForms(null, getXFormsInstanceAsXmlString());
+		verifyInvalidXForms("", getXFormsInstanceAsXmlString());
+	}
+	
+	private void verifyInvalidXForms(String rawXFormsModelXmlAsString, String rawXFormsInstanceAsString) throws Exception
+	{
+		fdp.setXFormsModelAsString(rawXFormsModelXmlAsString);
+		fdp.setXFormsInstanceAsString(rawXFormsInstanceAsString);
+		
+		String result = writeFieldDataPacketAsXml();
+
+		assertNotContains(MartusXml.getTagStart(MartusXml.XFormsElementName), result);
+		assertNotContains(MartusXml.getTagStart(MartusXml.XFormsModelElementName), result);
+		assertNotContains(MartusXml.getTagStart(MartusXml.XFormsInstanceElementName), result);
+	}
+
 	public void testXForms() throws Exception
 	{
 		String rawXFormsModelXmlAsString = getXFormsModelAsXmlString();
-		Document expectedXFormsModelDocument = convertXmlToDocument(rawXFormsModelXmlAsString);
 		fdp.setXFormsModelAsString(rawXFormsModelXmlAsString);
 		
 		String rawXFormsInstanceAsString = getXFormsInstanceAsXmlString();
-		Document expectedXFormsInstanceDocument = convertXmlToDocument(rawXFormsInstanceAsString);
 		fdp.setXFormsInstanceAsString(rawXFormsInstanceAsString);
 		
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		fdp.writeXml(out, security);
-		String result = new String(out.toByteArray(), "UTF-8");
-		out.close();
+		String result = writeFieldDataPacketAsXml();
 
 		assertContains(MartusXml.getTagStart(MartusXml.XFormsElementName), result);
-		assertContains(MartusXml.getTagStart(MartusXml.XFormsModelElementName), result);
-		assertContains(MartusXml.getTagStart(MartusXml.XFormsInstanceElementName), result);
 
-		UniversalId uid = UniversalIdForTesting.createFromAccountAndPrefix("other acct", "");
-		FieldDataPacket got = new FieldDataPacket(uid, fdp.getFieldSpecs());
-		byte[] bytes = result.getBytes("UTF-8");
-		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
-		got.loadFromXml(in, security);
+		FieldDataPacket got = loadFieldDataPacketFromXml(result);
 
 		String actualXFormsModelXmlAsString = got.getXFormsModelAString();
 		verifyNonEmptyXFormsValue(actualXFormsModelXmlAsString);
@@ -816,13 +809,16 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		String actualXFormsInstanceAsString = got.getXFormsInstanceAsString();
 		verifyNonEmptyXFormsValue(actualXFormsInstanceAsString);
 		
+		Document expectedXFormsModelDocument = convertXmlToDocument(rawXFormsModelXmlAsString);
 		verifyEqualDocuments(expectedXFormsModelDocument, actualXFormsModelXmlAsString);
+		
+		Document expectedXFormsInstanceDocument = convertXmlToDocument(rawXFormsInstanceAsString);
 		verifyEqualDocuments(expectedXFormsInstanceDocument, actualXFormsInstanceAsString);
 	}
-	
-	private void verifyNonEmptyXFormsValue(String valueToAssrt)
+
+	private void verifyNonEmptyXFormsValue(String valueToAssert)
 	{
-		assertFalse("Did not load xforms?", valueToAssrt.isEmpty());
+		assertFalse("Did not load xforms?", valueToAssert.isEmpty());
 	}
 	
 	private void verifyEqualDocuments(Document expectedXFormsDocument, String actualXmlAsString) throws Exception
@@ -839,6 +835,27 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 		
 		return  documentBuilder.parse(inputStream);
+	}
+	
+	private FieldDataPacket loadFieldDataPacketFromXml(String result) throws Exception
+	{
+		UniversalId uid = UniversalIdForTesting.createFromAccountAndPrefix("other acct", "");
+		FieldDataPacket got = new FieldDataPacket(uid, fdp.getFieldSpecs());
+		byte[] bytes = result.getBytes("UTF-8");
+		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
+		got.loadFromXml(in, security);
+		
+		return got;
+	}
+	
+	private String writeFieldDataPacketAsXml() throws Exception
+	{
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		fdp.writeXml(out, security);
+		String result = new String(out.toByteArray(), "UTF-8");
+		out.close();
+
+		return result;
 	}
 
 	void verifyLoadException(byte[] input, Class expectedExceptionClass)
