@@ -51,7 +51,7 @@ public class XmlWriterFilter
 		writeDirect("\n");
 	}
 
-	public String createEndTag(String text)
+	public static String createEndTag(String text)
 	{
 		return XmlUtilities.createStartElement("/" + text);
 	}
