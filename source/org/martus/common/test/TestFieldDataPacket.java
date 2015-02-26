@@ -625,11 +625,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		assertNotContains("encrypted data visible3?", data1, result);
 		assertNotContains("encrypted data visible4?", data2base + xmlAmp + xmlLt + xmlGt, result);
 
-		UniversalId uid = UniversalIdForTesting.createFromAccountAndPrefix("other acct", "");
-		FieldDataPacket got = new FieldDataPacket(uid, fdp.getFieldSpecs());
-		byte[] bytes = result.getBytes("UTF-8");
-		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
-		got.loadFromXml(in, security);
+		FieldDataPacket got = loadFieldDataPacketFromXml(result);
 
 		assertEquals("account", fdp.getAccountId(), got.getAccountId());
 		assertEquals("id", fdp.getLocalId(), got.getLocalId());
@@ -782,11 +778,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 
 		assertContains(MartusXml.getTagStart(MartusXml.XFormsElementName), result);
 
-		UniversalId uid = UniversalIdForTesting.createFromAccountAndPrefix("other acct", "");
-		FieldDataPacket got = new FieldDataPacket(uid, fdp.getFieldSpecs());
-		byte[] bytes = result.getBytes("UTF-8");
-		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
-		got.loadFromXml(in, security);
+		FieldDataPacket got = loadFieldDataPacketFromXml(result);
 
 		String actualXFormsModelXmlAsString = got.getXFormsModelAString();
 		verifyNonEmptyXFormsValue(actualXFormsModelXmlAsString);
@@ -820,6 +812,17 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 		
 		return  documentBuilder.parse(inputStream);
+	}
+	
+	private FieldDataPacket loadFieldDataPacketFromXml(String result) throws Exception
+	{
+		UniversalId uid = UniversalIdForTesting.createFromAccountAndPrefix("other acct", "");
+		FieldDataPacket got = new FieldDataPacket(uid, fdp.getFieldSpecs());
+		byte[] bytes = result.getBytes("UTF-8");
+		ByteArrayInputStreamWithSeek in = new ByteArrayInputStreamWithSeek(bytes);
+		got.loadFromXml(in, security);
+		
+		return got;
 	}
 	
 	private String writeFieldDataPacketAsXml() throws Exception
