@@ -788,11 +788,9 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 	public void testXForms() throws Exception
 	{
 		String rawXFormsModelXmlAsString = getXFormsModelAsXmlString();
-		Document expectedXFormsModelDocument = convertXmlToDocument(rawXFormsModelXmlAsString);
 		fdp.setXFormsModelAsString(rawXFormsModelXmlAsString);
 		
 		String rawXFormsInstanceAsString = getXFormsInstanceAsXmlString();
-		Document expectedXFormsInstanceDocument = convertXmlToDocument(rawXFormsInstanceAsString);
 		fdp.setXFormsInstanceAsString(rawXFormsInstanceAsString);
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -814,7 +812,10 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		String actualXFormsInstanceAsString = got.getXFormsInstanceAsString();
 		verifyNonEmptyXFormsValue(actualXFormsInstanceAsString);
 		
+		Document expectedXFormsModelDocument = convertXmlToDocument(rawXFormsModelXmlAsString);
 		verifyEqualDocuments(expectedXFormsModelDocument, actualXFormsModelXmlAsString);
+		
+		Document expectedXFormsInstanceDocument = convertXmlToDocument(rawXFormsInstanceAsString);
 		verifyEqualDocuments(expectedXFormsInstanceDocument, actualXFormsInstanceAsString);
 	}
 	
