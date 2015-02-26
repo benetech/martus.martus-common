@@ -51,6 +51,7 @@ import org.martus.common.fieldspec.TestFieldSpec;
 import org.martus.common.fieldspec.TestMiniFieldSpec;
 import org.martus.common.network.TestServerBulletinSummary;
 import org.martus.common.network.TestShortServerBulletinSummary;
+import org.martus.common.utilities.TestBurmeseUtilities;
 import org.martus.common.utilities.TestDateUtilities;
 import org.martus.common.utilities.TestJpegGeoTagReader;
 import org.martus.common.utilities.TestMartusFlexidate;
@@ -90,6 +91,7 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestBulletinSummary.class));
 		suite.addTest(new TestSuite(TestBulletinZipImporter.class));
 		suite.addTest(new TestSuite(TestBulletinZipUtilities.class));
+		suite.addTest(new TestSuite(TestBurmeseUtilities.class));
 		suite.addTest(new TestSuite(TestChoiceItem.class));
 		suite.addTest(new TestSuite(TestClientFileDatabase.class));
 		suite.addTest(new TestSuite(TestContactKey.class));		

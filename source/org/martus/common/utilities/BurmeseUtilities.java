@@ -25,8 +25,8 @@ public class BurmeseUtilities
  * @author RENN
  *
  */
-class MString {
-
+class MString 
+{
 	static String tallAA = "\u102B";
 	static String AA = "\u102C";
 	static String vi = "\u102D";
@@ -49,8 +49,10 @@ class MString {
 	static String PTN_2 = "((\u101D))(\u1040)(?=\u0020)?";
 	static String PTN_3 = "(([\u1000-\u101C\u101E-\u102A\u102C\u102E-\u103F\u104C-\u109F\u0020]))(\u1047)";
 
-	public static String getZ2Uni(String zString) {
-
+	public static String getZ2Uni(String zString) 
+	{
+		if(zString == null)
+			return null;
 		String output = new String(zString);
 		output = output.replaceAll("\u106A", " \u1009");
 		output = output.replaceAll("\u1025(?=[\u1039\u102C])", "\u1009"); // new
@@ -152,7 +154,10 @@ class MString {
 		return output;
 	}
 
-	public static String getUni2Z(String inString) {
+	public static String getUni2Z(String inString) 
+	{
+		if(inString == null)
+			return null;
 		String output = new String(inString);
 		output = output.replaceAll("\u104E\u1004\u103A\u1038", "\u104E");
 		output = output.replaceAll("\u102B\u103A", "\u105A");
