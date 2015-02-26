@@ -801,8 +801,6 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		out.close();
 
 		assertContains(MartusXml.getTagStart(MartusXml.XFormsElementName), result);
-		assertContains(MartusXml.getTagStart(MartusXml.XFormsModelElementName), result);
-		assertContains(MartusXml.getTagStart(MartusXml.XFormsInstanceElementName), result);
 
 		UniversalId uid = UniversalIdForTesting.createFromAccountAndPrefix("other acct", "");
 		FieldDataPacket got = new FieldDataPacket(uid, fdp.getFieldSpecs());
