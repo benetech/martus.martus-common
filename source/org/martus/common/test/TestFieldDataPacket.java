@@ -472,10 +472,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		fdp.set(aTag, data1);
 		fdp.set(bTag, data2base + "&<>");
 
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		fdp.writeXml(out, security);
-		String result = new String(out.toByteArray(), "UTF-8");
-		out.close();
+		String result = writeFieldDataPacketAsXml();
 
 		assertContains(MartusXml.getTagStart(MartusXml.FieldDataPacketElementName), result);
 		assertContains(MartusXml.getTagEnd(MartusXml.FieldDataPacketElementName), result);
@@ -569,10 +566,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		fdp.addAttachment(attach1);
 		fdp.addAttachment(attach2);
 
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		fdp.writeXml(out, security);
-		String result = new String(out.toByteArray(), "UTF-8");
-		out.close();
+		String result = writeFieldDataPacketAsXml();
 
 		int attachmentUidAt = result.indexOf(MartusXml.AttachmentLocalIdElementName);
 		int attachmentKeyAt = result.indexOf(MartusXml.AttachmentKeyElementName);
@@ -618,10 +612,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		fdp.set(aTag, data1);
 		fdp.set(bTag, data2base + "&<>");
 
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		fdp.writeXml(out, security);
-		String result = new String(out.toByteArray(), "UTF-8");
-		out.close();
+		String result = writeFieldDataPacketAsXml();
 
 		assertContains(MartusXml.getTagStart(MartusXml.FieldDataPacketElementName), result);
 		assertContains(MartusXml.getTagEnd(MartusXml.FieldDataPacketElementName), result);
@@ -663,10 +654,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		fdp.set(aTag, data1);
 		fdp.set(bTag, data2base + "&<>");
 
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		fdp.writeXml(out, security);
-		String result = new String(out.toByteArray(), "UTF-8");
-		out.close();
+		String result = writeFieldDataPacketAsXml();
 
 		assertContains(MartusXml.getTagStart(MartusXml.HQSessionKeyElementName), result);
 		assertContains(MartusXml.getTagStart(AuthorizedSessionKeys.AUTHORIZED_SESSION_KEYS_TAG), result);
@@ -717,10 +705,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		fdp.set(aTag, data1);
 		fdp.set(bTag, data2base + "&<>");
 
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		fdp.writeXml(out, security);
-		String result = new String(out.toByteArray(), "UTF-8");
-		out.close();
+		String result = writeFieldDataPacketAsXml();
 
 		assertContains(MartusXml.getTagStart(MartusXml.HQSessionKeyElementName), result);
 		assertContains(MartusXml.getTagStart(AuthorizedSessionKeys.AUTHORIZED_SESSION_KEYS_TAG), result);
@@ -793,10 +778,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		String rawXFormsInstanceAsString = getXFormsInstanceAsXmlString();
 		fdp.setXFormsInstanceAsString(rawXFormsInstanceAsString);
 		
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		fdp.writeXml(out, security);
-		String result = new String(out.toByteArray(), "UTF-8");
-		out.close();
+		String result = writeFieldDataPacketAsXml();
 
 		assertContains(MartusXml.getTagStart(MartusXml.XFormsElementName), result);
 
@@ -818,7 +800,7 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		Document expectedXFormsInstanceDocument = convertXmlToDocument(rawXFormsInstanceAsString);
 		verifyEqualDocuments(expectedXFormsInstanceDocument, actualXFormsInstanceAsString);
 	}
-	
+
 	private void verifyNonEmptyXFormsValue(String valueToAssert)
 	{
 		assertFalse("Did not load xforms?", valueToAssert.isEmpty());
@@ -838,6 +820,16 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 		
 		return  documentBuilder.parse(inputStream);
+	}
+	
+	private String writeFieldDataPacketAsXml() throws Exception
+	{
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		fdp.writeXml(out, security);
+		String result = new String(out.toByteArray(), "UTF-8");
+		out.close();
+
+		return result;
 	}
 
 	void verifyLoadException(byte[] input, Class expectedExceptionClass)
