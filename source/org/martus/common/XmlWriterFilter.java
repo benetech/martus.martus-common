@@ -47,8 +47,13 @@ public class XmlWriterFilter
 
 	public void writeEndTag(String text) throws IOException
 	{
-		writeDirect(XmlUtilities.createStartElement("/" + text));
+		writeDirect(createEndTag(text));
 		writeDirect("\n");
+	}
+
+	public String createEndTag(String text)
+	{
+		return XmlUtilities.createStartElement("/" + text);
 	}
 
 	public void writeEncoded(String text) throws IOException
