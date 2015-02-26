@@ -766,6 +766,29 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		assertNotEquals("Set the uid?", fdp.getUniversalId(), loadedBad.getUniversalId());
 	}
 	
+	
+	public void testInvalidXFormsChildrenValues() throws Exception
+	{
+		verifyXForms(null, null);
+		verifyXForms("", "");
+		verifyXForms(getXFormsModelAsXmlString(), null);
+		verifyXForms(getXFormsModelAsXmlString(), "");
+		verifyXForms(null, getXFormsInstanceAsXmlString());
+		verifyXForms("", getXFormsInstanceAsXmlString());
+	}
+	
+	private void verifyXForms(String rawXFormsModelXmlAsString, String rawXFormsInstanceAsString) throws Exception
+	{
+		fdp.setXFormsModelAsString(rawXFormsModelXmlAsString);
+		fdp.setXFormsInstanceAsString(rawXFormsInstanceAsString);
+		
+		String result = writeFieldDataPacketAsXml();
+
+		assertNotContains(MartusXml.getTagStart(MartusXml.XFormsElementName), result);
+		assertNotContains(MartusXml.getTagStart(MartusXml.XFormsModelElementName), result);
+		assertNotContains(MartusXml.getTagStart(MartusXml.XFormsInstanceElementName), result);
+	}
+
 	public void testXForms() throws Exception
 	{
 		String rawXFormsModelXmlAsString = getXFormsModelAsXmlString();
