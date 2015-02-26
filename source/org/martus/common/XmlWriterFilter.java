@@ -42,12 +42,7 @@ public class XmlWriterFilter
 
 	public void writeStartTag(String text) throws IOException
 	{
-		writeDirect(createStartElement(text));
-	}
-
-	public static String createStartElement(String text)
-	{
-		return "<" + text + ">";
+		writeDirect(XmlUtilities.createStartElement(text));
 	}
 
 	public void writeEndTag(String text) throws IOException
