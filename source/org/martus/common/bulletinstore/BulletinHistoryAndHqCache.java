@@ -171,7 +171,7 @@ public class BulletinHistoryAndHqCache extends BulletinStoreCache implements Dat
 		catch(Exception e)
 		{
 			hitErrorsDuringScan = true;
-			// FIXME: change this to use a logger so we see problems on the server!
+			// FIXME: Before next server release: change this to use a logger so we see problems on the server!
 			//e.printStackTrace();
 		}
 	}
