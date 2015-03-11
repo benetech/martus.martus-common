@@ -815,6 +815,26 @@ public class TestFieldDataPacket extends TestCaseEnhanced
 		Document expectedXFormsInstanceDocument = convertXmlToDocument(rawXFormsInstanceAsString);
 		verifyEqualDocuments(expectedXFormsInstanceDocument, actualXFormsInstanceAsString);
 	}
+	
+	public void testContainsXForms() throws Exception
+	{
+		verifyContainsXForms(false, "", "");
+		verifyContainsXForms(false, null, null);
+		verifyContainsXForms(false, null, "");
+		verifyContainsXForms(false, "", null);
+		verifyContainsXForms(false, getXFormsModelAsXmlString(), "");
+		verifyContainsXForms(false, getXFormsModelAsXmlString(), null);
+		verifyContainsXForms(false, "", getXFormsInstanceAsXmlString());
+		verifyContainsXForms(false, null, getXFormsInstanceAsXmlString());
+		verifyContainsXForms(true, getXFormsModelAsXmlString(), getXFormsInstanceAsXmlString());
+	}
+	
+	private void verifyContainsXForms(boolean expectedValue, String xFormsModelXmlAsString, String xFormsInstanceXmlAsString) 
+	{
+		fdp.setXFormsModelAsString(xFormsModelXmlAsString);
+		fdp.setXFormsInstanceAsString(xFormsInstanceXmlAsString);
+		assertEquals("XForms data not expected?", expectedValue, fdp.containXFormsData());
+	}
 
 	private void verifyNonEmptyXFormsValue(String valueToAssert)
 	{

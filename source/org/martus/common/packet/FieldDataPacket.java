@@ -398,16 +398,24 @@ public class FieldDataPacket extends Packet
 
 	private void writeXFormsElement(XmlWriterFilter dest) throws IOException
 	{
-		if (getXFormsModelAString() == null || getXFormsModelAString().isEmpty())
-			return;
-		
-		if (getXFormsInstanceAsString() == null || getXFormsInstanceAsString().isEmpty())
+		if (!containXFormsData())
 			return;
 
 		dest.writeStartTag(MartusXml.XFormsElementName);
 		writeNonEncodedElement(dest, MartusXml.XFormsModelElementName, getXFormsModelAString());
 		writeNonEncodedElement(dest, MartusXml.XFormsInstanceElementName, getXFormsInstanceAsString());
 		dest.writeEndTag(MartusXml.XFormsElementName);
+	}
+
+	public boolean containXFormsData()
+	{
+		if (getXFormsModelAString() == null || getXFormsModelAString().isEmpty())
+			return false;
+		
+		if (getXFormsInstanceAsString() == null || getXFormsInstanceAsString().isEmpty())
+			return false;
+		
+		return true;
 	}
 
 	protected String getFieldListString()
