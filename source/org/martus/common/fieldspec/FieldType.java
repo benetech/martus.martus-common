@@ -37,22 +37,31 @@ abstract public class FieldType
 	{
 		if(FieldTypeNormal.getTypeNameString().equals(name))
 			return new FieldTypeNormal();
+		
 		if(FieldTypeMultiline.getTypeNameString().equals(name))
 			return new FieldTypeMultiline();
+		
 		if(FieldTypeDate.getTypeNameString().equals(name))
 			return new FieldTypeDate();
+		
 		if(FieldTypeDateRange.getTypeNameString().equals(name))
 			return new FieldTypeDateRange();
+		
 		if(FieldTypeBoolean.getTypeNameString().equals(name))
 			return new FieldTypeBoolean();
+		
 		if(FieldTypeLanguage.getTypeNameString().equals(name))
 			return new FieldTypeLanguage();
+		
 		if(FieldTypeGrid.getTypeNameString().equals(name))
 			return new FieldTypeGrid();
+		
 		if(FieldTypeDropdown.getTypeNameString().equals(name))
 			return new FieldTypeDropdown();
+		
 		if(FieldTypeMessage.getTypeNameString().equals(name))
 			return new FieldTypeMessage();
+		
 		if(FieldTypeSectionStart.getTypeNameString().equals(name))
 			return new FieldTypeSectionStart();
 		
