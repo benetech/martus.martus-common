@@ -33,6 +33,7 @@ public class FieldTypeNormal extends FieldType
 		return getTypeNameString();
 	}
 	
+	@Override
 	public boolean isString()
 	{
 		return true;
