@@ -75,4 +75,8 @@ public class Exceptions
 	public static class InvalidBulletinStateException extends Exception
 	{
 	}
+	
+	public static class ImportXFormsException extends Exception
+	{
+	}
 }
