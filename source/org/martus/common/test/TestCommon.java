@@ -29,6 +29,7 @@ package org.martus.common.test;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.martus.common.TestExceptions;
 import org.martus.common.bulletin.TestAttachmentProxy;
 import org.martus.common.bulletin.TestBulletin;
 import org.martus.common.bulletin.TestBulletinHtmlGenerator;
@@ -144,6 +145,7 @@ public class TestCommon
 		suite.addTest(new TestSuite(TestUniversalId.class));
 		suite.addTest(new TestSuite(TestXmlWriterFilter.class));
 		suite.addTest(new TestSuite(TestZipEntryInputStream.class));
+		suite.addTest(new TestSuite(TestExceptions.class));
 		return suite;
 	}
 }
