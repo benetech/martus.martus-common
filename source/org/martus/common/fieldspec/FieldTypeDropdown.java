@@ -32,8 +32,8 @@ public class FieldTypeDropdown extends FieldType
 	{
 		return getTypeNameString();
 	}
-	
-	
+
+	@Override
 	public boolean isDropdown()
 	{
 		return true;
@@ -44,6 +44,7 @@ public class FieldTypeDropdown extends FieldType
 		return "DROPDOWN";
 	}
 	
+	@Override
 	public FieldSpec createEmptyFieldSpec()
 	{
 		return new CustomDropDownFieldSpec();
