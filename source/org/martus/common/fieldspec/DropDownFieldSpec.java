@@ -26,6 +26,9 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.fieldspec;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.martus.common.MiniLocalization;
 import org.martus.common.PoolOfReusableChoicesLists;
 import org.martus.common.ReusableChoices;
@@ -60,6 +63,11 @@ public class DropDownFieldSpec extends FieldSpec
 	public ChoiceItem[] getAllChoices()
 	{
 		return choices.getChoices();
+	}
+	
+	public List<ChoiceItem> getChoiceItemList()
+	{
+		return Arrays.asList(getAllChoices());
 	}
 
 	public int getCount()
