@@ -120,6 +120,7 @@ public class GridRow
 		}
 
 		//Note: Template switching may cause column counts to differ
+		//FIXME: add unit tests with a template having more grid columns than the new template with the same grid field tag.
 		public void addRowIfRoom(String cellText)
 		{
 			if(thisRow.getColumnCount() >= currentColumn+1)
