@@ -114,10 +114,18 @@ public class GridRow
 			if(tag.equals(COLUMN_TAG))
 			{
 				String cellText = ((SimpleXmlStringLoader)ended).getText();
-				thisRow.setCellText(currentColumn++, cellText);
+				addRowIfRoom(cellText);
 			}
 			super.endElement(tag, ended);
 		}
+
+		//Note: Template switching may cause column counts to differ
+		public void addRowIfRoom(String cellText)
+		{
+			if(thisRow.getColumnCount() >= currentColumn+1)
+				thisRow.setCellText(currentColumn++, cellText);
+		}
+		
 		GridRow thisRow;
 		int currentColumn;
 
