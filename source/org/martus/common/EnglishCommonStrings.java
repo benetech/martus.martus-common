@@ -92,7 +92,7 @@ public class EnglishCommonStrings
 		"language:bur=Burmese",
 
 		"field:BulletinUnverifiedFieldDesk=Created by an UNKNOWN Contact",
-		"field:BulletinNotYours=Contact Bulletin",
+		"field:BulletinNotYours=Contact Record",
 		"field:publicsection=Public Information",
 		"field:privatesection=Private Information",
 		"field:allprivate=Keep ALL Information Private",
@@ -117,7 +117,7 @@ public class EnglishCommonStrings
 		"field:attachments=Attachments",
 		"field:HQSummaryLabel=Contacts",
 		"field:HQNotConfigured=(not currently configured)",
-		"field:NoHQsConfigured=No Contact accounts selected for this bulletin.",
+		"field:NoHQsConfigured=No Contact accounts selected for this record.",
 
 		"field:DateRangeTemplatebegin=#FieldLabel# (beginning)",
 		"field:DateRangeTemplateend=#FieldLabel# (end)",
