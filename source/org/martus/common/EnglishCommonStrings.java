@@ -92,7 +92,7 @@ public class EnglishCommonStrings
 		"language:bur=Burmese",
 
 		"field:BulletinUnverifiedFieldDesk=Created by an UNKNOWN Contact",
-		"field:BulletinNotYours=Contact Record",
+		"field:BulletinNotYours=Contact Bulletin",
 		"field:publicsection=Public Information",
 		"field:privatesection=Private Information",
 		"field:allprivate=Keep ALL Information Private",
