@@ -130,7 +130,7 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 			"<tr><td align='right' valign='top'>Attachments</td><td align='left' valign='top'></td></tr>\n"+
 			"<tr></tr>\n" + 
 			"<tr><td colspan='2' align='left'><u><b>Contacts</b></u></td></tr>\n"+
-			"<tr><td align='right' valign='top'></td><td align='left' valign='top'>No Contact accounts selected for this bulletin.</td></tr>\n"+
+			"<tr><td align='right' valign='top'></td><td align='left' valign='top'>No Contact accounts selected for this record.</td></tr>\n"+
 			"<tr></tr>\n" + 
 			"<tr><td align='right' valign='top'>Bulletin Id:</td><td align='left' valign='top'>"+b.getLocalId()+"</td></tr>\n"+
 			"</table></html>";
@@ -172,7 +172,7 @@ public class TestBulletinHtmlGenerator extends TestCaseEnhanced
 			"<tr><td align='right' valign='top'>Attachments</td><td align='left' valign='top'></td></tr>\n"+
 			"<tr></tr>\n" + 
 			"<tr><td colspan='2' align='left'><u><b>Contacts</b></u></td></tr>\n"+
-			"<tr><td align='right' valign='top'></td><td align='left' valign='top'>No Contact accounts selected for this bulletin.</td></tr>\n"+
+			"<tr><td align='right' valign='top'></td><td align='left' valign='top'>No Contact accounts selected for this record.</td></tr>\n"+
 			"<tr></tr>\n" + 
 			"<tr><td align='right' valign='top'>Bulletin Id:</td><td align='left' valign='top'>"+b.getLocalId()+"</td></tr>\n"+
 			"</table></html>";
