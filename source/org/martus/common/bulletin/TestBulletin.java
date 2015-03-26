@@ -517,6 +517,19 @@ public class TestBulletin extends TestCaseEnhanced
 		assertEquals(3, b4.getHistory().size());
 		assertTrue( b4.getHistory().contains(b1.getLocalId()));
 	}
+	
+	public void testCreateDraftCopyOfWithXFormsData() throws Exception
+	{
+		Bulletin original = new Bulletin(security);
+		original.getFieldDataPacket().setXFormsModelAsString(getXFormsModelWithOnStringInputFieldXmlAsString());
+		original.getFieldDataPacket().setXFormsInstanceAsString(getXFormsInstanceXmlAsString());
+
+		Bulletin draftCopy = new Bulletin(security);
+		draftCopy.createDraftCopyOf(original, getDb());
+		
+		assertEquals("Incorrect xforms model data?", original.getFieldDataPacket().getXFormsModelAString(), draftCopy.getFieldDataPacket().getXFormsModelAString());
+		assertEquals("Incorrect xforms instance data?", original.getFieldDataPacket().getXFormsInstanceAsString(), draftCopy.getFieldDataPacket().getXFormsInstanceAsString());
+	}
 
 	public void testAuthorizedToReadDependantOnStatus() throws Exception
 	{
@@ -863,6 +876,19 @@ public class TestBulletin extends TestCaseEnhanced
 	static MockDatabase getDb()
 	{
 		return (MockDatabase)store.getDatabase();
+	}
+	
+	private static String getXFormsModelWithOnStringInputFieldXmlAsString()
+	{
+		return 	"<xforms_model><h:html xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.w3.org/2002/xforms\" xmlns:jr=\"http://openrosa.org/javarosa\" xmlns:h=\"http://www.w3.org/1999/xhtml\" xmlns:ev=\"http://www.w3.org/2001/xml-events\" >" +
+				"<h:head><h:title>XForms Sample</h:title><model><instance><nm id=\"SampleForUnitTesting\" ><name/>" +
+				"</nm></instance><bind nodeset=\"/nm/name\" type=\"string\" /></model></h:head>" +
+				"<h:body><input ref=\"name\" ><label>some randon name</label><hint>(required)</hint></input></h:body></h:html></xforms_model>";
+	}
+	
+	private static String getXFormsInstanceXmlAsString()
+	{
+		return "<xforms_instance><nm id=\"SampleForUnitTesting\"><name>some randon name</name></nm></xforms_instance>";
 	}
 
 	static final String samplePublic = "some public text";
