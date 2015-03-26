@@ -32,6 +32,7 @@ public class FieldTypeSectionStart extends FieldType
 		return getTypeNameString();
 	}
 	
+	@Override
 	public boolean isSectionStart()
 	{
 		return true;
@@ -41,5 +42,4 @@ public class FieldTypeSectionStart extends FieldType
 	{
 		return "SECTION";
 	}
-
 }
