@@ -692,6 +692,9 @@ public class Bulletin implements BulletinConstants
 		pullFields(other, getFieldDataPacket().getFieldSpecs());
 		pullFields(other, getPrivateFieldDataPacket().getFieldSpecs());
 		
+		getFieldDataPacket().setXFormsModelAsString(other.getFieldDataPacket().getXFormsModelAString());
+		getFieldDataPacket().setXFormsInstanceAsString(other.getFieldDataPacket().getXFormsInstanceAsString());
+		
 		AttachmentProxy[] attachmentPublicProxies = other.getPublicAttachments();
 		for(int aIndex = 0; aIndex < attachmentPublicProxies.length; ++aIndex)
 		{
