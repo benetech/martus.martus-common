@@ -234,9 +234,7 @@ public class GridFieldSpec extends FieldSpec
 	{
 		for (int index = 0; index < fieldSpecsToAdd.size(); ++index)
 		{
-			FieldSpec columnSpec = fieldSpecsToAdd.get(index);
-			if (columnSpec != null)
-				addColumn(columnSpec);
+			addColumn(fieldSpecsToAdd.get(index));
 		}
 	}
 	
