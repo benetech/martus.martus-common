@@ -230,7 +230,7 @@ public class GridFieldSpec extends FieldSpec
 		}
 	}
 
-	public void addColumns(FieldSpecCollection fieldSpecsToAdd) throws Exception
+	public void addColumns(FieldSpecCollection fieldSpecsToAdd) throws UnsupportedFieldTypeException
 	{
 		for (int index = 0; index < fieldSpecsToAdd.size(); ++index)
 		{
