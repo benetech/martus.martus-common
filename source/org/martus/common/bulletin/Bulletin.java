@@ -66,6 +66,7 @@ import org.martus.common.MartusUtilities;
 import org.martus.common.MartusXml;
 import org.martus.common.MiniLocalization;
 import org.martus.common.PoolOfReusableChoicesLists;
+import org.martus.common.bulletinstore.BulletinStore;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.crypto.MartusCrypto.CryptoException;
 import org.martus.common.crypto.SessionKey;
@@ -79,6 +80,7 @@ import org.martus.common.fieldspec.FieldType;
 import org.martus.common.fieldspec.FieldTypeBoolean;
 import org.martus.common.fieldspec.FieldTypeDate;
 import org.martus.common.fieldspec.FieldTypeNormal;
+import org.martus.common.fieldspec.FieldTypeSectionStart;
 import org.martus.common.fieldspec.FieldTypeUnknown;
 import org.martus.common.fieldspec.GridFieldSpec;
 import org.martus.common.fieldspec.MiniFieldSpec;
@@ -845,7 +847,7 @@ public class Bulletin implements BulletinConstants
 		return new FieldDataPacket(dataUid, publicFieldSpecs);
 	}
 
-	public Bulletin createNewBulletinFromXFormsBulletin() throws Exception
+	public Bulletin createNewBulletinFromXFormsBulletin(BulletinStore store) throws Exception
 	{
 		String xFormsModelXmlAsString = getXformsModelWithoutRootElement();
 		String xFormsInstanceXmlAsString = getXFormsInstanceWithoutRootElement();
@@ -857,7 +859,7 @@ public class Bulletin implements BulletinConstants
 		
 		FieldSpecCollection fieldSpecsFromXForms = createFieldSpecsFromXForms(formEntryController);
 		
-		return createBulletin(formEntryController, fieldSpecsFromXForms);
+		return createBulletin(store, formEntryController, fieldSpecsFromXForms);
 	}
 	
 	private static final void initializeJavaRosa() 
@@ -884,9 +886,21 @@ public class Bulletin implements BulletinConstants
 		return XmlUtilities.stripXmlStartEndElements(xml, elementNameToStrip);
 	}
 
-	private Bulletin createBulletin(FormEntryController formEntryController, FieldSpecCollection fieldsFromXForms) throws Exception
+	private Bulletin createBulletin(BulletinStore store, FormEntryController formEntryController, FieldSpecCollection fieldsFromXForms) throws Exception
 	{
-		Bulletin bulletinLoadedFromXForms = new Bulletin(getSignatureGenerator(), new FieldSpecCollection(), fieldsFromXForms);
+		FieldSpecCollection allFields = new FieldSpecCollection();
+		allFields.addAll(StandardFieldSpecs.getDefaultTopSectionFieldSpecs());
+		//FIXME urgent : Remove hard coded text and put into EnglishStrings, not sure how its extracted from there.
+		allFields.add(FieldSpec.createFieldSpec("secureApp Data", new FieldTypeSectionStart()));
+		allFields.addAll(fieldsFromXForms);
+		
+		Bulletin bulletinLoadedFromXForms = new Bulletin(store.getSignatureGenerator(), new FieldSpecCollection(), allFields);
+		bulletinLoadedFromXForms.set(TAGTITLE, get(TAGTITLE));
+		bulletinLoadedFromXForms.set(TAGLANGUAGE, get(TAGLANGUAGE));
+		bulletinLoadedFromXForms.set(TAGAUTHOR, get(TAGAUTHOR));
+		bulletinLoadedFromXForms.set(TAGORGANIZATION, get(TAGORGANIZATION));
+		bulletinLoadedFromXForms.set(TAGENTRYDATE, get(TAGENTRYDATE));
+		
 		resetFormEntryControllerIndex(formEntryController);
 		int event;
 		while ((event = formEntryController.stepToNextEvent()) != FormEntryController.EVENT_END_OF_FORM) 
