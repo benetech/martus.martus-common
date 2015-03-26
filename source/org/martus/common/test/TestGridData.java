@@ -25,6 +25,7 @@ Boston, MA 02111-1307, USA.
 */
 package org.martus.common.test;
 
+import org.martus.common.FieldSpecCollection;
 import org.martus.common.GridData;
 import org.martus.common.GridRow;
 import org.martus.common.PoolOfReusableChoicesLists;
@@ -336,6 +337,22 @@ public class TestGridData extends TestCaseEnhanced
 		gridWithData.removeTrailingBlankRows();
 		assertEquals("Should now have 2 row after blank row removal", 2, gridWithData.getRowCount());
 	}
+	
+	public void testAddColumns() throws Exception
+	{
+		GridFieldSpec spec = new GridFieldSpec();
+		FieldSpecCollection expectedFieldSpecs = createSampleFieldSpecCollection();
+		spec.addColumns(expectedFieldSpecs);
+		
+		FieldSpecCollection actualFieldSpecs = new FieldSpecCollection();
+		for (int index = 0; index < spec.getColumnCount(); ++index)
+		{
+			actualFieldSpecs.add(spec.getFieldSpec(index));
+		}
+		
+		assertEquals("Incorrect number of fieldspecs copied?", expectedFieldSpecs.size(), actualFieldSpecs.size());
+		assertEquals("Incrrect fields specs copied?", expectedFieldSpecs, actualFieldSpecs);
+	}
 
 	public static GridData createSampleGridWithData() throws Exception
 	{
@@ -367,9 +384,22 @@ public class TestGridData extends TestCaseEnhanced
 	public static GridFieldSpec createSampleGridSpec() throws UnsupportedFieldTypeException
 	{
 		GridFieldSpec spec = new GridFieldSpec();
-		spec.addColumn(FieldSpec.createCustomField("a", "Column 1", new FieldTypeNormal()));
-		spec.addColumn(FieldSpec.createCustomField("b", "Column 2", new FieldTypeNormal()));
+		FieldSpecCollection sampleFieldSpecs = createSampleFieldSpecCollection();
+		for (int index = 0; index < sampleFieldSpecs.size(); ++index)
+		{
+			spec.addColumn(sampleFieldSpecs.get(index));
+		}
+		
 		return spec;
+	}
+	
+	private static FieldSpecCollection createSampleFieldSpecCollection()
+	{
+		FieldSpecCollection sampleFieldSpecCollection = new FieldSpecCollection();
+		sampleFieldSpecCollection.add(FieldSpec.createCustomField("a", "Column 1", new FieldTypeNormal()));
+		sampleFieldSpecCollection.add(FieldSpec.createCustomField("b", "Column 2", new FieldTypeNormal()));
+		
+		return sampleFieldSpecCollection;
 	}
 
 	static public final String SAMPLE_DATA1 = "data1";
