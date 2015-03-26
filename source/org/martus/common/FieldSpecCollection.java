@@ -59,6 +59,14 @@ public class FieldSpecCollection implements Comparable
 		specs.add(spec);
 	}
 	
+	public void addAll(FieldSpecCollection fieldSpecCollectionToAdd)
+	{
+		for (int index = 0; index < fieldSpecCollectionToAdd.size(); ++index)
+		{
+			add(fieldSpecCollectionToAdd.get(index));
+		}
+	}
+	
 	public FieldSpec get(int index)
 	{
 		return (FieldSpec) specs.get(index);

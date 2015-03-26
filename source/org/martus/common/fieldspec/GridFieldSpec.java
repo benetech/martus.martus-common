@@ -28,6 +28,7 @@ package org.martus.common.fieldspec;
 import java.util.Iterator;
 import java.util.Vector;
 
+import org.martus.common.FieldSpecCollection;
 import org.martus.common.GridData;
 import org.martus.common.MartusXml;
 import org.martus.common.MiniLocalization;
@@ -229,6 +230,16 @@ public class GridFieldSpec extends FieldSpec
 		}
 	}
 
+	public void addColumns(FieldSpecCollection fieldSpecsToAdd) throws Exception
+	{
+		for (int index = 0; index < fieldSpecsToAdd.size(); ++index)
+		{
+			FieldSpec columnSpec = fieldSpecsToAdd.get(index);
+			if (columnSpec != null)
+				addColumn(columnSpec);
+		}
+	}
+	
 	public void addColumn(FieldSpec columnSpec) throws UnsupportedFieldTypeException
 	{
 		if(!isValidColumnType(columnSpec.getType()))
