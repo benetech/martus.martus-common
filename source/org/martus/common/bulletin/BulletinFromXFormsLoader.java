@@ -191,7 +191,6 @@ public class BulletinFromXFormsLoader
 		        {
 		        	GridRow gridRow = createGridRowWithData(formEntryController, gridData.getSpec(), fieldsFromXForms.getAllReusableChoiceLists());
 		        	gridData.addRow(gridRow);
-		        	System.out.println(gridData.toString());
 		        }
 			}
 			
