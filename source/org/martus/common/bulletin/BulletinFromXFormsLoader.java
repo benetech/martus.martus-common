@@ -125,7 +125,7 @@ public class BulletinFromXFormsLoader
 		allFields.add(FieldSpec.createFieldSpec(fieldLabel, new FieldTypeSectionStart()));
 		allFields.addAll(fieldsFromXForms);
 		
-		Bulletin bulletinLoadedFromXForms = new Bulletin(signatureGenerator, new FieldSpecCollection(), allFields);
+		Bulletin bulletinLoadedFromXForms = new Bulletin(signatureGenerator, allFields, new FieldSpecCollection());
 		bulletinLoadedFromXForms.set(Bulletin.TAGTITLE, bulletinToLoadFrom.get(Bulletin.TAGTITLE));
 		bulletinLoadedFromXForms.set(Bulletin.TAGLANGUAGE, bulletinToLoadFrom.get(Bulletin.TAGLANGUAGE));
 		bulletinLoadedFromXForms.set(Bulletin.TAGAUTHOR, bulletinToLoadFrom.get(Bulletin.TAGAUTHOR));
@@ -150,7 +150,7 @@ public class BulletinFromXFormsLoader
 			QuestionDef question = questionPrompt.getQuestion();
 			final int dataType = questionPrompt.getDataType();
 			TreeReference reference = (TreeReference) question.getBind().getReference();
-			FieldDataPacket privateFieldDataPacket = bulletinLoadedFromXForms.getPrivateFieldDataPacket();
+			FieldDataPacket fieldDataPacket = bulletinLoadedFromXForms.getFieldDataPacket();
 			String xFormsFieldTag = reference.getNameLast();
 			String answerAsString = answer.getDisplayText();
 			if (dataType == Constants.DATATYPE_DATE)
@@ -159,7 +159,7 @@ public class BulletinFromXFormsLoader
 			if (shouldTreatSingleItemChoiceListAsBooleanField(dataType, question) && answerAsString.isEmpty())
 				answerAsString = FieldSpec.FALSESTRING;
 			
-			privateFieldDataPacket.set(xFormsFieldTag, answerAsString);
+			fieldDataPacket.set(xFormsFieldTag, answerAsString);
 		}
 		
 		return bulletinLoadedFromXForms;
