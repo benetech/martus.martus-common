@@ -131,11 +131,7 @@ public class BulletinFromXFormsLoader
 		allFields.addAll(fieldsFromXForms);
 		
 		Bulletin bulletinLoadedFromXForms = new Bulletin(signatureGenerator, allFields, new FieldSpecCollection());
-		bulletinLoadedFromXForms.set(Bulletin.TAGTITLE, bulletinToLoadFrom.get(Bulletin.TAGTITLE));
-		bulletinLoadedFromXForms.set(Bulletin.TAGLANGUAGE, bulletinToLoadFrom.get(Bulletin.TAGLANGUAGE));
-		bulletinLoadedFromXForms.set(Bulletin.TAGAUTHOR, bulletinToLoadFrom.get(Bulletin.TAGAUTHOR));
-		bulletinLoadedFromXForms.set(Bulletin.TAGORGANIZATION, bulletinToLoadFrom.get(Bulletin.TAGORGANIZATION));
-		bulletinLoadedFromXForms.set(Bulletin.TAGENTRYDATE, bulletinToLoadFrom.get(Bulletin.TAGENTRYDATE));
+		transferAllStandardFields(bulletinLoadedFromXForms);
 		
 		resetFormEntryControllerIndex(formEntryController);
 		int event;
@@ -168,6 +164,18 @@ public class BulletinFromXFormsLoader
 		}
 		
 		return bulletinLoadedFromXForms;
+	}
+
+	private void transferAllStandardFields(Bulletin bulletinLoadedFromXForms)
+	{
+		FieldSpecCollection standardFieldSpecs = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
+		for (int index = 0; index < standardFieldSpecs.size(); ++index)
+		{
+			FieldSpec standardField = standardFieldSpecs.get(index);
+			String tag = standardField.getTag();
+			String originalValueToTransfer = bulletinToLoadFrom.get(tag);
+			bulletinLoadedFromXForms.set(tag, originalValueToTransfer);
+		}
 	}
 
 	private void convertXFormRepeatToGridData(FormEntryController formEntryController, FieldSpecCollection fieldsFromXForms, Bulletin bulletinLoadedFromXForms) throws Exception
