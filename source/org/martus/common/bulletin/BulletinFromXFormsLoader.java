@@ -54,6 +54,7 @@ import org.martus.common.FieldSpecCollection;
 import org.martus.common.GridData;
 import org.martus.common.GridRow;
 import org.martus.common.MartusXml;
+import org.martus.common.MiniLocalization;
 import org.martus.common.PoolOfReusableChoicesLists;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.fieldspec.ChoiceItem;
@@ -71,8 +72,9 @@ import org.martus.util.xml.XmlUtilities;
 
 public class BulletinFromXFormsLoader
 {
-	public BulletinFromXFormsLoader(Bulletin bulletinToLoadFromToUse)
+	public BulletinFromXFormsLoader(MiniLocalization localizationToUse, Bulletin bulletinToLoadFromToUse)
 	{
+		localization = localizationToUse;
 		bulletinToLoadFrom = bulletinToLoadFromToUse;
 	}
 	
@@ -119,8 +121,8 @@ public class BulletinFromXFormsLoader
 	{
 		FieldSpecCollection allFields = new FieldSpecCollection();
 		allFields.addAll(StandardFieldSpecs.getDefaultTopSectionFieldSpecs());
-		//FIXME urgent : Remove hard coded text and put into EnglishStrings, not sure how its extracted from there.
-		allFields.add(FieldSpec.createFieldSpec("secureApp Data", new FieldTypeSectionStart()));
+		String fieldLabel = getLocalization().getFieldLabel("secureAppDataSection");
+		allFields.add(FieldSpec.createFieldSpec(fieldLabel, new FieldTypeSectionStart()));
 		allFields.addAll(fieldsFromXForms);
 		
 		Bulletin bulletinLoadedFromXForms = new Bulletin(signatureGenerator, new FieldSpecCollection(), allFields);
@@ -440,5 +442,11 @@ public class BulletinFromXFormsLoader
     	treeReference.add(modelRootElement.getName(), TreeReference.INDEX_UNBOUND);
 	}
 	
+	private MiniLocalization getLocalization()
+	{
+		return localization;
+	}
+	
+	private MiniLocalization localization;
 	private Bulletin bulletinToLoadFrom;
 }
