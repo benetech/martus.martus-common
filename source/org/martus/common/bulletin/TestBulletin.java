@@ -520,9 +520,16 @@ public class TestBulletin extends TestCaseEnhanced
 	
 	public void testCreateDraftCopyOfWithXFormsData() throws Exception
 	{
+		verifyDraftCopyOfWithXFormsData(null, null);
+		verifyDraftCopyOfWithXFormsData("", "");
+		verifyDraftCopyOfWithXFormsData(getXFormsModelWithOnStringInputFieldXmlAsString(), getXFormsInstanceXmlAsString());
+	}
+
+	private void verifyDraftCopyOfWithXFormsData(String xFormsModelXmlAsString, String xFormsInstanceXmlAsString) throws Exception
+	{
 		Bulletin original = new Bulletin(security);
-		original.getFieldDataPacket().setXFormsModelAsString(getXFormsModelWithOnStringInputFieldXmlAsString());
-		original.getFieldDataPacket().setXFormsInstanceAsString(getXFormsInstanceXmlAsString());
+		original.getFieldDataPacket().setXFormsModelAsString(xFormsModelXmlAsString);
+		original.getFieldDataPacket().setXFormsInstanceAsString(xFormsInstanceXmlAsString);
 
 		Bulletin draftCopy = new Bulletin(security);
 		draftCopy.createDraftCopyOf(original, getDb());
