@@ -49,13 +49,13 @@ import org.javarosa.form.api.FormEntryPrompt;
 import org.javarosa.model.xform.XFormsModule;
 import org.javarosa.xform.parse.XFormParser;
 import org.javarosa.xform.util.XFormUtils;
+import org.martus.common.Exceptions.ImportXFormsException;
 import org.martus.common.FieldSpecCollection;
 import org.martus.common.GridData;
 import org.martus.common.GridRow;
 import org.martus.common.MartusXml;
 import org.martus.common.PoolOfReusableChoicesLists;
-import org.martus.common.Exceptions.ImportXFormsException;
-import org.martus.common.bulletinstore.BulletinStore;
+import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.fieldspec.ChoiceItem;
 import org.martus.common.fieldspec.DropDownFieldSpec;
 import org.martus.common.fieldspec.FieldSpec;
@@ -76,7 +76,7 @@ public class BulletinFromXFormsLoader
 		bulletinToLoadFrom = bulletinToLoadFromToUse;
 	}
 	
-	public Bulletin createNewBulletinFromXFormsBulletin(BulletinStore store) throws Exception
+	public Bulletin createNewBulletinFromXFormsBulletin() throws Exception
 	{
 		String xFormsModelXmlAsString = getXformsModelWithoutRootElement();
 		String xFormsInstanceXmlAsString = getXFormsInstanceWithoutRootElement();
@@ -88,7 +88,7 @@ public class BulletinFromXFormsLoader
 		
 		FieldSpecCollection fieldSpecsFromXForms = createFieldSpecsFromXForms(formEntryController);
 		
-		return createBulletin(store, formEntryController, fieldSpecsFromXForms);
+		return createBulletin(bulletinToLoadFrom.getSignatureGenerator(), formEntryController, fieldSpecsFromXForms);
 	}
 	
 	private static final void initializeJavaRosa() 
@@ -115,7 +115,7 @@ public class BulletinFromXFormsLoader
 		return XmlUtilities.stripXmlStartEndElements(xml, elementNameToStrip);
 	}
 
-	private Bulletin createBulletin(BulletinStore store, FormEntryController formEntryController, FieldSpecCollection fieldsFromXForms) throws Exception
+	private Bulletin createBulletin(MartusCrypto signatureGenerator, FormEntryController formEntryController, FieldSpecCollection fieldsFromXForms) throws Exception
 	{
 		FieldSpecCollection allFields = new FieldSpecCollection();
 		allFields.addAll(StandardFieldSpecs.getDefaultTopSectionFieldSpecs());
@@ -123,7 +123,7 @@ public class BulletinFromXFormsLoader
 		allFields.add(FieldSpec.createFieldSpec("secureApp Data", new FieldTypeSectionStart()));
 		allFields.addAll(fieldsFromXForms);
 		
-		Bulletin bulletinLoadedFromXForms = new Bulletin(store.getSignatureGenerator(), new FieldSpecCollection(), allFields);
+		Bulletin bulletinLoadedFromXForms = new Bulletin(signatureGenerator, new FieldSpecCollection(), allFields);
 		bulletinLoadedFromXForms.set(Bulletin.TAGTITLE, bulletinToLoadFrom.get(Bulletin.TAGTITLE));
 		bulletinLoadedFromXForms.set(Bulletin.TAGLANGUAGE, bulletinToLoadFrom.get(Bulletin.TAGLANGUAGE));
 		bulletinLoadedFromXForms.set(Bulletin.TAGAUTHOR, bulletinToLoadFrom.get(Bulletin.TAGAUTHOR));
