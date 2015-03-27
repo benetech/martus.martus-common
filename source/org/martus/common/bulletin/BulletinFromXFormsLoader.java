@@ -72,13 +72,18 @@ import org.martus.util.xml.XmlUtilities;
 
 public class BulletinFromXFormsLoader
 {
-	public BulletinFromXFormsLoader(MiniLocalization localizationToUse, Bulletin bulletinToLoadFromToUse)
+	private BulletinFromXFormsLoader(MiniLocalization localizationToUse, Bulletin bulletinToLoadFromToUse)
 	{
 		localization = localizationToUse;
 		bulletinToLoadFrom = bulletinToLoadFromToUse;
 	}
 	
-	public Bulletin createNewBulletinFromXFormsBulletin() throws Exception
+	public static Bulletin createNewBulletinFromXFormsBulletin(MiniLocalization localization, Bulletin bulletinToLoadFromToUse) throws Exception
+	{
+		return new BulletinFromXFormsLoader(localization, bulletinToLoadFromToUse).createNewBulletinFromXFormsBulletin();
+	}
+	
+	private Bulletin createNewBulletinFromXFormsBulletin() throws Exception
 	{
 		String xFormsModelXmlAsString = getXformsModelWithoutRootElement();
 		String xFormsInstanceXmlAsString = getXFormsInstanceWithoutRootElement();
