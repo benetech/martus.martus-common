@@ -125,7 +125,7 @@ public class BulletinFromXFormsLoader
 	private Bulletin createBulletin(MartusCrypto signatureGenerator, FormEntryController formEntryController, FieldSpecCollection fieldsFromXForms) throws Exception
 	{
 		FieldSpecCollection allFields = new FieldSpecCollection();
-		allFields.addAll(StandardFieldSpecs.getDefaultTopSectionFieldSpecs());
+		allFields.addAll(bulletinToLoadFrom.getTopSectionFieldSpecs());
 		String fieldLabel = getLocalization().getFieldLabel("secureAppDataSection");
 		allFields.add(FieldSpec.createFieldSpec(fieldLabel, new FieldTypeSectionStart()));
 		allFields.addAll(fieldsFromXForms);
