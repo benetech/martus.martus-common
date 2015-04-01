@@ -83,6 +83,11 @@ public class BulletinFromXFormsLoader
 		return new BulletinFromXFormsLoader(localization, bulletinToLoadFromToUse).createNewBulletinFromXFormsBulletin();
 	}
 	
+	public static Bulletin createNewBulletinFromXFormsBulletin(Bulletin bulletinToLoadFromToUse) throws Exception
+	{
+		return new BulletinFromXFormsLoader(null, bulletinToLoadFromToUse).createNewBulletinFromXFormsBulletin();
+	}
+
 	private Bulletin createNewBulletinFromXFormsBulletin() throws Exception
 	{
 		String xFormsModelXmlAsString = getXformsModelWithoutRootElement();
