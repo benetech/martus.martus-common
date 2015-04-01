@@ -532,6 +532,11 @@ public class Bulletin implements BulletinConstants
 		getBulletinHeaderPacket().removeAllPrivateAttachments();
 		getPrivateFieldDataPacket().clearAttachments();
 	}
+	
+	public boolean containsXFormsData()
+	{
+		return getFieldDataPacket().containXFormsData();
+	}
 
 	public boolean contains(String lookFor, MiniLocalization localization)
 	{
