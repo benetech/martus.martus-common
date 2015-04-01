@@ -159,6 +159,18 @@ public class TestBulletin extends TestCaseEnhanced
 	    	assertEquals(DateUtilities.getTodayInStoredFormat(), b.getLastSavedDate());
 	}
     
+    public void testContainsXFormsData() throws Exception
+    {
+	    	Bulletin b = new Bulletin(security);
+	    	final String sampleAuthor = "Daphne Moon";
+	    	b.set(Bulletin.TAGAUTHOR, sampleAuthor);
+	    	assertFalse(b.containsXFormsData());
+	    	b.getFieldDataPacket().setXFormsInstanceAsString("instance");
+	    	assertFalse(b.containsXFormsData());
+	    	b.getFieldDataPacket().setXFormsModelAsString("model");
+	    	assertTrue(b.containsXFormsData());
+    }
+    
     public void testContains() throws Exception
     {
 	    	MiniLocalization localization = new MiniLocalization();
