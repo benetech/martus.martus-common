@@ -126,7 +126,10 @@ public class BulletinFromXFormsLoader
 	{
 		FieldSpecCollection allFields = new FieldSpecCollection();
 		allFields.addAll(bulletinToLoadFrom.getTopSectionFieldSpecs());
-		String fieldLabel = getLocalization().getFieldLabel("secureAppDataSection");
+		MiniLocalization miniLocalization = getLocalization();
+		String fieldLabel = "";
+		if(miniLocalization != null)
+			fieldLabel = miniLocalization.getFieldLabel("secureAppDataSection");
 		allFields.add(FieldSpec.createFieldSpec(fieldLabel, new FieldTypeSectionStart()));
 		allFields.addAll(fieldsFromXForms);
 		
