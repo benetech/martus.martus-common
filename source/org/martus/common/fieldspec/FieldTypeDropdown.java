@@ -41,7 +41,7 @@ public class FieldTypeDropdown extends FieldType
 	
 	public static String getTypeNameString()
 	{
-		return "DROPDOWN";
+		return getTypeNameString(FIELD_DROPDOWN);
 	}
 	
 	@Override

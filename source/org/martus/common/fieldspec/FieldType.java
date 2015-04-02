@@ -26,6 +26,9 @@ Boston, MA 02111-1307, USA.
 
 package org.martus.common.fieldspec;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.martus.common.MiniLocalization;
 import org.martus.common.PoolOfReusableChoicesLists;
 import org.martus.util.xml.XmlUtilities;
@@ -70,6 +73,11 @@ abstract public class FieldType
 	
 	abstract public String getTypeName();
 	
+	static protected String getTypeNameString(Integer type)
+	{
+		return FIELD_TYPE_NAMES.get(type);
+	}
+
 	public String[] convertStoredToHumanReadable(String storedData, PoolOfReusableChoicesLists reusableChoicesLists, MiniLocalization localization)
 	{
 		return new String[] { storedData };
@@ -181,6 +189,33 @@ abstract public class FieldType
 		return new FieldSpec(this);
 	}
 	
-	public static String UNKNOWN_TYPE_STRING = "UNKNOWN";
-
+	protected static final Integer FIELD_UNKNOWN = 0; 
+	protected static final Integer FIELD_NORMAL = 1; 
+	protected static final Integer FIELD_BOOLEAN = 2; 
+	protected static final Integer FIELD_DATE = 3; 
+	protected static final Integer FIELD_DATERANGE = 4; 
+	protected static final Integer FIELD_DROPDOWN = 5; 
+	protected static final Integer FIELD_GRID = 6; 
+	protected static final Integer FIELD_LANGUAGE = 7; 
+	protected static final Integer FIELD_MESSAGE = 8; 
+	protected static final Integer FIELD_MULTILINE = 9; 
+	protected static final Integer FIELD_POPUPTREE = 10; 
+	protected static final Integer FIELD_SECTION = 11; 
+	
+	private static final Map<Integer , String> FIELD_TYPE_NAMES = new HashMap<Integer , String>() 
+			{{
+				put(FIELD_UNKNOWN, "UNKNOWN");
+				put(FIELD_NORMAL, "STRING");
+				put(FIELD_BOOLEAN, "BOOLEAN");
+				put(FIELD_DATE, "DATE");
+				put(FIELD_DATERANGE, "DATERANGE");
+				put(FIELD_DROPDOWN, "DROPDOWN");
+				put(FIELD_GRID, "GRID");
+				put(FIELD_LANGUAGE, "LANGUAGE");
+				put(FIELD_MESSAGE, "MESSAGE");
+				put(FIELD_MULTILINE, "MULTILINE");
+				put(FIELD_POPUPTREE, "POPUPTREE");
+				put(FIELD_SECTION, "SECTION");
+				}};
+	
 }

@@ -35,6 +35,6 @@ public class FieldTypeUnknown extends FieldType
 	
 	public String getTypeName()
 	{
-		return UNKNOWN_TYPE_STRING;
+		return getTypeNameString(FIELD_UNKNOWN);
 	}
 }

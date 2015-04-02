@@ -40,7 +40,7 @@ public class FieldTypeMessage extends FieldType
 	
 	public static String getTypeNameString()
 	{
-		return "MESSAGE";
+		return getTypeNameString(FIELD_MESSAGE);
 	}
 
 	public FieldSpec createEmptyFieldSpec()

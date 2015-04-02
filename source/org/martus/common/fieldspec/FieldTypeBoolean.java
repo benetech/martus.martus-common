@@ -38,7 +38,7 @@ public class FieldTypeBoolean extends FieldType
 	
 	public static String getTypeNameString()
 	{
-		return "BOOLEAN";
+		return getTypeNameString(FIELD_BOOLEAN);
 	}
 	
 	

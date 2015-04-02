@@ -40,6 +40,6 @@ public class FieldTypeSectionStart extends FieldType
 	
 	public static String getTypeNameString()
 	{
-		return "SECTION";
+		return getTypeNameString(FIELD_SECTION);
 	}
 }
