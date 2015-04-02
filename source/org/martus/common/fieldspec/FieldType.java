@@ -78,6 +78,11 @@ abstract public class FieldType
 		return FIELD_TYPE_NAMES.get(type);
 	}
 
+	static public int getNumberOfFieldTypes()
+	{
+		return FIELD_TYPE_NAMES.size();
+	}
+	
 	public String[] convertStoredToHumanReadable(String storedData, PoolOfReusableChoicesLists reusableChoicesLists, MiniLocalization localization)
 	{
 		return new String[] { storedData };
