@@ -53,6 +53,7 @@ import org.martus.common.Exceptions.ImportXFormsException;
 import org.martus.common.FieldSpecCollection;
 import org.martus.common.GridData;
 import org.martus.common.GridRow;
+import org.martus.common.MartusLogger;
 import org.martus.common.MartusXml;
 import org.martus.common.MiniLocalization;
 import org.martus.common.PoolOfReusableChoicesLists;
@@ -360,7 +361,7 @@ public class BulletinFromXFormsLoader
 		TreeReference reference = (TreeReference) question.getBind().getReference();
 		String tag = reference.getNameLast();
 		String questionLabel = questionPrompt.getQuestion().getLabelInnerText();
-		if (dataType == Constants.DATATYPE_TEXT)
+		if (isNormalFieldType(dataType))
 		{
 			return FieldSpec.createCustomField(tag, questionLabel, new FieldTypeNormal());
 		}
@@ -389,8 +390,35 @@ public class BulletinFromXFormsLoader
 			fieldSpec.setLabel(questionLabel);
 			return fieldSpec;
 		}
-		
+		MartusLogger.log("Warning: BulletinFromXFormsLoader.convertToFieldSpec unknown Field Type:" + String.valueOf(dataType));
 		return null;
+	}
+
+	static public boolean isNormalFieldType(final int dataType)
+	{
+		if(dataType == Constants.DATATYPE_TEXT)
+			return true;
+		if(dataType == Constants.DATATYPE_INTEGER)
+			return true;
+		if(dataType == Constants.DATATYPE_DECIMAL)
+			return true;
+		if(dataType == Constants.DATATYPE_TIME)
+			return true;
+		if(dataType == Constants.DATATYPE_DATE_TIME)
+			return true;
+		if(dataType == Constants.DATATYPE_GEOPOINT)
+			return true;
+		if(dataType == Constants.DATATYPE_BARCODE)
+			return true;
+		if(dataType == Constants.DATATYPE_BINARY)
+			return true;
+		if(dataType == Constants.DATATYPE_LONG)
+			return true;
+		if(dataType == Constants.DATATYPE_GEOSHAPE)
+			return true;
+		if(dataType == Constants.DATATYPE_GEOTRACE)
+			return true;
+		return false;
 	}
 
 	private boolean shouldTreatSingleItemChoiceListAsBooleanField(int xFormsDataType, QuestionDef question)
