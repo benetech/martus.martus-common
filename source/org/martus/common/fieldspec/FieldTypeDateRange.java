@@ -47,7 +47,7 @@ public class FieldTypeDateRange extends FieldType
 	
 	public static String getTypeNameString()
 	{
-		return "DATERANGE";
+		return getTypeNameString(FIELD_DATERANGE);
 	}
 	
 	@Override

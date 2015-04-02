@@ -30,7 +30,7 @@ public class FieldTypeAnyField extends FieldType
 {
 	public String getTypeName()
 	{
-		return UNKNOWN_TYPE_STRING;
+		return getTypeNameString(FIELD_UNKNOWN);
 	}
 
 	public boolean isAnyField()

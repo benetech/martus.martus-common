@@ -45,7 +45,7 @@ public class FieldTypeDate extends FieldType
 	
 	public static String getTypeNameString()
 	{
-		return "DATE";
+		return getTypeNameString(FIELD_DATE);
 	}
 	
 	@Override

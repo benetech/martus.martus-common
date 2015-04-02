@@ -40,7 +40,7 @@ public class FieldTypeGrid extends FieldType
 	
 	public static String getTypeNameString()
 	{
-		return "GRID";
+		return getTypeNameString(FIELD_GRID);
 	}
 	
 	public FieldSpec createEmptyFieldSpec()

@@ -35,7 +35,7 @@ public class FieldTypePopUpTree extends FieldType
 	
 	public static String getTypeNameString()
 	{
-		return "POPUPTREE";
+		return getTypeNameString(FIELD_POPUPTREE);
 	}
 	
 	public FieldSpec createEmptyFieldSpec()

@@ -45,7 +45,7 @@ public class FieldTypeLanguage extends FieldType
 	
 	public static String getTypeNameString()
 	{
-		return "LANGUAGE";
+		return getTypeNameString(FIELD_LANGUAGE);
 	}
 	
 	public String getDefaultValue()

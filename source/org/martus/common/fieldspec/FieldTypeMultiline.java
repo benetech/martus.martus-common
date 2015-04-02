@@ -40,6 +40,6 @@ public class FieldTypeMultiline extends FieldType
 	
 	public static String getTypeNameString()
 	{
-		return "MULTILINE";
+		return getTypeNameString(FIELD_MULTILINE);
 	}
 }

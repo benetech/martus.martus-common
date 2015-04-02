@@ -41,6 +41,6 @@ public class FieldTypeNormal extends FieldType
 	
 	public static String getTypeNameString()
 	{
-		return "STRING";
+		return getTypeNameString(FIELD_NORMAL);
 	}
 }
