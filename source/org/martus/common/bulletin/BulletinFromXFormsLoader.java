@@ -213,8 +213,8 @@ public class BulletinFromXFormsLoader
 				IFormElement element = formModel.getForm().getChild(formModel.getFormIndex());
 		        if (element instanceof GroupDef) 
 		        {
-		        	GridRow gridRow = createGridRowWithData(formEntryController, gridData.getSpec(), fieldsFromXForms.getAllReusableChoiceLists());
-		        	gridData.addRow(gridRow);
+		        		GridRow gridRow = createGridRowWithData(formEntryController, gridData.getSpec(), fieldsFromXForms.getAllReusableChoiceLists());
+		        		gridData.addRow(gridRow);
 		        }
 			}
 			
@@ -313,17 +313,21 @@ public class BulletinFromXFormsLoader
 				}
 				else
 				{
+					
 					fieldsFromXForms.addAll(gridChildrenFieldSpecs);
 				}
 			}
-			
-			if (child instanceof QuestionDef)
+			else if (child instanceof QuestionDef)
 			{
 				QuestionDef questionDef = (QuestionDef) child;
 				FormEntryPrompt questionPrompt = findQuestion(formEntryController, (TreeReference) questionDef.getBind().getReference());
 				FieldSpec fieldSpec = convertToFieldSpec(questionPrompt);
 				if (fieldSpec != null)
 					fieldsFromXForms.add(fieldSpec);
+			}
+			else
+			{
+				System.out.println(child.getLabelInnerText());
 			}
 		}
 		
