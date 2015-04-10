@@ -132,11 +132,6 @@ public class BulletinFromXFormsLoader
 	{
 		FieldSpecCollection allFields = new FieldSpecCollection();
 		allFields.addAll(bulletinToLoadFrom.getTopSectionFieldSpecs());
-		MiniLocalization miniLocalization = getLocalization();
-		String fieldLabel = "";
-		if(miniLocalization != null)
-			fieldLabel = miniLocalization.getFieldLabel("secureAppDataSection");
-		allFields.add(FieldSpec.createFieldSpec(fieldLabel, new FieldTypeSectionStart()));
 		allFields.addAll(fieldsFromXForms);
 		
 		Bulletin bulletinLoadedFromXForms = new Bulletin(signatureGenerator, allFields, new FieldSpecCollection());
@@ -313,21 +308,18 @@ public class BulletinFromXFormsLoader
 				}
 				else
 				{
-					
+					fieldsFromXForms.add(FieldSpec.createFieldSpec(groupDef.getLabelInnerText(), new FieldTypeSectionStart()));
 					fieldsFromXForms.addAll(gridChildrenFieldSpecs);
 				}
 			}
-			else if (child instanceof QuestionDef)
+			
+			if (child instanceof QuestionDef)
 			{
 				QuestionDef questionDef = (QuestionDef) child;
 				FormEntryPrompt questionPrompt = findQuestion(formEntryController, (TreeReference) questionDef.getBind().getReference());
 				FieldSpec fieldSpec = convertToFieldSpec(questionPrompt);
 				if (fieldSpec != null)
 					fieldsFromXForms.add(fieldSpec);
-			}
-			else
-			{
-				System.out.println(child.getLabelInnerText());
 			}
 		}
 		
