@@ -449,26 +449,26 @@ public class BulletinFromXFormsLoader
 
     private FormEntryController importXFormsData(String xFormsModelXmlAsString, String xFormsInstance) 
     {
-    	InputStream xFormsModelInputStream = new ByteArrayInputStream(xFormsModelXmlAsString.getBytes(StandardCharsets.UTF_8));
+    		InputStream xFormsModelInputStream = new ByteArrayInputStream(xFormsModelXmlAsString.getBytes(StandardCharsets.UTF_8));
 		FormDef formDef = XFormUtils.getFormFromInputStream(xFormsModelInputStream);
 		FormEntryModel formEntryModel = new FormEntryModel(formDef);
 		FormEntryController formEntryController = new FormEntryController(formEntryModel);
 		
-    	byte[] xFormsInstanceBytes = xFormsInstance.getBytes(StandardCharsets.UTF_8);
-    	TreeElement modelRootElement = formEntryController.getModel().getForm().getInstance().getRoot().deepCopy(true);
-    	TreeElement instanceRootElement = XFormParser.restoreDataModel(xFormsInstanceBytes, null).getRoot();
-    	if (!instanceRootElement.getName().equals(modelRootElement.getName()))
-    		return null;
-    	
-    	if (instanceRootElement.getMult() != TreeReference.DEFAULT_MUTLIPLICITY)
-    		return null;
-    	
-    	populateDataModel(modelRootElement);
-    	modelRootElement.populate(instanceRootElement, formEntryController.getModel().getForm());
-    	populateFormEntryControllerModel(formEntryController, modelRootElement);
-    	fixLanguageIusses(formEntryController);
-    	
-    	return formEntryController;
+	    	byte[] xFormsInstanceBytes = xFormsInstance.getBytes(StandardCharsets.UTF_8);
+	    	TreeElement modelRootElement = formEntryController.getModel().getForm().getInstance().getRoot().deepCopy(true);
+	    	TreeElement instanceRootElement = XFormParser.restoreDataModel(xFormsInstanceBytes, null).getRoot();
+	    	if (!instanceRootElement.getName().equals(modelRootElement.getName()))
+	    		return null;
+	    	
+	    	if (instanceRootElement.getMult() != TreeReference.DEFAULT_MUTLIPLICITY)
+	    		return null;
+	    	
+	    	populateDataModel(modelRootElement);
+	    	modelRootElement.populate(instanceRootElement, formEntryController.getModel().getForm());
+	    	populateFormEntryControllerModel(formEntryController, modelRootElement);
+	    	fixLanguageIusses(formEntryController);
+	    	
+	    	return formEntryController;
     }
 
 	private void populateFormEntryControllerModel(FormEntryController formEntryController, TreeElement modelRoot)
