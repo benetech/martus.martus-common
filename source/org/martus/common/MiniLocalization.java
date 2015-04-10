@@ -609,7 +609,7 @@ public class MiniLocalization
 				LANGUAGE_OTHER, ENGLISH, ARABIC, "arm", 
 				"az", "bg", "bn", BURMESE, "km","my","zh", "nl", "eo", FARSI, FRENCH, "de","gu","ha","he","hi","hu",
 				"it", "ja","jv","kn","kk","ky","ko","ku","ml","mr","ne","or","pa","ps","pl","pt","ro",RUSSIAN,
-				"sr", "sd","si",SPANISH,"ta","tg","te",THAI,"tr","tk","uk","ur","uz","vi"};
+				"sr", "sd","si","sq",SPANISH,"ta","tg","te",THAI,"tr","tk","uk","ur","uz","vi"};
 
 	static public final String SPACE = " ";
 	static public final long DATE_UNKNOWN = -1;
