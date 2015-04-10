@@ -488,7 +488,7 @@ public class BulletinFromXFormsLoader
 	private void populateDataModel(TreeElement modelRootElement)
 	{
 		TreeReference treeReference = TreeReference.rootRef();
-    	treeReference.add(modelRootElement.getName(), TreeReference.INDEX_UNBOUND);
+		treeReference.add(modelRootElement.getName(), TreeReference.INDEX_UNBOUND);
 	}
 	
 	private MiniLocalization getLocalization()
