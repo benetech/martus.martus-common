@@ -39,6 +39,7 @@ public class EnglishCommonStrings
 	final public static String strings[] = {
 		"language:?=-Other-",
 		"language:en=English",
+		"language:sq=Albanian",
 		"language:ar=Arabic",
 		"language:arm=Armenian",
 		"language:az=Azerbaijani",
