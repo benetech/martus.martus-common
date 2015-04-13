@@ -55,7 +55,6 @@ import org.martus.common.GridData;
 import org.martus.common.GridRow;
 import org.martus.common.MartusLogger;
 import org.martus.common.MartusXml;
-import org.martus.common.MiniLocalization;
 import org.martus.common.PoolOfReusableChoicesLists;
 import org.martus.common.crypto.MartusCrypto;
 import org.martus.common.fieldspec.ChoiceItem;
@@ -73,20 +72,14 @@ import org.martus.util.xml.XmlUtilities;
 
 public class BulletinFromXFormsLoader
 {
-	private BulletinFromXFormsLoader(MiniLocalization localizationToUse, Bulletin bulletinToLoadFromToUse)
+	private BulletinFromXFormsLoader(Bulletin bulletinToLoadFromToUse)
 	{
-		localization = localizationToUse;
 		bulletinToLoadFrom = bulletinToLoadFromToUse;
-	}
-	
-	public static Bulletin createNewBulletinFromXFormsBulletin(MiniLocalization localization, Bulletin bulletinToLoadFromToUse) throws Exception
-	{
-		return new BulletinFromXFormsLoader(localization, bulletinToLoadFromToUse).createNewBulletinFromXFormsBulletin();
 	}
 	
 	public static Bulletin createNewBulletinFromXFormsBulletin(Bulletin bulletinToLoadFromToUse) throws Exception
 	{
-		return new BulletinFromXFormsLoader(null, bulletinToLoadFromToUse).createNewBulletinFromXFormsBulletin();
+		return new BulletinFromXFormsLoader(bulletinToLoadFromToUse).createNewBulletinFromXFormsBulletin();
 	}
 
 	private Bulletin createNewBulletinFromXFormsBulletin() throws Exception
@@ -487,11 +480,5 @@ public class BulletinFromXFormsLoader
 		treeReference.add(modelRootElement.getName(), TreeReference.INDEX_UNBOUND);
 	}
 	
-	private MiniLocalization getLocalization()
-	{
-		return localization;
-	}
-	
-	private MiniLocalization localization;
 	private Bulletin bulletinToLoadFrom;
 }
