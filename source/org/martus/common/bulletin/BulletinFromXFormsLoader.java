@@ -65,8 +65,8 @@ import org.martus.common.fieldspec.FieldTypeDate;
 import org.martus.common.fieldspec.FieldTypeNormal;
 import org.martus.common.fieldspec.FieldTypeSectionStart;
 import org.martus.common.fieldspec.GridFieldSpec;
-import org.martus.common.fieldspec.StandardFieldSpecs;
 import org.martus.common.packet.FieldDataPacket;
+import org.martus.common.utilities.MartusFlexidate;
 import org.martus.util.MultiCalendar;
 import org.martus.util.xml.XmlUtilities;
 
@@ -124,11 +124,12 @@ public class BulletinFromXFormsLoader
 	private Bulletin createBulletin(MartusCrypto signatureGenerator, FormEntryController formEntryController, FieldSpecCollection fieldsFromXForms) throws Exception
 	{
 		FieldSpecCollection allFields = new FieldSpecCollection();
-		allFields.addAll(bulletinToLoadFrom.getTopSectionFieldSpecs());
+		FieldSpecCollection nonEmptytopSectionFieldSpecsFrom = getNonEmptyTopFieldSpecs();
+		allFields.addAll(nonEmptytopSectionFieldSpecsFrom);
 		allFields.addAll(fieldsFromXForms);
 		
 		Bulletin bulletinLoadedFromXForms = new Bulletin(signatureGenerator, allFields, new FieldSpecCollection());
-		transferAllStandardFields(bulletinLoadedFromXForms);
+		transferAllStandardFields(bulletinLoadedFromXForms, nonEmptytopSectionFieldSpecsFrom);
 		
 		resetFormEntryControllerIndex(formEntryController);
 		int event;
@@ -166,6 +167,38 @@ public class BulletinFromXFormsLoader
 		return bulletinLoadedFromXForms;
 	}
 
+	private FieldSpecCollection getNonEmptyTopFieldSpecs()
+	{
+		FieldSpecCollection topSectionFieldSpecsFrom = bulletinToLoadFrom.getTopSectionFieldSpecs();
+		FieldSpecCollection nonEmptyFieldSpecs = new FieldSpecCollection();
+		for(int i = 0; i < topSectionFieldSpecsFrom.size(); ++i)
+		{
+			FieldSpec spec = topSectionFieldSpecsFrom.get(i);
+			if(shouldAddFieldSpec(spec))
+				nonEmptyFieldSpecs.add(spec);
+		}
+		return nonEmptyFieldSpecs;
+	}
+
+	private boolean shouldAddFieldSpec(FieldSpec spec)
+	{
+		String tag = spec.getTag();
+		if(tag.equals(Bulletin.TAGAUTHOR))
+			return true;
+		if(tag.equals(Bulletin.TAGLANGUAGE))
+			return true;
+		if(tag.equals(Bulletin.TAGENTRYDATE))
+			return true;
+		if(tag.equals(Bulletin.TAGTITLE))
+			return true;	
+
+		String data = bulletinToLoadFrom.get(spec.getTag());
+		if(tag.equals(Bulletin.TAGEVENTDATE))
+			return !data.equals(MartusFlexidate.toStoredDateFormat(MultiCalendar.UNKNOWN));
+
+		return !data.isEmpty();
+	}
+
 	private void copyPrivateAttachmentProxies(Bulletin bulletinLoadedFromXForms) throws Exception
 	{
 		AttachmentProxy[] privateAttachmentProxies = getBulletinToLoadFrom().getPrivateAttachments();
@@ -184,9 +217,8 @@ public class BulletinFromXFormsLoader
 		}
 	}
 
-	private void transferAllStandardFields(Bulletin bulletinLoadedFromXForms)
+	private void transferAllStandardFields(Bulletin bulletinLoadedFromXForms, FieldSpecCollection standardFieldSpecs)
 	{
-		FieldSpecCollection standardFieldSpecs = StandardFieldSpecs.getDefaultTopSectionFieldSpecs();
 		for (int index = 0; index < standardFieldSpecs.size(); ++index)
 		{
 			FieldSpec standardField = standardFieldSpecs.get(index);
