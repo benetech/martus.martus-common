@@ -354,7 +354,7 @@ public class BulletinFromXFormsLoader
 				}
 				else
 				{
-					fieldsFromXForms.add(FieldSpec.createFieldSpec(groupDef.getLabelInnerText(), new FieldTypeSectionStart()));
+					fieldsFromXForms.add(FieldSpec.createCustomField(groupDef.getLabelInnerText(), groupDef.getLabelInnerText(), new FieldTypeSectionStart()));
 					fieldsFromXForms.addAll(gridChildrenFieldSpecs);
 				}
 			}
