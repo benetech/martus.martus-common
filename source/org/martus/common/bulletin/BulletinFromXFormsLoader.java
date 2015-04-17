@@ -160,7 +160,28 @@ public class BulletinFromXFormsLoader
 			fieldDataPacket.set(xFormsFieldTag, answerAsString);
 		}
 		
+		copyPrivateAttachmentProxies(bulletinLoadedFromXForms);
+		copyPublicAttachmentProxies(bulletinLoadedFromXForms);
+		
 		return bulletinLoadedFromXForms;
+	}
+
+	private void copyPrivateAttachmentProxies(Bulletin bulletinLoadedFromXForms) throws Exception
+	{
+		AttachmentProxy[] privateAttachmentProxies = getBulletinToLoadFrom().getPrivateAttachments();
+		for (AttachmentProxy privateAttachmentProxy : privateAttachmentProxies)
+		{
+			bulletinLoadedFromXForms.addPrivateAttachment(privateAttachmentProxy);
+		}
+	}
+	
+	private void copyPublicAttachmentProxies(Bulletin bulletinLoadedFromXForms) throws Exception
+	{
+		AttachmentProxy[] publicAttachmentProxies = getBulletinToLoadFrom().getPublicAttachments();
+		for (AttachmentProxy publicAttachmentProxy : publicAttachmentProxies)
+		{
+			bulletinLoadedFromXForms.addPublicAttachment(publicAttachmentProxy);
+		}
 	}
 
 	private void transferAllStandardFields(Bulletin bulletinLoadedFromXForms)
@@ -478,6 +499,11 @@ public class BulletinFromXFormsLoader
 	{
 		TreeReference treeReference = TreeReference.rootRef();
 		treeReference.add(modelRootElement.getName(), TreeReference.INDEX_UNBOUND);
+	}
+	
+	private Bulletin getBulletinToLoadFrom()
+	{
+		return bulletinToLoadFrom;
 	}
 	
 	private Bulletin bulletinToLoadFrom;
