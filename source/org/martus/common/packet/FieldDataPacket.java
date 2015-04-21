@@ -213,8 +213,7 @@ public class FieldDataPacket extends Packet
 
 	public void clearAll()
 	{
-		xFormsModelAsString = null;
-		xFormsInstanceAsString = null;
+		clearXFormsData();
 		fields.clearAllData();
 		clearAttachments();
 		clearAuthorizedToRead();
@@ -416,6 +415,12 @@ public class FieldDataPacket extends Packet
 			return false;
 		
 		return true;
+	}
+	
+	public void clearXFormsData()
+	{
+		xFormsModelAsString = null;
+		xFormsInstanceAsString = null;
 	}
 
 	protected String getFieldListString()
