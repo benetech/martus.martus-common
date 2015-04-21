@@ -537,6 +537,11 @@ public class Bulletin implements BulletinConstants
 	{
 		return getFieldDataPacket().containXFormsData();
 	}
+	
+	public void clearXFormsData()
+	{
+		getFieldDataPacket().clearXFormsData();
+	}
 
 	public boolean contains(String lookFor, MiniLocalization localization)
 	{
