@@ -331,10 +331,10 @@ public class BulletinFromXFormsLoader
 		FormDef formDef = formEntryController.getModel().getForm();
 		List<IFormElement> children = formDef.getChildren();
 		
-		return recursivelyConvertXFormsFormToFieldSpecs(formEntryController, children);
+		return recursivelyConvertXFormsFieldsToFieldSpecs(formEntryController, children);
 	}
 
-	private FieldSpecCollection recursivelyConvertXFormsFormToFieldSpecs(FormEntryController formEntryController, List<IFormElement> children) throws Exception
+	private FieldSpecCollection recursivelyConvertXFormsFieldsToFieldSpecs(FormEntryController formEntryController, List<IFormElement> children) throws Exception
 	{
 		FieldSpecCollection fieldsFromXForms = new FieldSpecCollection();
 		for (IFormElement child : children)
@@ -343,7 +343,7 @@ public class BulletinFromXFormsLoader
 			{
 				GroupDef groupDef = (GroupDef) child;
 				List<IFormElement> groupChildrem = groupDef.getChildren();
-				FieldSpecCollection gridChildrenFieldSpecs = recursivelyConvertXFormsFormToFieldSpecs(formEntryController, groupChildrem);
+				FieldSpecCollection gridChildrenFieldSpecs = recursivelyConvertXFormsFieldsToFieldSpecs(formEntryController, groupChildrem);
 				if (isRepeatGroup(groupDef))
 				{
 					GridFieldSpec gridSpec = new GridFieldSpec();
