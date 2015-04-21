@@ -350,6 +350,7 @@ public class BulletinFromXFormsLoader
 					TreeReference thisTreeReference = (TreeReference) groupDef.getBind().getReference();
 					gridSpec.setTag(thisTreeReference.toString());
 					gridSpec.addColumns(gridChildrenFieldSpecs);
+					fieldsFromXForms.add(FieldSpec.createCustomField(createGridTag(thisTreeReference), getNonNullLabel(groupDef), new FieldTypeSectionStart()));
 					fieldsFromXForms.add(gridSpec);
 				}
 				else
@@ -370,6 +371,21 @@ public class BulletinFromXFormsLoader
 		}
 		
 		return fieldsFromXForms;
+	}
+
+	private String createGridTag(TreeReference treeReference)
+	{
+		final String GRID_TAG_POSTFIX = "gridTag";
+		return treeReference.toString() + GRID_TAG_POSTFIX;
+	}
+
+	private String getNonNullLabel(GroupDef groupDef)
+	{
+		String potentialLabel = groupDef.getLabelInnerText();
+		if (potentialLabel == null)
+			return "";
+
+		return potentialLabel;
 	}
 
 	private boolean isRepeatGroup(GroupDef groupDef)
