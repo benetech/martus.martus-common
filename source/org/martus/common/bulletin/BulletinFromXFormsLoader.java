@@ -234,12 +234,12 @@ public class BulletinFromXFormsLoader
 		IFormElement repeatElement = formModel.getForm().getChild(formModel.getFormIndex());
 		GroupDef castedRepeatDef = (GroupDef) repeatElement;
 		TreeReference repeatTreeReference = (TreeReference) castedRepeatDef.getBind().getReference(); 
-		GridFieldSpec foundGridFieldSpec = (GridFieldSpec) fieldsFromXForms.findBytag(repeatTreeReference.toString());
+		String gridTag = createGridTag(repeatTreeReference);
+		GridFieldSpec foundGridFieldSpec = (GridFieldSpec) fieldsFromXForms.findBytag(gridTag);
 		PoolOfReusableChoicesLists allReusableChoiceLists = fieldsFromXForms.getAllReusableChoiceLists();
 		GridData gridData = new GridData(foundGridFieldSpec, allReusableChoiceLists);
 		handleRepeat(formEntryController, fieldsFromXForms, gridData);
 		
-		String gridTag = repeatTreeReference.toString();
 		bulletinLoadedFromXForms.set(gridTag, gridData.getXmlRepresentation());
 	}
 
@@ -348,14 +348,14 @@ public class BulletinFromXFormsLoader
 				{
 					GridFieldSpec gridSpec = new GridFieldSpec();
 					TreeReference thisTreeReference = (TreeReference) groupDef.getBind().getReference();
-					gridSpec.setTag(thisTreeReference.toString());
+					gridSpec.setTag(createGridTag(thisTreeReference));
 					gridSpec.addColumns(gridChildrenFieldSpecs);
-					fieldsFromXForms.add(FieldSpec.createCustomField(createGridTag(thisTreeReference), getNonNullLabel(groupDef), new FieldTypeSectionStart()));
+					fieldsFromXForms.add(FieldSpec.createCustomField(createSectionTag(thisTreeReference.toString()), getNonNullLabel(groupDef), new FieldTypeSectionStart()));
 					fieldsFromXForms.add(gridSpec);
 				}
 				else
 				{
-					fieldsFromXForms.add(FieldSpec.createCustomField(groupDef.getLabelInnerText(), groupDef.getLabelInnerText(), new FieldTypeSectionStart()));
+					fieldsFromXForms.add(FieldSpec.createCustomField(createSectionTag(groupDef), groupDef.getLabelInnerText(), new FieldTypeSectionStart()));
 					fieldsFromXForms.addAll(gridChildrenFieldSpecs);
 				}
 			}
@@ -373,10 +373,31 @@ public class BulletinFromXFormsLoader
 		return fieldsFromXForms;
 	}
 
+	private String createSectionTag(GroupDef groupDef)
+	{
+		return createSectionTag(groupDef.getLabelInnerText());
+	}
+	
+	private String createSectionTag(String sectionLabel)
+	{
+		final String SECTION_TAG_POSTFIX = "Section";
+		return createTag(sectionLabel.toString()) + SECTION_TAG_POSTFIX;
+	}
+	
 	private String createGridTag(TreeReference treeReference)
 	{
-		final String GRID_TAG_POSTFIX = "gridTag";
-		return treeReference.toString() + GRID_TAG_POSTFIX;
+		final String GRID_TAG_POSTFIX = "Grid";
+		return createTag(treeReference.toString()) + GRID_TAG_POSTFIX;
+	}
+
+	private String createTag(String label)
+	{
+		final String TAG_POSTFIX = "Tag";
+		String rawtext = label.replaceAll(" ", "_");
+		rawtext = rawtext.replaceAll("/", "_");
+		rawtext = rawtext.replaceAll("\\(", "_");
+		rawtext = rawtext.replaceAll("\\)", "_");
+		return rawtext + TAG_POSTFIX;
 	}
 
 	private String getNonNullLabel(GroupDef groupDef)
