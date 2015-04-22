@@ -355,7 +355,7 @@ public class BulletinFromXFormsLoader
 				}
 				else
 				{
-					fieldsFromXForms.add(FieldSpec.createCustomField(createSectionTag(groupDef), groupDef.getLabelInnerText(), new FieldTypeSectionStart()));
+					fieldsFromXForms.add(FieldSpec.createCustomField(createSectionTag(groupDef), getNonNullLabel(groupDef), new FieldTypeSectionStart()));
 					fieldsFromXForms.addAll(gridChildrenFieldSpecs);
 				}
 			}
@@ -375,7 +375,7 @@ public class BulletinFromXFormsLoader
 
 	private String createSectionTag(GroupDef groupDef)
 	{
-		return createSectionTag(groupDef.getLabelInnerText());
+		return createSectionTag(getNonNullLabel(groupDef));
 	}
 	
 	private String createSectionTag(String sectionLabel)
