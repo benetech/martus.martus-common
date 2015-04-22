@@ -344,19 +344,20 @@ public class BulletinFromXFormsLoader
 				GroupDef groupDef = (GroupDef) child;
 				List<IFormElement> groupChildrem = groupDef.getChildren();
 				FieldSpecCollection gridChildrenFieldSpecs = recursivelyConvertXFormsFieldsToFieldSpecs(formEntryController, groupChildrem);
+				String sectionTag = null;
 				if (isRepeatGroup(groupDef))
 				{
 					GridFieldSpec gridSpec = new GridFieldSpec();
 					TreeReference thisTreeReference = (TreeReference) groupDef.getBind().getReference();
 					gridSpec.setTag(createGridTag(thisTreeReference));
 					gridSpec.addColumns(gridChildrenFieldSpecs);
-					String sectionTag = createSectionTag(thisTreeReference.toString());
+					sectionTag = createSectionTag(thisTreeReference.toString());
 					fieldsFromXForms.add(FieldSpec.createCustomField(sectionTag, getNonNullLabel(groupDef), new FieldTypeSectionStart()));
 					fieldsFromXForms.add(gridSpec);
 				}
 				else
 				{
-					String sectionTag = createSectionTag(groupDef);
+					sectionTag = createSectionTag(groupDef);
 					fieldsFromXForms.add(FieldSpec.createCustomField(sectionTag, getNonNullLabel(groupDef), new FieldTypeSectionStart()));
 					fieldsFromXForms.addAll(gridChildrenFieldSpecs);
 				}
