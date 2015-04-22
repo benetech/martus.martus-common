@@ -352,15 +352,15 @@ public class BulletinFromXFormsLoader
 					gridSpec.setTag(createGridTag(thisTreeReference));
 					gridSpec.addColumns(gridChildrenFieldSpecs);
 					sectionTag = createSectionTag(thisTreeReference.toString());
-					fieldsFromXForms.add(FieldSpec.createCustomField(sectionTag, getNonNullLabel(groupDef), new FieldTypeSectionStart()));
 					fieldsFromXForms.add(gridSpec);
 				}
 				else
 				{
 					sectionTag = createSectionTag(groupDef);
-					fieldsFromXForms.add(FieldSpec.createCustomField(sectionTag, getNonNullLabel(groupDef), new FieldTypeSectionStart()));
 					fieldsFromXForms.addAll(gridChildrenFieldSpecs);
 				}
+				
+				fieldsFromXForms.add(FieldSpec.createCustomField(sectionTag, getNonNullLabel(groupDef), new FieldTypeSectionStart()));
 			}
 			
 			if (child instanceof QuestionDef)
