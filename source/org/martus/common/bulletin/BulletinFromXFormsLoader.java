@@ -350,12 +350,14 @@ public class BulletinFromXFormsLoader
 					TreeReference thisTreeReference = (TreeReference) groupDef.getBind().getReference();
 					gridSpec.setTag(createGridTag(thisTreeReference));
 					gridSpec.addColumns(gridChildrenFieldSpecs);
-					fieldsFromXForms.add(FieldSpec.createCustomField(createSectionTag(thisTreeReference.toString()), getNonNullLabel(groupDef), new FieldTypeSectionStart()));
+					String sectionTag = createSectionTag(thisTreeReference.toString());
+					fieldsFromXForms.add(FieldSpec.createCustomField(sectionTag, getNonNullLabel(groupDef), new FieldTypeSectionStart()));
 					fieldsFromXForms.add(gridSpec);
 				}
 				else
 				{
-					fieldsFromXForms.add(FieldSpec.createCustomField(createSectionTag(groupDef), getNonNullLabel(groupDef), new FieldTypeSectionStart()));
+					String sectionTag = createSectionTag(groupDef);
+					fieldsFromXForms.add(FieldSpec.createCustomField(sectionTag, getNonNullLabel(groupDef), new FieldTypeSectionStart()));
 					fieldsFromXForms.addAll(gridChildrenFieldSpecs);
 				}
 			}
