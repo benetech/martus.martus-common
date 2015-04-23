@@ -292,6 +292,10 @@ public class MiniLocalization
 		return getLabel(getCurrentLanguageCode(), "language", code);
 	}
 	
+	//TODO: From Kevin
+	//This is a nice improvement. Now I think I want them all to call
+	//localization.getCancelButtonLabel();
+	//I assume that would be in UiLocalization (not mini, and not Martus).
 	public String getCancelButtonLabel()
 	{
 		return getButtonLabel(EnglishCommonStrings.CANCEL);
