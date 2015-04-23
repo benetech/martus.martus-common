@@ -344,20 +344,23 @@ public class BulletinFromXFormsLoader
 				GroupDef groupDef = (GroupDef) child;
 				List<IFormElement> groupChildrem = groupDef.getChildren();
 				FieldSpecCollection gridChildrenFieldSpecs = recursivelyConvertXFormsFieldsToFieldSpecs(formEntryController, groupChildrem);
+				String sectionTag = null;
 				if (isRepeatGroup(groupDef))
 				{
 					GridFieldSpec gridSpec = new GridFieldSpec();
 					TreeReference thisTreeReference = (TreeReference) groupDef.getBind().getReference();
 					gridSpec.setTag(createGridTag(thisTreeReference));
 					gridSpec.addColumns(gridChildrenFieldSpecs);
-					fieldsFromXForms.add(FieldSpec.createCustomField(createSectionTag(thisTreeReference.toString()), getNonNullLabel(groupDef), new FieldTypeSectionStart()));
+					sectionTag = createSectionTag(thisTreeReference.toString());
 					fieldsFromXForms.add(gridSpec);
 				}
 				else
 				{
-					fieldsFromXForms.add(FieldSpec.createCustomField(createSectionTag(groupDef), groupDef.getLabelInnerText(), new FieldTypeSectionStart()));
+					sectionTag = createSectionTag(groupDef);
 					fieldsFromXForms.addAll(gridChildrenFieldSpecs);
 				}
+				
+				fieldsFromXForms.add(FieldSpec.createCustomField(sectionTag, getNonNullLabel(groupDef), new FieldTypeSectionStart()));
 			}
 			
 			if (child instanceof QuestionDef)
@@ -375,7 +378,7 @@ public class BulletinFromXFormsLoader
 
 	private String createSectionTag(GroupDef groupDef)
 	{
-		return createSectionTag(groupDef.getLabelInnerText());
+		return createSectionTag(getNonNullLabel(groupDef));
 	}
 	
 	private String createSectionTag(String sectionLabel)
