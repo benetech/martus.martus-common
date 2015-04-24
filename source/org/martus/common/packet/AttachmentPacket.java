@@ -229,7 +229,7 @@ public class AttachmentPacket extends Packet
 		dest.writeEndTag(MartusXml.AttachmentBytesElementName);
 	}
 
-	protected FileInputStream createFileInputStream() throws FileNotFoundException
+	protected InputStream createFileInputStream() throws FileNotFoundException
 	{
 		return new FileInputStream(rawFile);
 	}
