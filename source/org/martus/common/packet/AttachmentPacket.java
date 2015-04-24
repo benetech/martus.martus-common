@@ -213,7 +213,7 @@ public class AttachmentPacket extends Packet
 
 		dest.writeStartTag(MartusXml.AttachmentBytesElementName);
 
-		InputStream inRaw = new BufferedInputStream(new FileInputStream(rawFile));
+		InputStream inRaw = new BufferedInputStream(createFileInputStream());
 		OutputStream outXml = new Base64XmlOutputStream(dest);
 		try
 		{
@@ -227,6 +227,11 @@ public class AttachmentPacket extends Packet
 		inRaw.close();
 
 		dest.writeEndTag(MartusXml.AttachmentBytesElementName);
+	}
+
+	protected FileInputStream createFileInputStream() throws FileNotFoundException
+	{
+		return new FileInputStream(rawFile);
 	}
 
 	SessionKey sessionKey;
